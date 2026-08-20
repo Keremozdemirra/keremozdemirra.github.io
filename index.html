@@ -20,7 +20,7 @@
  "address":{"@type":"PostalAddress","addressLocality":"Munich","addressCountry":"DE"},
  "alumniOf":[{"@type":"CollegeOrUniversity","name":"Technical University of Munich"},
              {"@type":"CollegeOrUniversity","name":"Istanbul University"}],
- "sameAs":["https://github.com/Keremozdemirra"]}
+ "sameAs":["https://github.com/Keremozdemirra","https://www.linkedin.com/in/keremozdemir23/"]}
 </script>
 <style>
 :root{
@@ -35,7 +35,7 @@ html{scroll-behavior:smooth}
 body{background:#16192a;color:var(--ink);font-family:var(--sans)}
 
 /* ---------- the film ---------- */
-#filmScroll{height:340vh;position:relative}
+#filmScroll{height:430vh;position:relative}
 #stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 #film{position:absolute;inset:0;display:block}
 
@@ -70,28 +70,30 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
   width:min(240px,26vw);min-width:170px;min-height:198px;
   display:flex;flex-direction:column;justify-content:center;
   text-decoration:none;text-align:center;
-  padding:1.6rem 1.2rem;border-radius:2px;
-  color:var(--night);
-  background:rgba(20,24,36,.32);
-  border:1px solid rgba(232,228,218,.14);
-  backdrop-filter:blur(10px);
-  transform:translateY(24px);opacity:0;
-  transition:transform .7s cubic-bezier(.23,1,.32,1), opacity .7s ease,
-             border-color .25s ease, background .25s ease;
+  padding:1.6rem 1.2rem;border-radius:3px;
+  color:#e9e2d2;
+  background:rgba(26,19,11,.46);
+  border:1px solid rgba(224,170,96,.22);
+  box-shadow:0 0 40px rgba(224,160,80,.05), inset 0 0 30px rgba(0,0,0,.3);
+  backdrop-filter:blur(6px);
+  transform:translateY(28px);opacity:0;
+  transition:transform .8s cubic-bezier(.23,1,.32,1), opacity .8s ease,
+             border-color .3s ease, box-shadow .3s ease, background .3s ease;
 }
+.door:hover{transform:translateY(-4px)!important}
 #portal.live .door{transform:none;opacity:1}
 #portal.live .door:nth-child(2){transition-delay:.12s}
 #portal.live .door:nth-child(3){transition-delay:.24s}
-.door:hover{border-color:rgba(232,228,218,.4);background:rgba(20,24,36,.5)}
+.door:hover{border-color:rgba(224,170,96,.55);background:rgba(30,22,13,.6);box-shadow:0 0 60px rgba(224,160,80,.12), inset 0 0 30px rgba(0,0,0,.3)}
 .door .k{
   display:block;font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;
-  color:rgba(232,228,218,.55);margin-bottom:.7rem;
+  color:rgba(224,170,96,.7);margin-bottom:.7rem;
 }
 .door h2{
   font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,2.6vw,2rem);
   letter-spacing:.01em;
 }
-.door p{margin-top:.55rem;font-size:.78rem;line-height:1.5;color:rgba(232,228,218,.66)}
+.door p{margin-top:.55rem;font-size:.78rem;line-height:1.5;color:rgba(233,226,210,.6)}
 
 /* ---------- after the film ---------- */
 footer{
@@ -116,6 +118,9 @@ footer a:hover{color:#fff}
   .door{width:78vw;padding:1.4rem 1rem 1.2rem}
   #theName{top:34%}
 }
+
+#fadeout{position:fixed;inset:0;background:#17110a;opacity:0;pointer-events:none;transition:opacity .30s ease;z-index:90}
+#fadeout.on{opacity:1}
 </style>
 </head>
 <body>
@@ -145,6 +150,7 @@ footer a:hover{color:#fff}
     </nav>
 
     <span id="hint" data-i="hint">Scroll</span>
+    <div id="fadeout" aria-hidden="true"></div>
   </div>
 </main>
 
@@ -301,6 +307,94 @@ footer a:hover{color:#fff}
 
   /* -------------------------------------------------- trunk pre-render */
   var trunkCanvas = document.createElement("canvas");
+  var rootCanvas = document.createElement("canvas");   // the underground
+  var rootBranches = [];
+
+  function growRoot(x, y, angle, len, width, depth) {
+    if (depth > 8 || len < 4) return;
+    var segs = 3, px = x, py = y, a = angle;
+    for (var sg = 0; sg < segs; sg++) {
+      a += (rnd() - 0.5) * 0.5;
+      a = lerp(a, Math.PI / 2, 0.05);          // roots seek down, loosely
+      var sl = len / segs;
+      var nx = px + Math.cos(a) * sl;
+      var ny = py + Math.sin(a) * sl;
+      var bow = (rnd() - 0.5) * sl * 0.6;
+      rootBranches.push({ x1: px, y1: py, x2: nx, y2: ny,
+        cx: (px + nx) / 2 - Math.sin(a) * bow, cy: (py + ny) / 2 + Math.cos(a) * bow,
+        w: width * (1 - sg / segs * 0.15) });
+      px = nx; py = ny;
+    }
+    var kids = depth < 2 ? 3 : 2;
+    for (var k = 0; k < kids; k++) {
+      var na = a + (k - (kids - 1) / 2) * lerp(0.5, 1.1, rnd()) + (rnd() - 0.5) * 0.4;
+      growRoot(px, py, na, len * lerp(0.6, 0.78, rnd()), width * 0.58, depth + 1);
+    }
+  }
+
+  function renderRoots() {
+    var RH = Math.round(H * 1.25);
+    rootCanvas.width = W * DPR; rootCanvas.height = RH * DPR;
+    var t = rootCanvas.getContext("2d");
+    t.scale(DPR, DPR);
+    // soil: warm dark, deepening
+    var sg = t.createLinearGradient(0, 0, 0, RH);
+    sg.addColorStop(0, "#2c2115");
+    sg.addColorStop(0.5, "#221a10");
+    sg.addColorStop(1, "#17110a");
+    t.fillStyle = sg; t.fillRect(0, 0, W, RH);
+    // strata: faint horizontal bands
+    for (var b = 0; b < 5; b++) {
+      t.fillStyle = "rgba(0,0,0," + (0.05 + rnd() * 0.05) + ")";
+      var by = RH * (0.15 + b * 0.17) + rnd() * 20;
+      t.fillRect(0, by, W, 1.5 + rnd() * 2);
+    }
+    // stones
+    for (var st = 0; st < 46; st++) {
+      var sx = rnd() * W, sy = rnd() * RH, sr = 2 + rnd() * 9;
+      t.fillStyle = "rgba(" + (90 + rnd() * 40 | 0) + "," + (78 + rnd() * 30 | 0) + "," + (60 + rnd() * 22 | 0) + "," + (0.10 + rnd() * 0.14) + ")";
+      t.beginPath(); t.ellipse(sx, sy, sr, sr * 0.7, rnd() * 3, 0, 6.284); t.fill();
+    }
+    // the root system
+    rootBranches.length = 0;
+    var unit = Math.min(H, W * 1.1);
+    growRoot(W / 2 - unit * 0.02, -6, Math.PI / 2 - 0.55, unit * 0.19, unit * 0.030, 0);
+    growRoot(W / 2 + unit * 0.02, -6, Math.PI / 2 + 0.55, unit * 0.19, unit * 0.030, 0);
+    growRoot(W / 2, -6, Math.PI / 2 + (rnd() - 0.5) * 0.3, unit * 0.23, unit * 0.026, 0);
+    rootBranches.forEach(function (r) {
+      t.strokeStyle = "#100b06";
+      t.lineCap = "round";
+      t.lineWidth = r.w + 2.5;
+      t.beginPath(); t.moveTo(r.x1, r.y1); t.quadraticCurveTo(r.cx, r.cy, r.x2, r.y2); t.stroke();
+    });
+    rootBranches.forEach(function (r) {
+      t.strokeStyle = "#3d2d1b";
+      t.lineCap = "round";
+      t.lineWidth = r.w;
+      t.beginPath(); t.moveTo(r.x1, r.y1); t.quadraticCurveTo(r.cx, r.cy, r.x2, r.y2); t.stroke();
+      if (r.w > 3) {
+        t.strokeStyle = "rgba(120,92,58,.35)";
+        t.lineWidth = Math.max(1, r.w * 0.25);
+        t.beginPath();
+        t.moveTo(r.x1 - r.w * 0.22, r.y1 - 1);
+        t.quadraticCurveTo(r.cx - r.w * 0.22, r.cy - 1, r.x2 - r.w * 0.22, r.y2 - 1);
+        t.stroke();
+      }
+    });
+    // root hairs
+    t.strokeStyle = "rgba(70,52,32,.5)"; t.lineWidth = 0.8;
+    rootBranches.forEach(function (r) {
+      if (r.w > 2.5 || rnd() < 0.5) return;
+      t.beginPath(); t.moveTo(r.x2, r.y2);
+      t.lineTo(r.x2 + (rnd() - 0.5) * 22, r.y2 + rnd() * 16); t.stroke();
+    });
+    // buried glints: minerals catching what little light there is
+    for (var gl = 0; gl < 26; gl++) {
+      t.fillStyle = "rgba(224,160,80," + (0.05 + rnd() * 0.10) + ")";
+      var gx2 = rnd() * W, gy2 = RH * 0.2 + rnd() * RH * 0.75;
+      t.beginPath(); t.arc(gx2, gy2, 0.8 + rnd() * 1.6, 0, 6.284); t.fill();
+    }
+  }
 
   function renderTrunk() {
     trunkCanvas.width = W * DPR; trunkCanvas.height = H * DPR;
@@ -358,6 +452,7 @@ footer a:hover{color:#fff}
     grow(W * 0.5, baseY, -Math.PI / 2 + 0.03, unit * 0.155, unit * 0.030, 0, 0);
     // normalise: the recursion above works in pixels already via scale
     renderTrunk();
+    renderRoots();
     buildLeaves();
     draw(lastP, performance.now());
   }
@@ -389,8 +484,9 @@ footer a:hover{color:#fff}
     var t = now * 0.001;
     var wind = reduced ? 0 : Math.sin(t * 0.9) * 0.35 + Math.sin(t * 0.23) * 0.3;
     var gust = smooth((p - 0.10) / 0.30);           // wind rises as the film moves
-    var gather = smooth((p - 0.66) / 0.18);         // leaves walk to the doors
+    var descend = smooth((p - 0.66) / 0.30);        // the camera goes underground
     var sk = skyColors(p);
+    var camY = ease(descend) * H * 1.12;    // how deep the camera has gone
 
     // sky
     var g = ctx.createLinearGradient(0, 0, 0, H);
@@ -398,6 +494,9 @@ footer a:hover{color:#fff}
     g.addColorStop(1, rgb(sk.bot));
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
+
+    ctx.save();
+    ctx.translate(0, -camY);
 
     // far hills, two parallax planes
     ctx.fillStyle = rgb(sk.haze, 0.30);
@@ -452,9 +551,16 @@ footer a:hover{color:#fff}
       for (var i = 0; i < N; i++) {
         var L = LEAVES[i];
         if ((pass === 0) !== (L.depth < 6)) continue;
-        drawLeaf(L, p, t, wind, gust, gather, pass);
+        drawLeaf(L, p, t, wind, gust, pass);
       }
     }
+
+    // the underground, hanging below the ground line
+    if (camY > 0 || descend > 0) {
+      ctx.drawImage(rootCanvas, 0, H * 0.885, W, H * 1.25);
+    }
+
+    ctx.restore();
 
     // stars, arriving with the night
     var night = smooth((p - 0.52) / 0.3);
@@ -488,16 +594,9 @@ footer a:hover{color:#fff}
     ctx.fill();
   }
 
-  var doorPts = [];   // set from DOM each frame portal is live
-  function refreshDoorPts() {
-    doorPts = doors.map(function (d) {
-      var r = d.getBoundingClientRect();
-      var s = stage.getBoundingClientRect();
-      return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height + 14 };
-    });
-  }
 
-  function drawLeaf(L, p, t, wind, gust, gather, front) {
+
+  function drawLeaf(L, p, t, wind, gust, front) {
     // colour: green → its own autumn shade, each on its own schedule
     var turn = smooth((p - L.turn * 0.42) / 0.24);
     var gc = GREENS_RGB[L.gi], ac = AUTUMN_RGB[L.ai];
@@ -522,15 +621,8 @@ footer a:hover{color:#fff}
       y = lerp(L.ay, L.gy, f * f * (3 - 2 * f));
       rot = L.tilt + f * L.spin;
     } else {
-      // grounded — and, at the end, walking to its door
+      // grounded: it stays where it fell
       x = L.gx; y = L.gy; rot = L.tilt + L.spin;
-      if (gather > 0 && doorPts.length === 3) {
-        var d = doorPts[L.door];
-        var ge = smooth(gather);
-        x = lerp(x, d.x + L.px, ge);
-        y = lerp(y, d.y + L.py, ge);
-        rot += ge * 2;
-      }
     }
 
     var sz = L.size * (front ? 1 : 0.8);
@@ -574,17 +666,19 @@ footer a:hover{color:#fff}
     }
     if (hintEl) hintEl.classList.toggle("off", p > 0.03);
     if (portal) {
-      var on = p > 0.70;
+      var on = p > 0.87;
       portal.classList.toggle("live", on);
-      if (on) refreshDoorPts();
     }
     document.documentElement.style.setProperty("--filmp", p.toFixed(3));
   }
 
   var raf = null;
+  var shown = 0;   // the displayed progress eases toward the scroll target
   function loop(now) {
-    draw(progress, now);
-    ui(progress);
+    shown += (progress - shown) * 0.16;
+    if (Math.abs(progress - shown) < 0.0004) shown = progress;
+    draw(shown, now);
+    ui(shown);
     raf = requestAnimationFrame(loop);
   }
 
@@ -641,6 +735,19 @@ footer a:hover{color:#fff}
   var saved = null;
   try { saved = localStorage.getItem("lang"); } catch(e){}
   if (saved === "tr" || saved === "de") apply(saved);
+})();
+
+/* door click: sink into the soil, then travel */
+(function(){
+  var f = document.getElementById("fadeout");
+  document.querySelectorAll(".door").forEach(function(a){
+    a.addEventListener("click", function(e){
+      if (e.metaKey || e.ctrlKey || !f) return;
+      e.preventDefault();
+      f.classList.add("on");
+      setTimeout(function(){ location.href = a.getAttribute("href"); }, 300);
+    });
+  });
 })();
 </script>
 </body>

@@ -35,6 +35,15 @@
   --ease:cubic-bezier(.23,1,.32,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
+@keyframes surface{from{opacity:1}to{opacity:0}}
+body::after{content:"";position:fixed;inset:0;background:#17110a;pointer-events:none;z-index:95;
+  animation:surface .55s ease .05s forwards}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.crown,main>section{animation:riseIn .6s cubic-bezier(.23,1,.32,1) both}
+main>section:nth-of-type(1){animation-delay:.12s}
+main>section:nth-of-type(2){animation-delay:.2s}
+main>section:nth-of-type(3){animation-delay:.28s}
+@media (prefers-reduced-motion:reduce){body::after{display:none}.crown,main>section{animation:none}}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--fg);font-family:var(--sans);line-height:1.6}
 ::selection{background:#e3c893;color:#221e17}
@@ -48,7 +57,7 @@ a{color:inherit}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em}
 .bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--dim);
+.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -60,7 +69,7 @@ a{color:inherit}
 
 /* ---------- page head ---------- */
 .crown{padding:clamp(3.4rem,9vh,6rem) 0 clamp(2rem,5vh,3rem)}
-.crown .no{font-family:var(--mono);font-size:.7rem;letter-spacing:.3em;color:var(--accent);display:block;margin-bottom:1rem}
+.crown .no{font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--accent);display:block;margin-bottom:.8rem}
 h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.4rem,6vw,4.2rem);line-height:1.05;letter-spacing:.005em}
 .crown p.lede{margin-top:1.2rem;max-width:58ch;font-size:1.05rem;color:var(--dim)}
 
@@ -73,19 +82,20 @@ section + section{border-top:1px solid var(--line)}
 .story p+p{margin-top:1em}
 .tl{margin-top:.6rem}
 .tl .row{display:grid;grid-template-columns:74px 1fr;gap:1.2rem;padding:1.1rem 0;border-top:1px solid var(--line)}
-.tl .yr{font-family:var(--mono);font-size:.78rem;color:var(--accent);padding-top:.25rem}
+.tl .yr{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var(--accent);padding-top:.1rem}
 .tl h3{font-family:var(--sans);font-weight:500;font-size:1rem}
-.tl .role{display:block;font-family:var(--mono);font-size:.72rem;color:var(--dim);margin:.15rem 0 .4rem}
+.tl .role{display:block;font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--dim);margin:.1rem 0 .4rem}
 .tl p{font-size:.92rem;color:#4c463b;max-width:64ch}
-.badge{display:inline-block;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--accent);
-  border:1px solid var(--line);border-radius:2px;padding:.15em .5em;margin-top:.5rem}
+.badge{display:inline-block;font-size:.72rem;color:var(--accent);
+  border:1px solid var(--line);border-radius:2px;padding:.15em .55em;margin-top:.5rem}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(1.2rem,4vw,3rem)}
 dl .item{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
-dl .item .v{color:var(--dim);text-align:right;font-family:var(--mono);font-size:.76rem;padding-top:.15rem;flex-shrink:0}
-h3.sub{font-family:var(--sans);font-weight:500;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:0 0 .5rem}
-.cv-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.6rem;padding:.7rem 1.2rem;
-  border:1px solid var(--fg);border-radius:2px;text-decoration:none;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;
-  transition:background .18s var(--ease),color .18s var(--ease)}
+dl .item .v{color:var(--dim);text-align:right;font-size:.8rem;padding-top:.1rem;flex-shrink:0}
+h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg);margin:0 0 .5rem}
+.cv-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.6rem;padding:.65rem 1.2rem;
+  border:1px solid var(--fg);border-radius:2px;text-decoration:none;font-size:.86rem;font-weight:500;letter-spacing:.02em;
+  transition:background .18s var(--ease),color .18s var(--ease),transform .18s var(--ease)}
+.cv-btn:active{transform:scale(.98)}
 .cv-btn:hover{background:var(--fg);color:var(--paper)}
 
 /* ---------- projects pieces ---------- */
@@ -93,15 +103,15 @@ h3.sub{font-family:var(--sans);font-weight:500;font-size:.85rem;letter-spacing:.
   display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start}
 .feature h3{font-family:var(--serif);font-weight:400;font-size:1.6rem}
 .feature p{max-width:58ch;font-size:.95rem;color:#4c463b;margin-top:.5rem}
-.feature .go{font-family:var(--mono);font-size:.74rem;color:var(--accent);text-decoration:none;white-space:nowrap;
-  border-bottom:1px solid var(--line)}
+.feature .go{font-size:.84rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:nowrap;
+  border-bottom:1px solid var(--line);transition:border-color .18s var(--ease)}
 .feature .go:hover{border-bottom-color:var(--accent)}
 .repo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;background:var(--line);
   border:1px solid var(--line);margin-top:.4rem}
 .repo{background:var(--paper);padding:1rem 1.1rem;text-decoration:none;transition:background .16s var(--ease)}
 .repo:hover{background:var(--raised)}
 .repo h3{font-family:var(--sans);font-weight:500;font-size:.95rem}
-.repo .t{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+.repo .t{font-family:var(--serif);font-style:italic;font-size:.8rem;color:var(--accent)}
 .repo p{font-size:.84rem;color:#4c463b;margin-top:.35rem;line-height:1.45}
 
 /* ---------- contact ---------- */
@@ -109,14 +119,14 @@ h3.sub{font-family:var(--sans);font-weight:500;font-size:.85rem;letter-spacing:.
 .mail-line a.addr{font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,4vw,2.6rem);text-decoration:none;
   border-bottom:1px solid var(--line)}
 .mail-line a.addr:hover{border-bottom-color:var(--accent)}
-.copy{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+.copy{font-size:.78rem;font-weight:500;letter-spacing:.02em;color:var(--dim);
   background:none;border:1px solid var(--line);border-radius:2px;padding:.5em .9em;cursor:pointer;
   transition:color .15s var(--ease),border-color .15s var(--ease)}
 .copy:hover{color:var(--fg);border-color:var(--fg)}
 .copy.done{color:var(--accent);border-color:var(--accent)}
 .socials{display:flex;gap:1.6rem;margin-top:2rem}
-.socials a{font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);text-decoration:none;
-  border-bottom:1px solid transparent}
+.socials a{font-size:.9rem;font-weight:500;letter-spacing:.02em;color:var(--dim);text-decoration:none;
+  border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .socials a:hover{color:var(--fg);border-bottom-color:var(--fg)}
 
 /* ---------- footer ---------- */
@@ -134,10 +144,22 @@ footer a:hover{color:var(--fg)}
   .tl .row{grid-template-columns:1fr;gap:.2rem}
   .feature{grid-template-columns:1fr}
 }
+#cvsheet{display:none}
 @media print{
-  .bar,footer,.leaf-mark,.cv-btn,.langs{display:none!important}
-  body{background:#fff;color:#000}
-  section{padding:1rem 0}
+  @page{size:A4;margin:13mm 15mm}
+  .bar,footer,.leaf-mark,.cv-btn,.langs,main>section,.crown{display:none!important}
+  main.wrap{max-width:none;padding:0}
+  body{background:#fff;color:#000;font-family:var(--sans)}
+  body::after{display:none}
+  #cvsheet{display:block;font-size:9.3pt;line-height:1.38}
+  #cvsheet h1{font-family:var(--serif);font-weight:400;font-size:20pt;margin:0}
+  #cvsheet .cl{font-size:8.4pt;color:#333;margin:.25em 0 .9em;border-bottom:.6pt solid #999;padding-bottom:.7em}
+  #cvsheet h2{font-family:var(--sans);font-weight:600;font-size:9.5pt;letter-spacing:.06em;text-transform:uppercase;
+    margin:.85em 0 .3em;border-bottom:.6pt solid #bbb;padding-bottom:.15em}
+  #cvsheet table{border-collapse:collapse;width:100%}
+  #cvsheet td{vertical-align:top;padding:.14em 0}
+  #cvsheet td.d{width:78pt;white-space:nowrap;color:#444;font-size:8.4pt;padding-right:8pt;padding-top:.24em}
+  #cvsheet .sk{margin:.1em 0}
 }
 .vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
 /* ---------- tools ---------- */
@@ -283,53 +305,31 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
 <section aria-labelledby="inst-h" class="tools">
   <h2 id="inst-h" data-i="inst-h">Five instruments, live</h2>
   <p class="lede" style="max-width:60ch;color:var(--dim);margin-bottom:2rem" data-i="inst-p">Reimplemented in JavaScript from my Python repositories, running entirely in this page. The inputs are illustrative; the arithmetic is the same as the repositories, and the Python versions carry the tests.</p>
-<article class="demo" id="demo-unitguard">
+<article class="demo" id="demo-dcf">
       <div class="demo-head">
         <span class="demo-n">Tool one</span>
-        <h3>unitguard</h3>
-        <p class="demo-q">Does this conversion have an answer, and if it does not, what exactly is missing?</p>
+        <h3>dcf-lab</h3>
+        <p class="demo-q">How much of this valuation is the five years that were forecast, and how much is the perpetuity bolted on after them?</p>
       </div>
       <div class="rig">
         <div class="rig-in">
-          <div class="ug-form">
-            <div>
-              <label class="lbl" for="ug-q">Quantity</label>
-              <input id="ug-q" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="1200">
+          <div class="slide-row">
+            <div class="slide">
+              <label class="lbl" for="dcf-w">Cost of capital <b id="dcf-w-v">8.15%</b></label>
+              <input id="dcf-w" type="range" min="400" max="1600" step="5" value="815" aria-describedby="dcf-w-v">
             </div>
-            <div>
-              <label class="lbl" for="ug-from">From</label>
-              <span class="sel"><select id="ug-from"></select></span>
+            <div class="slide">
+              <label class="lbl" for="dcf-g">Terminal growth <b id="dcf-g-v">2.10%</b></label>
+              <input id="dcf-g" type="range" min="0" max="600" step="5" value="210" aria-describedby="dcf-g-v">
             </div>
-            <div>
-              <label class="lbl" for="ug-to">To</label>
-              <span class="sel"><select id="ug-to"></select></span>
-            </div>
-            <div class="ug-go"><button type="button" class="btn btn-solid" id="ug-go">Convert</button></div>
           </div>
-          <div class="chips" id="ug-chips"></div>
         </div>
-        <div class="rig-in verdict" id="ug-out" role="status" aria-live="polite"></div>
+        <div class="rig-in" id="dcf-body" role="status" aria-live="polite"></div>
       </div>
-      <p class="demo-src"><a href="https://github.com/Keremozdemirra/unitguard" rel="noopener noreferrer">github.com/Keremozdemirra/unitguard</a><span>127 tests</span></p>
-    </article><article class="demo" id="demo-bridge">
-      <div class="demo-head">
-        <span class="demo-n">Tool two</span>
-        <h3>carbon-bridge</h3>
-        <p class="demo-q">Emissions moved between two years. How much of that was output, how much was the product mix, how much was energy intensity, and how much was the emission factor?</p>
-      </div>
-      <div class="rig">
-        <div class="rig-in">
-          <div class="seg-grid" id="cb-segs"></div>
-        </div>
-        <div class="rig-in">
-          <div class="wf" id="cb-wf"></div>
-          <div class="check" id="cb-check"></div>
-        </div>
-      </div>
-      <p class="demo-src"><a href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/esg-toolkit</a><span>37 tests</span></p>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/analyst-toolkit</a><span>72 tests</span></p>
     </article><article class="demo" id="demo-macc">
       <div class="demo-head">
-        <span class="demo-n">Tool three</span>
+        <span class="demo-n">Tool two</span>
         <h3>marginal-abatement</h3>
         <p class="demo-q">At a given carbon price, which of these ten measures is worth doing, and what does the set cost?</p>
       </div>
@@ -355,9 +355,53 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
         </div>
       </div>
       <p class="demo-src"><a href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/esg-toolkit</a><span>46 tests</span></p>
-    </article><article class="demo" id="demo-sizer">
+    </article><article class="demo" id="demo-bridge">
+      <div class="demo-head">
+        <span class="demo-n">Tool three</span>
+        <h3>carbon-bridge</h3>
+        <p class="demo-q">Emissions moved between two years. How much of that was output, how much was the product mix, how much was energy intensity, and how much was the emission factor?</p>
+      </div>
+      <div class="rig">
+        <div class="rig-in">
+          <div class="seg-grid" id="cb-segs"></div>
+        </div>
+        <div class="rig-in">
+          <div class="wf" id="cb-wf"></div>
+          <div class="check" id="cb-check"></div>
+        </div>
+      </div>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/esg-toolkit</a><span>37 tests</span></p>
+    </article><article class="demo" id="demo-unitguard">
       <div class="demo-head">
         <span class="demo-n">Tool four</span>
+        <h3>unitguard</h3>
+        <p class="demo-q">Does this conversion have an answer, and if it does not, what exactly is missing?</p>
+      </div>
+      <div class="rig">
+        <div class="rig-in">
+          <div class="ug-form">
+            <div>
+              <label class="lbl" for="ug-q">Quantity</label>
+              <input id="ug-q" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="1200">
+            </div>
+            <div>
+              <label class="lbl" for="ug-from">From</label>
+              <span class="sel"><select id="ug-from"></select></span>
+            </div>
+            <div>
+              <label class="lbl" for="ug-to">To</label>
+              <span class="sel"><select id="ug-to"></select></span>
+            </div>
+            <div class="ug-go"><button type="button" class="btn btn-solid" id="ug-go">Convert</button></div>
+          </div>
+          <div class="chips" id="ug-chips"></div>
+        </div>
+        <div class="rig-in verdict" id="ug-out" role="status" aria-live="polite"></div>
+      </div>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/unitguard" rel="noopener noreferrer">github.com/Keremozdemirra/unitguard</a><span>127 tests</span></p>
+    </article><article class="demo" id="demo-sizer">
+      <div class="demo-head">
+        <span class="demo-n">Tool five</span>
         <h3>market-sizer</h3>
         <p class="demo-q">The two sizings disagree. Which assumption would have to change, and what would it have to become?</p>
       </div>
@@ -392,28 +436,6 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
         </div>
       </div>
       <p class="demo-src"><a href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/analyst-toolkit</a><span>49 tests</span></p>
-    </article><article class="demo" id="demo-dcf">
-      <div class="demo-head">
-        <span class="demo-n">Tool five</span>
-        <h3>dcf-lab</h3>
-        <p class="demo-q">How much of this valuation is the five years that were forecast, and how much is the perpetuity bolted on after them?</p>
-      </div>
-      <div class="rig">
-        <div class="rig-in">
-          <div class="slide-row">
-            <div class="slide">
-              <label class="lbl" for="dcf-w">Cost of capital <b id="dcf-w-v">8.15%</b></label>
-              <input id="dcf-w" type="range" min="400" max="1600" step="5" value="815" aria-describedby="dcf-w-v">
-            </div>
-            <div class="slide">
-              <label class="lbl" for="dcf-g">Terminal growth <b id="dcf-g-v">2.10%</b></label>
-              <input id="dcf-g" type="range" min="0" max="600" step="5" value="210" aria-describedby="dcf-g-v">
-            </div>
-          </div>
-        </div>
-        <div class="rig-in" id="dcf-body" role="status" aria-live="polite"></div>
-      </div>
-      <p class="demo-src"><a href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/analyst-toolkit</a><span>72 tests</span></p>
     </article>
 </section>
 
@@ -474,25 +496,62 @@ window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-c": "İletiş
     });
   });
 
-  /* one leaf falls when the page opens — a signature, not a show */
-  if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+  /* the world continues here: now and then a leaf drifts by, and once in a
+     while something small walks across a rule line. Never louder than that. */
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function oneLeaf(){
+    if(still || document.hidden) return;
     var leaf = document.createElement("div");
     leaf.className = "leaf-mark";
-    leaf.innerHTML = '<svg width="18" height="26" viewBox="0 0 18 26"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".9"/><path d="M9 3 L9 23" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg>';
+    var hue = ["#b06a24","#9c5a1e","#c07c2e"][Math.floor(Math.random()*3)];
+    leaf.innerHTML = '<svg width="16" height="23" viewBox="0 0 18 26"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="'+hue+'" opacity=".85"/><path d="M9 3 L9 23" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg>';
     document.body.appendChild(leaf);
-    var x = 12 + Math.random() * 70, t0 = null, dur = 7000 + Math.random() * 4000;
+    var x = 8 + Math.random() * 80, t0 = null, dur = 8000 + Math.random() * 5000;
     function fall(ts){
       if(!t0) t0 = ts;
       var p = (ts - t0) / dur;
       if(p >= 1){ leaf.remove(); return; }
-      leaf.style.left = "calc(" + x + "vw + " + (Math.sin(p * 9) * 40) + "px)";
+      leaf.style.left = "calc(" + x + "vw + " + (Math.sin(p * 8) * 44) + "px)";
       leaf.style.top = (p * 108) + "vh";
-      leaf.style.transform = "rotate(" + (p * 500) + "deg)";
+      leaf.style.transform = "rotate(" + (p * 460) + "deg)";
       leaf.style.opacity = p > .85 ? (1 - p) / .15 : 1;
       requestAnimationFrame(fall);
     }
-    setTimeout(function(){ requestAnimationFrame(fall); }, 1200);
+    requestAnimationFrame(fall);
   }
+  if(!still){
+    setTimeout(oneLeaf, 1500);
+    setInterval(oneLeaf, 21000 + Math.random() * 9000);
+  }
+
+  /* the ladybird: crosses one section rule, once, slowly */
+  function ladybird(){
+    if(still || document.hidden) return;
+    var rules = document.querySelectorAll("main>section + section");
+    if(!rules.length) return;
+    var host = rules[Math.floor(Math.random() * rules.length)];
+    var bug = document.createElement("div");
+    bug.setAttribute("aria-hidden","true");
+    bug.style.cssText = "position:absolute;width:9px;height:7px;margin-top:-4px;pointer-events:none;z-index:4;";
+    bug.innerHTML = '<svg width="9" height="7" viewBox="0 0 9 7"><ellipse cx="5" cy="3.5" rx="3.6" ry="3" fill="#8a3b1e"/><circle cx="1.6" cy="3.5" r="1.4" fill="#2b2118"/><line x1="5" y1="1" x2="5" y2="6" stroke="#2b2118" stroke-width=".5"/><circle cx="4" cy="2.6" r=".5" fill="#2b2118"/><circle cx="6.2" cy="4.2" r=".5" fill="#2b2118"/></svg>';
+    host.style.position = "relative";
+    host.appendChild(bug);
+    var dir = Math.random() < .5 ? 1 : -1, t0 = null, dur = 26000;
+    if(dir < 0) bug.firstChild.style.transform = "scaleX(-1)";
+    function walk(ts){
+      if(!t0) t0 = ts;
+      var p = (ts - t0) / dur;
+      if(p >= 1){ bug.remove(); return; }
+      var wob = Math.sin(p * 90) * 0.6;
+      var xx = dir > 0 ? p * 100 : 100 - p * 100;
+      bug.style.left = xx + "%";
+      bug.style.top = wob + "px";
+      bug.style.opacity = p < .05 ? p / .05 : p > .95 ? (1 - p) / .05 : .8;
+      requestAnimationFrame(walk);
+    }
+    requestAnimationFrame(walk);
+  }
+  if(!still) setTimeout(ladybird, 9000 + Math.random() * 14000);
 })();
 
 

@@ -35,6 +35,15 @@
   --ease:cubic-bezier(.23,1,.32,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
+@keyframes surface{from{opacity:1}to{opacity:0}}
+body::after{content:"";position:fixed;inset:0;background:#17110a;pointer-events:none;z-index:95;
+  animation:surface .55s ease .05s forwards}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.crown,main>section{animation:riseIn .6s cubic-bezier(.23,1,.32,1) both}
+main>section:nth-of-type(1){animation-delay:.12s}
+main>section:nth-of-type(2){animation-delay:.2s}
+main>section:nth-of-type(3){animation-delay:.28s}
+@media (prefers-reduced-motion:reduce){body::after{display:none}.crown,main>section{animation:none}}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--fg);font-family:var(--sans);line-height:1.6}
 ::selection{background:#e3c893;color:#221e17}
@@ -48,7 +57,7 @@ a{color:inherit}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em}
 .bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--dim);
+.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -60,7 +69,7 @@ a{color:inherit}
 
 /* ---------- page head ---------- */
 .crown{padding:clamp(3.4rem,9vh,6rem) 0 clamp(2rem,5vh,3rem)}
-.crown .no{font-family:var(--mono);font-size:.7rem;letter-spacing:.3em;color:var(--accent);display:block;margin-bottom:1rem}
+.crown .no{font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--accent);display:block;margin-bottom:.8rem}
 h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.4rem,6vw,4.2rem);line-height:1.05;letter-spacing:.005em}
 .crown p.lede{margin-top:1.2rem;max-width:58ch;font-size:1.05rem;color:var(--dim)}
 
@@ -73,19 +82,20 @@ section + section{border-top:1px solid var(--line)}
 .story p+p{margin-top:1em}
 .tl{margin-top:.6rem}
 .tl .row{display:grid;grid-template-columns:74px 1fr;gap:1.2rem;padding:1.1rem 0;border-top:1px solid var(--line)}
-.tl .yr{font-family:var(--mono);font-size:.78rem;color:var(--accent);padding-top:.25rem}
+.tl .yr{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var(--accent);padding-top:.1rem}
 .tl h3{font-family:var(--sans);font-weight:500;font-size:1rem}
-.tl .role{display:block;font-family:var(--mono);font-size:.72rem;color:var(--dim);margin:.15rem 0 .4rem}
+.tl .role{display:block;font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--dim);margin:.1rem 0 .4rem}
 .tl p{font-size:.92rem;color:#4c463b;max-width:64ch}
-.badge{display:inline-block;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--accent);
-  border:1px solid var(--line);border-radius:2px;padding:.15em .5em;margin-top:.5rem}
+.badge{display:inline-block;font-size:.72rem;color:var(--accent);
+  border:1px solid var(--line);border-radius:2px;padding:.15em .55em;margin-top:.5rem}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(1.2rem,4vw,3rem)}
 dl .item{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
-dl .item .v{color:var(--dim);text-align:right;font-family:var(--mono);font-size:.76rem;padding-top:.15rem;flex-shrink:0}
-h3.sub{font-family:var(--sans);font-weight:500;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:0 0 .5rem}
-.cv-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.6rem;padding:.7rem 1.2rem;
-  border:1px solid var(--fg);border-radius:2px;text-decoration:none;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;
-  transition:background .18s var(--ease),color .18s var(--ease)}
+dl .item .v{color:var(--dim);text-align:right;font-size:.8rem;padding-top:.1rem;flex-shrink:0}
+h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg);margin:0 0 .5rem}
+.cv-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.6rem;padding:.65rem 1.2rem;
+  border:1px solid var(--fg);border-radius:2px;text-decoration:none;font-size:.86rem;font-weight:500;letter-spacing:.02em;
+  transition:background .18s var(--ease),color .18s var(--ease),transform .18s var(--ease)}
+.cv-btn:active{transform:scale(.98)}
 .cv-btn:hover{background:var(--fg);color:var(--paper)}
 
 /* ---------- projects pieces ---------- */
@@ -93,15 +103,15 @@ h3.sub{font-family:var(--sans);font-weight:500;font-size:.85rem;letter-spacing:.
   display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start}
 .feature h3{font-family:var(--serif);font-weight:400;font-size:1.6rem}
 .feature p{max-width:58ch;font-size:.95rem;color:#4c463b;margin-top:.5rem}
-.feature .go{font-family:var(--mono);font-size:.74rem;color:var(--accent);text-decoration:none;white-space:nowrap;
-  border-bottom:1px solid var(--line)}
+.feature .go{font-size:.84rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:nowrap;
+  border-bottom:1px solid var(--line);transition:border-color .18s var(--ease)}
 .feature .go:hover{border-bottom-color:var(--accent)}
 .repo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;background:var(--line);
   border:1px solid var(--line);margin-top:.4rem}
 .repo{background:var(--paper);padding:1rem 1.1rem;text-decoration:none;transition:background .16s var(--ease)}
 .repo:hover{background:var(--raised)}
 .repo h3{font-family:var(--sans);font-weight:500;font-size:.95rem}
-.repo .t{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+.repo .t{font-family:var(--serif);font-style:italic;font-size:.8rem;color:var(--accent)}
 .repo p{font-size:.84rem;color:#4c463b;margin-top:.35rem;line-height:1.45}
 
 /* ---------- contact ---------- */
@@ -109,14 +119,14 @@ h3.sub{font-family:var(--sans);font-weight:500;font-size:.85rem;letter-spacing:.
 .mail-line a.addr{font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,4vw,2.6rem);text-decoration:none;
   border-bottom:1px solid var(--line)}
 .mail-line a.addr:hover{border-bottom-color:var(--accent)}
-.copy{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+.copy{font-size:.78rem;font-weight:500;letter-spacing:.02em;color:var(--dim);
   background:none;border:1px solid var(--line);border-radius:2px;padding:.5em .9em;cursor:pointer;
   transition:color .15s var(--ease),border-color .15s var(--ease)}
 .copy:hover{color:var(--fg);border-color:var(--fg)}
 .copy.done{color:var(--accent);border-color:var(--accent)}
 .socials{display:flex;gap:1.6rem;margin-top:2rem}
-.socials a{font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);text-decoration:none;
-  border-bottom:1px solid transparent}
+.socials a{font-size:.9rem;font-weight:500;letter-spacing:.02em;color:var(--dim);text-decoration:none;
+  border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .socials a:hover{color:var(--fg);border-bottom-color:var(--fg)}
 
 /* ---------- footer ---------- */
@@ -134,10 +144,22 @@ footer a:hover{color:var(--fg)}
   .tl .row{grid-template-columns:1fr;gap:.2rem}
   .feature{grid-template-columns:1fr}
 }
+#cvsheet{display:none}
 @media print{
-  .bar,footer,.leaf-mark,.cv-btn,.langs{display:none!important}
-  body{background:#fff;color:#000}
-  section{padding:1rem 0}
+  @page{size:A4;margin:13mm 15mm}
+  .bar,footer,.leaf-mark,.cv-btn,.langs,main>section,.crown{display:none!important}
+  main.wrap{max-width:none;padding:0}
+  body{background:#fff;color:#000;font-family:var(--sans)}
+  body::after{display:none}
+  #cvsheet{display:block;font-size:9.3pt;line-height:1.38}
+  #cvsheet h1{font-family:var(--serif);font-weight:400;font-size:20pt;margin:0}
+  #cvsheet .cl{font-size:8.4pt;color:#333;margin:.25em 0 .9em;border-bottom:.6pt solid #999;padding-bottom:.7em}
+  #cvsheet h2{font-family:var(--sans);font-weight:600;font-size:9.5pt;letter-spacing:.06em;text-transform:uppercase;
+    margin:.85em 0 .3em;border-bottom:.6pt solid #bbb;padding-bottom:.15em}
+  #cvsheet table{border-collapse:collapse;width:100%}
+  #cvsheet td{vertical-align:top;padding:.14em 0}
+  #cvsheet td.d{width:78pt;white-space:nowrap;color:#444;font-size:8.4pt;padding-right:8pt;padding-top:.24em}
+  #cvsheet .sk{margin:.1em 0}
 }
 </style>
 </head>
@@ -175,10 +197,14 @@ footer a:hover{color:var(--fg)}
   <h2 id="exp-h" data-i="exp-h">Experience</h2>
   <div class="tl">
     <div class="row"><span class="yr">Now</span><div>
-      <h3>CoLaunch</h3><span class="role" data-i="r6">Co-founder · colaunch.app</span>
-      <p data-i="e6">Co-founded, in build. Third place at the Boğaziçi Enterprize competition — the only outside verdict on it so far, stated as such.</p>
+      <h3>BIGM</h3><span class="role" data-i="r7">Marketing manager, part-time · Munich</span>
+      <p data-i="e7">Running social media presence and brand identity for a B2B AI sales-automation platform, alongside my studies.</p>
     </div></div>
-    <div class="row"><span class="yr">2025</span><div>
+    <div class="row"><span class="yr">Now</span><div>
+      <h3>CoLaunch</h3><span class="role" data-i="r6">Co-founder · colaunch.app</span>
+      <p data-i="e6">A platform matching startup ideas with the talent to build them. Third at the Boğaziçi Enterprize competition; competed nationally among JA Startup teams and reached the YTU Entrepreneurship semi-final.</p>
+    </div></div>
+    <div class="row"><span class="yr">2026</span><div>
       <h3>Kaeser Kompressoren</h3><span class="role" data-i="r5">Circular economy project at TUM · team of five</span>
       <p data-i="e5">Designed a take-back scheme and a product-as-a-service model for industrial compressors. Ran the Scope 3 analysis and drew the route to ESPR compliance and a Digital Product Passport.</p>
     </div></div>
@@ -210,12 +236,14 @@ footer a:hover{color:var(--fg)}
       <dl>
         <div class="item"><span class="k">TUM · BSc Sustainable Management and Technology</span><span class="v">2024–2027</span></div>
         <div class="item"><span class="k">Istanbul University · BSc Economics, remote</span><span class="v">2025–2029</span></div>
+        <div class="item"><span class="k">Yeditepe University · Management Information Systems, transferred to TUM</span><span class="v">2023–2024</span></div>
       </dl>
       <h3 class="sub" style="margin-top:1.6rem" data-i="cr-lang">Languages</h3>
       <dl>
         <div class="item"><span class="k" data-i="l-tr">Turkish</span><span class="v" data-i="l-trv">native</span></div>
         <div class="item"><span class="k" data-i="l-en">English</span><span class="v">C1 · IELTS 7.0</span></div>
         <div class="item"><span class="k" data-i="l-de">German</span><span class="v" data-i="l-dev">A2, self-assessed</span></div>
+        <div class="item"><span class="k" data-i="l-wp">Work permit</span><span class="v" data-i="l-wpv">eligible to work in Germany</span></div>
       </dl>
     </div>
     <div>
@@ -237,13 +265,44 @@ footer a:hover{color:var(--fg)}
   </div>
 </section>
 
+<div id="cvsheet" aria-hidden="true">
+  <header>
+    <h1>Kerem Özdemir</h1>
+    <p class="cl">Munich · kozdemir3523@gmail.com · linkedin.com/in/keremozdemir23 · github.com/Keremozdemirra · keremozdemirra.github.io</p>
+  </header>
+  <h2>Experience</h2>
+  <table>
+    <tr><td class="d">07/2026–</td><td><b>BIGM, Munich</b> — Marketing manager, part-time. Social media presence and brand identity for a B2B AI sales-automation platform.</td></tr>
+    <tr><td class="d">02/2026–</td><td><b>CoLaunch, Istanbul</b> — Co-founder, colaunch.app. Platform matching startup ideas with talent; 3rd at Boğaziçi Enterprize; national level among JA Startup teams; YTU Entrepreneurship semi-final.</td></tr>
+    <tr><td class="d">10/2025–02/2026</td><td><b>Kaeser Kompressoren</b> — TUM circular-economy project, team of five. Take-back scheme and product-as-a-service model; Scope 3 analysis; ESPR and Digital Product Passport roadmap.</td></tr>
+    <tr><td class="d">10–11/2025</td><td><b>SILREAL GmbH, Berlin (remote)</b> — Consultant intern. China market-entry report and client presentations for a healthcare and consumer goods client.</td></tr>
+    <tr><td class="d">05–09/2025</td><td><b>Microbify GmbH, Straubing</b> — Market expansion consultant, project study. Mapped and sized three B2B segments; market-entry strategy with KPIs and risk assessment. Graded 1.0.</td></tr>
+    <tr><td class="d">07–08/2024</td><td><b>HTE Industrial Control Systems, Istanbul</b> — Sustainability consultant intern. Company sustainability strategy assessment; environmental impact and resource efficiency.</td></tr>
+    <tr><td class="d">03–04/2024</td><td><b>Tuğçelik Alüminyum, Istanbul</b> — Sustainability intern. Collected fuel and electricity data; built the first Scope 1–2 inventory; on-site compliance inspections.</td></tr>
+  </table>
+  <h2>Education</h2>
+  <table>
+    <tr><td class="d">2024–2027</td><td><b>Technical University of Munich</b> — BSc Sustainable Management &amp; Technology</td></tr>
+    <tr><td class="d">2025–2029</td><td><b>Istanbul University</b> — BSc Economics, remote</td></tr>
+    <tr><td class="d">2023–2024</td><td><b>Yeditepe University</b> — Management Information Systems, transferred to TUM</td></tr>
+  </table>
+  <h2>Skills</h2>
+  <p class="sk"><b>Sustainability &amp; ESG:</b> ESG analysis and reporting · LCA · carbon accounting (Scope 1–3) · CSRD / ESPR / Digital Product Passport · circular-economy strategy<br>
+  <b>Analytics &amp; strategy:</b> financial modelling · market research · data analysis · KPI and risk assessment<br>
+  <b>Tools:</b> Excel and PowerPoint with think-cell (advanced) · Python (foundational) · Java (intermediate) · AI-assisted analysis workflows<br>
+  <b>Languages:</b> Turkish (native) · English (C1, IELTS 7.0) · German (A2) — eligible to work in Germany</p>
+  <h2>Certifications &amp; memberships</h2>
+  <p class="sk">McKinsey Forward (2026) · BCG Digital Transformation simulation (2026) · Management Consulting, Emory (2025) · Sustainability Consulting, UIUC (2025) · Google Project Management (2024) · Google AI Essentials (2024)<br>
+  UN MGCY Chemicals &amp; Waste Youth Platform (2025–) · Enactus Straubing e.V., finance auditor (2024–2026)</p>
+</div>
+
 </main>
 <footer><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 <script>
-window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-c": "İletişim", "p-h1": "Profil", "p-lede": "Münih. Paralel iki lisans, altı gerçek iş deneyimi, kurulmakta olan bir şirket.", "st1": "TUM'da Sürdürülebilir Yönetim ve Teknoloji, yanında İstanbul Üniversitesi'nde Ekonomi okuyorum. Bu eşleşme bilinçli: biri sanayinin nasıl değişmek zorunda olduğunu, diğeri arkasındaki paranın nasıl davrandığını anlatıyor.", "st2": "Asıl sevdiğim şey, yapılanın sağlam olması. Başkasının kontrol edebildiği bir emisyon envanteri. Her varsayımın üzerinde bir isim taşıdığı bir pazar modeli. Bir sayı eksikken tahmin etmeyi reddedip tam olarak neyin eksik olduğunu söyleyen bir araç. Repolarımın çoğu, bir yerlerde bir tablonun sessizce yanlış hesapladığını gördüğüm için var.", "st3": "Küçük bir ekiple CoLaunch'ı kuruyorum ve karbon muhasebesi ile finansal analiz için bir dizi açık araç tutuyorum — beşi projeler sayfasında canlı çalışıyor. Adımla yayımlanan her şey kaynağını taşır.", "cv": "Yazdır / CV olarak kaydet", "exp-h": "Deneyim", "cr-h": "Belgeler", "cr-edu": "Eğitim", "cr-lang": "Diller", "cr-cert": "Sertifikalar", "cr-mem": "Üyelikler", "l-tr": "Türkçe", "l-trv": "ana dil", "l-en": "İngilizce", "l-de": "Almanca", "l-dev": "A2, öz değerlendirme", "r6": "Kurucu ortak · colaunch.app", "r5": "TUM'da döngüsel ekonomi projesi · beş kişilik ekip", "r4": "Danışman stajyer · Berlin", "r3": "Pazar genişleme danışmanı · Straubing", "r2": "Sürdürülebilirlik danışmanı stajyer · İstanbul", "r1": "Sürdürülebilirlik stajyeri · İstanbul", "e6": "Kuruldu, inşa halinde. Boğaziçi Enterprize yarışmasında üçüncülük — şimdilik tek dış değerlendirme, öyle de yazıyor.", "e5": "Endüstriyel kompresörler için geri alım şeması ve hizmet-olarak-ürün modeli tasarlandı. Scope 3 analizi ve ESPR + Dijital Ürün Pasaportu rotası.", "e4": "Sağlık ve tüketici ürünleri müşterisi için Çin pazarına giriş raporu. Müşteri sunumları ve içindeki grafikler.", "e3": "Gaz akışları ve sıvılardan mikrobiyolojik örnekleme için üç B2B segmenti haritalandı ve boyutlandırıldı. KPI'lar ve risk değerlendirmesiyle pazar giriş stratejisi.", "e2": "Raporlama yükümlülükleri tarandı; bir kontrol sistemleri üreticisine uygulananlar uygulanmayanlardan ayrıldı.", "e1": "Üretim sahalarında yakıt ve elektrik verisi toplandı; şirketin ilk Scope 1 ve Scope 2 envanteri kuruldu."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-c": "Kontakt", "p-h1": "Profil", "p-lede": "München. Zwei Studiengänge parallel, sechs Stationen echter Arbeit, ein Unternehmen im Aufbau.", "st1": "Ich studiere Sustainable Management & Technology an der TU München und daneben Volkswirtschaft an der Universität Istanbul. Die Kombination ist Absicht: das eine Fach handelt davon, wie die Industrie sich ändern muss, das andere davon, wie sich das Geld dahinter verhält.", "st2": "Was mir wirklich liegt: Dinge bauen, die halten. Ein Emissionsinventar, das jemand anderes prüfen kann. Ein Marktmodell, in dem jede Annahme einen Namen trägt. Ein Werkzeug, das nicht rät, wenn eine Zahl fehlt, sondern sagt, was genau fehlt. Die meisten meiner Repositories existieren, weil irgendwo eine Tabelle still versagt hat.", "st3": "Mit einem kleinen Team baue ich CoLaunch, und ich pflege öffentliche Instrumente für Carbon Accounting und Finanzanalyse — fünf davon laufen live auf der Projektseite. Alles unter meinem Namen trägt seine Quelle.", "cv": "Drucken / als CV speichern", "exp-h": "Werdegang", "cr-h": "Nachweise", "cr-edu": "Ausbildung", "cr-lang": "Sprachen", "cr-cert": "Zertifikate", "cr-mem": "Mitgliedschaften", "l-tr": "Türkisch", "l-trv": "Muttersprache", "l-en": "Englisch", "l-de": "Deutsch", "l-dev": "A2, Selbsteinschätzung", "r6": "Mitgründer · colaunch.app", "r5": "Kreislaufwirtschaftsprojekt an der TUM · Fünferteam", "r4": "Consultant Praktikant · Berlin", "r3": "Market Expansion Consultant · Straubing", "r2": "Praktikant Nachhaltigkeitsberatung · Istanbul", "r1": "Praktikant Nachhaltigkeit · Istanbul", "e6": "Mitgegründet, im Aufbau. Dritter Platz beim Boğaziçi-Enterprize-Wettbewerb — bislang das einzige Außenurteil, und so benannt.", "e5": "Rücknahmesystem und Product-as-a-Service-Modell für Industriekompressoren entworfen. Scope-3-Analyse und Weg zu ESPR und digitalem Produktpass.", "e4": "China-Markteintrittsbericht für einen Kunden aus Healthcare und Konsumgütern. Kundenpräsentationen samt Grafiken.", "e3": "Drei B2B-Segmente für mikrobiologische Probenahme kartiert und dimensioniert. Markteintrittsstrategie mit KPIs und Risikobewertung.", "e2": "Berichtspflichten durchgearbeitet und getrennt, was für einen Steuerungshersteller gilt und was nicht.", "e1": "Brennstoff- und Stromdaten der Produktionsstandorte erhoben; erstes Scope-1- und Scope-2-Inventar der Firma aufgebaut."}};
+window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-c": "İletişim", "p-h1": "Profil", "p-lede": "Münih. Paralel iki lisans, altı gerçek iş deneyimi, kurulmakta olan bir şirket.", "st1": "TUM'da Sürdürülebilir Yönetim ve Teknoloji, yanında İstanbul Üniversitesi'nde Ekonomi okuyorum. Bu eşleşme bilinçli: biri sanayinin nasıl değişmek zorunda olduğunu, diğeri arkasındaki paranın nasıl davrandığını anlatıyor.", "st2": "Asıl sevdiğim şey, yapılanın sağlam olması. Başkasının kontrol edebildiği bir emisyon envanteri. Her varsayımın üzerinde bir isim taşıdığı bir pazar modeli. Bir sayı eksikken tahmin etmeyi reddedip tam olarak neyin eksik olduğunu söyleyen bir araç. Repolarımın çoğu, bir yerlerde bir tablonun sessizce yanlış hesapladığını gördüğüm için var.", "st3": "Küçük bir ekiple CoLaunch'ı kuruyorum ve karbon muhasebesi ile finansal analiz için bir dizi açık araç tutuyorum — beşi projeler sayfasında canlı çalışıyor. Adımla yayımlanan her şey kaynağını taşır.", "cv": "Yazdır / CV olarak kaydet", "exp-h": "Deneyim", "cr-h": "Belgeler", "cr-edu": "Eğitim", "cr-lang": "Diller", "cr-cert": "Sertifikalar", "cr-mem": "Üyelikler", "l-tr": "Türkçe", "l-trv": "ana dil", "l-en": "İngilizce", "l-de": "Almanca", "l-dev": "A2, öz değerlendirme", "r7": "Pazarlama müdürü, yarı zamanlı · Münih", "e7": "B2B bir yapay zekâ satış-otomasyonu platformunun sosyal medya varlığını ve marka kimliğini yürütüyorum, okulun yanında.", "l-wp": "Çalışma izni", "l-wpv": "Almanya'da çalışmaya uygun", "r6": "Kurucu ortak · colaunch.app", "r5": "TUM'da döngüsel ekonomi projesi · beş kişilik ekip", "r4": "Danışman stajyer · Berlin", "r3": "Pazar genişleme danışmanı · Straubing", "r2": "Sürdürülebilirlik danışmanı stajyer · İstanbul", "r1": "Sürdürülebilirlik stajyeri · İstanbul", "e6": "Startup fikirlerini onları inşa edecek yetenekle eşleştiren bir platform. Boğaziçi Enterprize'da üçüncülük; JA Startup takımları arasında ulusal düzeyde yarıştı, YTU Girişimcilik'te yarı final.", "e5": "Endüstriyel kompresörler için geri alım şeması ve hizmet-olarak-ürün modeli tasarlandı. Scope 3 analizi ve ESPR + Dijital Ürün Pasaportu rotası.", "e4": "Sağlık ve tüketici ürünleri müşterisi için Çin pazarına giriş raporu. Müşteri sunumları ve içindeki grafikler.", "e3": "Gaz akışları ve sıvılardan mikrobiyolojik örnekleme için üç B2B segmenti haritalandı ve boyutlandırıldı. KPI'lar ve risk değerlendirmesiyle pazar giriş stratejisi.", "e2": "Raporlama yükümlülükleri tarandı; bir kontrol sistemleri üreticisine uygulananlar uygulanmayanlardan ayrıldı.", "e1": "Üretim sahalarında yakıt ve elektrik verisi toplandı; şirketin ilk Scope 1 ve Scope 2 envanteri kuruldu."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-c": "Kontakt", "p-h1": "Profil", "p-lede": "München. Zwei Studiengänge parallel, sechs Stationen echter Arbeit, ein Unternehmen im Aufbau.", "st1": "Ich studiere Sustainable Management & Technology an der TU München und daneben Volkswirtschaft an der Universität Istanbul. Die Kombination ist Absicht: das eine Fach handelt davon, wie die Industrie sich ändern muss, das andere davon, wie sich das Geld dahinter verhält.", "st2": "Was mir wirklich liegt: Dinge bauen, die halten. Ein Emissionsinventar, das jemand anderes prüfen kann. Ein Marktmodell, in dem jede Annahme einen Namen trägt. Ein Werkzeug, das nicht rät, wenn eine Zahl fehlt, sondern sagt, was genau fehlt. Die meisten meiner Repositories existieren, weil irgendwo eine Tabelle still versagt hat.", "st3": "Mit einem kleinen Team baue ich CoLaunch, und ich pflege öffentliche Instrumente für Carbon Accounting und Finanzanalyse — fünf davon laufen live auf der Projektseite. Alles unter meinem Namen trägt seine Quelle.", "cv": "Drucken / als CV speichern", "exp-h": "Werdegang", "cr-h": "Nachweise", "cr-edu": "Ausbildung", "cr-lang": "Sprachen", "cr-cert": "Zertifikate", "cr-mem": "Mitgliedschaften", "l-tr": "Türkisch", "l-trv": "Muttersprache", "l-en": "Englisch", "l-de": "Deutsch", "l-dev": "A2, Selbsteinschätzung", "r7": "Marketing Manager, Teilzeit · München", "e7": "Social-Media-Präsenz und Markenidentität einer B2B-KI-Vertriebsplattform, neben dem Studium.", "l-wp": "Arbeitserlaubnis", "l-wpv": "berechtigt, in Deutschland zu arbeiten", "r6": "Mitgründer · colaunch.app", "r5": "Kreislaufwirtschaftsprojekt an der TUM · Fünferteam", "r4": "Consultant Praktikant · Berlin", "r3": "Market Expansion Consultant · Straubing", "r2": "Praktikant Nachhaltigkeitsberatung · Istanbul", "r1": "Praktikant Nachhaltigkeit · Istanbul", "e6": "Eine Plattform, die Startup-Ideen mit den passenden Talenten zusammenbringt. Dritter Platz beim Boğaziçi Enterprize; national unter JA-Startup-Teams angetreten, Halbfinale bei YTU Entrepreneurship.", "e5": "Rücknahmesystem und Product-as-a-Service-Modell für Industriekompressoren entworfen. Scope-3-Analyse und Weg zu ESPR und digitalem Produktpass.", "e4": "China-Markteintrittsbericht für einen Kunden aus Healthcare und Konsumgütern. Kundenpräsentationen samt Grafiken.", "e3": "Drei B2B-Segmente für mikrobiologische Probenahme kartiert und dimensioniert. Markteintrittsstrategie mit KPIs und Risikobewertung.", "e2": "Berichtspflichten durchgearbeitet und getrennt, was für einen Steuerungshersteller gilt und was nicht.", "e1": "Brennstoff- und Stromdaten der Produktionsstandorte erhoben; erstes Scope-1- und Scope-2-Inventar der Firma aufgebaut."}};
 
 (function(){
   "use strict";
@@ -281,25 +340,62 @@ window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-c": "İletiş
     });
   });
 
-  /* one leaf falls when the page opens — a signature, not a show */
-  if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+  /* the world continues here: now and then a leaf drifts by, and once in a
+     while something small walks across a rule line. Never louder than that. */
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function oneLeaf(){
+    if(still || document.hidden) return;
     var leaf = document.createElement("div");
     leaf.className = "leaf-mark";
-    leaf.innerHTML = '<svg width="18" height="26" viewBox="0 0 18 26"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".9"/><path d="M9 3 L9 23" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg>';
+    var hue = ["#b06a24","#9c5a1e","#c07c2e"][Math.floor(Math.random()*3)];
+    leaf.innerHTML = '<svg width="16" height="23" viewBox="0 0 18 26"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="'+hue+'" opacity=".85"/><path d="M9 3 L9 23" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg>';
     document.body.appendChild(leaf);
-    var x = 12 + Math.random() * 70, t0 = null, dur = 7000 + Math.random() * 4000;
+    var x = 8 + Math.random() * 80, t0 = null, dur = 8000 + Math.random() * 5000;
     function fall(ts){
       if(!t0) t0 = ts;
       var p = (ts - t0) / dur;
       if(p >= 1){ leaf.remove(); return; }
-      leaf.style.left = "calc(" + x + "vw + " + (Math.sin(p * 9) * 40) + "px)";
+      leaf.style.left = "calc(" + x + "vw + " + (Math.sin(p * 8) * 44) + "px)";
       leaf.style.top = (p * 108) + "vh";
-      leaf.style.transform = "rotate(" + (p * 500) + "deg)";
+      leaf.style.transform = "rotate(" + (p * 460) + "deg)";
       leaf.style.opacity = p > .85 ? (1 - p) / .15 : 1;
       requestAnimationFrame(fall);
     }
-    setTimeout(function(){ requestAnimationFrame(fall); }, 1200);
+    requestAnimationFrame(fall);
   }
+  if(!still){
+    setTimeout(oneLeaf, 1500);
+    setInterval(oneLeaf, 21000 + Math.random() * 9000);
+  }
+
+  /* the ladybird: crosses one section rule, once, slowly */
+  function ladybird(){
+    if(still || document.hidden) return;
+    var rules = document.querySelectorAll("main>section + section");
+    if(!rules.length) return;
+    var host = rules[Math.floor(Math.random() * rules.length)];
+    var bug = document.createElement("div");
+    bug.setAttribute("aria-hidden","true");
+    bug.style.cssText = "position:absolute;width:9px;height:7px;margin-top:-4px;pointer-events:none;z-index:4;";
+    bug.innerHTML = '<svg width="9" height="7" viewBox="0 0 9 7"><ellipse cx="5" cy="3.5" rx="3.6" ry="3" fill="#8a3b1e"/><circle cx="1.6" cy="3.5" r="1.4" fill="#2b2118"/><line x1="5" y1="1" x2="5" y2="6" stroke="#2b2118" stroke-width=".5"/><circle cx="4" cy="2.6" r=".5" fill="#2b2118"/><circle cx="6.2" cy="4.2" r=".5" fill="#2b2118"/></svg>';
+    host.style.position = "relative";
+    host.appendChild(bug);
+    var dir = Math.random() < .5 ? 1 : -1, t0 = null, dur = 26000;
+    if(dir < 0) bug.firstChild.style.transform = "scaleX(-1)";
+    function walk(ts){
+      if(!t0) t0 = ts;
+      var p = (ts - t0) / dur;
+      if(p >= 1){ bug.remove(); return; }
+      var wob = Math.sin(p * 90) * 0.6;
+      var xx = dir > 0 ? p * 100 : 100 - p * 100;
+      bug.style.left = xx + "%";
+      bug.style.top = wob + "px";
+      bug.style.opacity = p < .05 ? p / .05 : p > .95 ? (1 - p) / .05 : .8;
+      requestAnimationFrame(walk);
+    }
+    requestAnimationFrame(walk);
+  }
+  if(!still) setTimeout(ladybird, 9000 + Math.random() * 14000);
 })();
 
 
