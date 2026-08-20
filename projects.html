@@ -3,20 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Projects — Kerem Özdemir</title>
+<title>Projects. Kerem Özdemir</title>
 <meta name="description" content="CoLaunch, five live analytical instruments, and the public repositories behind them.">
 <meta name="color-scheme" content="light">
 <link rel="canonical" href="https://keremozdemirra.github.io/projects.html">
-<meta property="og:title" content="Projects — Kerem Özdemir">
+<meta property="og:title" content="Projects. Kerem Özdemir">
 <meta property="og:description" content="CoLaunch, five live analytical instruments, and the public repositories behind them.">
 <meta property="og:type" content="profile">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<meta property="og:image" content="https://keremozdemirra.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Analytics: cookieless. Create a site at dash.cloudflare.com > Web Analytics,
+     paste the token below and remove the comment markers.
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "YOUR_TOKEN"}'></script>
+-->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
 <style>
 :root{
   --serif:"Fraunces",Georgia,serif;
   --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --text:"Newsreader",Georgia,serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --display:var(--serif);
   --paper:#f2efe6;
@@ -35,6 +43,8 @@
   --ease:cubic-bezier(.23,1,.32,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
+#fadeout{position:fixed;inset:0;background:#17110a;opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:96}
+#fadeout.on{opacity:1}
 @keyframes surface{from{opacity:1}to{opacity:0}}
 body::after{content:"";position:fixed;inset:0;background:#17110a;pointer-events:none;z-index:95;
   animation:surface .55s ease .05s forwards}
@@ -49,6 +59,7 @@ body{background:var(--paper);color:var(--fg);font-family:var(--sans);line-height
 ::selection{background:#e3c893;color:#221e17}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
 .wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
@@ -71,21 +82,21 @@ a{color:inherit}
 .crown{padding:clamp(3.4rem,9vh,6rem) 0 clamp(2rem,5vh,3rem)}
 .crown .no{font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--accent);display:block;margin-bottom:.8rem}
 h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.4rem,6vw,4.2rem);line-height:1.05;letter-spacing:.005em}
-.crown p.lede{margin-top:1.2rem;max-width:58ch;font-size:1.05rem;color:var(--dim)}
+.crown p.lede{margin-top:1.2rem;max-width:58ch;font-family:var(--text);font-size:1.15rem;color:var(--dim)}
 
 h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:.005em;margin:0 0 1.2rem}
 section{padding:clamp(2.2rem,6vh,4rem) 0}
 section + section{border-top:1px solid var(--line)}
 
 /* ---------- profile pieces ---------- */
-.story{max-width:62ch;font-size:1.02rem}
+.story{max-width:62ch;font-family:var(--text);font-size:1.13rem;line-height:1.65}
 .story p+p{margin-top:1em}
 .tl{margin-top:.6rem}
 .tl .row{display:grid;grid-template-columns:74px 1fr;gap:1.2rem;padding:1.1rem 0;border-top:1px solid var(--line)}
 .tl .yr{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var(--accent);padding-top:.1rem}
 .tl h3{font-family:var(--sans);font-weight:500;font-size:1rem}
 .tl .role{display:block;font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--dim);margin:.1rem 0 .4rem}
-.tl p{font-size:.92rem;color:#4c463b;max-width:64ch}
+.tl p{font-family:var(--text);font-size:1rem;color:#4c463b;max-width:64ch}
 .badge{display:inline-block;font-size:.72rem;color:var(--accent);
   border:1px solid var(--line);border-radius:2px;padding:.15em .55em;margin-top:.5rem}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(1.2rem,4vw,3rem)}
@@ -102,7 +113,7 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 .feature{border:1px solid var(--line);background:var(--raised);padding:clamp(1.4rem,4vw,2.4rem);
   display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start}
 .feature h3{font-family:var(--serif);font-weight:400;font-size:1.6rem}
-.feature p{max-width:58ch;font-size:.95rem;color:#4c463b;margin-top:.5rem}
+.feature p{max-width:58ch;font-family:var(--text);font-size:1.02rem;color:#4c463b;margin-top:.5rem}
 .feature .go{font-size:.84rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:nowrap;
   border-bottom:1px solid var(--line);transition:border-color .18s var(--ease)}
 .feature .go:hover{border-bottom-color:var(--accent)}
@@ -112,7 +123,7 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 .repo:hover{background:var(--raised)}
 .repo h3{font-family:var(--sans);font-weight:500;font-size:.95rem}
 .repo .t{font-family:var(--serif);font-style:italic;font-size:.8rem;color:var(--accent)}
-.repo p{font-size:.84rem;color:#4c463b;margin-top:.35rem;line-height:1.45}
+.repo p{font-family:var(--text);font-size:.92rem;color:#4c463b;margin-top:.35rem;line-height:1.45}
 
 /* ---------- contact ---------- */
 .mail-line{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-top:1rem}
@@ -274,7 +285,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
 <header class="bar">
   <div class="wrap">
     <a class="home" href="index.html">Kerem Özdemir</a>
-    <nav aria-label="Site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" aria-current="page" data-i="nav-j">Projects</a><a href="contact.html" data-i="nav-c">Contact</a>
+    <nav aria-label="Site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" aria-current="page" data-i="nav-j">Projects</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -286,7 +297,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
 <main class="wrap">
 
 <div class="crown">
-  <span class="no">02</span>
+  <span class="no">No. 02</span>
   <h1 data-i="j-h1">Projects</h1>
   <p class="lede" data-i="j-lede">A company in build, five instruments that run in this page, and the repositories behind them.</p>
 </div>
@@ -296,7 +307,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
   <div class="feature">
     <div>
       <h3>colaunch.app</h3>
-      <p data-i="col-p">Co-founding a platform for people who build things together. In build with a small team; third place at the Boğaziçi Enterprize competition. More here as it ships — no promises ahead of the product.</p>
+      <p data-i="col-p">Co-founding a platform for people who build things together. In build with a small team; third place at the Boğaziçi Enterprize competition. More here as it ships. no promises ahead of the product.</p>
     </div>
     <a class="go" href="https://colaunch.app" rel="noopener noreferrer">colaunch.app →</a>
   </div>
@@ -310,7 +321,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
         <span class="demo-n">Tool one</span>
         <h3>dcf-lab</h3>
         <p class="demo-q">How much of this valuation is the five years that were forecast, and how much is the perpetuity bolted on after them?</p>
-      </div>
+      <p style="font-family:var(--text);font-style:italic;color:var(--dim);margin:.6rem 0 0;max-width:56ch">Every slider is an argument: growth is the story, the discount rate is the doubt, and the terminal value is where valuations hide.</p></div>
       <div class="rig">
         <div class="rig-in">
           <div class="slide-row">
@@ -443,12 +454,12 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
   <h2 id="repo-h" data-i="repo-h">Repositories</h2>
   <p class="lede" style="max-width:60ch;color:var(--dim)" data-i="repo-p">Everything public, everything sourced. The instruments above come from the first five; the rest package working method as reusable skills.</p>
   <div class="repo-grid">
-    <a class="repo" href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer"><h3>esg-toolkit</h3><span class="t">Python</span><p data-i="rp1">Carbon decomposition, target pathways, abatement cost, CBAM embedded emissions.</p></a>
-    <a class="repo" href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer"><h3>analyst-toolkit</h3><span class="t">Python</span><p data-i="rp2">Market sizing from two directions, DCF with the terminal value taken apart.</p></a>
-    <a class="repo" href="https://github.com/Keremozdemirra/unitguard" rel="noopener noreferrer"><h3>unitguard</h3><span class="t">Python</span><p data-i="rp3">Unit and dimension safety for energy and emissions arithmetic. Refuses to guess.</p></a>
-    <a class="repo" href="https://github.com/Keremozdemirra/open-climate-data" rel="noopener noreferrer"><h3>open-climate-data</h3><span class="t">Python</span><p data-i="rp4">One interface over public climate data; every value carries source, version, date.</p></a>
-    <a class="repo" href="https://github.com/Keremozdemirra/simea" rel="noopener noreferrer"><h3>simea</h3><span class="t" data-i="rt5">Research</span><p data-i="rp5">Two papers on market predictability, with the models that test them.</p></a>
-    <a class="repo" href="https://github.com/Keremozdemirra/agent-kit" rel="noopener noreferrer"><h3>agent-kit +11</h3><span class="t" data-i="rt6">Skill packs</span><p data-i="rp6">Twelve repositories of working method packaged as Claude skills — finance, sustainability, research, writing, risk, and the conventions they share.</p></a>
+    <a class="repo" href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer" data-gh="esg-toolkit"><h3>esg-toolkit</h3><span class="t">Python</span><p data-i="rp1">Carbon decomposition, target pathways, abatement cost, CBAM embedded emissions.</p></a>
+    <a class="repo" href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer" data-gh="analyst-toolkit"><h3>analyst-toolkit</h3><span class="t">Python</span><p data-i="rp2">Market sizing from two directions, DCF with the terminal value taken apart.</p></a>
+    <a class="repo" href="https://github.com/Keremozdemirra/unitguard" rel="noopener noreferrer" data-gh="unitguard"><h3>unitguard</h3><span class="t">Python</span><p data-i="rp3">Unit and dimension safety for energy and emissions arithmetic. Refuses to guess.</p></a>
+    <a class="repo" href="https://github.com/Keremozdemirra/open-climate-data" rel="noopener noreferrer" data-gh="open-climate-data"><h3>open-climate-data</h3><span class="t">Python</span><p data-i="rp4">One interface over public climate data; every value carries source, version, date.</p></a>
+    <a class="repo" href="https://github.com/Keremozdemirra/simea" rel="noopener noreferrer" data-gh="simea"><h3>simea</h3><span class="t" data-i="rt5">Research</span><p data-i="rp5">Two papers on market predictability, with the models that test them.</p></a>
+    <a class="repo" href="https://github.com/Keremozdemirra/agent-kit" rel="noopener noreferrer" data-gh="agent-kit"><h3>agent-kit +11</h3><span class="t" data-i="rt6">Skill packs</span><p data-i="rp6">Twelve repositories of working method packaged as Claude skills. finance, sustainability, research, writing, risk, and the conventions they share.</p></a>
   </div>
 </section>
 
@@ -458,7 +469,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 <script>
-window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-c": "İletişim", "j-h1": "Projeler", "j-lede": "Kurulmakta olan bir şirket, bu sayfanın içinde çalışan beş araç ve arkalarındaki repolar.", "col-p": "Birlikte bir şeyler inşa edenler için bir platform kuruyoruz. Küçük bir ekiple yapım halinde; Boğaziçi Enterprize yarışmasında üçüncülük. Ürün ilerledikçe burada — üründen önce vaat yok.", "inst-h": "Beş araç, canlı", "inst-p": "Python repolarımdan JavaScript'e yeniden yazıldı, tamamen bu sayfada çalışıyor. Girdiler örnektir; aritmetik repolardakiyle aynı, testler Python tarafında.", "repo-h": "Repolar", "repo-p": "Hepsi açık, hepsi kaynaklı. Yukarıdaki araçlar ilk beşten geliyor; kalanlar çalışma yöntemini yeniden kullanılabilir skill'ler olarak paketliyor.", "rp1": "Karbon ayrıştırma, hedef patikaları, azaltım maliyeti, CBAM gömülü emisyonları.", "rp2": "İki yönden pazar boyutlandırma, terminal değeri parçalanmış DCF.", "rp3": "Enerji ve emisyon aritmetiği için birim ve boyut güvenliği. Tahmin etmeyi reddeder.", "rp4": "Açık iklim verisi üzerinde tek arayüz; her değer kaynak, sürüm ve tarih taşır.", "rt5": "Araştırma", "rp5": "Pazar öngörülebilirliği üzerine iki makale ve onları test eden modeller.", "rt6": "Skill paketleri", "rp6": "Çalışma yöntemini Claude skill'i olarak paketleyen on iki repo — finans, sürdürülebilirlik, araştırma, yazı, risk ve ortak konvansiyonları."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-c": "Kontakt", "j-h1": "Projekte", "j-lede": "Ein Unternehmen im Aufbau, fünf Instrumente, die in dieser Seite laufen, und die Repositories dahinter.", "col-p": "Wir bauen eine Plattform für Menschen, die gemeinsam Dinge entwickeln. Im Aufbau mit kleinem Team; dritter Platz beim Boğaziçi-Enterprize-Wettbewerb. Mehr hier, sobald es liefert — keine Versprechen vor dem Produkt.", "inst-h": "Fünf Instrumente, live", "inst-p": "Aus meinen Python-Repositories in JavaScript neu umgesetzt, laufen vollständig in dieser Seite. Die Eingaben sind illustrativ; die Arithmetik ist dieselbe, die Tests trägt die Python-Seite.", "repo-h": "Repositories", "repo-p": "Alles öffentlich, alles mit Quelle. Die Instrumente oben stammen aus den ersten fünf; der Rest verpackt Arbeitsmethode als wiederverwendbare Skills.", "rp1": "Emissionszerlegung, Zielpfade, Vermeidungskosten, eingebettete CBAM-Emissionen.", "rp2": "Marktgrößen aus zwei Richtungen, DCF mit zerlegtem Terminal Value.", "rp3": "Einheiten- und Dimensionssicherheit für Energie- und Emissionsrechnung. Rät nicht.", "rp4": "Eine Schnittstelle über öffentliche Klimadaten; jeder Wert trägt Quelle, Version, Datum.", "rt5": "Forschung", "rp5": "Zwei Arbeiten zur Vorhersagbarkeit von Märkten, mit den Modellen, die sie testen.", "rt6": "Skill-Pakete", "rp6": "Zwölf Repositories, die Arbeitsmethode als Claude-Skills verpacken — Finanzen, Nachhaltigkeit, Recherche, Schreiben, Risiko und ihre gemeinsamen Konventionen."}};
+window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "j-h1": "Projeler", "j-lede": "Kurulmakta olan bir şirket, bu sayfanın içinde çalışan beş araç ve arkalarındaki repolar.", "col-p": "Birlikte bir şeyler inşa edenler için bir platform kuruyoruz. Küçük bir ekiple yapım halinde; Boğaziçi Enterprize yarışmasında üçüncülük. Ürün ilerledikçe burada. üründen önce vaat yok.", "inst-h": "Beş araç, canlı", "inst-p": "Python repolarımdan JavaScript'e yeniden yazıldı, tamamen bu sayfada çalışıyor. Girdiler örnektir; aritmetik repolardakiyle aynı, testler Python tarafında.", "repo-h": "Repolar", "repo-p": "Hepsi açık, hepsi kaynaklı. Yukarıdaki araçlar ilk beşten geliyor; kalanlar çalışma yöntemini yeniden kullanılabilir skill'ler olarak paketliyor.", "rp1": "Karbon ayrıştırma, hedef patikaları, azaltım maliyeti, CBAM gömülü emisyonları.", "rp2": "İki yönden pazar boyutlandırma, terminal değeri parçalanmış DCF.", "rp3": "Enerji ve emisyon aritmetiği için birim ve boyut güvenliği. Tahmin etmeyi reddeder.", "rp4": "Açık iklim verisi üzerinde tek arayüz; her değer kaynak, sürüm ve tarih taşır.", "rt5": "Araştırma", "rp5": "Pazar öngörülebilirliği üzerine iki makale ve onları test eden modeller.", "rt6": "Skill paketleri", "rp6": "Çalışma yöntemini Claude skill'i olarak paketleyen on iki repo. finans, sürdürülebilirlik, araştırma, yazı, risk ve ortak konvansiyonları."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "j-h1": "Projekte", "j-lede": "Ein Unternehmen im Aufbau, fünf Instrumente, die in dieser Seite laufen, und die Repositories dahinter.", "col-p": "Wir bauen eine Plattform für Menschen, die gemeinsam Dinge entwickeln. Im Aufbau mit kleinem Team; dritter Platz beim Boğaziçi-Enterprize-Wettbewerb. Mehr hier, sobald es liefert. keine Versprechen vor dem Produkt.", "inst-h": "Fünf Instrumente, live", "inst-p": "Aus meinen Python-Repositories in JavaScript neu umgesetzt, laufen vollständig in dieser Seite. Die Eingaben sind illustrativ; die Arithmetik ist dieselbe, die Tests trägt die Python-Seite.", "repo-h": "Repositories", "repo-p": "Alles öffentlich, alles mit Quelle. Die Instrumente oben stammen aus den ersten fünf; der Rest verpackt Arbeitsmethode als wiederverwendbare Skills.", "rp1": "Emissionszerlegung, Zielpfade, Vermeidungskosten, eingebettete CBAM-Emissionen.", "rp2": "Marktgrößen aus zwei Richtungen, DCF mit zerlegtem Terminal Value.", "rp3": "Einheiten- und Dimensionssicherheit für Energie- und Emissionsrechnung. Rät nicht.", "rp4": "Eine Schnittstelle über öffentliche Klimadaten; jeder Wert trägt Quelle, Version, Datum.", "rt5": "Forschung", "rp5": "Zwei Arbeiten zur Vorhersagbarkeit von Märkten, mit den Modellen, die sie testen.", "rt6": "Skill-Pakete", "rp6": "Zwölf Repositories, die Arbeitsmethode als Claude-Skills verpacken. Finanzen, Nachhaltigkeit, Recherche, Schreiben, Risiko und ihre gemeinsamen Konventionen."}};
 
 (function(){
   "use strict";
@@ -484,6 +495,21 @@ window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-c": "İletiş
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   if(lang !== "en") apply(lang);
+
+  /* soft travel: no internal link jumps straight */
+  var fadeEl = document.createElement("div");
+  fadeEl.id = "fadeout";
+  document.body.appendChild(fadeEl);
+  document.querySelectorAll('a[href$=".html"], a[href="index.html"]').forEach(function(a){
+    var h = a.getAttribute("href");
+    if (/^https?:/.test(h)) return;
+    a.addEventListener("click", function(e){
+      if (e.metaKey || e.ctrlKey) return;
+      e.preventDefault();
+      fadeEl.classList.add("on");
+      setTimeout(function(){ location.href = h; }, 280);
+    });
+  });
 
   /* copy buttons */
   document.querySelectorAll(".copy[data-copy]").forEach(function(b){
@@ -1249,6 +1275,26 @@ window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-c": "İletiş
   })();
 
   
+})();
+
+/* live repository freshness, quietly, with a silent fallback */
+(function(){
+  fetch("https://api.github.com/users/Keremozdemirra/repos?per_page=100")
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(list){
+      if (!list) return;
+      var by = {};
+      list.forEach(function(r){ by[r.name] = r; });
+      document.querySelectorAll("[data-gh]").forEach(function(card){
+        var r = by[card.getAttribute("data-gh")];
+        if (!r || !r.pushed_at) return;
+        var d = new Date(r.pushed_at);
+        var days = Math.round((Date.now() - d) / 86400000);
+        var label = days <= 0 ? "updated today" : days === 1 ? "updated yesterday" : "updated " + days + " days ago";
+        var t = card.querySelector(".t");
+        if (t) t.textContent = t.textContent + " · " + label;
+      });
+    }).catch(function(){});
 })();
 
 </script>

@@ -10,10 +10,14 @@
 <meta property="og:title" content="Kerem Özdemir">
 <meta property="og:description" content="Munich.">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://keremozdemirra.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://keremozdemirra.github.io/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
 <meta property="og:url" content="https://keremozdemirra.github.io/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Instrument+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Kerem Özdemir",
  "url":"https://keremozdemirra.github.io/",
@@ -43,16 +47,16 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
   position:absolute;left:0;right:0;top:20%;text-align:center;
   font-family:var(--serif);font-weight:300;
   font-size:clamp(2.6rem,9vw,7.5rem);letter-spacing:.01em;line-height:1;
-  color:var(--ink);white-space:nowrap;pointer-events:none;
+  color:var(--ink);white-space:nowrap;cursor:default;
   text-shadow:0 1px 0 rgba(255,255,255,.25);
   will-change:opacity,transform,filter;
 }
 #theName i{font-style:italic;font-weight:400}
 
 #hint{
-  position:absolute;left:50%;bottom:3.4vh;transform:translateX(-50%);
-  font-size:.64rem;letter-spacing:.38em;text-transform:uppercase;
-  color:rgba(130,118,104,.85);
+  position:absolute;left:50%;bottom:13vh;transform:translateX(-50%);
+  font-family:var(--serif);font-style:italic;font-size:.9rem;letter-spacing:.06em;
+  color:rgba(130,118,104,.9);
   transition:opacity .4s ease;
   animation:breathe 3s ease-in-out infinite;
 }
@@ -67,7 +71,7 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
 }
 #portal.live{opacity:1;pointer-events:auto}
 .door{
-  width:min(240px,26vw);min-width:170px;min-height:198px;
+  width:min(225px,21vw);min-width:170px;min-height:198px;
   display:flex;flex-direction:column;justify-content:center;
   text-decoration:none;text-align:center;
   padding:1.6rem 1.2rem;border-radius:3px;
@@ -86,14 +90,14 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
 #portal.live .door:nth-child(3){transition-delay:.24s}
 .door:hover{border-color:rgba(224,170,96,.55);background:rgba(30,22,13,.6);box-shadow:0 0 60px rgba(224,160,80,.12), inset 0 0 30px rgba(0,0,0,.3)}
 .door .k{
-  display:block;font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;
-  color:rgba(224,170,96,.7);margin-bottom:.7rem;
+  display:block;font-family:var(--serif);font-style:italic;font-size:.85rem;letter-spacing:.04em;
+  color:rgba(224,170,96,.75);margin-bottom:.6rem;
 }
 .door h2{
   font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,2.6vw,2rem);
   letter-spacing:.01em;
 }
-.door p{margin-top:.55rem;font-size:.78rem;line-height:1.5;color:rgba(233,226,210,.6)}
+.door p{margin-top:.55rem;font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:.92rem;line-height:1.5;color:rgba(233,226,210,.62)}
 
 /* ---------- after the film ---------- */
 footer{
@@ -119,8 +123,19 @@ footer a:hover{color:#fff}
   #theName{top:34%}
 }
 
-#fadeout{position:fixed;inset:0;background:#17110a;opacity:0;pointer-events:none;transition:opacity .30s ease;z-index:90}
+#fadeout{position:fixed;inset:0;background:#17110a;opacity:0;pointer-events:none;transition:opacity .34s ease;z-index:90}
 #fadeout.on{opacity:1}
+@keyframes dawn{from{opacity:1}to{opacity:0}}
+#dawn{position:fixed;inset:0;background:#17110a;pointer-events:none;z-index:92;animation:dawn .8s ease .1s forwards}
+@media (prefers-reduced-motion:reduce){#dawn{display:none}}
+
+.door:focus-visible,.langs button:focus-visible,#sndBtn:focus-visible{outline:2px solid #e0a050;outline-offset:3px}
+#sndBtn{position:fixed;right:1.1rem;bottom:1.1rem;z-index:60;width:42px;height:42px;border-radius:50%;
+  border:1px solid rgba(224,170,96,.35);background:rgba(20,16,10,.55);color:#e0c9a2;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);
+  transition:border-color .2s ease,color .2s ease}
+#sndBtn:hover{border-color:rgba(224,170,96,.7);color:#f4e3c6}
+#sndBtn svg{width:19px;height:19px}
 </style>
 </head>
 <body>
@@ -133,24 +148,34 @@ footer a:hover{color:#fff}
 
     <nav id="portal" aria-label="Site">
       <a class="door" href="profile.html">
-        <span class="k">01</span>
+        <span class="k">No. 01</span>
         <h2 data-i="d1">Profile</h2>
         <p data-i="d1p">Who I am, where I study, what I have done.</p>
       </a>
       <a class="door" href="projects.html">
-        <span class="k">02</span>
+        <span class="k">No. 02</span>
         <h2 data-i="d2">Projects</h2>
         <p data-i="d2p">Working instruments, repositories, and CoLaunch.</p>
       </a>
+      <a class="door" href="notes.html">
+        <span class="k">No. 03</span>
+        <h2 data-i="d4">Notes</h2>
+        <p data-i="d4p">Things worth writing down.</p>
+      </a>
       <a class="door" href="contact.html">
-        <span class="k">03</span>
+        <span class="k">No. 04</span>
         <h2 data-i="d3">Contact</h2>
-        <p data-i="d3p">One address, answered.</p>
+        <p data-i="d3p">Email, LinkedIn, GitHub.</p>
       </a>
     </nav>
 
     <span id="hint" data-i="hint">Scroll</span>
     <div id="fadeout" aria-hidden="true"></div>
+    <div id="dawn" aria-hidden="true"></div>
+    <button type="button" id="sndBtn" aria-pressed="false" aria-label="Sound on or off" title="Sound">
+      <svg id="sndOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8a5 5 0 0 1 0 8M11 5L6 9H3v6h3l5 4z"/><line x1="18" y1="6" x2="4" y2="20" opacity=".85"/></svg>
+      <svg id="sndOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M15 8a5 5 0 0 1 0 8M17.7 5a9 9 0 0 1 0 14M11 5L6 9H3v6h3l5 4z"/></svg>
+    </button>
   </div>
 </main>
 
@@ -170,8 +195,8 @@ footer a:hover{color:#fff}
    Every leaf's flight is a pure function of scroll progress: leaf i detaches
    at its own threshold, follows a path seeded from its index, lands, and at
    the end glides to one of the three doors. Because nothing depends on wall
-   time except a light idle sway, scrubbing backwards runs the film backwards
-   — leaves rise from the ground and reattach. That reversibility is the
+   time except a light idle sway, scrubbing backwards runs the film backwards:
+   leaves rise from the ground and reattach. That reversibility is the
    whole trick, and it is why this is drawn live instead of played from
    frames: a frame sequence of this length would cost megabytes and still
    blur on a retina screen.
@@ -196,6 +221,13 @@ footer a:hover{color:#fff}
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var DPR = Math.min(1.75, window.devicePixelRatio || 1);
+
+  /* eggs share this; the film reads it every frame */
+  var EGG = window.__EGG = { blossom: 0, burst: null, moleRect: null, moleBurst: 0 };
+  var _mon = new Date().getMonth();            // real season, real weather
+  var SEASON = (_mon === 11 || _mon <= 1) ? "winter" : (_mon >= 2 && _mon <= 4) ? "spring" : "other";
+  var _d = new Date();
+  var FESTIVE = (_mon === 11 && _d.getDate() >= 26) || (_mon === 0 && _d.getDate() <= 6);
   var W = 0, H = 0, small = false;
 
   /* ------------------------------------------------ seeded randomness
@@ -254,12 +286,17 @@ footer a:hover{color:#fff}
   var N = 0;
 
   var GREENS = ["#5a7d4a", "#6b8f54", "#4c7040", "#7da05f", "#87a86a", "#5f8a4e"];
+  var BLOSSOM = ["#e8b4c8", "#f2d2dd", "#f7e8ee", "#dfa0b8", "#f0c6d4", "#f5dde6", "#e5aabf"];
   var AUTUMN = ["#c8842e", "#b25b28", "#d99a3c", "#a34a22", "#c26a24", "#dca94e", "#8f3f1e"];
 
   function hex(h) {
     return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
   }
-  var GREENS_RGB = GREENS.map(hex), AUTUMN_RGB = AUTUMN.map(hex);
+  var GREENS_RGB = GREENS.map(hex), AUTUMN_RGB = AUTUMN.map(hex), BLOSSOM_RGB = BLOSSOM.map(hex);
+  if (SEASON === "spring") GREENS_RGB = GREENS_RGB.map(function(c,i){
+    var b = BLOSSOM_RGB[i % BLOSSOM_RGB.length];
+    return i % 3 === 0 ? b : c;                       // a spring tree carries some blossom
+  });
 
   function buildLeaves() {
     LEAVES.length = 0;
@@ -453,6 +490,7 @@ footer a:hover{color:#fff}
     // normalise: the recursion above works in pixels already via scale
     renderTrunk();
     renderRoots();
+    buildAntPath();
     buildLeaves();
     draw(lastP, performance.now());
   }
@@ -504,13 +542,13 @@ footer a:hover{color:#fff}
     ctx.fillStyle = rgb(sk.haze, 0.45);
     hill(H * 0.865, 16, 0.0014, 40);
 
-    // ground
-    var gg = ctx.createLinearGradient(0, H * 0.86, 0, H);
+    // ground: real soil from the first frame, so the descent has nowhere to jump
+    ctx.drawImage(rootCanvas, 0, H * 0.885, W, H * 1.25);
+    var gg = ctx.createLinearGradient(0, H * 0.875, 0, H * 0.9);
     gg.addColorStop(0, rgb(sk.bot, 0));
-    gg.addColorStop(0.35, rgb([sk.bot[0] * 0.84 | 0, sk.bot[1] * 0.82 | 0, sk.bot[2] * 0.78 | 0]));
-    gg.addColorStop(1, rgb([sk.bot[0] * 0.68 | 0, sk.bot[1] * 0.66 | 0, sk.bot[2] * 0.62 | 0]));
+    gg.addColorStop(1, rgb([sk.bot[0] * 0.72 | 0, sk.bot[1] * 0.72 | 0, sk.bot[2] * 0.62 | 0], 0.55));
     ctx.fillStyle = gg;
-    ctx.fillRect(0, H * 0.86, W, H);
+    ctx.fillRect(0, H * 0.875, W, H * 0.9 - H * 0.875 + 2);
 
     // contact shadow under the trunk
     ctx.save();
@@ -546,7 +584,7 @@ footer a:hover{color:#fff}
       ctx.restore();
     }
 
-    // leaves — back depth first
+    // leaves, back depth first
     for (var pass = 0; pass < 2; pass++) {
       for (var i = 0; i < N; i++) {
         var L = LEAVES[i];
@@ -555,15 +593,10 @@ footer a:hover{color:#fff}
       }
     }
 
-    // the underground, hanging below the ground line
-    if (camY > 0 || descend > 0) {
-      ctx.drawImage(rootCanvas, 0, H * 0.885, W, H * 1.25);
-    }
-
     ctx.restore();
 
     // stars, arriving with the night
-    var night = smooth((p - 0.52) / 0.3);
+    var night = smooth((p - 0.52) / 0.3) * (1 - smooth((descend - 0.5) / 0.4));
     if (night > 0) {
       var sr = mulberry(77);
       ctx.fillStyle = "rgba(232,236,246," + (0.75 * night) + ")";
@@ -573,6 +606,9 @@ footer a:hover{color:#fff}
         else if (ss > 0.45) { ctx.globalAlpha = night * 0.5; ctx.fillRect(sx, sy, 1, 1); ctx.globalAlpha = 1; }
       }
     }
+
+    drawCreatures(now * 0.001, descend, camY);
+    drawExtras(now * 0.001, p, descend, camY, night);
 
     // dusk vignette + grain
     var v = ctx.createRadialGradient(W / 2, H * 0.45, H * 0.3, W / 2, H * 0.5, H * 0.95);
@@ -603,6 +639,12 @@ footer a:hover{color:#fff}
     var r = lerp(gc[0], ac[0], turn) | 0,
         gr = lerp(gc[1], ac[1], turn) | 0,
         b = lerp(gc[2], ac[2], turn) | 0;
+    if (EGG.blossom > 0) {                            // 3523: the tree remembers spring
+      var bc = BLOSSOM_RGB[L.ai % BLOSSOM_RGB.length];
+      r = lerp(r, bc[0], EGG.blossom) | 0;
+      gr = lerp(gr, bc[1], EGG.blossom) | 0;
+      b = lerp(b, bc[2], EGG.blossom) | 0;
+    }
 
     var f = clamp((p - L.detach) / L.dur, 0, 1);   // fall phase 0..1
     var x, y, rot, alpha = 1;
@@ -645,6 +687,233 @@ footer a:hover{color:#fff}
     }
     ctx.restore();
     ctx.globalAlpha = 1;
+  }
+
+  /* ------------------------------------------- the underground is inhabited
+     A column of ants follows one of the main roots, and every so often a
+     mole surfaces near the doors, looks around, and thinks better of it.
+     Time-based, world-space, and only drawn once the camera is down there. */
+  var antPath = [];
+  function buildAntPath() {
+    antPath.length = 0;
+    // a gentle S across the soil, roughly following root territory
+    var y0 = H * 0.885;
+    for (var i = 0; i <= 60; i++) {
+      var u = i / 60;
+      antPath.push({
+        x: W * 0.18 + u * W * 0.64 + Math.sin(u * 5.2) * W * 0.05,
+        y: y0 + H * 0.62 + Math.sin(u * 8.5 + 1.3) * H * 0.035
+      });
+    }
+  }
+  function drawCreatures(t, descend, camY) {
+    if (reduced || descend < 0.12) return;
+    var vis = smooth((descend - 0.12) / 0.3);
+    ctx.save();
+    ctx.translate(0, -camY);
+
+    // ants: a working line, each with its own gait
+    ctx.fillStyle = "rgba(16,10,6," + (0.9 * vis) + ")";
+    for (var a = 0; a < 14; a++) {
+      var u = ((t * 0.014 + a * 0.073) % 1.04) - 0.02;
+      if (u < 0 || u > 1) continue;
+      var idx = u * 59;
+      var i0 = idx | 0;
+      var f = idx - i0;
+      var P0 = antPath[i0], P1 = antPath[Math.min(59, i0 + 1)];
+      var ax = lerp(P0.x, P1.x, f), ay = lerp(P0.y, P1.y, f);
+      ay += Math.sin(t * 22 + a * 3) * 0.5;               // gait wobble
+      var ang = Math.atan2(P1.y - P0.y, P1.x - P0.x);
+      ctx.save();
+      ctx.translate(ax, ay);
+      ctx.rotate(ang);
+      ctx.beginPath(); ctx.ellipse(-1.6, 0, 1.5, 1.0, 0, 0, 6.284); ctx.fill();   // abdomen
+      ctx.beginPath(); ctx.ellipse(0.2, 0, 1.0, 0.8, 0, 0, 6.284); ctx.fill();    // thorax
+      ctx.beginPath(); ctx.arc(1.7, 0, 0.8, 0, 6.284); ctx.fill();                // head
+      ctx.restore();
+    }
+
+    // the mole: a 24 s cycle. mound swells, snout appears, sniffs, withdraws
+    var cyc = (t % 24) / 24;
+    var mx = W * 0.78, my = H * 0.885 + H * 0.94;
+    var up = 0;
+    if (cyc > 0.30 && cyc < 0.42) up = smooth((cyc - 0.30) / 0.12);
+    else if (cyc >= 0.42 && cyc < 0.62) up = 1;
+    else if (cyc >= 0.62 && cyc < 0.72) up = 1 - smooth((cyc - 0.62) / 0.10);
+    EGG.moleRect = up > 0.4 ? { x: mx - 20, y: my - 30 - camY + 0, w: 40, h: 44, camY: camY } : null;
+    if (EGG.moleBurst > 0) EGG.moleBurst -= 0.02;
+    if (up > 0) {
+      var mound = smooth(Math.min(1, up * 1.4));
+      ctx.fillStyle = "rgba(46,32,18," + (0.9 * vis) + ")";     // loose earth
+      ctx.beginPath();
+      ctx.ellipse(mx, my + 4, 34 * mound, 10 * mound, 0, Math.PI, 0);
+      ctx.fill();
+      var rise = up * 22;
+      ctx.save();
+      ctx.translate(mx, my + 6 - rise);
+      var sniff = up === 1 ? Math.sin(t * 7) * 2 : 0;
+      ctx.rotate(sniff * 0.03);
+      ctx.fillStyle = "rgba(38,28,20," + vis + ")";              // velvet back
+      ctx.beginPath(); ctx.ellipse(0, 6, 15, 13, 0, 0, 6.284); ctx.fill();
+      ctx.fillStyle = "rgba(52,38,26," + vis + ")";              // head
+      ctx.beginPath(); ctx.ellipse(0, -4, 9, 8, 0, 0, 6.284); ctx.fill();
+      ctx.fillStyle = "rgba(196,148,120," + vis + ")";           // the snout
+      ctx.beginPath(); ctx.ellipse(0, -10 + sniff * 0.4, 3.2, 2.6, 0, 0, 6.284); ctx.fill();
+      ctx.fillStyle = "rgba(10,7,4," + vis + ")";
+      ctx.beginPath(); ctx.arc(-3.4, -6.5, 0.7, 0, 6.284); ctx.fill();
+      ctx.beginPath(); ctx.arc(3.4, -6.5, 0.7, 0, 6.284); ctx.fill();
+      // digging paws, only while rising
+      if (up < 1) {
+        ctx.fillStyle = "rgba(196,148,120," + (vis * 0.9) + ")";
+        ctx.beginPath(); ctx.ellipse(-11, 2, 3.4, 2.2, -0.5, 0, 6.284); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(11, 2, 3.4, 2.2, 0.5, 0, 6.284); ctx.fill();
+      }
+      ctx.restore();
+      // flying dirt at emergence
+      if (up > 0.1 && up < 0.9) {
+        ctx.fillStyle = "rgba(46,32,18," + (0.5 * vis) + ")";
+        for (var dd = 0; dd < 5; dd++) {
+          var da = dd * 1.3 + t * 3;
+          ctx.beginPath();
+          ctx.arc(mx + Math.cos(da) * (20 + up * 16), my - up * 26 + Math.sin(da * 1.7) * 8, 1.4, 0, 6.284);
+          ctx.fill();
+        }
+      }
+    }
+    ctx.restore();
+  }
+
+  /* ---------------------------------------------- eggs drawn by the film */
+  var flies = [];             // fireflies
+  var idleSince = performance.now();
+  var pointer = { x: -100, y: -100 };
+  window.addEventListener("mousemove", function(e){ pointer.x = e.clientX; pointer.y = e.clientY; idleSince = performance.now(); }, { passive:true });
+  window.addEventListener("scroll", function(){ idleSince = performance.now(); flies.length = 0; }, { passive:true });
+
+  var bird = { state: 0, t0: 0, next: 18 };   // 0 away, 1 flying in, 2 perched, 3 leaving
+  var perch = null;
+
+  function drawExtras(t, p, descend, camY, night) {
+    if (reduced) return;
+
+    /* snow, in real winter, while the tree still stands */
+    if (SEASON === "winter" && p < 0.5) {
+      ctx.fillStyle = "rgba(245,245,250," + (0.5 * (1 - p * 2)) + ")";
+      for (var sn = 0; sn < 40; sn++) {
+        var sx = ((sn * 127.3 + t * (12 + sn % 5 * 4)) % (W + 20)) - 10;
+        var sy = ((sn * 61.7 + t * (26 + sn % 7 * 6)) % (H + 20)) - 10;
+        ctx.beginPath(); ctx.arc(sx, sy, sn % 3 ? 1.1 : 1.7, 0, 6.284); ctx.fill();
+      }
+    }
+
+    /* festive lights on the branch tips, at night, in the last week of the year */
+    if (FESTIVE && night > 0.2) {
+      for (var li = 0; li < tips.length; li += 9) {
+        var tp = tips[li];
+        var tw = 0.5 + 0.5 * Math.sin(t * 2.2 + li);
+        var col = li % 27 === 0 ? "224,120,80" : li % 18 === 0 ? "224,180,80" : "180,200,120";
+        ctx.fillStyle = "rgba(" + col + "," + (night * tw * 0.9) + ")";
+        ctx.beginPath(); ctx.arc(tp.x, tp.y + 2, 1.6, 0, 6.284); ctx.fill();
+      }
+    }
+
+    /* the bird: arrives now and then while the canopy is full */
+    if (p < 0.18) {
+      if (bird.state === 0 && t > bird.next) {
+        bird.state = 1; bird.t0 = t;
+        perch = tips[(tips.length * 0.3 | 0)];
+      }
+      if (bird.state === 1 && perch) {
+        var bt = (t - bird.t0) / 3.2;
+        if (bt >= 1) { bird.state = 2; bird.t0 = t; }
+        var bx = lerp(-40, perch.x, smooth(bt));
+        var by = lerp(H * 0.25, perch.y - 6, smooth(bt)) - Math.sin(bt * 3.14) * 60;
+        drawBird(bx, by, t, true);
+      } else if (bird.state === 2 && perch) {
+        var hop = Math.abs(Math.sin(t * 3)) * 1.5;
+        drawBird(perch.x, perch.y - 6 - hop, t, false);
+        if (t - bird.t0 > 4.5) { bird.state = 3; bird.t0 = t; }
+      } else if (bird.state === 3 && perch) {
+        var lt = (t - bird.t0) / 2.6;
+        if (lt >= 1) { bird.state = 0; bird.next = t + 34 + (t % 17); }
+        drawBird(lerp(perch.x, W + 50, smooth(lt)),
+                 lerp(perch.y - 6, H * 0.12, smooth(lt)) - Math.sin(lt * 3.14) * 40, t, true);
+      }
+    } else if (bird.state !== 0) { bird.state = 0; bird.next = t + 20; }
+
+    /* fireflies: ten still seconds in the dusk, and they come to the cursor */
+    var nightish = p > 0.45 && p < 0.92 && descend < 0.6;
+    if (nightish && performance.now() - idleSince > 10000) {
+      if (flies.length === 0) {
+        for (var fl = 0; fl < 12; fl++) {
+          flies.push({ x: Math.random() * W, y: Math.random() * H * 0.7,
+                       vx: 0, vy: 0, ph: Math.random() * 6.28 });
+        }
+      }
+      flies.forEach(function (F) {
+        var tx = pointer.x > 0 ? pointer.x : W / 2;
+        var ty = pointer.y > 0 ? pointer.y : H * 0.4;
+        F.vx += ((tx - F.x) * 0.0004 + Math.sin(t * 1.3 + F.ph) * 0.02);
+        F.vy += ((ty - F.y) * 0.0004 + Math.cos(t * 1.1 + F.ph) * 0.02);
+        F.vx *= 0.96; F.vy *= 0.96;
+        F.x += F.vx; F.y += F.vy;
+        var glow = 0.35 + 0.65 * Math.abs(Math.sin(t * 1.7 + F.ph));
+        var g3 = ctx.createRadialGradient(F.x, F.y, 0, F.x, F.y, 9);
+        g3.addColorStop(0, "rgba(226,210,120," + 0.85 * glow + ")");
+        g3.addColorStop(1, "rgba(226,210,120,0)");
+        ctx.fillStyle = g3;
+        ctx.beginPath(); ctx.arc(F.x, F.y, 9, 0, 6.284); ctx.fill();
+      });
+    } else if (flies.length && !nightish) flies.length = 0;
+
+    /* the K burst, when the name has been clicked five times */
+    if (EGG.burst) {
+      var B = EGG.burst, bp = (t - B.t0) / 2.6;
+      if (bp >= 1) { EGG.burst = null; }
+      else {
+        B.pts.forEach(function (P, i) {
+          var e2 = smooth(Math.min(1, bp * 2.2 - P.d * 0.4));
+          var fade = bp > 0.75 ? (1 - bp) / 0.25 : 1;
+          var px2 = lerp(P.sx, P.tx, e2), py2 = lerp(P.sy, P.ty, e2);
+          ctx.fillStyle = "rgba(" + P.c + "," + (0.9 * fade) + ")";
+          ctx.save(); ctx.translate(px2, py2); ctx.rotate(bp * P.r);
+          ctx.beginPath(); ctx.moveTo(0, -4); ctx.quadraticCurveTo(2.8, -0.8, 0, 4);
+          ctx.quadraticCurveTo(-2.8, -0.8, 0, -4); ctx.fill(); ctx.restore();
+        });
+      }
+    }
+
+    /* petals while the 3523 spring holds */
+    if (EGG.blossom > 0.05) {
+      ctx.fillStyle = "rgba(242,210,221," + (0.8 * EGG.blossom) + ")";
+      for (var pt2 = 0; pt2 < 26; pt2++) {
+        var pxx = ((pt2 * 193.7 + t * (18 + pt2 % 5 * 6)) % (W + 30)) - 15;
+        var pyy = ((pt2 * 97.3 + t * (34 + pt2 % 7 * 8)) % (H + 30)) - 15;
+        ctx.save(); ctx.translate(pxx, pyy); ctx.rotate(t * 2 + pt2);
+        ctx.beginPath(); ctx.ellipse(0, 0, 2.6, 1.6, 0, 0, 6.284); ctx.fill(); ctx.restore();
+      }
+    }
+  }
+
+  function drawBird(x, y, t, flying) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = "#2a2019";
+    ctx.beginPath(); ctx.ellipse(0, 0, 7, 4.5, -0.15, 0, 6.284); ctx.fill();   // body
+    ctx.beginPath(); ctx.arc(6, -3, 3, 0, 6.284); ctx.fill();                  // head
+    ctx.fillStyle = "#c98a3c";
+    ctx.beginPath(); ctx.moveTo(8.6, -3.4); ctx.lineTo(12, -2.6); ctx.lineTo(8.6, -1.8); ctx.fill();  // beak
+    ctx.fillStyle = "#2a2019";
+    ctx.beginPath(); ctx.moveTo(-6, -1); ctx.lineTo(-13, 1.5); ctx.lineTo(-6, 2.4); ctx.fill();       // tail
+    if (flying) {
+      var w2 = Math.sin(t * 18) * 8;
+      ctx.beginPath(); ctx.moveTo(-1, -1);
+      ctx.quadraticCurveTo(-3, -8 - w2, -10, -6 - w2);
+      ctx.quadraticCurveTo(-4, -1, -1, 0); ctx.fill();
+    } else {
+      ctx.beginPath(); ctx.ellipse(-1, -0.5, 4.5, 2.6, -0.3, 0, 6.284); ctx.fill();
+    }
+    ctx.restore();
   }
 
   /* ------------------------------------------------------ scroll wiring */
@@ -710,10 +979,10 @@ footer a:hover{color:#fff}
   var D = {
     tr: {"d1":"Profil","d1p":"Kim olduğum, nerede okuduğum, ne yaptığım.",
          "d2":"Projeler","d2p":"Çalışan araçlar, repolar ve CoLaunch.",
-         "d3":"İletişim","d3p":"Tek adres, cevaplanır.","hint":"Kaydır"},
+         "d3":"İletişim","d3p":"E-posta, LinkedIn, GitHub.","d4":"Notlar","d4p":"Yazmaya değer şeyler.","hint":"Kaydır"},
     de: {"d1":"Profil","d1p":"Wer ich bin, wo ich studiere, was ich gemacht habe.",
          "d2":"Projekte","d2p":"Laufende Instrumente, Repositories und CoLaunch.",
-         "d3":"Kontakt","d3p":"Eine Adresse, beantwortet.","hint":"Scrollen"}
+         "d3":"Kontakt","d3p":"E-Mail, LinkedIn, GitHub.","d4":"Notizen","d4p":"Dinge, die es wert sind.","hint":"Scrollen"}
   };
   var base = {};
   function apply(l){
@@ -735,6 +1004,146 @@ footer a:hover{color:#fff}
   var saved = null;
   try { saved = localStorage.getItem("lang"); } catch(e){}
   if (saved === "tr" || saved === "de") apply(saved);
+})();
+
+/* sound: wind, leaves and night crickets, synthesised, off until asked */
+(function(){
+  var btn = document.getElementById("sndBtn");
+  if (!btn) return;
+  var on = false, actx = null, wind = null, windGain = null, cricketTimer = null;
+
+  function makeNoise(ac) {
+    var len = ac.sampleRate * 2;
+    var buf = ac.createBuffer(1, len, ac.sampleRate);
+    var d = buf.getChannelData(0);
+    var last = 0;
+    for (var i = 0; i < len; i++) {                 // brown-ish noise = wind
+      last = (last + (Math.random() * 2 - 1) * 0.03) * 0.985;
+      d[i] = last * 4;
+    }
+    var src = ac.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    return src;
+  }
+  function chirp(ac, when) {
+    var o = ac.createOscillator(), g = ac.createGain();
+    o.type = "sine"; o.frequency.value = 4200 + Math.random() * 600;
+    g.gain.setValueAtTime(0, when);
+    for (var k = 0; k < 4; k++) {
+      g.gain.setValueAtTime(0.012, when + k * 0.055);
+      g.gain.setValueAtTime(0, when + k * 0.055 + 0.03);
+    }
+    o.connect(g); g.connect(ac.destination);
+    o.start(when); o.stop(when + 0.4);
+  }
+  function start() {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    actx.resume();
+    var lp = actx.createBiquadFilter();
+    lp.type = "lowpass"; lp.frequency.value = 420; lp.Q.value = 0.4;
+    windGain = actx.createGain(); windGain.gain.value = 0.05;
+    wind = makeNoise(actx);
+    wind.connect(lp); lp.connect(windGain); windGain.connect(actx.destination);
+    wind.start();
+    // wind follows the film; crickets only at dusk
+    cricketTimer = setInterval(function(){
+      if (!actx) return;
+      var p = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--filmp")) || 0;
+      if (windGain) windGain.gain.value = 0.03 + p * 0.06 * (p < 0.7 ? 1 : (1 - p) * 3);
+      if (p > 0.45 && p < 0.9 && Math.random() < 0.5) chirp(actx, actx.currentTime + Math.random() * 1.5);
+    }, 1800);
+  }
+  function stop() {
+    if (cricketTimer) clearInterval(cricketTimer);
+    if (wind) { try { wind.stop(); } catch(e){} wind = null; }
+    if (actx) actx.suspend();
+  }
+  function paint() {
+    document.getElementById("sndOff").style.display = on ? "none" : "";
+    document.getElementById("sndOn").style.display = on ? "" : "none";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  btn.addEventListener("click", function(){
+    on = !on;
+    if (on) start(); else stop();
+    paint();
+    try { localStorage.setItem("snd", on ? "1" : "0"); } catch(e){}
+  });
+})();
+
+/* eggs: the inputs that wake them */
+(function(){
+  var EGG = window.__EGG || {};
+
+  /* 3523: the year the address was born; typing it brings spring back */
+  var buf = "";
+  window.addEventListener("keydown", function(e){
+    if (e.key.length !== 1) return;
+    buf = (buf + e.key).slice(-4);
+    if (buf === "3523") {
+      var t0 = performance.now();
+      var up = setInterval(function(){
+        var el = (performance.now() - t0) / 1000;
+        EGG.blossom = el < 1 ? el : el > 10 ? Math.max(0, 1 - (el - 10)) : 1;
+        if (el > 11) clearInterval(up);
+      }, 40);
+    }
+  });
+
+  /* five clicks on the name: the leaves spell the initial */
+  var nameEl = document.getElementById("theName");
+  var clicks = 0, lastClick = 0;
+  if (nameEl) nameEl.addEventListener("click", function(){
+    var n2 = performance.now();
+    clicks = n2 - lastClick < 1600 ? clicks + 1 : 1;
+    lastClick = n2;
+    if (clicks >= 5) {
+      clicks = 0;
+      var cv = document.createElement("canvas");
+      cv.width = 220; cv.height = 260;
+      var cx = cv.getContext("2d");
+      cx.font = "900 240px Georgia";
+      cx.fillText("K", 20, 225);
+      var img = cx.getImageData(0, 0, 220, 260).data;
+      var pts = [];
+      var colors = ["224,141,60","178,91,40","217,154,60","143,63,30","90,125,74"];
+      for (var y = 0; y < 260; y += 7) for (var x = 0; x < 220; x += 7) {
+        if (img[(y * 220 + x) * 4 + 3] > 128) {
+          pts.push({
+            sx: Math.random() * innerWidth, sy: Math.random() * innerHeight,
+            tx: innerWidth / 2 - 110 + x, ty: innerHeight * 0.32 + y * 0.9,
+            c: colors[pts.length % colors.length],
+            d: Math.random(), r: (Math.random() - 0.5) * 6
+          });
+        }
+      }
+      EGG.burst = { t0: performance.now() / 1000, pts: pts };
+    }
+  });
+
+  /* the mole keeps something buried: click it while it looks around */
+  var film = document.getElementById("film");
+  if (film) film.addEventListener("click", function(e){
+    var R = EGG.moleRect;
+    if (!R) return;
+    var r2 = film.getBoundingClientRect();
+    var x = e.clientX - r2.left, y = e.clientY - r2.top;
+    if (x > R.x && x < R.x + R.w && y > R.y && y < R.y + R.h) {
+      EGG.moleBurst = 1;
+      var a = document.createElement("a");
+      a.href = "Kerem_Ozdemir_CV.pdf"; a.download = "";
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+  });
+
+  /* for whoever opens the console */
+  try {
+    console.log("%c\n        &\n      & & &\n    &  & &  &\n   &  \\|/  &\n       |\n       |\n  _____|_____\n", "color:#7da05f");
+    console.log("%cYou read source. I like you already. Write me: kozdemir3523@gmail.com",
+      "color:#b06a24;font-size:13px");
+    console.log("%cTry typing 3523 on the tree. Click the mole if you can catch it.",
+      "color:#8a8272;font-size:11px");
+  } catch(err){}
 })();
 
 /* door click: sink into the soil, then travel */
