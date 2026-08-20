@@ -53,18 +53,11 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
   will-change:opacity,transform,filter;
 }
 #theName i{font-style:italic;font-weight:400}
-#theName .sig-l{display:inline-block;opacity:0;transform:translateY(9px) rotate(-5deg);
-  animation:penIn .34s cubic-bezier(.23,1,.32,1) forwards}
-@keyframes penIn{to{opacity:1;transform:none}}
-#swash{position:absolute;left:50%;transform:translateX(-50%);width:min(430px,58vw);
-  margin-top:.1em;overflow:visible}
-#swash path{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round;
-  stroke-dasharray:520;stroke-dashoffset:520}
-#theName.signed #swash path{animation:swashIn .8s cubic-bezier(.5,.02,.3,1) forwards}
-@keyframes swashIn{to{stroke-dashoffset:0}}
+#theName .sig-l{display:inline-block;opacity:0;transform:translateY(6px);filter:blur(5px);
+  animation:penIn .7s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes penIn{to{opacity:1;transform:none;filter:blur(0)}}
 @media (prefers-reduced-motion:reduce){
-  #theName .sig-l{animation:none;opacity:1;transform:none}
-  #swash path{stroke-dashoffset:0}
+  #theName .sig-l{animation:none;opacity:1;transform:none;filter:none}
 }
 
 #hint{
@@ -91,9 +84,9 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
 #portal.live{opacity:1;pointer-events:auto}
 .door{
   width:auto;min-height:188px;
-  display:flex;flex-direction:column;justify-content:center;
+  display:flex;flex-direction:column;justify-content:flex-start;
   text-decoration:none;text-align:center;
-  padding:1.6rem 1.2rem;border-radius:3px;
+  padding:2rem 1.2rem 1.3rem;border-radius:3px;
   color:#e9e2d2;
   background:rgba(26,19,11,.46);
   border:1px solid rgba(224,170,96,.22);
@@ -113,8 +106,9 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
   font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,2.6vw,2rem);
   letter-spacing:.01em;
 }
-.door .peek{height:0;overflow:hidden;opacity:0;transition:height .45s cubic-bezier(.23,1,.32,1),opacity .4s ease .05s;margin-top:0}
-.door:hover .peek,.door:focus-visible .peek{height:52px;opacity:1;margin-top:.7rem}
+.door .peek{height:52px;margin-top:.8rem;opacity:0;transform:translateY(6px);
+  transition:opacity .4s ease,transform .45s cubic-bezier(.23,1,.32,1)}
+.door:hover .peek,.door:focus-visible .peek{opacity:1;transform:none}
 .peek .pg{width:76px;height:48px;margin:0 auto;border:1px solid rgba(224,170,96,.35);border-radius:2px;
   background:rgba(238,233,222,.07);padding:5px 6px;display:flex;flex-direction:column;gap:3px;align-items:flex-start}
 .peek .ln{height:3px;border-radius:1px;background:rgba(233,226,210,.5)}
@@ -122,7 +116,7 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
 .peek .ln.b{width:88%}.peek .ln.c{width:74%}.peek .ln.d{width:40%}
 .peek .blk{width:100%;height:10px;border-radius:1px;background:rgba(224,170,96,.22)}
 @media (hover:none){.door .peek{display:none}}
-.door p{margin-top:.55rem;font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:.92rem;line-height:1.5;color:rgba(233,226,210,.62)}
+.door p{margin-top:.55rem;min-height:3em;font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:.92rem;line-height:1.5;color:rgba(233,226,210,.62)}
 
 /* ---------- after the film ---------- */
 footer{
@@ -148,13 +142,10 @@ footer a:hover{color:#fff}
   #theName{top:34%}
 }
 
-#fadeout{position:fixed;inset:0;background:#17110a;opacity:0;pointer-events:none;transition:opacity .34s ease;z-index:90}
+#fadeout{position:fixed;inset:0;background:#17110a;opacity:0;pointer-events:none;transition:opacity .42s ease;z-index:90}
 #fadeout.on{opacity:1}
-#fadeout .runner{position:absolute;bottom:18vh;left:-60px;opacity:0}
-#fadeout.on .runner{animation:runAcross .62s linear forwards;opacity:1}
-@keyframes runAcross{from{left:-60px}to{left:calc(50% - 20px)}}
-#fadeout .runner svg{animation:runBob .16s ease-in-out infinite alternate}
-@keyframes runBob{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+.door.leaving{transform:translateY(2px) scale(.985)!important;border-color:rgba(224,170,96,.7);
+  transition:transform .3s ease,border-color .3s ease,filter .3s ease;filter:brightness(.82)}
 @keyframes dawn{from{opacity:1}to{opacity:0}}
 #dawn{position:fixed;inset:0;background:#17110a;pointer-events:none;z-index:92;animation:dawn .8s ease .1s forwards}
 @media (prefers-reduced-motion:reduce){#dawn{display:none}}
@@ -173,12 +164,24 @@ footer a:hover{color:#fff}
   white-space:nowrap;opacity:0;transition:opacity .3s ease;pointer-events:none;
   text-shadow:0 1px 3px rgba(10,7,4,.7)}
 #seasonDial:hover .lbl,#seasonDial.fresh .lbl{opacity:1}
-#sndBtn{position:fixed;right:1.1rem;bottom:1.1rem;z-index:60;width:42px;height:42px;border-radius:50%;
+#sndWrap{position:fixed;right:1.1rem;bottom:1.1rem;z-index:60;display:flex;align-items:center;gap:.5rem}
+#sndBtn{width:42px;height:42px;border-radius:50%;flex:none;
   border:1px solid rgba(224,170,96,.35);background:rgba(20,16,10,.78);color:#e0c9a2;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   transition:border-color .2s ease,color .2s ease}
 #sndBtn:hover{border-color:rgba(224,170,96,.7);color:#f4e3c6}
 #sndBtn svg{width:19px;height:19px}
+#sndPanel{width:0;opacity:0;overflow:hidden;height:42px;display:flex;align-items:center;
+  border:1px solid transparent;border-radius:21px;background:rgba(20,16,10,.78);
+  transition:width .4s cubic-bezier(.23,1,.32,1),opacity .32s ease,padding .4s cubic-bezier(.23,1,.32,1),border-color .3s ease}
+#sndWrap.open #sndPanel{width:116px;opacity:1;padding:0 14px;border-color:rgba(224,170,96,.35)}
+#sndVol{-webkit-appearance:none;appearance:none;width:100%;height:2px;border-radius:1px;cursor:pointer;
+  background:linear-gradient(90deg,#e0a050 0%,#e0a050 65%,rgba(224,170,96,.22) 65%);outline:none}
+#sndVol::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;
+  background:#e8d5b0;border:1px solid rgba(120,84,40,.8);box-shadow:0 1px 3px rgba(0,0,0,.5)}
+#sndVol::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:#e8d5b0;
+  border:1px solid rgba(120,84,40,.8);box-shadow:0 1px 3px rgba(0,0,0,.5)}
+#sndVol:focus-visible{outline:2px solid #e0a050;outline-offset:4px}
 </style>
 </head>
 <body>
@@ -187,7 +190,7 @@ footer a:hover{color:#fff}
   <div id="stage">
     <canvas id="film" aria-hidden="true"></canvas>
 
-    <h1 id="theName">Kerem <i>Özdemir</i><svg id="swash" viewBox="0 0 430 30" aria-hidden="true"><path d="M8 20 C 90 6, 200 26, 268 16 S 400 8, 422 14 c -14 8 -40 10 -30 2"/></svg></h1>
+    <h1 id="theName">Kerem <i>Özdemir</i></h1>
 
     <nav id="portal" aria-label="Site">
       <a class="door" href="profile.html">
@@ -213,11 +216,25 @@ footer a:hover{color:#fff}
     </nav>
 
     <span id="hint" data-i="hint">Scroll</span>
-    <div id="fadeout" aria-hidden="true"><span class="runner"><svg width="40" height="52" viewBox="0 0 40 52"><g stroke="#e0a050" stroke-width="3" stroke-linecap="round" fill="none"><line x1="20" y1="18" x2="20" y2="32"/><line x1="20" y1="32" x2="12" y2="44"/><line x1="20" y1="32" x2="29" y2="42"/><line x1="20" y1="21" x2="10" y2="28"/><line x1="20" y1="21" x2="30" y2="26"/></g><circle cx="21" cy="11" r="6" fill="#e0a050"/></svg></span></div>
+    <div id="fadeout" aria-hidden="true"></div>
     <div id="dawn" aria-hidden="true"></div>
     <button type="button" id="seasonDial" aria-label="Change the season" title="Season">
       <svg viewBox="0 0 52 52" width="52" height="52" aria-hidden="true">
+        <defs>
+          <radialGradient id="dialHalo">
+            <stop offset="0" stop-color="rgba(224,170,96,.28)"/>
+            <stop offset="1" stop-color="rgba(224,170,96,0)"/>
+          </radialGradient>
+        </defs>
         <circle cx="26" cy="26" r="21" fill="none" stroke="rgba(224,170,96,.25)" stroke-width="1"/>
+        <g stroke="rgba(224,170,96,.35)" stroke-width="1" stroke-linecap="round">
+          <line x1="26" y1="5.4" x2="26" y2="8.2"/>
+          <line x1="46.6" y1="26" x2="43.8" y2="26"/>
+          <line x1="26" y1="46.6" x2="26" y2="43.8"/>
+          <line x1="5.4" y1="26" x2="8.2" y2="26"/>
+        </g>
+        <path d="M26 1.4 L28.1 4.6 L23.9 4.6 Z" fill="rgba(224,170,96,.75)"/>
+        <circle cx="26" cy="10" r="8.5" fill="url(#dialHalo)"/>
         <g class="wheel" id="seasonWheel">
           <g class="glyph" data-s="0" transform="translate(26,10)">
             <circle r="2.2" fill="#e8b4c8"/><circle cx="-3.4" cy="-1" r="2" fill="#f2d2dd"/><circle cx="3.4" cy="-1" r="2" fill="#f2d2dd"/><circle cx="-2" cy="2.8" r="2" fill="#f2d2dd"/><circle cx="2" cy="2.8" r="2" fill="#f2d2dd"/><circle r="1.1" fill="#c9903c"/>
@@ -243,10 +260,13 @@ footer a:hover{color:#fff}
       </svg>
       <span class="lbl" id="seasonLbl">Summer</span>
     </button>
-    <button type="button" id="sndBtn" aria-pressed="false" aria-label="Sound on or off" title="Sound">
-      <svg id="sndOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8a5 5 0 0 1 0 8M11 5L6 9H3v6h3l5 4z"/><line x1="18" y1="6" x2="4" y2="20" opacity=".85"/></svg>
-      <svg id="sndOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M15 8a5 5 0 0 1 0 8M17.7 5a9 9 0 0 1 0 14M11 5L6 9H3v6h3l5 4z"/></svg>
-    </button>
+    <div id="sndWrap">
+      <div id="sndPanel"><input type="range" id="sndVol" min="0" max="100" value="65" aria-label="Volume"></div>
+      <button type="button" id="sndBtn" aria-pressed="false" aria-label="Sound on or off" title="Sound">
+        <svg id="sndOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8a5 5 0 0 1 0 8M11 5L6 9H3v6h3l5 4z"/><line x1="18" y1="6" x2="4" y2="20" opacity=".85"/></svg>
+        <svg id="sndOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M15 8a5 5 0 0 1 0 8M17.7 5a9 9 0 0 1 0 14M11 5L6 9H3v6h3l5 4z"/></svg>
+      </button>
+    </div>
   </div>
 </main>
 
@@ -636,20 +656,29 @@ footer a:hover{color:#fff}
       t.quadraticCurveTo(r.cx - r.w * 0.2, r.cy - 1, r.x2 - r.w2 * 0.2, r.y2 - 1);
       t.stroke();
     });
-    // the ants' gallery: a faint worked channel through the soil
-    if (antPath.length) {
-      t.strokeStyle = "rgba(96,74,48,.5)";
-      t.lineWidth = 7; t.lineCap = "round";
+    // the ants' galleries: worked channels, a trunk with true side forks
+    antPaths.forEach(function (path, pi) {
+      var outerW = pi === 0 ? 7 : 4.6, innerW = pi === 0 ? 4.5 : 2.8;
+      t.strokeStyle = "rgba(96,74,48," + (pi === 0 ? 0.5 : 0.42) + ")";
+      t.lineWidth = outerW; t.lineCap = "round"; t.lineJoin = "round";
       t.beginPath();
-      antPath.forEach(function (P, i) {
+      path.forEach(function (P, i) {
         var yy = P.y - H * 0.885;   // rootCanvas koordinatına indir
         if (i === 0) t.moveTo(P.x, yy); else t.lineTo(P.x, yy);
       });
       t.stroke();
-      t.strokeStyle = "rgba(20,13,7,.55)";
-      t.lineWidth = 4.5;
+      t.strokeStyle = "rgba(20,13,7," + (pi === 0 ? 0.55 : 0.45) + ")";
+      t.lineWidth = innerW;
       t.stroke();
-    }
+      // a small worked chamber where each gallery ends
+      if (pi > 0) {
+        var end = path[path.length - 1];
+        t.fillStyle = "rgba(20,13,7,.42)";
+        t.beginPath(); t.ellipse(end.x, end.y - H * 0.885, 7, 4.6, 0, 0, 6.284); t.fill();
+        t.strokeStyle = "rgba(96,74,48,.38)"; t.lineWidth = 1.4;
+        t.stroke();
+      }
+    });
 
     // root hairs
     t.strokeStyle = "rgba(70,52,32,.4)"; t.lineWidth = 0.7;
@@ -796,13 +825,14 @@ footer a:hover{color:#fff}
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
-    var parX = pointer.x > 0 ? (pointer.x - W / 2) : 0;
+    parSm += (((pointer.x > 0 ? (pointer.x - W / 2) : 0)) - parSm) * 0.03;
+    var parX = parSm;
     ctx.save();
     ctx.translate(0, -camY);
 
     // far hills: deepest plane moves most against the cursor
     ctx.save();
-    ctx.translate(-parX * 0.016, 0);
+    ctx.translate(-parX * 0.010, 0);
     ctx.fillStyle = rgb(sk.haze, 0.30);
     hill(H * 0.82, 26, 0.0009, 8);
     ctx.fillStyle = rgb(sk.haze, 0.45);
@@ -815,7 +845,6 @@ footer a:hover{color:#fff}
     ctx.fillRect(-40, H * 0.76, W + 80, H * 0.13);
     ctx.restore();
     ctx.save();
-    ctx.translate(-parX * 0.005, 0);
 
     // ground: real soil from the first frame, so the descent has nowhere to jump
     ctx.drawImage(rootCanvas, 0, H * 0.885, W, H * 1.25);
@@ -857,11 +886,14 @@ footer a:hover{color:#fff}
       ctx.translate(-W / 2, -H * 0.92);
       ctx.globalAlpha = growS;
     }
+    var leafDim = Math.min(0.72, Math.max(
+      Math.max(smooth((p - 0.52) / 0.3), gNightIdle * 0.9) * 0.6,
+      smooth((descend - 0.15) / 0.45) * 0.72));
     for (var pass = 0; pass < 2; pass++) {
       for (var i = 0; i < N; i++) {
         var L = LEAVES[i];
         if ((pass === 0) !== (L.depth < 6)) continue;
-        drawLeaf(L, p, t, wind, gust, pass);
+        drawLeaf(L, p, t, wind, gust, pass, leafDim);
       }
     }
 
@@ -942,7 +974,7 @@ footer a:hover{color:#fff}
 
 
 
-  function drawLeaf(L, p, t, wind, gust, front) {
+  function drawLeaf(L, p, t, wind, gust, front, dim) {
     // colour: green → its own autumn shade, each on its own schedule
     var turn = smooth((p - L.turn * 0.42) / 0.24);
     turn = Math.max(turn, sw(2) * 0.9);               // an autumn tree starts turned
@@ -956,10 +988,14 @@ footer a:hover{color:#fff}
       r = lerp(r, bc2[0], spr) | 0; gr = lerp(gr, bc2[1], spr) | 0; b = lerp(b, bc2[2], spr) | 0;
     }
     var win = sw(3);
-    if (win > 0) {                                    // winter: frost takes the colour
-      r = lerp(r, WINTER_RGB[0], win * 0.75) | 0;
-      gr = lerp(gr, WINTER_RGB[1], win * 0.75) | 0;
-      b = lerp(b, WINTER_RGB[2], win * 0.75) | 0;
+    var grounded = (p - L.detach) / L.dur >= 1;
+    if (win > 0) {
+      // on the branch, frost takes the colour; on the ground it only dusts
+      var wtc = grounded ? [158, 146, 120] : WINTER_RGB;
+      var wamt = win * (grounded ? 0.34 : 0.75);
+      r = lerp(r, wtc[0], wamt) | 0;
+      gr = lerp(gr, wtc[1], wamt) | 0;
+      b = lerp(b, wtc[2], wamt) | 0;
     }
     if (EGG.blossom > 0) {                            // 3523: the tree remembers spring
       var bc = BLOSSOM_RGB[L.ai % BLOSSOM_RGB.length];
@@ -994,6 +1030,10 @@ footer a:hover{color:#fff}
     ctx.translate(x, y);
     ctx.rotate(rot);
     ctx.globalAlpha = alpha * (front ? 1 : 0.75);
+    if (dim > 0.01) {
+      var dk = 1 - dim * 0.62;
+      r = (r * dk) | 0; gr = (gr * dk) | 0; b = (b * dk) | 0;
+    }
     ctx.fillStyle = "rgb(" + r + "," + gr + "," + b + ")";
     // a leaf: two arcs meeting at a point
     ctx.beginPath();
@@ -1015,19 +1055,34 @@ footer a:hover{color:#fff}
      A column of ants follows one of the main roots, and every so often a
      mole surfaces near the doors, looks around, and thinks better of it.
      Time-based, world-space, and only drawn once the camera is down there. */
-  var antPath = [];
+  var antPaths = [];          // [0] is the trunk gallery; the rest fork off it
   function buildAntPath() {
-    antPath.length = 0;
-    // a gentle S across the soil, roughly following root territory
+    antPaths.length = 0;
     var y0 = H * 0.885;
-    for (var i = 0; i <= 60; i++) {
-      var u = i / 60;
-      // the empty lower-left corner is theirs: in from the edge, down and around
-      antPath.push({
-        x: W * 0.03 + u * W * 0.34 + Math.sin(u * 4.2) * W * 0.03,
-        y: y0 + H * 0.78 + Math.sin(u * 7.5 + 1.3) * H * 0.05 + u * H * 0.06
+    // trunk gallery: in from the lower-left edge, working right and down
+    var trunk = [];
+    for (var i = 0; i <= 40; i++) {
+      var u = i / 40;
+      trunk.push({
+        x: W * 0.03 + u * W * 0.31 + Math.sin(u * 4.2) * W * 0.03,
+        y: y0 + H * 0.76 + Math.sin(u * 6.5 + 1.3) * H * 0.045 + u * H * 0.055
       });
     }
+    antPaths.push(trunk);
+    // side galleries: each forks from a point on the trunk and wanders off
+    [[0.30, -0.085, 0.075], [0.55, 0.095, 0.115], [0.80, -0.075, 0.095]]
+      .forEach(function (F, fi) {
+        var start = trunk[(F[0] * 40) | 0];
+        var br = [];
+        for (var j = 0; j <= 22; j++) {
+          var v = j / 22;
+          br.push({
+            x: start.x + v * W * F[2] + Math.sin(v * 5 + fi * 2.1) * W * 0.012,
+            y: start.y + v * H * F[1] + Math.sin(v * 7 + fi) * H * 0.014
+          });
+        }
+        antPaths.push(br);
+      });
   }
   function drawCreatures(t, descend, camY) {
     if (reduced || descend < 0.12) return;
@@ -1037,14 +1092,18 @@ footer a:hover{color:#fff}
 
     // ants: a working line, each with its own gait
     var antFrozen = antPause > 0 && t - antPause < 2.4;
-    for (var a = 0; a < 14; a++) {
+    var LANE = [0, 0, 1, 0, 2, 0, 3];       // most traffic keeps to the trunk
+    for (var a = 0; a < 16; a++) {
+      var path = antPaths[LANE[a % LANE.length]] || antPaths[0];
+      if (!path) break;
+      var last2 = path.length - 1;
       var tA = antFrozen ? antPause : t;
-      var u = ((tA * 0.014 + a * 0.073) % 1.04) - 0.02;
+      var u = ((tA * 0.014 * (1 + (a % 3) * 0.12) + a * 0.073) % 1.04) - 0.02;
       if (u < 0 || u > 1) continue;
-      var idx = u * 59;
+      var idx = u * (last2 - 0.01);
       var i0 = idx | 0;
       var f = idx - i0;
-      var P0 = antPath[i0], P1 = antPath[Math.min(59, i0 + 1)];
+      var P0 = path[i0], P1 = path[Math.min(last2, i0 + 1)];
       var ax = lerp(P0.x, P1.x, f), ay = lerp(P0.y, P1.y, f);
       ay += Math.sin((antFrozen ? tA : t) * 22 + a * 3) * 0.5;   // gait wobble
       var ang = Math.atan2(P1.y - P0.y, P1.x - P0.x);
@@ -1088,7 +1147,7 @@ footer a:hover{color:#fff}
     if (cyc > 0.30 && cyc < 0.42) up = smooth((cyc - 0.30) / 0.12);
     else if (cyc >= 0.42 && cyc < 0.62) up = 1;
     else if (cyc >= 0.62 && cyc < 0.72) up = 1 - smooth((cyc - 0.62) / 0.10);
-    EGG.moleRect = up > 0.4 ? { x: mx - 30, y: my - 44 - camY, w: 60, h: 58 } : null;
+    EGG.moleRect = up > 0.4 ? { x: mx - 22, y: my - 34 - camY, w: 44, h: 46 } : null;
     if (EGG.moleBurst > 0) EGG.moleBurst -= 0.02;
     if (up > 0) {
       var mound = smooth(Math.min(1, up * 1.4));
@@ -1096,19 +1155,19 @@ footer a:hover{color:#fff}
       for (var md = 2; md >= 0; md--) {
         ctx.fillStyle = "rgba(" + (40 + md * 8) + "," + (29 + md * 6) + "," + (16 + md * 4) + "," + (0.9 * vis) + ")";
         ctx.beginPath();
-        ctx.ellipse(mx, my + 5 + md * 2, (36 - md * 5) * mound, (11 - md * 2) * mound, 0, Math.PI, 0);
+        ctx.ellipse(mx, my + 5 + md * 1.6, (27 - md * 4) * mound, (8.5 - md * 1.6) * mound, 0, Math.PI, 0);
         ctx.fill();
       }
       for (var sp2 = 0; sp2 < 8; sp2++) {
         ctx.fillStyle = "rgba(70,52,30," + (0.5 * vis * mound) + ")";
         ctx.beginPath();
-        ctx.arc(mx + Math.sin(sp2 * 2.7) * 26 * mound, my + 3 + Math.cos(sp2 * 1.9) * 4, 1.1, 0, 6.284);
+        ctx.arc(mx + Math.sin(sp2 * 2.7) * 19 * mound, my + 3 + Math.cos(sp2 * 1.9) * 3, 0.9, 0, 6.284);
         ctx.fill();
       }
-      var rise = up * 30;
+      var rise = up * 19;
       ctx.save();
-      ctx.translate(mx, my + 6 - rise);
-      ctx.scale(1.45, 1.45);
+      ctx.translate(mx, my + 4 - rise);
+      ctx.scale(0.95, 0.95);
       var sniff = up === 1 ? Math.sin(t * 5.2) : 0;
       ctx.rotate(sniff * 0.05);
 
@@ -1159,20 +1218,20 @@ footer a:hover{color:#fff}
       // the famous hands: broad, pale, turned out, resting on the rim
       [-1, 1].forEach(function (sd) {
         ctx.save();
-        ctx.translate(sd * 11.5, 4 - (1 - up) * 5);
-        ctx.rotate(sd * 1.15);
-        var hg = ctx.createRadialGradient(0, 0, 0, 0, 0, 5.5);
-        hg.addColorStop(0, "rgba(222,182,158," + vis + ")");
-        hg.addColorStop(1, "rgba(196,152,126," + vis + ")");
+        ctx.translate(sd * 10, 6 - (1 - up) * 4);
+        ctx.rotate(sd * 0.9);
+        var hg = ctx.createRadialGradient(0, 0, 0, 0, 0, 4);
+        hg.addColorStop(0, "rgba(206,168,146," + (0.9 * vis) + ")");
+        hg.addColorStop(1, "rgba(178,138,114," + (0.9 * vis) + ")");
         ctx.fillStyle = hg;
-        ctx.beginPath(); ctx.ellipse(0, 0, 5, 3.6, 0, 0, 6.284); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(0, 0, 3.6, 2.6, 0, 0, 6.284); ctx.fill();
         // five stubby claws
-        ctx.strokeStyle = "rgba(238,228,212," + (0.95 * vis) + ")";
-        ctx.lineWidth = 1.1; ctx.lineCap = "round";
+        ctx.strokeStyle = "rgba(226,214,196," + (0.8 * vis) + ")";
+        ctx.lineWidth = 0.9; ctx.lineCap = "round";
         for (var cl = -2; cl <= 2; cl++) {
           ctx.beginPath();
-          ctx.moveTo(cl * 1.7, -2.4);
-          ctx.lineTo(cl * 2.1, -5.4);
+          ctx.moveTo(cl * 1.3, -1.7);
+          ctx.lineTo(cl * 1.6, -3.8);
           ctx.stroke();
         }
         ctx.restore();
@@ -1184,7 +1243,7 @@ footer a:hover{color:#fff}
         for (var dd = 0; dd < 5; dd++) {
           var da = dd * 1.3 + t * 3;
           ctx.beginPath();
-          ctx.arc(mx + Math.cos(da) * (20 + up * 16), my - up * 26 + Math.sin(da * 1.7) * 8, 1.4, 0, 6.284);
+          ctx.arc(mx + Math.cos(da) * (14 + up * 11), my - up * 17 + Math.sin(da * 1.7) * 6, 1.1, 0, 6.284);
           ctx.fill();
         }
       }
@@ -1249,6 +1308,7 @@ footer a:hover{color:#fff}
   })();
   var idleSince = performance.now();
   var pointer = { x: -100, y: -100 };
+  var parSm = 0;
   window.addEventListener("mousemove", function(e){ pointer.x = e.clientX; pointer.y = e.clientY; idleSince = performance.now(); }, { passive:true });
   window.addEventListener("scroll", function(){ idleSince = performance.now(); flies.length = 0; }, { passive:true });
 
@@ -1293,7 +1353,7 @@ footer a:hover{color:#fff}
           g4.stroke();
         }
         // a wildflower now and then, when the year is warm
-        if (gr2() < 0.10 * (1 - gwin) * (1 - gaut * 0.5)) {
+        if (gr2() < 0.10 * Math.max(0, 1 - gwin * 1.3) * (1 - gaut * 0.5)) {
           var fx4 = gx5 + 2, fy4 = 25 - 9 - gr2() * 5;
           g4.strokeStyle = "rgba(88,118,60,.8)"; g4.lineWidth = 0.9;
           g4.beginPath(); g4.moveTo(fx4, 25); g4.lineTo(fx4, fy4 + 2); g4.stroke();
@@ -1318,6 +1378,7 @@ footer a:hover{color:#fff}
               wet: false, whistleAt: 20, notes: 0, hangTip: null };
   var CAUGHT = null;   // a leaf snatched from the air
   var BIKE = { present: true, x: 0, leanA: 0.14, gone: 0, back: false };
+  EGG._dbg = function () { return { state: GUY.state, next: GUY.next, present: BIKE.present, back: BIKE.back, gone: BIKE.gone, night: gNightIdle }; };
   var HOUSE = { doorOpen: 0 };
   var RAIN = { on: 0, until: 0 };
   var SNOWMAN = { stage: 0, x: 0 };          // 0 none · 1..3 built
@@ -1386,35 +1447,61 @@ footer a:hover{color:#fff}
     ctx.fillStyle = es;
     ctx.fillRect(-46, -72, 92, 14);
 
-    // roof: shingle courses under a ridge
+    // roof: a clay-tiled plane from eaves to ridge, snowed over in winter
     ctx.save();
     ctx.beginPath();
-    ctx.moveTo(-58, -70); ctx.lineTo(0, -110); ctx.lineTo(58, -70);
-    ctx.lineTo(58, -74); ctx.lineTo(0, -114); ctx.lineTo(-58, -74);
+    ctx.moveTo(-58, -68); ctx.lineTo(0, -112); ctx.lineTo(58, -68);
     ctx.closePath();
-    var rg = ctx.createLinearGradient(0, -114, 0, -70);
-    rg.addColorStop(0, "#3f2f20");
-    rg.addColorStop(1, "#2b1f14");
+    var rg = ctx.createLinearGradient(0, -112, 0, -68);
+    rg.addColorStop(0, "#8a4a2c");
+    rg.addColorStop(1, "#66311c");
     ctx.fillStyle = rg;
     ctx.fill();
-    // scalloped shingle rows clipped to the roof plane
-    ctx.beginPath();
-    ctx.moveTo(-58, -71); ctx.lineTo(0, -111); ctx.lineTo(58, -71); ctx.closePath();
     ctx.clip();
-    ctx.strokeStyle = "rgba(12,8,5,.5)";
-    ctx.lineWidth = 1;
-    for (var row = 0; row < 5; row++) {
-      var ry = -76 - row * 8;
+    // scalloped terracotta courses, staggered like real tiles
+    for (var row = 0; row < 6; row++) {
+      var ry = -70 - row * 7.5;
+      var off = row % 2 ? 4 : 0;
+      ctx.fillStyle = row % 2 ? "rgba(196,110,66,.20)" : "rgba(96,42,22,.24)";
       ctx.beginPath();
-      for (var sh2 = -8; sh2 <= 8; sh2++) {
-        ctx.arc(sh2 * 8, ry, 4.5, Math.PI, 0, true);
-      }
+      for (var sh2 = -8; sh2 <= 8; sh2++) ctx.arc(sh2 * 8 + off, ry, 4.4, Math.PI, 0, true);
+      ctx.lineTo(66, ry + 7.5); ctx.lineTo(-66, ry + 7.5);
+      ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = "rgba(30,12,6,.42)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (var sh3 = -8; sh3 <= 8; sh3++) ctx.arc(sh3 * 8 + off, ry, 4.4, Math.PI, 0, true);
       ctx.stroke();
+    }
+    // low sun warms the west slope a little
+    var rw = ctx.createLinearGradient(-58, 0, 58, 0);
+    rw.addColorStop(0, "rgba(232,176,84,.10)");
+    rw.addColorStop(0.5, "rgba(232,176,84,0)");
+    rw.addColorStop(1, "rgba(20,10,6,.14)");
+    ctx.fillStyle = rw;
+    ctx.fillRect(-58, -112, 116, 44);
+    // winter: snow settles from the ridge down
+    var snw = sw(3);
+    if (snw > 0.05) {
+      ctx.globalAlpha = snw;
+      var sg2 = ctx.createLinearGradient(0, -112, 0, -70);
+      sg2.addColorStop(0, "rgba(236,238,236,.96)");
+      sg2.addColorStop(1, "rgba(236,238,236,.34)");
+      ctx.fillStyle = sg2;
+      ctx.beginPath();
+      ctx.moveTo(-58, -68); ctx.lineTo(0, -112); ctx.lineTo(58, -68); ctx.closePath();
+      ctx.fill();
+      // soft lip of snow hanging over the eaves
+      ctx.fillStyle = "rgba(240,242,240,.9)";
+      ctx.beginPath(); ctx.ellipse(-29, -69.5, 30, 3.2, -0.65, 0, 6.284); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(29, -69.5, 30, 3.2, 0.65, 0, 6.284); ctx.fill();
+      ctx.globalAlpha = 1;
     }
     ctx.restore();
     // ridge cap
-    ctx.strokeStyle = "#1c130b"; ctx.lineWidth = 3; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(-58, -72); ctx.lineTo(0, -112); ctx.lineTo(58, -72); ctx.stroke();
+    ctx.strokeStyle = sw(3) > 0.5 ? "#d8dcd8" : "#3a1e10";
+    ctx.lineWidth = 3; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(-58, -70); ctx.lineTo(0, -113); ctx.lineTo(58, -70); ctx.stroke();
 
     // chimney with cap
     ctx.fillStyle = "#4a3826";
@@ -1504,18 +1591,21 @@ footer a:hover{color:#fff}
     ctx.restore();
   }
 
-  function drawBike(x, y, a, roll, vis) {
+  function drawBike(x, y, a, roll, vis, face, dim) {
     ctx.save();
     ctx.translate(x, y);
+    if (face === -1) ctx.scale(-1, 1);
     ctx.rotate(a);
     ctx.globalAlpha = vis;
+    var bdk = 1 - (dim || 0) * 0.55;
+    var frameCol = "rgb(" + ((168 * bdk) | 0) + "," + ((39 * bdk) | 0) + "," + ((30 * bdk) | 0) + ")";
     var R = 10.5;
     // wheels
     [[-14, 0], [14, 0]].forEach(function (wp, wi) {
       ctx.strokeStyle = "#241d16";
       ctx.lineWidth = 2.6;
       ctx.beginPath(); ctx.arc(wp[0], wp[1], R, 0, 6.284); ctx.stroke();
-      ctx.strokeStyle = "rgba(200,190,170,.6)";
+      ctx.strokeStyle = "rgba(200,190,170," + (0.6 * bdk) + ")";
       ctx.lineWidth = 0.8;
       for (var sp3 = 0; sp3 < 5; sp3++) {
         var sa = roll + sp3 * 1.2566 + wi;
@@ -1524,7 +1614,7 @@ footer a:hover{color:#fff}
       }
     });
     // frame: the red everything hangs from
-    ctx.strokeStyle = "#a8271e";
+    ctx.strokeStyle = frameCol;
     ctx.lineWidth = 2.4;
     ctx.lineCap = "round";
     ctx.beginPath();
@@ -1548,12 +1638,13 @@ footer a:hover{color:#fff}
     { coat: "#27423a", scarf: null,      sleeves: true  },   // autumn
     { coat: "#3a2f2a", scarf: "#a8271e", sleeves: true  }    // winter: the red scarf
   ];
-  function drawGuy(x, y, t, mode, outfit, prop) {
+  function drawGuy(x, y, t, mode, outfit, prop, face) {
     /* mode: "walk" | "wave" | "stand" | "ride" — a small man, curly hair,
        drawn in the same warm ink as everything else on this page */
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(small ? 1.1 : 1.35, small ? 1.1 : 1.35);
+    if (face === -1) ctx.scale(-1, 1);
     var step = mode === "walk" ? Math.sin(t * 8) : 0;
     var bounce = mode === "walk" ? Math.abs(Math.cos(t * 8)) * 1.2 : mode === "ride" ? Math.sin(t * 10) * 0.6 : 0;
     ctx.translate(0, -bounce);
@@ -1768,7 +1859,8 @@ footer a:hover{color:#fff}
     BIKE.x = W * 0.5 - 68;
     if (BIKE.present && groundVis > 0.02 && GUY.state !== "ride" && GUY.state !== "rideBack") {
       ctx.globalAlpha = groundVis; groundShadow(BIKE.x, 30, 0.18); ctx.globalAlpha = 1;
-      drawBike(BIKE.x, guyGround() - 10, BIKE.leanA, 0, groundVis);
+      drawBike(BIKE.x, guyGround() - 10, BIKE.leanA, 0, groundVis, 1,
+               Math.max(night, gNightIdle));
       EGG.bikeRect = { x: BIKE.x - 28, y: guyGround() - 34, w: 56, h: 40 };
     } else EGG.bikeRect = null;
 
@@ -1812,7 +1904,8 @@ footer a:hover{color:#fff}
     if (SNOWMAN.stage > 0 && sw(3) > 0.2 && groundVis > 0.02) {
       ctx.globalAlpha = groundVis;
       var smx = SNOWMAN.x, smy = guyGround();
-      ctx.fillStyle = "#e8e9ea";
+      var smdk = 1 - Math.max(night, gNightIdle) * 0.45;
+      ctx.fillStyle = "rgb(" + ((232 * smdk) | 0) + "," + ((233 * smdk) | 0) + "," + ((234 * smdk) | 0) + ")";
       if (SNOWMAN.stage >= 1) { ctx.beginPath(); ctx.arc(smx, smy - 9, 10, 0, 6.284); ctx.fill(); }
       if (SNOWMAN.stage >= 2) { ctx.beginPath(); ctx.arc(smx, smy - 24, 7.4, 0, 6.284); ctx.fill(); }
       if (SNOWMAN.stage >= 3) {
@@ -1832,8 +1925,13 @@ footer a:hover{color:#fff}
     EGG.snowRect = (sw(3) > 0.4 && SNOWMAN.stage === 0 && groundVis > 0.4)
       ? { x: W * 0.24 - 20, y: guyGround() - 16, w: 40, h: 18 } : null;
     if (EGG.snowRect) {   // the mound waiting to become someone
-      ctx.fillStyle = "rgba(232,233,235,.85)";
+      var mdk = 1 - Math.max(night, gNightIdle) * 0.5;
+      ctx.globalAlpha = groundVis * 0.8;
+      ctx.fillStyle = "rgba(" + ((226 * mdk) | 0) + "," + ((228 * mdk) | 0) + "," + ((230 * mdk) | 0) + ",.8)";
       ctx.beginPath(); ctx.ellipse(W * 0.24, guyGround() - 2, 16, 7, 0, Math.PI, 0); ctx.fill();
+      ctx.fillStyle = "rgba(140,150,160," + (0.25 * mdk) + ")";
+      ctx.beginPath(); ctx.ellipse(W * 0.24 + 4, guyGround() - 2, 11, 4.4, 0, Math.PI * 1.05, Math.PI * 1.85); ctx.fill();
+      ctx.globalAlpha = 1;
     }
 
     /* saplings, from planted acorns */
@@ -1976,7 +2074,8 @@ footer a:hover{color:#fff}
         GUY.targetX = W * (0.30 + (t % 7) / 35);
       }
       if (gNightIdle > 0.6 && GUY.state !== "away" && GUY.state !== "home" &&
-          GUY.state !== "enterHouse" && GUY.state !== "ride") {
+          GUY.state !== "enterHouse" && GUY.state !== "ride" &&
+          GUY.state !== "rideBack" && GUY.state !== "held" && GUY.state !== "falling") {
         GUY.state = "goHome";                     // the night sends him in
       }
       if (wantsChange && (GUY.state === "wave" || GUY.state === "stand")) GUY.state = "goHome";
@@ -2013,8 +2112,9 @@ footer a:hover{color:#fff}
           if (GUY.x > W + 40) { GUY.state = "away"; GUY.next = t + 10 + (t % 9); }
           break;
         case "toBike":
-          GUY.x += (BIKE.x > GUY.x ? 1 : -1) * 78 * spd;
-          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
+          var dirB = BIKE.x > GUY.x ? 1 : -1;
+          GUY.x += dirB * 78 * spd;
+          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop, dirB);
           if (BIKE.present && Math.abs(GUY.x - BIKE.x) < 6) {
             GUY.state = "ride"; GUY.t0 = t;
             BIKE.present = false;               // it leaves with him, obviously
@@ -2033,8 +2133,8 @@ footer a:hover{color:#fff}
         }
         case "rideBack": {
           var rbx = W + 40 - (t - GUY.t0) * 120;
-          drawBike(rbx, gy4 - 10, 0, -(t - GUY.t0) * 11, 1);
-          drawGuy(rbx + 2, gy4, t, "ride", GUY.outfit, null);
+          drawBike(rbx, gy4 - 10, 0, (t - GUY.t0) * 11, 1, -1);
+          drawGuy(rbx + 2, gy4, t, "ride", GUY.outfit, null, -1);
           if (rbx <= BIKE.x) {
             BIKE.present = true; BIKE.back = false;
             GUY.state = "stand"; GUY.t0 = t; GUY.x = rbx - 14;
@@ -2096,8 +2196,9 @@ footer a:hover{color:#fff}
           if (t - GUY.t0 > 0.7) { GUY.state = "stand"; GUY.t0 = t; GUY.bubble = 0; }
           break;
         case "goDoze":
-          GUY.x += (houseX() - 38 > GUY.x ? 1 : -1) * 46 * spd;
-          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
+          var dirD = houseX() - 38 > GUY.x ? 1 : -1;
+          GUY.x += dirD * 46 * spd;
+          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop, dirD);
           if (Math.abs(GUY.x - (houseX() - 38)) < 6) { GUY.state = "doze"; GUY.t0 = t; }
           break;
         case "doze":
@@ -2118,8 +2219,9 @@ footer a:hover{color:#fff}
           break;
         }
         case "goHome":
+          var dirH = GUY.x < houseX() - 16 ? 1 : -1;
           GUY.x += (houseX() - 16 - GUY.x) * 0.02 + 40 * spd * (GUY.x < houseX() - 18 ? 1 : 0);
-          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
+          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop, dirH);
           if (GUY.x >= houseX() - 30) { GUY.state = "enterHouse"; GUY.t0 = t; }
           break;
         case "enterHouse":
@@ -2131,12 +2233,13 @@ footer a:hover{color:#fff}
           break;
         case "exitHouse":
           GUY.x = lerp(houseX() - 8, houseX() - 40, (t - GUY.t0) / 0.7);
-          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
+          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop, -1);
           if (t - GUY.t0 > 0.7) { GUY.state = "wave"; GUY.t0 = t; GUY.mode2 = "wave"; }
           break;
         case "toSnow":
-          GUY.x += (GUY.x < W * 0.24 + 20 ? 1 : -1) * 52 * spd;
-          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
+          var dirS = GUY.x < W * 0.24 + 20 ? 1 : -1;
+          GUY.x += dirS * 52 * spd;
+          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop, dirS);
           if (Math.abs(GUY.x - (W * 0.24 + 20)) < 8) { GUY.state = "building"; GUY.t0 = t; SNOWMAN.x = W * 0.24; }
           break;
         case "building": {
@@ -2147,8 +2250,9 @@ footer a:hover{color:#fff}
           break;
         }
         case "toPlant":
-          GUY.x += (GUY.x < GUY.targetX ? 1 : -1) * 52 * spd;
-          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
+          var dirP = GUY.x < GUY.targetX ? 1 : -1;
+          GUY.x += dirP * 52 * spd;
+          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop, dirP);
           if (Math.abs(GUY.x - GUY.targetX) < 8) { GUY.state = "planting"; GUY.t0 = t; }
           break;
         case "planting":
@@ -2163,6 +2267,8 @@ footer a:hover{color:#fff}
       if (!BIKE.present && !BIKE.back && t - BIKE.gone > 16 && GUY.state === "away") {
         BIKE.back = true; GUY.state = "rideBack"; GUY.t0 = t;   // he brings it back himself
       }
+      // if anything interrupted the return, the bike is not lost: try again later
+      if (BIKE.back && !BIKE.present && GUY.state !== "rideBack") BIKE.back = false;
       // floating notes while he whistles
       if (GUY.notes > t) {
         ctx.fillStyle = "rgba(60,48,36," + (0.7 * (GUY.notes - t) / 1.8) + ")";
@@ -2401,19 +2507,17 @@ footer a:hover{color:#fff}
           if (ch === " ") { frag.appendChild(document.createTextNode("\u00a0")); return; }
           var sp = document.createElement("span");
           sp.className = "sig-l";
-          sp.style.animationDelay = (0.55 + delay) + "s";
-          delay += 0.055;
+          sp.style.animationDelay = (0.45 + delay) + "s";
+          delay += 0.045;
           sp.textContent = ch;
           frag.appendChild(sp);
         });
         node.parentNode.replaceChild(frag, node);
-      } else if (node.nodeType === 1 && node.id !== "swash") {
+      } else if (node.nodeType === 1) {
         [].slice.call(node.childNodes).forEach(splitNode);
       }
     }
     [].slice.call(nameEl.childNodes).forEach(splitNode);
-    var sw2 = document.getElementById("swash");
-    if (sw2) sw2.querySelector("path").style.animationDelay = (0.55 + delay + 0.15) + "s";
     setTimeout(function(){ nameEl.classList.add("signed"); }, 100);
   })();
 
@@ -2460,7 +2564,7 @@ footer a:hover{color:#fff}
     }
     seasonShow += (seasonCur - seasonShow) * 0.045;
     if (DRAG.held && shown > 0.35 && EGG.release) EGG.release();
-    var wantNight = FORCE_NIGHT || (progress < 0.25 && (performance.now() - idleSince > 12000));
+    var wantNight = FORCE_NIGHT || (progress < 0.25 && (performance.now() - idleSince > 35000));
     gNightIdle += ((wantNight ? 1 : 0) - gNightIdle) * (wantNight ? 0.012 : 0.05);
     shown += (progress - shown) * 0.16;
     if (Math.abs(progress - shown) < 0.0004) shown = progress;
@@ -2620,7 +2724,19 @@ footer a:hover{color:#fff}
 (function(){
   var btn = document.getElementById("sndBtn");
   if (!btn) return;
-  var on = false, actx = null, wind = null, windGain = null, cricketTimer = null;
+  var on = false, actx = null, wind = null, windGain = null, cricketTimer = null, master = null;
+  var wrap = document.getElementById("sndWrap");
+  var slider = document.getElementById("sndVol");
+  var vol = 0.65;
+  try { var _vs = parseFloat(localStorage.getItem("sndvol")); if (!isNaN(_vs)) vol = Math.min(1, Math.max(0, _vs)); } catch(e){}
+  function applyVol() {
+    if (master) master.gain.value = vol * vol * 1.7;
+    if (slider) {
+      slider.value = Math.round(vol * 100);
+      var pc = Math.round(vol * 100) + "%";
+      slider.style.background = "linear-gradient(90deg,#e0a050 0%,#e0a050 " + pc + ",rgba(224,170,96,.22) " + pc + ")";
+    }
+  }
 
   function makeNoise(ac) {
     var len = ac.sampleRate * 2;
@@ -2645,17 +2761,19 @@ footer a:hover{color:#fff}
       g.gain.linearRampToValueAtTime(0.006, s2 + 0.02);
       g.gain.linearRampToValueAtTime(0, s2 + 0.07);
     }
-    o.connect(g); g.connect(ac.destination);
+    o.connect(g); g.connect(master);
     o.start(when); o.stop(when + 0.5);
   }
   function start() {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     actx.resume();
+    if (!master) { master = actx.createGain(); master.connect(actx.destination); }
+    applyVol();
     var lp = actx.createBiquadFilter();
     lp.type = "lowpass"; lp.frequency.value = 420; lp.Q.value = 0.4;
     windGain = actx.createGain(); windGain.gain.value = 0.05;
     wind = makeNoise(actx);
-    wind.connect(lp); lp.connect(windGain); windGain.connect(actx.destination);
+    wind.connect(lp); lp.connect(windGain); windGain.connect(master);
     wind.start();
     // wind follows the film; crickets only at dusk
     cricketTimer = setInterval(function(){
@@ -2673,7 +2791,7 @@ footer a:hover{color:#fff}
       g.gain.setValueAtTime(0.0001, actx.currentTime + nn[0]);
       g.gain.linearRampToValueAtTime(0.018, actx.currentTime + nn[0] + 0.05);
       g.gain.linearRampToValueAtTime(0.0001, actx.currentTime + nn[0] + 0.2);
-      o.connect(g); g.connect(actx.destination);
+      o.connect(g); g.connect(master);
       o.start(actx.currentTime + nn[0]); o.stop(actx.currentTime + nn[0] + 0.25);
     });
   };
@@ -2685,7 +2803,7 @@ footer a:hover{color:#fff}
     o.frequency.exponentialRampToValueAtTime(48, actx.currentTime + 0.16);
     g.gain.setValueAtTime(0.11, actx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.2);
-    o.connect(g); g.connect(actx.destination);
+    o.connect(g); g.connect(master);
     o.start(); o.stop(actx.currentTime + 0.25);
   };
   window.__hoot = function(){
@@ -2696,7 +2814,7 @@ footer a:hover{color:#fff}
       o.frequency.exponentialRampToValueAtTime(300, actx.currentTime + d + 0.22);
       g.gain.setValueAtTime(0.05, actx.currentTime + d);
       g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + d + 0.3);
-      o.connect(g); g.connect(actx.destination);
+      o.connect(g); g.connect(master);
       o.start(actx.currentTime + d); o.stop(actx.currentTime + d + 0.35);
     });
   };
@@ -2707,7 +2825,7 @@ footer a:hover{color:#fff}
       o.type = "sine"; o.frequency.value = 1244;
       g.gain.setValueAtTime(0.035, actx.currentTime + d);
       g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + d + 0.25);
-      o.connect(g); g.connect(actx.destination);
+      o.connect(g); g.connect(master);
       o.start(actx.currentTime + d); o.stop(actx.currentTime + d + 0.3);
     });
   };
@@ -2724,9 +2842,18 @@ footer a:hover{color:#fff}
   btn.addEventListener("click", function(){
     on = !on;
     if (on) start(); else stop();
+    if (wrap) wrap.classList.toggle("open", on);
     paint();
     try { localStorage.setItem("snd", on ? "1" : "0"); } catch(e){}
   });
+  if (slider) {
+    slider.addEventListener("input", function(){
+      vol = slider.value / 100;
+      applyVol();
+      try { localStorage.setItem("sndvol", String(vol)); } catch(e){}
+    });
+  }
+  applyVol();
 })();
 
 /* eggs: the inputs that wake them */
@@ -2853,7 +2980,16 @@ footer a:hover{color:#fff}
       wave: function(){ if (EGG2.tap) EGG2.tap(); return "he waves back"; },
       ride: function(){ if (EGG2.rideRequest) EGG2.rideRequest(); return "off he goes"; },
       rain: function(){ if (EGG2.rainRequest) EGG2.rainRequest(); return "clouds obliged"; },
-      season: function(i){ if (EGG2.setSeason) EGG2.setSeason(((i % 4) + 4) % 4); return ["spring","summer","autumn","winter"][((i % 4) + 4) % 4]; },
+      season: function(i){
+        var names = ["spring","summer","autumn","winter"];
+        var alias = { spring:0, summer:1, autumn:2, fall:2, winter:3,
+                      ilkbahar:0, bahar:0, yaz:1, sonbahar:2, guz:2, kis:3 };
+        if (typeof i === "string") i = alias[i.toLowerCase().replace("\u0131","i").replace("\u015f","s")];
+        i = ((Math.round(+i) % 4) + 4) % 4;
+        if (isNaN(i)) return "try kerem.season('winter') or 0..3";
+        if (EGG2.setSeason) EGG2.setSeason(i);
+        return names[i];
+      },
       regrow: function(){ if (EGG2.regrow) EGG2.regrow(); return "a new tree"; },
       throwMe: function(){
         if (EGG2.grab && EGG2.grab(innerWidth/2, innerHeight*0.3)) setTimeout(function(){
@@ -2875,8 +3011,9 @@ footer a:hover{color:#fff}
     a.addEventListener("click", function(e){
       if (e.metaKey || e.ctrlKey || !f) return;
       e.preventDefault();
+      a.classList.add("leaving");
       f.classList.add("on");
-      setTimeout(function(){ location.href = a.getAttribute("href"); }, 300);
+      setTimeout(function(){ location.href = a.getAttribute("href"); }, 380);
     });
   });
 })();
