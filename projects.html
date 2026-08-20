@@ -163,8 +163,12 @@ footer a:hover{color:var(--fg)}
   .tl .row{grid-template-columns:1fr;gap:.2rem}
   .feature{grid-template-columns:1fr}
 }
+.rise{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+.rise.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rise{opacity:1;transform:none;transition:none}}
 #cvsheet{display:none}
 @media print{
+  .rise{opacity:1!important;transform:none!important}
   @page{size:A4;margin:13mm 15mm}
   .bar,footer,.leaf-mark,.cv-btn,.langs{display:none!important}
   body{background:#fff;color:#000}
@@ -483,6 +487,14 @@ window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar",
 
 (function(){
   "use strict";
+  /* arrival: the page rises section by section */
+  try {
+    var rises = [].slice.call(document.querySelectorAll(".crown, main > section, footer .wrap"));
+    rises.forEach(function (el) { el.classList.add("rise"); });
+    rises.forEach(function (el, i) {
+      setTimeout(function () { el.classList.add("in"); }, 160 + i * 90);
+    });
+  } catch (e) {}
   /* language: the same dictionaries drive every inner page */
   var lang = "en";
   try { lang = localStorage.getItem("lang") || "en"; } catch(e){}
