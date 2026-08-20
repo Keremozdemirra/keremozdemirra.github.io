@@ -12,6 +12,7 @@
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://keremozdemirra.github.io/og.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="Notes" href="feed.xml">
 <meta name="twitter:image" content="https://keremozdemirra.github.io/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
 <meta property="og:url" content="https://keremozdemirra.github.io/">
@@ -52,14 +53,19 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
   will-change:opacity,transform,filter;
 }
 #theName i{font-style:italic;font-weight:400}
+@keyframes inkIn{from{clip-path:inset(-20% 100% -20% 0)}to{clip-path:inset(-20% -2% -20% 0)}}
+#theName{animation:inkIn 1.4s cubic-bezier(.6,.02,.3,1) .5s backwards}
+@media (prefers-reduced-motion:reduce){#theName{animation:none}}
 
 #hint{
-  position:absolute;left:50%;bottom:13vh;transform:translateX(-50%);
-  font-family:var(--serif);font-style:italic;font-size:.9rem;letter-spacing:.06em;
-  color:rgba(220,206,182,.9);text-shadow:0 1px 3px rgba(10,7,4,.6);
+  position:absolute;left:50%;top:33%;transform:translateX(-50%);
+  font-family:var(--serif);font-style:italic;font-size:.92rem;letter-spacing:.06em;
+  color:rgba(90,80,66,.9);
   transition:opacity .4s ease;
   animation:breathe 3s ease-in-out infinite;
 }
+#hint::after{content:"";display:block;width:1px;height:26px;margin:6px auto 0;
+  background:linear-gradient(rgba(90,80,66,.6),transparent)}
 #hint.off{animation:none;opacity:0}
 @keyframes breathe{0%,100%{opacity:.4}50%{opacity:.9}}
 
@@ -134,14 +140,19 @@ footer a:hover{color:#fff}
 
 #fadeout{position:fixed;inset:0;background:#17110a;opacity:0;pointer-events:none;transition:opacity .34s ease;z-index:90}
 #fadeout.on{opacity:1}
+#fadeout .runner{position:absolute;bottom:18vh;left:-60px;opacity:0}
+#fadeout.on .runner{animation:runAcross .62s linear forwards;opacity:1}
+@keyframes runAcross{from{left:-60px}to{left:calc(50% - 20px)}}
+#fadeout .runner svg{animation:runBob .16s ease-in-out infinite alternate}
+@keyframes runBob{from{transform:translateY(0)}to{transform:translateY(-4px)}}
 @keyframes dawn{from{opacity:1}to{opacity:0}}
 #dawn{position:fixed;inset:0;background:#17110a;pointer-events:none;z-index:92;animation:dawn .8s ease .1s forwards}
 @media (prefers-reduced-motion:reduce){#dawn{display:none}}
 
 .door:focus-visible,.langs button:focus-visible,#sndBtn:focus-visible{outline:2px solid #e0a050;outline-offset:3px}
 #seasonDial{position:fixed;left:1.1rem;bottom:1.1rem;z-index:60;width:52px;height:52px;border-radius:50%;
-  border:1px solid rgba(224,170,96,.35);background:rgba(20,16,10,.55);cursor:pointer;
-  backdrop-filter:blur(6px);padding:0;transition:border-color .2s ease,transform .18s ease}
+  border:1px solid rgba(224,170,96,.35);background:rgba(20,16,10,.78);cursor:pointer;
+  padding:0;transition:border-color .2s ease,transform .18s ease}
 #seasonDial:hover{border-color:rgba(224,170,96,.7)}
 #seasonDial:active{transform:scale(.94)}
 #seasonDial .wheel{transition:transform .9s cubic-bezier(.23,1,.32,1);transform-origin:50% 50%}
@@ -153,8 +164,8 @@ footer a:hover{color:#fff}
   text-shadow:0 1px 3px rgba(10,7,4,.7)}
 #seasonDial:hover .lbl,#seasonDial.fresh .lbl{opacity:1}
 #sndBtn{position:fixed;right:1.1rem;bottom:1.1rem;z-index:60;width:42px;height:42px;border-radius:50%;
-  border:1px solid rgba(224,170,96,.35);background:rgba(20,16,10,.55);color:#e0c9a2;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);
+  border:1px solid rgba(224,170,96,.35);background:rgba(20,16,10,.78);color:#e0c9a2;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
   transition:border-color .2s ease,color .2s ease}
 #sndBtn:hover{border-color:rgba(224,170,96,.7);color:#f4e3c6}
 #sndBtn svg{width:19px;height:19px}
@@ -192,7 +203,7 @@ footer a:hover{color:#fff}
     </nav>
 
     <span id="hint" data-i="hint">Scroll</span>
-    <div id="fadeout" aria-hidden="true"></div>
+    <div id="fadeout" aria-hidden="true"><span class="runner"><svg width="40" height="52" viewBox="0 0 40 52"><g stroke="#e0a050" stroke-width="3" stroke-linecap="round" fill="none"><line x1="20" y1="18" x2="20" y2="32"/><line x1="20" y1="32" x2="12" y2="44"/><line x1="20" y1="32" x2="29" y2="42"/><line x1="20" y1="21" x2="10" y2="28"/><line x1="20" y1="21" x2="30" y2="26"/></g><circle cx="21" cy="11" r="6" fill="#e0a050"/></svg></span></div>
     <div id="dawn" aria-hidden="true"></div>
     <button type="button" id="seasonDial" aria-label="Change the season" title="Season">
       <svg viewBox="0 0 52 52" width="52" height="52" aria-hidden="true">
@@ -270,7 +281,7 @@ footer a:hover{color:#fff}
   var doors = portal ? [].slice.call(portal.querySelectorAll(".door")) : [];
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var DPR = Math.min(1.75, window.devicePixelRatio || 1);
+  var DPR = Math.min(1.5, window.devicePixelRatio || 1);
 
   /* eggs share this; the film reads it every frame */
   var EGG = window.__EGG = { blossom: 0, burst: null, moleRect: null, moleBurst: 0 };
@@ -284,9 +295,69 @@ footer a:hover{color:#fff}
     if (_sv !== null && +_sv >= 0 && +_sv < 4) seasonCur = +_sv;   // the tree remembers you
   } catch (e) {}
   var seasonShow = seasonCur;
+  EGG.regrow = function () {
+    var seed = (Math.random() * 1e9) | 0;
+    rnd = mulberry(seed);
+    branches.length = 0; tips.length = 0;
+    var baseY = H * 0.92;
+    var unit = Math.min(H, W * 1.1);
+    grow(W * 0.5, baseY, -Math.PI / 2 + 0.03, unit * 0.155, unit * 0.030, 0, 0);
+    renderTrunk();
+    buildAntPath();
+    renderRoots();
+    buildLeaves();
+    treeGrowT = performance.now();
+  };
   EGG.setSeason = function (i) {
     seasonCur = i;
     try { localStorage.setItem("season", String(i)); } catch (e) {}
+  };
+  var DRAG = { held: false, px: 0, py: 0, vx: 0, vy: 0, lastX: 0, lastY: 0, lastT: 0, rot: 0 };
+  EGG.grab = function (x, y) {
+    if (GUY.state === "ride" || GUY.state === "rideBack" || GUY.state === "home") return false;
+    DRAG.held = true; DRAG.px = x; DRAG.py = y;
+    DRAG.lastX = x; DRAG.lastY = y; DRAG.lastT = performance.now();
+    DRAG.vx = 0; DRAG.vy = 0;
+    GUY.state = "held";
+    return true;
+  };
+  EGG.dragTo = function (x, y) {
+    if (!DRAG.held) return;
+    var n2 = performance.now(), dt3 = Math.max(8, n2 - DRAG.lastT);
+    DRAG.vx = DRAG.vx * 0.6 + ((x - DRAG.lastX) / dt3 * 1000) * 0.4;
+    DRAG.vy = DRAG.vy * 0.6 + ((y - DRAG.lastY) / dt3 * 1000) * 0.4;
+    DRAG.lastX = x; DRAG.lastY = y; DRAG.lastT = n2;
+    DRAG.px = x; DRAG.py = y;
+  };
+  EGG.release = function () {
+    if (!DRAG.held) return;
+    DRAG.held = false;
+    // released into the canopy: he grabs the nearest branch and hangs on
+    if (DRAG.py < H * 0.62 && Math.abs(DRAG.px - W / 2) < W * 0.2 && lastP < 0.3) {
+      var best = null, bd = 1e9;
+      for (var ti2 = 0; ti2 < tips.length; ti2 += 4) {
+        var tp2 = tips[ti2];
+        var dd2 = (tp2.x - DRAG.px) * (tp2.x - DRAG.px) + (tp2.y - DRAG.py) * (tp2.y - DRAG.py);
+        if (dd2 < bd) { bd = dd2; best = tp2; }
+      }
+      if (best) {
+        GUY.hangTip = best;
+        GUY.state = "hang"; GUY.t0 = performance.now() / 1000;
+        return;
+      }
+    }
+    GUY.state = "falling";
+    GUY.fx = DRAG.px; GUY.fy = DRAG.py;
+    GUY.fvx = clamp(DRAG.vx, -900, 900);
+    GUY.fvy = clamp(DRAG.vy, -900, 900);
+    DRAG.rot = 0;
+  };
+  EGG.dragging = function () { return DRAG.held; };
+  EGG.tap = function () {
+    DRAG.held = false;
+    GUY.state = "wave"; GUY.t0 = performance.now() / 1000;
+    GUY.mode2 = "wave";
+    GUY.bubble = GUY.t0 + 2.2;
   };
   EGG.rideRequest = function () {
     if (GUY.state === "ride" || GUY.state === "rideBack" || !BIKE.present) return;
@@ -309,6 +380,27 @@ footer a:hover{color:#fff}
   };
   EGG.owlRequest = function () { OWL.on = false; };
   EGG.eclipseRequest = function () { ECLIPSE = 1; };
+  EGG.catchLeaf = function (x, y) {
+    if (CAUGHT) return false;
+    for (var i = 0; i < N; i++) {
+      var L2 = LEAVES[i];
+      var f2 = (lastP - L2.detach) / L2.dur;
+      if (f2 <= 0.05 || f2 >= 0.95) continue;
+      // where is it right now? cheap re-derivation of the draw position
+      var fe2 = ease(Math.max(0, Math.min(1, f2)));
+      var lx = lerp(L2.ax, L2.gx, fe2 * 0.55) + L2.driftA * 90 * fe2;
+      var ly = lerp(L2.ay, L2.gy, f2 * f2 * (3 - 2 * f2));
+      if ((lx - x) * (lx - x) + (ly - y) * (ly - y) < 500) {
+        CAUGHT = { i: i, t0: performance.now() / 1000, x: lx, y: ly };
+        L2.detach = 9;   // it leaves the film; it is his now
+        return true;
+      }
+    }
+    return false;
+  };
+  EGG.soakRequest = function () {
+    if (RAIN.on > 0.2) GUY.wet = true;
+  };
   EGG.rainRequest = function () {
     RAIN.on = 1; RAIN.until = performance.now() / 1000 + 12;
   };
@@ -318,6 +410,20 @@ footer a:hover{color:#fff}
   EGG.getSeason = function () { return seasonCur; };
   function sw(k) { return Math.max(0, 1 - Math.abs(seasonShow - k)); }   // season weight
   var gNightIdle = 0;
+  var _hr = new Date().getHours() + new Date().getMinutes() / 60;
+  // sun path: -1 at 07:00 (shadows west), 0 at 13:00, +1 at 19:00
+  var SUN = Math.max(-1, Math.min(1, (_hr - 13) / 6));
+  function groundShadow(x, w2, al) {
+    ctx.save();
+    ctx.translate(x + SUN * w2 * 0.9, H * 0.889);
+    ctx.scale(1, 0.18);
+    var sg2 = ctx.createRadialGradient(0, 0, 0, 0, 0, w2 * (1 + Math.abs(SUN) * 0.6));
+    sg2.addColorStop(0, "rgba(20,14,8," + al + ")");
+    sg2.addColorStop(1, "rgba(20,14,8,0)");
+    ctx.fillStyle = sg2;
+    ctx.beginPath(); ctx.arc(0, 0, w2 * (1 + Math.abs(SUN) * 0.6), 0, 6.284); ctx.fill();
+    ctx.restore();
+  }
   try { if (new URLSearchParams(location.search).get("night") === "1") gNightIdle = 1; } catch (e) {}
   var FORCE_NIGHT = gNightIdle === 1;
   var W = 0, H = 0, small = false;
@@ -375,6 +481,19 @@ footer a:hover{color:#fff}
   /* ------------------------------------------------------------ leaves */
   var LEAVES = [];
   var aoBlobs = [];
+  var aoCanvas = null;
+  function bakeAO() {
+    aoCanvas = document.createElement("canvas");
+    aoCanvas.width = W; aoCanvas.height = H;
+    var a2 = aoCanvas.getContext("2d");
+    aoBlobs.forEach(function (B) {
+      var g2 = a2.createRadialGradient(B.x, B.y, 0, B.x, B.y, B.r);
+      g2.addColorStop(0, "rgba(26,36,20,0.10)");
+      g2.addColorStop(1, "rgba(26,36,20,0)");
+      a2.fillStyle = g2;
+      a2.beginPath(); a2.arc(B.x, B.y, B.r, 0, 6.284); a2.fill();
+    });
+  }
   var N = 0;
 
   var GREENS = ["#5a7d4a", "#6b8f54", "#4c7040", "#7da05f", "#87a86a", "#5f8a4e"];
@@ -389,7 +508,7 @@ footer a:hover{color:#fff}
 
   function buildLeaves() {
     LEAVES.length = 0;
-    N = small ? 1000 : 2300;
+    N = small ? 950 : 2000;
     for (var i = 0; i < N; i++) {
       var tip = tips[(rnd() * tips.length) | 0];
       var spread = lerp(10, 62, rnd());
@@ -429,6 +548,8 @@ footer a:hover{color:#fff}
       var tp = tips[(rnd() * tips.length) | 0];
       aoBlobs.push({ x: tp.x, y: tp.y - 6, r: lerp(28, 56, rnd()) });
     }
+    bakeAO();
+    bakeSky();
   }
 
   /* -------------------------------------------------- trunk pre-render */
@@ -636,6 +757,7 @@ footer a:hover{color:#fff}
 
   /* -------------------------------------------------------------- draw */
   var lastP = 0;
+  var treeGrowT = 0;
 
   function draw(p, now) {
     lastP = p;
@@ -645,6 +767,7 @@ footer a:hover{color:#fff}
     var descend = smooth((p - 0.66) / 0.30);        // the camera goes underground
     var sk = skyColors(p);
     var camY = ease(descend) * H * 1.12;    // how deep the camera has gone
+    var night = Math.max(smooth((p - 0.52) / 0.3), gNightIdle * 0.9) * (1 - smooth((descend - 0.5) / 0.4));
 
     // sky
     // seasons tint the daylight, the idle night takes it over
@@ -662,14 +785,26 @@ footer a:hover{color:#fff}
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
+    var parX = pointer.x > 0 ? (pointer.x - W / 2) : 0;
     ctx.save();
     ctx.translate(0, -camY);
 
-    // far hills, two parallax planes
+    // far hills: deepest plane moves most against the cursor
+    ctx.save();
+    ctx.translate(-parX * 0.016, 0);
     ctx.fillStyle = rgb(sk.haze, 0.30);
     hill(H * 0.82, 26, 0.0009, 8);
     ctx.fillStyle = rgb(sk.haze, 0.45);
     hill(H * 0.865, 16, 0.0014, 40);
+    // depth haze: the far ground breathes
+    var fog = ctx.createLinearGradient(0, H * 0.76, 0, H * 0.885);
+    fog.addColorStop(0, rgb(sk.haze, 0));
+    fog.addColorStop(1, rgb(sk.haze, 0.30));
+    ctx.fillStyle = fog;
+    ctx.fillRect(-40, H * 0.76, W + 80, H * 0.13);
+    ctx.restore();
+    ctx.save();
+    ctx.translate(-parX * 0.005, 0);
 
     // ground: real soil from the first frame, so the descent has nowhere to jump
     ctx.drawImage(rootCanvas, 0, H * 0.885, W, H * 1.25);
@@ -679,41 +814,38 @@ footer a:hover{color:#fff}
     ctx.fillStyle = gg;
     ctx.fillRect(0, H * 0.875, W, H * 0.9 - H * 0.875 + 2);
 
-    // contact shadow under the trunk
-    ctx.save();
-    ctx.translate(W / 2, H * 0.918);
-    ctx.scale(1, 0.22);
-    var sh = ctx.createRadialGradient(0, 0, 0, 0, 0, 130);
-    sh.addColorStop(0, "rgba(20,14,8,.30)");
-    sh.addColorStop(1, "rgba(20,14,8,0)");
-    ctx.fillStyle = sh;
-    ctx.beginPath(); ctx.arc(0, 0, 130, 0, 6.284); ctx.fill();
-    ctx.restore();
+    // the tree's shadow follows the sun
+    groundShadow(W / 2, 150, 0.30 * (1 - Math.max(night, gNightIdle) * 0.7));
 
-    // trunk, with a whisper of sway
+    // trunk, with a whisper of sway (and, after a reseed, a visible growing)
+    var growS = treeGrowT ? smooth(Math.min(1, (now - treeGrowT) / 1800)) : 1;
     ctx.save();
     ctx.translate(W / 2, H * 0.92);
+    ctx.scale(0.15 + 0.85 * growS, 0.15 + 0.85 * growS);
     ctx.rotate(wind * 0.004 * (1 + gust));
     ctx.translate(-W / 2, -H * 0.92);
     ctx.drawImage(trunkCanvas, 0, 0, W, H);
     ctx.restore();
 
-    // canopy depth: soft occlusion blobs behind the back leaves, fading as leaves go
+    ctx.restore();
+    ctx.globalAlpha = 1;
+
+    // canopy depth: baked occlusion layer, faded as the leaves go
     var canopyAlive = 1 - smooth((p - 0.14) / 0.5);
-    if (canopyAlive > 0.02) {
-      ctx.save();
-      for (var ao = 0; ao < aoBlobs.length; ao++) {
-        var B = aoBlobs[ao];
-        var g2 = ctx.createRadialGradient(B.x, B.y, 0, B.x, B.y, B.r);
-        g2.addColorStop(0, "rgba(26,36,20," + (0.10 * canopyAlive) + ")");
-        g2.addColorStop(1, "rgba(26,36,20,0)");
-        ctx.fillStyle = g2;
-        ctx.beginPath(); ctx.arc(B.x, B.y, B.r, 0, 6.284); ctx.fill();
-      }
-      ctx.restore();
+    if (canopyAlive > 0.02 && aoCanvas) {
+      ctx.globalAlpha = canopyAlive;
+      ctx.drawImage(aoCanvas, 0, 0, W, H);
+      ctx.globalAlpha = 1;
     }
 
     // leaves, back depth first
+    ctx.save();
+    if (growS < 1) {
+      ctx.translate(W / 2, H * 0.92);
+      ctx.scale(0.15 + 0.85 * growS, 0.15 + 0.85 * growS);
+      ctx.translate(-W / 2, -H * 0.92);
+      ctx.globalAlpha = growS;
+    }
     for (var pass = 0; pass < 2; pass++) {
       for (var i = 0; i < N; i++) {
         var L = LEAVES[i];
@@ -723,21 +855,30 @@ footer a:hover{color:#fff}
     }
 
     ctx.restore();
+    ctx.restore();
 
-    // stars, arriving with the night
-    var night = Math.max(smooth((p - 0.52) / 0.3), gNightIdle * 0.9) * (1 - smooth((descend - 0.5) / 0.4));
-    if (night > 0) {
-      var sr = mulberry(77);
-      ctx.fillStyle = "rgba(232,236,246," + (0.75 * night) + ")";
-      for (var st = 0; st < 90; st++) {
-        var sx = sr() * W, sy = sr() * H * 0.55, ss = sr();
-        if (ss > 0.86) { ctx.fillRect(sx, sy, 1.6, 1.6); }
-        else if (ss > 0.45) { ctx.globalAlpha = night * 0.5; ctx.fillRect(sx, sy, 1, 1); ctx.globalAlpha = 1; }
-      }
+    // stars, arriving with the night: one baked field, faded in
+    if (night > 0.01 && starField) {
+      ctx.globalAlpha = night;
+      ctx.drawImage(starField, 0, 0);
+      ctx.globalAlpha = 1;
+    }
+
+    // foreground grass: a darker strip in front of the trunk line
+    var fgVis = 1 - smooth(descend * 1.35);
+    if (fgVis > 0.02 && grassFrames.length) {
+      ctx.save();
+      ctx.globalAlpha = fgVis * 0.9;
+      ctx.filter = "brightness(0.75)";
+      var gfF = grassFrames[(((now * 0.001) * 2) | 0) % 3];
+      ctx.drawImage(gfF, 0, H * 0.892 - 21, W, 21 * 1.15);
+      ctx.filter = "none";
+      ctx.globalAlpha = 1;
+      ctx.restore();
     }
 
     drawCreatures(now * 0.001, descend, camY);
-    drawExtras(now * 0.001, p, descend, camY, night, gust);
+    drawExtras(now * 0.001, p, descend, camY, night, gust, wind);
 
     // dusk vignette + grain
     var v = ctx.createRadialGradient(W / 2, H * 0.45, H * 0.3, W / 2, H * 0.5, H * 0.95);
@@ -820,8 +961,8 @@ footer a:hover{color:#fff}
     ctx.quadraticCurveTo(sz * 0.7, -sz * 0.2, 0, sz);
     ctx.quadraticCurveTo(-sz * 0.7, -sz * 0.2, 0, -sz);
     ctx.fill();
-    // midrib
-    if (sz > 4.5) {
+    // midrib, only where it can be seen
+    if (front && sz > 5.6) {
       ctx.strokeStyle = "rgba(0,0,0,.18)";
       ctx.lineWidth = 0.6;
       ctx.beginPath(); ctx.moveTo(0, -sz * 0.8); ctx.lineTo(0, sz * 0.8); ctx.stroke();
@@ -841,9 +982,10 @@ footer a:hover{color:#fff}
     var y0 = H * 0.885;
     for (var i = 0; i <= 60; i++) {
       var u = i / 60;
+      // the empty lower-left corner is theirs: in from the edge, down and around
       antPath.push({
-        x: W * 0.18 + u * W * 0.64 + Math.sin(u * 5.2) * W * 0.05,
-        y: y0 + H * 0.62 + Math.sin(u * 8.5 + 1.3) * H * 0.035
+        x: W * 0.03 + u * W * 0.34 + Math.sin(u * 4.2) * W * 0.03,
+        y: y0 + H * 0.78 + Math.sin(u * 7.5 + 1.3) * H * 0.05 + u * H * 0.06
       });
     }
   }
@@ -906,7 +1048,7 @@ footer a:hover{color:#fff}
     if (cyc > 0.30 && cyc < 0.42) up = smooth((cyc - 0.30) / 0.12);
     else if (cyc >= 0.42 && cyc < 0.62) up = 1;
     else if (cyc >= 0.62 && cyc < 0.72) up = 1 - smooth((cyc - 0.62) / 0.10);
-    EGG.moleRect = up > 0.4 ? { x: mx - 20, y: my - 30 - camY + 0, w: 40, h: 44, camY: camY } : null;
+    EGG.moleRect = up > 0.4 ? { x: mx - 30, y: my - 44 - camY, w: 60, h: 58 } : null;
     if (EGG.moleBurst > 0) EGG.moleBurst -= 0.02;
     if (up > 0) {
       var mound = smooth(Math.min(1, up * 1.4));
@@ -923,68 +1065,74 @@ footer a:hover{color:#fff}
         ctx.arc(mx + Math.sin(sp2 * 2.7) * 26 * mound, my + 3 + Math.cos(sp2 * 1.9) * 4, 1.1, 0, 6.284);
         ctx.fill();
       }
-      var rise = up * 26;
+      var rise = up * 30;
       ctx.save();
-      ctx.translate(mx, my + 4 - rise);
-      var sniff = up === 1 ? Math.sin(t * 6) : 0;
-      ctx.rotate(sniff * 0.04);
+      ctx.translate(mx, my + 6 - rise);
+      ctx.scale(1.45, 1.45);
+      var sniff = up === 1 ? Math.sin(t * 5.2) : 0;
+      ctx.rotate(sniff * 0.05);
 
-      // body: velvet fur, round back, gradient like light from above
-      var bg2 = ctx.createRadialGradient(0, -2, 2, 0, 4, 20);
-      bg2.addColorStop(0, "rgba(74,62,52," + vis + ")");
-      bg2.addColorStop(0.7, "rgba(48,39,31," + vis + ")");
-      bg2.addColorStop(1, "rgba(30,23,17," + vis + ")");
+      /* a European mole, seen from the front, half out of his hill:
+         velvet pear of a body, pink pointed snout, huge pale hands */
+      // body silhouette
+      var bg2 = ctx.createLinearGradient(0, -22, 0, 10);
+      bg2.addColorStop(0, "rgba(66,55,46," + vis + ")");
+      bg2.addColorStop(0.55, "rgba(48,39,32," + vis + ")");
+      bg2.addColorStop(1, "rgba(32,25,19," + vis + ")");
       ctx.fillStyle = bg2;
       ctx.beginPath();
-      ctx.moveTo(-15, 10);
-      ctx.quadraticCurveTo(-16, -8, 0, -12);
-      ctx.quadraticCurveTo(16, -8, 15, 10);
+      ctx.moveTo(-13, 10);
+      ctx.bezierCurveTo(-15, -6, -10, -18, 0, -20);
+      ctx.bezierCurveTo(10, -18, 15, -6, 13, 10);
       ctx.closePath(); ctx.fill();
-      // fur: a few soft strokes following the back
-      ctx.strokeStyle = "rgba(20,15,10," + (0.35 * vis) + ")";
-      ctx.lineWidth = 0.7;
-      for (var fr = -2; fr <= 2; fr++) {
-        ctx.beginPath();
-        ctx.moveTo(fr * 5, -10 + Math.abs(fr));
-        ctx.quadraticCurveTo(fr * 5.5, -2, fr * 6, 8);
-        ctx.stroke();
-      }
-      // the snout: pink, twitching, with nostrils
-      var sy2 = -12 + sniff * 0.8;
-      ctx.fillStyle = "rgba(214,150,132," + vis + ")";
+      // velvet sheen along the crown
+      ctx.strokeStyle = "rgba(120,104,90," + (0.35 * vis) + ")";
+      ctx.lineWidth = 1.4; ctx.lineCap = "round";
       ctx.beginPath();
-      ctx.moveTo(-3.4, sy2 + 3);
-      ctx.quadraticCurveTo(0, sy2 - 3.4 - sniff * 0.6, 3.4, sy2 + 3);
-      ctx.quadraticCurveTo(0, sy2 + 5, -3.4, sy2 + 3);
-      ctx.fill();
-      ctx.fillStyle = "rgba(140,84,72," + vis + ")";
-      ctx.beginPath(); ctx.arc(-1.1, sy2 + 0.6, 0.55, 0, 6.284); ctx.fill();
-      ctx.beginPath(); ctx.arc(1.1, sy2 + 0.6, 0.55, 0, 6.284); ctx.fill();
-      // whiskers
-      ctx.strokeStyle = "rgba(210,196,176," + (0.55 * vis) + ")";
-      ctx.lineWidth = 0.5;
+      ctx.moveTo(-7, -14);
+      ctx.quadraticCurveTo(0, -19, 7, -14);
+      ctx.stroke();
+      // the snout: a soft pink cone, always working
+      var sn2 = sniff * 0.8;
+      ctx.fillStyle = "rgba(216,154,136," + vis + ")";
+      ctx.beginPath();
+      ctx.moveTo(-3.2, -13.5);
+      ctx.quadraticCurveTo(0, -22 - sn2, 3.2, -13.5);
+      ctx.quadraticCurveTo(0, -11.5, -3.2, -13.5);
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "rgba(150,92,80," + vis + ")";
+      ctx.beginPath(); ctx.ellipse(-1, -17.4 - sn2 * 0.6, 0.55, 0.8, -0.2, 0, 6.284); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(1, -17.4 - sn2 * 0.6, 0.55, 0.8, 0.2, 0, 6.284); ctx.fill();
+      // whiskers, three a side, fine and pale
+      ctx.strokeStyle = "rgba(214,200,182," + (0.6 * vis) + ")";
+      ctx.lineWidth = 0.45;
       for (var wk = 0; wk < 3; wk++) {
-        var wy = sy2 + 1.5 + wk * 1.3, wl = 9 - wk;
-        ctx.beginPath(); ctx.moveTo(-3, wy); ctx.lineTo(-3 - wl, wy - 1 + wk * 0.8); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(3, wy); ctx.lineTo(3 + wl, wy - 1 + wk * 0.8); ctx.stroke();
+        var wy2 = -15 + wk * 1.5;
+        ctx.beginPath(); ctx.moveTo(-2.6, wy2); ctx.quadraticCurveTo(-8, wy2 - 1 + wk, -11 + wk, wy2 - 2 + wk * 1.4); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(2.6, wy2); ctx.quadraticCurveTo(8, wy2 - 1 + wk, 11 - wk, wy2 - 2 + wk * 1.4); ctx.stroke();
       }
-      // eyes: nearly blind, nearly hidden in fur
-      ctx.fillStyle = "rgba(8,6,4," + (0.8 * vis) + ")";
-      ctx.beginPath(); ctx.arc(-4.6, -7, 0.7, 0, 6.284); ctx.fill();
-      ctx.beginPath(); ctx.arc(4.6, -7, 0.7, 0, 6.284); ctx.fill();
-      // digging paws: broad, pale, turned outward, with claws
+      // eyes: two sleepy stitches, moles barely use them
+      ctx.strokeStyle = "rgba(10,7,5," + (0.85 * vis) + ")";
+      ctx.lineWidth = 0.9;
+      ctx.beginPath(); ctx.arc(-4.6, -12.4, 1.2, 0.3, 2.6); ctx.stroke();
+      ctx.beginPath(); ctx.arc(4.6, -12.4, 1.2, 0.5, 2.9); ctx.stroke();
+      // the famous hands: broad, pale, turned out, resting on the rim
       [-1, 1].forEach(function (sd) {
         ctx.save();
-        ctx.translate(sd * 13, 2 - (1 - up) * 4);
-        ctx.rotate(sd * 0.9);
-        ctx.fillStyle = "rgba(206,164,140," + vis + ")";
-        ctx.beginPath(); ctx.ellipse(0, 0, 4.6, 3.2, 0, 0, 6.284); ctx.fill();
-        ctx.strokeStyle = "rgba(238,226,208," + (0.9 * vis) + ")";
-        ctx.lineWidth = 1;
-        for (var cl = -1; cl <= 1; cl++) {
+        ctx.translate(sd * 11.5, 4 - (1 - up) * 5);
+        ctx.rotate(sd * 1.15);
+        var hg = ctx.createRadialGradient(0, 0, 0, 0, 0, 5.5);
+        hg.addColorStop(0, "rgba(222,182,158," + vis + ")");
+        hg.addColorStop(1, "rgba(196,152,126," + vis + ")");
+        ctx.fillStyle = hg;
+        ctx.beginPath(); ctx.ellipse(0, 0, 5, 3.6, 0, 0, 6.284); ctx.fill();
+        // five stubby claws
+        ctx.strokeStyle = "rgba(238,228,212," + (0.95 * vis) + ")";
+        ctx.lineWidth = 1.1; ctx.lineCap = "round";
+        for (var cl = -2; cl <= 2; cl++) {
           ctx.beginPath();
           ctx.moveTo(cl * 1.7, -2.4);
-          ctx.lineTo(cl * 2.3, -5.2);
+          ctx.lineTo(cl * 2.1, -5.4);
           ctx.stroke();
         }
         ctx.restore();
@@ -1005,7 +1153,50 @@ footer a:hover{color:#fff}
   }
 
   /* ---------------------------------------------- eggs drawn by the film */
+  var puffs = [];
+  function puff(x, y, kind) {
+    for (var i = 0; i < 16; i++) {
+      puffs.push({ x: x + (Math.random() - 0.5) * 20, y: y - 4,
+        vx: (Math.random() - 0.5) * 160, vy: -Math.random() * 210 - 40,
+        t0: performance.now() / 1000, kind: kind, ph: Math.random() * 6.28 });
+    }
+  }
   var flies = [];             // fireflies
+  var starField = null, moonSprite = null;
+  function bakeSky() {
+    starField = document.createElement("canvas");
+    starField.width = W; starField.height = (H * 0.6) | 0;
+    var sf = starField.getContext("2d");
+    var sr = mulberry(77);
+    for (var st = 0; st < 90; st++) {
+      var sx = sr() * W, sy = sr() * H * 0.55, ss = sr();
+      sf.fillStyle = ss > 0.86 ? "rgba(232,236,246,.8)" : "rgba(232,236,246,.45)";
+      sf.fillRect(sx, sy, ss > 0.86 ? 1.6 : 1, ss > 0.86 ? 1.6 : 1);
+    }
+    moonSprite = document.createElement("canvas");
+    moonSprite.width = 200; moonSprite.height = 200;
+    var mc = moonSprite.getContext("2d");
+    var mg = mc.createRadialGradient(100, 100, 0, 100, 100, 95);
+    mg.addColorStop(0, "rgba(240,238,224,.18)");
+    mg.addColorStop(1, "rgba(240,238,224,0)");
+    mc.fillStyle = mg; mc.fillRect(0, 0, 200, 200);
+    mc.fillStyle = "rgba(240,238,226,.85)";
+    mc.beginPath(); mc.arc(100, 100, 20, 0, 6.284); mc.fill();
+    mc.fillStyle = "rgba(210,208,196,.5)";
+    mc.beginPath(); mc.arc(94, 96, 4, 0, 6.284); mc.fill();
+    mc.beginPath(); mc.arc(107, 106, 2.6, 0, 6.284); mc.fill();
+  }
+  var flySprite = (function () {
+    var c2 = document.createElement("canvas");
+    c2.width = 24; c2.height = 24;
+    var f3 = c2.getContext("2d");
+    var g5 = f3.createRadialGradient(12, 12, 0, 12, 12, 11);
+    g5.addColorStop(0, "rgba(226,210,120,.9)");
+    g5.addColorStop(1, "rgba(226,210,120,0)");
+    f3.fillStyle = g5;
+    f3.fillRect(0, 0, 24, 24);
+    return c2;
+  })();
   var idleSince = performance.now();
   var pointer = { x: -100, y: -100 };
   window.addEventListener("mousemove", function(e){ pointer.x = e.clientX; pointer.y = e.clientY; idleSince = performance.now(); }, { passive:true });
@@ -1014,19 +1205,43 @@ footer a:hover{color:#fff}
   var bird = { state: 0, t0: 0, next: 18 };   // 0 away, 1 flying in, 2 perched, 3 leaving
   var perch = null;
 
-  /* grass tufts along the ground line, swaying, seasonal */
-  var grass = [];
+  /* grass, pre-rendered in three sway phases per season blend */
+  var grassFrames = [];
+  var grassSeasonKey = -1;
   function buildGrass() {
-    grass.length = 0;
-    var gr2 = mulberry(4242);
-    for (var i = 0; i < 70; i++) {
-      grass.push({ x: gr2() * W, h: 5 + gr2() * 9, ph: gr2() * 6.28, blades: 3 + (gr2() * 3 | 0) });
+    grassFrames.length = 0;
+    var gwin = sw(3), gaut = sw(2);
+    grassSeasonKey = Math.round(seasonShow * 10);
+    var gr3 = lerp(96, 168, gaut * 0.5 + gwin * 0.6) | 0;
+    var gg3 = lerp(122, 148, gwin * 0.7) | 0;
+    var gb3 = lerp(66, 128, gwin * 0.8) | 0;
+    for (var f2 = 0; f2 < 3; f2++) {
+      var cv2 = document.createElement("canvas");
+      cv2.width = W; cv2.height = 22;
+      var g4 = cv2.getContext("2d");
+      g4.strokeStyle = "rgba(" + gr3 + "," + gg3 + "," + gb3 + ",.75)";
+      g4.lineWidth = 1;
+      var gr2 = mulberry(4242);
+      for (var i = 0; i < 46; i++) {
+        var gx5 = gr2() * W, gh5 = 5 + gr2() * 8, gph = gr2() * 6.28;
+        for (var bl = 0; bl < 3; bl++) {
+          var bx = gx5 + bl * 2 - 3;
+          var lean = Math.sin(f2 / 3 * 6.28 + gph + bl) * 2.4;
+          g4.beginPath();
+          g4.moveTo(bx, 21);
+          g4.quadraticCurveTo(bx + lean * 0.4, 21 - gh5 * 0.6, bx + lean, 21 - gh5);
+          g4.stroke();
+        }
+      }
+      grassFrames.push(cv2);
     }
   }
 
   /* the man himself: curly hair, unhurried, and at home here */
   var GUY = { state: "away", t0: 0, next: 6, x: -40, targetX: 0,
-              outfit: null, prop: null, bubble: 0, lookUp: 0 };
+              outfit: null, prop: null, bubble: 0, lookUp: 0,
+              wet: false, whistleAt: 20, notes: 0, hangTip: null };
+  var CAUGHT = null;   // a leaf snatched from the air
   var BIKE = { present: true, x: 0, leanA: 0.14, gone: 0, back: false };
   var HOUSE = { doorOpen: 0 };
   var RAIN = { on: 0, until: 0 };
@@ -1041,49 +1256,69 @@ footer a:hover{color:#fff}
   var BIRTHDAY = _dd.getMonth() === 10 && _dd.getDate() === 5;
 
   function guyGround() { return H * 0.888; }
-  function houseX() { return W * 0.868; }
+  function houseX() { return W * 0.858; }
 
   function drawHouse(t, night2) {
     var hx = houseX(), hy = guyGround();
     ctx.save();
     ctx.translate(hx, hy);
+    ctx.scale(1.45, 1.45);
     // chimney smoke: only when the fire would be lit
     if (sw(3) > 0.4 || night2 > 0.3) {
       for (var sm = 0; sm < 3; sm++) {
         var st2 = (t * 0.24 + sm * 0.33) % 1;
         ctx.fillStyle = "rgba(200,195,185," + (0.20 * (1 - st2)) + ")";
         ctx.beginPath();
-        ctx.arc(16 + Math.sin(st2 * 5 + sm) * 4, -58 - st2 * 26, 3 + st2 * 5, 0, 6.284);
+        ctx.arc(28 + Math.sin(st2 * 5 + sm) * 6, -102 - st2 * 34, 4 + st2 * 7, 0, 6.284);
         ctx.fill();
       }
     }
-    // walls: warm timber
+    // walls: warm timber, sized for the man who lives here
     ctx.fillStyle = "#5c452e";
-    ctx.fillRect(-26, -40, 52, 40);
+    ctx.fillRect(-46, -72, 92, 72);
     ctx.strokeStyle = "rgba(30,20,12,.4)"; ctx.lineWidth = 1;
-    for (var pl = 1; pl < 4; pl++) { ctx.beginPath(); ctx.moveTo(-26, -40 + pl * 10); ctx.lineTo(26, -40 + pl * 10); ctx.stroke(); }
-    // roof
+    for (var pl = 1; pl < 6; pl++) { ctx.beginPath(); ctx.moveTo(-46, -72 + pl * 12); ctx.lineTo(46, -72 + pl * 12); ctx.stroke(); }
+    // roof, with an overhang
     ctx.fillStyle = "#33261a";
-    ctx.beginPath(); ctx.moveTo(-32, -40); ctx.lineTo(0, -62); ctx.lineTo(32, -40); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-56, -72); ctx.lineTo(0, -108); ctx.lineTo(56, -72); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "rgba(20,14,9,.5)";
+    ctx.fillRect(-56, -74, 112, 3);
     // chimney
     ctx.fillStyle = "#4a3826";
-    ctx.fillRect(12, -58, 8, 14);
-    // door, hinged left, opens as he passes
+    ctx.fillRect(22, -102, 12, 24);
+    ctx.fillStyle = "#3a2b1c";
+    ctx.fillRect(20, -104, 16, 4);
+    // door, hinged left, tall enough for him
     ctx.save();
-    ctx.translate(-8, 0);
+    ctx.translate(-16, 0);
     ctx.rotate(-HOUSE.doorOpen * 1.1);
     ctx.fillStyle = "#3a2b1c";
-    ctx.fillRect(0, -22, 13, 22);
+    ctx.fillRect(0, -44, 22, 44);
+    ctx.strokeStyle = "rgba(20,14,9,.5)"; ctx.lineWidth = 1;
+    ctx.strokeRect(1.5, -42.5, 19, 42.5);
     ctx.fillStyle = "#c9a05a";
-    ctx.beginPath(); ctx.arc(10.5, -11, 1.1, 0, 6.284); ctx.fill();
+    ctx.beginPath(); ctx.arc(18, -22, 1.6, 0, 6.284); ctx.fill();
     ctx.restore();
+    // doorstep
+    ctx.fillStyle = "#4a3826";
+    ctx.fillRect(-20, -1, 30, 3);
     // round window, lit when the day is done
     var lit = Math.max(night2, sw(3) * 0.25);
     ctx.fillStyle = lit > 0.25 ? "rgba(232,176,84," + (0.55 + lit * 0.4) + ")" : "rgba(40,32,24,.9)";
-    ctx.beginPath(); ctx.arc(13, -28, 5, 0, 6.284); ctx.fill();
-    ctx.strokeStyle = "#2c2014"; ctx.lineWidth = 1.4;
-    ctx.beginPath(); ctx.arc(13, -28, 5, 0, 6.284); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(8, -28); ctx.lineTo(18, -28); ctx.moveTo(13, -33); ctx.lineTo(13, -23); ctx.stroke();
+    ctx.beginPath(); ctx.arc(24, -50, 8.5, 0, 6.284); ctx.fill();
+    ctx.strokeStyle = "#2c2014"; ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.arc(24, -50, 8.5, 0, 6.284); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(15.5, -50); ctx.lineTo(32.5, -50); ctx.moveTo(24, -58.5); ctx.lineTo(24, -41.5); ctx.stroke();
+    // a lantern by the door at night
+    if (night2 > 0.3) {
+      var lg3 = ctx.createRadialGradient(-24, -34, 0, -24, -34, 14);
+      lg3.addColorStop(0, "rgba(232,176,84," + (0.35 * night2) + ")");
+      lg3.addColorStop(1, "rgba(232,176,84,0)");
+      ctx.fillStyle = lg3;
+      ctx.beginPath(); ctx.arc(-24, -34, 14, 0, 6.284); ctx.fill();
+      ctx.fillStyle = "#241a10"; ctx.fillRect(-26, -38, 4, 6);
+      ctx.fillStyle = "#e8b054"; ctx.fillRect(-25.2, -36.8, 2.4, 3.4);
+    }
     ctx.restore();
   }
 
@@ -1179,7 +1414,36 @@ footer a:hover{color:#fff}
       }
       // arms
       ctx.strokeStyle = armCol; ctx.lineWidth = 2.6;
-      if (mode === "crouch") {
+      if (mode === "held") {
+        // dangling from the visitor's hand: arms up, legs kicking
+        ctx.strokeStyle = trouser; ctx.lineWidth = 3; ctx.lineCap = "round";
+        var kick = Math.sin(t * 11);
+        ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(-3 + kick * 2, -9); ctx.lineTo(-2 + kick * 3.4, 1); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(3 - kick * 2, -9); ctx.lineTo(2 - kick * 3.4, 1); ctx.stroke();
+        ctx.strokeStyle = coat; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(0, -31); ctx.stroke();
+        ctx.strokeStyle = armCol; ctx.lineWidth = 2.6;
+        ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(-5, -36); ctx.lineTo(-6, -42); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(5, -36); ctx.lineTo(6, -42); ctx.stroke();
+      } else if (mode === "flat") {
+        // face down in the grass, recovering his dignity
+        ctx.strokeStyle = coat; ctx.lineWidth = 5; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(-12, -3); ctx.lineTo(2, -3); ctx.stroke();
+        ctx.strokeStyle = trouser; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(2, -3); ctx.lineTo(10, -2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(2, -3); ctx.lineTo(11, -4); ctx.stroke();
+        ctx.strokeStyle = armCol; ctx.lineWidth = 2.6;
+        ctx.beginPath(); ctx.moveTo(-10, -3); ctx.lineTo(-16, -1); ctx.stroke();
+        ctx.fillStyle = skin;
+        ctx.beginPath(); ctx.arc(-15, -5, 4.2, 0, 6.284); ctx.fill();
+        ctx.fillStyle = hair;
+        for (var c4 = 0; c4 < 5; c4++) {
+          var ca4 = 1.6 + c4 * 0.55;
+          ctx.beginPath(); ctx.arc(-15 + Math.cos(ca4) * 4, -5.6 + Math.sin(ca4) * 4, 2.1, 0, 6.284); ctx.fill();
+        }
+        ctx.restore();
+        return;
+      } else if (mode === "crouch") {
         // bent over, hands at the ground: the working pose
         ctx.strokeStyle = coat; ctx.lineWidth = 5;
         ctx.beginPath(); ctx.moveTo(0, -20); ctx.quadraticCurveTo(4, -27, 10, -26); ctx.stroke();
@@ -1211,9 +1475,15 @@ footer a:hover{color:#fff}
       ctx.fillStyle = skin;
       ctx.beginPath(); ctx.arc(0, 0, 4.6, 0, 6.284); ctx.fill();
       ctx.fillStyle = hair;
-      for (var c3 = 0; c3 < 7; c3++) {
-        var ca2 = -3.0 + c3 * 0.44;
-        ctx.beginPath(); ctx.arc(Math.cos(ca2) * 4.4, -0.8 + Math.sin(ca2) * 4.4, 2.2, 0, 6.284); ctx.fill();
+      if (GUY.wet) {
+        // rain won: the curls give up
+        ctx.beginPath(); ctx.arc(0, -1.4, 4.9, Math.PI, 0); ctx.fill();
+        ctx.fillRect(-4.9, -1.4, 9.8, 1.8);
+      } else {
+        for (var c3 = 0; c3 < 7; c3++) {
+          var ca2 = -3.0 + c3 * 0.44;
+          ctx.beginPath(); ctx.arc(Math.cos(ca2) * 4.4, -0.8 + Math.sin(ca2) * 4.4, 2.2, 0, 6.284); ctx.fill();
+        }
       }
       if (prop === "party") {                      // the birthday hat
         ctx.fillStyle = "#c2452e";
@@ -1265,7 +1535,7 @@ footer a:hover{color:#fff}
     ctx.restore();
   }
 
-  function drawExtras(t, p, descend, camY, night, gust) {
+  function drawExtras(t, p, descend, camY, night, gust, wind) {
     if (reduced) return;
 
     /* snow, in real winter, while the tree still stands */
@@ -1290,40 +1560,36 @@ footer a:hover{color:#fff}
       }
     }
 
-    /* grass, swaying with the wind, coloured by the season */
-    if (p < 0.995) {
-      var gy3 = H * 0.888;
-      for (var gi2 = 0; gi2 < grass.length; gi2++) {
-        var G = grass[gi2];
-        var gwin = sw(3), gaut = sw(2);
-        var gr3 = lerp(96, 168, gaut * 0.5 + gwin * 0.6) | 0;
-        var gg3 = lerp(122, 148, gwin * 0.7) | 0;
-        var gb3 = lerp(66, 128, gwin * 0.8) | 0;
-        ctx.strokeStyle = "rgba(" + gr3 + "," + gg3 + "," + gb3 + ",.75)";
-        ctx.lineWidth = 1;
-        for (var bl = 0; bl < G.blades; bl++) {
-          var bx = G.x + bl * 2 - G.blades;
-          var lean = Math.sin(t * 1.6 + G.ph + bl) * 2.2 * (0.5 + gust);
-          ctx.beginPath();
-          ctx.moveTo(bx, gy3);
-          ctx.quadraticCurveTo(bx + lean * 0.4, gy3 - G.h * 0.6, bx + lean, gy3 - G.h - bl % 2 * 2);
-          ctx.stroke();
-        }
+    /* grass: three baked sway frames, cycled */
+    var groundVis = 1 - smooth(descend * 1.35);
+    if (groundVis > 0.02) {
+      if (Math.round(seasonShow * 10) !== grassSeasonKey) buildGrass();
+      var gf = grassFrames[((t * (1.5 + gust * 2)) | 0) % 3];
+      if (gf) {
+        ctx.globalAlpha = groundVis;
+        ctx.drawImage(gf, 0, H * 0.888 - 21);
+        ctx.globalAlpha = 1;
       }
     }
 
     /* the red bicycle, leaning on the trunk, waiting */
-    if (BIKE.present && p < 0.55) {
-      BIKE.x = W * 0.5 - 68;
-      drawBike(BIKE.x, guyGround() - 10, BIKE.leanA, 0, Math.min(1, (0.55 - p) * 8));
+    BIKE.x = W * 0.5 - 68;
+    if (BIKE.present && groundVis > 0.02 && GUY.state !== "ride" && GUY.state !== "rideBack") {
+      ctx.globalAlpha = groundVis; groundShadow(BIKE.x, 30, 0.18); ctx.globalAlpha = 1;
+      drawBike(BIKE.x, guyGround() - 10, BIKE.leanA, 0, groundVis);
       EGG.bikeRect = { x: BIKE.x - 28, y: guyGround() - 34, w: 56, h: 40 };
     } else EGG.bikeRect = null;
 
     EGG.trunkRect = p < 0.4 ? { x: W * 0.5 - 22, y: H * 0.55, w: 44, h: H * 0.33 } : null;
-    EGG.antRect = (descend > 0.2) ? { x: W * 0.18, y: H * 0.885 + H * 0.62 - camY - 14, w: W * 0.64, h: 30 } : null;
+    EGG.antRect = (descend > 0.2) ? { x: W * 0.03, y: H * 0.885 + H * 0.78 - camY - 20, w: W * 0.37, h: H * 0.14 } : null;
 
     /* his house, before him */
-    if (p < 0.55) drawHouse(t, Math.max(night, gNightIdle));
+    if (groundVis > 0.02) {
+      ctx.globalAlpha = groundVis;
+      groundShadow(houseX(), 95, 0.22);
+      drawHouse(t, Math.max(night, gNightIdle));
+      ctx.globalAlpha = 1;
+    }
     HOUSE.doorOpen += ((GUY.state === "enterHouse" || GUY.state === "exitHouse" ? 1 : 0) - HOUSE.doorOpen) * 0.12;
 
     /* weather he answers to */
@@ -1347,7 +1613,8 @@ footer a:hover{color:#fff}
     }
 
     /* the snowman he built, if winter kept it */
-    if (SNOWMAN.stage > 0 && sw(3) > 0.2) {
+    if (SNOWMAN.stage > 0 && sw(3) > 0.2 && groundVis > 0.02) {
+      ctx.globalAlpha = groundVis;
       var smx = SNOWMAN.x, smy = guyGround();
       ctx.fillStyle = "#e8e9ea";
       if (SNOWMAN.stage >= 1) { ctx.beginPath(); ctx.arc(smx, smy - 9, 10, 0, 6.284); ctx.fill(); }
@@ -1364,8 +1631,9 @@ footer a:hover{color:#fff}
         ctx.beginPath(); ctx.moveTo(smx - 5, smy - 30); ctx.lineTo(smx + 5, smy - 30); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(smx + 4, smy - 29); ctx.lineTo(smx + 5.5, smy - 23); ctx.stroke();
       }
+      ctx.globalAlpha = 1;
     } else if (sw(3) < 0.1) SNOWMAN.stage = 0;   // spring takes it, quietly
-    EGG.snowRect = (sw(3) > 0.4 && SNOWMAN.stage === 0 && p < 0.4)
+    EGG.snowRect = (sw(3) > 0.4 && SNOWMAN.stage === 0 && groundVis > 0.4)
       ? { x: W * 0.24 - 20, y: guyGround() - 16, w: 40, h: 18 } : null;
     if (EGG.snowRect) {   // the mound waiting to become someone
       ctx.fillStyle = "rgba(232,233,235,.85)";
@@ -1373,6 +1641,7 @@ footer a:hover{color:#fff}
     }
 
     /* saplings, from planted acorns */
+    ctx.globalAlpha = groundVis;
     SAPLING.forEach(function (S) {
       var age = Math.min(1, (t - S.t0) / 4);
       ctx.strokeStyle = "#4a6a3a"; ctx.lineWidth = 1.4;
@@ -1384,6 +1653,8 @@ footer a:hover{color:#fff}
         ctx.beginPath(); ctx.ellipse(S.x + 3, guyGround() - 13 * age, 3.4, 1.8, 0.5, 0, 6.284); ctx.fill();
       }
     });
+
+    ctx.globalAlpha = 1;
 
     /* the acorn a squirrel dropped */
     if (ACORN) {
@@ -1476,17 +1747,32 @@ footer a:hover{color:#fff}
       }
     }
 
-    /* the man: a life, not a loop */
-    if (p < 0.5) {
+    /* the man: his life runs whether you watch or not; only the drawing fades */
+    {
       var gy4 = guyGround();
+      var guyVis = groundVis;
+      ctx.globalAlpha = guyVis;
+      if (GUY.state !== "away" && GUY.state !== "home" && GUY.state !== "held" && GUY.state !== "falling")
+        groundShadow(GUY.x, 22, 0.20);
       if (GUY.outfit === null) GUY.outfit = seasonCur;
       var wantsChange = GUY.outfit !== seasonCur;
       var rainingHere = RAIN.on > 0.3;
       GUY.prop = null;
-      if (rainingHere && GUY.state !== "enterHouse" && GUY.state !== "home") GUY.prop = "umbrella";
+      if (rainingHere && !GUY.wet && GUY.state !== "enterHouse" && GUY.state !== "home") GUY.prop = "umbrella";
+      if (RAIN.on < 0.1) GUY.wet = false;
       if (ECLIPSE > 0.1) GUY.prop = "lantern";
       if (BIRTHDAY) GUY.prop = GUY.prop || "party";
 
+      // watchdog: no state may hold him hostage
+      if (GUY.state !== "away" && GUY.state !== "home" && GUY.state !== "held") {
+        if (!GUY.stateT || GUY.lastState !== GUY.state) { GUY.stateT = t; GUY.lastState = GUY.state; }
+        else if (t - GUY.stateT > 26) { GUY.state = "walkout"; GUY.stateT = t; }
+      }
+      var stillFor = (performance.now() - idleSince) / 1000;
+      if (stillFor > 120 && gNightIdle < 0.4 &&
+          (GUY.state === "wave" || GUY.state === "stand" || GUY.state === "walkout" || GUY.state === "walkin")) {
+        GUY.state = "goDoze";
+      }
       if (GUY.state === "away" && t > GUY.next && gNightIdle < 0.5) {
         GUY.state = "walkin"; GUY.x = -30;
         var windy2 = Math.abs(wind) > 0.45 && gust > 0.2;
@@ -1500,6 +1786,10 @@ footer a:hover{color:#fff}
       if (wantsChange && (GUY.state === "wave" || GUY.state === "stand")) GUY.state = "goHome";
 
       var spd = 0.0165;
+      if (!GUY.lastT) GUY.lastT = t;
+      var dt2 = Math.min(0.05, t - GUY.lastT);
+      GUY.lastT = t;
+      spd = dt2;
       switch (GUY.state) {
         case "walkin":
           GUY.x += 42 * spd;
@@ -1509,7 +1799,12 @@ footer a:hover{color:#fff}
         case "wave":
           drawGuy(GUY.x, gy4, t, GUY.mode2 === "kite" ? "stand" : "wave", GUY.outfit,
                   GUY.mode2 === "kite" ? "kite" : GUY.prop);
-          if (GUY.bubble > t && GUY.mode2 !== "kite") drawBubble(GUY.x, gy4 - 66, "Hi, I\u2019m Kerem.");
+          if (t > GUY.whistleAt && GUY.mode2 !== "kite" && RAIN.on < 0.2) {
+            GUY.whistleAt = t + 24 + (t % 11);
+            GUY.notes = t + 1.8;
+            if (window.__whistle) window.__whistle();
+          }
+          if (GUY.bubble > t && GUY.mode2 !== "kite") drawBubble(GUY.x, gy4 - 66, bubbleText());
           if (t - GUY.t0 > (GUY.mode2 === "kite" ? 7 : 3.4)) GUY.state = "walkout";
           break;
         case "stand":
@@ -1519,13 +1814,15 @@ footer a:hover{color:#fff}
         case "walkout":
           GUY.x += 46 * spd;
           drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
-          if (GUY.x > W + 40) { GUY.state = "away"; GUY.next = t + 34 + (t % 23); }
+          if (GUY.x > W + 40) { GUY.state = "away"; GUY.next = t + 10 + (t % 9); }
           break;
         case "toBike":
-          GUY.x += 78 * spd;
+          GUY.x += (BIKE.x > GUY.x ? 1 : -1) * 78 * spd;
           drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
-          if (BIKE.present && GUY.x >= BIKE.x - 4) { GUY.state = "ride"; GUY.t0 = t; }
-          else if (!BIKE.present) GUY.state = "walkout";
+          if (BIKE.present && Math.abs(GUY.x - BIKE.x) < 6) {
+            GUY.state = "ride"; GUY.t0 = t;
+            BIKE.present = false;               // it leaves with him, obviously
+          } else if (!BIKE.present) GUY.state = "walkout";
           break;
         case "ride": {
           var rx = BIKE.x + (t - GUY.t0) * 130;
@@ -1533,8 +1830,8 @@ footer a:hover{color:#fff}
           drawBike(rx, gy4 - 10, 0, roll, 1);
           drawGuy(rx - 2, gy4, t, "ride", GUY.outfit, null);
           if (rx > W + 60) {
-            GUY.state = "away"; GUY.next = t + 46;
-            BIKE.present = false; BIKE.gone = t;
+            GUY.state = "away"; GUY.next = t + 26;
+            BIKE.gone = t;
           }
           break;
         }
@@ -1542,26 +1839,98 @@ footer a:hover{color:#fff}
           var rbx = W + 40 - (t - GUY.t0) * 120;
           drawBike(rbx, gy4 - 10, 0, -(t - GUY.t0) * 11, 1);
           drawGuy(rbx + 2, gy4, t, "ride", GUY.outfit, null);
-          if (rbx <= W * 0.5 - 68) {
+          if (rbx <= BIKE.x) {
             BIKE.present = true; BIKE.back = false;
-            GUY.state = "walkout"; GUY.x = rbx;
+            GUY.state = "stand"; GUY.t0 = t; GUY.x = rbx - 14;
           }
           break;
         }
+        case "held":
+          ctx.globalAlpha = 1;
+          GUY.x = DRAG.px;
+          ctx.save();
+          ctx.translate(0, 0);
+          drawGuy(DRAG.px, DRAG.py + 42, t, "held", GUY.outfit, null);
+          ctx.restore();
+          break;
+        case "falling": {
+          ctx.globalAlpha = 1;
+          GUY.fvy += 2400 * dt2;
+          GUY.fx += GUY.fvx * dt2;
+          GUY.fvx *= (1 - 0.4 * dt2);
+          GUY.fy += GUY.fvy * dt2;
+          DRAG.rot += GUY.fvx * dt2 * 0.004;
+          if (GUY.fx < 14) { GUY.fx = 14; GUY.fvx = Math.abs(GUY.fvx) * 0.5; }
+          if (GUY.fx > W - 14) { GUY.fx = W - 14; GUY.fvx = -Math.abs(GUY.fvx) * 0.5; }
+          var landY = gy4;
+          if (GUY.fy >= landY) {
+            GUY.fy = landY;
+            if (Math.abs(GUY.fvy) > 520) {
+              GUY.fvy = -Math.abs(GUY.fvy) * 0.38;          // a real bounce
+              GUY.fvx *= 0.7;
+              if (window.__thud) window.__thud();
+            } else if (Math.abs(GUY.fvy) > 210) {
+              GUY.state = "splat"; GUY.t0 = t; GUY.x = GUY.fx;
+              if (window.__thud) window.__thud();
+              if (sw(3) > 0.5) puff(GUY.fx, gy4, "snow");
+              else if (p > 0.42) puff(GUY.fx, gy4, "leaves");
+            } else {
+              GUY.state = "stand"; GUY.t0 = t; GUY.x = GUY.fx;
+            }
+            // dropped onto the mole's hill: the mole objects
+            var mR = EGG.moleRect;
+            if (mR && GUY.fx > mR.x - 20 && GUY.fx < mR.x + mR.w + 20) {
+              GUY.fvx = 260; GUY.state = "splat"; GUY.t0 = t; GUY.x = GUY.fx + 26;
+            }
+          }
+          ctx.save();
+          ctx.translate(GUY.fx, GUY.fy);
+          ctx.rotate(clamp(DRAG.rot, -0.9, 0.9));
+          ctx.translate(-GUY.fx, -GUY.fy);
+          drawGuy(GUY.fx, GUY.fy, t, "held", GUY.outfit, null);
+          ctx.restore();
+          break;
+        }
+        case "splat":
+          drawGuy(GUY.x, gy4, t, "flat", GUY.outfit, null);
+          if (t - GUY.t0 > 1.6) { GUY.state = "getup"; GUY.t0 = t; }
+          break;
+        case "getup":
+          drawGuy(GUY.x, gy4, t, "crouch", GUY.outfit, null);
+          if (t - GUY.t0 > 0.7) { GUY.state = "stand"; GUY.t0 = t; GUY.bubble = 0; }
+          break;
+        case "goDoze":
+          GUY.x += (houseX() - 38 > GUY.x ? 1 : -1) * 46 * spd;
+          drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
+          if (Math.abs(GUY.x - (houseX() - 38)) < 6) { GUY.state = "doze"; GUY.t0 = t; }
+          break;
+        case "doze":
+          // seated on the doorstep, chin down
+          drawGuy(houseX() - 38, gy4 - 4, t, "crouch", GUY.outfit, null);
+          if (stillFor < 3) { GUY.state = "stand"; GUY.t0 = t; }
+          break;
+        case "hang":
+          drawGuy(GUY.hangTip.x, GUY.hangTip.y + 46 + Math.sin(t * 2.2) * 5, t, "held", GUY.outfit, null);
+          if (t - GUY.t0 > 2.2) {
+            GUY.state = "falling";
+            GUY.fx = GUY.hangTip.x; GUY.fy = GUY.hangTip.y + 46;
+            GUY.fvx = Math.sin(t) * 60; GUY.fvy = 0;
+          }
+          break;
         case "goHome":
           GUY.x += (houseX() - 16 - GUY.x) * 0.02 + 40 * spd * (GUY.x < houseX() - 18 ? 1 : 0);
           drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
-          if (GUY.x >= houseX() - 20) { GUY.state = "enterHouse"; GUY.t0 = t; }
+          if (GUY.x >= houseX() - 30) { GUY.state = "enterHouse"; GUY.t0 = t; }
           break;
         case "enterHouse":
-          drawGuy(lerp(GUY.x, houseX() - 6, (t - GUY.t0) / 0.7), gy4, t, "walk", GUY.outfit, null);
+          drawGuy(lerp(GUY.x, houseX() - 8, (t - GUY.t0) / 0.7), gy4, t, "walk", GUY.outfit, null);
           if (t - GUY.t0 > 0.7) { GUY.state = "home"; GUY.t0 = t; GUY.outfit = seasonCur; }
           break;
         case "home":
           if (gNightIdle < 0.5 && t - GUY.t0 > 1.6) { GUY.state = "exitHouse"; GUY.t0 = t; }
           break;
         case "exitHouse":
-          GUY.x = lerp(houseX() - 6, houseX() - 26, (t - GUY.t0) / 0.7);
+          GUY.x = lerp(houseX() - 8, houseX() - 40, (t - GUY.t0) / 0.7);
           drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
           if (t - GUY.t0 > 0.7) { GUY.state = "wave"; GUY.t0 = t; GUY.mode2 = "wave"; }
           break;
@@ -1591,13 +1960,70 @@ footer a:hover{color:#fff}
           }
           break;
       }
-      if (!BIKE.present && !BIKE.back && t - BIKE.gone > 28) {
+      if (!BIKE.present && !BIKE.back && t - BIKE.gone > 16 && GUY.state === "away") {
         BIKE.back = true; GUY.state = "rideBack"; GUY.t0 = t;   // he brings it back himself
       }
-      EGG.guyRect = (GUY.state !== "away" && GUY.state !== "ride" && GUY.state !== "rideBack" &&
-                     GUY.state !== "home")
+      // floating notes while he whistles
+      if (GUY.notes > t) {
+        ctx.fillStyle = "rgba(60,48,36," + (0.7 * (GUY.notes - t) / 1.8) + ")";
+        ctx.font = "13px Georgia";
+        ctx.fillText("\u266a", GUY.x + 12, gy4 - 70 - (1.8 - (GUY.notes - t)) * 14);
+        ctx.fillText("\u266b", GUY.x + 24, gy4 - 60 - (1.8 - (GUY.notes - t)) * 10);
+      }
+      // dozing on the doorstep after two still minutes
+      if (GUY.state === "doze") {
+        var zt = (t % 2.4) / 2.4;
+        ctx.fillStyle = "rgba(60,48,36," + (0.65 * (1 - zt)) + ")";
+        ctx.font = "italic " + (11 + zt * 6) + "px Georgia";
+        ctx.fillText("z", houseX() - 44 + zt * 12, gy4 - 62 - zt * 22);
+      }
+      ctx.globalAlpha = 1;
+      EGG.guyRect = (guyVis > 0.3 && GUY.state !== "away" && GUY.state !== "ride" &&
+                     GUY.state !== "rideBack" && GUY.state !== "home" &&
+                     GUY.state !== "falling" && GUY.state !== "held")
         ? { x: GUY.x - 18, y: gy4 - 62, w: 36, h: 64 } : null;
-    } else { EGG.guyRect = null; }
+    }
+
+    /* a caught leaf drifts to his hand, and he shows it off */
+    if (CAUGHT) {
+      var ct2 = t - CAUGHT.t0;
+      if (GUY.state === "away" || GUY.state === "home") { CAUGHT = null; }
+      else if (ct2 < 1.2) {
+        var tx2 = GUY.x + 12, ty2 = guyGround() - 40;
+        var cx2 = lerp(CAUGHT.x, tx2, smooth(ct2 / 1.2));
+        var cy2 = lerp(CAUGHT.y, ty2, smooth(ct2 / 1.2));
+        ctx.fillStyle = "#c8842e";
+        ctx.save(); ctx.translate(cx2, cy2); ctx.rotate(ct2 * 5);
+        ctx.beginPath(); ctx.moveTo(0, -5); ctx.quadraticCurveTo(3.4, -1, 0, 6);
+        ctx.quadraticCurveTo(-3.4, -1, 0, -5); ctx.fill(); ctx.restore();
+      } else if (ct2 < 3.2) {
+        GUY.lookUp = t + 0.1;
+        ctx.fillStyle = "#c8842e";
+        ctx.save(); ctx.translate(GUY.x + 13, guyGround() - 54);
+        ctx.rotate(Math.sin(t * 3) * 0.2);
+        ctx.beginPath(); ctx.moveTo(0, -5); ctx.quadraticCurveTo(3.4, -1, 0, 6);
+        ctx.quadraticCurveTo(-3.4, -1, 0, -5); ctx.fill(); ctx.restore();
+      } else CAUGHT = null;
+    }
+
+    /* dust, snow and leaves thrown up by landings */
+    for (var pu = puffs.length - 1; pu >= 0; pu--) {
+      var P2 = puffs[pu];
+      var pa2 = t - P2.t0;
+      if (pa2 > 1.4) { puffs.splice(pu, 1); continue; }
+      var px4 = P2.x + P2.vx * pa2;
+      var py4 = P2.y + P2.vy * pa2 + 320 * pa2 * pa2;
+      var fade = 1 - pa2 / 1.4;
+      if (P2.kind === "snow") {
+        ctx.fillStyle = "rgba(240,242,246," + (0.8 * fade) + ")";
+        ctx.beginPath(); ctx.arc(px4, py4, 2 + pa2 * 2, 0, 6.284); ctx.fill();
+      } else {
+        ctx.fillStyle = "rgba(" + (170 + (pu % 3) * 20) + "," + (100 + (pu % 4) * 12) + ",40," + (0.85 * fade) + ")";
+        ctx.save(); ctx.translate(px4, py4); ctx.rotate(pa2 * 6 + P2.ph);
+        ctx.beginPath(); ctx.moveTo(0, -3.4); ctx.quadraticCurveTo(2.4, -0.6, 0, 4);
+        ctx.quadraticCurveTo(-2.4, -0.6, 0, -3.4); ctx.fill(); ctx.restore();
+      }
+    }
 
     /* the bird: arrives now and then while the canopy is full */
     if (p < 0.18) {
@@ -1612,9 +2038,20 @@ footer a:hover{color:#fff}
         var by = lerp(H * 0.25, perch.y - 6, smooth(bt)) - Math.sin(bt * 3.14) * 60;
         drawBird(bx, by, t, true);
       } else if (bird.state === 2 && perch) {
+        var nearGuy = (GUY.state === "wave" || GUY.state === "stand") && Math.abs(GUY.x - perch.x) < 46;
+        if (nearGuy && t - bird.t0 > 1.2) { bird.state = 4; bird.t0 = t; }
         var hop = Math.abs(Math.sin(t * 3)) * 1.5;
         drawBird(perch.x, perch.y - 6 - hop, t, false);
-        if (t - bird.t0 > 4.5) { bird.state = 3; bird.t0 = t; }
+        if (t - bird.t0 > 4.5 && bird.state === 2) { bird.state = 3; bird.t0 = t; }
+      } else if (bird.state === 4) {
+        // it likes him: a landing on the curls
+        var bt4 = Math.min(1, (t - bird.t0) / 1.1);
+        var hx4 = GUY.x + 2, hy4 = gy4 !== undefined ? 0 : 0;
+        var headY = guyGround() - 58;
+        drawBird(lerp(perch.x, hx4, smooth(bt4)),
+                 lerp(perch.y - 6, headY, smooth(bt4)) - Math.sin(bt4 * 3.14) * 24, t, bt4 < 1);
+        if (t - bird.t0 > 4.4) { bird.state = 3; perch = { x: GUY.x, y: headY }; bird.t0 = t; }
+        if (GUY.state !== "wave" && GUY.state !== "stand") { bird.state = 3; bird.t0 = t; }
       } else if (bird.state === 3 && perch) {
         var lt = (t - bird.t0) / 2.6;
         if (lt >= 1) { bird.state = 0; bird.next = t + 34 + (t % 17); }
@@ -1639,19 +2076,10 @@ footer a:hover{color:#fff}
     }
 
     /* the idle moon */
-    if (gNightIdle > 0.25 && p < 0.3) {
-      var mA = (gNightIdle - 0.25) / 0.75;
-      var mgx = W * 0.82, mgy = H * 0.16;
-      var mg = ctx.createRadialGradient(mgx, mgy, 0, mgx, mgy, 90);
-      mg.addColorStop(0, "rgba(240,238,224," + 0.18 * mA + ")");
-      mg.addColorStop(1, "rgba(240,238,224,0)");
-      ctx.fillStyle = mg;
-      ctx.beginPath(); ctx.arc(mgx, mgy, 90, 0, 6.284); ctx.fill();
-      ctx.fillStyle = "rgba(240,238,226," + 0.85 * mA + ")";
-      ctx.beginPath(); ctx.arc(mgx, mgy, 20, 0, 6.284); ctx.fill();
-      ctx.fillStyle = "rgba(210,208,196," + 0.5 * mA + ")";
-      ctx.beginPath(); ctx.arc(mgx - 6, mgy - 4, 4, 0, 6.284); ctx.fill();
-      ctx.beginPath(); ctx.arc(mgx + 7, mgy + 6, 2.6, 0, 6.284); ctx.fill();
+    if (gNightIdle > 0.25 && p < 0.3 && moonSprite) {
+      ctx.globalAlpha = (gNightIdle - 0.25) / 0.75;
+      ctx.drawImage(moonSprite, W * 0.82 - 100, H * 0.16 - 100);
+      ctx.globalAlpha = 1;
     }
 
     /* fireflies: ten still seconds in the dusk, and they come to the cursor */
@@ -1671,11 +2099,9 @@ footer a:hover{color:#fff}
         F.vx *= 0.96; F.vy *= 0.96;
         F.x += F.vx; F.y += F.vy;
         var glow = 0.35 + 0.65 * Math.abs(Math.sin(t * 1.7 + F.ph));
-        var g3 = ctx.createRadialGradient(F.x, F.y, 0, F.x, F.y, 9);
-        g3.addColorStop(0, "rgba(226,210,120," + 0.85 * glow + ")");
-        g3.addColorStop(1, "rgba(226,210,120,0)");
-        ctx.fillStyle = g3;
-        ctx.beginPath(); ctx.arc(F.x, F.y, 9, 0, 6.284); ctx.fill();
+        ctx.globalAlpha = glow;
+        ctx.drawImage(flySprite, F.x - 12, F.y - 12);
+        ctx.globalAlpha = 1;
       });
     } else if (flies.length && !nightish) flies.length = 0;
 
@@ -1710,6 +2136,10 @@ footer a:hover{color:#fff}
     }
   }
 
+  function bubbleText() {
+    var l2 = document.documentElement.getAttribute("lang");
+    return l2 === "tr" ? "Selam, ben Kerem." : l2 === "de" ? "Hi, ich bin Kerem." : "Hi, I\u2019m Kerem.";
+  }
   function drawBubble(x, y, text) {
     ctx.save();
     ctx.font = "italic 13px Georgia";
@@ -1758,6 +2188,16 @@ footer a:hover{color:#fff}
     var span = r.height - window.innerHeight;
     progress = span > 0 ? clamp(-r.top / span, 0, 1) : 1;
   }
+
+  function placeHint() {
+    if (!hintEl || !nameEl) return;
+    var nr = nameEl.getBoundingClientRect();
+    var sr2 = stage.getBoundingClientRect();
+    hintEl.style.top = (nr.bottom - sr2.top + 22) + "px";
+  }
+  window.addEventListener("resize", placeHint);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeHint);
+  setTimeout(placeHint, 60);
 
   function ui(p) {
     if (nameEl) {
@@ -1874,6 +2314,27 @@ footer a:hover{color:#fff}
      pages, where reading language actually matters */
 })();
 
+/* real weather: if it rains over Munich, it rains here */
+(function(){
+  var EGG = window.__EGG || {};
+  function apply(code) {
+    if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95) {
+      if (EGG.rainRequest) { EGG.rainRequest(); setInterval(EGG.rainRequest, 11000); }
+    }
+  }
+  try {
+    var c = JSON.parse(localStorage.getItem("wx") || "null");
+    if (c && Date.now() - c.t < 1800000) { apply(c.code); return; }
+  } catch(e){}
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=48.14&longitude=11.58&current=weather_code")
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if (!j || !j.current) return;
+      try { localStorage.setItem("wx", JSON.stringify({ t: Date.now(), code: j.current.weather_code })); } catch(e){}
+      apply(j.current.weather_code);
+    }).catch(function(){});
+})();
+
 /* the season dial: turn the wheel, the year turns with it */
 (function(){
   var EGG = window.__EGG || {};
@@ -1904,13 +2365,25 @@ footer a:hover{color:#fff}
       if (EGG.rainRequest) EGG.rainRequest();
     }
   });
+  var clickTimer = null;
+  dial.addEventListener("dblclick", function(){
+    if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+    if (EGG.regrow) EGG.regrow();
+  });
   dial.addEventListener("click", function(){
     if (longFired) return;
+    if (clickTimer) return;
+    clickTimer = setTimeout(function(){
+      clickTimer = null;
+      advance();
+    }, 240);
+  });
+  function advance(){
     cur = (cur + 1) % 4;
     if (cur === EGG.getSeason() % 4 && cur === 0) turns++;
     EGG.setSeason(cur);
     paint();
-  });
+  }
   paint();
 })();
 
@@ -1934,15 +2407,17 @@ footer a:hover{color:#fff}
     return src;
   }
   function chirp(ac, when) {
+    // a cricket, not a geiger counter: low, soft, rounded edges
     var o = ac.createOscillator(), g = ac.createGain();
-    o.type = "sine"; o.frequency.value = 4200 + Math.random() * 600;
+    o.type = "sine"; o.frequency.value = 2300 + Math.random() * 300;
     g.gain.setValueAtTime(0, when);
-    for (var k = 0; k < 4; k++) {
-      g.gain.setValueAtTime(0.012, when + k * 0.055);
-      g.gain.setValueAtTime(0, when + k * 0.055 + 0.03);
+    for (var k = 0; k < 3; k++) {
+      var s2 = when + k * 0.09;
+      g.gain.linearRampToValueAtTime(0.006, s2 + 0.02);
+      g.gain.linearRampToValueAtTime(0, s2 + 0.07);
     }
     o.connect(g); g.connect(ac.destination);
-    o.start(when); o.stop(when + 0.4);
+    o.start(when); o.stop(when + 0.5);
   }
   function start() {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
@@ -1961,6 +2436,29 @@ footer a:hover{color:#fff}
       if (p > 0.45 && p < 0.9 && Math.random() < 0.5) chirp(actx, actx.currentTime + Math.random() * 1.5);
     }, 1800);
   }
+  window.__whistle = function(){
+    if (!actx || !on) return;
+    [[0, 880], [0.22, 1046], [0.44, 988]].forEach(function(nn){
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = "sine"; o.frequency.value = nn[1];
+      g.gain.setValueAtTime(0.0001, actx.currentTime + nn[0]);
+      g.gain.linearRampToValueAtTime(0.018, actx.currentTime + nn[0] + 0.05);
+      g.gain.linearRampToValueAtTime(0.0001, actx.currentTime + nn[0] + 0.2);
+      o.connect(g); g.connect(actx.destination);
+      o.start(actx.currentTime + nn[0]); o.stop(actx.currentTime + nn[0] + 0.25);
+    });
+  };
+  window.__thud = function(){
+    if (!actx || !on) return;
+    var o = actx.createOscillator(), g = actx.createGain();
+    o.type = "sine";
+    o.frequency.setValueAtTime(110, actx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(48, actx.currentTime + 0.16);
+    g.gain.setValueAtTime(0.11, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.2);
+    o.connect(g); g.connect(actx.destination);
+    o.start(); o.stop(actx.currentTime + 0.25);
+  };
   window.__hoot = function(){
     if (!actx || !on) return;
     [0, 0.28].forEach(function(d){
@@ -1977,8 +2475,8 @@ footer a:hover{color:#fff}
     if (!actx || !on) return;
     [0, 0.12].forEach(function(d){
       var o = actx.createOscillator(), g = actx.createGain();
-      o.type = "triangle"; o.frequency.value = 1560;
-      g.gain.setValueAtTime(0.06, actx.currentTime + d);
+      o.type = "sine"; o.frequency.value = 1244;
+      g.gain.setValueAtTime(0.035, actx.currentTime + d);
       g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + d + 0.25);
       o.connect(g); g.connect(actx.destination);
       o.start(actx.currentTime + d); o.stop(actx.currentTime + d + 0.3);
@@ -2055,6 +2553,40 @@ footer a:hover{color:#fff}
   /* the mole keeps something buried: click it while it looks around */
   var film = document.getElementById("film");
   function hit(R, x, y) { return R && x > R.x && x < R.x + R.w && y > R.y && y < R.y + R.h; }
+  var grabbed = false, downAt = 0;
+  function fxy(e) {
+    var r3 = film.getBoundingClientRect();
+    return { x: e.clientX - r3.left, y: e.clientY - r3.top };
+  }
+  if (film) {
+    film.addEventListener("pointerdown", function(e){
+      var q = fxy(e);
+      if (hit(EGG.guyRect, q.x, q.y) && EGG.grab && EGG.grab(q.x, q.y)) {
+        grabbed = true; downAt = performance.now();
+        film.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      }
+    });
+    film.addEventListener("pointermove", function(e){
+      var q = fxy(e);
+      if (grabbed && EGG.dragTo) { EGG.dragTo(q.x, q.y); return; }
+      film.style.cursor = hit(EGG.guyRect, q.x, q.y) ? "grab"
+        : (hit(EGG.bikeRect, q.x, q.y) || hit(EGG.moleRect, q.x, q.y) ||
+           hit(EGG.owlRect, q.x, q.y) || hit(EGG.acornRect, q.x, q.y) ||
+           hit(EGG.snowRect, q.x, q.y) || hit(EGG.moonRect, q.x, q.y)) ? "pointer" : "";
+    });
+    film.addEventListener("pointerup", function(e){
+      if (grabbed) {
+        grabbed = false;
+        if (performance.now() - downAt < 200 && EGG.tap) EGG.tap();
+        else if (EGG.release) EGG.release();
+      }
+    });
+  }
+  if (film) film.addEventListener("dblclick", function(e){
+    var q2 = fxy(e);
+    if (hit(EGG.guyRect, q2.x, q2.y) && EGG.soakRequest) EGG.soakRequest();
+  });
   if (film) film.addEventListener("click", function(e){
     var r2 = film.getBoundingClientRect();
     var x = e.clientX - r2.left, y = e.clientY - r2.top;
@@ -2065,7 +2597,7 @@ footer a:hover{color:#fff}
       document.body.appendChild(a); a.click(); a.remove();
       return;
     }
-    if ((hit(EGG.guyRect, x, y) || hit(EGG.bikeRect, x, y)) && EGG.rideRequest) {
+    if (hit(EGG.bikeRect, x, y) && EGG.rideRequest) {
       EGG.rideRequest();
       if (window.__bell) window.__bell();
       return;
@@ -2075,6 +2607,7 @@ footer a:hover{color:#fff}
     if (hit(EGG.owlRect, x, y) && EGG.owlRequest) { EGG.owlRequest(); if (window.__hoot) window.__hoot(); return; }
     if (hit(EGG.moonRect, x, y) && EGG.eclipseRequest) { EGG.eclipseRequest(); return; }
     if (EGG.starLive && EGG.wishRequest) { EGG.wishRequest(); return; }
+    if (EGG.catchLeaf && EGG.catchLeaf(x, y)) return;
     if (hit(EGG.trunkRect, x, y) && EGG.squirrelRequest) { EGG.squirrelRequest(); return; }
     if (hit(EGG.antRect, x, y) && EGG.antRequest) { EGG.antRequest(); return; }
   });
@@ -2085,6 +2618,23 @@ footer a:hover{color:#fff}
     console.log("%cYou read source. I like you already. Write me: kozdemir3523@gmail.com",
       "color:#b06a24;font-size:13px");
     console.log("%cTry typing 3523 on the tree. Click the mole if you can catch it.",
+      "color:#8a8272;font-size:11px");
+    var EGG2 = window.__EGG || {};
+    window.kerem = {
+      wave: function(){ if (EGG2.tap) EGG2.tap(); return "he waves back"; },
+      ride: function(){ if (EGG2.rideRequest) EGG2.rideRequest(); return "off he goes"; },
+      rain: function(){ if (EGG2.rainRequest) EGG2.rainRequest(); return "clouds obliged"; },
+      season: function(i){ if (EGG2.setSeason) EGG2.setSeason(((i % 4) + 4) % 4); return ["spring","summer","autumn","winter"][((i % 4) + 4) % 4]; },
+      regrow: function(){ if (EGG2.regrow) EGG2.regrow(); return "a new tree"; },
+      throwMe: function(){
+        if (EGG2.grab && EGG2.grab(innerWidth/2, innerHeight*0.3)) setTimeout(function(){
+          if (EGG2.dragTo) EGG2.dragTo(innerWidth/2+60, innerHeight*0.25);
+          if (EGG2.release) EGG2.release();
+        }, 60);
+        return "wheee";
+      }
+    };
+    console.log("%cAlso: window.kerem — wave(), ride(), rain(), season(n), regrow(), throwMe().",
       "color:#8a8272;font-size:11px");
   } catch(err){}
 })();
