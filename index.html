@@ -60,12 +60,12 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
 #hint{
   position:absolute;left:50%;top:33%;transform:translateX(-50%);
   font-family:var(--serif);font-style:italic;font-size:.92rem;letter-spacing:.06em;
-  color:rgba(90,80,66,.9);
+  color:#b06a24;text-shadow:0 0 8px rgba(240,235,220,.75), 0 1px 2px rgba(240,235,220,.9);
   transition:opacity .4s ease;
   animation:breathe 3s ease-in-out infinite;
 }
 #hint::after{content:"";display:block;width:1px;height:26px;margin:6px auto 0;
-  background:linear-gradient(rgba(90,80,66,.6),transparent)}
+  background:linear-gradient(rgba(176,106,36,.7),transparent)}
 #hint.off{animation:none;opacity:0}
 @keyframes breathe{0%,100%{opacity:.4}50%{opacity:.9}}
 
@@ -333,15 +333,16 @@ footer a:hover{color:#fff}
     if (!DRAG.held) return;
     DRAG.held = false;
     // released into the canopy: he grabs the nearest branch and hangs on
-    if (DRAG.py < H * 0.62 && Math.abs(DRAG.px - W / 2) < W * 0.2 && lastP < 0.3) {
+    if (DRAG.py < H * 0.62 && lastP < 0.3) {
       var best = null, bd = 1e9;
-      for (var ti2 = 0; ti2 < tips.length; ti2 += 4) {
+      for (var ti2 = 0; ti2 < tips.length; ti2++) {
         var tp2 = tips[ti2];
         var dd2 = (tp2.x - DRAG.px) * (tp2.x - DRAG.px) + (tp2.y - DRAG.py) * (tp2.y - DRAG.py);
         if (dd2 < bd) { bd = dd2; best = tp2; }
       }
-      if (best) {
+      if (best && bd < 4900) {                       // only if a branch is truly at hand
         GUY.hangTip = best;
+        GUY.swing = clamp(DRAG.vx * 0.004, -0.8, 0.8);
         GUY.state = "hang"; GUY.t0 = performance.now() / 1000;
         return;
       }
@@ -511,7 +512,7 @@ footer a:hover{color:#fff}
     N = small ? 950 : 2000;
     for (var i = 0; i < N; i++) {
       var tip = tips[(rnd() * tips.length) | 0];
-      var spread = lerp(10, 62, rnd());
+      var spread = lerp(8, 46, rnd());
       var la = rnd() * Math.PI * 2;
       var ax = tip.x + Math.cos(la) * spread;
       var ay = tip.y + Math.sin(la) * spread * 0.8 - 6;
@@ -1497,12 +1498,15 @@ footer a:hover{color:#fff}
       ctx.restore();
       // held things
       if (prop === "umbrella") {
+        var uw = Math.sin(t * 1.7) * 0.08;
+        ctx.save(); ctx.translate(2.5, -19); ctx.rotate(uw);   // pivot at the hand
         ctx.strokeStyle = "#2c2622"; ctx.lineWidth = 1.2;
-        ctx.beginPath(); ctx.moveTo(6, -22); ctx.lineTo(9, -40); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(4.5, -19); ctx.stroke();
         ctx.fillStyle = "#7a3226";
-        ctx.beginPath(); ctx.arc(9, -40, 14, Math.PI, 0); ctx.fill();
+        ctx.beginPath(); ctx.arc(4.5, -19, 14, Math.PI, 0); ctx.fill();
         ctx.strokeStyle = "rgba(0,0,0,.25)";
-        ctx.beginPath(); ctx.arc(9, -40, 14, Math.PI, 0); ctx.stroke();
+        ctx.beginPath(); ctx.arc(4.5, -19, 14, Math.PI, 0); ctx.stroke();
+        ctx.restore();
       } else if (prop === "lantern") {
         ctx.strokeStyle = "#2c2622"; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(7, -24); ctx.lineTo(9, -18); ctx.stroke();
@@ -1572,6 +1576,13 @@ footer a:hover{color:#fff}
       }
     }
 
+    /* winter frosts the ground line */
+    var wWinG = sw(3);
+    if (wWinG > 0.2 && groundVis > 0.02) {
+      ctx.fillStyle = "rgba(238,241,245," + (0.35 * wWinG * groundVis) + ")";
+      ctx.fillRect(0, H * 0.885, W, 3);
+    }
+
     /* the red bicycle, leaning on the trunk, waiting */
     BIKE.x = W * 0.5 - 68;
     if (BIKE.present && groundVis > 0.02 && GUY.state !== "ride" && GUY.state !== "rideBack") {
@@ -1595,8 +1606,11 @@ footer a:hover{color:#fff}
     /* weather he answers to */
     if (RAIN.on > 0) {
       if (t > RAIN.until) RAIN.on = Math.max(0, RAIN.on - 0.02);
+      var rainVis = RAIN.on * groundVis;          // rain belongs to the sky, not the soil
+      if (rainVis < 0.02) { /* underground: hold, draw nothing */ }
+      else {
       var slant = sw(2) * 3 + 1;
-      ctx.strokeStyle = "rgba(180,196,210," + (0.4 * RAIN.on) + ")";
+      ctx.strokeStyle = "rgba(180,196,210," + (0.4 * rainVis) + ")";
       ctx.lineWidth = 1;
       for (var rd = 0; rd < 70; rd++) {
         var rx2 = ((rd * 173.7 + t * (260 + rd % 5 * 40)) % (W + 40)) - 20;
@@ -1604,11 +1618,12 @@ footer a:hover{color:#fff}
         ctx.beginPath(); ctx.moveTo(rx2, ry2); ctx.lineTo(rx2 - slant, ry2 + 9); ctx.stroke();
       }
       // splashes at the ground
-      ctx.strokeStyle = "rgba(180,196,210," + (0.3 * RAIN.on) + ")";
+      ctx.strokeStyle = "rgba(180,196,210," + (0.3 * rainVis) + ")";
       for (var sp4 = 0; sp4 < 12; sp4++) {
         var sx4 = ((sp4 * 251.3 + t * 500) % W);
         var ph4 = (t * 3 + sp4) % 1;
         ctx.beginPath(); ctx.arc(sx4, guyGround(), ph4 * 5, Math.PI, 0); ctx.stroke();
+      }
       }
     }
 
@@ -1676,8 +1691,8 @@ footer a:hover{color:#fff}
         SQUIRREL.state = 0;
         if (!ACORN) ACORN = { x: W * 0.5 + 40 + (t % 1) * 60, y: H * 0.5, vy: 0, landed: false };
       } else {
-        var sqx = W * 0.5 + 14 * Math.sin(sq * 3) + 6;
-        var sqy = lerp(guyGround() - 20, H * 0.45, smooth(sq));
+        var sqy = lerp(guyGround() - 10, H * 0.47, smooth(sq));
+        var sqx = W * 0.5 + Math.sin(sq * 9) * 6;      // spiralling up the bark
         ctx.save();
         ctx.translate(sqx, sqy);
         ctx.fillStyle = "#8a5a30";
@@ -1692,7 +1707,7 @@ footer a:hover{color:#fff}
     var owlNight = Math.max(night, gNightIdle);
     if (owlNight > 0.5 && p < 0.8 && !OWL.on && (t % 30) < 0.05) {
       OWL.on = true; OWL.t0 = t;
-      OWL.tip = tips[(tips.length * 0.62) | 0];
+      OWL.tip = tips[((t * 733) | 0) % tips.length];
     }
     if (OWL.on && OWL.tip) {
       var ox = OWL.tip.x, oy = OWL.tip.y - 8;
@@ -1909,14 +1924,18 @@ footer a:hover{color:#fff}
           drawGuy(houseX() - 38, gy4 - 4, t, "crouch", GUY.outfit, null);
           if (stillFor < 3) { GUY.state = "stand"; GUY.t0 = t; }
           break;
-        case "hang":
-          drawGuy(GUY.hangTip.x, GUY.hangTip.y + 46 + Math.sin(t * 2.2) * 5, t, "held", GUY.outfit, null);
+        case "hang": {
+          GUY.swing = (GUY.swing || 0) * 0.985;
+          var sx6 = GUY.hangTip.x + Math.sin(t * 3.1) * 18 * GUY.swing;
+          drawGuy(sx6, GUY.hangTip.y + 46 + Math.cos(t * 3.1) * 4 * Math.abs(GUY.swing) + Math.sin(t * 2.2) * 3,
+                  t, "held", GUY.outfit, null);
           if (t - GUY.t0 > 2.2) {
             GUY.state = "falling";
-            GUY.fx = GUY.hangTip.x; GUY.fy = GUY.hangTip.y + 46;
-            GUY.fvx = Math.sin(t) * 60; GUY.fvy = 0;
+            GUY.fx = sx6; GUY.fy = GUY.hangTip.y + 46;
+            GUY.fvx = GUY.swing * 160; GUY.fvy = 0;
           }
           break;
+        }
         case "goHome":
           GUY.x += (houseX() - 16 - GUY.x) * 0.02 + 40 * spd * (GUY.x < houseX() - 18 ? 1 : 0);
           drawGuy(GUY.x, gy4, t, "walk", GUY.outfit, GUY.prop);
@@ -2029,7 +2048,7 @@ footer a:hover{color:#fff}
     if (p < 0.18) {
       if (bird.state === 0 && t > bird.next) {
         bird.state = 1; bird.t0 = t;
-        perch = tips[(tips.length * 0.3 | 0)];
+        perch = tips[((t * 997) | 0) % tips.length];
       }
       if (bird.state === 1 && perch) {
         var bt = (t - bird.t0) / 3.2;
@@ -2144,6 +2163,7 @@ footer a:hover{color:#fff}
     ctx.save();
     ctx.font = "italic 13px Georgia";
     var w2 = ctx.measureText(text).width + 16;
+    x = Math.max(w2 / 2 + 6, Math.min(W - w2 / 2 - 6, x));
     ctx.fillStyle = "rgba(246,242,232,.94)";
     ctx.strokeStyle = "rgba(60,48,36,.35)";
     ctx.lineWidth = 1;
@@ -2231,6 +2251,7 @@ footer a:hover{color:#fff}
       }
     }
     seasonShow += (seasonCur - seasonShow) * 0.045;
+    if (DRAG.held && shown > 0.35 && EGG.release) EGG.release();
     var wantNight = FORCE_NIGHT || (progress < 0.25 && (performance.now() - idleSince > 12000));
     gNightIdle += ((wantNight ? 1 : 0) - gNightIdle) * (wantNight ? 0.012 : 0.05);
     shown += (progress - shown) * 0.16;
@@ -2593,7 +2614,7 @@ footer a:hover{color:#fff}
     if (hit(EGG.moleRect, x, y)) {
       EGG.moleBurst = 1;
       var a = document.createElement("a");
-      a.href = "Kerem_Ozdemir_CV.pdf"; a.download = "";
+      a.href = "Kerem_Ozdemir_CV.pdf"; a.download = "Kerem_Ozdemir_CV.pdf";
       document.body.appendChild(a); a.click(); a.remove();
       return;
     }
