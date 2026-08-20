@@ -1,0 +1,1197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects — Kerem Özdemir</title>
+<meta name="description" content="CoLaunch, five live analytical instruments, and the public repositories behind them.">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://keremozdemirra.github.io/projects.html">
+<meta property="og:title" content="Projects — Kerem Özdemir">
+<meta property="og:description" content="CoLaunch, five live analytical instruments, and the public repositories behind them.">
+<meta property="og:type" content="profile">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --display:var(--serif);
+  --paper:#f2efe6;
+  --paper2:#eae6da;
+  --fg:#221e17;
+  --ink:var(--fg);
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --raised:#faf8f1;
+  --field:#ffffff;
+  --accent:#8a5a24;
+  --accent-text:#8a5a24;
+  --amber:#b06a24;
+  --petrol:#1d2b26;
+  --danger:#9c3a1e;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--fg);font-family:var(--sans);line-height:1.6}
+::selection{background:#e3c893;color:#221e17}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+a{color:inherit}
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em}
+.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
+.bar nav a{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--dim);
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+.langs{display:flex;gap:.1rem;margin-left:.6rem}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- page head ---------- */
+.crown{padding:clamp(3.4rem,9vh,6rem) 0 clamp(2rem,5vh,3rem)}
+.crown .no{font-family:var(--mono);font-size:.7rem;letter-spacing:.3em;color:var(--accent);display:block;margin-bottom:1rem}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.4rem,6vw,4.2rem);line-height:1.05;letter-spacing:.005em}
+.crown p.lede{margin-top:1.2rem;max-width:58ch;font-size:1.05rem;color:var(--dim)}
+
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:.005em;margin:0 0 1.2rem}
+section{padding:clamp(2.2rem,6vh,4rem) 0}
+section + section{border-top:1px solid var(--line)}
+
+/* ---------- profile pieces ---------- */
+.story{max-width:62ch;font-size:1.02rem}
+.story p+p{margin-top:1em}
+.tl{margin-top:.6rem}
+.tl .row{display:grid;grid-template-columns:74px 1fr;gap:1.2rem;padding:1.1rem 0;border-top:1px solid var(--line)}
+.tl .yr{font-family:var(--mono);font-size:.78rem;color:var(--accent);padding-top:.25rem}
+.tl h3{font-family:var(--sans);font-weight:500;font-size:1rem}
+.tl .role{display:block;font-family:var(--mono);font-size:.72rem;color:var(--dim);margin:.15rem 0 .4rem}
+.tl p{font-size:.92rem;color:#4c463b;max-width:64ch}
+.badge{display:inline-block;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--accent);
+  border:1px solid var(--line);border-radius:2px;padding:.15em .5em;margin-top:.5rem}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(1.2rem,4vw,3rem)}
+dl .item{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
+dl .item .v{color:var(--dim);text-align:right;font-family:var(--mono);font-size:.76rem;padding-top:.15rem;flex-shrink:0}
+h3.sub{font-family:var(--sans);font-weight:500;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:0 0 .5rem}
+.cv-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.6rem;padding:.7rem 1.2rem;
+  border:1px solid var(--fg);border-radius:2px;text-decoration:none;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;
+  transition:background .18s var(--ease),color .18s var(--ease)}
+.cv-btn:hover{background:var(--fg);color:var(--paper)}
+
+/* ---------- projects pieces ---------- */
+.feature{border:1px solid var(--line);background:var(--raised);padding:clamp(1.4rem,4vw,2.4rem);
+  display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start}
+.feature h3{font-family:var(--serif);font-weight:400;font-size:1.6rem}
+.feature p{max-width:58ch;font-size:.95rem;color:#4c463b;margin-top:.5rem}
+.feature .go{font-family:var(--mono);font-size:.74rem;color:var(--accent);text-decoration:none;white-space:nowrap;
+  border-bottom:1px solid var(--line)}
+.feature .go:hover{border-bottom-color:var(--accent)}
+.repo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;background:var(--line);
+  border:1px solid var(--line);margin-top:.4rem}
+.repo{background:var(--paper);padding:1rem 1.1rem;text-decoration:none;transition:background .16s var(--ease)}
+.repo:hover{background:var(--raised)}
+.repo h3{font-family:var(--sans);font-weight:500;font-size:.95rem}
+.repo .t{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+.repo p{font-size:.84rem;color:#4c463b;margin-top:.35rem;line-height:1.45}
+
+/* ---------- contact ---------- */
+.mail-line{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-top:1rem}
+.mail-line a.addr{font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,4vw,2.6rem);text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.mail-line a.addr:hover{border-bottom-color:var(--accent)}
+.copy{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+  background:none;border:1px solid var(--line);border-radius:2px;padding:.5em .9em;cursor:pointer;
+  transition:color .15s var(--ease),border-color .15s var(--ease)}
+.copy:hover{color:var(--fg);border-color:var(--fg)}
+.copy.done{color:var(--accent);border-color:var(--accent)}
+.socials{display:flex;gap:1.6rem;margin-top:2rem}
+.socials a{font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);text-decoration:none;
+  border-bottom:1px solid transparent}
+.socials a:hover{color:var(--fg);border-bottom-color:var(--fg)}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem)}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim)}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+@media (max-width:640px){
+  .tl .row{grid-template-columns:1fr;gap:.2rem}
+  .feature{grid-template-columns:1fr}
+}
+@media print{
+  .bar,footer,.leaf-mark,.cv-btn,.langs{display:none!important}
+  body{background:#fff;color:#000}
+  section{padding:1rem 0}
+}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+/* ---------- tools ---------- */
+.tools{padding-block:clamp(3rem,8vh,5rem) clamp(4rem,11vh,7rem)}
+.demo{border-top:1px solid var(--line);padding-top:clamp(1.75rem,4vw,2.5rem);margin-bottom:clamp(3.5rem,9vh,6rem)}
+.demo:last-of-type{margin-bottom:clamp(2rem,5vh,3rem)}
+.demo-head{margin-bottom:clamp(1.5rem,3.5vw,2.25rem)}
+.demo-n{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.6rem}
+.demo h3{font-size:clamp(1.7rem,4.6vw,3rem);letter-spacing:-0.035em;color:var(--fg)}
+.demo-q{margin:.7rem 0 0;max-width:56ch;font-size:clamp(1.02rem,.95rem + .3vw,1.2rem);line-height:1.45;color:var(--fg)}
+.demo-src{display:flex;flex-wrap:wrap;gap:.5rem 1.4rem;align-items:baseline;margin:clamp(1.1rem,2.5vw,1.5rem) 0 0;
+  padding-top:.9rem;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:none;color:var(--dim)}
+.demo-src a{color:var(--accent-text);text-decoration:none;border-bottom:1px solid var(--line);word-break:break-all}
+.demo-src a:hover{border-bottom-color:var(--accent-text)}
+.tools-note{max-width:64ch;margin-top:clamp(2rem,5vh,3rem);padding-top:1.1rem;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;line-height:1.8;color:var(--dim);text-transform:none}
+/* ---------- shared tool furniture ---------- */
+.rig{border:1px solid var(--line);background:var(--raised)}
+.rig-in{padding:clamp(1rem,2.6vw,1.6rem)}
+.rig-in + .rig-in{border-top:1px solid var(--line)}
+input[type="text"],input[type="number"],input[type="email"],select,textarea{
+  width:100%;background:var(--field);border:1px solid var(--line);color:var(--fg);
+  font-family:var(--mono);font-weight:400;font-size:.95rem;padding:.6rem .65rem;border-radius:0;
+  transition:border-color .15s ease}
+input[type="number"]{font-variant-numeric:tabular-nums}
+input:hover,select:hover,textarea:hover{border-color:var(--dim)}
+input:focus,select:focus,textarea:focus{border-color:var(--accent-text)}
+.btn{background:transparent;border:1px solid var(--dim);color:var(--fg);
+  font-family:var(--mono);font-weight:500;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;
+  padding:.7rem 1.1rem;cursor:pointer;transition:background-color .16s ease,color .16s ease,border-color .16s ease}
+.btn:hover{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn-solid{background:var(--amber);border-color:var(--amber);color:var(--petrol)}
+.btn-solid:hover{background:var(--petrol);border-color:var(--petrol);color:var(--chalk)}
+.out{font-family:var(--mono);font-variant-numeric:tabular-nums}
+input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;background:transparent;margin:.35rem 0;padding:0;border:0}
+input[type="range"]:focus{outline:none}
+input[type="range"]:focus-visible{outline:3px solid var(--accent-text);outline-offset:4px}
+input[type="range"]::-webkit-slider-runnable-track{height:4px;background:var(--line)}
+input[type="range"]::-moz-range-track{height:4px;background:var(--line)}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;
+  margin-top:-9px;background:var(--amber);border:2px solid var(--bg);cursor:pointer}
+input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--amber);border:2px solid var(--bg);cursor:pointer;border-radius:0}
+/* ---------- demo 1, unitguard ---------- */
+.ug-form{display:grid;grid-template-columns:1fr;gap:.85rem}
+@media (min-width:700px){
+.ug-form{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr) auto;align-items:end}
+}
+.ug-go{white-space:nowrap}
+/* ---------- demo 2, carbon bridge ---------- */
+.seg-grid{display:grid;grid-template-columns:1fr;gap:1.1rem}
+@media (min-width:900px){
+.seg-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+.seg{border:1px solid var(--line);padding:.85rem}
+.seg h4{font-family:var(--mono);font-weight:500;font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--accent-text);margin-bottom:.75rem}
+.seg-row{display:grid;grid-template-columns:minmax(0,1fr) 5.4rem 5.4rem;gap:.4rem .5rem;align-items:center;margin-bottom:.5rem}
+.seg-row:last-child{margin-bottom:0}
+.seg-row span{font-family:var(--mono);font-size:.68rem;letter-spacing:.02em;color:var(--dim);line-height:1.25}
+.seg-row input{padding:.42rem .45rem;font-size:.82rem;text-align:right}
+.seg-head span{color:var(--fg);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;text-align:right}
+.seg-head span:first-child{text-align:left}
+.wf{margin-top:.4rem}
+.wf-row{display:grid;grid-template-columns:minmax(5.5rem,8.5rem) minmax(0,1fr) minmax(5rem,7rem);
+  gap:.5rem .75rem;align-items:center;padding:.32rem 0}
+.wf-row .k{font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;color:var(--dim);line-height:1.2}
+.wf-row .v{font-family:var(--mono);font-size:.76rem;letter-spacing:0;color:var(--fg);text-align:right;font-variant-numeric:tabular-nums}
+.wf-track{position:relative;height:20px;background:var(--field);border:1px solid var(--line)}
+.wf-bar{position:absolute;top:0;bottom:0;background:var(--accent-text);min-width:2px}
+.wf-bar.up{background:var(--fg)}
+.wf-bar.lvl{background:var(--line);border-right:3px solid var(--fg)}
+.wf-axis{margin:.9rem 0 0;font-family:var(--mono);font-size:.68rem;letter-spacing:.03em;line-height:1.7;color:var(--dim);max-width:70ch}
+.wf-row.tot .k,.wf-row.tot .v{color:var(--fg);font-weight:500}
+.wf-row.tot{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:.35rem;padding:.5rem 0}
+/* ---------- demo 4, market sizer ---------- */
+.ms-cols{display:grid;grid-template-columns:1fr;gap:1.1rem}
+@media (min-width:820px){
+.ms-cols{grid-template-columns:1fr 1fr;align-items:start}
+}
+.ms-box{border:1px solid var(--line);padding:.85rem}
+.ms-box h4{font-family:var(--mono);font-weight:500;font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--accent-text);margin-bottom:.2rem}
+.ms-box .sub{font-family:var(--mono);font-size:.66rem;color:var(--dim);margin:0 0 .8rem;line-height:1.5}
+.ms-row{display:grid;grid-template-columns:minmax(0,1fr) 6.4rem;gap:.45rem .6rem;align-items:center;margin-bottom:.45rem}
+.ms-row label{font-family:var(--mono);font-size:.68rem;color:var(--dim);line-height:1.25}
+.ms-row input{padding:.42rem .45rem;font-size:.82rem;text-align:right}
+.ms-seg{border-top:1px solid var(--line);margin-top:.7rem;padding-top:.7rem}
+.ms-seg b{display:block;font-family:var(--mono);font-weight:500;font-size:.68rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--fg);margin-bottom:.45rem}
+.ms-tot{display:flex;justify-content:space-between;gap:1rem;border-top:1px solid var(--line);margin-top:.7rem;padding-top:.6rem;
+  font-family:var(--mono);font-size:.78rem;color:var(--fg);font-variant-numeric:tabular-nums}
+.ms-gap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem;margin-top:1.1rem;padding-top:.9rem;border-top:1px solid var(--line)}
+/* ---------- demo 5, dcf ---------- */
+.dcf-split{margin-top:1.2rem}
+.dcf-track{display:flex;height:46px;border:1px solid var(--line);background:var(--field);overflow:hidden}
+.dcf-fc{background:var(--fg);min-width:1px}
+.dcf-tv{background:var(--accent-text);min-width:1px}
+.dcf-key{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;margin-top:.7rem;font-family:var(--mono);font-size:.7rem;color:var(--dim);
+  font-variant-numeric:tabular-nums}
+.dcf-key span{display:flex;align-items:center;gap:.45rem}
+.dcf-key i{width:12px;height:12px;display:block;flex:none}
+.dcf-key i.a{background:var(--fg)}
+.dcf-key i.b{background:var(--accent-text)}
+.dcf-share{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem;margin-top:.2rem}
+.dcf-share .big{font-size:clamp(2.6rem,10vw,5rem)}
+.dcf-share p{margin:0;max-width:34ch;color:var(--fg);font-size:clamp(.98rem,.93rem + .22vw,1.1rem);line-height:1.5}
+.row .grade{display:inline-block;margin-top:.9rem;font-family:var(--mono);font-weight:500;font-size:.7rem;
+  letter-spacing:.12em;text-transform:uppercase;background:var(--amber);color:var(--petrol);padding:.4rem .65rem}</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="index.html">Kerem Özdemir</a>
+    <nav aria-label="Site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" aria-current="page" data-i="nav-j">Projects</a><a href="contact.html" data-i="nav-c">Contact</a>
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+
+<div class="crown">
+  <span class="no">02</span>
+  <h1 data-i="j-h1">Projects</h1>
+  <p class="lede" data-i="j-lede">A company in build, five instruments that run in this page, and the repositories behind them.</p>
+</div>
+
+<section aria-labelledby="col-h">
+  <h2 id="col-h">CoLaunch</h2>
+  <div class="feature">
+    <div>
+      <h3>colaunch.app</h3>
+      <p data-i="col-p">Co-founding a platform for people who build things together. In build with a small team; third place at the Boğaziçi Enterprize competition. More here as it ships — no promises ahead of the product.</p>
+    </div>
+    <a class="go" href="https://colaunch.app" rel="noopener noreferrer">colaunch.app →</a>
+  </div>
+</section>
+
+<section aria-labelledby="inst-h" class="tools">
+  <h2 id="inst-h" data-i="inst-h">Five instruments, live</h2>
+  <p class="lede" style="max-width:60ch;color:var(--dim);margin-bottom:2rem" data-i="inst-p">Reimplemented in JavaScript from my Python repositories, running entirely in this page. The inputs are illustrative; the arithmetic is the same as the repositories, and the Python versions carry the tests.</p>
+<article class="demo" id="demo-unitguard">
+      <div class="demo-head">
+        <span class="demo-n">Tool one</span>
+        <h3>unitguard</h3>
+        <p class="demo-q">Does this conversion have an answer, and if it does not, what exactly is missing?</p>
+      </div>
+      <div class="rig">
+        <div class="rig-in">
+          <div class="ug-form">
+            <div>
+              <label class="lbl" for="ug-q">Quantity</label>
+              <input id="ug-q" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="1200">
+            </div>
+            <div>
+              <label class="lbl" for="ug-from">From</label>
+              <span class="sel"><select id="ug-from"></select></span>
+            </div>
+            <div>
+              <label class="lbl" for="ug-to">To</label>
+              <span class="sel"><select id="ug-to"></select></span>
+            </div>
+            <div class="ug-go"><button type="button" class="btn btn-solid" id="ug-go">Convert</button></div>
+          </div>
+          <div class="chips" id="ug-chips"></div>
+        </div>
+        <div class="rig-in verdict" id="ug-out" role="status" aria-live="polite"></div>
+      </div>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/unitguard" rel="noopener noreferrer">github.com/Keremozdemirra/unitguard</a><span>127 tests</span></p>
+    </article><article class="demo" id="demo-bridge">
+      <div class="demo-head">
+        <span class="demo-n">Tool two</span>
+        <h3>carbon-bridge</h3>
+        <p class="demo-q">Emissions moved between two years. How much of that was output, how much was the product mix, how much was energy intensity, and how much was the emission factor?</p>
+      </div>
+      <div class="rig">
+        <div class="rig-in">
+          <div class="seg-grid" id="cb-segs"></div>
+        </div>
+        <div class="rig-in">
+          <div class="wf" id="cb-wf"></div>
+          <div class="check" id="cb-check"></div>
+        </div>
+      </div>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/esg-toolkit</a><span>37 tests</span></p>
+    </article><article class="demo" id="demo-macc">
+      <div class="demo-head">
+        <span class="demo-n">Tool three</span>
+        <h3>marginal-abatement</h3>
+        <p class="demo-q">At a given carbon price, which of these ten measures is worth doing, and what does the set cost?</p>
+      </div>
+      <div class="rig">
+        <div class="rig-in">
+          <div class="slide">
+            <label class="lbl" for="mc-price">Carbon price <b id="mc-price-v">12 EUR per tonne</b></label>
+            <input id="mc-price" type="range" min="0" max="200" step="1" value="12" aria-describedby="mc-price-v">
+          </div>
+          <dl class="readouts" style="margin-top:1.1rem">
+            <div><dt>Measures unlocked</dt><dd id="mc-n">0<small>of ten</small></dd></div>
+            <div><dt>Cumulative abatement</dt><dd id="mc-t">0<small>tonnes a year</small></dd></div>
+            <div><dt>Net annual cost</dt><dd id="mc-c">0<small>at the levelised cost</small></dd></div>
+          </dl>
+        </div>
+        <div class="rig-in">
+          <div class="macc-chart">
+            <div class="macc-axis" id="mc-axis" aria-hidden="true"></div>
+            <div class="macc-plot" id="mc-plot"><div class="macc-zero" id="mc-zero"></div></div>
+          </div>
+          <p class="macc-hint">Bar width is annual abatement. Bar height is the levelised cost per tonne. Select a bar for its arithmetic.</p>
+          <div class="macc-read" id="mc-read" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/esg-toolkit</a><span>46 tests</span></p>
+    </article><article class="demo" id="demo-sizer">
+      <div class="demo-head">
+        <span class="demo-n">Tool four</span>
+        <h3>market-sizer</h3>
+        <p class="demo-q">The two sizings disagree. Which assumption would have to change, and what would it have to become?</p>
+      </div>
+      <div class="rig">
+        <div class="rig-in">
+          <div class="ms-cols">
+            <div class="ms-box">
+              <h4>Top down</h4>
+              <p class="sub">A universe narrowed by factors.</p>
+              <div id="ms-td"></div>
+              <div class="ms-tot"><span>Top down total</span><b id="ms-td-tot">0</b></div>
+            </div>
+            <div class="ms-box">
+              <h4>Bottom up</h4>
+              <p class="sub">Segments, each a product of drivers.</p>
+              <div id="ms-bu"></div>
+              <div class="ms-tot"><span>Bottom up total</span><b id="ms-bu-tot">0</b></div>
+            </div>
+          </div>
+          <dl class="readouts ms-gap">
+            <div><dt>Top down</dt><dd id="ms-a">0<small>EUR, illustrative</small></dd></div>
+            <div><dt>Bottom up</dt><dd id="ms-b">0<small>EUR, illustrative</small></dd></div>
+            <div><dt>Gap</dt><dd id="ms-g">0<small id="ms-g-sub">bottom up minus top down</small></dd></div>
+          </dl>
+        </div>
+        <div class="rig-in">
+          <table class="solve" id="ms-solve">
+            <caption>What each assumption would have to be for the two sizings to agree</caption>
+            <thead><tr><th scope="col">Assumption</th><th scope="col">Now</th><th scope="col">Implied</th><th scope="col">Multiple</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/analyst-toolkit</a><span>49 tests</span></p>
+    </article><article class="demo" id="demo-dcf">
+      <div class="demo-head">
+        <span class="demo-n">Tool five</span>
+        <h3>dcf-lab</h3>
+        <p class="demo-q">How much of this valuation is the five years that were forecast, and how much is the perpetuity bolted on after them?</p>
+      </div>
+      <div class="rig">
+        <div class="rig-in">
+          <div class="slide-row">
+            <div class="slide">
+              <label class="lbl" for="dcf-w">Cost of capital <b id="dcf-w-v">8.15%</b></label>
+              <input id="dcf-w" type="range" min="400" max="1600" step="5" value="815" aria-describedby="dcf-w-v">
+            </div>
+            <div class="slide">
+              <label class="lbl" for="dcf-g">Terminal growth <b id="dcf-g-v">2.10%</b></label>
+              <input id="dcf-g" type="range" min="0" max="600" step="5" value="210" aria-describedby="dcf-g-v">
+            </div>
+          </div>
+        </div>
+        <div class="rig-in" id="dcf-body" role="status" aria-live="polite"></div>
+      </div>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/analyst-toolkit</a><span>72 tests</span></p>
+    </article>
+</section>
+
+<section aria-labelledby="repo-h">
+  <h2 id="repo-h" data-i="repo-h">Repositories</h2>
+  <p class="lede" style="max-width:60ch;color:var(--dim)" data-i="repo-p">Everything public, everything sourced. The instruments above come from the first five; the rest package working method as reusable skills.</p>
+  <div class="repo-grid">
+    <a class="repo" href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer"><h3>esg-toolkit</h3><span class="t">Python</span><p data-i="rp1">Carbon decomposition, target pathways, abatement cost, CBAM embedded emissions.</p></a>
+    <a class="repo" href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer"><h3>analyst-toolkit</h3><span class="t">Python</span><p data-i="rp2">Market sizing from two directions, DCF with the terminal value taken apart.</p></a>
+    <a class="repo" href="https://github.com/Keremozdemirra/unitguard" rel="noopener noreferrer"><h3>unitguard</h3><span class="t">Python</span><p data-i="rp3">Unit and dimension safety for energy and emissions arithmetic. Refuses to guess.</p></a>
+    <a class="repo" href="https://github.com/Keremozdemirra/open-climate-data" rel="noopener noreferrer"><h3>open-climate-data</h3><span class="t">Python</span><p data-i="rp4">One interface over public climate data; every value carries source, version, date.</p></a>
+    <a class="repo" href="https://github.com/Keremozdemirra/simea" rel="noopener noreferrer"><h3>simea</h3><span class="t" data-i="rt5">Research</span><p data-i="rp5">Two papers on market predictability, with the models that test them.</p></a>
+    <a class="repo" href="https://github.com/Keremozdemirra/agent-kit" rel="noopener noreferrer"><h3>agent-kit +11</h3><span class="t" data-i="rt6">Skill packs</span><p data-i="rp6">Twelve repositories of working method packaged as Claude skills — finance, sustainability, research, writing, risk, and the conventions they share.</p></a>
+  </div>
+</section>
+
+</main>
+<footer><div class="wrap">
+  <span>© 2026 Kerem Özdemir</span>
+  <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
+</div></footer>
+<script>
+window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-c": "İletişim", "j-h1": "Projeler", "j-lede": "Kurulmakta olan bir şirket, bu sayfanın içinde çalışan beş araç ve arkalarındaki repolar.", "col-p": "Birlikte bir şeyler inşa edenler için bir platform kuruyoruz. Küçük bir ekiple yapım halinde; Boğaziçi Enterprize yarışmasında üçüncülük. Ürün ilerledikçe burada — üründen önce vaat yok.", "inst-h": "Beş araç, canlı", "inst-p": "Python repolarımdan JavaScript'e yeniden yazıldı, tamamen bu sayfada çalışıyor. Girdiler örnektir; aritmetik repolardakiyle aynı, testler Python tarafında.", "repo-h": "Repolar", "repo-p": "Hepsi açık, hepsi kaynaklı. Yukarıdaki araçlar ilk beşten geliyor; kalanlar çalışma yöntemini yeniden kullanılabilir skill'ler olarak paketliyor.", "rp1": "Karbon ayrıştırma, hedef patikaları, azaltım maliyeti, CBAM gömülü emisyonları.", "rp2": "İki yönden pazar boyutlandırma, terminal değeri parçalanmış DCF.", "rp3": "Enerji ve emisyon aritmetiği için birim ve boyut güvenliği. Tahmin etmeyi reddeder.", "rp4": "Açık iklim verisi üzerinde tek arayüz; her değer kaynak, sürüm ve tarih taşır.", "rt5": "Araştırma", "rp5": "Pazar öngörülebilirliği üzerine iki makale ve onları test eden modeller.", "rt6": "Skill paketleri", "rp6": "Çalışma yöntemini Claude skill'i olarak paketleyen on iki repo — finans, sürdürülebilirlik, araştırma, yazı, risk ve ortak konvansiyonları."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-c": "Kontakt", "j-h1": "Projekte", "j-lede": "Ein Unternehmen im Aufbau, fünf Instrumente, die in dieser Seite laufen, und die Repositories dahinter.", "col-p": "Wir bauen eine Plattform für Menschen, die gemeinsam Dinge entwickeln. Im Aufbau mit kleinem Team; dritter Platz beim Boğaziçi-Enterprize-Wettbewerb. Mehr hier, sobald es liefert — keine Versprechen vor dem Produkt.", "inst-h": "Fünf Instrumente, live", "inst-p": "Aus meinen Python-Repositories in JavaScript neu umgesetzt, laufen vollständig in dieser Seite. Die Eingaben sind illustrativ; die Arithmetik ist dieselbe, die Tests trägt die Python-Seite.", "repo-h": "Repositories", "repo-p": "Alles öffentlich, alles mit Quelle. Die Instrumente oben stammen aus den ersten fünf; der Rest verpackt Arbeitsmethode als wiederverwendbare Skills.", "rp1": "Emissionszerlegung, Zielpfade, Vermeidungskosten, eingebettete CBAM-Emissionen.", "rp2": "Marktgrößen aus zwei Richtungen, DCF mit zerlegtem Terminal Value.", "rp3": "Einheiten- und Dimensionssicherheit für Energie- und Emissionsrechnung. Rät nicht.", "rp4": "Eine Schnittstelle über öffentliche Klimadaten; jeder Wert trägt Quelle, Version, Datum.", "rt5": "Forschung", "rp5": "Zwei Arbeiten zur Vorhersagbarkeit von Märkten, mit den Modellen, die sie testen.", "rt6": "Skill-Pakete", "rp6": "Zwölf Repositories, die Arbeitsmethode als Claude-Skills verpacken — Finanzen, Nachhaltigkeit, Recherche, Schreiben, Risiko und ihre gemeinsamen Konventionen."}};
+
+(function(){
+  "use strict";
+  /* language: the same dictionaries drive every inner page */
+  var lang = "en";
+  try { lang = localStorage.getItem("lang") || "en"; } catch(e){}
+  var base = {};
+  function apply(l){
+    var dict = (window.I18N && window.I18N[l]) || {};
+    document.querySelectorAll("[data-i]").forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if(!(k in base)) base[k] = el.innerHTML;
+      if(l === "en"){ el.innerHTML = base[k]; return; }
+      if(dict[k] !== undefined) el.innerHTML = dict[k];
+    });
+    document.documentElement.setAttribute("lang", l);
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true":"false");
+    });
+    try { localStorage.setItem("lang", l); } catch(e){}
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  if(lang !== "en") apply(lang);
+
+  /* copy buttons */
+  document.querySelectorAll(".copy[data-copy]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var t = b.getAttribute("data-copy");
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject())
+        .then(function(){ b.classList.add("done"); b.textContent = b.getAttribute("data-done") || "copied";
+          setTimeout(function(){ b.classList.remove("done"); b.textContent = b.getAttribute("data-label") || "copy"; }, 1600); })
+        .catch(function(){});
+    });
+  });
+
+  /* one leaf falls when the page opens — a signature, not a show */
+  if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    var leaf = document.createElement("div");
+    leaf.className = "leaf-mark";
+    leaf.innerHTML = '<svg width="18" height="26" viewBox="0 0 18 26"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".9"/><path d="M9 3 L9 23" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg>';
+    document.body.appendChild(leaf);
+    var x = 12 + Math.random() * 70, t0 = null, dur = 7000 + Math.random() * 4000;
+    function fall(ts){
+      if(!t0) t0 = ts;
+      var p = (ts - t0) / dur;
+      if(p >= 1){ leaf.remove(); return; }
+      leaf.style.left = "calc(" + x + "vw + " + (Math.sin(p * 9) * 40) + "px)";
+      leaf.style.top = (p * 108) + "vh";
+      leaf.style.transform = "rotate(" + (p * 500) + "deg)";
+      leaf.style.opacity = p > .85 ? (1 - p) / .15 : 1;
+      requestAnimationFrame(fall);
+    }
+    setTimeout(function(){ requestAnimationFrame(fall); }, 1200);
+  }
+})();
+
+
+/* live region + shims the instruments expect */
+(function(){
+  "use strict";
+  var live = document.createElement("div");
+  live.id = "live"; live.className = "vh"; live.setAttribute("aria-live","polite");
+  document.body.appendChild(live);
+  window.__toolshim = true;
+})();
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var live = $("live");
+  function say(t){ if(live){ live.textContent=""; setTimeout(function(){ live.textContent=t; },30); } }
+  function el(tag, cls, txt){ var e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; }
+  var NF = new Intl.NumberFormat("en-GB");
+  function n0(v){ return NF.format(Math.round(v)); }
+  function nd(v,d){ return v.toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  function markTool(){ /* no tracking on this page */ }
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* =========================================================================
+     TOOL 1  unitguard
+     Exact rational arithmetic. A unit is a dimension, a scale to the SI
+     coherent unit, and for greenhouse gases a species. Conversion is refused
+     rather than guessed, and the refusal names what is missing.
+     ========================================================================= */
+  function bgcd(a, b){ if (a < 0n) a = -a; if (b < 0n) b = -b; while (b) { var t = a % b; a = b; b = t; } return a; }
+  function R(n, d){
+    if (d === undefined) d = 1n;
+    if (d === 0n) return null;
+    if (d < 0n) { n = -n; d = -d; }
+    var g = bgcd(n, d); if (g > 1n) { n = n / g; d = d / g; }
+    return { n: n, d: d };
+  }
+  function rmul(a, b){ return R(a.n * b.n, a.d * b.d); }
+  function rdiv(a, b){ return R(a.n * b.d, a.d * b.n); }
+  function parseR(s){
+    s = String(s).trim().replace(/[,\s]/g, "");
+    if (!/^-?\d+(\.\d+)?$/.test(s)) return null;
+    var neg = s.charAt(0) === "-"; if (neg) s = s.slice(1);
+    var p = s.split("."), frac = p[1] || "";
+    var n = BigInt(p[0] + frac), d = BigInt("1" + new Array(frac.length + 1).join("0"));
+    if (neg) n = -n;
+    return R(n, d);
+  }
+  function group(intPart){ return intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+  function fmtR(r){
+    var neg = r.n < 0n, d = r.d;
+    var n = neg ? -r.n : r.n;
+    for (var k = 0; k <= 24; k++) {
+      var pow = BigInt("1" + new Array(k + 1).join("0"));
+      var p = n * pow;
+      if (p % d === 0n) {
+        var v = (p / d).toString();
+        if (k > 0) {
+          while (v.length <= k) v = "0" + v;
+          v = v.slice(0, v.length - k) + "." + v.slice(v.length - k);
+          v = v.replace(/0+$/, "").replace(/\.$/, "");
+        }
+        var dot = v.indexOf(".");
+        var ip = dot < 0 ? v : v.slice(0, dot), fp = dot < 0 ? "" : v.slice(dot);
+        return (neg ? "-" : "") + group(ip) + fp;
+      }
+    }
+    var approx = Number(n) / Number(d);
+    return "~" + (neg ? "-" : "") + approx.toLocaleString("en-GB", { maximumFractionDigits: 6 });
+  }
+
+  var UG_UNITS = [
+    { s: "J",     dim: "energy", sc: R(1n) },
+    { s: "kJ",    dim: "energy", sc: R(1000n) },
+    { s: "MJ",    dim: "energy", sc: R(1000000n) },
+    { s: "GJ",    dim: "energy", sc: R(1000000000n) },
+    { s: "TJ",    dim: "energy", sc: R(1000000000000n) },
+    { s: "Wh",    dim: "energy", sc: R(3600n) },
+    { s: "kWh",   dim: "energy", sc: R(3600000n) },
+    { s: "MWh",   dim: "energy", sc: R(3600000000n) },
+    { s: "GWh",   dim: "energy", sc: R(3600000000000n) },
+    { s: "g",     dim: "mass",   sc: R(1n, 1000n) },
+    { s: "kg",    dim: "mass",   sc: R(1n) },
+    { s: "t",     dim: "mass",   sc: R(1000n) },
+    { s: "kt",    dim: "mass",   sc: R(1000000n) },
+    { s: "Mt",    dim: "mass",   sc: R(1000000000n) },
+    { s: "tC",    dim: "ghg",    sp: "C" },
+    { s: "tCO2",  dim: "ghg",    sp: "CO2" },
+    { s: "tCO2e", dim: "ghg",    sp: "CO2e" },
+    { s: "tCH4",  dim: "ghg",    sp: "CH4" }
+  ];
+  var UG_BY = {};
+  UG_UNITS.forEach(function(u){ UG_BY[u.s] = u; });
+  var DIM_NAME = { energy: "energy", mass: "mass", ghg: "greenhouse gas mass" };
+
+  function ghgFactor(from, to, fromS, toS){
+    if (from === to) return { ok: true, f: R(1n) };
+    if (from === "CH4" || to === "CH4") {
+      return { ok: false,
+        head: "No global warming potential was given",
+        line: fromS + " to " + toS + " has no answer here.",
+        why: "A tonne of CH4 becomes tCO2e only through a global warming potential, and a GWP only exists inside a stated IPCC assessment report and time horizon. Over 100 years AR4 puts methane at 25, AR5 at 28, and AR6 at 27.0 for biogenic and 29.8 for fossil methane. Name the report and the horizon and this is one multiplication.",
+        note: "unitguard refuses rather than pick one." };
+    }
+    if (from === "CO2e") {
+      return { ok: false,
+        head: "No gas mix was given",
+        line: fromS + " to " + toS + " has no answer here.",
+        why: "tCO2e is a unit of account, not a substance. It records how much warming a bundle of gases is held to cause, not how much of any single gas is present. Without the mix that produced the figure there is no mass of " + to + " to return.",
+        note: "The direction that does work is CO2 to CO2e, where the potential is 1 by definition." };
+    }
+    if (from === "C" && to === "CO2") return { ok: true, f: R(44n, 12n), note: "Exactly 44/12, the ratio of the molar masses." };
+    if (from === "CO2" && to === "C") return { ok: true, f: R(12n, 44n), note: "Exactly 12/44, the ratio of the molar masses." };
+    if (from === "CO2" && to === "CO2e") return { ok: true, f: R(1n), note: "The potential of CO2 is 1 by definition of the metric." };
+    if (from === "C" && to === "CO2e") return { ok: true, f: R(44n, 12n), note: "Carbon to CO2 at 44/12, then CO2 to CO2e at a potential of 1." };
+    return { ok: false, head: "Not defined", line: fromS + " to " + toS + " has no answer here.",
+      why: "unitguard has no defined route between these two species.", note: "" };
+  }
+
+  function ugConvert(qty, fromS, toS){
+    var a = UG_BY[fromS], b = UG_BY[toS];
+    if (a.dim !== b.dim) {
+      if (a.dim === "mass" && b.dim === "ghg") {
+        return { ok: false,
+          head: "No gas species was given",
+          line: fromS + " to " + toS + " has no answer here.",
+          why: fromS + " is a bare mass. " + toS + " counts one specific gas. Naming the species is the whole difference between the two, and a converter that guessed it would be inventing the number.",
+          note: "State the species on the input side and the conversion goes through." };
+      }
+      if (a.dim === "ghg" && b.dim === "mass") {
+        return { ok: false,
+          head: "The species would be discarded",
+          line: fromS + " to " + toS + " has no answer here.",
+          why: "unitguard carries the gas species as part of the unit. Converting " + fromS + " to a bare " + toS + " drops it, and the figure stops being an emissions figure. Keep the species in the target unit.",
+          note: "" };
+      }
+      return { ok: false,
+        head: "Different dimensions",
+        line: fromS + " to " + toS + " has no answer here.",
+        why: fromS + " measures " + DIM_NAME[a.dim] + " and " + toS + " measures " + DIM_NAME[b.dim] + ". Nothing converts one into the other on its own. An energy density or an emission factor would, and neither was supplied.",
+        note: "" };
+    }
+    if (a.dim === "ghg") {
+      var g = ghgFactor(a.sp, b.sp, fromS, toS);
+      if (!g.ok) return g;
+      return { ok: true, value: rmul(qty, g.f), note: g.note || "" };
+    }
+    return { ok: true, value: rmul(qty, rdiv(a.sc, b.sc)),
+      note: "Scale factors are exact rationals, so this round trips without loss." };
+  }
+
+  (function(){
+    var qEl = $("ug-q"), fromEl = $("ug-from"), toEl = $("ug-to"), out = $("ug-out"), chips = $("ug-chips");
+    UG_UNITS.forEach(function(u){
+      var o1 = el("option", null, u.s); o1.value = u.s; fromEl.appendChild(o1);
+      var o2 = el("option", null, u.s); o2.value = u.s; toEl.appendChild(o2);
+    });
+    function run(){
+      var raw = qEl.value;
+      var q = parseR(raw);
+      out.textContent = "";
+      if (q === null) {
+        out.className = "rig-in verdict";
+        out.appendChild(el("p", "v-head bad", "Not a number"));
+        out.appendChild(el("p", "v-line", "“" + raw.trim() + "” is not a magnitude."));
+        out.appendChild(el("p", "v-why", "Type a plain decimal. Magnitudes are read as exact rationals, so 0.1 means one tenth rather than the binary double nearest to it."));
+        return;
+      }
+      var r = ugConvert(q, fromEl.value, toEl.value);
+      if (r.ok) {
+        out.className = "rig-in verdict v-ok";
+        out.appendChild(el("p", "v-head", "Converted"));
+        var b = el("p", "big", fmtR(r.value) + " " + toEl.value);
+        out.appendChild(b);
+        out.appendChild(el("p", "v-why", fmtR(q) + " " + fromEl.value + " is " + fmtR(r.value) + " " + toEl.value + "."));
+        if (r.note) out.appendChild(el("p", "v-note", r.note));
+        var vv = fmtR(r.value);
+        if (vv.charAt(0) === "~") out.appendChild(el("p", "v-note", "The leading tilde marks a rational that does not terminate in decimal. The stored value is exact; the printed one is not."));
+      } else {
+        out.className = "rig-in verdict";
+        out.appendChild(el("p", "v-head bad", "Refused. " + r.head));
+        out.appendChild(el("p", "v-line", r.line));
+        out.appendChild(el("p", "v-why", r.why));
+        if (r.note) out.appendChild(el("p", "v-note", r.note));
+      }
+    }
+    var EX = [
+      { q: "1200", f: "tCH4", t: "tCO2e" },
+      { q: "8000", f: "tCO2e", t: "tCO2" },
+      { q: "1", f: "kWh", t: "MJ" },
+      { q: "500", f: "tC", t: "tCO2" }
+    ];
+    EX.forEach(function(e){
+      var b = el("button", "chip", e.q + " " + e.f + " to " + e.t);
+      b.type = "button";
+      b.addEventListener("click", function(){
+        qEl.value = e.q; fromEl.value = e.f; toEl.value = e.t; markTool("unitguard"); run();
+        say("Loaded " + e.q + " " + e.f + " to " + e.t + ".");
+      });
+      chips.appendChild(b);
+    });
+    function userRun(){ markTool("unitguard"); run(); }
+    $("ug-go").addEventListener("click", userRun);
+    qEl.addEventListener("input", userRun);
+    fromEl.addEventListener("change", userRun);
+    toEl.addEventListener("change", userRun);
+    qEl.addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); userRun(); } });
+    fromEl.value = "tCH4"; toEl.value = "tCO2e";
+    run();
+  })();
+
+  /* =========================================================================
+     TOOL 2  carbon-bridge, additive LMDI-I
+     E_i = Q * S_i * I_i * F_i. The four effects sum back to the observed
+     change with no residual. That identity is printed.
+     ========================================================================= */
+  var ZERO_SUB = 1e-12;
+  function logMean(a, b){
+    if (a < 0 || b < 0) return NaN;
+    if (a === b) return a;
+    if (a === 0 || b === 0) return 0;
+    if (Math.abs(a - b) < 1e-12 * Math.max(a, b)) return 0.5 * (a + b);
+    return (a - b) / (Math.log(a) - Math.log(b));
+  }
+  function posv(v){ return v > 0 ? v : ZERO_SUB; }
+
+  function decompose(segs){
+    var base = segs.map(function(s){ return { q: s.b.q, e: s.b.q * s.b.i, m: s.b.q * s.b.i * s.b.f }; });
+    var targ = segs.map(function(s){ return { q: s.t.q, e: s.t.q * s.t.i, m: s.t.q * s.t.i * s.t.f }; });
+    var Q0 = 0, QT = 0, E0 = 0, ET = 0, i;
+    for (i = 0; i < segs.length; i++) { Q0 += base[i].q; QT += targ[i].q; E0 += base[i].m; ET += targ[i].m; }
+    if (!(Q0 > 0) || !(QT > 0)) return { error: "Total output must be above zero in both periods." };
+    var eff = { activity: 0, mix: 0, intensity: 0, factor: 0 };
+    for (i = 0; i < segs.length; i++) {
+      var bq = posv(base[i].q), tq = posv(targ[i].q);
+      var be = posv(base[i].e), te = posv(targ[i].e);
+      var bm = posv(base[i].m), tm = posv(targ[i].m);
+      var w = logMean(tm, bm);
+      eff.activity  += w * Math.log(QT / Q0);
+      eff.mix       += w * Math.log((tq / QT) / (bq / Q0));
+      eff.intensity += w * Math.log((te / tq) / (be / bq));
+      eff.factor    += w * Math.log((tm / te) / (bm / be));
+    }
+    var explained = eff.activity + eff.mix + eff.intensity + eff.factor;
+    return { base: E0, target: ET, total: ET - E0, eff: eff, explained: explained, residual: (ET - E0) - explained };
+  }
+
+  (function(){
+    var SEGS = [
+      { name: "Coated sheet", b: { q: 120000, i: 0.42, f: 0.31 }, t: { q: 138000, i: 0.38, f: 0.26 } },
+      { name: "Extrusions",   b: { q: 64000,  i: 0.55, f: 0.31 }, t: { q: 72000,  i: 0.52, f: 0.26 } },
+      { name: "Castings",     b: { q: 41000,  i: 0.88, f: 0.44 }, t: { q: 34000,  i: 0.85, f: 0.40 } }
+    ];
+    var ROWS = [
+      { k: "q", label: "Output, units", step: "1000" },
+      { k: "i", label: "MWh per unit", step: "0.01" },
+      { k: "f", label: "tCO2e per MWh", step: "0.01" }
+    ];
+    var host = $("cb-segs"), wf = $("cb-wf"), check = $("cb-check");
+
+    SEGS.forEach(function(s, si){
+      var box = el("div", "seg");
+      box.appendChild(el("h4", null, s.name));
+      var head = el("div", "seg-row seg-head");
+      head.appendChild(el("span", null, ""));
+      head.appendChild(el("span", null, "2023"));
+      head.appendChild(el("span", null, "2026"));
+      box.appendChild(head);
+      ROWS.forEach(function(r){
+        var row = el("div", "seg-row");
+        row.appendChild(el("span", null, r.label));
+        ["b", "t"].forEach(function(period){
+          var inp = document.createElement("input");
+          inp.type = "number"; inp.step = r.step; inp.min = "0";
+          inp.value = String(s[period][r.k]);
+          inp.id = "cb-" + si + "-" + period + "-" + r.k;
+          inp.setAttribute("aria-label", s.name + ", " + r.label + ", " + (period === "b" ? "2023" : "2026"));
+          inp.addEventListener("input", function(){
+            var v = parseFloat(inp.value);
+            s[period][r.k] = isFinite(v) && v >= 0 ? v : 0;
+            markTool("carbon-bridge");
+            draw();
+          });
+          row.appendChild(inp);
+        });
+        box.appendChild(row);
+      });
+      host.appendChild(box);
+    });
+
+    function bar(label, from, to, lo, hi, isEffect){
+      var row = el("div", "wf-row" + (isEffect ? "" : " tot"));
+      row.appendChild(el("span", "k", label));
+      var track = el("div", "wf-track");
+      var span = hi - lo || 1;
+      var fill;
+      if (isEffect) {
+        var a = Math.min(from, to), b = Math.max(from, to);
+        fill = el("i", "wf-bar" + (to > from ? " up" : ""));
+        fill.style.left = ((a - lo) / span * 100) + "%";
+        fill.style.width = Math.max(0.5, (b - a) / span * 100) + "%";
+      } else {
+        fill = el("i", "wf-bar lvl");
+        fill.style.left = "0%";
+        fill.style.width = Math.max(0.5, (to - lo) / span * 100) + "%";
+      }
+      track.appendChild(fill);
+      row.appendChild(track);
+      var delta = to - from;
+      row.appendChild(el("span", "v", isEffect ? (delta >= 0 ? "+" : "") + n0(delta) : n0(to)));
+      return row;
+    }
+
+    function draw(){
+      var d = decompose(SEGS);
+      wf.textContent = ""; check.textContent = "";
+      if (d.error) { check.appendChild(el("p", null, d.error)); return; }
+      var run = d.base;
+      var pts = [0, d.base];
+      var order = [["Output", d.eff.activity], ["Mix", d.eff.mix], ["Energy intensity", d.eff.intensity], ["Emission factor", d.eff.factor]];
+      order.forEach(function(o){ run += o[1]; pts.push(run); });
+      pts.push(d.target);
+      pts = pts.slice(1);
+      var lo = Math.min.apply(null, pts), hi = Math.max.apply(null, pts);
+      var pad = Math.max((hi - lo) * 0.08, 1e-9);
+      lo = lo - pad; hi = hi + pad;
+      if (lo < 0) lo = Math.min(0, lo);
+
+      wf.appendChild(bar("2023 emissions", 0, d.base, lo, hi, false));
+      run = d.base;
+      order.forEach(function(o){
+        wf.appendChild(bar(o[0], run, run + o[1], lo, hi, true));
+        run += o[1];
+      });
+      wf.appendChild(bar("2026 emissions", 0, d.target, lo, hi, false));
+      wf.appendChild(el("p", "wf-axis", "The scale runs from " + n0(lo) + " to " + n0(hi) + " tCO2e and does not start at zero, so the four effects are readable next to totals six times their size."));
+
+      var e = d.eff;
+      check.appendChild(el("p", "lab", "The check"));
+      var f = el("p");
+      f.appendChild(document.createTextNode("activity + mix + intensity + factor = total"));
+      check.appendChild(f);
+      var terms = [e.activity, e.mix, e.intensity, e.factor];
+      var expr = terms.map(function(v, i){
+        if (i === 0) return nd(v, 6);
+        return (v < 0 ? " - " : " + ") + nd(Math.abs(v), 6);
+      }).join("");
+      var line = el("p");
+      line.appendChild(document.createTextNode(expr + "  =  "));
+      line.appendChild(el("b", null, nd(d.explained, 6)));
+      check.appendChild(line);
+      check.appendChild(el("p", null, "sum of the four effects   " + nd(d.explained, 6) + " tCO2e"));
+      check.appendChild(el("p", null, "2026 minus 2023           " + nd(d.total, 6) + " tCO2e"));
+      check.appendChild(el("p", null, "residual                  " + d.residual.toExponential(2) + " tCO2e"));
+      check.appendChild(el("p", "lab", "LMDI-I leaves no residual, so the only difference is floating point noise. Edit any field above and the two lines stay equal."));
+    }
+    draw();
+  })();
+
+  /* =========================================================================
+     TOOL 3  marginal-abatement
+     LCOA = (capex * CRF(r, life) - annual saving) / annual abatement
+     CRF(r, n) = r / (1 - (1 + r)^-n)
+     ========================================================================= */
+  (function(){
+    var RATE = 0.08;
+    var RAW = [
+      { n: "LED relighting",             capex: 54000,   save: 18000,   life: 8,  ab: 420 },
+      { n: "Compressed air leak repair", capex: 18000,   save: 32000,   life: 5,  ab: 610 },
+      { n: "Variable speed drives",      capex: 96000,   save: 24500,   life: 10, ab: 1240 },
+      { n: "Boiler tuning",              capex: 12000,   save: 3600,    life: 4,  ab: 380 },
+      { n: "Heat recovery",              capex: 410000,  save: 38000,   life: 15, ab: 1850 },
+      { n: "Rooftop PV",                 capex: 620000,  save: 74000,   life: 25, ab: 2100 },
+      { n: "Process electrification",    capex: 1850000, save: 96000,   life: 20, ab: 3400 },
+      { n: "Motor replacement",          capex: 168000,  save: 21000,   life: 12, ab: 940 },
+      { n: "Insulation upgrade",         capex: 95000,   save: 14200,   life: 20, ab: 760 },
+      { n: "Green power contract",       capex: 0,       save: -118000, life: 1,  ab: 3700 }
+    ];
+    function crf(r, n){ return r === 0 ? 1 / n : r / (1 - Math.pow(1 + r, -n)); }
+    var M = RAW.map(function(m){
+      var c = crf(RATE, m.life);
+      return { n: m.n, capex: m.capex, save: m.save, life: m.life, ab: m.ab, crf: c,
+               lcoa: (m.capex * c - m.save) / m.ab };
+    }).sort(function(a, b){ return a.lcoa - b.lcoa || (a.n < b.n ? -1 : 1); });
+
+    var TOTAL_AB = M.reduce(function(s, m){ return s + m.ab; }, 0);
+    var LO = Math.min(0, M[0].lcoa), HI = Math.max(0, M[M.length - 1].lcoa);
+    LO = Math.floor((LO * 1.14) / 5) * 5; HI = Math.ceil((HI * 1.14) / 5) * 5;
+    var SPAN = HI - LO;
+    var zeroPct = (HI - 0) / SPAN * 100;
+
+    var plot = $("mc-plot"), axis = $("mc-axis"), zero = $("mc-zero"),
+        price = $("mc-price"), priceV = $("mc-price-v"), read = $("mc-read"),
+        rN = $("mc-n"), rT = $("mc-t"), rC = $("mc-c");
+    zero.style.top = zeroPct + "%";
+    [HI, 0, LO].forEach(function(v){
+      var s = el("span", null, (v > 0 ? "+" : "") + v);
+      s.style.top = ((HI - v) / SPAN * 100) + "%";
+      axis.appendChild(s);
+    });
+
+    var bars = [], picked = -1;
+    M.forEach(function(m, i){
+      var b = el("button", "macc-b");
+      b.type = "button";
+      b.style.flexBasis = (m.ab / TOTAL_AB * 100) + "%";
+      b.setAttribute("aria-pressed", "false");
+      b.setAttribute("aria-label", m.n + ", " + nd(m.lcoa, 2) + " euro per tonne, " + n0(m.ab) + " tonnes a year");
+      var f = el("i");
+      if (m.lcoa >= 0) { f.style.top = ((HI - m.lcoa) / SPAN * 100) + "%"; f.style.height = (m.lcoa / SPAN * 100) + "%"; }
+      else { f.style.top = zeroPct + "%"; f.style.height = (-m.lcoa / SPAN * 100) + "%"; }
+      b.appendChild(f);
+      b.addEventListener("click", function(){ markTool("marginal-abatement"); picked = (picked === i ? -1 : i); paint(); });
+      plot.appendChild(b);
+      bars.push(b);
+    });
+
+    function money(v){
+      var s = Math.abs(Math.round(v));
+      return (v < 0 ? "-" : "") + NF.format(s) + " EUR";
+    }
+    function paint(){
+      var p = parseFloat(price.value);
+      priceV.textContent = n0(p) + " EUR per tonne";
+      var on = M.filter(function(m){ return m.lcoa <= p; });
+      var ab = on.reduce(function(s, m){ return s + m.ab; }, 0);
+      var net = on.reduce(function(s, m){ return s + m.lcoa * m.ab; }, 0);
+      M.forEach(function(m, i){
+        bars[i].dataset.on = m.lcoa <= p ? "1" : "0";
+        bars[i].setAttribute("aria-pressed", picked === i ? "true" : "false");
+      });
+      rN.textContent = ""; rN.appendChild(document.createTextNode(String(on.length)));
+      rN.appendChild(el("small", null, "of ten"));
+      rT.textContent = ""; rT.appendChild(document.createTextNode(n0(ab)));
+      rT.appendChild(el("small", null, "tonnes a year, of " + n0(TOTAL_AB)));
+      rC.textContent = ""; rC.appendChild(document.createTextNode(money(net)));
+      rC.appendChild(el("small", null, net < 0 ? "a net saving at the levelised cost" : "a net cost at the levelised cost"));
+
+      read.textContent = "";
+      if (picked >= 0) {
+        var m = M[picked];
+        read.appendChild(el("h4", null, m.n));
+        var pre = el("pre");
+        pre.appendChild(document.createTextNode(
+          "CRF  = 0.08 / (1 - 1.08^-" + m.life + ")\n" +
+          "     = " + nd(m.crf, 6) + "\n" +
+          "LCOA = (" + NF.format(m.capex) + " × " + nd(m.crf, 6) + " - " + NF.format(m.save) + ") / " + NF.format(m.ab) + "\n" +
+          "     = "));
+        var b = el("b", null, nd(m.lcoa, 2) + " EUR per tonne");
+        pre.appendChild(b);
+        pre.appendChild(document.createTextNode(
+          "\n\n" + (m.lcoa <= p ? "At " + n0(p) + " EUR per tonne this measure is worth doing."
+                                : "At " + n0(p) + " EUR per tonne this measure is not worth doing. It clears at " + nd(m.lcoa, 2) + ".")));
+        read.appendChild(pre);
+      } else {
+        read.appendChild(el("h4", null, on.length ? "Worth doing at " + n0(p) + " EUR per tonne" : "Nothing clears at " + n0(p) + " EUR per tonne"));
+        var ul = el("ul", "macc-list");
+        (on.length ? on : M.slice(0, 3)).forEach(function(m){
+          var liEl = el("li");
+          liEl.appendChild(el("b", null, m.n));
+          liEl.appendChild(el("span", null, nd(m.lcoa, 2) + " EUR/t  ·  " + n0(m.ab) + " t"));
+          ul.appendChild(liEl);
+        });
+        read.appendChild(ul);
+        if (!on.length) read.appendChild(el("p", "macc-hint", "The three cheapest are shown. The curve starts at " + nd(M[0].lcoa, 2) + " EUR per tonne."));
+        else if (on.length === M.length) read.appendChild(el("p", "macc-hint", "Every measure on this curve clears at " + nd(M[M.length - 1].lcoa, 2) + " EUR per tonne. Above that the slider changes nothing."));
+      }
+    }
+    price.addEventListener("input", function(){ markTool("marginal-abatement"); picked = -1; paint(); });
+    paint();
+  })();
+
+  /* =========================================================================
+     TOOL 4  market-sizer
+     Top down is a universe times factors. Bottom up is a sum of segments,
+     each a product of drivers. The inversion is the finding.
+     ========================================================================= */
+  (function(){
+    var TD = [
+      { name: "EU companies above 250 staff", value: 47000, kind: "count", step: "1000" },
+      { name: "Share in scope of CSRD", value: 0.62, kind: "share", step: "0.01" },
+      { name: "Share buying external software", value: 0.45, kind: "share", step: "0.01" },
+      { name: "Annual licence, EUR", value: 22000, kind: "money", step: "500" }
+    ];
+    var BU = [
+      { name: "Large listed", drivers: [
+        { name: "Companies", value: 4200, kind: "count", step: "100" },
+        { name: "Attach rate", value: 0.71, kind: "share", step: "0.01" },
+        { name: "Annual licence, EUR", value: 62000, kind: "money", step: "1000" }] },
+      { name: "Large private", drivers: [
+        { name: "Companies", value: 11500, kind: "count", step: "100" },
+        { name: "Attach rate", value: 0.38, kind: "share", step: "0.01" },
+        { name: "Annual licence, EUR", value: 26000, kind: "money", step: "1000" }] },
+      { name: "Mid-market", drivers: [
+        { name: "Companies", value: 26000, kind: "count", step: "500" },
+        { name: "Attach rate", value: 0.31, kind: "share", step: "0.01" },
+        { name: "Annual licence, EUR", value: 11000, kind: "money", step: "500" }] }
+    ];
+    var tdHost = $("ms-td"), buHost = $("ms-bu"), body = $("ms-solve").querySelector("tbody");
+
+    function field(a, labelText, onChange, idBase){
+      var row = el("div", "ms-row");
+      var lab = el("label", null, labelText);
+      lab.htmlFor = idBase;
+      var inp = document.createElement("input");
+      inp.type = "number"; inp.step = a.step; inp.min = "0"; inp.id = idBase;
+      inp.value = String(a.value);
+      inp.addEventListener("input", function(){
+        var v = parseFloat(inp.value);
+        a.value = isFinite(v) && v >= 0 ? v : 0;
+        markTool("market-sizer");
+        onChange();
+      });
+      row.appendChild(lab); row.appendChild(inp);
+      return row;
+    }
+    TD.forEach(function(a, i){ tdHost.appendChild(field(a, a.name, draw, "ms-td-" + i)); });
+    BU.forEach(function(s, si){
+      var box = el("div", "ms-seg");
+      box.appendChild(el("b", null, s.name));
+      s.drivers.forEach(function(d, di){ box.appendChild(field(d, d.name, draw, "ms-bu-" + si + "-" + di)); });
+      buHost.appendChild(box);
+    });
+
+    function tdTotal(){ return TD.reduce(function(p, a){ return p * a.value; }, 1); }
+    function segValue(s){ return s.drivers.reduce(function(p, d){ return p * d.value; }, 1); }
+    function buTotal(){ return BU.reduce(function(s, seg){ return s + segValue(seg); }, 0); }
+    function mn(v){ return nd(v / 1e6, 1) + "m"; }
+
+    function verdict(a, implied){
+      if (a.kind === "share" && implied > 1) return { ok: false, why: "implied share of " + nd(implied * 100, 1) + "% exceeds 100%" };
+      if (implied < 0) return { ok: false, why: "implied value is negative" };
+      return { ok: true };
+    }
+    function fmtVal(a, v){
+      if (a.kind === "share") return nd(v, 3);
+      if (a.kind === "money") return NF.format(Math.round(v));
+      return NF.format(Math.round(v));
+    }
+
+    function draw(){
+      var td = tdTotal(), bu = buTotal();
+      $("ms-td-tot").textContent = mn(td) + " EUR";
+      $("ms-bu-tot").textContent = mn(bu) + " EUR";
+      function put(id, main, sub){
+        var d = $(id); d.textContent = ""; d.appendChild(document.createTextNode(main));
+        d.appendChild(el("small", null, sub));
+      }
+      put("ms-a", mn(td), "EUR, illustrative");
+      put("ms-b", mn(bu), "EUR, illustrative");
+      var gap = bu - td;
+      put("ms-g", (gap >= 0 ? "+" : "") + mn(gap), td > 0 ? nd((bu / td - 1) * 100, 1) + "% of the top down total" : "top down total is zero");
+
+      body.textContent = "";
+      function group(label, note){
+        var tr = el("tr", "grp");
+        var td4 = el("td", null, label); td4.colSpan = 4;
+        tr.appendChild(td4); body.appendChild(tr);
+        if (note) {
+          var tr2 = el("tr");
+          var w = el("td", "why", note); w.colSpan = 4;
+          tr2.appendChild(w); body.appendChild(tr2);
+        }
+      }
+      function line(a, implied, bad){
+        var tr = el("tr");
+        tr.appendChild(el("td", null, a.name));
+        tr.appendChild(el("td", null, fmtVal(a, a.value)));
+        if (bad) {
+          var c = el("td", "no", bad === true ? "infeasible" : "infeasible"); c.colSpan = 2;
+          tr.appendChild(c);
+          body.appendChild(tr);
+          if (bad !== true) {
+            var tr2 = el("tr");
+            tr2.appendChild(el("td", null, ""));
+            var w = el("td", "why", bad); w.colSpan = 3;
+            tr2.appendChild(w); body.appendChild(tr2);
+          }
+          return;
+        }
+        tr.appendChild(el("td", null, fmtVal(a, implied)));
+        tr.appendChild(el("td", null, a.value === 0 ? "n/a" : "×" + nd(implied / a.value, 3)));
+        body.appendChild(tr);
+      }
+
+      group("Top down, every factor shares the multiple " + (td > 0 ? "×" + nd(bu / td, 3) : "undefined"));
+      TD.forEach(function(a){
+        if (td === 0) { line(a, 0, "the top down total is zero, so no factor can scale it"); return; }
+        if (a.value === 0) { line(a, 0, "a factor pinned at zero cannot be scaled to close a gap"); return; }
+        var implied = a.value * (bu / td);
+        var v = verdict(a, implied);
+        line(a, implied, v.ok ? null : v.why);
+      });
+
+      BU.forEach(function(seg) {
+        var sv = segValue(seg);
+        var rest = BU.reduce(function(s, o){ return s + (o === seg ? 0 : segValue(o)); }, 0);
+        var required = td - rest;
+        var groupNote = null;
+        if (sv === 0) groupNote = "This segment is worth zero, so scaling any of its drivers cannot move the total.";
+        else if (required < 0) groupNote = "The other segments alone come to " + mn(rest) + " EUR, already above the top down total of " + mn(td) + " EUR. No value of any driver in this segment closes the gap.";
+        group("Bottom up, " + seg.name, groupNote);
+        seg.drivers.forEach(function(d){
+          if (sv === 0 || required < 0) { line(d, 0, true); return; }
+          var implied = d.value * (required / sv);
+          var v = verdict(d, implied);
+          line(d, implied, v.ok ? null : v.why);
+        });
+      });
+    }
+    draw();
+  })();
+
+  /* =========================================================================
+     TOOL 5  dcf-lab
+     Five forecast years discounted at the end-year convention, plus a Gordon
+     terminal value. The terminal share is the headline. g >= w is refused.
+     ========================================================================= */
+  (function(){
+    var FCF = [88.2, 100.8, 115.6, 132.6, 152.2];
+    var wEl = $("dcf-w"), gEl = $("dcf-g"), wV = $("dcf-w-v"), gV = $("dcf-g-v"), body = $("dcf-body");
+
+    function draw(){
+      var w = parseInt(wEl.value, 10) / 10000;
+      var g = parseInt(gEl.value, 10) / 10000;
+      wV.textContent = nd(w * 100, 2) + "%";
+      gV.textContent = nd(g * 100, 2) + "%";
+      body.textContent = "";
+
+      if (g >= w) {
+        body.appendChild(el("p", "v-head bad", "Refused. No number to report"));
+        body.appendChild(el("p", "v-line", "Terminal growth of " + nd(g * 100, 2) + "% is not below the cost of capital of " + nd(w * 100, 2) + "%."));
+        body.appendChild(el("p", "v-why", "A perpetuity growing at or above its discount rate has unbounded value, so there is no enterprise value to print. Clamping the growth rate to just under the cost of capital is worse than refusing, because it swaps in a different model whose answer runs away as the clamp tightens. Either the growth rate or the cost of capital is wrong."));
+        body.appendChild(el("p", "v-note", "The forecast years still discount normally. It is only the terminal value that has no answer."));
+        return;
+      }
+
+      var factors = FCF.map(function(_, i){ return Math.pow(1 + w, -(i + 1)); });
+      var pv = FCF.map(function(c, i){ return c * factors[i]; });
+      var pvForecast = pv.reduce(function(a, b){ return a + b; }, 0);
+      var tv = FCF[4] * (1 + g) / (w - g);
+      var pvTerminal = tv * factors[4];
+      var ev = pvForecast + pvTerminal;
+      var share = pvTerminal / ev;
+
+      var share1 = el("div", "dcf-share");
+      share1.appendChild(el("span", "big", nd(share * 100, 1) + "%"));
+      share1.appendChild(el("p", null, "of the enterprise value is the terminal value. The five forecast years account for the other " + nd((1 - share) * 100, 1) + "%."));
+      body.appendChild(share1);
+
+      var split = el("div", "dcf-split");
+      var track = el("div", "dcf-track");
+      var a = el("div", "dcf-fc"); a.style.width = ((1 - share) * 100) + "%";
+      var b = el("div", "dcf-tv"); b.style.width = (share * 100) + "%";
+      track.appendChild(a); track.appendChild(b);
+      split.appendChild(track);
+      var key = el("div", "dcf-key");
+      var k1 = el("span"); k1.appendChild(el("i", "a")); k1.appendChild(document.createTextNode("Forecast present value " + nd(pvForecast, 1)));
+      var k2 = el("span"); k2.appendChild(el("i", "b")); k2.appendChild(document.createTextNode("Terminal present value " + nd(pvTerminal, 1)));
+      var k3 = el("span"); k3.appendChild(document.createTextNode("Enterprise value " + nd(ev, 1)));
+      key.appendChild(k1); key.appendChild(k2); key.appendChild(k3);
+      split.appendChild(key);
+      body.appendChild(split);
+
+      var tbl = el("table", "yrs");
+      var thead = el("thead"), htr = el("tr");
+      ["Year", "Free cash flow", "Discount factor", "Present value"].forEach(function(h, i){
+        var th = el("th", null, h); th.scope = "col"; htr.appendChild(th);
+      });
+      thead.appendChild(htr); tbl.appendChild(thead);
+      var tb = el("tbody");
+      FCF.forEach(function(c, i){
+        var tr = el("tr");
+        tr.appendChild(el("td", null, String(i + 1)));
+        tr.appendChild(el("td", null, nd(c, 1)));
+        tr.appendChild(el("td", null, nd(factors[i], 4)));
+        tr.appendChild(el("td", null, nd(pv[i], 1)));
+        tb.appendChild(tr);
+      });
+      var trT = el("tr");
+      trT.appendChild(el("td", null, "Terminal"));
+      trT.appendChild(el("td", null, nd(tv, 1)));
+      trT.appendChild(el("td", null, nd(factors[4], 4)));
+      trT.appendChild(el("td", null, nd(pvTerminal, 1)));
+      tb.appendChild(trT);
+      tbl.appendChild(tb);
+      body.appendChild(tbl);
+
+      var note = el("p", "v-note", "Terminal value " + nd(tv, 1) + " = " + nd(FCF[4], 1) + " × (1 + " + nd(g, 4) + ") / (" + nd(w, 4) + " - " + nd(g, 4) + "). Cash flows are in the same unit throughout and the unit does not matter to the share.");
+      body.appendChild(note);
+    }
+    function userDraw(){ markTool("dcf-lab"); draw(); }
+    wEl.addEventListener("input", userDraw);
+    gEl.addEventListener("input", userDraw);
+    draw();
+  })();
+
+  
+})();
+
+</script>
+</body>
+</html>

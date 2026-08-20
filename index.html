@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kerem Özdemir</title>
+<meta name="description" content="Kerem Özdemir. Munich.">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://keremozdemirra.github.io/">
+<meta property="og:title" content="Kerem Özdemir">
+<meta property="og:description" content="Munich.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://keremozdemirra.github.io/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Kerem Özdemir",
+ "url":"https://keremozdemirra.github.io/",
+ "address":{"@type":"PostalAddress","addressLocality":"Munich","addressCountry":"DE"},
+ "alumniOf":[{"@type":"CollegeOrUniversity","name":"Technical University of Munich"},
+             {"@type":"CollegeOrUniversity","name":"Istanbul University"}],
+ "sameAs":["https://github.com/Keremozdemirra"]}
+</script>
+<style>
+:root{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --ink:#211d16;
+  --paper:#eceade;
+  --night:#e8e4da;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#16192a;color:var(--ink);font-family:var(--sans)}
+
+/* ---------- the film ---------- */
+#filmScroll{height:340vh;position:relative}
+#stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+#film{position:absolute;inset:0;display:block}
+
+#theName{
+  position:absolute;left:0;right:0;top:20%;text-align:center;
+  font-family:var(--serif);font-weight:300;
+  font-size:clamp(2.6rem,9vw,7.5rem);letter-spacing:.01em;line-height:1;
+  color:var(--ink);white-space:nowrap;pointer-events:none;
+  text-shadow:0 1px 0 rgba(255,255,255,.25);
+  will-change:opacity,transform,filter;
+}
+#theName i{font-style:italic;font-weight:400}
+
+#hint{
+  position:absolute;left:50%;bottom:3.4vh;transform:translateX(-50%);
+  font-size:.64rem;letter-spacing:.38em;text-transform:uppercase;
+  color:rgba(130,118,104,.85);
+  transition:opacity .4s ease;
+  animation:breathe 3s ease-in-out infinite;
+}
+#hint.off{animation:none;opacity:0}
+@keyframes breathe{0%,100%{opacity:.4}50%{opacity:.9}}
+
+/* ---------- the doors ---------- */
+#portal{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  gap:clamp(1rem,4vw,3.5rem);flex-wrap:wrap;padding:0 6vw;
+  opacity:0;pointer-events:none;transition:opacity .8s ease;
+}
+#portal.live{opacity:1;pointer-events:auto}
+.door{
+  width:min(240px,26vw);min-width:170px;min-height:198px;
+  display:flex;flex-direction:column;justify-content:center;
+  text-decoration:none;text-align:center;
+  padding:1.6rem 1.2rem;border-radius:2px;
+  color:var(--night);
+  background:rgba(20,24,36,.32);
+  border:1px solid rgba(232,228,218,.14);
+  backdrop-filter:blur(10px);
+  transform:translateY(24px);opacity:0;
+  transition:transform .7s cubic-bezier(.23,1,.32,1), opacity .7s ease,
+             border-color .25s ease, background .25s ease;
+}
+#portal.live .door{transform:none;opacity:1}
+#portal.live .door:nth-child(2){transition-delay:.12s}
+#portal.live .door:nth-child(3){transition-delay:.24s}
+.door:hover{border-color:rgba(232,228,218,.4);background:rgba(20,24,36,.5)}
+.door .k{
+  display:block;font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(232,228,218,.55);margin-bottom:.7rem;
+}
+.door h2{
+  font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,2.6vw,2rem);
+  letter-spacing:.01em;
+}
+.door p{margin-top:.55rem;font-size:.78rem;line-height:1.5;color:rgba(232,228,218,.66)}
+
+/* ---------- after the film ---------- */
+footer{
+  background:#12151f;color:rgba(232,228,218,.5);
+  font-size:.72rem;letter-spacing:.06em;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.1rem 6vw;
+}
+footer a{color:rgba(232,228,218,.75);text-decoration:none}
+footer a:hover{color:#fff}
+.langs{display:flex;gap:.6rem}
+.langs button{background:none;border:0;cursor:pointer;font:inherit;color:rgba(232,228,218,.6);padding:.2em .1em}
+.langs button:hover{color:#fff}
+.langs button[aria-pressed="true"]{color:#fff;border-bottom:1px solid rgba(232,228,218,.5)}
+
+@media (prefers-reduced-motion:reduce){
+  #filmScroll{height:100vh}
+  #hint{display:none}
+}
+@media (max-width:700px){
+  #portal{align-content:center}
+  .door{width:78vw;padding:1.4rem 1rem 1.2rem}
+  #theName{top:34%}
+}
+</style>
+</head>
+<body>
+
+<main id="filmScroll" aria-label="Kerem Özdemir">
+  <div id="stage">
+    <canvas id="film" aria-hidden="true"></canvas>
+
+    <h1 id="theName">Kerem <i>Özdemir</i></h1>
+
+    <nav id="portal" aria-label="Site">
+      <a class="door" href="profile.html">
+        <span class="k">01</span>
+        <h2 data-i="d1">Profile</h2>
+        <p data-i="d1p">Who I am, where I study, what I have done.</p>
+      </a>
+      <a class="door" href="projects.html">
+        <span class="k">02</span>
+        <h2 data-i="d2">Projects</h2>
+        <p data-i="d2p">Working instruments, repositories, and CoLaunch.</p>
+      </a>
+      <a class="door" href="contact.html">
+        <span class="k">03</span>
+        <h2 data-i="d3">Contact</h2>
+        <p data-i="d3p">One address, answered.</p>
+      </a>
+    </nav>
+
+    <span id="hint" data-i="hint">Scroll</span>
+  </div>
+</main>
+
+<footer>
+  <span>© 2026 Kerem Özdemir</span>
+  <nav class="langs" aria-label="Language">
+    <button type="button" data-lang="en" aria-pressed="true">EN</button>
+    <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+    <button type="button" data-lang="de" aria-pressed="false">DE</button>
+  </nav>
+</footer>
+
+<script>
+/* ============================================================ THE TREE
+   A scroll-scrubbed film, computed rather than filmed.
+
+   Every leaf's flight is a pure function of scroll progress: leaf i detaches
+   at its own threshold, follows a path seeded from its index, lands, and at
+   the end glides to one of the three doors. Because nothing depends on wall
+   time except a light idle sway, scrubbing backwards runs the film backwards
+   — leaves rise from the ground and reattach. That reversibility is the
+   whole trick, and it is why this is drawn live instead of played from
+   frames: a frame sequence of this length would cost megabytes and still
+   blur on a retina screen.
+
+   Structure: trunk and branches are grown once with a seeded recursive
+   generator and pre-rendered to an offscreen canvas per theme phase; leaves
+   are particles drawn each frame; sky, haze, hills and grain are cheap
+   gradients over the top. Reduced motion collapses the film to its final
+   still with the doors open. */
+
+(function () {
+  "use strict";
+
+  var canvas = document.getElementById("film");
+  if (!canvas) return;
+  var ctx = canvas.getContext("2d");
+  var stage = document.getElementById("stage");
+  var nameEl = document.getElementById("theName");
+  var hintEl = document.getElementById("hint");
+  var portal = document.getElementById("portal");
+  var doors = portal ? [].slice.call(portal.querySelectorAll(".door")) : [];
+
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var DPR = Math.min(1.75, window.devicePixelRatio || 1);
+  var W = 0, H = 0, small = false;
+
+  /* ------------------------------------------------ seeded randomness
+     One seed, one tree. The same visitor sees the same tree twice. */
+  function mulberry(seed) {
+    return function () {
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  var rnd = mulberry(20260820);
+
+  var lerp = function (a, b, t) { return a + (b - a) * t; };
+  var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+  var smooth = function (t) { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+  var ease = function (t) { return 1 - Math.pow(1 - clamp(t, 0, 1), 3); };
+
+  /* ------------------------------------------------------- the skeleton */
+  var branches = [];   // {x1,y1,x2,y2,w,depth,sway}
+  var tips = [];       // leaf anchor points {x,y,depth,sway}
+
+  function grow(x, y, angle, len, width, depth, swayAmp) {
+    if (depth > 9 || len < 4.5) { tips.push({ x: x, y: y, d: depth, s: swayAmp }); return; }
+    var segs = 4;
+    var px = x, py = y, a = angle;
+    for (var s = 0; s < segs; s++) {
+      a += (rnd() - 0.5) * 0.22;                       // organic wobble
+      a = lerp(a, -Math.PI / 2, 0.03);                 // faint phototropism
+      var sl = len / segs;
+      var nx = px + Math.cos(a) * sl;
+      var ny = py + Math.sin(a) * sl;
+      var bow = (rnd() - 0.5) * sl * 0.5;
+      branches.push({ x1: px, y1: py, x2: nx, y2: ny,
+        cx: (px + nx) / 2 - Math.sin(a) * bow, cy: (py + ny) / 2 + Math.cos(a) * bow,
+        w: width * (1 - s / segs * 0.12), d: depth, s: swayAmp });
+      px = nx; py = ny;
+    }
+    if (depth >= 2 && rnd() < 0.75) tips.push({ x: px, y: py, d: depth, s: swayAmp });
+    if (depth >= 4) tips.push({ x: (x + px) / 2, y: (y + py) / 2, d: depth, s: swayAmp * 0.8 });
+    var kids = depth < 3 ? 3 : 2;
+    for (var k = 0; k < kids; k++) {
+      var spread = lerp(0.35, 0.85, rnd());
+      var na = a + (k - (kids - 1) / 2) * spread + (rnd() - 0.5) * 0.3;
+      // droop: outer branches relax toward horizontal, like weight does
+      na = lerp(na, na > -Math.PI / 2 ? -0.15 : -Math.PI + 0.15, depth * 0.02);
+      grow(px, py, na, len * lerp(0.62, 0.74, rnd()), width * 0.66, depth + 1,
+           swayAmp + len * 0.0022);
+    }
+  }
+
+  /* ------------------------------------------------------------ leaves */
+  var LEAVES = [];
+  var aoBlobs = [];
+  var N = 0;
+
+  var GREENS = ["#5a7d4a", "#6b8f54", "#4c7040", "#7da05f", "#87a86a", "#5f8a4e"];
+  var AUTUMN = ["#c8842e", "#b25b28", "#d99a3c", "#a34a22", "#c26a24", "#dca94e", "#8f3f1e"];
+
+  function hex(h) {
+    return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+  }
+  var GREENS_RGB = GREENS.map(hex), AUTUMN_RGB = AUTUMN.map(hex);
+
+  function buildLeaves() {
+    LEAVES.length = 0;
+    N = small ? 1000 : 2300;
+    for (var i = 0; i < N; i++) {
+      var tip = tips[(rnd() * tips.length) | 0];
+      var spread = lerp(10, 62, rnd());
+      var la = rnd() * Math.PI * 2;
+      var ax = tip.x + Math.cos(la) * spread;
+      var ay = tip.y + Math.sin(la) * spread * 0.8 - 6;
+      LEAVES.push({
+        ax: ax, ay: ay,                              // attach point
+        depth: tip.d, sway: tip.s,
+        size: lerp(3.4, 7.2, rnd()) * (small ? 0.85 : 1),
+        tilt: rnd() * Math.PI * 2,
+        spin: (rnd() - 0.5) * 9,
+        gi: (rnd() * GREENS_RGB.length) | 0,
+        ai: (rnd() * AUTUMN_RGB.length) | 0,
+        turn: 0.10 + rnd() * 0.5,                    // when this leaf turns colour
+        detach: 0.14 + Math.pow(rnd(), 0.85) * 0.46,  // when it lets go (max .72)
+        dur: 0.10 + rnd() * 0.08,                    // how much progress a fall takes
+        driftA: (rnd() - 0.5) * 2,                   // horizontal drift direction
+        driftB: rnd() * Math.PI * 2,                 // flutter phase
+        door: (rnd() * 3) | 0,                       // which pile it joins
+        gx: 0, gy: 0,                                // ground position, set on resize
+        phase: rnd() * Math.PI * 2
+      });
+    }
+    // ground positions: banked drifts, weighted under the tree
+    LEAVES.forEach(function (L) {
+      var bank = (rnd() - 0.5);
+      L.gx = W * 0.5 + bank * W * 0.46 + (rnd() - 0.5) * 40;
+      L.gy = H * 0.875 + Math.abs(bank) * H * 0.02 + rnd() * H * 0.06;
+      // its place in the pile: a gaussian heap, not a strip
+      var gsx = (rnd() + rnd() + rnd() - 1.5) / 1.5;
+      L.px = gsx * 82;
+      L.py = 10 - Math.abs((rnd() + rnd() - 1)) * 20 - (1 - Math.abs(gsx)) * 8;
+    });
+    aoBlobs.length = 0;
+    for (var ab = 0; ab < 16; ab++) {
+      var tp = tips[(rnd() * tips.length) | 0];
+      aoBlobs.push({ x: tp.x, y: tp.y - 6, r: lerp(28, 56, rnd()) });
+    }
+  }
+
+  /* -------------------------------------------------- trunk pre-render */
+  var trunkCanvas = document.createElement("canvas");
+
+  function renderTrunk() {
+    trunkCanvas.width = W * DPR; trunkCanvas.height = H * DPR;
+    var t = trunkCanvas.getContext("2d");
+    t.scale(DPR, DPR);
+    t.lineCap = "round";
+    // dark silhouette first, then one warm rim light along the left edge
+    // root flare: the trunk widens where it meets the ground
+    var base = branches[0];
+    if (base) {
+      t.fillStyle = "#2b2118";
+      t.beginPath();
+      t.moveTo(base.x1 - base.w * 1.4, base.y1 + 2);
+      t.quadraticCurveTo(base.x1 - base.w * 0.5, base.y1 - base.w * 1.6, base.x1 - base.w * 0.52, base.y1 - base.w * 2.4);
+      t.lineTo(base.x1 + base.w * 0.52, base.y1 - base.w * 2.4);
+      t.quadraticCurveTo(base.x1 + base.w * 0.5, base.y1 - base.w * 1.6, base.x1 + base.w * 1.4, base.y1 + 2);
+      t.closePath(); t.fill();
+    }
+    branches.forEach(function (b) {
+      t.strokeStyle = "#2b2118";
+      t.lineWidth = b.w;
+      t.beginPath(); t.moveTo(b.x1, b.y1);
+      t.quadraticCurveTo(b.cx, b.cy, b.x2, b.y2); t.stroke();
+    });
+    // bark: a lit edge and a shadow edge, so limbs read as cylinders
+    branches.forEach(function (b) {
+      if (b.w < 3.5) return;
+      t.strokeStyle = "rgba(146,112,78,.30)";
+      t.lineWidth = Math.max(1.1, b.w * 0.24);
+      t.beginPath();
+      t.moveTo(b.x1 - b.w * 0.24, b.y1 - 1);
+      t.quadraticCurveTo(b.cx - b.w * 0.24, b.cy - 1, b.x2 - b.w * 0.24, b.y2 - 1);
+      t.stroke();
+      t.strokeStyle = "rgba(12,8,5,.35)";
+      t.lineWidth = Math.max(1, b.w * 0.18);
+      t.beginPath();
+      t.moveTo(b.x1 + b.w * 0.28, b.y1 + 1);
+      t.quadraticCurveTo(b.cx + b.w * 0.28, b.cy + 1, b.x2 + b.w * 0.28, b.y2 + 1);
+      t.stroke();
+    });
+  }
+
+  /* ----------------------------------------------------------- resize */
+  function resize() {
+    W = stage.clientWidth; H = stage.clientHeight;
+    small = W < 720;
+    canvas.width = W * DPR; canvas.height = H * DPR;
+    canvas.style.width = W + "px"; canvas.style.height = H + "px";
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+    branches.length = 0; tips.length = 0;
+    rnd = mulberry(20260820);
+    var baseY = H * 0.92;
+    var unit = Math.min(H, W * 1.1);
+    grow(W * 0.5, baseY, -Math.PI / 2 + 0.03, unit * 0.155, unit * 0.030, 0, 0);
+    // normalise: the recursion above works in pixels already via scale
+    renderTrunk();
+    buildLeaves();
+    draw(lastP, performance.now());
+  }
+
+  /* -------------------------------------------------------------- sky */
+  // phases: 0 morning ivory · .5 golden dusk · 1 blue night
+  function skyColors(p) {
+    var a = smooth(p * 1.6), b = smooth((p - 0.55) * 2.2);
+    function mix3(c1, c2, c3) {
+      return [
+        Math.round(lerp(lerp(c1[0], c2[0], a), c3[0], b)),
+        Math.round(lerp(lerp(c1[1], c2[1], a), c3[1], b)),
+        Math.round(lerp(lerp(c1[2], c2[2], a), c3[2], b))
+      ];
+    }
+    return {
+      top: mix3([236, 232, 222], [225, 188, 148], [24, 30, 44]),
+      bot: mix3([214, 212, 200], [204, 148, 104], [38, 44, 58]),
+      haze: mix3([200, 200, 190], [190, 140, 100], [30, 36, 50])
+    };
+  }
+  var rgb = function (c, al) { return "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + (al == null ? 1 : al) + ")"; };
+
+  /* -------------------------------------------------------------- draw */
+  var lastP = 0;
+
+  function draw(p, now) {
+    lastP = p;
+    var t = now * 0.001;
+    var wind = reduced ? 0 : Math.sin(t * 0.9) * 0.35 + Math.sin(t * 0.23) * 0.3;
+    var gust = smooth((p - 0.10) / 0.30);           // wind rises as the film moves
+    var gather = smooth((p - 0.66) / 0.18);         // leaves walk to the doors
+    var sk = skyColors(p);
+
+    // sky
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, rgb(sk.top));
+    g.addColorStop(1, rgb(sk.bot));
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    // far hills, two parallax planes
+    ctx.fillStyle = rgb(sk.haze, 0.30);
+    hill(H * 0.82, 26, 0.0009, 8);
+    ctx.fillStyle = rgb(sk.haze, 0.45);
+    hill(H * 0.865, 16, 0.0014, 40);
+
+    // ground
+    var gg = ctx.createLinearGradient(0, H * 0.86, 0, H);
+    gg.addColorStop(0, rgb(sk.bot, 0));
+    gg.addColorStop(0.35, rgb([sk.bot[0] * 0.84 | 0, sk.bot[1] * 0.82 | 0, sk.bot[2] * 0.78 | 0]));
+    gg.addColorStop(1, rgb([sk.bot[0] * 0.68 | 0, sk.bot[1] * 0.66 | 0, sk.bot[2] * 0.62 | 0]));
+    ctx.fillStyle = gg;
+    ctx.fillRect(0, H * 0.86, W, H);
+
+    // contact shadow under the trunk
+    ctx.save();
+    ctx.translate(W / 2, H * 0.918);
+    ctx.scale(1, 0.22);
+    var sh = ctx.createRadialGradient(0, 0, 0, 0, 0, 130);
+    sh.addColorStop(0, "rgba(20,14,8,.30)");
+    sh.addColorStop(1, "rgba(20,14,8,0)");
+    ctx.fillStyle = sh;
+    ctx.beginPath(); ctx.arc(0, 0, 130, 0, 6.284); ctx.fill();
+    ctx.restore();
+
+    // trunk, with a whisper of sway
+    ctx.save();
+    ctx.translate(W / 2, H * 0.92);
+    ctx.rotate(wind * 0.004 * (1 + gust));
+    ctx.translate(-W / 2, -H * 0.92);
+    ctx.drawImage(trunkCanvas, 0, 0, W, H);
+    ctx.restore();
+
+    // canopy depth: soft occlusion blobs behind the back leaves, fading as leaves go
+    var canopyAlive = 1 - smooth((p - 0.14) / 0.5);
+    if (canopyAlive > 0.02) {
+      ctx.save();
+      for (var ao = 0; ao < aoBlobs.length; ao++) {
+        var B = aoBlobs[ao];
+        var g2 = ctx.createRadialGradient(B.x, B.y, 0, B.x, B.y, B.r);
+        g2.addColorStop(0, "rgba(26,36,20," + (0.10 * canopyAlive) + ")");
+        g2.addColorStop(1, "rgba(26,36,20,0)");
+        ctx.fillStyle = g2;
+        ctx.beginPath(); ctx.arc(B.x, B.y, B.r, 0, 6.284); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // leaves — back depth first
+    for (var pass = 0; pass < 2; pass++) {
+      for (var i = 0; i < N; i++) {
+        var L = LEAVES[i];
+        if ((pass === 0) !== (L.depth < 6)) continue;
+        drawLeaf(L, p, t, wind, gust, gather, pass);
+      }
+    }
+
+    // stars, arriving with the night
+    var night = smooth((p - 0.52) / 0.3);
+    if (night > 0) {
+      var sr = mulberry(77);
+      ctx.fillStyle = "rgba(232,236,246," + (0.75 * night) + ")";
+      for (var st = 0; st < 90; st++) {
+        var sx = sr() * W, sy = sr() * H * 0.55, ss = sr();
+        if (ss > 0.86) { ctx.fillRect(sx, sy, 1.6, 1.6); }
+        else if (ss > 0.45) { ctx.globalAlpha = night * 0.5; ctx.fillRect(sx, sy, 1, 1); ctx.globalAlpha = 1; }
+      }
+    }
+
+    // dusk vignette + grain
+    var v = ctx.createRadialGradient(W / 2, H * 0.45, H * 0.3, W / 2, H * 0.5, H * 0.95);
+    v.addColorStop(0, "rgba(0,0,0,0)");
+    v.addColorStop(1, "rgba(10,10,16," + (0.12 + p * 0.25) + ")");
+    ctx.fillStyle = v;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  function hill(y, amp, freq, ph) {
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    for (var x = 0; x <= W; x += 12) {
+      ctx.lineTo(x, y + Math.sin(x * freq * 6.28 + ph) * amp * 0.4
+                    + Math.sin(x * freq * 17 + ph * 1.7) * amp * 0.2);
+    }
+    ctx.lineTo(W, H);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  var doorPts = [];   // set from DOM each frame portal is live
+  function refreshDoorPts() {
+    doorPts = doors.map(function (d) {
+      var r = d.getBoundingClientRect();
+      var s = stage.getBoundingClientRect();
+      return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height + 14 };
+    });
+  }
+
+  function drawLeaf(L, p, t, wind, gust, gather, front) {
+    // colour: green → its own autumn shade, each on its own schedule
+    var turn = smooth((p - L.turn * 0.42) / 0.24);
+    var gc = GREENS_RGB[L.gi], ac = AUTUMN_RGB[L.ai];
+    var r = lerp(gc[0], ac[0], turn) | 0,
+        gr = lerp(gc[1], ac[1], turn) | 0,
+        b = lerp(gc[2], ac[2], turn) | 0;
+
+    var f = clamp((p - L.detach) / L.dur, 0, 1);   // fall phase 0..1
+    var x, y, rot, alpha = 1;
+
+    if (f <= 0) {
+      // attached: sway with its branch
+      var s = Math.sin(t * 1.7 + L.phase) * (1.5 + L.sway * 18) * (0.4 + gust) * (reduced ? 0 : 1);
+      x = L.ax + s + wind * L.sway * 26 * gust;
+      y = L.ay + Math.cos(t * 1.3 + L.phase) * 1.2;
+      rot = L.tilt + s * 0.02;
+    } else if (f < 1) {
+      // falling: drift is deterministic in f, flutter layered on top
+      var fe = ease(f);
+      var dx = L.driftA * 90 * fe + Math.sin(f * 9 + L.driftB) * 22 * (1 - f * 0.4);
+      x = lerp(L.ax, L.gx, fe * 0.55) + dx;
+      y = lerp(L.ay, L.gy, f * f * (3 - 2 * f));
+      rot = L.tilt + f * L.spin;
+    } else {
+      // grounded — and, at the end, walking to its door
+      x = L.gx; y = L.gy; rot = L.tilt + L.spin;
+      if (gather > 0 && doorPts.length === 3) {
+        var d = doorPts[L.door];
+        var ge = smooth(gather);
+        x = lerp(x, d.x + L.px, ge);
+        y = lerp(y, d.y + L.py, ge);
+        rot += ge * 2;
+      }
+    }
+
+    var sz = L.size * (front ? 1 : 0.8);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rot);
+    ctx.globalAlpha = alpha * (front ? 1 : 0.75);
+    ctx.fillStyle = "rgb(" + r + "," + gr + "," + b + ")";
+    // a leaf: two arcs meeting at a point
+    ctx.beginPath();
+    ctx.moveTo(0, -sz);
+    ctx.quadraticCurveTo(sz * 0.7, -sz * 0.2, 0, sz);
+    ctx.quadraticCurveTo(-sz * 0.7, -sz * 0.2, 0, -sz);
+    ctx.fill();
+    // midrib
+    if (sz > 4.5) {
+      ctx.strokeStyle = "rgba(0,0,0,.18)";
+      ctx.lineWidth = 0.6;
+      ctx.beginPath(); ctx.moveTo(0, -sz * 0.8); ctx.lineTo(0, sz * 0.8); ctx.stroke();
+    }
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
+
+  /* ------------------------------------------------------ scroll wiring */
+  var film = document.getElementById("filmScroll");
+  var progress = 0;
+
+  function readScroll() {
+    var r = film.getBoundingClientRect();
+    var span = r.height - window.innerHeight;
+    progress = span > 0 ? clamp(-r.top / span, 0, 1) : 1;
+  }
+
+  function ui(p) {
+    if (nameEl) {
+      var fade = smooth((p - 0.07) / 0.18);
+      nameEl.style.opacity = 1 - fade;
+      nameEl.style.transform = "translateY(" + (-fade * 40) + "px)";
+      nameEl.style.filter = "blur(" + fade * 6 + "px)";
+    }
+    if (hintEl) hintEl.classList.toggle("off", p > 0.03);
+    if (portal) {
+      var on = p > 0.70;
+      portal.classList.toggle("live", on);
+      if (on) refreshDoorPts();
+    }
+    document.documentElement.style.setProperty("--filmp", p.toFixed(3));
+  }
+
+  var raf = null;
+  function loop(now) {
+    draw(progress, now);
+    ui(progress);
+    raf = requestAnimationFrame(loop);
+  }
+
+  if (reduced) {
+    // the final still, doors open, no film
+    resize();
+    readScroll();
+    draw(1, 0); ui(1);
+    if (portal) portal.classList.add("live");
+    window.addEventListener("resize", function () { resize(); draw(1, 0); });
+  } else {
+    window.addEventListener("scroll", readScroll, { passive: true });
+    window.addEventListener("resize", resize);
+    resize();
+    readScroll();
+    raf = requestAnimationFrame(loop);
+    // spare the battery when the film is off-screen
+    new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { if (!raf) raf = requestAnimationFrame(loop); }
+      else if (raf) { cancelAnimationFrame(raf); raf = null; }
+    }).observe(stage);
+  }
+})();
+
+
+/* index languages: the three doors and the hint */
+(function(){
+  "use strict";
+  var D = {
+    tr: {"d1":"Profil","d1p":"Kim olduğum, nerede okuduğum, ne yaptığım.",
+         "d2":"Projeler","d2p":"Çalışan araçlar, repolar ve CoLaunch.",
+         "d3":"İletişim","d3p":"Tek adres, cevaplanır.","hint":"Kaydır"},
+    de: {"d1":"Profil","d1p":"Wer ich bin, wo ich studiere, was ich gemacht habe.",
+         "d2":"Projekte","d2p":"Laufende Instrumente, Repositories und CoLaunch.",
+         "d3":"Kontakt","d3p":"Eine Adresse, beantwortet.","hint":"Scrollen"}
+  };
+  var base = {};
+  function apply(l){
+    document.querySelectorAll("[data-i]").forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if(!(k in base)) base[k] = el.innerHTML;
+      if(l === "en"){ el.innerHTML = base[k]; return; }
+      if(D[l] && D[l][k] !== undefined) el.innerHTML = D[l][k];
+    });
+    document.documentElement.setAttribute("lang", l);
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true":"false");
+    });
+    try { localStorage.setItem("lang", l); } catch(e){}
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  var saved = null;
+  try { saved = localStorage.getItem("lang"); } catch(e){}
+  if (saved === "tr" || saved === "de") apply(saved);
+})();
+</script>
+</body>
+</html>
