@@ -162,7 +162,7 @@ footer a:hover{color:#fff}
   opacity:0;pointer-events:none;transition:opacity .6s ease}
 .edgeNav span{font-size:2rem;line-height:1;font-family:var(--serif)}
 .edgeNav i{font-style:italic;font-family:var(--serif);font-size:.72rem;letter-spacing:.04em;
-  opacity:0;transition:opacity .3s ease;writing-mode:vertical-rl}
+  opacity:0;transition:opacity .3s ease}
 .edgeNav:hover i,.edgeNav:focus-visible i{opacity:.95}
 #edgeL{left:.35rem} #edgeR{right:.35rem}
 body.atCover .edgeNav{opacity:.45;pointer-events:auto}
@@ -589,7 +589,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     LEAVES.forEach(function (L) {
       var bank = (rnd() - 0.5);
       L.gx = W * 0.5 + bank * W * 0.46 + (rnd() - 0.5) * 40;
-      L.gy = H * 0.875 + Math.abs(bank) * H * 0.02 + rnd() * H * 0.06;
+      L.gy = H * 0.885 - 3 - Math.abs((rnd() + rnd() - 1)) * 15 + rnd() * 9 + Math.abs(bank) * 5;
       // its place in the pile: a gaussian heap, not a strip
       var gsx = (rnd() + rnd() + rnd() - 1.5) / 1.5;
       L.px = gsx * 82;
@@ -637,6 +637,22 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     sg.addColorStop(0.5, "#221a10");
     sg.addColorStop(1, "#17110a");
     t.fillStyle = sg; t.fillRect(0, 0, W, RH);
+    // the footpath: a pale worn line the whole world walks
+    t.fillStyle = "rgba(126,100,66,.30)";
+    t.beginPath();
+    t.moveTo(0, 2.2 + Math.sin(0.3) * 1.2);
+    for (var pxw = 0; pxw <= W; pxw += 18) {
+      t.lineTo(pxw, 2.2 + Math.sin(pxw * 0.011 + 0.3) * 1.2);
+    }
+    for (var pxw2 = W; pxw2 >= 0; pxw2 -= 18) {
+      t.lineTo(pxw2, 7.4 + Math.sin(pxw2 * 0.013 + 1.9) * 1.4);
+    }
+    t.closePath(); t.fill();
+    // worn patches where feet linger: the tree, the bike, the house door
+    t.fillStyle = "rgba(140,112,74,.22)";
+    [[W * 0.5, 16], [W * 0.5 - 68, 10], [W * 0.858 - 12, 12], [W * 0.24, 9]].forEach(function (wp2) {
+      t.beginPath(); t.ellipse(wp2[0], 5, wp2[1], 3.2, 0, 0, 6.284); t.fill();
+    });
     // strata: faint horizontal bands
     for (var b = 0; b < 5; b++) {
       t.fillStyle = "rgba(0,0,0," + (0.05 + rnd() * 0.05) + ")";
@@ -730,13 +746,13 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     t.fillRect(rx1 - 2.4, ry1 - 1.8, 4.8, 3.6);
     RELICS.push({ x: rx1, y: ry1, r: 22, cap: "München, 2026. Small things compute." });
     // 2024: an aluminium billet, Istanbul
-    var rx2 = W * 0.885, ry2 = RH * 0.30;
+    var rx2 = W * 0.84, ry2 = RH * 0.32;
     t.save();
     t.translate(rx2, ry2); t.rotate(-0.18);
     var alg = t.createLinearGradient(0, -5, 0, 5);
-    alg.addColorStop(0, "rgba(206,210,214,.85)");
-    alg.addColorStop(0.5, "rgba(150,156,162,.85)");
-    alg.addColorStop(1, "rgba(110,116,122,.85)");
+    alg.addColorStop(0, "rgba(214,198,168,.85)");
+    alg.addColorStop(0.5, "rgba(168,150,122,.85)");
+    alg.addColorStop(1, "rgba(122,106,84,.85)");
     t.fillStyle = alg;
     t.fillRect(-14, -4.5, 28, 9);
     t.strokeStyle = "rgba(40,44,48,.5)"; t.lineWidth = 1;
@@ -757,7 +773,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     t.restore();
     RELICS.push({ x: rx3, y: ry3, r: 22, cap: "A degree, rolled tight. Istanbul University." });
     // the marble, deepest of all
-    var rx4 = W * 0.86, ry4 = RH * 0.60;
+    var rx4 = W * 0.80, ry4 = RH * 0.60;
     var mg2 = t.createRadialGradient(rx4 - 1.5, ry4 - 1.5, 0.5, rx4, ry4, 5);
     mg2.addColorStop(0, "rgba(238,234,224,.9)");
     mg2.addColorStop(0.5, "rgba(150,180,190,.8)");
@@ -794,7 +810,8 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         t.fillRect(jx - 2.6, shy - 8.4, 1.4, 6);
       }
     }
-    // ladder shaft up to the daylight
+    // ladder shaft up to the daylight (kept for wide screens only)
+    if (!small) {
     t.strokeStyle = "rgba(96,78,52,.6)"; t.lineWidth = 1.6;
     t.beginPath(); t.moveTo(cx6 + cw6 * 0.42, 2); t.lineTo(cx6 + cw6 * 0.42, RH * 0.13); t.stroke();
     t.beginPath(); t.moveTo(cx6 + cw6 * 0.42 + 7, 2); t.lineTo(cx6 + cw6 * 0.42 + 7, RH * 0.13); t.stroke();
@@ -803,6 +820,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       t.moveTo(cx6 + cw6 * 0.42, RH * 0.02 + lr * RH * 0.019);
       t.lineTo(cx6 + cw6 * 0.42 + 7, RH * 0.02 + lr * RH * 0.019);
       t.stroke();
+    }
     }
 
     /* ---- the well shaft, the rope, and the water table ---- */
@@ -906,6 +924,30 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     g.lineWidth = 1.5;
     g.beginPath(); g.moveTo(0, seaTop); g.lineTo(coast + w * 0.02, seaTop); g.stroke();
 
+    // the footpath continues from the meadow to the pier steps
+    g.fillStyle = "rgba(126,100,66,.30)";
+    g.beginPath();
+    g.moveTo(w, gy + 2.2);
+    g.quadraticCurveTo(w * 0.92, gy + 2, w * 0.845, gy + 3.4);
+    g.lineTo(w * 0.80, gy + 4.4);
+    g.lineTo(w * 0.80, gy + 8.4);
+    g.lineTo(w * 0.845, gy + 8);
+    g.quadraticCurveTo(w * 0.92, gy + 7.6, w, gy + 7.4);
+    g.closePath(); g.fill();
+    g.fillStyle = "rgba(140,112,74,.20)";
+    g.beginPath(); g.ellipse(w * 0.815, gy + 6, 10, 2.8, 0, 0, 6.284); g.fill();
+    // meadow grass thickens back toward the seam, in the meadow's own greens
+    var seamGrass = winter ? "rgba(150,148,132,.5)" : (autumn ? "rgba(150,116,60,.6)" : "rgba(95,138,78,.6)");
+    g.strokeStyle = seamGrass; g.lineWidth = 1.3; g.lineCap = "round";
+    for (var sg2i = 0; sg2i < 22; sg2i++) {
+      var su2 = sg2i / 22;
+      var sgx = w * (0.80 + su2 * 0.20) + Math.sin(sg2i * 5.1) * 6;
+      var sgh = (3.5 + Math.sin(sg2i * 2.3) * 1.5) * (0.45 + su2 * 0.55);
+      g.beginPath(); g.moveTo(sgx, gy + 2);
+      g.quadraticCurveTo(sgx + 1.4, gy - sgh * 0.6, sgx + Math.sin(sg2i * 1.7) * 3, gy - sgh);
+      g.stroke();
+    }
+
     /* ---- far plane: the city, two depths ---- */
     // back strip: soft masses
     g.fillStyle = autumn ? "rgba(168,146,118,0.18)" : "rgba(152,142,128,0.18)";
@@ -944,6 +986,16 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       g.beginPath(); g.moveTo(px - 2, mb - mh2); g.lineTo(px, mb - mh2 - 6.5);
       g.lineTo(px + 2, mb - mh2); g.closePath(); g.fill();
     }
+
+    // toward the meadow, the skyline dissolves into the haze
+    g.save();
+    g.globalCompositeOperation = "destination-out";
+    var seamFade2 = g.createLinearGradient(w, 0, w * 0.86, 0);
+    seamFade2.addColorStop(0, "rgba(0,0,0,.9)");
+    seamFade2.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = seamFade2;
+    g.fillRect(w * 0.86, 0, w * 0.14, gy - 8);
+    g.restore();
 
     /* ---- mid plane: Kiz Kulesi ---- */
     var tx = w * 0.42, by = seaTop - 5;
@@ -1032,25 +1084,6 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     g.moveTo(cx4 - 2.7, pY - 24.6); g.quadraticCurveTo(cx4 - 0.9, pY - 20.4, cx4 - 1.8, pY - 16.6);
     g.lineTo(cx4 + 1.8, pY - 16.6); g.quadraticCurveTo(cx4 + 0.9, pY - 20.4, cx4 + 2.7, pY - 24.6);
     g.stroke();
-    /* ---- the sign: this way to the profile ---- */
-    var sx2 = w * 0.815;
-    g.strokeStyle = "#3f2f1d"; g.lineWidth = 4; g.lineCap = "butt";
-    g.beginPath(); g.moveTo(sx2, gy); g.lineTo(sx2, gy - 34); g.stroke();
-    g.fillStyle = "#54402a";
-    g.beginPath();
-    g.moveTo(sx2 - 30, gy - 46); g.lineTo(sx2 + 22, gy - 46);
-    g.lineTo(sx2 + 30, gy - 39); g.lineTo(sx2 + 22, gy - 32); g.lineTo(sx2 - 30, gy - 32);
-    g.closePath(); g.fill();
-    g.strokeStyle = "rgba(26,18,10,.6)"; g.lineWidth = 1.2;
-    g.beginPath();
-    g.moveTo(sx2 - 30, gy - 46); g.lineTo(sx2 + 22, gy - 46);
-    g.lineTo(sx2 + 30, gy - 39); g.lineTo(sx2 + 22, gy - 32); g.lineTo(sx2 - 30, gy - 32);
-    g.closePath(); g.stroke();
-    g.font = "italic 13px Georgia";
-    g.textAlign = "center";
-    g.fillStyle = "rgba(240,234,220,.88)";
-    g.fillText("Profile", sx2 - 3, gy - 35.5);
-
     /* caption */
     g.font = "italic 22px Georgia";
     g.fillStyle = "rgba(242,238,226,0.5)";
@@ -1086,6 +1119,15 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     g.beginPath(); g.moveTo(0, gy);
     for (i = 0; i < near.length; i++) g.lineTo(w * near[i][0], gy - near[i][1]);
     g.lineTo(w, gy); g.closePath(); g.fill();
+    // toward the meadow the ranges dissolve, and the far hills carry through
+    g.save();
+    g.globalCompositeOperation = "destination-out";
+    var seamFade = g.createLinearGradient(0, 0, w * 0.14, 0);
+    seamFade.addColorStop(0, "rgba(0,0,0,.92)");
+    seamFade.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = seamFade;
+    g.fillRect(0, 0, w * 0.14, gy);
+    g.restore();
 
     /* ---- the town on the horizon: roofs, then the Frauenkirche ---- */
     g.fillStyle = "rgba(96,76,58,0.35)";
@@ -1158,6 +1200,32 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       }
     }
 
+    /* the footpath arrives from the meadow, crosses the stream, walks on */
+    g.fillStyle = "rgba(126,100,66,.30)";
+    g.beginPath();
+    g.moveTo(0, gy + 2.2);
+    g.quadraticCurveTo(w * 0.10, gy + 2.6, w * 0.18, gy + 3);
+    g.quadraticCurveTo(w * 0.34, gy + 3.6, w * 0.585, gy + 3);
+    g.lineTo(w * 0.585, gy + 7.6);
+    g.quadraticCurveTo(w * 0.34, gy + 8.4, w * 0.18, gy + 7.8);
+    g.quadraticCurveTo(w * 0.10, gy + 7.4, 0, gy + 7.2);
+    g.closePath(); g.fill();
+    g.fillStyle = "rgba(140,112,74,.20)";
+    g.beginPath(); g.ellipse(w * 0.44, gy + 6, 12, 2.8, 0, 0, 6.284); g.fill();
+    g.beginPath(); g.ellipse(w * 0.60, gy + 6, 9, 2.6, 0, 0, 6.284); g.fill();
+    // meadow grass thickens toward the seam
+    var seamGrass2 = winter ? "rgba(150,148,132,.5)" : (autumn ? "rgba(150,116,60,.6)" : "rgba(95,138,78,.6)");
+    g.strokeStyle = seamGrass2; g.lineWidth = 1.3; g.lineCap = "round";
+    for (var sg3i = 0; sg3i < 22; sg3i++) {
+      var su3 = sg3i / 22;
+      var sgx2 = w * (0.20 - su3 * 0.20) + Math.sin(sg3i * 5.3) * 6;
+      if (sgx2 < 2) sgx2 = 2 + (sg3i % 5);
+      var sgh2 = (3.5 + Math.sin(sg3i * 2.1) * 1.5) * (0.45 + (1 - su3) * 0.55);
+      g.beginPath(); g.moveTo(sgx2, gy + 2);
+      g.quadraticCurveTo(sgx2 + 1.4, gy - sgh2 * 0.6, sgx2 + Math.sin(sg3i * 1.9) * 3, gy - sgh2);
+      g.stroke();
+    }
+
     /* ---- Eisbach: the stream with the standing wave (surfer is live) ---- */
     var eL = w * 0.06, eR = w * 0.30, eY = gy + 3;
     var eg = g.createLinearGradient(0, eY, 0, eY + 14);
@@ -1175,6 +1243,30 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     g.fillStyle = "rgba(110,98,82,.6)";
     [eL - 10, eR + 6].forEach(function (bx3) {
       g.beginPath(); g.ellipse(bx3, eY + 2, 7, 3, 0, 0, 6.284); g.fill();
+    });
+    // a small arched footbridge carries the path across
+    var brx = w * 0.18, brw = w * 0.055;
+    g.strokeStyle = "#4a3826"; g.lineWidth = 3.4; g.lineCap = "round";
+    g.beginPath();
+    g.moveTo(brx - brw, eY + 2);
+    g.quadraticCurveTo(brx, eY - 7, brx + brw, eY + 2);
+    g.stroke();
+    g.strokeStyle = "#5d4730"; g.lineWidth = 1.2;
+    for (var bp = 0; bp <= 8; bp++) {
+      var bu2 = bp / 8;
+      var bpx = brx - brw + bu2 * brw * 2;
+      var bpy = eY + 2 - (1 - Math.pow(2 * bu2 - 1, 2)) * 9;
+      g.beginPath(); g.moveTo(bpx, bpy - 1.4); g.lineTo(bpx, bpy + 1.4); g.stroke();
+    }
+    // handrail
+    g.strokeStyle = "#3f2f1d"; g.lineWidth = 1.4;
+    g.beginPath();
+    g.moveTo(brx - brw, eY - 4);
+    g.quadraticCurveTo(brx, eY - 13, brx + brw, eY - 4);
+    g.stroke();
+    [brx - brw, brx, brx + brw].forEach(function (rp) {
+      var rpy = rp === brx ? eY - 12.6 : eY - 3.6;
+      g.beginPath(); g.moveTo(rp, rpy); g.lineTo(rp, rpy + (rp === brx ? 5.6 : 5)); g.stroke();
     });
 
     /* ---- biergarten under its chestnut ---- */
@@ -1274,15 +1366,6 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     g.arc(upx, gy - 45.5, 3.4, Math.PI, 0, true);
     g.lineTo(upx + 3.4, gy - 52.5);
     g.stroke();
-    // small board: where these stairs go
-    g.fillStyle = "#54402a";
-    g.fillRect(upx - 26, gy - 36, 52, 12);
-    g.strokeStyle = "rgba(26,18,10,.6)"; g.lineWidth = 1;
-    g.strokeRect(upx - 26, gy - 36, 52, 12);
-    g.font = "italic 11px Georgia";
-    g.textAlign = "center";
-    g.fillStyle = "rgba(240,234,220,.88)";
-    g.fillText("Projects", upx, gy - 27);
 
     /* ---- maypole ---- */
     var mp = w * 0.85, ph = 92;
@@ -1323,7 +1406,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       var ng = pair[0].getContext("2d");
       ng.drawImage(pair[1], 0, 0);
       ng.globalCompositeOperation = "source-atop";
-      ng.fillStyle = "rgba(22,25,42,.40)";
+      ng.fillStyle = "rgba(22,25,42,.30)";
       ng.fillRect(0, 0, wingW * DPR, H * DPR);
     });
   }
@@ -1460,6 +1543,12 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         kg.addColorStop(1, "rgba(240,210,140,0)");
         ctx.fillStyle = kg;
         ctx.beginPath(); ctx.arc(kx, seaTop - 47, 16, 0, 6.284); ctx.fill();
+        // stars land on the water too
+        for (var tw5 = 0; tw5 < 3; tw5++) {
+          var twa = 0.3 + Math.sin(t * (1.1 + tw5 * 0.4) + tw5 * 2.6) * 0.3;
+          ctx.fillStyle = "rgba(226,230,224," + (twa * la * 0.5) + ")";
+          ctx.fillRect(IW(0.12 + tw5 * 0.17), seaTop + 14 + tw5 * 11, 2.2, 1);
+        }
         // moonpath on the water: a soft feathered band
         var mpg = ctx.createLinearGradient(IW(0.30), 0, IW(0.56), 0);
         mpg.addColorStop(0, "rgba(226,222,200,0)");
@@ -1565,10 +1654,99 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
           ctx.fillRect(MW(Wp[0]), gy2 - Wp[1], 1.6, 1.6);
         });
       }
-      EGG.ubahnRect = { x: MW(0.585) - 4, y: gy2 - 58, w: 78, h: 76 };
+      EGG.ubahnRect = { x: MW(0.585) - 4, y: gy2 - 58, w: 110, h: 76 };
       EGG.kirkRect = { x: MW(0.66) - 28, y: gy2 - 115, w: 78, h: 115 };
       EGG.mugRect = { x: MW(0.44) - 24, y: gy2 - 32, w: 48, h: 34 };
     } else { EGG.ubahnRect = null; EGG.kirkRect = null; EGG.mugRect = null; }
+
+    /* -------- he follows you into the cities, when he is free -------- */
+    var settledL = camXs < -wingW * 0.72, settledR = camXs > wingW * 0.72;
+    if ((settledL || settledR) && (GUY.state === "wave" || GUY.state === "stand")) GUY.state = "walkout";
+    var guyFree = GUY.state === "away" || GUY.state === "home";
+    if (settledL && WGUY.side !== -1 && guyFree) { WGUY.side = -1; WGUY.t0 = t; WGUY.crumbT = t + 6; }
+    else if (settledR && WGUY.side !== 1 && guyFree) { WGUY.side = 1; WGUY.t0 = t; }
+    else if (!settledL && WGUY.side === -1 && Math.abs(camXs) < wingW * 0.4) WGUY.side = 0;
+    else if (!settledR && WGUY.side === 1 && Math.abs(camXs) < wingW * 0.4) WGUY.side = 0;
+    if (WGUY.side !== 0) {
+      var wgT = Math.min(1, (t - WGUY.t0) / 5);
+      if (GUY.state === "away") GUY.next = Math.max(GUY.next, t + 8);   // one Kerem at a time
+      if (WGUY.side === -1 && camXs < -wingW * 0.2) {
+        // to the pier, then he sits, feet over the water
+        var wgx = lerp(-24, -wingW + wingW * 0.62, smooth(wgT));
+        if (wgT < 1) {
+          drawGuy(wgx, gy2, t, "walk", GUY.outfit, null, -1);
+        } else {
+          drawGuy(-wingW + wingW * 0.62, gy2 - 5, t, "crouch", GUY.outfit, null, -1);
+          // a crumb for the gulls, every little while
+          if (t > WGUY.crumbT) { WGUY.crumbT = t + 9 + (t % 5); WGUY.crumbAt = t; }
+          if (WGUY.crumbAt && t - WGUY.crumbAt < 2.6) {
+            var cph = (t - WGUY.crumbAt) / 2.6;
+            if (cph < 0.45) {
+              var cu2 = cph / 0.45;
+              ctx.fillStyle = "rgba(226,208,172,.9)";
+              ctx.beginPath();
+              ctx.arc(-wingW + wingW * 0.62 - 14 - cu2 * 46,
+                      gy2 - 16 - Math.sin(cu2 * Math.PI) * 26 + cu2 * 18, 1.3, 0, 6.284);
+              ctx.fill();
+            } else {
+              // one gull commits to the dive
+              var gu2 = (cph - 0.45) / 0.55;
+              var gvx = -wingW + wingW * 0.62 - 60 + Math.sin(gu2 * Math.PI) * -30;
+              var gvy = gy2 - 70 + smooth(gu2) * 64;
+              var gfl = Math.sin(t * 11) * 3;
+              ctx.strokeStyle = "rgba(234,230,218,.85)";
+              ctx.lineWidth = 1.4;
+              ctx.beginPath(); ctx.moveTo(gvx - 6, gvy);
+              ctx.quadraticCurveTo(gvx - 3, gvy - 4 - gfl, gvx, gvy);
+              ctx.quadraticCurveTo(gvx + 3, gvy - 4 - gfl, gvx + 6, gvy);
+              ctx.stroke();
+            }
+          }
+        }
+      } else if (WGUY.side === 1 && camXs > wingW * 0.2) {
+        // to the biergarten bench
+        var wgx2 = lerp(W + 24, W + wingW * 0.44 + 37, smooth(wgT));
+        if (wgT < 1) drawGuy(wgx2, gy2, t, "walk", GUY.outfit, null, 1);
+        else drawGuy(W + wingW * 0.44 + 37, gy2 - 6, t, "crouch", GUY.outfit, null, -1);
+      }
+    }
+
+    /* -------- the signposts, always legible, always on top -------- */
+    function drawWorldSign(x2, label, arrowRight, night3) {
+      ctx.save();
+      ctx.translate(x2, gy2);
+      ctx.strokeStyle = "#3f2f1d"; ctx.lineWidth = 4; ctx.lineCap = "butt";
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -34); ctx.stroke();
+      var d2 = arrowRight ? 1 : -1;
+      ctx.fillStyle = "#54402a";
+      ctx.beginPath();
+      ctx.moveTo(-30 * d2, -46); ctx.lineTo(22 * d2, -46);
+      ctx.lineTo(30 * d2, -39); ctx.lineTo(22 * d2, -32); ctx.lineTo(-30 * d2, -32);
+      ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = "rgba(26,18,10,.6)"; ctx.lineWidth = 1.2; ctx.stroke();
+      if (night3 > 0.35) {
+        ctx.strokeStyle = "rgba(224,170,96," + (0.35 * night3) + ")";
+        ctx.lineWidth = 0.8; ctx.stroke();
+      }
+      ctx.font = "italic 13px Georgia";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "rgba(240,234,220,.92)";
+      ctx.fillText(label, -3 * d2, -35.5);
+      ctx.restore();
+      ctx.textAlign = "start";
+    }
+    // a breath of soil tone across both ground junctions
+    [[-26, 0], [W, 26]].forEach(function (sm3) {
+      var sg4 = ctx.createLinearGradient(sm3[0], 0, sm3[0] + 26, 0);
+      var aIn = sm3[1] === 0 ? 0.30 : 0;
+      var aOut = sm3[1] === 0 ? 0 : 0.30;
+      sg4.addColorStop(0, "rgba(34,25,16," + aIn + ")");
+      sg4.addColorStop(1, "rgba(34,25,16," + aOut + ")");
+      ctx.fillStyle = sg4;
+      ctx.fillRect(sm3[0], gy2, 26, H - gy2);
+    });
+    if (camXs < -wingW * 0.06) drawWorldSign(-wingW + wingW * 0.815, "Profile", true, night2);
+    if (camXs > wingW * 0.06) drawWorldSign(W + wingW * 0.585 + 46 + 30, "Projects", false, night2);
 
     /* -------- one-shot flourishes (clicks) -------- */
     if (WINGFX.gulls > 0 && t - WINGFX.gulls < 5) {
@@ -1691,6 +1869,35 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         ctx.closePath(); ctx.fill();
         ctx.beginPath(); ctx.moveTo(-1, -1); ctx.lineTo(-4.5, -5); ctx.lineTo(-2.6, -1); ctx.closePath(); ctx.fill();
         ctx.beginPath(); ctx.moveTo(-0.5, 0); ctx.lineTo(-3.5, 3.6); ctx.lineTo(-2, 0); ctx.closePath(); ctx.fill();
+        ctx.restore();
+      }
+
+      // someone lost a kite; it is having a wonderful time
+      var ku = (t % 75) / 75;
+      if (ku < 0.30) {
+        var kx2 = -80 + (ku / 0.30) * (W + 160);
+        var ky2 = H * 0.22 + Math.sin(ku * 9) * 30;
+        ctx.save();
+        ctx.translate(kx2, ky2);
+        ctx.rotate(0.5 + Math.sin(t * 1.8) * 0.18);
+        ctx.fillStyle = "rgba(168,39,30,.85)";
+        ctx.beginPath();
+        ctx.moveTo(0, -11); ctx.lineTo(7.5, 0); ctx.lineTo(0, 12); ctx.lineTo(-7.5, 0);
+        ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = "rgba(60,40,26,.5)"; ctx.lineWidth = 0.8;
+        ctx.beginPath(); ctx.moveTo(0, -11); ctx.lineTo(0, 12); ctx.moveTo(-7.5, 0); ctx.lineTo(7.5, 0); ctx.stroke();
+        // tail with three bows
+        ctx.beginPath();
+        ctx.moveTo(0, 12);
+        ctx.quadraticCurveTo(-9, 21 + Math.sin(t * 4) * 3, -14, 32 + Math.sin(t * 3.1) * 4);
+        ctx.stroke();
+        for (var kb = 1; kb <= 3; kb++) {
+          var kbu = kb / 3;
+          ctx.fillStyle = kb % 2 ? "rgba(224,170,96,.85)" : "rgba(236,228,208,.85)";
+          ctx.beginPath();
+          ctx.arc(-kbu * 13 + Math.sin(t * 4 + kb) * 2, 12 + kbu * 19 + Math.sin(t * 3.1 + kb) * 3, 2, 0, 6.284);
+          ctx.fill();
+        }
         ctx.restore();
       }
 
@@ -1861,6 +2068,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
 
     parSm += (((pointer.x > 0 ? (pointer.x - W / 2) : 0)) - parSm) * 0.03;
     var parX = parSm;
+    var hazeN = nightMix(sk.haze.slice(), false);
     var skyLift = gSkyS * H * 0.62;
     EGG.view = { x: camXs, y: skyLift };
     ctx.save();                                   // ── world: pans and lifts
@@ -1871,7 +2079,6 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     // far hills: deepest plane moves most against the cursor
     ctx.save();
     ctx.translate(-parX * 0.010 + camXs * 0.62, 0);
-    var hazeN = nightMix(sk.haze.slice(), false);
     ctx.fillStyle = rgb(hazeN, 0.30);
     hill(H * 0.82, 26, 0.0009, 8);
     ctx.fillStyle = rgb(hazeN, 0.45);
@@ -1881,7 +2088,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     fog.addColorStop(0, rgb(hazeN, 0));
     fog.addColorStop(1, rgb(hazeN, 0.30));
     ctx.fillStyle = fog;
-    ctx.fillRect(-40, H * 0.76, W + 80, H * 0.13);
+    ctx.fillRect(-wingW - 60, H * 0.76, W + wingW * 2 + 120, H * 0.13);
     ctx.restore();
 
     // a rainbow, if the rain has just moved on
@@ -1930,6 +2137,20 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     ctx.rotate(wind * 0.004 * (1 + gust));
     ctx.translate(-W / 2, -H * 0.92);
     ctx.drawImage(trunkCanvas, 0, 0, W, H);
+    var wWinT = sw(3);
+    if (wWinT > 0.4 && p < 0.55) {
+      ctx.strokeStyle = "rgba(236,239,238," + (0.42 * wWinT) + ")";
+      ctx.lineCap = "round";
+      for (var sb = 0; sb < branches.length; sb++) {
+        var B3 = branches[sb];
+        if (B3.w < 2.4) continue;
+        ctx.lineWidth = Math.max(0.8, B3.w * 0.26);
+        ctx.beginPath();
+        ctx.moveTo(B3.x1, B3.y1 - B3.w * 0.34 - 0.6);
+        ctx.quadraticCurveTo(B3.cx, B3.cy - B3.w * 0.3 - 0.6, B3.x2, B3.y2 - B3.w * 0.3 - 0.6);
+        ctx.stroke();
+      }
+    }
     ctx.restore();
 
     ctx.restore();
@@ -1951,6 +2172,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       ctx.translate(-W / 2, -H * 0.92);
       ctx.globalAlpha = growS;
     }
+    gLeafFade = 1 - Math.min(1, Math.abs(camXs) / (wingW * 0.55 || 1)) * 0.95;
     var leafDim = Math.min(0.72, Math.max(
       Math.max(smooth((p - 0.52) / 0.3), gNightIdle * 0.9) * 0.6,
       smooth((descend - 0.15) / 0.45) * 0.72));
@@ -1970,8 +2192,9 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       var cAl = (1 - night) * (1 - smooth(descend * 1.4)) * 0.55;
       if (cAl > 0.02) {
         ctx.globalAlpha = cAl;
-        var c1x = ((t * 7) % (W + 420)) - 400;
-        var c2x = ((t * 4.4 + W * 0.6) % (W + 460)) - 420;
+        var cSpan = W + wingW * 2 + 460;
+        var c1x = ((t * 7) % cSpan) - wingW - 400;
+        var c2x = ((t * 4.4 + W * 0.6) % cSpan) - wingW - 420;
         ctx.drawImage(cloudSprite, c1x, H * 0.055, 340, 112);
         ctx.drawImage(cloudSprite, c2x, H * 0.20, 250, 84);
         ctx.globalAlpha = 1;
@@ -2026,6 +2249,17 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         ctx.globalAlpha = 1;
       }
       drawWingLife(now * 0.001, wingNight);
+      // beyond the cities, only haze
+      var edgeL2 = ctx.createLinearGradient(-wingW + 150, 0, -wingW, 0);
+      edgeL2.addColorStop(0, rgb(hazeN, 0));
+      edgeL2.addColorStop(1, rgb(hazeN, 0.5));
+      ctx.fillStyle = edgeL2;
+      ctx.fillRect(-wingW, 0, 150, H);
+      var edgeR2 = ctx.createLinearGradient(W + wingW - 150, 0, W + wingW, 0);
+      edgeR2.addColorStop(0, rgb(hazeN, 0));
+      edgeR2.addColorStop(1, rgb(hazeN, 0.5));
+      ctx.fillStyle = edgeR2;
+      ctx.fillRect(W + wingW - 150, 0, 150, H);
     } else {
       EGG.ferryRect = EGG.kirkRect = EGG.mugRect = null;
       EGG.pierSignRect = EGG.ubahnRect = null;
@@ -2046,13 +2280,14 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   }
 
   function hill(y, amp, freq, ph) {
+    var x0 = -wingW - 60, x1 = W + wingW + 60;
     ctx.beginPath();
-    ctx.moveTo(0, H);
-    for (var x = 0; x <= W; x += 12) {
+    ctx.moveTo(x0, H);
+    for (var x = x0; x <= x1; x += 12) {
       ctx.lineTo(x, y + Math.sin(x * freq * 6.28 + ph) * amp * 0.4
                     + Math.sin(x * freq * 17 + ph * 1.7) * amp * 0.2);
     }
-    ctx.lineTo(W, H);
+    ctx.lineTo(x1, H);
     ctx.closePath();
     ctx.fill();
   }
@@ -2114,7 +2349,12 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(rot);
-    ctx.globalAlpha = alpha * (front ? 1 : 0.75);
+    var winterKeep = 1;
+    if (f <= 0 && win > 0.55 && (L.ai % 6) !== 0) {
+      winterKeep = clamp(1 - (win - 0.55) / 0.25, 0, 1);
+      if (winterKeep <= 0.02) return;
+    }
+    ctx.globalAlpha = alpha * (front ? 1 : 0.75) * gLeafFade * winterKeep;
     if (dim > 0.01) {
       var dk = 1 - dim * 0.62;
       r = (r * dk) | 0; gr = (gr * dk) | 0; b = (b * dk) | 0;
@@ -2402,11 +2642,13 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     var days = (Date.now() - ref) / 86400000;
     var phase = ((days % synodic) + synodic) % synodic / synodic;   // 0 new · .5 full
     var lit = 1 - Math.abs(phase - 0.5) * 2;         // 0 dark · 1 full
-    if (lit < 0.97) {
+    if (lit < 0.95) {
+      mc.save();
+      mc.beginPath(); mc.arc(100, 100, 20.2, 0, 6.284); mc.clip();
       mc.globalCompositeOperation = "destination-out";
-      var off = (1 - lit) * 40 * (phase < 0.5 ? 1 : -1);
-      mc.beginPath(); mc.arc(100 - off, 100, 20.5, 0, 6.284); mc.fill();
-      mc.globalCompositeOperation = "source-over";
+      var off = (1 - lit) * 34 * (phase < 0.5 ? 1 : -1);
+      mc.beginPath(); mc.arc(100 - off, 100 - 2, 21, 0, 6.284); mc.fill();
+      mc.restore();
     }
   }
   var flySprite = (function () {
@@ -2430,6 +2672,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   var BALLOON = { boost: 0 };
   var RAINBOW = { t0: -99, prev: 0 };
   var WINGFX = { gulls: 0, bell: 0, foam: 0 };
+  var WGUY = { side: 0, t0: 0, crumbT: 0 };
   window.addEventListener("mousemove", function(e){ pointer.x = e.clientX; pointer.y = e.clientY; idleSince = performance.now(); }, { passive:true });
   window.addEventListener("scroll", function(){ idleSince = performance.now(); flies.length = 0; }, { passive:true });
 
@@ -2515,6 +2758,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   EGG._dbg = function () { return { state: GUY.state, next: GUY.next, present: BIKE.present, back: BIKE.back, gone: BIKE.gone, night: gNightIdle }; };
   var HOUSE = { doorOpen: 0, knockT: 0 };
   var RELICS = [];
+  var gLeafFade = 1;
   var FISH = { x: 0, vx: 0 };
   function wellX() { return houseX() - (small ? 96 : 150); }
   EGG.knock = function () { HOUSE.knockT = performance.now() / 1000; };
@@ -3177,17 +3421,19 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       if (rainVis < 0.02) { /* underground: hold, draw nothing */ }
       else {
       var slant = sw(2) * 3 + 1;
+      var rSpan = W + wingW * 2 + 40;
+      var rN = Math.abs(camXs) > 1 ? 130 : 70;
       ctx.strokeStyle = "rgba(180,196,210," + (0.4 * rainVis) + ")";
       ctx.lineWidth = 1;
-      for (var rd = 0; rd < 70; rd++) {
-        var rx2 = ((rd * 173.7 + t * (260 + rd % 5 * 40)) % (W + 40)) - 20;
+      for (var rd = 0; rd < rN; rd++) {
+        var rx2 = ((rd * 173.7 + t * (260 + rd % 5 * 40)) % rSpan) - wingW - 20;
         var ry2 = ((rd * 97.3 + t * (620 + rd % 7 * 60)) % (H * 0.9));
         ctx.beginPath(); ctx.moveTo(rx2, ry2); ctx.lineTo(rx2 - slant, ry2 + 9); ctx.stroke();
       }
       // splashes at the ground
       ctx.strokeStyle = "rgba(180,196,210," + (0.3 * rainVis) + ")";
-      for (var sp4 = 0; sp4 < 12; sp4++) {
-        var sx4 = ((sp4 * 251.3 + t * 500) % W);
+      for (var sp4 = 0; sp4 < 18; sp4++) {
+        var sx4 = ((sp4 * 251.3 + t * 500) % rSpan) - wingW;
         var ph4 = (t * 3 + sp4) % 1;
         ctx.beginPath(); ctx.arc(sx4, guyGround(), ph4 * 5, Math.PI, 0); ctx.stroke();
       }
@@ -3901,7 +4147,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     if (nameEl) {
       var fade = smooth((p - 0.07) / 0.18);
       nameEl.style.color = gNightIdle > 0.35 ? "#e8e1d0" : "";
-      nameEl.style.opacity = (1 - fade) * (1 - Math.min(1, Math.abs(camXs) / (wingW * 0.55 || 1)));
+      nameEl.style.opacity = (1 - fade) * (1 - Math.min(1, Math.abs(camXs) / (wingW * 0.30 || 1))) * (1 - gSkyS * 0.55);
       nameEl.style.transform = "translate(" + (-camXs * 0.85) + "px," +
         (-fade * 40 + gSkyS * H * 0.57) + "px)";
       nameEl.style.filter = "blur(" + fade * 6 + "px)";
@@ -4176,12 +4422,26 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     wind = makeNoise(actx);
     wind.connect(lp); lp.connect(windGain); windGain.connect(master);
     wind.start();
-    // wind follows the film; crickets only at dusk
+    // wind follows the film; crickets only at dusk; gulls only by the sea
     cricketTimer = setInterval(function(){
       if (!actx) return;
       var p = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--filmp")) || 0;
       if (windGain) windGain.gain.value = 0.03 + p * 0.06 * (p < 0.7 ? 1 : (1 - p) * 3);
       if (p > 0.45 && p < 0.9 && Math.random() < 0.5) chirp(actx, actx.currentTime + Math.random() * 1.5);
+      var ps2 = window.__EGG && window.__EGG.panState && window.__EGG.panState();
+      if (ps2 && ps2.atCover && ps2.camXs < -ps2.wingW * 0.5 && Math.random() < 0.4) {
+        [[0, 1350], [0.28, 1080]].forEach(function(gc){
+          var o = actx.createOscillator(), g = actx.createGain();
+          o.type = "sine";
+          o.frequency.setValueAtTime(gc[1], actx.currentTime + gc[0]);
+          o.frequency.exponentialRampToValueAtTime(gc[1] * 0.62, actx.currentTime + gc[0] + 0.24);
+          g.gain.setValueAtTime(0.0001, actx.currentTime + gc[0]);
+          g.gain.linearRampToValueAtTime(0.012, actx.currentTime + gc[0] + 0.05);
+          g.gain.linearRampToValueAtTime(0.0001, actx.currentTime + gc[0] + 0.3);
+          o.connect(g); g.connect(master);
+          o.start(actx.currentTime + gc[0]); o.stop(actx.currentTime + gc[0] + 0.35);
+        });
+      }
     }, 1800);
   }
   window.__knock = function(){
