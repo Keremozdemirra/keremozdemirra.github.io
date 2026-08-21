@@ -159,9 +159,40 @@ footer a:hover{color:var(--fg)}
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
+/* ---------- the narrow reading, where a thumb does the work ---------- */
 @media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
+    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  .langs{margin-left:auto;gap:.15rem}
+  .langs button{font-size:.66rem;padding:.2em .4em;min-width:32px;min-height:40px;
+    display:inline-flex;align-items:center;justify-content:center}
+
+  /* stacks: one column reads better than four squeezed ones */
   .tl .row{grid-template-columns:1fr;gap:.2rem}
   .feature{grid-template-columns:1fr}
+  .repo-grid{grid-template-columns:1fr}
+  .cols{gap:1.6rem}
+
+  /* nothing wide is allowed to push the page sideways: it scrolls in place */
+  main table{display:block;width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  main pre,main figure{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  main img,main svg,main canvas{max-width:100%;height:auto}
+
+  /* buttons and fields a finger can find */
+  .cv-btn{padding:.8rem 1.25rem;font-size:.88rem}
+  .copy{padding:.68em 1em}
+  .share-link{padding:.5em .8em;margin-left:.5rem}
+  body .frow input,body .frow textarea,
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px}
+  body .frow input,body input[type="text"],body input[type="email"]{min-height:46px}
+  .socials{gap:1.3rem;flex-wrap:wrap}
+  footer .wrap{gap:1rem}
 }
 .rise{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .7s cubic-bezier(.22,1,.36,1)}
 .rise.in{opacity:1;transform:none}

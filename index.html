@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kerem Özdemir</title>
 <meta name="description" content="Kerem Özdemir. Munich.">
 <meta name="color-scheme" content="light">
@@ -42,7 +42,8 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
 /* ---------- the film ---------- */
 #filmScroll{height:495vh;position:relative}
 #stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
-#film{position:absolute;inset:0;display:block}
+#film{position:absolute;inset:0;display:block;touch-action:pan-y pinch-zoom;
+  -webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 
 #theName{
   position:absolute;left:0;right:0;top:20%;text-align:center;
@@ -149,6 +150,14 @@ footer a:hover{color:#fff}
   .door{width:78vw;padding:1.4rem 1rem 1.2rem}
   #theName{top:34%}
 }
+/* a phone held sideways: the sky is a strip, so the name comes up out of
+   the canopy and the invitation with it */
+@media (max-height:520px) and (orientation:landscape){
+  #theName{top:7%;font-size:clamp(2rem,5vw,3.4rem)}
+  #sig{width:min(430px,52vw)}
+  #hint{top:29%;font-size:.82rem}
+  #hint::after{height:15px;margin-top:4px}
+}
 
 #fadeout{position:fixed;inset:0;background:#17110a;opacity:0;pointer-events:none;transition:opacity .42s ease;z-index:90}
 #fadeout.on{opacity:1}
@@ -160,12 +169,14 @@ footer a:hover{color:#fff}
   transform:translate(-50%,-50%) scale(0);pointer-events:none;z-index:91}
 #iris.go{transition:transform .52s cubic-bezier(.22,1,.36,1);transform:translate(-50%,-50%) scale(var(--irs,80))}
 .edgeNav{position:fixed;top:50%;transform:translateY(-50%);z-index:58;background:none;border:0;cursor:pointer;
-  color:#8a7a5e;display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.7rem .55rem;
-  opacity:0;pointer-events:none;transition:opacity .6s ease}
+  color:#8a7a5e;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.15rem;padding:.7rem .55rem;min-width:44px;min-height:64px;
+  opacity:0;pointer-events:none;transition:opacity .6s ease;
+  -webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 .edgeNav span{font-size:2rem;line-height:1;font-family:var(--serif)}
 .edgeNav i{font-style:italic;font-family:var(--serif);font-size:.72rem;letter-spacing:.04em;
   opacity:0;transition:opacity .3s cubic-bezier(.22,1,.36,1)}
-.edgeNav:hover i,.edgeNav:focus-visible i{opacity:.95;transition-delay:.15s}
+.edgeNav:hover i,.edgeNav:focus i,.edgeNav:focus-visible i{opacity:.95;transition-delay:.15s}
 #edgeL{left:.35rem} #edgeR{right:.35rem}
 body.atCover .edgeNav{opacity:.45;pointer-events:auto}
 body.atCover .edgeNav:hover{opacity:1}
@@ -176,9 +187,11 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
 @media (prefers-reduced-motion:reduce){#dawn{display:none}}
 
 .door:focus-visible,.langs button:focus-visible,#sndBtn:focus-visible{outline:2px solid #e0a050;outline-offset:3px}
-#seasonDial{position:fixed;left:1.1rem;bottom:1.1rem;z-index:60;width:52px;height:52px;border-radius:50%;
+#seasonDial{position:fixed;left:1.1rem;bottom:calc(1.1rem + env(safe-area-inset-bottom,0px));
+  z-index:60;width:52px;height:52px;border-radius:50%;
   border:1px solid rgba(224,170,96,.35);background:rgba(20,16,10,.78);cursor:pointer;
-  padding:0;transition:border-color .2s ease,transform .18s ease}
+  padding:0;transition:border-color .2s ease,transform .18s ease;
+  touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 #seasonDial:hover{border-color:rgba(224,170,96,.7)}
 #seasonDial:active{transform:scale(.94)}
 #seasonDial .glyph{opacity:0;transform:translate(26px,26px) scale(.55);
@@ -190,7 +203,8 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   white-space:nowrap;opacity:0;transition:opacity .3s ease;pointer-events:none;
   text-shadow:0 1px 3px rgba(10,7,4,.7)}
 #seasonDial:hover .lbl,#seasonDial.fresh .lbl{opacity:1}
-#sndWrap{position:fixed;right:1.1rem;bottom:1.1rem;z-index:60;display:flex;align-items:center;gap:.5rem}
+#sndWrap{position:fixed;right:1.1rem;bottom:calc(1.1rem + env(safe-area-inset-bottom,0px));
+  z-index:60;display:flex;align-items:center;gap:.5rem}
 #sndBtn{width:42px;height:42px;border-radius:50%;flex:none;
   border:1px solid rgba(224,170,96,.35);background:rgba(20,16,10,.78);color:#e0c9a2;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
@@ -201,13 +215,26 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   border:1px solid transparent;border-radius:21px;background:rgba(20,16,10,.78);
   transition:width .4s cubic-bezier(.22,1,.36,1),opacity .32s ease,padding .4s cubic-bezier(.22,1,.36,1),border-color .3s ease}
 #sndWrap.open #sndPanel{width:116px;opacity:1;padding:0 14px;border-color:rgba(224,170,96,.35)}
-#sndVol{-webkit-appearance:none;appearance:none;width:100%;height:2px;border-radius:1px;cursor:pointer;
-  background:linear-gradient(90deg,#e0a050 0%,#e0a050 65%,rgba(224,170,96,.22) 65%);outline:none}
+#sndVol{-webkit-appearance:none;appearance:none;width:100%;height:40px;padding:19px 0;
+  border-radius:1px;cursor:pointer;touch-action:none;background-clip:content-box;
+  background-color:transparent;
+  background-image:linear-gradient(90deg,#e0a050 0%,#e0a050 65%,rgba(224,170,96,.22) 65%);outline:none}
 #sndVol::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;
   background:#e8d5b0;border:1px solid rgba(120,84,40,.8);box-shadow:0 1px 3px rgba(0,0,0,.5)}
 #sndVol::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:#e8d5b0;
   border:1px solid rgba(120,84,40,.8);box-shadow:0 1px 3px rgba(0,0,0,.5)}
 #sndVol:focus-visible{outline:2px solid #e0a050;outline-offset:4px}
+@media (max-width:720px){
+  .langs button{padding:.9em .8em}
+  .edgeNav{padding:.9rem .7rem}
+  #sndWrap.open #sndPanel{width:140px}
+  /* four doors in a column, short enough that the stack stands in one screen */
+  .door{min-height:0}
+  .door p{min-height:2.4em}
+  /* and the footer keeps out from under the two fixed corners */
+  footer{flex-direction:column;align-items:center;gap:.9rem;
+    padding:1.2rem 6vw calc(4.6rem + env(safe-area-inset-bottom,0px))}
+}
 </style>
 </head>
 <body>
@@ -797,7 +824,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       [W * 0.58, RH * 0.34],     // the billet
       [W * 0.40, RH * 0.42],     // the diploma
       [W * 0.62, RH * 0.70],     // the marble
-      [W * 0.56, RH * 0.79]
+      [W * 0.54, RH * 0.79]      // the line ends at the capsule
     ];
     // the taproot line: a faint warm dotted curve reaching for the water
     t.strokeStyle = "rgba(206,166,116,.22)";
@@ -873,6 +900,34 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     yearLabel("childhood", rx4 + 12, ry4 + 3);
     RELICS.push({ x: rx4, y: ry4, r: 20, cap: "A marble from a childhood pocket. İstanbul." });
 
+    /* ---- the time capsule: a dull tin where the taproot gives up ---- */
+    var tcx = TAP[5][0], tcy = TAP[5][1] + RH * 0.013;
+    t.save();
+    t.translate(tcx, tcy); t.rotate(-0.06);
+    var tcg = t.createLinearGradient(0, -7, 0, 7);
+    tcg.addColorStop(0, "rgba(148,146,138,.9)");
+    tcg.addColorStop(0.5, "rgba(112,110,102,.9)");
+    tcg.addColorStop(1, "rgba(84,82,76,.9)");
+    t.fillStyle = tcg;
+    t.beginPath(); t.roundRect(-12, -7, 24, 14, 2.5); t.fill();
+    t.strokeStyle = "rgba(40,40,38,.7)"; t.lineWidth = 1;
+    t.beginPath(); t.roundRect(-12, -7, 24, 14, 2.5); t.stroke();
+    t.beginPath(); t.moveTo(-12, -2.6); t.lineTo(12, -2.6); t.stroke();     // the lid seam
+    // scratches, older than the burial
+    t.strokeStyle = "rgba(206,204,196,.4)"; t.lineWidth = 0.5;
+    t.beginPath(); t.moveTo(-9, 2.4); t.lineTo(-3.5, 4.6); t.stroke();
+    t.beginPath(); t.moveTo(4, 1.6); t.lineTo(9.5, 3.2); t.stroke();
+    t.beginPath(); t.moveTo(-6, -6); t.lineTo(-1, -4.6); t.stroke();
+    // the lid label
+    t.font = "bold 6.5px Georgia";
+    t.textAlign = "center";
+    t.fillStyle = "rgba(232,228,216,.75)";
+    t.fillText("2050", 0, 2.6);
+    t.textAlign = "start";
+    t.restore();
+    yearLabel("2026", tcx + 18, tcy + 3);
+    RELICS.push({ x: tcx, y: tcy, r: 22, cap: "Buried in 2026. Opens in 2050. Contents already forgotten." });
+
     /* ---- the amphora, half buried where the old sea reached ---- */
     var amx = W * 0.08, amy = RH * 0.40;
     t.save();
@@ -936,6 +991,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         t.fillRect(jx - 2.6, shy - 8.4, 1.4, 6);
       }
     }
+    RELICS.push({ x: cx6, y: RH * 0.15, r: 26, cap: "The cellar keeps last summer in jars." });
     // ladder shaft up to the daylight (kept for wide screens only)
     if (!small) {
     t.strokeStyle = "rgba(96,78,52,.6)"; t.lineWidth = 1.6;
@@ -963,6 +1019,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     t.closePath(); t.fill();
     t.strokeStyle = "rgba(200,180,150,.4)"; t.lineWidth = 1;
     t.beginPath(); t.moveTo(wx2 - 6, RH * 0.802); t.lineTo(wx2 + 6, RH * 0.802); t.stroke();
+    RELICS.push({ x: wx2, y: RH * 0.80, r: 24, cap: "The rope knows the water table by name." });
     // the aquifer: still, dark, patient
     var aq = t.createLinearGradient(0, RH * 0.845, 0, RH * 0.95);
     aq.addColorStop(0, "rgba(52,74,74,.9)");
@@ -972,6 +1029,13 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     t.strokeStyle = "rgba(150,190,186,.28)";
     t.lineWidth = 1.2;
     t.beginPath(); t.moveTo(0, RH * 0.851); t.lineTo(W, RH * 0.851); t.stroke();
+
+    // the sleeper in her burrow, and the ants' terminus, join the archive
+    RELICS.push({ x: W * 0.06, y: RH * 0.175, r: 24, cap: "She sleeps through every season except spring." });
+    if (antPaths[2] && antPaths[2].length) {
+      var antEnd = antPaths[2][antPaths[2].length - 1];
+      RELICS.push({ x: antEnd.x, y: antEnd.y - H * 0.885, r: 20, cap: "Public transport, in the original sense." });
+    }
   }
 
   function renderTrunk() {
@@ -1077,40 +1141,40 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     /* ---- far plane: the city, two depths ---- */
     // back strip: soft masses
     g.fillStyle = autumn ? "rgba(168,146,118,0.18)" : "rgba(152,142,128,0.18)";
-    var back = [[0.02, 0.10, 8], [0.14, 0.08, 12], [0.27, 0.09, 7], [0.40, 0.07, 10], [0.50, 0.10, 8], [0.62, 0.06, 6]];
+    var back = [[0.02, 0.10, 10], [0.14, 0.08, 15], [0.27, 0.09, 9], [0.40, 0.07, 13], [0.50, 0.10, 10], [0.62, 0.06, 8]];
     for (i = 0; i < back.length; i++) g.fillRect(w * back[i][0], seaTop - back[i][2], w * back[i][1], back[i][2]);
     // front strip
     g.fillStyle = autumn ? "rgba(160,138,112,0.30)" : "rgba(150,140,125,0.30)";
-    var blocks = [[0.03, 0.07, 12], [0.115, 0.05, 16], [0.29, 0.06, 11], [0.55, 0.06, 13], [0.63, 0.05, 9]];
+    var blocks = [[0.03, 0.07, 15], [0.115, 0.05, 20], [0.29, 0.06, 14], [0.55, 0.06, 16], [0.63, 0.05, 11]];
     for (i = 0; i < blocks.length; i++) g.fillRect(w * blocks[i][0], seaTop - blocks[i][2], w * blocks[i][1], blocks[i][2]);
 
     // Galata tower at 0.20w: cylinder, gallery, cone
-    var gx2 = w * 0.20, gh2 = 46;
+    var gx2 = w * 0.20, gh2 = 58;
     g.fillStyle = "rgba(150,140,125,0.34)";
-    g.fillRect(gx2 - 5, seaTop - gh2 + 14, 10, gh2 - 14);
-    g.fillRect(gx2 - 6.5, seaTop - gh2 + 10, 13, 5);            // gallery ring
-    g.beginPath(); g.moveTo(gx2 - 6, seaTop - gh2 + 10);
-    g.lineTo(gx2, seaTop - gh2 - 4); g.lineTo(gx2 + 6, seaTop - gh2 + 10);
+    g.fillRect(gx2 - 6.2, seaTop - gh2 + 17, 12.4, gh2 - 17);
+    g.fillRect(gx2 - 8, seaTop - gh2 + 12, 16, 6);              // gallery ring
+    g.beginPath(); g.moveTo(gx2 - 7.4, seaTop - gh2 + 12);
+    g.lineTo(gx2, seaTop - gh2 - 5); g.lineTo(gx2 + 7.4, seaTop - gh2 + 12);
     g.closePath(); g.fill();
     g.fillStyle = "rgba(60,52,44,0.25)";
-    for (i = 0; i < 3; i++) g.fillRect(gx2 - 3.5 + i * 3, seaTop - gh2 + 16, 1.4, 2.2);   // window band
+    for (i = 0; i < 4; i++) g.fillRect(gx2 - 4.6 + i * 3.1, seaTop - gh2 + 19.5, 1.6, 2.6);   // window band
 
     // the great mosque: central dome, two half domes, four minarets (0.38..0.54)
     var mx2 = w * 0.46, mb = seaTop;
     g.fillStyle = "rgba(150,140,125,0.32)";
-    g.fillRect(w * 0.40, mb - 10, w * 0.12, 10);                 // base mass
-    g.beginPath(); g.arc(mx2, mb - 10, 13, Math.PI, 0); g.closePath(); g.fill();        // main dome
-    g.beginPath(); g.arc(mx2 - 15, mb - 8, 8, Math.PI, 0); g.closePath(); g.fill();     // half dome
-    g.beginPath(); g.arc(mx2 + 15, mb - 8, 8, Math.PI, 0); g.closePath(); g.fill();
-    g.beginPath(); g.moveTo(mx2 - 1.2, mb - 23); g.lineTo(mx2, mb - 27); g.lineTo(mx2 + 1.2, mb - 23); g.closePath(); g.fill();  // alem
-    var minx = [0.385, 0.415, 0.505, 0.535];
+    g.fillRect(w * 0.395, mb - 13, w * 0.13, 13);                // base mass
+    g.beginPath(); g.arc(mx2, mb - 13, 16.5, Math.PI, 0); g.closePath(); g.fill();      // main dome
+    g.beginPath(); g.arc(mx2 - 19, mb - 10, 10, Math.PI, 0); g.closePath(); g.fill();   // half dome
+    g.beginPath(); g.arc(mx2 + 19, mb - 10, 10, Math.PI, 0); g.closePath(); g.fill();
+    g.beginPath(); g.moveTo(mx2 - 1.4, mb - 29.5); g.lineTo(mx2, mb - 34.5); g.lineTo(mx2 + 1.4, mb - 29.5); g.closePath(); g.fill();  // alem
+    var minx = [0.378, 0.412, 0.508, 0.542];
     for (i = 0; i < 4; i++) {
       px = w * minx[i];
-      var mh2 = 30 + (i % 2) * 4;
-      g.fillRect(px - 1.1, mb - mh2, 2.2, mh2);
-      g.fillRect(px - 2.2, mb - mh2 * 0.62, 4.4, 1.6);           // serefe balcony
-      g.beginPath(); g.moveTo(px - 2, mb - mh2); g.lineTo(px, mb - mh2 - 6.5);
-      g.lineTo(px + 2, mb - mh2); g.closePath(); g.fill();
+      var mh2 = 38 + (i % 2) * 5;
+      g.fillRect(px - 1.4, mb - mh2, 2.8, mh2);
+      g.fillRect(px - 2.8, mb - mh2 * 0.62, 5.6, 2);             // serefe balcony
+      g.beginPath(); g.moveTo(px - 2.5, mb - mh2); g.lineTo(px, mb - mh2 - 8);
+      g.lineTo(px + 2.5, mb - mh2); g.closePath(); g.fill();
     }
 
     // toward the meadow, the skyline dissolves into the haze
@@ -1125,9 +1189,11 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
 
     /* ---- Istanbul University: the Beyazıt gate on the plateau ----
        painted after the seam fade so the haze does not erase it */
-    var iux = w * 0.92, iuw = w * 0.10, iub = gy + 1;
+    var iux = w * 0.925, iuw = w * 0.088, iub = gy + 1;
     var iuh = 50;
     var iuStone = "rgba(178,166,146,0.72)", iuStoneDk = "rgba(152,139,120,0.72)", iuLine = "rgba(96,86,72,0.38)";
+    g.save();                              // the gate reads 1.4x from the meadow
+    g.translate(iux, iub); g.scale(1.4, 1.4); g.translate(-iux, -iub);
     // flanking towers with their small domes
     for (i = -1; i <= 1; i += 2) {
       var iutx = iux + i * iuw * 0.5;
@@ -1180,14 +1246,17 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       g.beginPath(); g.moveTo(iux - iuw * 0.5 - 6, iub - 66.6); g.quadraticCurveTo(iux - iuw * 0.5, iub - 71, iux - iuw * 0.5 + 6, iub - 66.6); g.stroke();
       g.beginPath(); g.moveTo(iux + iuw * 0.5 - 6, iub - 66.6); g.quadraticCurveTo(iux + iuw * 0.5, iub - 71, iux + iuw * 0.5 + 6, iub - 66.6); g.stroke();
     }
-    g.font = "italic 11px Georgia";
+    g.restore();
+    g.font = "italic 12px Georgia";
     g.textAlign = "center";
     g.fillStyle = "rgba(242,238,226,0.5)";
-    g.fillText("Istanbul University", iux, iub + 17);
+    g.fillText("Istanbul University", iux, iub + 19);
     g.textAlign = "start";
 
-    /* ---- mid plane: Kiz Kulesi ---- */
+    /* ---- mid plane: Kiz Kulesi, 1.25x so it reads at a glance ---- */
     var tx = w * 0.42, by = seaTop - 5;
+    g.save();
+    g.translate(tx, seaTop); g.scale(1.25, 1.25); g.translate(-tx, -seaTop);
     g.fillStyle = "rgba(226,218,198,0.09)";                      // reflection
     g.fillRect(tx - 5, seaTop + 3, 10, 30);
     g.fillRect(tx - 2.5, seaTop + 3, 5, 44);
@@ -1219,59 +1288,75 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       g.beginPath(); g.moveTo(tx - 5.4, by - 47); g.lineTo(tx + 5.4, by - 47); g.stroke();
       g.beginPath(); g.moveTo(tx - 17, seaTop - 3); g.quadraticCurveTo(tx, seaTop - 8, tx + 17, seaTop - 3); g.stroke();
     }
+    g.restore();
 
-    /* ---- near plane: the pier ---- */
-    var pL = w * 0.565, pR = w * 0.79, pY = gy - 4;
+    /* ---- near plane: the pier, long enough to walk in thought ---- */
+    var pL = w * 0.545, pR = w * 0.805, pY = gy - 4;
     // piles into the water
-    g.strokeStyle = "#3a2b1a"; g.lineWidth = 5; g.lineCap = "butt";
-    [0.08, 0.36, 0.64, 0.92].forEach(function (u) {
+    g.strokeStyle = "#3a2b1a"; g.lineWidth = 7; g.lineCap = "butt";
+    [0.06, 0.32, 0.58, 0.85].forEach(function (u) {
       var pxx = pL + (pR - pL) * u;
-      g.beginPath(); g.moveTo(pxx, pY + 2); g.lineTo(pxx, pY + 26); g.stroke();
+      g.beginPath(); g.moveTo(pxx, pY + 2); g.lineTo(pxx, pY + 32); g.stroke();
     });
     // deck planks
-    var dg2 = g.createLinearGradient(0, pY - 6, 0, pY + 4);
+    var dg2 = g.createLinearGradient(0, pY - 8, 0, pY + 6);
     dg2.addColorStop(0, "#5d4730");
     dg2.addColorStop(1, "#46341f");
     g.fillStyle = dg2;
-    g.fillRect(pL, pY - 5, pR - pL, 9);
-    g.strokeStyle = "rgba(24,16,9,.5)"; g.lineWidth = 1;
-    for (i = 1; i < 12; i++) {
-      px = pL + (pR - pL) * i / 12;
-      g.beginPath(); g.moveTo(px, pY - 5); g.lineTo(px, pY + 4); g.stroke();
+    g.fillRect(pL, pY - 7, pR - pL, 12);
+    g.strokeStyle = "rgba(24,16,9,.5)"; g.lineWidth = 1.2;
+    for (i = 1; i < 14; i++) {
+      px = pL + (pR - pL) * i / 14;
+      g.beginPath(); g.moveTo(px, pY - 7); g.lineTo(px, pY + 5); g.stroke();
     }
-    g.strokeStyle = "rgba(200,180,150,.14)";
-    g.beginPath(); g.moveTo(pL, pY - 4); g.lineTo(pR, pY - 4); g.stroke();
+    g.strokeStyle = "rgba(200,180,150,.16)"; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(pL, pY - 5.6); g.lineTo(pR, pY - 5.6); g.stroke();
     // bollards + rope
     g.fillStyle = "#332514";
-    [0.14, 0.55, 0.9].forEach(function (u) {
+    [0.12, 0.52, 0.9].forEach(function (u) {
       var bx2 = pL + (pR - pL) * u;
-      g.fillRect(bx2 - 2.6, pY - 14, 5.2, 10);
-      g.beginPath(); g.arc(bx2, pY - 14.5, 3, 0, 6.284); g.fill();
+      g.fillRect(bx2 - 3.4, pY - 19, 6.8, 13);
+      g.beginPath(); g.arc(bx2, pY - 19.6, 4, 0, 6.284); g.fill();
     });
-    g.strokeStyle = "rgba(190,168,132,.55)"; g.lineWidth = 1.4;
+    g.strokeStyle = "rgba(190,168,132,.55)"; g.lineWidth = 1.5;
     g.beginPath();
-    g.moveTo(pL + (pR - pL) * 0.14, pY - 12);
-    g.quadraticCurveTo(pL + (pR - pL) * 0.345, pY - 4, pL + (pR - pL) * 0.55, pY - 12);
-    g.quadraticCurveTo(pL + (pR - pL) * 0.75, pY - 4, pL + (pR - pL) * 0.9, pY - 12);
+    g.moveTo(pL + (pR - pL) * 0.12, pY - 16);
+    g.quadraticCurveTo(pL + (pR - pL) * 0.32, pY - 5, pL + (pR - pL) * 0.52, pY - 16);
+    g.quadraticCurveTo(pL + (pR - pL) * 0.72, pY - 5, pL + (pR - pL) * 0.9, pY - 16);
     g.stroke();
-    // a crate with a tea glass (steam is drawn live)
-    var cx4 = pL + (pR - pL) * 0.32;
-    g.fillStyle = "#4a3826";
-    g.fillRect(cx4 - 7, pY - 16, 14, 11);
-    g.strokeStyle = "rgba(20,14,8,.5)"; g.lineWidth = 1;
-    g.strokeRect(cx4 - 7, pY - 16, 14, 11);
-    g.beginPath(); g.moveTo(cx4 - 7, pY - 10.5); g.lineTo(cx4 + 7, pY - 10.5); g.stroke();
-    // the glass: ince belli
-    g.fillStyle = "rgba(200,90,40,.85)";
+    // a small round pier table on three legs (steam is drawn live)
+    var cx4 = pL + (pR - pL) * 0.30;
+    g.strokeStyle = "#3f2f1d"; g.lineWidth = 1.8; g.lineCap = "round";
+    g.beginPath(); g.moveTo(cx4 - 8, pY - 23); g.lineTo(cx4 - 10.5, pY - 6); g.stroke();
+    g.beginPath(); g.moveTo(cx4 + 8, pY - 23); g.lineTo(cx4 + 10.5, pY - 6); g.stroke();
+    g.beginPath(); g.moveTo(cx4, pY - 23); g.lineTo(cx4, pY - 6); g.stroke();
+    var ttg = g.createLinearGradient(0, pY - 27, 0, pY - 22);
+    ttg.addColorStop(0, "#67503a");
+    ttg.addColorStop(1, "#4a3826");
+    g.fillStyle = ttg;
+    g.beginPath(); g.ellipse(cx4, pY - 24.5, 13, 3.4, 0, 0, 6.284); g.fill();
+    g.strokeStyle = "rgba(24,16,9,.5)"; g.lineWidth = 1;
+    g.beginPath(); g.ellipse(cx4, pY - 24.5, 13, 3.4, 0, 0, 6.284); g.stroke();
+    // the saucer, then the glass: ince belli, amber to the light
+    g.fillStyle = "rgba(226,216,192,.9)";
+    g.beginPath(); g.ellipse(cx4, pY - 27, 6, 1.7, 0, 0, 6.284); g.fill();
+    g.strokeStyle = "rgba(140,120,90,.5)"; g.lineWidth = 0.7;
+    g.beginPath(); g.ellipse(cx4, pY - 27, 6, 1.7, 0, 0, 6.284); g.stroke();
+    var teaG = g.createLinearGradient(0, pY - 40, 0, pY - 27);
+    teaG.addColorStop(0, "rgba(224,130,50,.92)");
+    teaG.addColorStop(1, "rgba(150,66,26,.92)");
+    g.fillStyle = teaG;
     g.beginPath();
-    g.moveTo(cx4 - 2.4, pY - 24); g.quadraticCurveTo(cx4 - 0.8, pY - 20.5, cx4 - 1.6, pY - 17);
-    g.lineTo(cx4 + 1.6, pY - 17); g.quadraticCurveTo(cx4 + 0.8, pY - 20.5, cx4 + 2.4, pY - 24);
+    g.moveTo(cx4 - 4.2, pY - 39); g.quadraticCurveTo(cx4 - 1.3, pY - 33.5, cx4 - 2.9, pY - 28);
+    g.lineTo(cx4 + 2.9, pY - 28); g.quadraticCurveTo(cx4 + 1.3, pY - 33.5, cx4 + 4.2, pY - 39);
     g.closePath(); g.fill();
-    g.strokeStyle = "rgba(235,230,215,.7)"; g.lineWidth = 0.8;
+    g.strokeStyle = "rgba(235,230,215,.75)"; g.lineWidth = 1;
     g.beginPath();
-    g.moveTo(cx4 - 2.7, pY - 24.6); g.quadraticCurveTo(cx4 - 0.9, pY - 20.4, cx4 - 1.8, pY - 16.6);
-    g.lineTo(cx4 + 1.8, pY - 16.6); g.quadraticCurveTo(cx4 + 0.9, pY - 20.4, cx4 + 2.7, pY - 24.6);
+    g.moveTo(cx4 - 4.6, pY - 39.8); g.quadraticCurveTo(cx4 - 1.5, pY - 33.4, cx4 - 3.2, pY - 27.4);
+    g.lineTo(cx4 + 3.2, pY - 27.4); g.quadraticCurveTo(cx4 + 1.5, pY - 33.4, cx4 + 4.6, pY - 39.8);
     g.stroke();
+    g.strokeStyle = "rgba(240,236,222,.85)"; g.lineWidth = 1.2;   // the light rim
+    g.beginPath(); g.moveTo(cx4 - 4.6, pY - 39.8); g.lineTo(cx4 + 4.6, pY - 39.8); g.stroke();
     /* caption */
     g.font = "italic 22px Georgia";
     g.fillStyle = "rgba(242,238,226,0.5)";
@@ -1319,7 +1404,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
 
     /* ---- the town on the horizon: roofs, then the Frauenkirche ---- */
     g.fillStyle = "rgba(96,76,58,0.35)";
-    var roofs = [[0.50, 0.05, 14], [0.56, 0.04, 20], [0.74, 0.05, 16], [0.80, 0.06, 12], [0.87, 0.04, 18]];
+    var roofs = [[0.615, 0.04, 14], [0.755, 0.05, 16], [0.815, 0.06, 12], [0.90, 0.04, 18]];
     for (i = 0; i < roofs.length; i++) {
       px = w * roofs[i][0];
       var rw2 = w * roofs[i][1], rh2 = roofs[i][2];
@@ -1327,43 +1412,43 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       g.beginPath(); g.moveTo(px - 2, gy - rh2); g.lineTo(px + rw2 / 2, gy - rh2 - 7);
       g.lineTo(px + rw2 + 2, gy - rh2); g.closePath(); g.fill();
     }
-    var cx = w * 0.66, tw = 17, th = 84;
+    var cx = w * 0.70, tw = 21, th = 105;
     g.fillStyle = "rgba(78,62,46,0.72)";
-    g.fillRect(cx - 4, gy - 44, 86, 44);                          // nave
-    g.beginPath(); g.moveTo(cx - 6, gy - 44); g.lineTo(cx + 39, gy - 58); g.lineTo(cx + 84, gy - 44);
+    g.fillRect(cx - 5, gy - 55, 106, 55);                          // nave
+    g.beginPath(); g.moveTo(cx - 7, gy - 55); g.lineTo(cx + 48, gy - 72); g.lineTo(cx + 103, gy - 55);
     g.closePath(); g.fill();                                       // nave roof
-    g.fillRect(cx - 24, gy - th, tw, th);                          // towers
+    g.fillRect(cx - 30, gy - th, tw, th);                          // towers
     g.fillRect(cx + 1, gy - th, tw, th);
     g.fillStyle = "rgba(50,38,28,0.5)";
     for (i = 0; i < 2; i++) {                                      // tall tower windows
-      px = (i === 0 ? cx - 24 : cx + 1) + tw / 2;
-      g.fillRect(px - 2.4, gy - th + 12, 4.8, 20);
-      g.fillRect(px - 2.4, gy - th + 38, 4.8, 14);
+      px = (i === 0 ? cx - 30 : cx + 1) + tw / 2;
+      g.fillRect(px - 3, gy - th + 15, 6, 25);
+      g.fillRect(px - 3, gy - th + 47, 6, 18);
     }
     // clock faces (hands are drawn live at the real hour)
     for (i = 0; i < 2; i++) {
-      px = (i === 0 ? cx - 24 : cx + 1) + tw / 2;
+      px = (i === 0 ? cx - 30 : cx + 1) + tw / 2;
       g.fillStyle = "rgba(226,216,192,0.85)";
-      g.beginPath(); g.arc(px, gy - th + 6, 4.2, 0, 6.284); g.fill();
-      g.strokeStyle = "rgba(60,46,32,.8)"; g.lineWidth = 0.8;
-      g.beginPath(); g.arc(px, gy - th + 6, 4.2, 0, 6.284); g.stroke();
+      g.beginPath(); g.arc(px, gy - th + 7.5, 5.2, 0, 6.284); g.fill();
+      g.strokeStyle = "rgba(60,46,32,.8)"; g.lineWidth = 0.9;
+      g.beginPath(); g.arc(px, gy - th + 7.5, 5.2, 0, 6.284); g.stroke();
     }
     g.fillStyle = "rgba(94,122,106,0.78)";                         // the onion domes
     for (i = 0; i < 2; i++) {
-      px = (i === 0 ? cx - 24 : cx + 1) + tw / 2;
+      px = (i === 0 ? cx - 30 : cx + 1) + tw / 2;
       y = gy - th;
       g.beginPath(); g.moveTo(px - tw / 2, y);
-      g.bezierCurveTo(px - tw / 2 - 3, y - 12, px - 3.5, y - 14, px - 2.2, y - 20);
-      g.lineTo(px + 2.2, y - 20);
-      g.bezierCurveTo(px + 3.5, y - 14, px + tw / 2 + 3, y - 12, px + tw / 2, y);
+      g.bezierCurveTo(px - tw / 2 - 3.8, y - 15, px - 4.4, y - 17.5, px - 2.8, y - 25);
+      g.lineTo(px + 2.8, y - 25);
+      g.bezierCurveTo(px + 4.4, y - 17.5, px + tw / 2 + 3.8, y - 15, px + tw / 2, y);
       g.closePath(); g.fill();
-      g.fillRect(px - 2.2, y - 24.5, 4.4, 4.5);                    // lantern
-      g.beginPath(); g.moveTo(px - 1.6, y - 24.5); g.lineTo(px, y - 31); g.lineTo(px + 1.6, y - 24.5);
+      g.fillRect(px - 2.8, y - 30.6, 5.6, 5.6);                    // lantern
+      g.beginPath(); g.moveTo(px - 2, y - 30.6); g.lineTo(px, y - 38.7); g.lineTo(px + 2, y - 30.6);
       g.closePath(); g.fill();
     }
 
     /* Olympiaturm: a slender needle watching from the park, hazed with the Alps */
-    var otx = w * 0.90, oth = 120;
+    var otx = w * 0.94, oth = 130;
     g.fillStyle = "rgba(150,140,125,0.28)";
     g.beginPath(); g.moveTo(otx - 3.4, gy); g.lineTo(otx - 1.7, gy - 46); g.lineTo(otx + 1.7, gy - 46);
     g.lineTo(otx + 3.4, gy); g.closePath(); g.fill();               // base flare
@@ -1398,7 +1483,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     }
     if (winter) {
       g.fillStyle = "rgba(236,234,226,0.45)";
-      var sp = [[0.32, 26], [0.52, 30], [0.9, 26]];
+      var sp = [[0.33, 28], [0.565, 32], [0.91, 26]];
       for (i = 0; i < sp.length; i++) {
         g.beginPath(); g.ellipse(w * sp[i][0], gy + 6, sp[i][1], 3.5, 0, 0, 6.284); g.fill();
       }
@@ -1408,15 +1493,15 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     g.fillStyle = "rgba(126,100,66,.30)";
     g.beginPath();
     g.moveTo(0, gy + 2.2);
-    g.quadraticCurveTo(w * 0.10, gy + 2.6, w * 0.18, gy + 3);
-    g.quadraticCurveTo(w * 0.34, gy + 3.6, w * 0.585, gy + 3);
-    g.lineTo(w * 0.585, gy + 7.6);
-    g.quadraticCurveTo(w * 0.34, gy + 8.4, w * 0.18, gy + 7.8);
-    g.quadraticCurveTo(w * 0.10, gy + 7.4, 0, gy + 7.2);
+    g.quadraticCurveTo(w * 0.11, gy + 2.6, w * 0.21, gy + 3);
+    g.quadraticCurveTo(w * 0.43, gy + 3.6, w * 0.66, gy + 3);
+    g.lineTo(w * 0.66, gy + 7.6);
+    g.quadraticCurveTo(w * 0.43, gy + 8.4, w * 0.21, gy + 7.8);
+    g.quadraticCurveTo(w * 0.11, gy + 7.4, 0, gy + 7.2);
     g.closePath(); g.fill();
     g.fillStyle = "rgba(140,112,74,.20)";
-    g.beginPath(); g.ellipse(w * 0.44, gy + 6, 12, 2.8, 0, 0, 6.284); g.fill();
-    g.beginPath(); g.ellipse(w * 0.60, gy + 6, 9, 2.6, 0, 0, 6.284); g.fill();
+    g.beginPath(); g.ellipse(w * 0.31, gy + 6, 12, 2.8, 0, 0, 6.284); g.fill();
+    g.beginPath(); g.ellipse(w * 0.52, gy + 6, 9, 2.6, 0, 0, 6.284); g.fill();
     // meadow grass thickens toward the seam
     var seamGrass2 = winter ? "rgba(150,148,132,.5)" : (autumn ? "rgba(150,116,60,.6)" : "rgba(95,138,78,.6)");
     g.strokeStyle = seamGrass2; g.lineWidth = 1.3; g.lineCap = "round";
@@ -1431,14 +1516,14 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     }
 
     /* ---- Eisbach: the stream with the standing wave (surfer is live) ---- */
-    var eL = w * 0.06, eR = w * 0.30, eY = gy + 3;
+    var eL = w * 0.05, eR = w * 0.26, eY = gy + 3;
     var eg = g.createLinearGradient(0, eY, 0, eY + 14);
     eg.addColorStop(0, winter ? "rgba(120,132,132,.85)" : "rgba(96,118,112,.85)");
     eg.addColorStop(1, "rgba(58,72,68,.9)");
     g.fillStyle = eg;
     g.beginPath();
     g.moveTo(eL - 8, eY);
-    g.quadraticCurveTo(w * 0.18, eY - 2, eR + 8, eY);
+    g.quadraticCurveTo(w * 0.155, eY - 2, eR + 8, eY);
     g.lineTo(eR + 4, eY + 14); g.lineTo(eL - 4, eY + 14);
     g.closePath(); g.fill();
     g.strokeStyle = "rgba(40,32,20,.6)"; g.lineWidth = 2;
@@ -1449,7 +1534,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       g.beginPath(); g.ellipse(bx3, eY + 2, 7, 3, 0, 0, 6.284); g.fill();
     });
     // a small arched footbridge carries the path across
-    var brx = w * 0.18, brw = w * 0.055;
+    var brx = w * 0.21, brw = w * 0.055;
     g.strokeStyle = "#4a3826"; g.lineWidth = 3.4; g.lineCap = "round";
     g.beginPath();
     g.moveTo(brx - brw, eY + 2);
@@ -1474,163 +1559,166 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     });
 
     /* ---- biergarten under its chestnut ---- */
-    var bx = w * 0.44, ty = gy - 16;
-    // the chestnut: trunk + three canopy blobs
-    g.strokeStyle = "#4a3826"; g.lineWidth = 5; g.lineCap = "round";
-    g.beginPath(); g.moveTo(bx + 2, gy); g.quadraticCurveTo(bx + 4, gy - 30, bx - 2, gy - 52); g.stroke();
+    var bx = w * 0.39, ty = gy - 20;
+    // the chestnut: a taller trunk + three broad canopy blobs
+    g.strokeStyle = "#4a3826"; g.lineWidth = 6.5; g.lineCap = "round";
+    g.beginPath(); g.moveTo(bx + 2, gy); g.quadraticCurveTo(bx + 5, gy - 38, bx - 2, gy - 66); g.stroke();
     var can = winter ? "rgba(120,116,104,.35)" : (autumn ? "rgba(160,110,52,.7)" : "rgba(92,116,66,.75)");
     if (!winter) {
       g.fillStyle = can;
-      g.beginPath(); g.ellipse(bx - 14, gy - 58, 20, 14, 0.2, 0, 6.284); g.fill();
-      g.beginPath(); g.ellipse(bx + 12, gy - 62, 22, 15, -0.15, 0, 6.284); g.fill();
-      g.beginPath(); g.ellipse(bx - 1, gy - 72, 18, 12, 0, 0, 6.284); g.fill();
+      g.beginPath(); g.ellipse(bx - 19, gy - 74, 26, 18, 0.2, 0, 6.284); g.fill();
+      g.beginPath(); g.ellipse(bx + 16, gy - 79, 28, 19, -0.15, 0, 6.284); g.fill();
+      g.beginPath(); g.ellipse(bx - 1, gy - 92, 23, 15, 0, 0, 6.284); g.fill();
       g.fillStyle = "rgba(0,0,0,.10)";
-      g.beginPath(); g.ellipse(bx - 6, gy - 54, 22, 9, 0.1, 0, 6.284); g.fill();
+      g.beginPath(); g.ellipse(bx - 8, gy - 69, 28, 11, 0.1, 0, 6.284); g.fill();
     } else {
-      g.strokeStyle = "rgba(90,76,60,.8)"; g.lineWidth = 2;
+      g.strokeStyle = "rgba(90,76,60,.8)"; g.lineWidth = 2.4;
       for (i = 0; i < 5; i++) {
-        g.beginPath(); g.moveTo(bx - 2, gy - 46 - i * 3);
-        g.quadraticCurveTo(bx - 2 + Math.sin(i * 2.6) * 16, gy - 58 - i * 4,
-                           bx + Math.sin(i * 1.9) * 26, gy - 66 - i * 5);
+        g.beginPath(); g.moveTo(bx - 2, gy - 58 - i * 4);
+        g.quadraticCurveTo(bx - 2 + Math.sin(i * 2.6) * 20, gy - 72 - i * 5,
+                           bx + Math.sin(i * 1.9) * 33, gy - 82 - i * 6);
         g.stroke();
       }
     }
-    // table with checkered cloth
-    g.strokeStyle = "#523d29"; g.lineWidth = 3;
+    // the long table with its checkered cloth
+    g.strokeStyle = "#523d29"; g.lineWidth = 3.6;
     g.beginPath();
-    g.moveTo(bx - 12, ty + 2); g.lineTo(bx - 15, gy + 2);
-    g.moveTo(bx + 12, ty + 2); g.lineTo(bx + 15, gy + 2);
+    g.moveTo(bx - 18, ty + 3); g.lineTo(bx - 22, gy + 2);
+    g.moveTo(bx + 18, ty + 3); g.lineTo(bx + 22, gy + 2);
     g.stroke();
     g.fillStyle = "#e8e0cc";
-    g.fillRect(bx - 20, ty - 2, 40, 6);
+    g.fillRect(bx - 28, ty - 3, 56, 8);
     g.fillStyle = "rgba(106,118,132,.55)";
-    for (i = 0; i < 10; i++) if (i % 2 === 0) g.fillRect(bx - 20 + i * 4, ty - 2, 4, 3);
-    for (i = 0; i < 10; i++) if (i % 2 === 1) g.fillRect(bx - 20 + i * 4, ty + 1, 4, 3);
+    for (i = 0; i < 19; i++) if (i % 2 === 0) g.fillRect(bx - 28 + i * 3, ty - 3, 3, 4);
+    for (i = 0; i < 19; i++) if (i % 2 === 1) g.fillRect(bx - 28 + i * 3, ty + 1, 3, 4);
     if (winter) {
       g.fillStyle = "rgba(238,236,228,0.8)";
-      g.fillRect(bx - 20, ty - 4, 40, 2.6);
+      g.fillRect(bx - 28, ty - 5.4, 56, 3);
     }
-    // two mugs
+    // two mugs, big enough to clink
     for (i = 0; i < 2; i++) {
-      var mx = bx - 10 + i * 14;
+      var mx = bx - 16 + i * 22;
       g.fillStyle = "rgba(212,158,84,0.9)";
-      g.fillRect(mx, ty - 11, 5, 8);
+      g.fillRect(mx, ty - 15.5, 7.5, 12);
+      g.strokeStyle = "rgba(160,112,52,0.8)"; g.lineWidth = 0.7;
+      g.beginPath(); g.moveTo(mx + 2.4, ty - 14.5); g.lineTo(mx + 2.4, ty - 4.5); g.stroke();
       g.fillStyle = "rgba(240,236,222,0.85)";
-      g.fillRect(mx - 0.5, ty - 13.4, 6, 2.4);
-      g.strokeStyle = "rgba(212,158,84,0.9)"; g.lineWidth = 1.2;
-      g.beginPath(); g.arc(mx + 6, ty - 7, 2, -Math.PI / 2, Math.PI / 2); g.stroke();
+      g.fillRect(mx - 0.8, ty - 19, 9.1, 3.6);
+      g.strokeStyle = "rgba(212,158,84,0.9)"; g.lineWidth = 1.6;
+      g.beginPath(); g.arc(mx + 9, ty - 9.5, 3, -Math.PI / 2, Math.PI / 2); g.stroke();
     }
-    // bench
+    // the bench, set clear of the table so a visitor can sit
+    var bnx = bx + (small ? 34 : 46), bnw = small ? 26 : 34;
     g.fillStyle = "#67503a";
-    g.fillRect(bx + 26, gy - 8, 22, 3);
-    g.strokeStyle = "#523d29"; g.lineWidth = 2;
+    g.fillRect(bnx, gy - 11, bnw, 4);
+    g.strokeStyle = "#523d29"; g.lineWidth = 2.4;
     g.beginPath();
-    g.moveTo(bx + 29, gy - 5); g.lineTo(bx + 27, gy + 1);
-    g.moveTo(bx + 45, gy - 5); g.lineTo(bx + 47, gy + 1);
+    g.moveTo(bnx + 4, gy - 7); g.lineTo(bnx + 2, gy + 1);
+    g.moveTo(bnx + bnw - 4, gy - 7); g.lineTo(bnx + bnw - 2, gy + 1);
     g.stroke();
     // string light wire: tree to the maypole (bulbs glow live at night)
     g.strokeStyle = "rgba(60,48,36,.6)"; g.lineWidth = 1;
-    g.beginPath(); g.moveTo(bx - 2, gy - 64);
-    g.quadraticCurveTo(w * 0.63, gy - 40, w * 0.85, gy - 86);
+    g.beginPath(); g.moveTo(bx - 2, gy - 84);
+    g.quadraticCurveTo(w * 0.63, gy - 46, w * 0.87, gy - 102);
     g.stroke();
 
     /* ---- the U-Bahn entrance: the way down to the projects ---- */
-    var ux = w * 0.585, uw2 = 46;
+    var ux = w * 0.66, uw2 = 60;
     // recess
-    var ug = g.createLinearGradient(0, gy - 2, 0, gy + 18);
+    var ug = g.createLinearGradient(0, gy - 2, 0, gy + 20);
     ug.addColorStop(0, "#171008");
     ug.addColorStop(1, "#0d0905");
     g.fillStyle = ug;
-    g.fillRect(ux, gy - 1, uw2, 17);
+    g.fillRect(ux, gy - 1, uw2, 19);
     // steps
-    g.strokeStyle = "rgba(190,176,150,.30)"; g.lineWidth = 1.2;
-    for (i = 1; i <= 3; i++) {
-      g.beginPath(); g.moveTo(ux + 3, gy - 1 + i * 4); g.lineTo(ux + uw2 - 3, gy - 1 + i * 4); g.stroke();
+    g.strokeStyle = "rgba(190,176,150,.30)"; g.lineWidth = 1.3;
+    for (i = 1; i <= 4; i++) {
+      g.beginPath(); g.moveTo(ux + 3, gy - 1 + i * 4.2); g.lineTo(ux + uw2 - 3, gy - 1 + i * 4.2); g.stroke();
     }
     // side walls + railing
     g.fillStyle = "#4a4038";
-    g.fillRect(ux - 3, gy - 4, 3, 20);
-    g.fillRect(ux + uw2, gy - 4, 3, 20);
-    g.strokeStyle = "#5d5248"; g.lineWidth = 2;
+    g.fillRect(ux - 4, gy - 5, 4, 24);
+    g.fillRect(ux + uw2, gy - 5, 4, 24);
+    g.strokeStyle = "#5d5248"; g.lineWidth = 2.4;
     g.beginPath();
-    g.moveTo(ux - 1.5, gy - 4); g.lineTo(ux - 1.5, gy - 14); g.lineTo(ux + 14, gy - 14);
+    g.moveTo(ux - 2, gy - 5); g.lineTo(ux - 2, gy - 18); g.lineTo(ux + 18, gy - 18);
     g.stroke();
     g.beginPath();
-    g.moveTo(ux + uw2 + 1.5, gy - 4); g.lineTo(ux + uw2 + 1.5, gy - 14); g.lineTo(ux + uw2 - 16, gy - 14);
+    g.moveTo(ux + uw2 + 2, gy - 5); g.lineTo(ux + uw2 + 2, gy - 18); g.lineTo(ux + uw2 - 20, gy - 18);
     g.stroke();
-    // the U sign on its post
-    var upx = ux + uw2 + 12;
-    g.strokeStyle = "#3f3a34"; g.lineWidth = 2.6;
-    g.beginPath(); g.moveTo(upx, gy); g.lineTo(upx, gy - 40); g.stroke();
+    // the U sign on its own post, left of the stairs, clear of them
+    var upx = ux - 18;
+    g.strokeStyle = "#3f3a34"; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(upx, gy); g.lineTo(upx, gy - 50); g.stroke();
     g.fillStyle = "#3a4c66";
-    g.fillRect(upx - 8, gy - 56, 16, 16);
-    g.strokeStyle = "rgba(230,232,236,.9)"; g.lineWidth = 2.4;
+    g.fillRect(upx - 10.5, gy - 71, 21, 21);
+    g.strokeStyle = "rgba(230,232,236,.9)"; g.lineWidth = 3;
     g.beginPath();
-    g.moveTo(upx - 3.4, gy - 52.5); g.lineTo(upx - 3.4, gy - 45.5);
-    g.arc(upx, gy - 45.5, 3.4, Math.PI, 0, true);
-    g.lineTo(upx + 3.4, gy - 52.5);
+    g.moveTo(upx - 4.4, gy - 66.5); g.lineTo(upx - 4.4, gy - 57.5);
+    g.arc(upx, gy - 57.5, 4.4, Math.PI, 0, true);
+    g.lineTo(upx + 4.4, gy - 66.5);
     g.stroke();
 
-    /* ---- TUM: a compact stone facade between biergarten and U-Bahn ---- */
-    var tux = w * 0.535, tuw = w * 0.070, tub = gy + 1, tuh = 42;
+    /* ---- TUM: a proper stone facade between biergarten and U-Bahn ---- */
+    var tux = w * 0.565, tuw = w * 0.11, tub = gy + 1, tuh = 56;
     g.fillStyle = "rgba(190,177,152,0.92)";
     g.fillRect(tux - tuw / 2, tub - tuh, tuw, tuh);
-    g.strokeStyle = "rgba(96,84,66,0.55)"; g.lineWidth = 0.9;
+    g.strokeStyle = "rgba(96,84,66,0.55)"; g.lineWidth = 1;
     g.strokeRect(tux - tuw / 2, tub - tuh, tuw, tuh);
     // parapet and cornice line
     g.fillStyle = "rgba(172,158,134,0.95)";
-    g.fillRect(tux - tuw / 2 - 2, tub - tuh - 3.2, tuw + 4, 3.2);
-    g.strokeRect(tux - tuw / 2 - 2, tub - tuh - 3.2, tuw + 4, 3.2);
-    g.beginPath(); g.moveTo(tux - tuw / 2, tub - tuh + 13); g.lineTo(tux + tuw / 2, tub - tuh + 13); g.stroke();
+    g.fillRect(tux - tuw / 2 - 2.6, tub - tuh - 4.2, tuw + 5.2, 4.2);
+    g.strokeRect(tux - tuw / 2 - 2.6, tub - tuh - 4.2, tuw + 5.2, 4.2);
+    g.beginPath(); g.moveTo(tux - tuw / 2, tub - tuh + 17); g.lineTo(tux + tuw / 2, tub - tuh + 17); g.stroke();
     // a row of tall windows across the upper floor
     g.fillStyle = "rgba(74,64,52,0.72)";
-    for (i = 0; i < 6; i++) {
-      var tuwx = tux - tuw / 2 + tuw * (0.09 + i * 0.15);
-      g.fillRect(tuwx, tub - tuh + 16.5, 4.6, 14);
-      g.strokeStyle = "rgba(214,202,178,0.5)"; g.lineWidth = 0.6;
-      g.beginPath(); g.moveTo(tuwx + 2.3, tub - tuh + 16.5); g.lineTo(tuwx + 2.3, tub - tuh + 30.5); g.stroke();
+    for (i = 0; i < 7; i++) {
+      var tuwx = tux - tuw / 2 + tuw * (0.075 + i * 0.13);
+      g.fillRect(tuwx, tub - tuh + 21.5, 6, 18.5);
+      g.strokeStyle = "rgba(214,202,178,0.5)"; g.lineWidth = 0.7;
+      g.beginPath(); g.moveTo(tuwx + 3, tub - tuh + 21.5); g.lineTo(tuwx + 3, tub - tuh + 40); g.stroke();
     }
     // the columned entrance portal
     g.fillStyle = "rgba(54,46,38,0.9)";
-    g.fillRect(tux - 8, tub - 17, 16, 17);
+    g.fillRect(tux - 10.5, tub - 22, 21, 22);
     g.fillStyle = "rgba(212,198,172,0.95)";
     for (i = 0; i < 4; i++) {
-      g.fillRect(tux - 8.5 + i * 5.1, tub - 19, 2, 19);
+      g.fillRect(tux - 11 + i * 6.6, tub - 24.5, 2.6, 24.5);
     }
     g.fillStyle = "rgba(196,182,156,0.96)";
-    g.beginPath(); g.moveTo(tux - 11.5, tub - 19); g.lineTo(tux, tub - 25.5); g.lineTo(tux + 11.5, tub - 19);
+    g.beginPath(); g.moveTo(tux - 15, tub - 24.5); g.lineTo(tux, tub - 33); g.lineTo(tux + 15, tub - 24.5);
     g.closePath(); g.fill();
-    g.strokeStyle = "rgba(96,84,66,0.55)"; g.lineWidth = 0.8;
-    g.beginPath(); g.moveTo(tux - 11.5, tub - 19); g.lineTo(tux, tub - 25.5); g.lineTo(tux + 11.5, tub - 19);
+    g.strokeStyle = "rgba(96,84,66,0.55)"; g.lineWidth = 0.9;
+    g.beginPath(); g.moveTo(tux - 15, tub - 24.5); g.lineTo(tux, tub - 33); g.lineTo(tux + 15, tub - 24.5);
     g.closePath(); g.stroke();
-    // the small dark plaque by the door
+    // the dark plaque by the door, letters legible from the path
     g.fillStyle = "rgba(28,32,38,0.95)";
-    g.fillRect(tux + 12, tub - 15, 17, 10);
-    g.strokeStyle = "rgba(214,202,178,0.4)"; g.lineWidth = 0.6;
-    g.strokeRect(tux + 12, tub - 15, 17, 10);
-    g.font = "bold 9px Georgia";
+    g.fillRect(tux + 16, tub - 20, 28, 15);
+    g.strokeStyle = "rgba(214,202,178,0.4)"; g.lineWidth = 0.7;
+    g.strokeRect(tux + 16, tub - 20, 28, 15);
+    g.font = "bold 12px Georgia";
     g.textAlign = "center";
     g.fillStyle = "rgba(234,238,242,0.95)";
-    g.fillText("TUM", tux + 20.5, tub - 7.5);
+    g.fillText("TUM", tux + 30, tub - 9);
     g.textAlign = "start";
     if (winter) {
       g.fillStyle = "rgba(238,240,238,0.8)";
-      g.fillRect(tux - tuw / 2 - 2, tub - tuh - 5.4, tuw + 4, 2.4);
+      g.fillRect(tux - tuw / 2 - 2.6, tub - tuh - 7, tuw + 5.2, 2.8);
     }
 
     /* ---- maypole ---- */
-    var mp = w * 0.85, ph = 92;
-    g.strokeStyle = "rgba(232,226,210,0.8)"; g.lineWidth = 3.5;
+    var mp = w * 0.87, ph = 110;
+    g.strokeStyle = "rgba(232,226,210,0.8)"; g.lineWidth = 4.2;
     g.beginPath(); g.moveTo(mp, gy); g.lineTo(mp, gy - ph); g.stroke();
-    g.strokeStyle = "rgba(106,118,132,0.8)"; g.lineWidth = 2;
-    for (i = 0; i < 9; i++) {
-      y = gy - 6 - i * 9.5;
-      g.beginPath(); g.moveTo(mp - 1.8, y); g.lineTo(mp + 1.8, y - 4.5); g.stroke();
+    g.strokeStyle = "rgba(106,118,132,0.8)"; g.lineWidth = 2.4;
+    for (i = 0; i < 10; i++) {
+      y = gy - 7 - i * 10.3;
+      g.beginPath(); g.moveTo(mp - 2.2, y); g.lineTo(mp + 2.2, y - 5.2); g.stroke();
     }
-    g.strokeStyle = "rgba(110,124,96,0.8)"; g.lineWidth = 2.2;
-    g.beginPath(); g.arc(mp, gy - ph + 12, 6, 0, 6.284); g.stroke();
+    g.strokeStyle = "rgba(110,124,96,0.8)"; g.lineWidth = 2.6;
+    g.beginPath(); g.arc(mp, gy - ph + 14, 7.2, 0, 6.284); g.stroke();
     g.fillStyle = "rgba(232,226,210,0.8)";
-    g.beginPath(); g.arc(mp, gy - ph - 2, 2, 0, 6.284); g.fill();
+    g.beginPath(); g.arc(mp, gy - ph - 2.5, 2.4, 0, 6.284); g.fill();
 
     /* caption */
     g.font = "italic 22px Georgia";
@@ -1642,7 +1730,8 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
 
   function buildWings() {
     wingSeasonKey = seasonCur;
-    wingW = Math.round(Math.min(W * 0.85, 980));
+    /* phones get wide wings: each city is a place you pan through, not a sliver */
+    wingW = Math.round(small ? Math.min(W * 1.7, 640) : Math.min(W * 0.85, 980));
     wingL = document.createElement("canvas");
     wingR = document.createElement("canvas");
     [wingL, wingR].forEach(function (cv) { cv.width = wingW * DPR; cv.height = H * DPR; });
@@ -1668,6 +1757,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   function drawFerry(x, y, dir, night2, t) {
     ctx.save();
     ctx.translate(x, y);
+    ctx.scale(1.2, 1.2);
     if (dir === -1) ctx.scale(-1, 1);
     ctx.fillStyle = "rgba(52,40,28,0.95)";
     ctx.beginPath(); ctx.moveTo(-35, -8); ctx.lineTo(35, -8); ctx.lineTo(30, 3);
@@ -1695,6 +1785,24 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       ctx.beginPath(); ctx.arc(33, -10, 1.4, 0, 6.284); ctx.fill();
     }
     ctx.restore();
+  }
+
+  function drawGull(x, y, t, seed, sc) {
+    // a proper gull: two arced wings meeting at a small grey body
+    var fl = Math.sin(t * 7 + seed * 2.3) * 4.6 * sc;
+    ctx.strokeStyle = "rgba(234,230,218,.85)";
+    ctx.lineWidth = 1.7 * sc;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(x - 10 * sc, y - 1.5 * sc);
+    ctx.quadraticCurveTo(x - 5 * sc, y - 5.5 * sc - fl, x - 1 * sc, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 1 * sc, y);
+    ctx.quadraticCurveTo(x + 5 * sc, y - 5.5 * sc - fl, x + 10 * sc, y - 1.5 * sc);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(226,222,210,.8)";
+    ctx.beginPath(); ctx.ellipse(x, y + 0.8 * sc, 2.1 * sc, 1.3 * sc, 0, 0, 6.284); ctx.fill();
   }
 
   function drawWingLife(t, night2) {
@@ -1736,31 +1844,31 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
           ctx.moveTo(fwx + fdir * 33, fwy + 4);
           ctx.quadraticCurveTo(fwx + fdir * 44, fwy + 6, fwx + fdir * 54, fwy + 5);
           ctx.stroke();
-          ctx.strokeStyle = "rgba(234,230,218,.7)";
           for (var eg2 = 0; eg2 < 2; eg2++) {
-            var egx = fwx - fdir * (26 + eg2 * 18);
-            var egy = fwy - 30 - eg2 * 10 + Math.sin(t * 5 + eg2 * 2) * 4;
-            var fl2 = Math.sin(t * 9 + eg2 * 3) * 3;
-            ctx.beginPath(); ctx.moveTo(egx - 5, egy);
-            ctx.quadraticCurveTo(egx - 2.5, egy - 3 - fl2, egx, egy);
-            ctx.quadraticCurveTo(egx + 2.5, egy - 3 - fl2, egx + 5, egy);
-            ctx.stroke();
+            var egx = fwx - fdir * (30 + eg2 * 22);
+            var egy = fwy - 34 - eg2 * 12 + Math.sin(t * 5 + eg2 * 2) * 4;
+            drawGull(egx, egy, t, eg2 + 2, 0.8);
           }
         }
-        EGG.ferryRect = { x: fwx - 40, y: fwy - 26, w: 80, h: 34 };
+        EGG.ferryRect = { x: fwx - 48, y: fwy - 32, w: 96, h: 42 };
       } else EGG.ferryRect = null;
 
-      // tea steam on the crate
-      var pL2 = 0.565, pR2 = 0.79;
-      var teaX = IW(pL2 + (pR2 - pL2) * 0.32);
+      // three gulls keep their own heights over the water
+      drawGull(IW(0.16) + Math.sin(t * 0.23) * wingW * 0.05, gy2 - 170 + Math.sin(t * 0.9) * 9, t, 0, 1);
+      drawGull(IW(0.34) + Math.sin(t * 0.19 + 2.1) * wingW * 0.07, gy2 - 118 + Math.sin(t * 1.1 + 1) * 7, t, 1, 1);
+      drawGull(IW(0.52) + Math.sin(t * 0.26 + 4.2) * wingW * 0.04, gy2 - 208 + Math.sin(t * 0.8 + 3) * 10, t, 2, 1);
+
+      // tea steam over the pier table
+      var pL2 = 0.545, pR2 = 0.805;
+      var teaX = IW(pL2 + (pR2 - pL2) * 0.30);
       for (var st4 = 0; st4 < 2; st4++) {
         var sph = (t * 0.5 + st4 * 0.5) % 1;
         ctx.strokeStyle = "rgba(235,232,222," + (0.4 * (1 - sph)) + ")";
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1.1;
         ctx.beginPath();
-        ctx.moveTo(teaX + Math.sin(sph * 7 + st4 * 3) * 2, gy2 - 28 - sph * 12);
-        ctx.quadraticCurveTo(teaX + Math.sin(sph * 9) * 3, gy2 - 32 - sph * 12,
-                             teaX + Math.sin(sph * 6 + 1) * 2, gy2 - 36 - sph * 12);
+        ctx.moveTo(teaX + Math.sin(sph * 7 + st4 * 3) * 2.4, gy2 - 46 - sph * 13);
+        ctx.quadraticCurveTo(teaX + Math.sin(sph * 9) * 3.4, gy2 - 51 - sph * 13,
+                             teaX + Math.sin(sph * 6 + 1) * 2.4, gy2 - 56 - sph * 13);
         ctx.stroke();
       }
 
@@ -1786,15 +1894,15 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         });
         // Galata gallery light
         ctx.fillStyle = "rgba(240,206,130," + (0.8 * la) + ")";
-        ctx.fillRect(IW(0.20) - 2, seaTop - 34, 4, 1.8);
+        ctx.fillRect(IW(0.20) - 2.5, seaTop - 43, 5, 2);
         // Kiz Kulesi beacon: a slow pulse
         var bk = Math.max(0, Math.sin(t * 1.6));
         var kx = IW(0.42);
-        var kg = ctx.createRadialGradient(kx, seaTop - 47, 0, kx, seaTop - 47, 16);
+        var kg = ctx.createRadialGradient(kx, seaTop - 59, 0, kx, seaTop - 59, 20);
         kg.addColorStop(0, "rgba(240,210,140," + (0.55 * la * bk) + ")");
         kg.addColorStop(1, "rgba(240,210,140,0)");
         ctx.fillStyle = kg;
-        ctx.beginPath(); ctx.arc(kx, seaTop - 47, 16, 0, 6.284); ctx.fill();
+        ctx.beginPath(); ctx.arc(kx, seaTop - 59, 20, 0, 6.284); ctx.fill();
         // stars land on the water too
         for (var tw5 = 0; tw5 < 3; tw5++) {
           var twa = 0.3 + Math.sin(t * (1.1 + tw5 * 0.4) + tw5 * 2.6) * 0.3;
@@ -1809,8 +1917,8 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         ctx.fillStyle = mpg;
         ctx.fillRect(IW(0.30), seaTop + 5, wingW * 0.26, 34);
       }
-      EGG.pierSignRect = { x: IW(0.815) - 34, y: gy2 - 48, w: 66, h: 48 };
-      EGG.iuRect = { x: IW(0.92) - wingW * 0.062, y: gy2 - 78, w: wingW * 0.124, h: 78 };
+      EGG.pierSignRect = { x: IW(0.82) - 34, y: gy2 - 48, w: 66, h: 48 };
+      EGG.iuRect = { x: IW(0.925) - wingW * 0.075, y: gy2 - 108, w: wingW * 0.15, h: 108 };
     } else { EGG.ferryRect = null; EGG.pierSignRect = null; EGG.iuRect = null; }
 
     /* ================= MÜNCHEN (east wing) ================= */
@@ -1818,7 +1926,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       var MW = function (u) { return W + wingW * u; };
 
       // Eisbach: water flows, one surfer refuses to leave
-      var eL2 = MW(0.06), eR2 = MW(0.30), eY2 = gy2 + 3;
+      var eL2 = MW(0.05), eR2 = MW(0.26), eY2 = gy2 + 3;
       ctx.strokeStyle = "rgba(210,222,214,.35)";
       ctx.lineWidth = 1;
       for (var fl3 = 0; fl3 < 5; fl3++) {
@@ -1829,35 +1937,75 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         ctx.lineTo(fxx + 10, eY2 + 3 + (fl3 % 3) * 3); ctx.stroke();
       }
       ctx.globalAlpha = 1;
-      // the standing wave + surfer
+      /* the standing wave, a proper curl, and the surfer who lives on it */
       var wvx = eL2 + (eR2 - eL2) * 0.30;
-      ctx.strokeStyle = "rgba(230,236,230,.7)";
-      ctx.lineWidth = 2;
+      var sbob = Math.sin(t * 4.2) * 1.6, slean = Math.sin(t * 2.6) * 0.09;
+      // the curl: water climbing back on itself, upstream of the board
+      var crl = Math.sin(t * 6) * 1.1;
+      var wg5 = ctx.createLinearGradient(wvx - 16, eY2 - 8, wvx - 16, eY2 + 8);
+      wg5.addColorStop(0, "rgba(150,176,168,.85)");
+      wg5.addColorStop(1, "rgba(84,108,102,.9)");
+      ctx.fillStyle = wg5;
       ctx.beginPath();
-      ctx.moveTo(wvx - 7, eY2 + 7);
-      ctx.quadraticCurveTo(wvx - 2, eY2 - 1 + Math.sin(t * 7) * 0.8, wvx + 4, eY2 + 2);
+      ctx.moveTo(wvx - 26, eY2 + 8);
+      ctx.quadraticCurveTo(wvx - 22, eY2 - 2 + crl * 0.4, wvx - 13, eY2 - 6 + crl * 0.6);
+      ctx.quadraticCurveTo(wvx - 6, eY2 - 8.5 + crl, wvx - 2, eY2 - 5 + crl * 0.5);
+      ctx.quadraticCurveTo(wvx + 3, eY2 - 1, wvx + 8, eY2 + 3);
+      ctx.lineTo(wvx + 8, eY2 + 8);
+      ctx.closePath(); ctx.fill();
+      // foam crest riding the lip
+      ctx.strokeStyle = "rgba(240,244,240,.85)";
+      ctx.lineWidth = 2.2; ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(wvx - 20, eY2 - 2 + crl * 0.4);
+      ctx.quadraticCurveTo(wvx - 12, eY2 - 7 + crl * 0.7, wvx - 4, eY2 - 6 + crl * 0.6);
       ctx.stroke();
-      var sbob = Math.sin(t * 4.2) * 1.4, slean = Math.sin(t * 2.6) * 0.14;
-      ctx.save();
-      ctx.translate(wvx + 3, eY2 - 1 + sbob * 0.4);
-      ctx.rotate(slean);
-      ctx.fillStyle = "rgba(238,232,214,.9)";                     // board
-      ctx.beginPath(); ctx.ellipse(0, 0, 7.5, 1.6, -0.1, 0, 6.284); ctx.fill();
-      ctx.strokeStyle = "#2b2620"; ctx.lineWidth = 2; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(-2, -1); ctx.lineTo(-3, -7); ctx.moveTo(2.5, -1); ctx.lineTo(2, -7); ctx.stroke();  // legs
-      ctx.fillStyle = "#2b2620";
-      ctx.beginPath(); ctx.ellipse(-0.5, -10, 2.6, 3.4, slean, 0, 6.284); ctx.fill();   // torso
-      ctx.beginPath(); ctx.arc(-0.5, -15, 2, 0, 6.284); ctx.fill();                      // head
-      ctx.strokeStyle = "#2b2620"; ctx.lineWidth = 1.6;
-      ctx.beginPath(); ctx.moveTo(-2.6, -11); ctx.lineTo(-6.5, -9 + sbob * 0.6); ctx.stroke();  // arms out
-      ctx.beginPath(); ctx.moveTo(1.6, -11); ctx.lineTo(5.5, -12 - sbob * 0.6); ctx.stroke();
-      ctx.restore();
-      // spray
-      ctx.fillStyle = "rgba(230,236,230,.5)";
-      for (var sp5 = 0; sp5 < 3; sp5++) {
-        var spp = (t * 2.2 + sp5 * 0.33) % 1;
+      ctx.fillStyle = "rgba(240,244,240,.65)";
+      for (var fc = 0; fc < 4; fc++) {
+        var fcp = (t * 2.6 + fc * 0.25) % 1;
         ctx.beginPath();
-        ctx.arc(wvx - 8 - spp * 6, eY2 + 2 - Math.sin(spp * Math.PI) * 7, 1 + spp, 0, 6.284);
+        ctx.arc(wvx - 5 - fcp * 17, eY2 - 6 + crl * 0.5 - Math.sin(fcp * Math.PI) * 3, 0.8 + fcp * 0.8, 0, 6.284);
+        ctx.fill();
+      }
+      // the surfer, 1.6x, crouched low with both arms out
+      ctx.save();
+      ctx.translate(wvx + 5, eY2 - 4 + sbob * 0.5);
+      ctx.rotate(slean - 0.05);
+      ctx.fillStyle = "rgba(238,232,214,.95)";                    // board, nose lifted
+      ctx.beginPath();
+      ctx.moveTo(-14, 2.2);
+      ctx.quadraticCurveTo(-4, 3.6, 5, 2.6);
+      ctx.quadraticCurveTo(11, 1.6, 14, -3);                      // the nose climbs
+      ctx.quadraticCurveTo(9.5, -0.4, 3, 0);
+      ctx.quadraticCurveTo(-6, 0.6, -14, 2.2);
+      ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = "rgba(120,104,80,.5)"; ctx.lineWidth = 0.8;
+      ctx.beginPath(); ctx.moveTo(-11.5, 2); ctx.quadraticCurveTo(0, 2.4, 12, -2.2); ctx.stroke();
+      // legs: wide stance, knees truly bent, weight low
+      ctx.strokeStyle = "#2b2620"; ctx.lineWidth = 3; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(-7, 1.2); ctx.lineTo(-5, -4.5); ctx.lineTo(-1.2, -7.2); ctx.stroke();  // back leg
+      ctx.beginPath(); ctx.moveTo(4.5, 0.6); ctx.lineTo(4.2, -5); ctx.lineTo(-0.2, -7.4); ctx.stroke();  // front leg
+      // shoes flat on the deck
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(-8.6, 1.4); ctx.lineTo(-5.2, 1.1); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(2.9, 0.9); ctx.lineTo(6.3, 0.5); ctx.stroke();
+      // torso: folded forward over the front knee
+      ctx.strokeStyle = "#2b2620"; ctx.lineWidth = 4.4;
+      ctx.beginPath(); ctx.moveTo(-0.8, -7.2); ctx.quadraticCurveTo(0.6, -10.5, 2.6, -13); ctx.stroke();
+      // both arms out for balance, palms open to the river
+      ctx.strokeStyle = "#2b2620"; ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.moveTo(0.6, -11.5); ctx.lineTo(-5.5, -13.5 + sbob * 0.7); ctx.lineTo(-10.5, -12.8 + sbob); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(1.6, -12); ctx.lineTo(8, -14.5 - sbob * 0.7); ctx.lineTo(12.6, -13.8 - sbob); ctx.stroke();
+      // head, watching the nose
+      ctx.fillStyle = "#2b2620";
+      ctx.beginPath(); ctx.arc(4.4, -15.8, 2.8, 0, 6.284); ctx.fill();
+      ctx.restore();
+      // spray kicked off the tail, drifting downstream
+      ctx.fillStyle = "rgba(230,236,230,.55)";
+      for (var sp5 = 0; sp5 < 5; sp5++) {
+        var spp = (t * 2.2 + sp5 * 0.21) % 1;
+        ctx.beginPath();
+        ctx.arc(wvx - 10 - spp * 13, eY2 + 3 - Math.sin(spp * Math.PI) * 10, 1.1 + spp * 1.5, 0, 6.284);
         ctx.fill();
       }
 
@@ -1866,23 +2014,23 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       var hAng = ((ck.getHours() % 12) + ck.getMinutes() / 60) / 12 * 6.284 - 1.5708;
       var mAng = ck.getMinutes() / 60 * 6.284 - 1.5708;
       [0, 1].forEach(function (twr) {
-        var cxw = MW(0.66) + (twr === 0 ? -24 : 1) + 8.5;
-        var cyw = gy2 - 84 + 6;
+        var cxw = MW(0.70) + (twr === 0 ? -30 : 1) + 10.5;
+        var cyw = gy2 - 105 + 7.5;
         ctx.strokeStyle = "rgba(60,46,32,.9)";
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1.1;
         ctx.beginPath(); ctx.moveTo(cxw, cyw);
-        ctx.lineTo(cxw + Math.cos(hAng) * 2.2, cyw + Math.sin(hAng) * 2.2); ctx.stroke();
-        ctx.lineWidth = 0.7;
+        ctx.lineTo(cxw + Math.cos(hAng) * 2.8, cyw + Math.sin(hAng) * 2.8); ctx.stroke();
+        ctx.lineWidth = 0.8;
         ctx.beginPath(); ctx.moveTo(cxw, cyw);
-        ctx.lineTo(cxw + Math.cos(mAng) * 3.3, cyw + Math.sin(mAng) * 3.3); ctx.stroke();
+        ctx.lineTo(cxw + Math.cos(mAng) * 4.1, cyw + Math.sin(mAng) * 4.1); ctx.stroke();
       });
 
       // night: string lights, the U sign hums, town windows
       if (night2 > 0.3) {
         var la2 = (night2 - 0.3) / 0.7;
-        var p0x = MW(0.44) - 2, p0y = gy2 - 64;
-        var p1x = MW(0.63), p1y = gy2 - 40;
-        var p2x = MW(0.85), p2y = gy2 - 86;
+        var p0x = MW(0.39) - 2, p0y = gy2 - 84;
+        var p1x = MW(0.63), p1y = gy2 - 46;
+        var p2x = MW(0.87), p2y = gy2 - 102;
         for (var bu = 1; bu < 9; bu++) {
           var bt4 = bu / 9;
           var bxq = (1 - bt4) * (1 - bt4) * p0x + 2 * (1 - bt4) * bt4 * p1x + bt4 * bt4 * p2x;
@@ -1896,21 +2044,21 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
           ctx.fillStyle = "rgba(248,222,150," + (0.9 * la2) + ")";
           ctx.beginPath(); ctx.arc(bxq, byq, 0.9, 0, 6.284); ctx.fill();
         }
-        var upx2 = MW(0.585) + 46 + 12;
-        var ug2 = ctx.createRadialGradient(upx2, gy2 - 48, 0, upx2, gy2 - 48, 14);
+        var upx2 = MW(0.66) - 18;
+        var ug2 = ctx.createRadialGradient(upx2, gy2 - 60, 0, upx2, gy2 - 60, 17);
         ug2.addColorStop(0, "rgba(150,180,220," + (0.30 * la2) + ")");
         ug2.addColorStop(1, "rgba(150,180,220,0)");
         ctx.fillStyle = ug2;
-        ctx.beginPath(); ctx.arc(upx2, gy2 - 48, 14, 0, 6.284); ctx.fill();
+        ctx.beginPath(); ctx.arc(upx2, gy2 - 60, 17, 0, 6.284); ctx.fill();
         ctx.fillStyle = "rgba(240,206,130," + (0.65 * la2) + ")";
-        [[0.515, 8], [0.57, 12], [0.755, 9], [0.81, 6], [0.885, 11]].forEach(function (Wp) {
+        [[0.63, 10], [0.775, 12], [0.83, 8], [0.905, 13], [0.935, 7]].forEach(function (Wp) {
           ctx.fillRect(MW(Wp[0]), gy2 - Wp[1], 1.6, 1.6);
         });
       }
-      EGG.ubahnRect = { x: MW(0.585) - 4, y: gy2 - 58, w: 110, h: 76 };
-      EGG.kirkRect = { x: MW(0.66) - 28, y: gy2 - 115, w: 78, h: 115 };
-      EGG.mugRect = { x: MW(0.44) - 24, y: gy2 - 32, w: 48, h: 34 };
-      EGG.tumRect = { x: MW(0.50), y: gy2 - 48, w: wingW * 0.07, h: 48 };
+      EGG.ubahnRect = { x: MW(0.66) - 32, y: gy2 - 74, w: 170, h: 94 };
+      EGG.kirkRect = { x: MW(0.70) - 34, y: gy2 - 145, w: 140, h: 70 };
+      EGG.mugRect = { x: MW(0.39) - 20, y: gy2 - 42, w: 42, h: 42 };
+      EGG.tumRect = { x: MW(0.565) - wingW * 0.055, y: gy2 - 62, w: wingW * 0.11 + 30, h: 62 };
     } else { EGG.ubahnRect = null; EGG.kirkRect = null; EGG.mugRect = null; EGG.tumRect = null; }
 
     /* -------- he follows you into the cities, when he is free -------- */
@@ -1925,12 +2073,12 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       var wgT = Math.min(1, (t - WGUY.t0) / 5);
       if (GUY.state === "away") GUY.next = Math.max(GUY.next, t + 8);   // one Kerem at a time
       if (WGUY.side === -1 && camXs < -wingW * 0.2) {
-        // to the pier, then he sits, feet over the water
-        var wgx = lerp(-24, -wingW + wingW * 0.62, smooth(wgT));
+        // to the pier, then he sits on the deck, feet over the edge
+        var wgx = lerp(-24, -wingW + wingW * 0.58, smooth(wgT));
         if (wgT < 1) {
           drawGuy(wgx, gy2, t, "walk", GUY.outfit, null, -1);
         } else {
-          drawGuy(-wingW + wingW * 0.62, gy2 - 5, t, "crouch", GUY.outfit, null, -1);
+          drawGuy(-wingW + wingW * 0.58, gy2 - 11, t, "sit", GUY.outfit, null, -1);
           // a crumb for the gulls, every little while
           if (t > WGUY.crumbT) { WGUY.crumbT = t + 9 + (t % 5); WGUY.crumbAt = t; }
           if (WGUY.crumbAt && t - WGUY.crumbAt < 2.6) {
@@ -1939,32 +2087,24 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
               var cu2 = cph / 0.45;
               ctx.fillStyle = "rgba(226,208,172,.9)";
               ctx.beginPath();
-              ctx.arc(-wingW + wingW * 0.62 - 14 - cu2 * 46,
-                      gy2 - 16 - Math.sin(cu2 * Math.PI) * 26 + cu2 * 18, 1.3, 0, 6.284);
+              ctx.arc(-wingW + wingW * 0.58 - 14 - cu2 * 46,
+                      gy2 - 22 - Math.sin(cu2 * Math.PI) * 26 + cu2 * 18, 1.3, 0, 6.284);
               ctx.fill();
             } else {
               // one gull commits to the dive
               var gu2 = (cph - 0.45) / 0.55;
-              var gvx = -wingW + wingW * 0.62 - 60 + Math.sin(gu2 * Math.PI) * -30;
-              var gvy = gy2 - 70 + smooth(gu2) * 64;
-              var gfl = Math.sin(t * 11) * 3;
-              ctx.strokeStyle = "rgba(234,230,218,.85)";
-              ctx.lineWidth = 1.4;
-              ctx.beginPath(); ctx.moveTo(gvx - 6, gvy);
-              ctx.quadraticCurveTo(gvx - 3, gvy - 4 - gfl, gvx, gvy);
-              ctx.quadraticCurveTo(gvx + 3, gvy - 4 - gfl, gvx + 6, gvy);
-              ctx.stroke();
+              var gvx = -wingW + wingW * 0.58 - 60 + Math.sin(gu2 * Math.PI) * -30;
+              var gvy = gy2 - 76 + smooth(gu2) * 64;
+              drawGull(gvx, gvy, t * 1.6, 5, 0.9);
             }
           }
         }
       } else if (WGUY.side === 1 && camXs > wingW * 0.2) {
-        // to the biergarten bench; on narrow screens the bench crowds the
-        // table, so he stands on its far side instead of seeming to sit on it
-        var wgSeatX = W + wingW * 0.44 + (small ? 58 : 37);
+        // to the biergarten bench, where he sits properly, facing the table
+        var wgSeatX = W + wingW * 0.39 + (small ? 47 : 63);
         var wgx2 = lerp(W + 24, wgSeatX, smooth(wgT));
         if (wgT < 1) drawGuy(wgx2, gy2, t, "walk", GUY.outfit, null, 1);
-        else if (small) drawGuy(wgSeatX, gy2, t, "stand", GUY.outfit, null, -1);
-        else drawGuy(wgSeatX, gy2 - 6, t, "crouch", GUY.outfit, null, -1);
+        else drawGuy(wgSeatX, gy2 - 11, t, "sit", GUY.outfit, null, -1);
       }
     }
 
@@ -2002,8 +2142,8 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       ctx.fillStyle = sg4;
       ctx.fillRect(sm3[0], gy2, 26, H - gy2);
     });
-    if (camXs < -wingW * 0.06) drawWorldSign(-wingW + wingW * 0.815, "Profile", true, night2);
-    if (camXs > wingW * 0.06) drawWorldSign(W + wingW * 0.585 + 46 + 30, "Projects", false, night2);
+    if (camXs < -wingW * 0.06) drawWorldSign(-wingW + wingW * 0.82, "Profile", true, night2);
+    if (camXs > wingW * 0.06) drawWorldSign(W + wingW * 0.66 + 60 + (small ? 16 : 44), "Projects", false, night2);
 
     /* -------- one-shot flourishes (clicks) -------- */
     if (WINGFX.gulls > 0 && t - WINGFX.gulls < 5) {
@@ -2023,15 +2163,15 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       var bt3 = t - WINGFX.bell;
       ctx.fillStyle = "rgba(60,48,36," + (0.7 * (1 - bt3 / 2.4)) + ")";
       ctx.font = "13px Georgia";
-      ctx.fillText("♪", W + wingW * 0.66 + 4, gy2 - 118 - bt3 * 18);
-      ctx.fillText("♫", W + wingW * 0.66 - 14, gy2 - 108 - bt3 * 24);
+      ctx.fillText("♪", W + wingW * 0.70 + 8, gy2 - 148 - bt3 * 18);
+      ctx.fillText("♫", W + wingW * 0.70 - 12, gy2 - 136 - bt3 * 24);
     }
     if (WINGFX.foam > 0 && t - WINGFX.foam < 1.4) {
       var ft = t - WINGFX.foam;
       ctx.fillStyle = "rgba(240,236,222," + (0.8 * (1 - ft / 1.4)) + ")";
       for (var fo = 0; fo < 4; fo++) {
         ctx.beginPath();
-        ctx.arc(W + wingW * 0.44 - 6 + fo * 5, gy2 - 30 - ft * 20 - fo * 3, 1.6 + ft * 1.2, 0, 6.284);
+        ctx.arc(W + wingW * 0.39 - 12 + fo * 8, gy2 - 40 - ft * 20 - fo * 3, 1.8 + ft * 1.3, 0, 6.284);
         ctx.fill();
       }
     }
@@ -2043,13 +2183,49 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     // deepening zenith
     ctx.save();
     ctx.translate(0, -H * 0.62);
+    // three cloud masses hold the room, each at its own depth and pace
+    if (cloudSprite) {
+      var CLD = [[7, 60, H * 0.13, 1.75, 0.85],
+                 [12, 620, H * 0.335, 1.2, 0.95],
+                 [17, 1180, H * 0.485, 0.85, 0.8]];
+      var cldDim = night >= 0.55 ? 0.3 : 1;
+      for (var cl2 = 0; cl2 < 3; cl2++) {
+        var cw3 = 320 * CLD[cl2][3];
+        var cx8 = ((t * CLD[cl2][0] + CLD[cl2][1]) % (W + cw3 + 240)) - cw3 - 120;
+        ctx.globalAlpha = CLD[cl2][4] * cldDim * gSkyS;
+        ctx.drawImage(cloudSprite, cx8, CLD[cl2][2], cw3, 110 * CLD[cl2][3]);
+      }
+      ctx.globalAlpha = 1;
+    }
     // the hot air balloon, minding its own business
     if (night < 0.55) {
       BALLOON.boost = Math.max(0, BALLOON.boost - 0.004);
       var bx2 = ((t * 9 + W * 0.3) % (W + 500)) - 250;
       var by2 = H * 0.30 + Math.sin(t * 0.32) * 14 - BALLOON.boost * 150;
+      // a second balloon, far off and higher, drifting the other way
+      ctx.save();
+      var bfx = W + 160 - ((t * 6.5 + W * 0.55) % (W + 460));
+      var bfy = H * 0.115 + Math.sin(t * 0.27 + 2) * 9;
+      ctx.translate(bfx, bfy);
+      ctx.scale(0.55, 0.55);
+      ctx.globalAlpha = 0.55;
+      for (var gof = -2; gof <= 2; gof++) {
+        ctx.fillStyle = (gof % 2 === 0) ? "rgba(160,74,44,.92)" : "rgba(230,216,190,.92)";
+        ctx.beginPath();
+        ctx.moveTo(0, 42);
+        ctx.bezierCurveTo(gof * 9 - 4, 26, gof * 13 - 3, -8, gof * 5, -26);
+        ctx.bezierCurveTo(gof * 5 + 4, -26, gof * 5 + 4, -26, gof * 5 + 1, -26);
+        ctx.bezierCurveTo(gof * 13 + 5, -8, gof * 9 + 6, 26, 2, 42);
+        ctx.closePath(); ctx.fill();
+      }
+      ctx.strokeStyle = "rgba(80,60,40,.8)";
+      ctx.beginPath(); ctx.moveTo(-10, 40); ctx.lineTo(-6, 58); ctx.moveTo(10, 40); ctx.lineTo(6, 58); ctx.stroke();
+      ctx.fillStyle = "#5d4630";
+      ctx.fillRect(-8, 58, 16, 11);
+      ctx.restore();
       ctx.save();
       ctx.translate(bx2, by2);
+      ctx.scale(1.25, 1.25);
       // envelope: five gores, warm stripes
       for (var go = -2; go <= 2; go++) {
         ctx.fillStyle = (go % 2 === 0) ? "rgba(160,74,44,.92)" : "rgba(230,216,190,.92)";
@@ -2102,9 +2278,11 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       ctx.textAlign = "start";
       ctx.restore();
       EGG.balloonRect = gSkyS > 0.35
-        ? { x: bx2 - 26, y: by2 - 30 - H * 0.62, w: 52, h: 104 } : null;
+        ? (small ? { x: bx2 - 46, y: by2 - 52 - H * 0.62, w: 92, h: 152 }
+                 : { x: bx2 - 33, y: by2 - 38 - H * 0.62, w: 66, h: 130 }) : null;
       EGG.bannerRect = gSkyS > 0.35
-        ? { x: bx2 - 102, y: by2 + 34 - H * 0.62, w: 52, h: 24 } : null;
+        ? (small ? { x: bx2 - 136, y: by2 + 34 - H * 0.62, w: 86, h: 44 }
+                 : { x: bx2 - 128, y: by2 + 44 - H * 0.62, w: 66, h: 28 }) : null;
 
       // a plane, high and unhurried, its contrail dissolving behind it
       var pu = (t % 55) / 55;
@@ -2158,12 +2336,12 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         ctx.restore();
       }
 
-      // three birds working a thermal
-      for (var tb = 0; tb < 5; tb++) {
+      // five birds working a thermal, circling well inside the frame
+      for (var tb = 0; tb < (small ? 3 : 5); tb++) {
         var ta2 = t * (0.5 + tb * 0.07) + tb * 2.1;
-        var trr = 44 + tb * 16;
-        var tbx = W * 0.74 + Math.cos(ta2) * trr;
-        var tby = H * 0.30 + Math.sin(ta2) * trr * 0.42 - tb * 10;
+        var trr = 34 + tb * 10;
+        var tbx = W * 0.70 + Math.cos(ta2) * trr;
+        var tby = H * 0.33 + Math.sin(ta2) * trr * 0.42 - tb * 8;
         var tfl = Math.sin(t * 6 + tb * 2.4) * 2.4;
         ctx.strokeStyle = "rgba(70,60,48,.55)";
         ctx.lineWidth = 1.2;
@@ -2228,9 +2406,9 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       if (warm2 > 0.3) {
         ctx.strokeStyle = "rgba(240,238,230," + (0.5 * Math.min(1, warm2)) + ")";
         ctx.lineWidth = 0.7;
-        for (var dd2 = 0; dd2 < 5; dd2++) {
+        for (var dd2 = 0; dd2 < (small ? 3 : 5); dd2++) {
           var du = ((t * 0.022 + dd2 * 0.21) % 1);
-          var dxp = W * (0.1 + dd2 * 0.18) + Math.sin(t * 0.6 + dd2 * 2) * 40;
+          var dxp = W * (0.1 + dd2 * (small ? 0.3 : 0.18)) + Math.sin(t * 0.6 + dd2 * 2) * 40;
           var dyp = H * 0.85 - du * H * 0.8;
           ctx.save();
           ctx.translate(dxp, dyp);
@@ -2250,9 +2428,15 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     } else {
       EGG.balloonRect = null;
       EGG.bannerRect = null;
-      // the Milky Way shows itself only to the very patient
-      if (gNightIdle > 0.55 && mwCanvas) {
-        ctx.globalAlpha = gSkyS * ((gNightIdle - 0.55) / 0.45) * 0.5;
+      // a second field of stars, dense enough to lean back into
+      if (starField2) {
+        ctx.globalAlpha = gSkyS * Math.min(1, night * 1.4);
+        ctx.drawImage(starField2, 0, 0);
+        ctx.globalAlpha = 1;
+      }
+      // the Milky Way keeps the room whenever night does
+      if (mwCanvas) {
+        ctx.globalAlpha = gSkyS * (0.34 + 0.26 * gNightIdle);
         ctx.drawImage(mwCanvas, 0, 0);
         ctx.globalAlpha = 1;
       }
@@ -2288,13 +2472,22 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     ctx.restore();
   }
 
+  /* a phone draws at 1.25 device pixels per css pixel: sharp enough for the
+     line work, cheap enough for the fill. A phone that still cannot carry it
+     is allowed to come down to 1, once, and stay there. */
+  var DPRCap = 1.25;
+  function applyDPR() {
+    DPR = Math.min(small ? DPRCap : 1.5, window.devicePixelRatio || 1);
+    canvas.width = W * DPR; canvas.height = H * DPR;
+    canvas.style.width = W + "px"; canvas.style.height = H + "px";
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+
   function resize() {
     W = stage.clientWidth; H = stage.clientHeight;
     skyPx = Math.round(H * 0.65);
     small = W < 720;
-    canvas.width = W * DPR; canvas.height = H * DPR;
-    canvas.style.width = W + "px"; canvas.style.height = H + "px";
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    applyDPR();
 
     branches.length = 0; tips.length = 0;
     rnd = mulberry(20260820);
@@ -2421,6 +2614,20 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       ctx.strokeStyle = "rgba(224,170,96," + (0.30 * sunA) + ")";
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.arc(sunX, sunY, 19.5, 0, 6.284); ctx.stroke();
+      // three long rays, barely there, wheeling with the hour
+      if (gSkyS > 0.05) {
+        ctx.save();
+        ctx.translate(sunX, sunY);
+        ctx.rotate(now * 0.001 * 0.016);
+        ctx.strokeStyle = "rgba(242,212,150," + (0.05 * sunA * gSkyS) + ")";
+        ctx.lineCap = "round";
+        for (var ry5 = 0; ry5 < 3; ry5++) {
+          ctx.rotate(2.0944);
+          ctx.lineWidth = 30;
+          ctx.beginPath(); ctx.moveTo(46, 0); ctx.lineTo(H * 0.52, 0); ctx.stroke();
+        }
+        ctx.restore();
+      }
     }
 
     // far hills: deepest plane moves most against the cursor
@@ -2630,17 +2837,25 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       ctx.save();
       ctx.globalAlpha = Math.max(0, Math.min(1, cfA));
       ctx.font = "italic 12.5px Georgia";
-      var cfw = ctx.measureText(CAPFX.text).width + 18;
+      var cfLns = capWrap(CAPFX.text, W * 0.78);
+      var cfLw = 0;
+      for (var cf2 = 0; cf2 < cfLns.length; cf2++) {
+        cfLw = Math.max(cfLw, ctx.measureText(cfLns[cf2]).width);
+      }
+      var cfw = cfLw + 18;
+      var cfh = 8 + cfLns.length * 16;
       var cfx = clamp(CAPFX.x, camXs + cfw / 2 + 8, camXs + W - cfw / 2 - 8);
-      var cfy = clamp(CAPFX.y - 40, 12 - skyLift, H - 40 - skyLift);
+      var cfy = clamp(CAPFX.y - 16 - cfh, 12 - skyLift, H - cfh - 16 - skyLift);
       ctx.fillStyle = "rgba(20,14,8,.88)";
       ctx.strokeStyle = "rgba(224,170,96,.35)";
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.roundRect(cfx - cfw / 2, cfy, cfw, 24, 4);
+      ctx.roundRect(cfx - cfw / 2, cfy, cfw, cfh, 4);
       ctx.fill(); ctx.stroke();
       ctx.fillStyle = "rgba(233,226,210,.92)";
-      ctx.fillText(CAPFX.text, cfx - cfw / 2 + 9, cfy + 17);
+      for (var cf3 = 0; cf3 < cfLns.length; cf3++) {
+        ctx.fillText(cfLns[cf3], cfx - cfw / 2 + 9, cfy + 17 + cf3 * 16);
+      }
       ctx.restore();
     }
     ctx.restore();                                // ── end of the world wrap
@@ -2742,8 +2957,8 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     ctx.quadraticCurveTo(sz * 0.7, -sz * 0.2, 0, sz);
     ctx.quadraticCurveTo(-sz * 0.7, -sz * 0.2, 0, -sz);
     ctx.fill();
-    // midrib, only where it can be seen
-    if (front && sz > 5.6) {
+    // midrib, only where it can be seen; on a phone leaf it never can
+    if (front && sz > 5.6 && !small) {
       ctx.strokeStyle = "rgba(0,0,0,.18)";
       ctx.lineWidth = 0.6;
       ctx.beginPath(); ctx.moveTo(0, -sz * 0.8); ctx.lineTo(0, sz * 0.8); ctx.stroke();
@@ -2909,6 +3124,16 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     else if (cyc >= 0.42 && cyc < 0.62) up = 1;
     else if (cyc >= 0.62 && cyc < 0.72) up = 1 - smooth((cyc - 0.62) / 0.10);
     EGG.moleRect = up > 0.4 ? { x: mx - 22, y: my - 34 - camY, w: 44, h: 46 } : null;
+    MOLEUP = up;
+    if (up === 0) {
+      // the settled mound stays while its critic reads below
+      for (var md2 = 2; md2 >= 0; md2--) {
+        ctx.fillStyle = "rgba(" + (40 + md2 * 8) + "," + (29 + md2 * 6) + "," + (16 + md2 * 4) + "," + (0.85 * vis) + ")";
+        ctx.beginPath();
+        ctx.ellipse(mx, my + 6 + md2 * 1.2, (24 - md2 * 4) * 0.7, (7 - md2 * 1.4) * 0.55, 0, Math.PI, 0);
+        ctx.fill();
+      }
+    }
     if (up > 0) {
       var mound = smooth(Math.min(1, up * 1.4));
       // the mound: layered loose earth with speckle
@@ -3038,7 +3263,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     }
   }
   var flies = [];             // fireflies
-  var starField = null, moonSprite = null, cloudSprite = null, mwCanvas = null;
+  var starField = null, starField2 = null, moonSprite = null, cloudSprite = null, mwCanvas = null;
   function bakeSky() {
     // the Milky Way: a diagonal band of grain, saved for the deep idle night
     mwCanvas = document.createElement("canvas");
@@ -3065,6 +3290,18 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       var sx = sr() * W, sy = sr() * H * 0.55, ss = sr();
       sf.fillStyle = ss > 0.86 ? "rgba(232,236,246,.8)" : "rgba(232,236,246,.45)";
       sf.fillRect(sx, sy, ss > 0.86 ? 1.6 : 1, ss > 0.86 ? 1.6 : 1);
+    }
+    // a second, denser field baked for the sky room alone
+    starField2 = document.createElement("canvas");
+    starField2.width = W; starField2.height = (H * 0.78) | 0;
+    var sf2 = starField2.getContext("2d");
+    var sr2 = mulberry(911);
+    for (var st5 = 0; st5 < 230; st5++) {
+      var sx5 = sr2() * W, sy5 = sr2() * H * 0.76, ss5 = sr2();
+      sf2.fillStyle = ss5 > 0.9 ? "rgba(236,238,248,.85)"
+        : (ss5 > 0.55 ? "rgba(232,236,246,.5)" : "rgba(228,232,244,.3)");
+      var sd5 = ss5 > 0.9 ? 1.7 : (ss5 > 0.55 ? 1.1 : 0.8);
+      sf2.fillRect(sx5, sy5, sd5, sd5);
     }
     cloudSprite = document.createElement("canvas");
     cloudSprite.width = 320; cloudSprite.height = 110;
@@ -3126,6 +3363,16 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   var WINGFX = { gulls: 0, bell: 0, foam: 0 };
   var WGUY = { side: 0, t0: 0, crumbT: 0 };
   window.addEventListener("mousemove", function(e){ pointer.x = e.clientX; pointer.y = e.clientY; idleSince = performance.now(); }, { passive:true });
+  /* touch has no hover: a tap lends the cursor its place for a moment, so
+     relic captions answer the finger too, then step back */
+  var tapCapT = null;
+  window.addEventListener("pointerup", function(e){
+    if (e.pointerType !== "touch") return;
+    EGG.lastTouchAt = performance.now();
+    pointer.x = e.clientX; pointer.y = e.clientY; idleSince = performance.now();
+    if (tapCapT) clearTimeout(tapCapT);
+    tapCapT = setTimeout(function(){ pointer.x = -100; pointer.y = -100; }, 2500);
+  }, { passive:true });
   window.addEventListener("scroll", function(){ idleSince = performance.now(); flies.length = 0; }, { passive:true });
 
   var bird = { state: 0, t0: 0, next: 18 };   // 0 away · 1 in · 2 perched · 3 leaving
@@ -3221,12 +3468,25 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   EGG._dbg = function () { return { state: GUY.state, next: GUY.next, present: BIKE.present, back: BIKE.back, gone: BIKE.gone, night: gNightIdle }; };
   var HOUSE = { doorOpen: 0, knockT: 0 };
   var RELICS = [];
+  var MOLEUP = 0;   // how far the mole is out of his hill, for the archive hover
   /* a transient caption in the relic style, for clickable landmarks */
   var CAPFX = { until: 0, text: "", x: 0, y: 0 };
   EGG.showCaption = function (text, x, y) {
     CAPFX.text = text; CAPFX.x = x; CAPFX.y = y;
     CAPFX.until = performance.now() / 1000 + 3;
   };
+  /* captions fold themselves to fit a narrow screen; the font must be set */
+  function capWrap(text, maxW2) {
+    var words = text.split(" ");
+    var lines = [], cur = "";
+    for (var wi2 = 0; wi2 < words.length; wi2++) {
+      var t9 = cur ? cur + " " + words[wi2] : words[wi2];
+      if (cur && ctx.measureText(t9).width > maxW2) { lines.push(cur); cur = words[wi2]; }
+      else cur = t9;
+    }
+    if (cur) lines.push(cur);
+    return lines;
+  }
   var gLeafFade = 1;
   var FISH = { x: 0, vx: 0 };
   function wellX() { return houseX() - (small ? 96 : 150); }
@@ -3567,6 +3827,46 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         var ca = -2.6 + c2 * 0.52;
         ctx.beginPath(); ctx.arc(hx + Math.cos(ca) * 4.2, hy + Math.sin(ca) * 4.2 - 0.6, 2.1, 0, 6.284); ctx.fill();
       }
+    } else if (mode === "sit") {
+      /* seated on an edge, the anchor point is the seat itself:
+         knees bent forward, shins down, feet swinging a little */
+      var dangle = Math.sin(t * 1.6) * 1.2;
+      ctx.strokeStyle = trouser; ctx.lineWidth = 3; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(0, -2); ctx.lineTo(6.5, -1.5); ctx.lineTo(7.5, 6 + dangle * 0.5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, -2); ctx.lineTo(5, -0.5); ctx.lineTo(5.4, 7 - dangle * 0.5); ctx.stroke();
+      // shoes
+      ctx.strokeStyle = "#17110c"; ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.moveTo(7.5, 6.4 + dangle * 0.5); ctx.lineTo(10.2, 6 + dangle * 0.5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(5.4, 7.4 - dangle * 0.5); ctx.lineTo(8.1, 7 - dangle * 0.5); ctx.stroke();
+      // torso, upright with an easy lean
+      ctx.strokeStyle = coat; ctx.lineWidth = 5;
+      ctx.beginPath(); ctx.moveTo(0, -3); ctx.lineTo(1.2, -14); ctx.stroke();
+      // arms folded to the lap
+      ctx.strokeStyle = armCol; ctx.lineWidth = 2.6;
+      ctx.beginPath(); ctx.moveTo(1, -12); ctx.lineTo(4.6, -8); ctx.lineTo(6.4, -3.6); ctx.stroke();
+      // the scarf, in winter
+      if (O.scarf) {
+        ctx.strokeStyle = O.scarf; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(-2, -13.6); ctx.lineTo(4.6, -13.4); ctx.stroke();
+      }
+      // head + curls
+      ctx.save();
+      ctx.translate(1.8, -19);
+      ctx.fillStyle = skin;
+      ctx.beginPath(); ctx.arc(0, 0, 4.6, 0, 6.284); ctx.fill();
+      ctx.fillStyle = hair;
+      if (GUY.wet) {
+        ctx.beginPath(); ctx.arc(0, -1.4, 4.9, Math.PI, 0); ctx.fill();
+        ctx.fillRect(-4.9, -1.4, 9.8, 1.8);
+      } else {
+        for (var c6 = 0; c6 < 7; c6++) {
+          var ca6 = -3.0 + c6 * 0.44;
+          ctx.beginPath(); ctx.arc(Math.cos(ca6) * 4.4, -0.8 + Math.sin(ca6) * 4.4, 2.2, 0, 6.284); ctx.fill();
+        }
+      }
+      ctx.strokeStyle = "rgba(60,34,20,.8)"; ctx.lineWidth = 0.7;
+      ctx.beginPath(); ctx.arc(0.6, 1, 1.8, 0.3, 2.0); ctx.stroke();
+      ctx.restore();
     } else {
       // legs
       ctx.strokeStyle = trouser; ctx.lineWidth = 3; ctx.lineCap = "round";
@@ -3708,8 +4008,25 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   }
 
   /* the relics answer the cursor; the fish answers nothing, being blind */
+  /* where the relics were last drawn, so a finger can find them again */
+  var ARCH = { live: false, camY: 0 };
+  EGG.relicUnder = function (cx8, cy8) {
+    if (!ARCH.live) return false;
+    var top8 = canvas.getBoundingClientRect().top;
+    function near(x8, yRel8, r8) {
+      var sy8 = (H * 0.885 + yRel8) - ARCH.camY;
+      return Math.abs(cx8 + camXs - x8) < r8 && Math.abs(cy8 - top8 - sy8) < r8;
+    }
+    for (var q8 = 0; q8 < RELICS.length; q8++) {
+      if (near(RELICS[q8].x, RELICS[q8].y, RELICS[q8].r)) return true;
+    }
+    return MOLEUP < 0.05 && near(W * 0.78, H * 0.94, 24);
+  };
+
   function drawArchive(t, descend, camY) {
+    ARCH.live = false;
     if (reduced || descend < 0.15) return;
+    ARCH.live = true; ARCH.camY = camY;
     var vis = smooth((descend - 0.15) / 0.3);
     var RH = H * 1.25;
     ctx.save();
@@ -3718,35 +4035,52 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     // relic auras + captions; the pointer is client space, the canvas may sit
     // above the fold at the very end, so correct by the canvas offset
     var cvTop = canvas.getBoundingClientRect().top;
-    for (var ri = 0; ri < RELICS.length; ri++) {
-      var R2 = RELICS[ri];
-      var wy = H * 0.885 + R2.y;
+    function hoverCap(x6, yRel, r6, cap6, ri6, ring6) {
+      var wy = H * 0.885 + yRel;
       var sy2 = wy - camY;
-      if (sy2 < -40 || sy2 > H + 40) continue;
+      if (sy2 < -40 || sy2 > H + 40) return;
       var hov = pointer.x > 0 &&
-                Math.abs(pointer.x + camXs - R2.x) < R2.r &&
-                Math.abs(pointer.y - cvTop - sy2) < R2.r;
-      // a slow breathing ring, so the eye finds them
-      var pulse2 = 0.5 + Math.sin(t * 1.4 + ri * 1.9) * 0.5;
-      ctx.strokeStyle = "rgba(224,170,96," + ((hov ? 0.5 : 0.10 + pulse2 * 0.07) * vis) + ")";
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(R2.x, wy, R2.r * (hov ? 0.8 : 0.62 + pulse2 * 0.1), 0, 6.284); ctx.stroke();
+                Math.abs(pointer.x + camXs - x6) < r6 &&
+                Math.abs(pointer.y - cvTop - sy2) < r6;
+      if (ring6) {
+        // a slow breathing ring, so the eye finds them
+        var pulse2 = 0.5 + Math.sin(t * 1.4 + ri6 * 1.9) * 0.5;
+        ctx.strokeStyle = "rgba(224,170,96," + ((hov ? 0.5 : 0.10 + pulse2 * 0.07) * vis) + ")";
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(x6, wy, r6 * (hov ? 0.8 : 0.62 + pulse2 * 0.1), 0, 6.284); ctx.stroke();
+      }
       if (hov) {
         ctx.font = "italic 12.5px Georgia";
-        var cw2 = ctx.measureText(R2.cap).width + 18;
-        var cx7 = clamp(R2.x, cw2 / 2 + 8, W - cw2 / 2 - 8);
+        var lns = capWrap(cap6, W * 0.78);
+        var lw2 = 0;
+        for (var ln2 = 0; ln2 < lns.length; ln2++) {
+          lw2 = Math.max(lw2, ctx.measureText(lns[ln2]).width);
+        }
+        var cw2 = lw2 + 18;
+        var ch2 = 8 + lns.length * 16;
+        var cx7 = clamp(x6, cw2 / 2 + 8, W - cw2 / 2 - 8);
         ctx.fillStyle = "rgba(20,14,8,.88)";
         ctx.strokeStyle = "rgba(224,170,96,.35)";
         ctx.lineWidth = 1;
         // kept on screen; in the lower half the caption sits below its relic
-        var capTop = clamp(sy2 > H * 0.52 ? sy2 + 18 : sy2 - 44,
-                           8 - Math.min(0, cvTop), H - 32) + camY;
+        var capTop = clamp(sy2 > H * 0.52 ? sy2 + 18 : sy2 - 20 - ch2,
+                           8 - Math.min(0, cvTop), H - ch2 - 8) + camY;
         ctx.beginPath();
-        ctx.roundRect(cx7 - cw2 / 2, capTop, cw2, 24, 4);
+        ctx.roundRect(cx7 - cw2 / 2, capTop, cw2, ch2, 4);
         ctx.fill(); ctx.stroke();
         ctx.fillStyle = "rgba(233,226,210,.92)";
-        ctx.fillText(R2.cap, cx7 - cw2 / 2 + 9, capTop + 17);
+        for (var ln3 = 0; ln3 < lns.length; ln3++) {
+          ctx.fillText(lns[ln3], cx7 - cw2 / 2 + 9, capTop + 17 + ln3 * 16);
+        }
       }
+    }
+    for (var ri = 0; ri < RELICS.length; ri++) {
+      var R2 = RELICS[ri];
+      hoverCap(R2.x, R2.y, R2.r, R2.cap, ri, true);
+    }
+    // the mound answers only while its keeper is below
+    if (MOLEUP < 0.05) {
+      hoverCap(W * 0.78, H * 0.94, 24, "Somewhere below, a critic reads.", RELICS.length, false);
     }
 
     // the blind fish in the aquifer
@@ -3791,6 +4125,8 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     ctx.strokeStyle = "rgba(190,214,210,.5)";
     ctx.beginPath(); ctx.arc(FISH.x + fdir2 * 10, fy2 - 6 - bph * 26, 1 + bph * 1.4, 0, 6.284); ctx.stroke();
     ctx.globalAlpha = 1;
+    // it hears the cursor come close, though it would not say so
+    hoverCap(FISH.x, fy2 - H * 0.885, 34, "It has never seen the sun. It does not mind.", RELICS.length + 1, false);
     ctx.restore();
   }
 
@@ -3973,6 +4309,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       var slant = sw(2) * 3 + 1;
       var rSpan = W + wingW * 2 + 40;
       var rN = Math.abs(camXs) > 1 ? 130 : 70;
+      if (small) rN = (rN * 0.6) | 0;    // phones carry lighter rain
       ctx.strokeStyle = "rgba(180,196,210," + (0.4 * rainVis) + ")";
       ctx.lineWidth = 1;
       for (var rd = 0; rd < rN; rd++) {
@@ -3982,7 +4319,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       }
       // splashes at the ground
       ctx.strokeStyle = "rgba(180,196,210," + (0.3 * rainVis) + ")";
-      for (var sp4 = 0; sp4 < 18; sp4++) {
+      for (var sp4 = 0; sp4 < (small ? 11 : 18); sp4++) {
         var sx4 = ((sp4 * 251.3 + t * 500) % rSpan) - wingW;
         var ph4 = (t * 3 + sp4) % 1;
         ctx.beginPath(); ctx.arc(sx4, guyGround(), ph4 * 5, Math.PI, 0); ctx.stroke();
@@ -4629,7 +4966,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     var nightish = (p > 0.45 && p < 0.92 && descend < 0.6) || (gNightIdle > 0.5 && p < 0.25);
     if (nightish && performance.now() - idleSince > 10000) {
       if (flies.length === 0) {
-        for (var fl = 0; fl < 12; fl++) {
+        for (var fl = 0; fl < (small ? 7 : 12); fl++) {
           flies.push({ x: Math.random() * W, y: Math.random() * H * 0.7,
                        vx: 0, vy: 0, ph: Math.random() * 6.28 });
         }
@@ -4862,6 +5199,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   var raf = null;
   var shown = 0;   // the displayed progress eases toward the scroll target
   var perfFrames = 0, perfT0 = 0, perfChecked = false;
+  var perf2Frames = 0, perf2T0 = 0, perf2Checked = false;
   function loop(now) {
     if (!perfChecked) {
       if (!perfT0) perfT0 = now;
@@ -4871,6 +5209,18 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         if (perfFrames / 3 < 38 && N > 1200) {   // struggling: thin the canopy, keep the film
           N = (N * 0.6) | 0;
           LEAVES.length = N;
+        }
+      }
+    } else if (!perf2Checked) {
+      // a second window, after the loading is over: a phone that still cannot
+      // hold a comfortable frame draws at one device pixel instead of 1.25
+      if (!perf2T0) perf2T0 = now;
+      perf2Frames++;
+      if (now - perf2T0 > 2500) {
+        perf2Checked = true;
+        if (small && DPRCap > 1 && perf2Frames / 2.5 < 45) {
+          DPRCap = 1;
+          applyDPR();
         }
       }
     }
@@ -5046,6 +5396,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     setTimeout(function(){ dial.classList.remove("fresh"); }, 1600);
   }
   var pressT = 0, longFired = false;
+  dial.addEventListener("contextmenu", function(e){ e.preventDefault(); });
   dial.addEventListener("pointerdown", function(){ pressT = performance.now(); longFired = false; });
   dial.addEventListener("pointerup", function(){
     if (performance.now() - pressT > 550) {
@@ -5087,7 +5438,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     if (slider) {
       slider.value = Math.round(vol * 100);
       var pc = Math.round(vol * 100) + "%";
-      slider.style.background = "linear-gradient(90deg,#e0a050 0%,#e0a050 " + pc + ",rgba(224,170,96,.22) " + pc + ")";
+      slider.style.backgroundImage = "linear-gradient(90deg,#e0a050 0%,#e0a050 " + pc + ",rgba(224,170,96,.22) " + pc + ")";
     }
   }
 
@@ -5350,7 +5701,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       if (ps && ps.atCover &&
           !hit(EGG.bikeRect, q.x, q.y) && !hit(EGG.snowRect, q.x, q.y) &&
           !hit(EGG.trunkRect, q.x, q.y) && !hit(EGG.balloonRect, q.x, q.y)) {
-        panDrag = { x0: e.clientX, cam0: ps.camX, moved: false };
+        panDrag = { x0: e.clientX, y0: e.clientY, cam0: ps.camX, moved: false, dead: false };
         film.setPointerCapture(e.pointerId);
       }
     });
@@ -5359,7 +5710,20 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       if (grabbed && EGG.dragTo) { EGG.dragTo(q.x, q.y); return; }
       if (panDrag) {
         var dx4 = e.clientX - panDrag.x0;
-        if (Math.abs(dx4) > 6) { panDrag.moved = true; window.__panMovedAt = performance.now(); }
+        var dy4 = e.clientY - panDrag.y0;
+        if (!panDrag.moved) {
+          // vertical intent won first: the scroll keeps the gesture for good
+          if (panDrag.dead ||
+              (Math.abs(dy4) > 8 && Math.abs(dx4) <= Math.abs(dy4) * 1.6)) {
+            panDrag.dead = true;
+            return;
+          }
+          // the pan engages only on clearly horizontal intent
+          if (Math.abs(dx4) > 6 && Math.abs(dx4) > Math.abs(dy4) * 1.6) {
+            panDrag.moved = true;
+            window.__panMovedAt = performance.now();
+          }
+        }
         if (panDrag.moved && EGG.panTo) EGG.panTo(panDrag.cam0 - dx4 * 1.2);
         film.style.cursor = panDrag.moved ? "grabbing" : "";
         return;
@@ -5388,13 +5752,34 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         film.style.cursor = "";
       }
     });
+    film.addEventListener("pointercancel", function(){
+      // the browser took the gesture for scrolling: let everything go
+      if (grabbed) { grabbed = false; if (EGG.release) EGG.release(); }
+      panDrag = null;
+      film.style.cursor = "";
+    });
+    film.addEventListener("contextmenu", function(e){ e.preventDefault(); });
   }
   if (film) film.addEventListener("dblclick", function(e){
     var q2 = fxy(e);
     if (hit(EGG.guyRect, q2.x, q2.y) && EGG.soakRequest) EGG.soakRequest();
   });
+  /* a finger has no hover: down there the first tap asks a relic what it is,
+     and only a second tap, while the caption still stands, lets it act */
+  var relicArm = null;
   if (film) film.addEventListener("click", function(e){
     if (window.__panMovedAt && performance.now() - window.__panMovedAt < 350) return;
+    if (EGG.lastTouchAt && performance.now() - EGG.lastTouchAt < 700 &&
+        EGG.relicUnder && EGG.relicUnder(e.clientX, e.clientY)) {
+      var nw8 = performance.now();
+      if (relicArm && nw8 - relicArm.t < 2500 &&
+          Math.abs(e.clientX - relicArm.x) < 44 && Math.abs(e.clientY - relicArm.y) < 44) {
+        relicArm = null;
+      } else {
+        relicArm = { t: nw8, x: e.clientX, y: e.clientY };
+        return;
+      }
+    }
     var r2 = film.getBoundingClientRect();
     var v2 = (window.__EGG && window.__EGG.view) || { x: 0, y: 0 };
     var x = e.clientX - r2.left + v2.x, y = e.clientY - r2.top - v2.y;
@@ -5454,11 +5839,11 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     if (hit(EGG.owlRect, x, y) && EGG.owlRequest) { EGG.owlRequest(); if (window.__hoot) window.__hoot(); return; }
     if (hit(EGG.moonRect, x, y) && EGG.eclipseRequest) { EGG.eclipseRequest(); return; }
     if (hit(EGG.iuRect, x, y) && EGG.showCaption) {
-      EGG.showCaption("Economics, where it started.", x, y);
+      EGG.showCaption("Economics, in progress, across the sea.", x, y);
       return;
     }
     if (hit(EGG.tumRect, x, y) && EGG.showCaption) {
-      EGG.showCaption("Management and Technology, the present chapter.", x, y);
+      EGG.showCaption("Sustainable Management and Technology, 2024 to 2027.", x, y);
       return;
     }
     if (hit(EGG.birdRect, x, y) && EGG.birdErrand && EGG.birdErrand()) return;
@@ -5470,15 +5855,265 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     if (hit(EGG.antRect, x, y) && EGG.antRequest) { EGG.antRequest(); return; }
   });
 
-  /* the parchment the bird fetches: an index of everything hidden.
-     Nothing on the page hints at it; the bird is the only door. */
+  /* the book the bird fetches: an index of everything hidden, bound in
+     two cream pages. Nothing on the page hints at it; the bird is the door. */
   var secretsEl = null, secretsBack = null;
+  var BOOK = { spread: 0, busy: false, single: false, pgL: null, pgR: null,
+               btnPrev: null, btnNext: null, xBtn: null, inner: null };
+  var swipedAt = 0;   // a swipe just turned the page; the echo click must not
+  var BOOK_PAGES = [
+    { title: "The notebook", h: "How to read this", ps: [
+      "This is the notebook I kept while building this place. It explains what the site does, how each part works, and every hidden thing in it. Nothing here is a riddle. If something is listed, it happens.",
+      "The site is one page of drawing instructions. There are no images and no video. Everything you see, including this notebook, is drawn line by line while you watch.",
+      "Turn the pages with the arrows, the arrow keys, or by swiping. Press Escape to close."
+    ] },
+    { h: "The film", ps: [
+      "Scrolling down runs a year in the life of one tree: summer, then the turn, then the fall, then dusk, then the camera goes underground to the roots and the four doors.",
+      "The film is scrubbed, not played. Every leaf's flight is calculated from your scroll position, so scrolling back up runs it exactly in reverse and the leaves return to their branches.",
+      "The four doors at the bottom lead to the four pages of the site: Profile, Projects, Notes and Contact.",
+      "The arrow keys scrub the film. The space bar plays it by itself. Both work anywhere on the page."
+    ] },
+    { h: "The world", ps: [
+      "The cover is not the whole map. Scroll up from it and the sky opens: clouds, a hot air balloon towing a banner, birds circling a thermal, and at night the stars.",
+      "Drag sideways at the cover, or use the arrows at the left and right edges, and the camera pans off the meadow. To the west lies Istanbul, with the Bosphorus, Kiz Kulesi, a working ferry and the Beyazit gate of Istanbul University. To the east lies Munich, with the Alps, the Frauenkirche, the Eisbach and its surfer, a beer garden, the U Bahn and TUM.",
+      "Each place has its own way into the site. The wooden sign on the pier opens the Profile page. The U Bahn stairs go down to Projects. The banner behind the balloon opens Notes. Knocking on the door of the house opens Contact.",
+      "Underground there is more than roots: a cellar under the house, a well whose rope reaches the water table, an ant colony with branching galleries, a mole, a sleeping rabbit, and four buried objects laid out along the taproot in the order I lived them."
+    ] },
+    { h: "What is real", ps: [
+      "The weather is Munich's, fetched live. If it is raining there while you read this, it rains here too.",
+      "The moon shows tonight's true phase, calculated from the date. It waxes and wanes over the month exactly as the real one does.",
+      "The clocks on the two towers of the Frauenkirche show the current hour and minute.",
+      "The sun sits where the time of day puts it, and every shadow on the meadow leans away from it accordingly.",
+      "The season starts as the real one for today's date. Once you turn the dial yourself, the site remembers your choice for your next visit.",
+      "On the Projects page, each repository reports its own latest commit, read from GitHub when the page loads. Nobody types those dates by hand."
+    ] },
+    { h: "The man", ps: [
+      "He lives here. He walks in from the edge, waves, says something, and wanders off again. He has around eighty things to say, and which one he picks depends on the season, the weather, the hour and what you have done to him.",
+      "He changes clothes with the season by walking into his house and coming out dressed for it. In the rain he opens an umbrella. In the wind he flies a kite. In winter you can see his breath.",
+      "You can pick him up with the cursor and drag him anywhere. Throw him and he falls with real weight, bounces or lands flat, gets up and complains. He keeps count, and on the third throw he says so.",
+      "Drop him into the canopy and he catches a branch and hangs there, swinging, until he lets go.",
+      "If you leave him alone for two minutes he sits on his doorstep and falls asleep. When night falls he goes inside and the window lights.",
+      "He follows you to both cities. In Istanbul he sits at the end of the pier and throws crumbs to the gulls. In Munich he takes a seat at the beer garden table."
+    ] },
+    { h: "Things to try", ps: [
+      "Type 3523 anywhere on the cover. The tree blossoms as it did in the spring it was planted.",
+      "The dial in the bottom left corner: one click moves the season forward, a double click grows an entirely new tree with a new shape, and holding it down brings rain.",
+      "Click the red bicycle. He rides off on it, and about fifteen seconds later he rides back and parks it where it was.",
+      "Click a falling leaf in mid air. He catches it, looks at it, and keeps it.",
+      "Double click him while it is raining. He gets thoroughly soaked and his hair goes flat.",
+      "Click the swing hanging from the low branch and he will come over and use it.",
+      "Knock on the door of the house. It opens before the page turns.",
+      "Click the mole when it surfaces. It takes my CV down the hole with it, and every other visit it brings the document up to read.",
+      "In winter, click the small mound of snow. He builds a snowman out of it and lends it his scarf.",
+      "When a squirrel drops an acorn, click the acorn. He plants it, and a sapling grows on that spot."
+    ] },
+    { h: "After dark", ps: [
+      "Stay completely still for thirty five seconds at the cover and evening falls early, just for you. Every season has its own night sky.",
+      "Once it is dark the fireflies come out and follow your cursor around.",
+      "Click the moon and it turns through its phases in front of you.",
+      "A shooting star crosses now and then. Click it while it falls and the tree blossoms as a wish granted.",
+      "A cat sits on the ridge of the roof at night and flicks its tail. An owl keeps the branch. Moths gather at the lantern by the door."
+    ] },
+    { h: "In the cities", ps: [
+      "Click the ferry in Istanbul and it sounds its horn while the gulls scatter. It docks and departs on a loop of its own, whether or not anyone is watching.",
+      "At night the tower blinks its light across the water and the city lights come on behind it.",
+      "Click the towers of the Frauenkirche in Munich and the bells ring.",
+      "Click the beer mugs on the table and they clink.",
+      "Click either university building for a line about what I study there.",
+      "The surfer on the Eisbach never leaves the wave. He is not going to."
+    ] },
+    { h: "Below the ground", ps: [
+      "Hover or tap any buried object and it tells you what it is. There are four along the taproot, in order: the chip from Munich, an aluminium billet from the first carbon inventory I ever built, the rolled diploma, and a marble from a childhood pocket in Istanbul.",
+      "The cellar under the house keeps last summer in jars. The well rope goes all the way down to the water, where a blind fish follows your cursor without ever seeing it.",
+      "There is a tin buried at the end of the root, labelled 2050. It says what it is for.",
+      "The ants run a working colony with a main gallery, three branch tunnels and chambers at the ends. Click them and the whole line stops to look at you."
+    ] },
+    { h: "The controls", ps: [
+      "The dial in the bottom left corner changes the season, regrows the tree and calls the rain, as described above.",
+      "The button in the bottom right corner turns the sound on and opens a volume slider. Every sound is synthesised on the spot: wind that follows the film, crickets at dusk, a ferry horn, a church bell, his whistling. Nothing was recorded.",
+      "The site speaks English, Turkish and German. The buttons are at the bottom of every page, and it remembers your choice.",
+      "The console answers to kerem. Try kerem.ride(), kerem.rain(), kerem.season('winter'), kerem.regrow(), kerem.istanbul(), kerem.munich(), kerem.sky(), kerem.throwMe() and kerem.secrets(), which opens this notebook.",
+      "If your system asks for reduced motion, the film stops moving and the site becomes a plain, quiet document. Nothing is lost."
+    ] },
+    { h: "How it was made", ps: [
+      "One HTML file. No frameworks, no images, no video, no tracking. The tree, the roots and the grass are grown by a seeded random function, so the same seed always produces the same tree, and a new seed produces a genuinely different one.",
+      "The heavy parts are drawn once into off screen canvases and reused every frame: the trunk, the roots, the grass, the stars, the clouds, the two cities. That is why it stays smooth while so much is moving.",
+      "The name at the top is not a font. It is drawn stroke by stroke as a signature, and the dots on the O land last.",
+      "The bird brought you this notebook because you clicked on it while it was perched. That was the only way in.",
+      "Thank you for reading this far. Kerem"
+    ] },
+    null   // the last leaf is blank, as it should be
+  ];
+  function bookNoMotion() {
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+  function bookShort() { return innerHeight < 480; }
+  /* two pages side by side need both a width to hold them and a height to
+     stand in; anything less is read one page at a time */
+  function bookWantsSingle() { return innerWidth < 640 || innerHeight < 340; }
+  /* on a narrow screen the covers reach the edges: the arrows and the clasp
+     come inside rather than hang off into nothing */
+  function bookTight() { return innerWidth < 940; }
+  function bookPad() {
+    return bookShort() ? "1.05rem 1.15rem 1.6rem" : "1.7rem 1.6rem 2.2rem";
+  }
+  function bookPageHTML(i) {
+    var P = BOOK_PAGES[i];
+    var s = "";
+    var sv = bookShort();
+    if (P) {
+      if (P.title) {
+        s += '<div style="font-style:italic;font-size:1.02rem;color:#6b573c;margin:0 0 ' +
+             (sv ? ".6rem" : "1.1rem") + ';">' + P.title + "</div>";
+      }
+      s += '<h3 style="font-weight:400;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;' +
+           'color:#8a6d48;margin:0 0 ' + (sv ? ".55rem" : ".95rem") + ';">' + P.h + "</h3>";
+      for (var k = 0; k < P.ps.length; k++) {
+        s += '<p style="margin:' + (sv ? ".42em" : ".55em") + ' 0;font-size:' +
+             (sv ? ".76rem" : ".84rem") + ';line-height:' + (sv ? "1.42" : "1.5") +
+             ';font-style:italic;color:#4a3c2b">' + P.ps[k] + "</p>";
+      }
+    }
+    if (i < BOOK_PAGES.length - 1 || P) {
+      s += '<span style="position:absolute;bottom:.7rem;' +
+           (BOOK.single || bookTight() ? "left:50%;transform:translateX(-50%)"
+                        : (i % 2 === 0 ? "left:1.3rem" : "right:1.3rem")) +
+           ';font-size:.7rem;color:#9a8668;">' + (i + 1) + "</span>";
+    }
+    return s;
+  }
+  function bookMaxSpread() {
+    return BOOK.single ? BOOK_PAGES.length - 2 : Math.ceil(BOOK_PAGES.length / 2) - 1;
+  }
+  function bookRender() {
+    BOOK.pgL.style.padding = bookPad();
+    BOOK.pgR.style.padding = bookPad();
+    if (BOOK.single) {
+      BOOK.pgL.style.display = "none";
+      BOOK.pgR.style.left = "0"; BOOK.pgR.style.width = "100%";
+      BOOK.pgR.style.borderRadius = "7px";
+      BOOK.pgR.innerHTML = bookPageHTML(BOOK.spread);
+    } else {
+      BOOK.pgL.style.display = "";
+      BOOK.pgR.style.left = "50%"; BOOK.pgR.style.width = "50%";
+      BOOK.pgR.style.borderRadius = "2px 9px 9px 2px";
+      BOOK.pgL.innerHTML = bookPageHTML(BOOK.spread * 2);
+      BOOK.pgR.innerHTML = bookPageHTML(BOOK.spread * 2 + 1);
+    }
+    // arrows: outside the covers on wide screens, tucked into the
+    // bottom corners of the single page on small ones
+    function placeArrow(b, dirRight) {
+      if (BOOK.single || bookTight()) {
+        // no margin outside the covers: the arrows take the bottom corners,
+        // where the page number used to sit, and the number moves to the middle
+        b.style.top = "auto"; b.style.bottom = "-0.1rem";
+        b.style.transform = "none";
+        b.style.color = "#8a6d48"; b.style.fontSize = "1.6rem";
+        if (dirRight) { b.style.right = ".4rem"; b.style.left = "auto"; }
+        else { b.style.left = ".4rem"; b.style.right = "auto"; }
+      } else {
+        b.style.top = "50%"; b.style.bottom = "auto";
+        b.style.transform = "translateY(-50%)";
+        b.style.color = "#e8dfc8"; b.style.fontSize = "2.1rem";
+        if (dirRight) { b.style.right = "-2.4rem"; b.style.left = "auto"; }
+        else { b.style.left = "-2.4rem"; b.style.right = "auto"; }
+      }
+    }
+    placeArrow(BOOK.btnPrev, false);
+    placeArrow(BOOK.btnNext, true);
+    if (BOOK.xBtn) {
+      // the clasp sits above the covers while there is room above them,
+      // and steps onto the page itself when there is not
+      var gapAbove = (innerHeight - Math.min(540, innerHeight * 0.84)) / 2;
+      var inside = gapAbove < 48;
+      BOOK.xBtn.style.top = inside ? ".15rem" : "-3rem";
+      BOOK.xBtn.style.right = inside ? ".25rem" : "-.7rem";
+      BOOK.xBtn.style.color = inside ? "#8a6d48" : "#e8dfc8";
+    }
+    BOOK.btnPrev.style.visibility = BOOK.spread > 0 ? "" : "hidden";
+    BOOK.btnNext.style.visibility = BOOK.spread < bookMaxSpread() ? "" : "hidden";
+  }
+  function bookFace(html, back) {
+    var f = document.createElement("div");
+    f.className = "bkFace";
+    f.style.cssText =
+      "position:absolute;inset:0;background:#efe7d2;padding:" + bookPad() + ";overflow:hidden;" +
+      "backface-visibility:hidden;-webkit-backface-visibility:hidden;" +
+      (back ? "transform:rotateY(180deg);" : "");
+    f.innerHTML = html;
+    var shade = document.createElement("div");
+    shade.style.cssText = "position:absolute;inset:0;pointer-events:none;background:linear-gradient(" +
+      (back ? "90deg" : "270deg") + ",rgba(70,52,30,.16),rgba(70,52,30,0) 30%);";
+    f.appendChild(shade);
+    return f;
+  }
+  function bookTurn(dir) {
+    if (BOOK.busy) return;
+    var target = BOOK.spread + dir;
+    if (target < 0 || target > bookMaxSpread()) return;
+    if (bookNoMotion()) { BOOK.spread = target; bookRender(); return; }
+    BOOK.busy = true;
+    var fwd = dir > 0;
+    var turner = document.createElement("div");
+    var frontHTML, backHTML, startDeg = 0, endDeg, leftCss, widthCss, originCss;
+    var fadeOutEnd = false, fadeIn = false;
+    if (BOOK.single) {
+      leftCss = "0"; widthCss = "100%"; originCss = "left center";
+      if (fwd) {
+        frontHTML = bookPageHTML(BOOK.spread); backHTML = "";
+        endDeg = -180; fadeOutEnd = true;          // the leaf leaves the book
+      } else {
+        frontHTML = bookPageHTML(target); backHTML = bookPageHTML(BOOK.spread);
+        startDeg = -180; endDeg = 0; fadeIn = true; // the leaf returns from the left
+      }
+    } else if (fwd) {
+      leftCss = "50%"; widthCss = "50%"; originCss = "left center";
+      frontHTML = bookPageHTML(BOOK.spread * 2 + 1);
+      backHTML = bookPageHTML(target * 2);
+      endDeg = -180;
+    } else {
+      leftCss = "0"; widthCss = "50%"; originCss = "right center";
+      frontHTML = bookPageHTML(BOOK.spread * 2);
+      backHTML = bookPageHTML(target * 2 + 1);
+      endDeg = 180;
+    }
+    turner.style.cssText =
+      "position:absolute;top:0;height:100%;left:" + leftCss + ";width:" + widthCss + ";" +
+      "transform-style:preserve-3d;z-index:3;transform-origin:" + originCss + ";" +
+      "transform:rotateY(" + startDeg + "deg)" + (fadeIn ? ";opacity:0" : "") + ";" +
+      "transition:transform .6s cubic-bezier(.35,.1,.25,1)" +
+      (fadeOutEnd ? ",opacity .16s ease .44s" : (fadeIn ? ",opacity .14s ease" : "")) + ";" +
+      "box-shadow:0 6px 26px rgba(20,14,8,.28);";
+    turner.appendChild(bookFace(frontHTML, false));
+    turner.appendChild(bookFace(backHTML, true));
+    BOOK.inner.appendChild(turner);
+    // beneath the turning leaf, the incoming page already waits
+    BOOK.spread = target;
+    if (BOOK.single) {
+      if (fwd) BOOK.pgR.innerHTML = bookPageHTML(target);
+      // going back, the old page stays beneath until the leaf covers it
+    } else if (fwd) {
+      BOOK.pgR.innerHTML = bookPageHTML(target * 2 + 1);
+    } else {
+      BOOK.pgL.innerHTML = bookPageHTML(target * 2);
+    }
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      turner.style.transform = "rotateY(" + endDeg + "deg)";
+      if (fadeOutEnd) turner.style.opacity = "0";
+      if (fadeIn) turner.style.opacity = "1";
+    }); });
+    setTimeout(function(){
+      turner.remove();
+      bookRender();
+      BOOK.busy = false;
+    }, 640);
+  }
   function closeSecrets() {
     if (secretsEl) { secretsEl.style.display = "none"; }
     if (secretsBack) { secretsBack.style.display = "none"; }
   }
   function openSecrets() {
-    var noMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var noMotion = bookNoMotion();
     if (!secretsEl) {
       secretsBack = document.createElement("div");
       secretsBack.style.cssText = "position:fixed;inset:0;background:rgba(20,14,8,.55);z-index:96;";
@@ -5486,70 +6121,130 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       secretsEl = document.createElement("div");
       secretsEl.id = "secrets";
       secretsEl.setAttribute("role", "dialog");
-      secretsEl.setAttribute("aria-label", "The small secrets");
+      secretsEl.setAttribute("aria-label", "The notebook");
       secretsEl.style.cssText =
         "position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);" +
-        "width:min(520px,88vw);max-height:72vh;overflow-y:auto;" +
-        "background:#efe7d2;border:1px solid rgba(90,70,40,.5);border-radius:3px;" +
-        "box-shadow:0 24px 70px rgba(20,14,8,.5),inset 0 0 0 3px #efe7d2,inset 0 0 0 4px rgba(90,70,40,.35);" +
-        "font-family:Georgia,serif;color:#33291e;padding:1.9rem 2.2rem 1.7rem;z-index:97;";
-      var lines = [
-        "Type 3523 on the keyboard. The tree remembers spring.",
-        "Drag him. Throw him. He keeps count of three.",
-        "Double click him in the rain.",
-        "Click the bicycle and wait for its return.",
-        "Click the mole before it sinks. It takes the CV with it.",
-        "The mole reads it sometimes.",
-        "Click the acorn the squirrel drops. He plants it.",
-        "Click the snow mound in winter. He builds someone.",
-        "Click the moon on an idle night.",
-        "Stand still for 35 seconds. Night falls, and the fireflies find your cursor.",
-        "Stand still for two minutes. He dozes on the doorstep.",
-        "Catch a falling leaf mid air.",
-        "The dial: click for seasons, double click for a brand new tree, hold for rain.",
-        "After rain, wait.",
-        "Scroll up from the cover.",
-        "Click the balloon, then its banner.",
-        "A star falls at night. Click it and wish.",
-        "Pan to the sea. Click the ferry. The tower blinks back.",
-        "Pan to the mountains. Click the church, the mugs. Watch the river.",
-        "Knock on his door.",
-        "A swing hangs from the low branch. He will try it if you ask.",
-        "He follows you to both cities.",
-        "A cat keeps the ridge at night.",
-        "The well reaches a blind fish.",
-        "Hover what lies buried.",
-        "And the console answers to kerem."
-      ];
-      var htmlStr =
-        '<button type="button" id="secretsX" aria-label="Close" ' +
-        'style="position:absolute;top:.45rem;right:.6rem;border:0;background:none;' +
-        'font:400 20px Georgia,serif;color:#6b573c;cursor:pointer;line-height:1;padding:.25rem .4rem">×</button>' +
-        '<h2 style="font-weight:400;font-style:italic;font-size:1.3rem;margin:0 0 1rem;letter-spacing:.02em">The small secrets</h2>';
-      for (var li = 0; li < lines.length; li++) {
-        htmlStr += '<p style="margin:.44em 0;font-size:.865rem;line-height:1.45;font-style:italic;color:#4a3c2b">' + lines[li] + '</p>';
+        "width:min(860px,92vw);height:min(540px,84vh);z-index:97;" +
+        "font-family:Georgia,serif;color:#33291e;perspective:1700px;" +
+        "touch-action:pan-y;";
+      var inner = document.createElement("div");
+      inner.style.cssText =
+        "position:absolute;inset:0;transform-style:preserve-3d;" +
+        "filter:drop-shadow(0 26px 60px rgba(20,14,8,.55));";
+      function makePage(leftSide) {
+        var pgg = document.createElement("div");
+        pgg.style.cssText =
+          "position:absolute;top:0;height:100%;width:50%;left:" + (leftSide ? "0" : "50%") + ";" +
+          "background:#efe7d2;padding:1.7rem 1.6rem 2.2rem;overflow:hidden;" +
+          "border-radius:" + (leftSide ? "9px 2px 2px 9px" : "2px 9px 9px 2px") + ";" +
+          "box-shadow:inset 0 0 0 1px rgba(90,70,40,.25);cursor:pointer;";
+        var spine = document.createElement("div");
+        spine.style.cssText =
+          "position:absolute;top:0;bottom:0;width:34px;pointer-events:none;" +
+          (leftSide ? "right:0;background:linear-gradient(270deg,rgba(70,52,30,.20),rgba(70,52,30,0));"
+                    : "left:0;background:linear-gradient(90deg,rgba(70,52,30,.20),rgba(70,52,30,0));");
+        pgg.appendChild(spine);
+        return pgg;
       }
-      secretsEl.innerHTML = htmlStr;
+      BOOK.inner = inner;
+      BOOK.pgL = makePage(true);
+      BOOK.pgR = makePage(false);
+      inner.appendChild(BOOK.pgL);
+      inner.appendChild(BOOK.pgR);
+      // the outer half of either page also turns it
+      BOOK.pgL.addEventListener("click", function (e) {
+        if (performance.now() - swipedAt < 450) return;
+        var r7 = BOOK.pgL.getBoundingClientRect();
+        if (BOOK.single || e.clientX < r7.left + r7.width * 0.5) bookTurn(-1);
+      });
+      BOOK.pgR.addEventListener("click", function (e) {
+        if (performance.now() - swipedAt < 450) return;
+        var r8 = BOOK.pgR.getBoundingClientRect();
+        if (BOOK.single) {
+          // one page: the left third leafs back, the rest leafs on
+          bookTurn(e.clientX < r8.left + r8.width * 0.3 ? -1 : 1);
+        } else if (e.clientX > r8.left + r8.width * 0.5) bookTurn(1);
+      });
+      // a finger can also leaf through: a clearly horizontal swipe turns the page
+      var swipe0 = null;
+      secretsEl.addEventListener("pointerdown", function (e) {
+        if (e.pointerType === "touch") swipe0 = { x: e.clientX, y: e.clientY };
+      });
+      secretsEl.addEventListener("pointerup", function (e) {
+        if (!swipe0) return;
+        var dx9 = e.clientX - swipe0.x, dy9 = e.clientY - swipe0.y;
+        swipe0 = null;
+        if (Math.abs(dx9) > 40 && Math.abs(dx9) > Math.abs(dy9) * 1.5) {
+          swipedAt = performance.now();
+          bookTurn(dx9 < 0 ? 1 : -1);
+        }
+      });
+      secretsEl.addEventListener("pointercancel", function () { swipe0 = null; });
+      function makeArrow(dir) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("aria-label", dir > 0 ? "Next page" : "Previous page");
+        b.innerHTML = dir > 0 ? "&rsaquo;" : "&lsaquo;";
+        b.style.cssText =
+          "position:absolute;top:50%;transform:translateY(-50%);" + (dir > 0 ? "right:-2.6rem" : "left:-2.6rem") + ";" +
+          "border:0;background:none;font:300 2.1rem Georgia,serif;color:#e8dfc8;cursor:pointer;" +
+          "padding:.55rem .8rem;line-height:1;opacity:.85;touch-action:manipulation;" +
+          "min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;";
+        b.addEventListener("click", function () { bookTurn(dir); });
+        return b;
+      }
+      BOOK.btnPrev = makeArrow(-1);
+      BOOK.btnNext = makeArrow(1);
+      var xBtn = document.createElement("button");
+      xBtn.type = "button"; xBtn.id = "secretsX";
+      xBtn.setAttribute("aria-label", "Close");
+      xBtn.innerHTML = "×";
+      xBtn.style.cssText =
+        "position:absolute;top:-3rem;right:-.7rem;border:0;background:none;" +
+        "font:400 24px Georgia,serif;color:#e8dfc8;cursor:pointer;line-height:1;" +
+        "padding:.5rem .7rem;opacity:.85;touch-action:manipulation;" +
+        "min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;";
+      BOOK.xBtn = xBtn;
+      xBtn.addEventListener("click", closeSecrets);
+      secretsEl.appendChild(inner);
+      secretsEl.appendChild(BOOK.btnPrev);
+      secretsEl.appendChild(BOOK.btnNext);
+      secretsEl.appendChild(xBtn);
       document.body.appendChild(secretsBack);
       document.body.appendChild(secretsEl);
-      secretsEl.querySelector("#secretsX").addEventListener("click", closeSecrets);
       window.addEventListener("keydown", function (e) {
+        if (secretsEl.style.display === "none") return;
         if (e.key === "Escape") closeSecrets();
+        else if (e.key === "ArrowRight") bookTurn(1);
+        else if (e.key === "ArrowLeft") bookTurn(-1);
+      });
+      window.addEventListener("resize", function () {
+        if (secretsEl.style.display === "none") return;
+        var single2 = bookWantsSingle();
+        if (single2 !== BOOK.single) {
+          var pg0 = BOOK.single ? BOOK.spread : BOOK.spread * 2;
+          BOOK.single = single2;
+          BOOK.spread = Math.min(single2 ? pg0 : (pg0 >> 1),
+                                 single2 ? BOOK_PAGES.length - 2
+                                         : Math.ceil(BOOK_PAGES.length / 2) - 1);
+        }
+        bookRender();
       });
       if (!noMotion) {
-        secretsEl.style.transition = "opacity .4s cubic-bezier(.22,1,.36,1), transform .5s cubic-bezier(.22,1,.36,1)";
+        secretsEl.style.transition = "opacity .4s cubic-bezier(.22,1,.36,1)";
         secretsBack.style.transition = "opacity .32s ease";
       }
     }
+    BOOK.single = bookWantsSingle();
+    BOOK.spread = 0;
+    bookRender();
     secretsBack.style.display = "";
     secretsEl.style.display = "";
     if (!noMotion) {
       secretsEl.style.opacity = "0";
-      secretsEl.style.transform = "translate(-50%,-47.5%)";
       secretsBack.style.opacity = "0";
       requestAnimationFrame(function () { requestAnimationFrame(function () {
         secretsEl.style.opacity = "1";
-        secretsEl.style.transform = "translate(-50%,-50%)";
         secretsBack.style.opacity = "1";
       }); });
     }
@@ -5591,7 +6286,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         return "wheee";
       }
     };
-    console.log("%cAlso: window.kerem — wave(), ride(), rain(), season(n), regrow(), throwMe().",
+    console.log("%cAlso: window.kerem with wave(), ride(), rain(), season(n), regrow(), throwMe(), secrets().",
       "color:#8a8272;font-size:11px");
   } catch(err){}
 })();
