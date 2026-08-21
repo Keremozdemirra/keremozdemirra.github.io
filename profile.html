@@ -168,9 +168,11 @@ footer a:hover{color:var(--fg)}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
     gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
-  .langs{margin-left:auto;gap:.15rem}
-  .langs button{font-size:.66rem;padding:.2em .4em;min-width:32px;min-height:40px;
-    display:inline-flex;align-items:center;justify-content:center}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
 
   /* stacks: one column reads better than four squeezed ones */
   .tl .row{grid-template-columns:1fr;gap:.2rem}
@@ -192,7 +194,51 @@ footer a:hover{color:var(--fg)}
   body select,body textarea{font-size:16px}
   body .frow input,body input[type="text"],body input[type="email"]{min-height:46px}
   .socials{gap:1.3rem;flex-wrap:wrap}
-  footer .wrap{gap:1rem}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+
+  /* room to breathe: on one column the rules were sitting on the text */
+  .crown{padding-bottom:clamp(1.4rem,4vh,2.2rem)}
+  section{padding:1.9rem 0}
+  .tl .row{padding:1.25rem 0}
+  .tl .role{margin-bottom:.45rem}
+  dl .item{padding:.7rem 0;gap:.6rem;align-items:baseline}
+  .story{font-size:1.08rem}
+  .mail-line{gap:.8rem}
+  .mail-line a.addr{word-break:break-all;line-height:1.25}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+  .cv-btn{min-height:44px;padding:.8rem 1.25rem}
+  .copy,.share-link{min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center}
+  .socials a{min-height:44px;display:inline-flex;align-items:center}
+  .mail-line a.addr{display:inline-flex;align-items:center;min-height:44px}
+  .note-read{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .feature .go{min-height:44px;display:inline-flex;align-items:center}
+  /* a link sitting inside a sentence: the line opens up so the link can be
+     a thumb tall without the paragraph closing over it */
+  .quiet-line{line-height:2.1}
+  .quiet-line a{display:inline-block;padding:.78rem 0;line-height:1.25}
+  .note-item h3 a{display:inline-block;padding:.5rem 0;border-bottom:0;
+    text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
+  .note-item h3 a:hover{text-decoration-color:var(--accent)}
+  /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px;min-height:44px}
+  body .frow textarea{min-height:8rem}
+  /* a 4px tall slider is not a control: the whole strip takes the touch */
+  input[type="range"]{height:44px;margin:0;padding:0}
+  .demo-src a{display:inline-flex;align-items:center;min-height:44px}
 }
 .rise{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .7s cubic-bezier(.22,1,.36,1)}
 .rise.in{opacity:1;transform:none}
@@ -223,8 +269,8 @@ footer a:hover{color:var(--fg)}
 <header class="bar">
   <div class="wrap">
     <a class="home" href="index.html">Kerem Özdemir</a>
-    <nav aria-label="Site"><a href="profile.html" aria-current="page" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a>
-      <div class="langs" role="group" aria-label="Language">
+    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" aria-current="page" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a>
+      <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
         <button type="button" data-lang="de" aria-pressed="false">DE</button>
@@ -240,7 +286,7 @@ footer a:hover{color:var(--fg)}
   <p class="lede" data-i="p-lede">Munich. Two degrees in parallel, six stints of real work, one company being built.</p>
 </div>
 
-<section aria-label="Story">
+<section aria-label="Story" data-ia="a-story">
   <div class="story">
     <p data-i="st1">I study Sustainable Management &amp; Technology at the Technical University of Munich, and Economics at Istanbul University alongside it. The pairing is deliberate: one degree is about how industry has to change, the other about how the money behind it behaves.</p>
     <p data-i="st2">What I actually enjoy is making things hold up. An emission inventory that someone else can check. A market model where every assumption has a name on it. A tool that refuses to guess when a number is missing, and says exactly what is missing instead. Most of my repositories exist because a spreadsheet somewhere failed silently and I did not want that to happen twice.</p>
@@ -252,11 +298,11 @@ footer a:hover{color:var(--fg)}
 <section aria-labelledby="exp-h">
   <h2 id="exp-h" data-i="exp-h">Experience</h2>
   <div class="tl">
-    <div class="row"><span class="yr">Now</span><div>
+    <div class="row"><span class="yr" data-i="yr-now">Now</span><div>
       <h3>BIGM</h3><span class="role" data-i="r7">Marketing manager, part-time · Munich</span>
       <p data-i="e7">Running social media presence and brand identity for a B2B AI sales-automation platform, alongside my studies.</p>
     </div></div>
-    <div class="row"><span class="yr">Now</span><div>
+    <div class="row"><span class="yr" data-i="yr-now">Now</span><div>
       <h3>CoLaunch</h3><span class="role" data-i="r6">Co-founder · colaunch.app</span>
       <p data-i="e6">A platform matching startup ideas with the talent to build them. Third at the Boğaziçi Enterprize competition; competed nationally among JA Startup teams and reached the YTU Entrepreneurship semi-final.</p>
     </div></div>
@@ -271,7 +317,7 @@ footer a:hover{color:var(--fg)}
     <div class="row"><span class="yr">2025</span><div>
       <h3>Microbify GmbH</h3><span class="role" data-i="r3">Market expansion consultant · Straubing</span>
       <p data-i="e3">Mapped and sized three B2B segments for microbiological sampling from gas streams and liquids. Wrote the market entry strategy, with KPIs and a risk assessment under it.</p>
-      <span class="badge">Graded 1.0</span>
+      <span class="badge" data-i="bg-grade">Graded 1.0</span>
     </div></div>
     <div class="row"><span class="yr">2024</span><div>
       <h3>HTE Industrial Control Systems</h3><span class="role" data-i="r2">Sustainability consultant intern · Istanbul</span>
@@ -290,9 +336,9 @@ footer a:hover{color:var(--fg)}
     <div>
       <h3 class="sub" data-i="cr-edu">Education</h3>
       <dl>
-        <div class="item"><span class="k">TUM · BSc Sustainable Management and Technology</span><span class="v">2024 to 2027</span></div>
-        <div class="item"><span class="k">Istanbul University · BSc Economics, remote</span><span class="v">2025 to 2029</span></div>
-        <div class="item"><span class="k">Yeditepe University · Management Information Systems, transferred to TUM</span><span class="v">2023 to 2024</span></div>
+        <div class="item"><span class="k" data-i="ed1">TUM · BSc Sustainable Management and Technology</span><span class="v" data-i="ed1v">2024 to 2027</span></div>
+        <div class="item"><span class="k" data-i="ed2">Istanbul University · BSc Economics, remote</span><span class="v" data-i="ed2v">2025 to 2029</span></div>
+        <div class="item"><span class="k" data-i="ed3">Yeditepe University · Management Information Systems, transferred to TUM</span><span class="v" data-i="ed3v">2023 to 2024</span></div>
       </dl>
       <h3 class="sub" style="margin-top:1.6rem" data-i="cr-lang">Languages</h3>
       <dl>
@@ -306,16 +352,16 @@ footer a:hover{color:var(--fg)}
       <h3 class="sub" data-i="cr-cert">Certifications</h3>
       <dl>
         <div class="item"><span class="k">McKinsey Forward</span><span class="v">2026</span></div>
-        <div class="item"><span class="k">BCG Digital Transformation simulation</span><span class="v">2026</span></div>
-        <div class="item"><span class="k">Management Consulting · Emory</span><span class="v">2025</span></div>
-        <div class="item"><span class="k">Sustainability Consulting · UIUC</span><span class="v">2025</span></div>
-        <div class="item"><span class="k">Google Project Management</span><span class="v">2024</span></div>
+        <div class="item"><span class="k" data-i="ct2">BCG Digital Transformation simulation</span><span class="v">2026</span></div>
+        <div class="item"><span class="k" data-i="ct3">Management Consulting · Emory</span><span class="v">2025</span></div>
+        <div class="item"><span class="k" data-i="ct4">Sustainability Consulting · UIUC</span><span class="v">2025</span></div>
+        <div class="item"><span class="k" data-i="ct5">Google Project Management</span><span class="v">2024</span></div>
         <div class="item"><span class="k">Google AI Essentials</span><span class="v">2024</span></div>
       </dl>
       <h3 class="sub" style="margin-top:1.6rem" data-i="cr-mem">Memberships</h3>
       <dl>
-        <div class="item"><span class="k">UN MGCY · Chemicals and Waste Youth Platform</span><span class="v">since 2025</span></div>
-        <div class="item"><span class="k">Enactus Straubing e.V. · finance auditor</span><span class="v">2024 to 2026</span></div>
+        <div class="item"><span class="k" data-i="mb1">UN MGCY · Chemicals and Waste Youth Platform</span><span class="v" data-i="mb1v">since 2025</span></div>
+        <div class="item"><span class="k" data-i="mb2">Enactus Straubing e.V. · finance auditor</span><span class="v" data-i="mb2v">2024 to 2026</span></div>
       </dl>
     </div>
   </div>
@@ -358,7 +404,7 @@ footer a:hover{color:var(--fg)}
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 <script>
-window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "p-h1": "Profil", "p-lede": "Münih. Aynı anda iki lisans, altı iş deneyimi, kurulmakta olan bir şirket.", "st1": "TUM'da Sürdürülebilir Yönetim ve Teknoloji, yanında İstanbul Üniversitesi'nde Ekonomi okuyorum. Bu eşleşme bilinçli: biri sanayinin nasıl değişmek zorunda olduğunu, diğeri arkasındaki paranın nasıl davrandığını anlatıyor.", "st2": "Asıl sevdiğim şey, yaptığım işin sağlam olması. Başkasının kontrol edebildiği bir emisyon envanteri. Her varsayımın üzerinde bir isim taşıdığı bir pazar modeli. Bir sayı eksikken tahmin etmeyi reddedip tam olarak neyin eksik olduğunu söyleyen bir araç. Repolarımın çoğu, bir yerlerde bir tablonun sessizce yanlış hesapladığını gördüğüm için var.", "st3": "Küçük bir ekiple CoLaunch'ı kuruyorum ve karbon muhasebesi ile finansal analiz için bir dizi açık araç tutuyorum. beşi projeler sayfasında canlı çalışıyor. Adımla yayımlanan her şey kaynağını taşır.", "cv": "CV indir (PDF)", "exp-h": "Deneyim", "cr-h": "Belgeler", "cr-edu": "Eğitim", "cr-lang": "Diller", "cr-cert": "Sertifikalar", "cr-mem": "Üyelikler", "l-tr": "Türkçe", "l-trv": "ana dil", "l-en": "İngilizce", "l-de": "Almanca", "l-dev": "A2, öz değerlendirme", "r7": "Pazarlama müdürü, yarı zamanlı · Münih", "e7": "Okulun yanında, B2B bir yapay zekâ satış otomasyonu platformunun sosyal medya varlığını ve marka kimliğini yönetiyorum.", "l-wp": "Çalışma izni", "l-wpv": "Almanya'da çalışmaya uygun", "r6": "Kurucu ortak · colaunch.app", "r5": "TUM'da döngüsel ekonomi projesi · beş kişilik ekip", "r4": "Danışman stajyer · Berlin", "r3": "Pazar genişleme danışmanı · Straubing", "r2": "Sürdürülebilirlik danışmanı stajyer · İstanbul", "r1": "Sürdürülebilirlik stajyeri · İstanbul", "e6": "Startup fikirlerini onları inşa edecek yetenekle eşleştiren bir platform. Boğaziçi Enterprize'da üçüncülük; JA Startup takımları arasında ulusal düzeyde yarıştı, YTU Girişimcilik'te yarı final.", "e5": "Endüstriyel kompresörler için geri alım şeması ve hizmet-olarak-ürün modeli tasarlandı. Scope 3 analizi ve ESPR + Dijital Ürün Pasaportu rotası.", "e4": "Sağlık ve tüketici ürünleri müşterisi için Çin pazarına giriş raporu. Müşteri sunumları ve içindeki grafikler.", "e3": "Gaz akışları ve sıvılardan mikrobiyolojik örnekleme için üç B2B segmenti haritalandı ve boyutlandırıldı. KPI'lar ve risk değerlendirmesiyle pazar giriş stratejisi.", "e2": "Raporlama yükümlülükleri tarandı; bir kontrol sistemleri üreticisine uygulananlar uygulanmayanlardan ayrıldı.", "e1": "Üretim sahalarında yakıt ve elektrik verisi toplandı; şirketin ilk Scope 1 ve Scope 2 envanteri kuruldu."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "p-h1": "Profil", "p-lede": "München. Zwei Studiengänge parallel, sechs Praxisstationen, ein Unternehmen im Aufbau.", "st1": "Ich studiere Sustainable Management & Technology an der TU München und daneben Volkswirtschaft an der Universität Istanbul. Die Kombination ist Absicht: das eine Fach handelt davon, wie die Industrie sich ändern muss, das andere davon, wie sich das Geld dahinter verhält.", "st2": "Was mir wirklich liegt: Dinge zu bauen, die halten. Ein Emissionsinventar, das jemand anderes prüfen kann. Ein Marktmodell, in dem jede Annahme einen Namen trägt. Ein Werkzeug, das nicht rät, wenn eine Zahl fehlt, sondern sagt, was genau fehlt. Die meisten meiner Repositories existieren, weil irgendwo eine Tabelle still versagt hat.", "st3": "Mit einem kleinen Team baue ich CoLaunch, und ich pflege öffentliche Instrumente für Carbon Accounting und Finanzanalyse. fünf davon laufen live auf der Projektseite. Alles unter meinem Namen trägt seine Quelle.", "cv": "CV herunterladen (PDF)", "exp-h": "Werdegang", "cr-h": "Nachweise", "cr-edu": "Ausbildung", "cr-lang": "Sprachen", "cr-cert": "Zertifikate", "cr-mem": "Mitgliedschaften", "l-tr": "Türkisch", "l-trv": "Muttersprache", "l-en": "Englisch", "l-de": "Deutsch", "l-dev": "A2, Selbsteinschätzung", "r7": "Marketing Manager, Teilzeit · München", "e7": "Social-Media-Präsenz und Markenidentität einer B2B-KI-Vertriebsplattform, neben dem Studium.", "l-wp": "Arbeitserlaubnis", "l-wpv": "berechtigt, in Deutschland zu arbeiten", "r6": "Mitgründer · colaunch.app", "r5": "Kreislaufwirtschaftsprojekt an der TUM · Fünferteam", "r4": "Consultant Praktikant · Berlin", "r3": "Market Expansion Consultant · Straubing", "r2": "Praktikant Nachhaltigkeitsberatung · Istanbul", "r1": "Praktikant Nachhaltigkeit · Istanbul", "e6": "Eine Plattform, die Startup-Ideen mit den passenden Talenten zusammenbringt. Dritter Platz beim Boğaziçi Enterprize; national unter JA-Startup-Teams angetreten, Halbfinale bei YTU Entrepreneurship.", "e5": "Rücknahmesystem und Product-as-a-Service-Modell für Industriekompressoren entworfen. Scope-3-Analyse und Weg zu ESPR und digitalem Produktpass.", "e4": "China-Markteintrittsbericht für einen Kunden aus Healthcare und Konsumgütern. Kundenpräsentationen samt Grafiken.", "e3": "Drei B2B-Segmente für mikrobiologische Probenahme kartiert und dimensioniert. Markteintrittsstrategie mit KPIs und Risikobewertung.", "e2": "Berichtspflichten durchgearbeitet und getrennt, was für einen Steuerungshersteller gilt und was nicht.", "e1": "Brennstoff- und Stromdaten der Produktionsstandorte erhoben; erstes Scope-1- und Scope-2-Inventar der Firma aufgebaut."}};
+window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "a-site": "Site", "a-lang": "Dil", "a-story": "Hikâye", "yr-now": "Şimdi", "bg-grade": "Not 1.0", "ed1": "TUM · Sürdürülebilir Yönetim ve Teknoloji lisansı", "ed1v": "2024 ile 2027 arası", "ed2": "İstanbul Üniversitesi · Ekonomi lisansı, uzaktan", "ed2v": "2025 ile 2029 arası", "ed3": "Yeditepe Üniversitesi · Yönetim Bilişim Sistemleri, TUM'a yatay geçiş", "ed3v": "2023 ile 2024 arası", "ct2": "BCG Digital Transformation simülasyonu", "ct3": "Yönetim Danışmanlığı · Emory", "ct4": "Sürdürülebilirlik Danışmanlığı · UIUC", "ct5": "Google Proje Yönetimi", "mb1": "UN MGCY · Kimyasallar ve Atık Gençlik Platformu", "mb1v": "2025'ten beri", "mb2": "Enactus Straubing e.V. · mali denetçi", "mb2v": "2024 ile 2026 arası", "p-h1": "Profil", "p-lede": "Münih. Aynı anda iki lisans, altı iş deneyimi, kurulmakta olan bir şirket.", "st1": "TUM'da Sürdürülebilir Yönetim ve Teknoloji, yanında İstanbul Üniversitesi'nde Ekonomi okuyorum. Bu eşleşme bilinçli: biri sanayinin nasıl değişmek zorunda olduğunu, diğeri arkasındaki paranın nasıl davrandığını anlatıyor.", "st2": "Asıl sevdiğim şey, yaptığım işin sağlam olması. Başkasının kontrol edebildiği bir emisyon envanteri. Her varsayımın üzerinde bir isim taşıdığı bir pazar modeli. Bir sayı eksikken tahmin etmeyi reddedip tam olarak neyin eksik olduğunu söyleyen bir araç. Repolarımın çoğu, bir yerlerde bir tablonun sessizce yanlış hesapladığını gördüğüm için var.", "st3": "Küçük bir ekiple CoLaunch'ı kuruyorum ve karbon muhasebesi ile finansal analiz için bir dizi açık araç tutuyorum. beşi projeler sayfasında canlı çalışıyor. Adımla yayımlanan her şey kaynağını taşır.", "cv": "CV indir (PDF)", "exp-h": "Deneyim", "cr-h": "Belgeler", "cr-edu": "Eğitim", "cr-lang": "Diller", "cr-cert": "Sertifikalar", "cr-mem": "Üyelikler", "l-tr": "Türkçe", "l-trv": "ana dil", "l-en": "İngilizce", "l-de": "Almanca", "l-dev": "A2, öz değerlendirme", "r7": "Pazarlama müdürü, yarı zamanlı · Münih", "e7": "Okulun yanında, B2B bir yapay zekâ satış otomasyonu platformunun sosyal medya varlığını ve marka kimliğini yönetiyorum.", "l-wp": "Çalışma izni", "l-wpv": "Almanya'da çalışmaya uygun", "r6": "Kurucu ortak · colaunch.app", "r5": "TUM'da döngüsel ekonomi projesi · beş kişilik ekip", "r4": "Danışman stajyer · Berlin", "r3": "Pazar genişleme danışmanı · Straubing", "r2": "Sürdürülebilirlik danışmanı stajyer · İstanbul", "r1": "Sürdürülebilirlik stajyeri · İstanbul", "e6": "Startup fikirlerini onları inşa edecek yetenekle eşleştiren bir platform. Boğaziçi Enterprize'da üçüncülük; JA Startup takımları arasında ulusal düzeyde yarıştı, YTU Girişimcilik'te yarı final.", "e5": "Endüstriyel kompresörler için geri alım şeması ve hizmet-olarak-ürün modeli tasarlandı. Scope 3 analizi ve ESPR + Dijital Ürün Pasaportu rotası.", "e4": "Sağlık ve tüketici ürünleri müşterisi için Çin pazarına giriş raporu. Müşteri sunumları ve içindeki grafikler.", "e3": "Gaz akışları ve sıvılardan mikrobiyolojik örnekleme için üç B2B segmenti haritalandı ve boyutlandırıldı. KPI'lar ve risk değerlendirmesiyle pazar giriş stratejisi.", "e2": "Raporlama yükümlülükleri tarandı; bir kontrol sistemleri üreticisine uygulananlar uygulanmayanlardan ayrıldı.", "e1": "Üretim sahalarında yakıt ve elektrik verisi toplandı; şirketin ilk Scope 1 ve Scope 2 envanteri kuruldu."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "a-site": "Website", "a-lang": "Sprache", "a-story": "Werdegang", "yr-now": "Jetzt", "bg-grade": "Note 1,0", "ed1": "TUM · BSc Sustainable Management and Technology", "ed1v": "2024 bis 2027", "ed2": "Universität Istanbul · BSc Volkswirtschaft, im Fernstudium", "ed2v": "2025 bis 2029", "ed3": "Yeditepe Universität · Wirtschaftsinformatik, Wechsel an die TUM", "ed3v": "2023 bis 2024", "ct2": "BCG Digital Transformation Simulation", "ct3": "Management Consulting · Emory", "ct4": "Nachhaltigkeitsberatung · UIUC", "ct5": "Google Projektmanagement", "mb1": "UN MGCY · Jugendplattform für Chemikalien und Abfall", "mb1v": "seit 2025", "mb2": "Enactus Straubing e.V. · Finanzprüfer", "mb2v": "2024 bis 2026", "p-h1": "Profil", "p-lede": "München. Zwei Studiengänge parallel, sechs Praxisstationen, ein Unternehmen im Aufbau.", "st1": "Ich studiere Sustainable Management & Technology an der TU München und daneben Volkswirtschaft an der Universität Istanbul. Die Kombination ist Absicht: das eine Fach handelt davon, wie die Industrie sich ändern muss, das andere davon, wie sich das Geld dahinter verhält.", "st2": "Was mir wirklich liegt: Dinge zu bauen, die halten. Ein Emissionsinventar, das jemand anderes prüfen kann. Ein Marktmodell, in dem jede Annahme einen Namen trägt. Ein Werkzeug, das nicht rät, wenn eine Zahl fehlt, sondern sagt, was genau fehlt. Die meisten meiner Repositories existieren, weil irgendwo eine Tabelle still versagt hat.", "st3": "Mit einem kleinen Team baue ich CoLaunch, und ich pflege öffentliche Instrumente für Carbon Accounting und Finanzanalyse. fünf davon laufen live auf der Projektseite. Alles unter meinem Namen trägt seine Quelle.", "cv": "CV herunterladen (PDF)", "exp-h": "Werdegang", "cr-h": "Nachweise", "cr-edu": "Ausbildung", "cr-lang": "Sprachen", "cr-cert": "Zertifikate", "cr-mem": "Mitgliedschaften", "l-tr": "Türkisch", "l-trv": "Muttersprache", "l-en": "Englisch", "l-de": "Deutsch", "l-dev": "A2, Selbsteinschätzung", "r7": "Marketing Manager, Teilzeit · München", "e7": "Social-Media-Präsenz und Markenidentität einer B2B-KI-Vertriebsplattform, neben dem Studium.", "l-wp": "Arbeitserlaubnis", "l-wpv": "berechtigt, in Deutschland zu arbeiten", "r6": "Mitgründer · colaunch.app", "r5": "Kreislaufwirtschaftsprojekt an der TUM · Fünferteam", "r4": "Consultant Praktikant · Berlin", "r3": "Market Expansion Consultant · Straubing", "r2": "Praktikant Nachhaltigkeitsberatung · Istanbul", "r1": "Praktikant Nachhaltigkeit · Istanbul", "e6": "Eine Plattform, die Startup-Ideen mit den passenden Talenten zusammenbringt. Dritter Platz beim Boğaziçi Enterprize; national unter JA-Startup-Teams angetreten, Halbfinale bei YTU Entrepreneurship.", "e5": "Rücknahmesystem und Product-as-a-Service-Modell für Industriekompressoren entworfen. Scope-3-Analyse und Weg zu ESPR und digitalem Produktpass.", "e4": "China-Markteintrittsbericht für einen Kunden aus Healthcare und Konsumgütern. Kundenpräsentationen samt Grafiken.", "e3": "Drei B2B-Segmente für mikrobiologische Probenahme kartiert und dimensioniert. Markteintrittsstrategie mit KPIs und Risikobewertung.", "e2": "Berichtspflichten durchgearbeitet und getrennt, was für einen Steuerungshersteller gilt und was nicht.", "e1": "Brennstoff- und Stromdaten der Produktionsstandorte erhoben; erstes Scope-1- und Scope-2-Inventar der Firma aufgebaut."}};
 
 (function(){
   "use strict";
@@ -373,8 +419,24 @@ window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar",
   /* language: the same dictionaries drive every inner page */
   var lang = "en";
   try { lang = localStorage.getItem("lang") || "en"; } catch(e){}
-  var base = {};
+  window.__lang = lang;
+  var base = {}, baseA = {};
+  /* one lookup the whole page shares: text nodes, attributes and anything a
+     script writes after the fact all ask the same dictionary */
+  window.__t = function(k, fallback){
+    var l = window.__lang || "en";
+    var dict = (l !== "en" && window.I18N && window.I18N[l]) || null;
+    return (dict && dict[k] !== undefined) ? dict[k] : fallback;
+  };
+  function attr(sel, name){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if(!(id in baseA)) baseA[id] = el.getAttribute(name) || "";
+      el.setAttribute(name, window.__t(k, baseA[id]));
+    });
+  }
   function apply(l){
+    window.__lang = l;
     var dict = (window.I18N && window.I18N[l]) || {};
     document.querySelectorAll("[data-i]").forEach(function(el){
       var k = el.getAttribute("data-i");
@@ -382,16 +444,20 @@ window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar",
       if(l === "en"){ el.innerHTML = base[k]; return; }
       if(dict[k] !== undefined) el.innerHTML = dict[k];
     });
+    attr("data-ia", "aria-label");
+    attr("data-it", "title");
+    attr("data-ip", "placeholder");
     document.documentElement.setAttribute("lang", l);
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true":"false");
     });
     try { localStorage.setItem("lang", l); } catch(e){}
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch(e){}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
-  if(lang !== "en") apply(lang);
+  apply(lang);
 
   /* soft travel: no internal link jumps straight */
   var fadeEl = document.createElement("div");
@@ -412,9 +478,11 @@ window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar",
   document.querySelectorAll(".copy[data-copy]").forEach(function(b){
     b.addEventListener("click", function(){
       var t = b.getAttribute("data-copy");
+      var idle = function(){ return window.__t(b.getAttribute("data-i") || "", b.getAttribute("data-label") || "copy"); };
+      var done = function(){ return window.__t(b.getAttribute("data-i-done") || "", b.getAttribute("data-done") || "copied"); };
       (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject())
-        .then(function(){ b.classList.add("done"); b.textContent = b.getAttribute("data-done") || "copied";
-          setTimeout(function(){ b.classList.remove("done"); b.textContent = b.getAttribute("data-label") || "copy"; }, 1600); })
+        .then(function(){ b.classList.add("done"); b.textContent = done();
+          setTimeout(function(){ b.classList.remove("done"); b.textContent = idle(); }, 1600); })
         .catch(function(){});
     });
   });

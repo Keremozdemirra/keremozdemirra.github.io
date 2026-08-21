@@ -21,10 +21,19 @@ body{min-height:100vh;background:radial-gradient(ellipse 60% 45% at 50% 42%, #2c
 @keyframes flick{0%,100%{opacity:.75}45%{opacity:1}60%{opacity:.68}}
 h1{font-family:"Fraunces",Georgia,serif;font-weight:300;font-size:clamp(1.8rem,5vw,2.8rem);letter-spacing:.01em}
 p{font-style:italic;color:rgba(233,226,210,.6);margin-top:.8rem;font-size:1.05rem}
-a{display:inline-block;margin-top:2rem;color:#e0a050;text-decoration:none;font-family:"Fraunces",Georgia,serif;
-  border:1px solid rgba(224,160,80,.4);border-radius:3px;padding:.7rem 1.4rem;transition:border-color .2s,background .2s}
+a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;
+  margin-top:2rem;color:#e0a050;text-decoration:none;font-family:"Fraunces",Georgia,serif;
+  border:1px solid rgba(224,160,80,.4);border-radius:3px;padding:.7rem 1.5rem;transition:border-color .2s,background .2s}
 a:hover{border-color:rgba(224,160,80,.8);background:rgba(224,160,80,.07)}
 a:focus-visible{outline:2px solid #e0a050;outline-offset:3px}
+.langs{display:flex;gap:.4rem;justify-content:center;margin-top:2.2rem}
+.langs button{background:none;border:0;cursor:pointer;color:rgba(233,226,210,.55);
+  font-family:"Fraunces",Georgia,serif;font-size:.78rem;letter-spacing:.08em;
+  min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:2px;transition:color .2s cubic-bezier(.22,1,.36,1)}
+.langs button:hover{color:#e9e2d2}
+.langs button[aria-pressed="true"]{color:#e0a050;border-bottom:1px solid rgba(224,160,80,.5)}
+.langs button:focus-visible{outline:2px solid #e0a050;outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.lantern,.lantern .glow{animation:none}}
 </style>
 </head>
@@ -37,9 +46,58 @@ a:focus-visible{outline:2px solid #e0a050;outline-offset:3px}
     <path d="M17 22h20l3 30a8 8 0 0 1-8 8H22a8 8 0 0 1-8-8z" fill="#241a10" stroke="#4a3822"/>
     <ellipse class="glow" cx="27" cy="40" rx="7" ry="10" fill="#e8b054"/>
   </svg>
-  <h1>Nothing grows here.</h1>
-  <p>The page you dug for does not exist, or it was never planted.</p>
-  <a href="/">Back to the tree</a>
+  <h1 data-i="h">Nothing grows here.</h1>
+  <p data-i="p">The page you dug for does not exist, or it was never planted.</p>
+  <a href="/" data-i="back">Back to the tree</a>
+  <nav class="langs" aria-label="Language" data-ia="a-lang">
+    <button type="button" data-lang="en" aria-pressed="true">EN</button>
+    <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+    <button type="button" data-lang="de" aria-pressed="false">DE</button>
+  </nav>
 </main>
+
+<script>
+/* even the empty room speaks three languages, and it remembers the choice
+   made anywhere else on the site */
+(function(){
+  "use strict";
+  var D = {
+    tr: { h: "Burada bir şey yetişmiyor.",
+          p: "Kazdığın sayfa yok, ya da hiç ekilmedi.",
+          back: "Ağaca dön", "a-lang": "Dil" },
+    de: { h: "Hier wächst nichts.",
+          p: "Die Seite, nach der du gegraben hast, gibt es nicht, oder sie wurde nie gepflanzt.",
+          back: "Zurück zum Baum", "a-lang": "Sprache" }
+  };
+  var base = {}, baseA = {};
+  function apply(l){
+    var d = D[l] || {};
+    document.querySelectorAll("[data-i]").forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if(!(k in base)) base[k] = el.textContent;
+      el.textContent = (l === "en" || d[k] === undefined) ? base[k] : d[k];
+    });
+    document.querySelectorAll("[data-ia]").forEach(function(el){
+      var k = el.getAttribute("data-ia");
+      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
+      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
+    });
+    document.documentElement.setAttribute("lang", l);
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    document.title = { tr: "Yeraltında kayboldun, Kerem Özdemir",
+                       de: "Unter der Erde verlaufen, Kerem Özdemir" }[l] ||
+                     "Lost underground, Kerem Özdemir";
+    try { localStorage.setItem("lang", l); } catch(e){}
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  var start = "en";
+  try { start = localStorage.getItem("lang") || "en"; } catch(e){}
+  apply(start);
+})();
+</script>
 </body>
 </html>

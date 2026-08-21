@@ -52,6 +52,9 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
   color:var(--ink);white-space:nowrap;cursor:default;
   text-shadow:0 1px 0 rgba(255,255,255,.25);
   will-change:opacity,transform,filter;
+  /* the signature is decorative: it must not stand between the cursor and
+     the world it floats over, least of all the museum, far below it */
+  pointer-events:none;
 }
 #theName i{font-style:italic;font-weight:400}
 #theName .srname{position:absolute;width:1px;height:1px;overflow:hidden;
@@ -73,6 +76,7 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
   color:#b06a24;text-shadow:0 0 8px rgba(240,235,220,.75), 0 1px 2px rgba(240,235,220,.9);
   transition:opacity .4s ease;
   animation:breathe 3s ease-in-out infinite;
+  pointer-events:none;
 }
 #hint::after{content:"";display:block;width:1px;height:26px;margin:6px auto 0;
   background:linear-gradient(rgba(176,106,36,.7),transparent)}
@@ -132,12 +136,14 @@ footer{
   background:#12151f;color:rgba(232,228,218,.5);
   font-size:.72rem;letter-spacing:.06em;
   display:flex;justify-content:space-between;align-items:center;
-  padding:1.1rem 6vw;
+  gap:1rem;padding:.65rem 6vw calc(.65rem + env(safe-area-inset-bottom,0px));
 }
 footer a{color:rgba(232,228,218,.75);text-decoration:none}
 footer a:hover{color:#fff}
-.langs{display:flex;gap:.6rem}
-.langs button{background:none;border:0;cursor:pointer;font:inherit;color:rgba(232,228,218,.6);padding:.2em .1em}
+.langs{display:flex;gap:.4rem}
+.langs button{background:none;border:0;cursor:pointer;font:inherit;color:rgba(232,228,218,.6);
+  min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;
+  padding:.2em .35em;border-radius:2px}
 .langs button:hover{color:#fff}
 .langs button[aria-pressed="true"]{color:#fff;border-bottom:1px solid rgba(232,228,218,.5)}
 
@@ -157,6 +163,13 @@ footer a:hover{color:#fff}
   #sig{width:min(430px,52vw)}
   #hint{top:29%;font-size:.82rem}
   #hint::after{height:15px;margin-top:4px}
+  /* two rows of doors do not fit under a strip of sky: put them in one */
+  #portal{grid-template-columns:repeat(4,1fr);top:52%}
+  .door{min-height:0;width:auto;padding:.9rem .75rem .85rem}
+  .door h2{font-size:clamp(1.05rem,2.2vw,1.45rem)}
+  .door p{margin-top:.35rem;min-height:0;font-size:.8rem;line-height:1.4}
+  .door .peek{display:none}
+  footer{padding-top:.5rem;padding-bottom:calc(.5rem + env(safe-area-inset-bottom,0px))}
 }
 
 #fadeout{position:fixed;inset:0;background:#17110a;opacity:0;pointer-events:none;transition:opacity .42s ease;z-index:90}
@@ -205,14 +218,14 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
 #seasonDial:hover .lbl,#seasonDial.fresh .lbl{opacity:1}
 #sndWrap{position:fixed;right:1.1rem;bottom:calc(1.1rem + env(safe-area-inset-bottom,0px));
   z-index:60;display:flex;align-items:center;gap:.5rem}
-#sndBtn{width:42px;height:42px;border-radius:50%;flex:none;
+#sndBtn{width:44px;height:44px;border-radius:50%;flex:none;
   border:1px solid rgba(224,170,96,.35);background:rgba(20,16,10,.78);color:#e0c9a2;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   transition:border-color .2s ease,color .2s ease}
 #sndBtn:hover{border-color:rgba(224,170,96,.7);color:#f4e3c6}
 #sndBtn svg{width:19px;height:19px}
-#sndPanel{width:0;opacity:0;overflow:hidden;height:42px;display:flex;align-items:center;
-  border:1px solid transparent;border-radius:21px;background:rgba(20,16,10,.78);
+#sndPanel{width:0;opacity:0;overflow:hidden;height:44px;display:flex;align-items:center;
+  border:1px solid transparent;border-radius:22px;background:rgba(20,16,10,.78);
   transition:width .4s cubic-bezier(.22,1,.36,1),opacity .32s ease,padding .4s cubic-bezier(.22,1,.36,1),border-color .3s ease}
 #sndWrap.open #sndPanel{width:116px;opacity:1;padding:0 14px;border-color:rgba(224,170,96,.35)}
 #sndVol{-webkit-appearance:none;appearance:none;width:100%;height:40px;padding:19px 0;
@@ -224,6 +237,18 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
 #sndVol::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:#e8d5b0;
   border:1px solid rgba(120,84,40,.8);box-shadow:0 1px 3px rgba(0,0,0,.5)}
 #sndVol:focus-visible{outline:2px solid #e0a050;outline-offset:4px}
+
+/* the film is over once the footer is on screen: its two corner controls and
+   the side chevrons stand down so the language row and the line under it are
+   never sat on. Same courtesy while a DOM overlay is open. */
+#seasonDial,#sndWrap{transition:opacity .5s cubic-bezier(.22,1,.36,1),
+  border-color .2s ease,transform .18s ease}
+.edgeNav{transition:opacity .5s cubic-bezier(.22,1,.36,1)}
+body.atFooter #seasonDial,body.atFooter #sndWrap,
+body.overlayOpen #seasonDial,body.overlayOpen #sndWrap{
+  opacity:0!important;pointer-events:none!important}
+body.atFooter .edgeNav,body.overlayOpen .edgeNav{
+  opacity:0!important;pointer-events:none!important}
 @media (max-width:720px){
   .langs button{padding:.9em .8em}
   .edgeNav{padding:.9rem .7rem}
@@ -231,9 +256,10 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   /* four doors in a column, short enough that the stack stands in one screen */
   .door{min-height:0}
   .door p{min-height:2.4em}
-  /* and the footer keeps out from under the two fixed corners */
-  footer{flex-direction:column;align-items:center;gap:.9rem;
-    padding:1.2rem 6vw calc(4.6rem + env(safe-area-inset-bottom,0px))}
+  /* the two fixed corners fade out over the footer, so this only needs the
+     room the row itself asks for */
+  footer{flex-direction:column;align-items:center;gap:.5rem;
+    padding:1.1rem 6vw calc(1.1rem + env(safe-area-inset-bottom,0px))}
 }
 </style>
 </head>
@@ -260,7 +286,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         <circle class="sgdot" cx="124.7" cy="-3.4" r="1.15"/>
       </svg></h1>
 
-    <nav id="portal" aria-label="Site">
+    <nav id="portal" aria-label="Site" data-ia="a-site">
       <a class="door" href="profile.html">
         <h2 data-i="d1">Profile</h2>
         <p data-i="d1p">Who I am, where I study, what I have done.</p>
@@ -289,7 +315,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     <button type="button" id="edgeL" class="edgeNav" aria-label="İstanbul"><span>‹</span><i>İstanbul</i></button>
     <button type="button" id="edgeR" class="edgeNav" aria-label="München"><span>›</span><i>München</i></button>
     <div id="dawn" aria-hidden="true"></div>
-    <button type="button" id="seasonDial" aria-label="Change the season" title="Season">
+    <button type="button" id="seasonDial" aria-label="Change the season" title="Season" data-ia="a-season" data-it="t-season">
       <svg viewBox="0 0 52 52" width="52" height="52" aria-hidden="true">
         <circle cx="26" cy="26" r="21" fill="none" stroke="rgba(224,170,96,.22)" stroke-width="1"/>
         <g stroke="rgba(224,170,96,.30)" stroke-width="1" stroke-linecap="round">
@@ -325,8 +351,8 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       <span class="lbl" id="seasonLbl">Summer</span>
     </button>
     <div id="sndWrap">
-      <div id="sndPanel"><input type="range" id="sndVol" min="0" max="100" value="65" aria-label="Volume"></div>
-      <button type="button" id="sndBtn" aria-pressed="false" aria-label="Sound on or off" title="Sound">
+      <div id="sndPanel"><input type="range" id="sndVol" min="0" max="100" value="65" aria-label="Volume" data-ia="a-vol"></div>
+      <button type="button" id="sndBtn" aria-pressed="false" aria-label="Sound on or off" title="Sound" data-ia="a-snd" data-it="t-snd">
         <svg id="sndOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8a5 5 0 0 1 0 8M11 5L6 9H3v6h3l5 4z"/><line x1="18" y1="6" x2="4" y2="20" opacity=".85"/></svg>
         <svg id="sndLow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M15 8a5 5 0 0 1 0 8M11 5L6 9H3v6h3l5 4z"/></svg>
         <svg id="sndOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M15 8a5 5 0 0 1 0 8M17.7 5a9 9 0 0 1 0 14M11 5L6 9H3v6h3l5 4z"/></svg>
@@ -337,7 +363,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
 
 <footer>
   <span>© 2026 Kerem Özdemir</span>
-  <nav class="langs" aria-label="Language">
+  <nav class="langs" aria-label="Language" data-ia="a-lang">
     <button type="button" data-lang="en" aria-pressed="true">EN</button>
     <button type="button" data-lang="tr" aria-pressed="false">TR</button>
     <button type="button" data-lang="de" aria-pressed="false">DE</button>
@@ -696,6 +722,308 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     }
   }
 
+  /* ---- the twelve, drawn with the same few materials ----
+     brass for what was won, chalky limestone in darker rock for what was
+     made, and for the two cities their own stuff: brass, paper, card. */
+  function drawMuseObj(t, k, x, y, sc) {
+    t.save();
+    t.translate(x, y);
+    t.scale(sc, sc);
+    t.lineJoin = "round";
+
+    function brass(y1, y2) {
+      var g = t.createLinearGradient(0, y1, 0, y2);
+      g.addColorStop(0, "rgba(234,206,150,.95)");
+      g.addColorStop(0.45, "rgba(196,156,90,.95)");
+      g.addColorStop(1, "rgba(122,94,48,.95)");
+      return g;
+    }
+    function paper(y1, y2) {
+      var g = t.createLinearGradient(0, y1, 0, y2);
+      g.addColorStop(0, "rgba(236,231,210,.94)");
+      g.addColorStop(0.55, "rgba(210,202,178,.94)");
+      g.addColorStop(1, "rgba(164,155,132,.94)");
+      return g;
+    }
+    /* the host rock every fossil is pressed into */
+    function slab(hw, hh) {
+      var g = t.createLinearGradient(0, -hh, 0, hh);
+      g.addColorStop(0, "rgba(80,69,53,.95)");
+      g.addColorStop(1, "rgba(43,36,27,.95)");
+      t.fillStyle = g;
+      t.beginPath(); t.roundRect(-hw, -hh, hw * 2, hh * 2, 3); t.fill();
+      t.strokeStyle = "rgba(126,107,78,.45)"; t.lineWidth = 0.9; t.stroke();
+      t.strokeStyle = "rgba(20,15,9,.35)"; t.lineWidth = 0.7;
+      t.beginPath(); t.moveTo(-hw + 2, hh - 2.5); t.lineTo(hw - 3, hh - 3.5); t.stroke();
+    }
+    var CHALK = "rgba(224,217,197,.88)";
+    var CHALKD = "rgba(224,217,197,.45)";
+
+    if (k === "medal") {
+      t.fillStyle = "rgba(138,74,44,.85)";
+      t.beginPath(); t.moveTo(-5.2, -13); t.lineTo(-1.6, -13); t.lineTo(-1.2, -4.4); t.lineTo(-5.8, -5.6); t.closePath(); t.fill();
+      t.beginPath(); t.moveTo(5.2, -13); t.lineTo(1.6, -13); t.lineTo(1.2, -4.4); t.lineTo(5.8, -5.6); t.closePath(); t.fill();
+      t.fillStyle = "rgba(106,54,30,.7)";
+      t.fillRect(-5.6, -13.4, 11.2, 1.6);
+      t.fillStyle = brass(-7.4, 7.4);
+      t.beginPath(); t.arc(0, 0, 7.4, 0, 6.284); t.fill();
+      t.strokeStyle = "rgba(88,66,32,.8)"; t.lineWidth = 0.9;
+      t.beginPath(); t.arc(0, 0, 7.4, 0, 6.284); t.stroke();
+      t.strokeStyle = "rgba(244,224,176,.45)"; t.lineWidth = 0.7;
+      t.beginPath(); t.arc(0, 0, 4.7, 0, 6.284); t.stroke();
+      t.fillStyle = "rgba(84,62,30,.85)";
+      for (var md = 0; md < 3; md++) {
+        t.beginPath(); t.arc(-2.7 + md * 2.7, 1.2, 0.9, 0, 6.284); t.fill();
+      }
+      t.fillStyle = "rgba(248,232,196,.35)";
+      t.beginPath(); t.ellipse(-2.6, -3.2, 2.4, 1.3, -0.6, 0, 6.284); t.fill();
+
+    } else if (k === "pin") {
+      t.strokeStyle = "rgba(158,128,76,.6)"; t.lineWidth = 1;
+      t.beginPath(); t.moveTo(-7.6, -9.2); t.lineTo(7.6, -9.2); t.stroke();
+      t.fillStyle = brass(-8, 9.5);
+      t.beginPath();
+      t.moveTo(-6.2, -7.4); t.lineTo(6.2, -7.4); t.lineTo(6.2, 1.6);
+      t.quadraticCurveTo(6.2, 7.2, 0, 9.4);
+      t.quadraticCurveTo(-6.2, 7.2, -6.2, 1.6);
+      t.closePath(); t.fill();
+      t.strokeStyle = "rgba(88,66,32,.8)"; t.lineWidth = 0.9; t.stroke();
+      t.strokeStyle = "rgba(84,62,30,.75)"; t.lineWidth = 1.1;
+      t.beginPath(); t.moveTo(-3.4, -1.8); t.lineTo(0, 1.4); t.lineTo(3.4, -1.8); t.stroke();
+      t.strokeStyle = "rgba(244,224,176,.35)"; t.lineWidth = 0.7;
+      t.beginPath(); t.moveTo(-4.4, -5.4); t.lineTo(-4.4, 1.4); t.stroke();
+
+    } else if (k === "plate") {
+      t.rotate(-0.05);
+      t.fillStyle = brass(-7.4, 7.4);
+      t.beginPath(); t.roundRect(-11.5, -7.4, 23, 14.8, 1.6); t.fill();
+      t.strokeStyle = "rgba(88,66,32,.85)"; t.lineWidth = 0.9;
+      t.beginPath(); t.roundRect(-11.5, -7.4, 23, 14.8, 1.6); t.stroke();
+      t.strokeStyle = "rgba(244,224,176,.3)"; t.lineWidth = 0.7;
+      t.beginPath(); t.roundRect(-9, -5, 18, 10, 1); t.stroke();
+      t.font = "bold 8px Georgia";
+      t.textAlign = "center";
+      t.fillStyle = "rgba(78,56,26,.9)";
+      t.fillText("1.0", 0.4, 3.2);
+      t.fillStyle = "rgba(248,232,196,.28)";
+      t.fillText("1.0", 0, 2.6);
+      t.textAlign = "start";
+
+    } else if (k === "scrolls") {
+      var roll = function (rx, ry, rw) {
+        t.fillStyle = paper(ry - 2.8, ry + 2.8);
+        t.beginPath(); t.roundRect(rx - rw / 2, ry - 2.8, rw, 5.6, 2.8); t.fill();
+        t.strokeStyle = "rgba(112,96,68,.6)"; t.lineWidth = 0.7;
+        t.beginPath(); t.roundRect(rx - rw / 2, ry - 2.8, rw, 5.6, 2.8); t.stroke();
+        t.fillStyle = "rgba(178,168,142,.9)";
+        t.beginPath(); t.ellipse(rx - rw / 2 + 1.4, ry, 1.2, 2.5, 0, 0, 6.284); t.fill();
+        t.strokeStyle = "rgba(140,126,98,.5)"; t.lineWidth = 0.5;
+        t.beginPath(); t.arc(rx - rw / 2 + 1.4, ry, 1.2, 0, 6.284); t.stroke();
+      };
+      roll(0.5, 5.2, 22);
+      roll(-2.2, -0.4, 20.5);
+      roll(1.6, -6, 18.5);
+      t.strokeStyle = "rgba(198,158,92,.7)"; t.lineWidth = 1.3;
+      t.beginPath(); t.moveTo(-0.6, -9.2); t.lineTo(-0.6, 8.4); t.stroke();
+      t.strokeStyle = "rgba(122,94,48,.5)"; t.lineWidth = 0.6;
+      t.beginPath(); t.moveTo(0.6, -9.2); t.lineTo(0.6, 8.4); t.stroke();
+
+    } else if (k === "shard") {
+      slab(15, 10);
+      t.save();
+      t.beginPath(); t.roundRect(-15, -10, 30, 20, 3); t.clip();
+      t.strokeStyle = CHALK; t.lineWidth = 1;
+      t.beginPath(); t.rect(-10.5, -6.5, 21, 13); t.stroke();
+      t.strokeStyle = CHALKD; t.lineWidth = 0.75;
+      for (var gr = 1; gr < 3; gr++) {
+        t.beginPath(); t.moveTo(-10.5, -6.5 + gr * 4.34); t.lineTo(10.5, -6.5 + gr * 4.34); t.stroke();
+      }
+      for (var gc = 1; gc < 4; gc++) {
+        t.beginPath(); t.moveTo(-10.5 + gc * 5.25, -6.5); t.lineTo(-10.5 + gc * 5.25, 6.5); t.stroke();
+      }
+      t.strokeStyle = "rgba(224,217,197,.7)"; t.lineWidth = 1.1;
+      t.beginPath(); t.moveTo(-10.5, -3); t.lineTo(-5.5, -3); t.stroke();
+      t.strokeStyle = "rgba(24,18,11,.92)"; t.lineWidth = 1.4;
+      t.beginPath();
+      t.moveTo(1.5, -10); t.lineTo(3.6, -3.4); t.lineTo(0.4, 0.6); t.lineTo(4.2, 5.2); t.lineTo(2.6, 10);
+      t.stroke();
+      t.strokeStyle = "rgba(24,18,11,.6)"; t.lineWidth = 0.9;
+      t.beginPath(); t.moveTo(3.6, -3.4); t.lineTo(9, -5.6); t.stroke();
+      t.restore();
+
+    } else if (k === "ribs") {
+      slab(15, 10);
+      t.strokeStyle = CHALK; t.lineWidth = 1;
+      t.beginPath(); t.moveTo(-11, 6.4); t.lineTo(11, 6.4); t.stroke();
+      var hgt = [2.2, 3.6, 5, 6.4, 8, 9.4, 10.8];
+      for (var rb = 0; rb < 7; rb++) {
+        var rx2 = -10 + rb * 3.2;
+        t.strokeStyle = rb % 2 ? CHALKD : CHALK;
+        t.lineWidth = 1.5;
+        t.beginPath(); t.moveTo(rx2, 6.4); t.lineTo(rx2, 6.4 - hgt[rb]); t.stroke();
+      }
+      t.strokeStyle = "rgba(224,217,197,.5)"; t.lineWidth = 0.8;
+      t.beginPath();
+      t.moveTo(-10, 4.2);
+      t.quadraticCurveTo(-1, -1.6, 10.4, -4.6);
+      t.stroke();
+
+    } else if (k === "delta") {
+      slab(15, 10);
+      t.strokeStyle = CHALK; t.lineWidth = 1.7;
+      t.beginPath();
+      t.moveTo(-13, -7.4);
+      t.quadraticCurveTo(-9.4, -5.6, -7.6, -2.6);
+      t.quadraticCurveTo(-6.6, -0.8, -5.4, 0);
+      t.stroke();
+      var ends = [[11.6, -7], [12, -2.4], [11.4, 2.6], [9.4, 7.4]];
+      var mids = [[2, -6.2], [2.6, -2.6], [2.4, 1.8], [1.4, 5.4]];
+      for (var dc = 0; dc < 4; dc++) {
+        t.strokeStyle = dc % 2 ? CHALK : CHALKD;
+        t.lineWidth = 1.15 - dc * 0.12;
+        t.beginPath();
+        t.moveTo(-5.4, 0);
+        t.quadraticCurveTo(mids[dc][0], mids[dc][1], ends[dc][0], ends[dc][1]);
+        t.stroke();
+        t.fillStyle = dc % 2 ? CHALK : CHALKD;
+        t.beginPath(); t.arc(ends[dc][0], ends[dc][1], 0.75, 0, 6.284); t.fill();
+      }
+      t.fillStyle = CHALK;
+      t.beginPath(); t.arc(-5.4, 0, 1.3, 0, 6.284); t.fill();
+
+    } else if (k === "spiral") {
+      slab(15, 10);
+      var spr = function (an) { return 0.52 * Math.exp(0.186 * an); };
+      var spx = function (an) { return 1.4 + Math.cos(an + 2.2) * spr(an); };
+      var spy = function (an) { return Math.sin(an + 2.2) * spr(an) * 0.9; };
+      t.strokeStyle = CHALK; t.lineWidth = 1.25;
+      t.beginPath();
+      for (var sp = 0; sp <= 176; sp++) {
+        var an = sp * 0.0893;
+        if (sp === 0) t.moveTo(spx(an), spy(an)); else t.lineTo(spx(an), spy(an));
+      }
+      t.stroke();
+      // the chambers, each a step of discounting
+      t.strokeStyle = CHALKD; t.lineWidth = 0.7;
+      for (var sr = 0; sr < 7; sr++) {
+        var sa = 15.7 - sr * 1.05;
+        if (sa < 3) break;
+        t.beginPath();
+        t.moveTo(spx(sa - 6.283), spy(sa - 6.283));
+        t.lineTo(spx(sa), spy(sa));
+        t.stroke();
+      }
+
+    } else if (k === "tablet") {
+      var tg = t.createLinearGradient(0, -12, 0, 12);
+      tg.addColorStop(0, "rgba(168,162,146,.95)");
+      tg.addColorStop(0.5, "rgba(138,132,118,.95)");
+      tg.addColorStop(1, "rgba(96,91,80,.95)");
+      t.fillStyle = tg;
+      t.beginPath();
+      t.moveTo(-11, 12); t.lineTo(-11, -6);
+      t.quadraticCurveTo(-11, -12.5, 0, -12.5);
+      t.quadraticCurveTo(11, -12.5, 11, -6);
+      t.lineTo(11, 12);
+      t.closePath(); t.fill();
+      t.strokeStyle = "rgba(48,42,33,.75)"; t.lineWidth = 0.9; t.stroke();
+      t.strokeStyle = "rgba(236,230,212,.28)"; t.lineWidth = 0.7;
+      t.beginPath();
+      t.moveTo(-8.6, 9.8); t.lineTo(-8.6, -5.6);
+      t.quadraticCurveTo(-8.6, -10.2, 0, -10.2);
+      t.quadraticCurveTo(8.6, -10.2, 8.6, -5.6);
+      t.lineTo(8.6, 9.8);
+      t.stroke();
+      // the letters, cut one by one so they keep their air
+      t.font = "6.4px Georgia";
+      t.textAlign = "center";
+      var wd7 = "SIMEA", adv7 = 3.9, x07 = -(wd7.length - 1) * adv7 / 2;
+      for (var lt7 = 0; lt7 < wd7.length; lt7++) {
+        t.fillStyle = "rgba(26,22,16,.98)";
+        t.fillText(wd7.charAt(lt7), x07 + lt7 * adv7, 1.05);
+        t.fillStyle = "rgba(250,246,232,.72)";
+        t.fillText(wd7.charAt(lt7), x07 + lt7 * adv7, 0.25);
+      }
+      t.textAlign = "start";
+      t.strokeStyle = "rgba(40,35,27,.4)"; t.lineWidth = 0.6;
+      t.beginPath(); t.moveTo(-6, 4.4); t.lineTo(6, 4.4); t.stroke();
+      t.beginPath(); t.moveTo(-4.6, 6.8); t.lineTo(4.6, 6.8); t.stroke();
+      t.beginPath(); t.moveTo(-6, 9.2); t.lineTo(2.4, 9.2); t.stroke();
+
+    } else if (k === "token") {
+      t.fillStyle = brass(-8, 8);
+      t.beginPath(); t.arc(0, 0, 8, 0, 6.284); t.fill();
+      t.strokeStyle = "rgba(84,62,30,.85)"; t.lineWidth = 0.9;
+      t.beginPath(); t.arc(0, 0, 8, 0, 6.284); t.stroke();
+      t.strokeStyle = "rgba(96,72,36,.5)"; t.lineWidth = 0.6;
+      for (var mk = 0; mk < 22; mk++) {
+        var ma = mk * 0.2856;
+        t.beginPath();
+        t.moveTo(Math.cos(ma) * 7.1, Math.sin(ma) * 7.1);
+        t.lineTo(Math.cos(ma) * 8, Math.sin(ma) * 8);
+        t.stroke();
+      }
+      t.strokeStyle = "rgba(244,224,176,.4)"; t.lineWidth = 0.7;
+      t.beginPath(); t.arc(0, 0, 5.4, 0, 6.284); t.stroke();
+      t.fillStyle = "rgba(70,52,26,.85)";
+      t.beginPath(); t.roundRect(-1.5, -1.5, 3, 3, 0.5); t.fill();
+      t.strokeStyle = "rgba(84,62,30,.6)"; t.lineWidth = 0.8;
+      t.beginPath();
+      t.moveTo(-4.6, 3.4); t.quadraticCurveTo(-2.3, 2.2, 0, 3.4);
+      t.quadraticCurveTo(2.3, 4.6, 4.6, 3.4);
+      t.stroke();
+      t.fillStyle = "rgba(248,232,196,.3)";
+      t.beginPath(); t.ellipse(-3, -3.6, 2.6, 1.4, -0.6, 0, 6.284); t.fill();
+
+    } else if (k === "ticket") {
+      t.rotate(0.13);
+      t.fillStyle = paper(-6.6, 6.6);
+      t.beginPath(); t.roundRect(-11.5, -6.6, 23, 13.2, 1); t.fill();
+      t.strokeStyle = "rgba(112,96,68,.6)"; t.lineWidth = 0.8;
+      t.beginPath(); t.roundRect(-11.5, -6.6, 23, 13.2, 1); t.stroke();
+      t.fillStyle = "rgba(94,122,106,.8)";
+      t.fillRect(-9.4, -4.6, 6, 5.2);
+      t.fillStyle = "rgba(236,231,210,.85)";
+      t.font = "4.4px Georgia";
+      t.fillText("U", -7.6, -0.7);
+      t.strokeStyle = "rgba(96,84,62,.5)"; t.lineWidth = 0.7;
+      t.beginPath(); t.moveTo(-2, -4); t.lineTo(9.4, -4); t.stroke();
+      t.beginPath(); t.moveTo(-2, -1.4); t.lineTo(7.4, -1.4); t.stroke();
+      t.beginPath(); t.moveTo(-9.4, 2.6); t.lineTo(9.4, 2.6); t.stroke();
+      t.strokeStyle = "rgba(138,74,44,.65)"; t.lineWidth = 0.9;
+      t.beginPath(); t.moveTo(-9.4, 4.6); t.lineTo(2.6, 4.6); t.stroke();
+      // the punch: a bite taken out of the top edge
+      t.fillStyle = "rgba(26,19,12,.95)";
+      t.beginPath(); t.arc(4.6, -6.6, 2.3, 0, 6.284); t.fill();
+      t.strokeStyle = "rgba(120,104,76,.5)"; t.lineWidth = 0.6;
+      t.beginPath(); t.arc(4.6, -6.6, 2.3, 0.15, 2.99); t.stroke();
+
+    } else if (k === "stub") {
+      t.rotate(-0.08);
+      t.fillStyle = paper(-6, 6);
+      t.beginPath();
+      t.moveTo(-13, -6); t.lineTo(9.4, -6); t.lineTo(10.6, -3.4); t.lineTo(9.4, -0.8);
+      t.lineTo(10.8, 1.8); t.lineTo(9.2, 4); t.lineTo(10.4, 6); t.lineTo(-13, 6);
+      t.closePath(); t.fill();
+      t.strokeStyle = "rgba(112,96,68,.6)"; t.lineWidth = 0.8; t.stroke();
+      t.strokeStyle = "rgba(120,104,76,.75)"; t.lineWidth = 0.8;
+      t.setLineDash([1.2, 1.6]);
+      t.beginPath(); t.moveTo(3.4, -6); t.lineTo(3.4, 6); t.stroke();
+      t.setLineDash([]);
+      t.fillStyle = "rgba(138,74,44,.7)";
+      t.fillRect(-11.4, -4.2, 5.4, 2);
+      t.strokeStyle = "rgba(96,84,62,.55)"; t.lineWidth = 0.7;
+      t.beginPath(); t.moveTo(-11.4, -0.6); t.lineTo(1.4, -0.6); t.stroke();
+      t.beginPath(); t.moveTo(-11.4, 2); t.lineTo(-1.6, 2); t.stroke();
+      t.strokeStyle = "rgba(70,60,44,.6)"; t.lineWidth = 0.9;
+      t.beginPath(); t.moveTo(-11.4, 4.2); t.lineTo(-8.4, 4.2); t.stroke();
+      t.beginPath(); t.moveTo(-2.4, 4.2); t.lineTo(1.4, 4.2); t.stroke();
+      t.fillStyle = "rgba(96,84,62,.5)";
+      t.beginPath(); t.arc(6.9, 0, 1, 0, 6.284); t.fill();
+    }
+    t.restore();
+  }
+
   function renderRoots() {
     var RH = Math.round(H * 1.25);
     rootCanvas.width = W * DPR; rootCanvas.height = RH * DPR;
@@ -816,117 +1144,121 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       t.beginPath(); t.arc(gx2, gy2, 0.8 + rnd() * 1.6, 0, 6.284); t.fill();
     }
 
-    /* ---- the archive: a life along the taproot. deepest is oldest ---- */
+    /* ---- the museum: twelve objects in three strata, deepest is earliest ---- */
     RELICS.length = 0;
-    var TAP = [
-      [W * 0.50, RH * 0.045],
-      [W * 0.44, RH * 0.26],     // the chip
-      [W * 0.58, RH * 0.34],     // the billet
-      [W * 0.40, RH * 0.42],     // the diploma
-      [W * 0.62, RH * 0.70],     // the marble
-      [W * 0.54, RH * 0.79]      // the line ends at the capsule
-    ];
-    // the taproot line: a faint warm dotted curve reaching for the water
-    t.strokeStyle = "rgba(206,166,116,.22)";
-    t.lineWidth = 1.2;
-    t.setLineDash([1.5, 7]);
-    t.beginPath();
-    t.moveTo(TAP[0][0], TAP[0][1]);
-    for (var tp3 = 1; tp3 < TAP.length - 1; tp3++) {
-      var tmx = (TAP[tp3][0] + TAP[tp3 + 1][0]) / 2;
-      var tmy = (TAP[tp3][1] + TAP[tp3 + 1][1]) / 2;
-      t.quadraticCurveTo(TAP[tp3][0], TAP[tp3][1], tmx, tmy);
-    }
-    t.lineTo(TAP[5][0], TAP[5][1]);
-    t.stroke();
-    t.setLineDash([]);
-    function yearLabel(txt, x5, y5) {
-      t.font = "italic 10px Georgia";
-      t.fillStyle = "rgba(226,214,188,.25)";
-      t.fillText(txt, x5, y5);
-    }
-    // 2026, nearest the surface: a small dark chip, München
-    var rx1 = TAP[1][0], ry1 = TAP[1][1];
-    t.fillStyle = "#1e2620";
-    t.fillRect(rx1 - 6, ry1 - 4.5, 12, 9);
-    t.strokeStyle = "rgba(224,180,100,.5)"; t.lineWidth = 0.8;
-    for (var pj = 0; pj < 4; pj++) {
-      t.beginPath(); t.moveTo(rx1 - 6, ry1 - 3 + pj * 2); t.lineTo(rx1 - 8.5, ry1 - 3 + pj * 2); t.stroke();
-      t.beginPath(); t.moveTo(rx1 + 6, ry1 - 3 + pj * 2); t.lineTo(rx1 + 8.5, ry1 - 3 + pj * 2); t.stroke();
-    }
-    t.fillStyle = "rgba(224,180,100,.35)";
-    t.fillRect(rx1 - 2.4, ry1 - 1.8, 4.8, 3.6);
-    yearLabel("2026", rx1 + 14, ry1 + 3);
-    RELICS.push({ x: rx1, y: ry1, r: 22, cap: "München, 2026. Small things compute." });
-    // 2024: an aluminium billet, Istanbul
-    var rx2 = TAP[2][0], ry2 = TAP[2][1];
-    t.save();
-    t.translate(rx2, ry2); t.rotate(-0.18);
-    var alg = t.createLinearGradient(0, -5, 0, 5);
-    alg.addColorStop(0, "rgba(214,198,168,.85)");
-    alg.addColorStop(0.5, "rgba(168,150,122,.85)");
-    alg.addColorStop(1, "rgba(122,106,84,.85)");
-    t.fillStyle = alg;
-    t.fillRect(-14, -4.5, 28, 9);
-    t.strokeStyle = "rgba(40,44,48,.5)"; t.lineWidth = 1;
-    t.strokeRect(-14, -4.5, 28, 9);
-    t.restore();
-    yearLabel("2024", rx2 + 20, ry2 + 3);
-    RELICS.push({ x: rx2, y: ry2, r: 24, cap: "Aluminium, 2024. The first carbon inventory." });
-    // the diploma scroll
-    var rx3 = TAP[3][0], ry3 = TAP[3][1];
-    t.save();
-    t.translate(rx3, ry3); t.rotate(0.22);
-    t.fillStyle = "rgba(226,214,188,.9)";
-    t.fillRect(-12, -4, 24, 8);
-    t.fillStyle = "rgba(196,180,150,.9)";
-    t.beginPath(); t.arc(-12, 0, 4, 0, 6.284); t.fill();
-    t.beginPath(); t.arc(12, 0, 4, 0, 6.284); t.fill();
-    t.strokeStyle = "rgba(168,39,30,.8)"; t.lineWidth = 1.6;
-    t.beginPath(); t.moveTo(0, -4); t.lineTo(0, 4); t.stroke();
-    t.restore();
-    yearLabel("2023", rx3 + 18, ry3 + 3);
-    RELICS.push({ x: rx3, y: ry3, r: 22, cap: "Istanbul University. Four years, rolled tight." });
-    // the marble, deepest of all
-    var rx4 = TAP[4][0], ry4 = TAP[4][1];
-    var mg2 = t.createRadialGradient(rx4 - 1.5, ry4 - 1.5, 0.5, rx4, ry4, 5);
-    mg2.addColorStop(0, "rgba(238,234,224,.9)");
-    mg2.addColorStop(0.5, "rgba(150,180,190,.8)");
-    mg2.addColorStop(1, "rgba(90,110,120,.85)");
-    t.fillStyle = mg2;
-    t.beginPath(); t.arc(rx4, ry4, 5, 0, 6.284); t.fill();
-    t.strokeStyle = "rgba(224,160,80,.35)"; t.lineWidth = 0.8;
-    t.beginPath(); t.arc(rx4, ry4, 5, 0, 6.284); t.stroke();
-    yearLabel("childhood", rx4 + 12, ry4 + 3);
-    RELICS.push({ x: rx4, y: ry4, r: 20, cap: "A marble from a childhood pocket. İstanbul." });
+    MUSE.length = 0;
+    (function museum() {
+      /* the four door cards own the middle of the last frame; the strata are
+         laid above and below them so every object stays reachable there */
+      var pel = document.getElementById("portal");
+      DOORS.t = H * 0.38; DOORS.b = H * 0.62;
+      if (pel && pel.offsetHeight > 20) {
+        // the grid is centred with a transform, so only the box tells the truth
+        var sr6 = stage.getBoundingClientRect(), pr6 = pel.getBoundingClientRect();
+        DOORS.t = pr6.top - sr6.top; DOORS.b = pr6.bottom - sr6.top;
+        if (!(DOORS.b > DOORS.t + 20)) { DOORS.t = H * 0.38; DOORS.b = H * 0.62; }
+      }
+      DOORS.h = DOORS.b - DOORS.t;
+      // the last frame of the film sits this far into the soil
+      var top0 = 0.235 * H;
+      var aqY = RH * 0.85 - top0;              // the water, in that frame
+      var zaT = 30, zaB = DOORS.t - 18;        // free above the doors
+      var zbT = DOORS.b + 18, zbB = aqY - 30;  // free below them
+      /* three bands go wherever the doors leave clear soil. Every way of
+         splitting them between the zone above the cards and the zone below
+         is tried, and the one that leaves the most air between bands wins.
+         A frame that leaves no clear soil at all spreads them through the
+         whole depth instead, where the descent still finds them. */
+      var zA = zaB - zaT, zB = zbB - zbT;
+      var plans = [[2, 1], [3, 0], [0, 3], [1, 2]];
+      var best = null, bestGap = -1;
+      for (var pl = 0; pl < plans.length; pl++) {
+        var na = plans[pl][0], nb = plans[pl][1];
+        if ((na && zA <= 0) || (nb && zB <= 0)) continue;
+        var gap = Math.min(na ? zA / na : 1e9, nb ? zB / nb : 1e9);
+        if (gap > bestGap) { bestGap = gap; best = plans[pl]; }
+      }
+      var sy = [];
+      var spread = function (t0, t1, n) {
+        for (var i = 0; i < n; i++) sy.push(t0 + (t1 - t0) * ((i + 0.5) / n));
+      };
+      if (best && bestGap >= 26) {
+        if (best[0]) spread(zaT, zaB, best[0]);
+        if (best[1]) spread(zbT, zbB, best[1]);
+      } else {
+        bestGap = Math.max(140, aqY - 64) / 3;
+        spread(34, Math.max(174, aqY - 30), 3);
+      }
+      // the bands may be tight: the objects come down to meet them
+      var hr = Math.max(12, Math.min(small ? 16 : 21, Math.round(bestGap / 2 - 1)));
+      var sc = Math.max(0.6, Math.min(1, hr / (small ? 20 : 21)));
+      var bandY = [sy[0] + top0, sy[1] + top0, sy[2] + top0];   // in soil space
+      var XS = small
+        ? [[0.19, 0.40, 0.61, 0.85],
+           [0.16, 0.32, 0.50, 0.68, 0.86],
+           [0.20, 0.50, 0.80]]
+        : [[0.14, 0.31, 0.69, 0.86],
+           [0.16, 0.27, 0.38, 0.68, 0.86],
+           [0.15, 0.38, 0.86]];
 
-    /* ---- the time capsule: a dull tin where the taproot gives up ---- */
-    var tcx = TAP[5][0], tcy = TAP[5][1] + RH * 0.013;
-    t.save();
-    t.translate(tcx, tcy); t.rotate(-0.06);
-    var tcg = t.createLinearGradient(0, -7, 0, 7);
-    tcg.addColorStop(0, "rgba(148,146,138,.9)");
-    tcg.addColorStop(0.5, "rgba(112,110,102,.9)");
-    tcg.addColorStop(1, "rgba(84,82,76,.9)");
-    t.fillStyle = tcg;
-    t.beginPath(); t.roundRect(-12, -7, 24, 14, 2.5); t.fill();
-    t.strokeStyle = "rgba(40,40,38,.7)"; t.lineWidth = 1;
-    t.beginPath(); t.roundRect(-12, -7, 24, 14, 2.5); t.stroke();
-    t.beginPath(); t.moveTo(-12, -2.6); t.lineTo(12, -2.6); t.stroke();     // the lid seam
-    // scratches, older than the burial
-    t.strokeStyle = "rgba(206,204,196,.4)"; t.lineWidth = 0.5;
-    t.beginPath(); t.moveTo(-9, 2.4); t.lineTo(-3.5, 4.6); t.stroke();
-    t.beginPath(); t.moveTo(4, 1.6); t.lineTo(9.5, 3.2); t.stroke();
-    t.beginPath(); t.moveTo(-6, -6); t.lineTo(-1, -4.6); t.stroke();
-    // the lid label
-    t.font = "bold 6.5px Georgia";
-    t.textAlign = "center";
-    t.fillStyle = "rgba(232,228,216,.75)";
-    t.fillText("2050", 0, 2.6);
-    t.textAlign = "start";
-    t.restore();
-    yearLabel("2026", tcx + 18, tcy + 3);
-    RELICS.push({ x: tcx, y: tcy, r: 22, cap: "Buried in 2026. Opens in 2050. Contents already forgotten." });
+      /* the taproot line: a faint warm dotted curve threading the three bands */
+      var TAP = [
+        [W * 0.50, RH * 0.045],
+        [W * 0.47, bandY[0]],
+        [W * 0.54, bandY[1]],
+        [W * 0.49, bandY[2]],
+        [W * 0.52, Math.min(bandY[2] + RH * 0.05, RH * 0.83)]
+      ];
+      t.strokeStyle = "rgba(206,166,116,.22)";
+      t.lineWidth = 1.2;
+      t.setLineDash([1.5, 7]);
+      t.beginPath();
+      t.moveTo(TAP[0][0], TAP[0][1]);
+      for (var tp3 = 1; tp3 < TAP.length - 1; tp3++) {
+        var tmx = (TAP[tp3][0] + TAP[tp3 + 1][0]) / 2;
+        var tmy = (TAP[tp3][1] + TAP[tp3 + 1][1]) / 2;
+        t.quadraticCurveTo(TAP[tp3][0], TAP[tp3][1], tmx, tmy);
+      }
+      t.lineTo(TAP[TAP.length - 1][0], TAP[TAP.length - 1][1]);
+      t.stroke();
+      t.setLineDash([]);
+
+      /* each band: a soft seam of sediment, a hairline, and its name */
+      var off = Math.max(11, Math.min(small ? 19 : 26, bestGap * 0.42));
+      var nx = small ? 5 : W * 0.026;
+      for (var bi = 0; bi < 3; bi++) {
+        var by = bandY[bi], ly = by - off;
+        var bg2 = t.createLinearGradient(0, ly, 0, by + off);
+        bg2.addColorStop(0, "rgba(224,170,96,.040)");
+        bg2.addColorStop(0.45, "rgba(224,170,96,.015)");
+        bg2.addColorStop(1, "rgba(0,0,0,.055)");
+        t.fillStyle = bg2;
+        t.fillRect(0, ly, W, off * 2);
+        t.strokeStyle = "rgba(206,176,126,.16)";
+        t.lineWidth = 1;
+        t.beginPath(); t.moveTo(0, ly + 0.5); t.lineTo(W, ly + 0.5); t.stroke();
+        t.font = "italic " + (small ? 9 : 10) + "px Georgia";
+        t.fillStyle = "rgba(230,216,188,.20)";
+        t.fillText(STRATA[bi], nx, ly + (small ? 11 : 13));
+        var tw6 = t.measureText(STRATA[bi]).width;
+        t.strokeStyle = "rgba(206,176,126,.11)";
+        t.beginPath();
+        t.moveTo(nx + tw6 + 6, ly + (small ? 8 : 9.5));
+        t.lineTo(nx + tw6 + (small ? 16 : 26), ly + (small ? 8 : 9.5));
+        t.stroke();
+      }
+
+      /* the objects themselves */
+      var seen = [0, 0, 0];
+      for (var mi = 0; mi < MUSEUM.length; mi++) {
+        var M0 = MUSEUM[mi];
+        var col = XS[M0.s][seen[M0.s]++];
+        var mx = W * col;
+        var my = bandY[M0.s] + (mi % 2 ? 1.5 : -1.5);
+        drawMuseObj(t, M0.k, mx, my, sc);
+        MUSE.push({ x: mx, y: my, r: hr, n: M0.n, yr: M0.yr, a: M0.a, b: M0.b, h: M0.h });
+      }
+    })();
 
     /* ---- the amphora, half buried where the old sea reached ---- */
     var amx = W * 0.08, amy = RH * 0.40;
@@ -3468,6 +3800,63 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   EGG._dbg = function () { return { state: GUY.state, next: GUY.next, present: BIKE.present, back: BIKE.back, gone: BIKE.gone, night: gNightIdle }; };
   var HOUSE = { doorOpen: 0, knockT: 0 };
   var RELICS = [];
+  /* ---- the museum below the meadow: twelve objects, three strata ----
+     s: which stratum (0 nearest the surface) · k: how it is drawn
+     n: its name · yr: the year, or what stands in for one
+     a, b: what he did, and what came of it · h: the page it opens */
+  var MUSE = [];                       // where the twelve were last drawn
+  var DOORS = { t: 0, b: 0, h: 0 };    // where the four door cards stand
+  var STRATA = ["Won", "Made", "Lived"];
+  var MUSEUM = [
+    { s: 0, k: "medal", h: "projects.html",
+      n: "Boğaziçi Enterprize", yr: "2026",
+      a: "Third place for CoLaunch, a platform matching startup ideas with the people who can build them.",
+      b: "The judges liked that it started from a real shortage." },
+    { s: 0, k: "pin", h: "projects.html",
+      n: "JA Startup", yr: "2026",
+      a: "The same idea taken to the national round, competing among JA Startup teams.",
+      b: "It carried on to a semi final at YTU Entrepreneurship." },
+    { s: 0, k: "plate", h: "profile.html",
+      n: "Market expansion study", yr: "Microbify, 2025",
+      a: "A market expansion study written for Microbify, in Straubing.",
+      b: "It came back graded 1.0. Nothing else about it needs saying." },
+    { s: 0, k: "scrolls", h: "profile.html",
+      n: "Certificates", yr: "2024 to 2026",
+      a: "McKinsey Forward and the BCG Digital Transformation simulation in 2026, Management Consulting at Emory and Sustainability Consulting at UIUC in 2025.",
+      b: "Google Project Management and Google AI Essentials in 2024. Six of them, kept rolled in one stack." },
+    { s: 1, k: "shard", h: "projects.html",
+      n: "unitguard", yr: "127 tests",
+      a: "A converter that refuses to convert what cannot be converted.",
+      b: "When a number is missing it says which one, instead of guessing." },
+    { s: 1, k: "ribs", h: "projects.html",
+      n: "marginal abatement", yr: "esg toolkit",
+      a: "An abatement cost curve. Ten measures, each priced by the tonne it saves.",
+      b: "Set a carbon price and it says which of them are worth doing." },
+    { s: 1, k: "delta", h: "projects.html",
+      n: "carbon bridge", yr: "esg toolkit",
+      a: "An LMDI decomposition of the emissions between two years.",
+      b: "It splits the change into output, mix, energy intensity and emission factor." },
+    { s: 1, k: "spiral", h: "projects.html",
+      n: "dcf lab", yr: "analyst toolkit",
+      a: "A discounted cash flow with the terminal value taken apart.",
+      b: "It shows how much of a valuation is forecast, and how much is perpetuity." },
+    { s: 1, k: "tablet", h: "notes.html",
+      n: "SIMEA", yr: "August 2026",
+      a: "A research programme on the agent as a decision subject inside systems.",
+      b: "Three things it tries to measure: the influence gradient, the autonomy threshold, the entropy of the choice set." },
+    { s: 2, k: "token", h: "profile.html",
+      n: "Ferry token", yr: "İstanbul",
+      a: "The old jeton, brass, worn smooth by pockets.",
+      b: "It bought one crossing of the Bosphorus and nothing else." },
+    { s: 2, k: "stub", h: "profile.html",
+      n: "Boarding pass", yr: "İstanbul to München",
+      a: "The torn half of a stub, kept in a coat pocket.",
+      b: "It is the distance between the other two, folded once." },
+    { s: 2, k: "ticket", h: "profile.html",
+      n: "U Bahn ticket", yr: "München",
+      a: "Punched at the small box on the platform, the way Munich asks.",
+      b: "The same short journey as the jeton, in a colder language." }
+  ];
   var MOLEUP = 0;   // how far the mole is out of his hill, for the archive hover
   /* a transient caption in the relic style, for clickable landmarks */
   var CAPFX = { until: 0, text: "", x: 0, y: 0 };
@@ -4020,7 +4409,22 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     for (var q8 = 0; q8 < RELICS.length; q8++) {
       if (near(RELICS[q8].x, RELICS[q8].y, RELICS[q8].r)) return true;
     }
+    for (var m8 = 0; m8 < MUSE.length; m8++) {
+      if (near(MUSE[m8].x, MUSE[m8].y, MUSE[m8].r)) return true;
+    }
     return MOLEUP < 0.05 && near(W * 0.78, H * 0.94, 24);
+  };
+  /* which of the twelve is under a finger or a cursor, if any */
+  EGG.museumAt = function (cx8, cy8) {
+    if (!ARCH.live) return null;
+    var top8 = canvas.getBoundingClientRect().top;
+    for (var m9 = 0; m9 < MUSE.length; m9++) {
+      var M9 = MUSE[m9];
+      var sy9 = (H * 0.885 + M9.y) - ARCH.camY;
+      if (Math.abs(cx8 + camXs - M9.x) < M9.r &&
+          Math.abs(cy8 - top8 - sy9) < M9.r) return M9;
+    }
+    return null;
   };
 
   function drawArchive(t, descend, camY) {
@@ -4078,6 +4482,84 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       var R2 = RELICS[ri];
       hoverCap(R2.x, R2.y, R2.r, R2.cap, ri, true);
     }
+
+    /* the twelve: a breathing ring each, and a museum label on the one the
+       cursor has found. Name and year on the head line, then two lines of
+       what he did and what came of it. */
+    function museLabel(M, sy4) {
+      var maxW = Math.min(W - 24, small ? 320 : 348);
+      ctx.font = "italic 11.5px Georgia";
+      var lns = capWrap(M.a, maxW - 22).concat(capWrap(M.b, maxW - 22));
+      var bw = 0, li;
+      for (li = 0; li < lns.length; li++) bw = Math.max(bw, ctx.measureText(lns[li]).width);
+      ctx.font = "12.5px Georgia";
+      var nmW = ctx.measureText(M.n).width;
+      ctx.font = "italic 10.5px Georgia";
+      bw = Math.max(bw, nmW + 9 + ctx.measureText(M.yr).width);
+      var cw4 = Math.min(maxW, bw + 22);
+      var ch4 = 32 + lns.length * 15;
+      var cx4 = clamp(M.x, cw4 / 2 + 8, W - cw4 / 2 - 8);
+      var lo4 = 8 - Math.min(0, cvTop), hi4 = H - ch4 - 8;
+      var top4 = sy4 > H * 0.55 ? sy4 + M.r + 6 : sy4 - M.r - 6 - ch4;
+      top4 = clamp(top4, lo4, hi4);
+      /* the four door cards are opaque and sit on top of the canvas: the
+         label steps into the clear soil above or below them. On a narrow
+         screen the doors fill the middle, so it always takes the strip
+         below them and reads like a plinth card. */
+      if (portal && portal.classList.contains("live") && DOORS.h > 20) {
+        var above4 = DOORS.t - 10 - ch4, below4 = DOORS.b + 10;
+        var fitA = above4 >= lo4, fitB = below4 + ch4 <= H - 8;
+        if (small) {
+          if (fitB) top4 = below4; else if (fitA) top4 = above4;
+        } else if (top4 < DOORS.b + 4 && top4 + ch4 > DOORS.t - 4) {
+          var nearAbove = sy4 <= (DOORS.t + DOORS.b) / 2;
+          if (nearAbove && fitA) top4 = above4;
+          else if (!nearAbove && fitB) top4 = below4;
+          else if (fitA) top4 = above4;
+          else if (fitB) top4 = below4;
+        }
+      }
+      var by4 = top4 + camY;
+      ctx.fillStyle = "rgba(20,14,8,.90)";
+      ctx.strokeStyle = "rgba(224,170,96,.38)";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.roundRect(cx4 - cw4 / 2, by4, cw4, ch4, 4);
+      ctx.fill(); ctx.stroke();
+      var bx4 = cx4 - cw4 / 2 + 11;
+      ctx.font = "12.5px Georgia";
+      ctx.fillStyle = "rgba(240,233,214,.96)";
+      ctx.fillText(M.n, bx4, by4 + 18);
+      ctx.font = "italic 10.5px Georgia";
+      ctx.fillStyle = "rgba(224,170,96,.55)";
+      ctx.fillText(M.yr, bx4 + nmW + 9, by4 + 18);
+      ctx.strokeStyle = "rgba(224,170,96,.16)";
+      ctx.beginPath();
+      ctx.moveTo(bx4, by4 + 24.5); ctx.lineTo(cx4 + cw4 / 2 - 11, by4 + 24.5);
+      ctx.stroke();
+      ctx.font = "italic 11.5px Georgia";
+      ctx.fillStyle = "rgba(228,220,202,.88)";
+      for (li = 0; li < lns.length; li++) {
+        ctx.fillText(lns[li], bx4, by4 + 39 + li * 15);
+      }
+    }
+    var museHot = null, museHotY = 0;
+    for (var mu = 0; mu < MUSE.length; mu++) {
+      var M4 = MUSE[mu];
+      var wy4 = H * 0.885 + M4.y;
+      var sy5 = wy4 - camY;
+      if (sy5 < -60 || sy5 > H + 60) continue;
+      var mh = pointer.x > 0 &&
+               Math.abs(pointer.x + camXs - M4.x) < M4.r &&
+               Math.abs(pointer.y - cvTop - sy5) < M4.r;
+      var pls = 0.5 + Math.sin(t * 1.25 + mu * 1.7) * 0.5;
+      ctx.strokeStyle = "rgba(224,170,96," + ((mh ? 0.5 : 0.09 + pls * 0.06) * vis) + ")";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(M4.x, wy4, M4.r * (mh ? 0.84 : 0.66 + pls * 0.1), 0, 6.284);
+      ctx.stroke();
+      if (mh) { museHot = M4; museHotY = sy5; }
+    }
+    if (museHot) museLabel(museHot, museHotY);
     // the mound answers only while its keeper is below
     if (MOLEUP < 0.05) {
       hoverCap(W * 0.78, H * 0.94, 24, "Somewhere below, a critic reads.", RELICS.length, false);
@@ -5315,30 +5797,77 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   var D = {
     tr: {"d1":"Profil","d1p":"Kim olduğum, nerede okuduğum, ne yaptığım.",
          "d2":"Projeler","d2p":"Çalışan araçlar, repolar ve CoLaunch.",
-         "d3":"İletişim","d3p":"E-posta, LinkedIn, GitHub.","d4":"Notlar","d4p":"Yazmaya değer şeyler.","hint":"Kaydır"},
+         "d3":"İletişim","d3p":"E-posta, LinkedIn, GitHub.","d4":"Notlar","d4p":"Yazmaya değer şeyler.","hint":"Kaydır",
+         "a-site":"Site","a-lang":"Dil","a-season":"Mevsimi değiştir","t-season":"Mevsim",
+         "a-vol":"Ses düzeyi","a-snd":"Sesi aç veya kapat","t-snd":"Ses",
+         "s0":"İlkbahar","s1":"Yaz","s2":"Sonbahar","s3":"Kış"},
     de: {"d1":"Profil","d1p":"Wer ich bin, wo ich studiere, was ich gemacht habe.",
          "d2":"Projekte","d2p":"Laufende Instrumente, Repositories und CoLaunch.",
-         "d3":"Kontakt","d3p":"E-Mail, LinkedIn, GitHub.","d4":"Notizen","d4p":"Dinge, die es wert sind.","hint":"Scrollen"}
+         "d3":"Kontakt","d3p":"E-Mail, LinkedIn, GitHub.","d4":"Notizen","d4p":"Dinge, die es wert sind.","hint":"Scrollen",
+         "a-site":"Website","a-lang":"Sprache","a-season":"Jahreszeit wechseln","t-season":"Jahreszeit",
+         "a-vol":"Lautstärke","a-snd":"Ton an oder aus","t-snd":"Ton",
+         "s0":"Frühling","s1":"Sommer","s2":"Herbst","s3":"Winter"}
   };
-  var base = {};
+  var base = {}, baseA = {};
+  /* one lookup for everything on this page, so the film's own controls can
+     ask for their names too */
+  window.__t = function(k, fallback){
+    var l = window.__lang || "en";
+    if (l !== "en" && D[l] && D[l][k] !== undefined) return D[l][k];
+    return fallback;
+  };
+  function attr(sel, name){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if(!(id in baseA)) baseA[id] = el.getAttribute(name) || "";
+      el.setAttribute(name, window.__t(k, baseA[id]));
+    });
+  }
   function apply(l){
+    window.__lang = l;
     document.querySelectorAll("[data-i]").forEach(function(el){
       var k = el.getAttribute("data-i");
       if(!(k in base)) base[k] = el.innerHTML;
       if(l === "en"){ el.innerHTML = base[k]; return; }
       if(D[l] && D[l][k] !== undefined) el.innerHTML = D[l][k];
     });
+    attr("data-ia", "aria-label");
+    attr("data-it", "title");
     document.documentElement.setAttribute("lang", l);
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true":"false");
     });
     try { localStorage.setItem("lang", l); } catch(e){}
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch(e){}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   /* the cover always opens in English; the choice still carries to the inner
      pages, where reading language actually matters */
+})();
+
+/* the footer is the end of the film: while it is on screen the two corner
+   controls and the side chevrons fade out, so the language row and the line
+   beneath it are clear to read and to press. They come back on the way up. */
+(function(){
+  "use strict";
+  var foot = document.querySelector("footer");
+  if (!foot) return;
+  function setFlag(on){ document.body.classList.toggle("atFooter", !!on); }
+  if (!("IntersectionObserver" in window)) {
+    var check = function(){
+      var r = foot.getBoundingClientRect();
+      setFlag(r.top < innerHeight && r.bottom > 0);
+    };
+    addEventListener("scroll", check, { passive: true });
+    addEventListener("resize", check);
+    check();
+    return;
+  }
+  new IntersectionObserver(function(entries){
+    setFlag(entries[0].isIntersecting);
+  }, { rootMargin: "0px 0px 0px 0px", threshold: 0 }).observe(foot);
 })();
 
 /* real weather: if it rains over Munich, it rains here */
@@ -5374,6 +5903,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   var lbl = document.getElementById("seasonLbl");
   if (!dial || !EGG.getSeason) return;
   var NAMES = ["Spring", "Summer", "Autumn", "Winter"];
+  function seasonName(i){ return (window.__t ? window.__t("s" + i, NAMES[i]) : NAMES[i]); }
   var ROT = [90, 0, -90, -180];      // which glyph sits at three o'clock? bring active to top
   var turns = 0, cur = EGG.getSeason();
   var orbit = document.getElementById("dialOrbit");
@@ -5391,10 +5921,12 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     dial.querySelectorAll(".glyph").forEach(function(g, i){
       g.classList.toggle("on", i === cur);
     });
-    lbl.textContent = NAMES[cur];
+    lbl.textContent = seasonName(cur);
     dial.classList.add("fresh");
     setTimeout(function(){ dial.classList.remove("fresh"); }, 1600);
   }
+  /* the season keeps its name in whatever language is being read */
+  document.addEventListener("langchange", function(){ lbl.textContent = seasonName(cur); });
   var pressT = 0, longFired = false;
   dial.addEventListener("contextmenu", function(e){ e.preventDefault(); });
   dial.addEventListener("pointerdown", function(){ pressT = performance.now(); longFired = false; });
@@ -5728,6 +6260,9 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         film.style.cursor = panDrag.moved ? "grabbing" : "";
         return;
       }
+      if (EGG.museumAt && EGG.museumAt(e.clientX, e.clientY)) {
+        film.style.cursor = "pointer"; return;
+      }
       film.style.cursor = hit(EGG.guyRect, q.x, q.y) ? "grab"
         : (hit(EGG.bikeRect, q.x, q.y) || hit(EGG.moleRect, q.x, q.y) ||
            hit(EGG.owlRect, q.x, q.y) || hit(EGG.acornRect, q.x, q.y) ||
@@ -5779,6 +6314,13 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         relicArm = { t: nw8, x: e.clientX, y: e.clientY };
         return;
       }
+    }
+    /* one of the twelve: the iris closes over it and the page it belongs
+       to opens. On a finger this is the second tap, the first having asked. */
+    var mus8 = EGG.museumAt && EGG.museumAt(e.clientX, e.clientY);
+    if (mus8 && window.__travel) {
+      window.__travel(mus8.h, e.clientX, e.clientY);
+      return;
     }
     var r2 = film.getBoundingClientRect();
     var v2 = (window.__EGG && window.__EGG.view) || { x: 0, y: 0 };
@@ -5877,7 +6419,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       "The cover is not the whole map. Scroll up from it and the sky opens: clouds, a hot air balloon towing a banner, birds circling a thermal, and at night the stars.",
       "Drag sideways at the cover, or use the arrows at the left and right edges, and the camera pans off the meadow. To the west lies Istanbul, with the Bosphorus, Kiz Kulesi, a working ferry and the Beyazit gate of Istanbul University. To the east lies Munich, with the Alps, the Frauenkirche, the Eisbach and its surfer, a beer garden, the U Bahn and TUM.",
       "Each place has its own way into the site. The wooden sign on the pier opens the Profile page. The U Bahn stairs go down to Projects. The banner behind the balloon opens Notes. Knocking on the door of the house opens Contact.",
-      "Underground there is more than roots: a cellar under the house, a well whose rope reaches the water table, an ant colony with branching galleries, a mole, a sleeping rabbit, and four buried objects laid out along the taproot in the order I lived them."
+      "Underground there is more than roots: a cellar under the house, a well whose rope reaches the water table, an ant colony with branching galleries, a mole, a sleeping rabbit, and a small museum of twelve objects laid out along the taproot in three bands, the deepest being the earliest."
     ] },
     { h: "What is real", ps: [
       "The weather is Munich's, fetched live. If it is raining there while you read this, it rains here too.",
@@ -5923,9 +6465,11 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       "The surfer on the Eisbach never leaves the wave. He is not going to."
     ] },
     { h: "Below the ground", ps: [
-      "Hover or tap any buried object and it tells you what it is. There are four along the taproot, in order: the chip from Munich, an aluminium billet from the first carbon inventory I ever built, the rolled diploma, and a marble from a childhood pocket in Istanbul.",
+      "Twelve objects are buried along the taproot, in three bands. Nearest the surface, Won: the Boğaziçi Enterprize medal for CoLaunch, the JA Startup badge, the brass plate for the Microbify study that came back graded 1.0, and six certificates kept rolled in one stack.",
+      "Below them, Made: five fossils, one for each instrument I keep in the open. A cracked spreadsheet for unitguard, ribs that read as a bar chart for the abatement cost curve, a river delta splitting four ways for the carbon decomposition, a coil for the discounted cash flow, and a stone tablet cut with the letters SIMEA.",
+      "Deepest, Lived: an Istanbul ferry token, a punched Munich U Bahn ticket, and the torn half of a boarding pass between the two cities.",
+      "Hover any of the twelve, or tap it once on a phone, and it shows a museum label: its name, its year, and two lines about what it was and what came of it. Click it, or tap it a second time, and it opens the page it belongs to.",
       "The cellar under the house keeps last summer in jars. The well rope goes all the way down to the water, where a blind fish follows your cursor without ever seeing it.",
-      "There is a tin buried at the end of the root, labelled 2050. It says what it is for.",
       "The ants run a working colony with a main gallery, three branch tunnels and chambers at the ends. Click them and the whole line stops to look at you."
     ] },
     { h: "The controls", ps: [
@@ -5955,7 +6499,10 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
      come inside rather than hang off into nothing */
   function bookTight() { return innerWidth < 940; }
   function bookPad() {
-    return bookShort() ? "1.05rem 1.15rem 1.6rem" : "1.7rem 1.6rem 2.2rem";
+    /* when the arrows come inside the covers they take the bottom strip, so
+       the text stops above them instead of running under them */
+    var foot = (BOOK.single || bookTight()) ? "2.7rem" : (bookShort() ? "1.6rem" : "2.2rem");
+    return bookShort() ? "1.05rem 1.15rem " + foot : "1.7rem 1.6rem " + foot;
   }
   function bookPageHTML(i) {
     var P = BOOK_PAGES[i];
@@ -5975,7 +6522,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       }
     }
     if (i < BOOK_PAGES.length - 1 || P) {
-      s += '<span style="position:absolute;bottom:.7rem;' +
+      s += '<span style="position:absolute;bottom:' + ((BOOK.single || bookTight()) ? ".95rem" : ".7rem") + ';' +
            (BOOK.single || bookTight() ? "left:50%;transform:translateX(-50%)"
                         : (i % 2 === 0 ? "left:1.3rem" : "right:1.3rem")) +
            ';font-size:.7rem;color:#9a8668;">' + (i + 1) + "</span>";
@@ -6111,6 +6658,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
   function closeSecrets() {
     if (secretsEl) { secretsEl.style.display = "none"; }
     if (secretsBack) { secretsBack.style.display = "none"; }
+    document.body.classList.remove("overlayOpen");
   }
   function openSecrets() {
     var noMotion = bookNoMotion();
@@ -6124,7 +6672,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
       secretsEl.setAttribute("aria-label", "The notebook");
       secretsEl.style.cssText =
         "position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);" +
-        "width:min(860px,92vw);height:min(540px,84vh);z-index:97;" +
+        "width:min(860px,92vw);height:min(540px,88vh);z-index:97;" +
         "font-family:Georgia,serif;color:#33291e;perspective:1700px;" +
         "touch-action:pan-y;";
       var inner = document.createElement("div");
@@ -6135,7 +6683,9 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
         var pgg = document.createElement("div");
         pgg.style.cssText =
           "position:absolute;top:0;height:100%;width:50%;left:" + (leftSide ? "0" : "50%") + ";" +
-          "background:#efe7d2;padding:1.7rem 1.6rem 2.2rem;overflow:hidden;" +
+          "background:#efe7d2;padding:1.7rem 1.6rem 2.2rem;" +
+          "overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;" +
+          "-webkit-overflow-scrolling:touch;" +
           "border-radius:" + (leftSide ? "9px 2px 2px 9px" : "2px 9px 9px 2px") + ";" +
           "box-shadow:inset 0 0 0 1px rgba(90,70,40,.25);cursor:pointer;";
         var spine = document.createElement("div");
@@ -6238,6 +6788,7 @@ body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!importan
     BOOK.single = bookWantsSingle();
     BOOK.spread = 0;
     bookRender();
+    document.body.classList.add("overlayOpen");
     secretsBack.style.display = "";
     secretsEl.style.display = "";
     if (!noMotion) {
