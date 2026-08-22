@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tools. Kerem Özdemir</title>
+<meta name="description" content="Free browser instruments for carbon compliance, finance, and living and working in Germany, four explorable essays and six playable games. Nothing tracked, everything computed in your own browser.">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://keremozdemir.de/tools.html">
+<meta property="og:title" content="Tools. Kerem Özdemir">
+<meta property="og:description" content="Free browser instruments for carbon compliance, finance, and living and working in Germany, four explorable essays and six playable games. Nothing tracked, everything computed in your own browser.">
+<meta property="og:type" content="profile">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<link rel="alternate" type="application/rss+xml" title="Notes" href="feed.xml">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Analytics: cookieless. Create a site at dash.cloudflare.com > Web Analytics,
+     paste the token below and remove the comment markers.
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "YOUR_TOKEN"}'></script>
+-->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --text:"Newsreader",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --display:var(--serif);
+  --paper:#f2efe6;
+  --paper2:#eae6da;
+  --fg:#221e17;
+  --ink:var(--fg);
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --raised:#faf8f1;
+  --field:#ffffff;
+  --accent:#8a5a24;
+  --accent-text:#8a5a24;
+  --amber:#b06a24;
+  --petrol:#1d2b26;
+  --danger:#9c3a1e;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+#fadeout{position:fixed;inset:0;background:#17110a;opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:96}
+#fadeout.on{opacity:1}
+@keyframes surface{from{opacity:1}to{opacity:0}}
+body::after{content:"";position:fixed;inset:0;background:#17110a;pointer-events:none;z-index:95;
+  animation:surface .55s ease .05s forwards}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.crown,main>section{animation:riseIn .6s cubic-bezier(.23,1,.32,1) both}
+main>section:nth-of-type(1){animation-delay:.12s}
+main>section:nth-of-type(2){animation-delay:.2s}
+main>section:nth-of-type(3){animation-delay:.28s}
+@media (prefers-reduced-motion:reduce){body::after{display:none}.crown,main>section{animation:none}}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--fg);font-family:var(--sans);line-height:1.6}
+::selection{background:#e3c893;color:#221e17}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
+.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+.langs{display:flex;gap:.1rem;margin-left:.6rem}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
+    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* six nav items on a narrow phone: the row is allowed to take a second
+   line rather than push the page sideways, and the words are set a little
+   tighter so that on most phones it does not have to */
+@media (max-width:430px){
+  .bar nav{gap:.34rem .55rem}
+  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+/* ---------- page head ---------- */
+.crown{padding:clamp(3.4rem,9vh,6rem) 0 clamp(2rem,5vh,3rem)}
+.crown .no{font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--accent);display:block;margin-bottom:.8rem}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.4rem,6vw,4.2rem);line-height:1.05;letter-spacing:.005em}
+.crown p.lede{margin-top:1.2rem;max-width:58ch;font-family:var(--text);font-size:1.15rem;color:var(--dim)}
+
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:.005em;margin:0 0 1.2rem}
+section{padding:clamp(2.2rem,6vh,4rem) 0}
+section + section{border-top:1px solid var(--line)}
+
+/* ---------- profile pieces ---------- */
+.story{max-width:62ch;font-family:var(--text);font-size:1.13rem;line-height:1.65}
+.story p+p{margin-top:1em}
+.tl{margin-top:.6rem}
+.tl .row{display:grid;grid-template-columns:74px 1fr;gap:1.2rem;padding:1.1rem 0;border-top:1px solid var(--line)}
+.tl .yr{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var(--accent);padding-top:.1rem}
+.tl h3{font-family:var(--sans);font-weight:500;font-size:1rem}
+.tl .role{display:block;font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--dim);margin:.1rem 0 .4rem}
+.tl p{font-family:var(--text);font-size:1rem;color:#4c463b;max-width:64ch}
+.badge{display:inline-block;font-size:.72rem;color:var(--accent);
+  border:1px solid var(--line);border-radius:2px;padding:.15em .55em;margin-top:.5rem}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(1.2rem,4vw,3rem)}
+dl .item{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
+dl .item .v{color:var(--dim);text-align:right;font-size:.8rem;padding-top:.1rem;flex-shrink:0}
+h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg);margin:0 0 .5rem}
+.cv-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.6rem;padding:.65rem 1.2rem;
+  border:1px solid var(--fg);border-radius:2px;text-decoration:none;font-size:.86rem;font-weight:500;letter-spacing:.02em;
+  transition:background .18s var(--ease),color .18s var(--ease),transform .18s var(--ease)}
+.cv-btn:active{transform:scale(.98)}
+.cv-btn:hover{background:var(--fg);color:var(--paper)}
+
+/* ---------- projects pieces ---------- */
+.feature{border:1px solid var(--line);background:var(--raised);padding:clamp(1.4rem,4vw,2.4rem);
+  display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start}
+.feature h3{font-family:var(--serif);font-weight:400;font-size:1.6rem}
+.feature p{max-width:58ch;font-family:var(--text);font-size:1.02rem;color:#4c463b;margin-top:.5rem}
+.feature .go{font-size:.84rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:nowrap;
+  border-bottom:1px solid var(--line);transition:border-color .18s var(--ease)}
+.feature .go:hover{border-bottom-color:var(--accent)}
+.repo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;background:var(--line);
+  border:1px solid var(--line);margin-top:.4rem}
+.repo{background:var(--paper);padding:1rem 1.1rem;text-decoration:none;transition:background .16s var(--ease)}
+.repo:hover{background:var(--raised)}
+.repo h3{font-family:var(--sans);font-weight:500;font-size:.95rem}
+.repo .t{font-family:var(--serif);font-style:italic;font-size:.8rem;color:var(--accent)}
+.repo p{font-family:var(--text);font-size:.92rem;color:#4c463b;margin-top:.35rem;line-height:1.45}
+
+/* ---------- contact ---------- */
+.mail-line{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-top:1rem}
+.mail-line a.addr{font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,4vw,2.6rem);text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.mail-line a.addr:hover{border-bottom-color:var(--accent)}
+.copy{font-size:.78rem;font-weight:500;letter-spacing:.02em;color:var(--dim);
+  background:none;border:1px solid var(--line);border-radius:2px;padding:.5em .9em;cursor:pointer;
+  transition:color .15s var(--ease),border-color .15s var(--ease)}
+.copy:hover{color:var(--fg);border-color:var(--fg)}
+.copy.done{color:var(--accent);border-color:var(--accent)}
+.socials{display:flex;gap:1.6rem;margin-top:2rem}
+.socials a{font-size:.9rem;font-weight:500;letter-spacing:.02em;color:var(--dim);text-decoration:none;
+  border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.socials a:hover{color:var(--fg);border-bottom-color:var(--fg)}
+
+/* ---------- share chip on instruments ---------- */
+.share-link{font-size:.7rem;font-weight:500;letter-spacing:.02em;color:var(--dim);
+  background:none;border:1px solid var(--line);border-radius:2px;padding:.3em .7em;cursor:pointer;
+  margin-left:.8rem;vertical-align:middle;transition:color .15s var(--ease),border-color .15s var(--ease)}
+.share-link:hover{color:var(--fg);border-color:var(--fg)}
+.share-link.done{color:var(--accent);border-color:var(--accent)}
+
+/* ---------- the narrow reading, where a thumb does the work ---------- */
+@media (max-width:640px){
+
+  /* stacks: one column reads better than four squeezed ones */
+  .tl .row{grid-template-columns:1fr;gap:.2rem}
+  .feature{grid-template-columns:1fr}
+  .repo-grid{grid-template-columns:1fr}
+  .cols{gap:1.6rem}
+
+  /* nothing wide is allowed to push the page sideways: it scrolls in place */
+  main table{display:block;width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  main pre,main figure{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  main img,main svg,main canvas{max-width:100%;height:auto}
+
+  /* buttons and fields a finger can find */
+  .cv-btn{padding:.8rem 1.25rem;font-size:.88rem}
+  .copy{padding:.68em 1em}
+  .share-link{padding:.5em .8em;margin-left:.5rem}
+  body .frow input,body .frow textarea,
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px}
+  body .frow input,body input[type="text"],body input[type="email"]{min-height:46px}
+  .socials{gap:1.3rem;flex-wrap:wrap}
+
+  /* room to breathe: on one column the rules were sitting on the text */
+  .crown{padding-bottom:clamp(1.4rem,4vh,2.2rem)}
+  section{padding:1.9rem 0}
+  .tl .row{padding:1.25rem 0}
+  .tl .role{margin-bottom:.45rem}
+  dl .item{padding:.7rem 0;gap:.6rem;align-items:baseline}
+  .story{font-size:1.08rem}
+  .mail-line{gap:.8rem}
+  .mail-line a.addr{word-break:break-all;line-height:1.25}
+}
+
+/* the same thumb, on the page itself */
+@media (pointer:coarse){
+  .cv-btn{min-height:44px;padding:.8rem 1.25rem}
+  .copy,.share-link{min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center}
+  .socials a{min-height:44px;display:inline-flex;align-items:center}
+  .mail-line a.addr{display:inline-flex;align-items:center;min-height:44px}
+  .note-read{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .feature .go{min-height:44px;display:inline-flex;align-items:center}
+  /* a link sitting inside a sentence: the line opens up so the link can be
+     a thumb tall without the paragraph closing over it */
+  .quiet-line{line-height:2.1}
+  .quiet-line a{display:inline-block;padding:.78rem 0;line-height:1.25}
+  .note-item h3 a{display:inline-block;padding:.5rem 0;border-bottom:0;
+    text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
+  .note-item h3 a:hover{text-decoration-color:var(--accent)}
+  /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px;min-height:44px}
+  body .frow textarea{min-height:8rem}
+  /* a 4px tall slider is not a control: the whole strip takes the touch */
+  input[type="range"]{height:44px;margin:0;padding:0}
+  .demo-src a{display:inline-flex;align-items:center;min-height:44px}
+}
+.rise{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+.rise.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rise{opacity:1;transform:none;transition:none}}
+#cvsheet{display:none}
+@media print{
+  .rise{opacity:1!important;transform:none!important}
+  @page{size:A4;margin:13mm 15mm}
+  .bar,footer,.leaf-mark,.cv-btn,.langs{display:none!important}
+  body{background:#fff;color:#000}
+  body::after{display:none}
+  body.has-cv main>section,body.has-cv .crown{display:none!important}
+  body.has-cv main.wrap{max-width:none;padding:0}
+  body.has-cv{font-family:var(--sans)}
+  #cvsheet{display:block;font-size:9.3pt;line-height:1.38}
+  #cvsheet h1{font-family:var(--serif);font-weight:400;font-size:20pt;margin:0}
+  #cvsheet .cl{font-size:8.4pt;color:#333;margin:.25em 0 .9em;border-bottom:.6pt solid #999;padding-bottom:.7em}
+  #cvsheet h2{font-family:var(--sans);font-weight:600;font-size:9.5pt;letter-spacing:.06em;text-transform:uppercase;
+    margin:.85em 0 .3em;border-bottom:.6pt solid #bbb;padding-bottom:.15em}
+  #cvsheet table{border-collapse:collapse;width:100%}
+  #cvsheet td{vertical-align:top;padding:.14em 0}
+  #cvsheet td.d{width:78pt;white-space:nowrap;color:#444;font-size:8.4pt;padding-right:8pt;padding-top:.24em}
+  #cvsheet .sk{margin:.1em 0}
+}
+
+.promise h3{font-family:var(--sans);font-weight:500;font-size:.95rem;margin:0 0 .35rem}
+.promise p{font-family:var(--text);font-size:1rem;color:#4c463b;line-height:1.5}
+.tool-group{margin-top:1.9rem}
+.tool-group:first-of-type{margin-top:.2rem}
+.tool-group > h3.sub{font-family:var(--serif);font-style:italic;font-size:1.02rem;color:var(--accent);margin-bottom:.6rem}
+.tool-note{font-family:var(--text);font-size:.98rem;color:var(--dim);max-width:62ch;margin-top:.7rem}
+.repo h3{font-size:1rem}
+/* four essays, two by two: an auto grid would leave a fifth cell empty */
+.repo-grid.essays{grid-template-columns:repeat(2,1fr)}
+@media (max-width:640px){.repo-grid.essays{grid-template-columns:1fr}}
+.built p{font-family:var(--text);font-size:1.06rem;color:#4c463b;max-width:62ch;line-height:1.6}
+.built p + p{margin-top:.8rem}
+@media (max-width:640px){.tool-group{margin-top:1.5rem}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="index.html">Kerem Özdemir</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a><a href="tools.html" aria-current="page" data-i="nav-t">Tools</a><a href="game.html" data-i="nav-g">Game Theory</a>
+      <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+
+<div class="crown">
+  <span class="no"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg></span>
+  <h1 data-i="w-h1">Tools</h1>
+  <p class="lede" data-i="w-lede">Working instruments for the kind of arithmetic that usually wants a spreadsheet, a consultant, or both. They run inside this site, they cost nothing, and they ask for nothing.</p>
+</div>
+
+<section aria-labelledby="w-what">
+  <h2 id="w-what" data-i="w-what-h">What these are</h2>
+  <p class="story" data-i="w-what-p">Each one is a page that does a single job and leaves its working on the screen. There is no account to make, no trial, no cookie banner and no analytics, because there is nothing here that watches you. Everything you type is computed in your own browser and never leaves it.</p>
+  <div class="cols" style="margin-top:1.8rem">
+    <div class="promise">
+      <h3 data-i="w-p1">Free, and free of accounts</h3>
+      <p data-i="w-p1d">No sign up, no trial, nothing to buy. A static page costs nothing to serve, so there is no subscription behind any of this and no reason to ever put one there.</p>
+    </div>
+    <div class="promise">
+      <h3 data-i="w-p2">Nothing is tracked</h3>
+      <p data-i="w-p2d">No analytics, no cookies, no database, no server. Once the fonts have arrived there is no network call left for the page to make.</p>
+    </div>
+    <div class="promise">
+      <h3 data-i="w-p3">Computed in your own browser</h3>
+      <p data-i="w-p3d">Your figures stay in the page you typed them into. After it has loaded once, it keeps working without a connection.</p>
+    </div>
+    <div class="promise">
+      <h3 data-i="w-p4">Every constant carries its source</h3>
+      <p data-i="w-p4d">Where a tool holds a rate, a threshold or an emission factor, it prints the publisher, the value and the date that value was read.</p>
+    </div>
+    <div class="promise">
+      <h3 data-i="w-p5">A missing number is named, not invented</h3>
+      <p data-i="w-p5d">Where a tool cannot know a figure it says which figure is missing and who holds it, and refuses to close the gap with a plausible guess.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="w-inst">
+  <h2 id="w-inst" data-i="w-inst-h">The instruments</h2>
+
+  <div class="tool-group">
+    <h3 class="sub" data-i="w-g1">Carbon and compliance</h3>
+    <div class="feature">
+      <div>
+        <h3>CBAM cost and data gap</h3>
+        <p data-i="w-c1">For importers bringing steel, aluminium, cement, fertiliser, hydrogen or electricity into the EU. Says whether you cross the fifty tonne threshold, prints the certificate cost one arithmetic step at a time, and lists every emissions figure you are still missing together with the supplier who holds it.</p>
+      </div>
+      <a class="go" href="tools/cbam/index.html" data-i="w-open">Open the tool →</a>
+    </div>
+    <p class="tool-note" data-i="w-g1n">Being built: a carbon inventory for small manufacturers, a household footprint that prints its uncertainty beside every line, and an emission factor dictionary where each figure carries the document it came from.</p>
+  </div>
+
+  <div class="tool-group">
+    <h3 class="sub" data-i="w-g2">Finance and analysis</h3>
+    <div class="feature">
+      <div>
+        <h3>Analyst desk</h3>
+        <p data-i="w-c2">For students, analysts and founders sizing something before a meeting. A discounted cash flow that shows how much of the value is the perpetuity behind the forecast, two market sizings with the gap between them left visible, a runway that names the month the money ends, and a converter that refuses a conversion it cannot make safely.</p>
+      </div>
+      <a class="go" href="tools/analyst/index.html" data-i="w-open">Open the tool →</a>
+    </div>
+    <p class="tool-note" data-i="w-g2n">Being built: an invoice and small trader tool for freelancing from Germany, and a ledger of climate and energy series that keeps the revision history instead of overwriting it.</p>
+  </div>
+
+  <div class="tool-group">
+    <h3 class="sub" data-i="w-g3">Living and working in Germany</h3>
+    <div class="feature">
+      <div>
+        <h3>Werkstudent</h3>
+        <p data-i="w-c3">For international students working alongside a degree. What actually arrives in your account from a working student job or a minijob, line by line. The two work limits that students confuse, side by side. What a month costs in six cities. And the arrival paperwork in the order it has to happen. This one speaks English, Turkish and German all the way down.</p>
+      </div>
+      <a class="go" href="tools/werkstudent/index.html" data-i="w-open">Open the tool →</a>
+    </div>
+    <p class="tool-note" data-i="w-g3n">Being built: a Turkey to Germany moving guide in the order things actually happen, and a decoder for a German electricity or gas bill.</p>
+  </div>
+</section>
+
+<section aria-labelledby="w-ess">
+  <h2 id="w-ess" data-i="w-ess-h">The essays</h2>
+  <p class="story" data-i="w-ess-p">Explorable Economics is not an instrument, and it is kept apart for that reason. You bring nothing to it. The model sitting in the middle of each essay is there so the argument can be checked rather than believed, and every essay ends by saying what its model cannot tell you.</p>
+  <div class="feature" style="margin-top:1.6rem">
+    <div>
+      <h3>Explorable Economics</h3>
+      <p data-i="w-ess-f">Drag the supply and demand curves and find that the statute does not decide who bears a tax. Run a used car market until the good cars withdraw. Hold a tournament between strategies, then let the winners reproduce. Move a discount rate and watch a catastrophe a century out turn into a rounding error.</p>
+    </div>
+    <a class="go" href="tools/economics/index.html" data-i="w-ess-go">Read the essays →</a>
+  </div>
+  <div class="repo-grid essays" style="margin-top:1.4rem">
+    <a class="repo" href="tools/economics/tax/index.html"><h3>Who actually pays a tax</h3><span class="t" data-i="w-e1t">Essay one</span><p data-i="w-e1">Tax incidence. Who hands the money to the state turns out not to matter; elasticity decides.</p></a>
+    <a class="repo" href="tools/economics/lemons/index.html"><h3>The market for lemons</h3><span class="t" data-i="w-e2t">Essay two</span><p data-i="w-e2">Adverse selection. What one side knows and the other does not, until the good cars leave the market.</p></a>
+    <a class="repo" href="tools/economics/cooperation/index.html"><h3>The evolution of cooperation</h3><span class="t" data-i="w-e3t">Essay three</span><p data-i="w-e3">The repeated prisoner's dilemma, a round robin between strategies, and then a population that reproduces.</p></a>
+    <a class="repo" href="tools/economics/discounting/index.html"><h3>Why the future is cheap</h3><span class="t" data-i="w-e4t">Essay four</span><p data-i="w-e4">Discounting. One rate, chosen quietly, decides whether a distant catastrophe is worth preventing today.</p></a>
+  </div>
+</section>
+
+<section aria-labelledby="w-game">
+  <h2 id="w-game" data-i="w-game-h">The games</h2>
+  <p class="story" data-i="w-game-p">Some arguments do not survive being read. You can be told that a short rule beats a clever one when the same two people keep meeting, agree with it, and learn nothing. These put the claim in your hands instead.</p>
+  <div class="feature" style="margin-top:1.6rem">
+    <div>
+      <h3>Game Theory</h3>
+      <p data-i="w-game-f">Six small painted games, each one a situation people are actually in. A neighbour at a fence every season for forty years. Two hunters who can take a stag together or a hare alone. Ten coins and a stranger who can refuse them. A pasture four households share. A number everybody guesses about everybody else. And a coin nobody can afford to be predictable with.</p>
+    </div>
+    <a class="go" href="game.html" data-i="w-game-go">See the games →</a>
+  </div>
+</section>
+
+<section aria-labelledby="w-built" class="built">
+  <h2 id="w-built" data-i="w-built-h">How they are built</h2>
+  <p data-i="w-b1">Every page here is a single HTML file. No backend, no database, no account system, no analytics of any kind. Nothing you type is sent anywhere because there is nowhere for it to be sent, and that is also why they can stay free: a static file costs nothing to serve.</p>
+  <p data-i="w-b2">The shared design and the shared helpers are spliced into each page when it is built, so what ships is still one file you can save, read or copy whole. The bar at the top of this page and the bar on every instrument are generated from the same few lines, which is why they are the same bar.</p>
+  <p class="quiet-line" style="margin-top:1.1rem" data-i="w-b3">The source of the site and of every instrument in it is public: <a href="https://github.com/Keremozdemirra/keremozdemirra.github.io" rel="noopener noreferrer">github.com/Keremozdemirra</a>.</p>
+</section>
+
+</main>
+<footer class="site-foot"><div class="wrap">
+  <span>© 2026 Kerem Özdemir</span>
+  <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
+</div></footer>
+<script>
+window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "w-h1": "Araçlar", "w-lede": "Genelde bir hesap tablosu, bir danışman ya da ikisini birden isteyen türden aritmetik için çalışan aletler. Bu sitenin içinde çalışırlar, hiçbir ücreti yoktur ve senden hiçbir şey istemezler.", "w-what-h": "Bunlar ne", "w-what-p": "Her biri tek bir iş yapan ve yaptığı hesabı ekranda bırakan bir sayfa. Açılacak hesap, deneme süresi, çerez bandı ya da analiz yok; çünkü burada seni izleyen hiçbir şey yok. Yazdığın her şey kendi tarayıcında hesaplanır ve oradan hiç çıkmaz.", "w-p1": "Ücretsiz, üstelik hesapsız", "w-p1d": "Kayıt yok, deneme yok, satın alınacak bir şey yok. Statik bir sayfayı yayında tutmak hiçbir şeye mal olmuyor; bu yüzden arkada bir abonelik yok ve olması için de bir sebep yok.", "w-p2": "Hiçbir şey izlenmiyor", "w-p2d": "Analiz yok, çerez yok, veritabanı yok, sunucu yok. Yazı tipleri geldikten sonra sayfanın yapacağı tek bir ağ isteği kalmıyor.", "w-p3": "Kendi tarayıcında hesaplanır", "w-p3d": "Rakamların, onları yazdığın sayfada kalır. Sayfa bir kez yüklendikten sonra bağlantı olmadan da çalışmaya devam eder.", "w-p4": "Her sabit kaynağını taşır", "w-p4d": "Bir araç bir oran, bir eşik ya da bir emisyon katsayısı tutuyorsa; yayımlayanı, değeri ve o değerin hangi tarihte okunduğunu birlikte yazar.", "w-p5": "Eksik sayı uydurulmaz, adı konur", "w-p5d": "Bir araç bir rakamı bilemiyorsa hangi rakamın eksik olduğunu ve kimde bulunduğunu söyler; boşluğu makul görünen bir tahminle kapatmayı reddeder.", "w-inst-h": "Aletler", "w-open": "Aracı aç →", "w-g1": "Karbon ve uyum", "w-c1": "Avrupa Birliği'ne çelik, alüminyum, çimento, gübre, hidrojen ya da elektrik ithal edenler için. Elli tonluk eşiği aşıp aşmadığını söyler, sertifika maliyetini adım adım yazar ve hâlâ eksik olan her emisyon rakamını, o rakamı elinde tutan tedarikçiyle birlikte listeler.", "w-g1n": "Yapım aşamasında: küçük üreticiler için bir karbon envanteri, her satırının yanına belirsizliğini yazan bir hane karbon ayak izi ve her rakamın geldiği belgeyi taşıdığı bir emisyon katsayısı sözlüğü.", "w-g2": "Finans ve analiz", "w-c2": "Bir toplantı öncesi bir şeyin büyüklüğünü ölçen öğrenciler, analistler ve kurucular için. Değerin ne kadarının tahminin arkasındaki sonsuz vade olduğunu gösteren bir indirgenmiş nakit akışı, aradaki farkı görünür bırakan iki yönlü pazar büyüklüğü, paranın biteceği ayı adıyla söyleyen bir pist hesabı ve güvenle yapamadığı çevrimi reddeden bir birim çevirici.", "w-g2n": "Yapım aşamasında: Almanya'dan serbest çalışanlar için bir fatura ve küçük esnaf aracı, ve revizyon geçmişini üzerine yazmak yerine saklayan bir iklim ve enerji veri defteri.", "w-g3": "Almanya'da yaşamak ve çalışmak", "w-c3": "Öğrenimiyle birlikte çalışan uluslararası öğrenciler için. Bir Werkstudent işinden ya da bir minijob'dan hesabına gerçekte ne geçtiği, satır satır. Öğrencilerin sürekli karıştırdığı iki çalışma sınırı, yan yana. Altı şehirde bir ayın maliyeti. Ve varış evrakları, olması gereken sırayla. Bu araç en alt satırına kadar İngilizce, Türkçe ve Almanca konuşuyor.", "w-g3n": "Yapım aşamasında: işlerin gerçekten olduğu sırayla yazılmış bir Türkiye'den Almanya'ya taşınma rehberi ve bir Alman elektrik ya da doğal gaz faturasını çözen bir araç.", "w-ess-h": "Denemeler", "w-ess-p": "Explorable Economics bir alet değil ve tam da bu yüzden ayrı duruyor. Ona bir şey getirmiyorsun. Her denemenin ortasındaki model, savın inanılması değil sınanması için orada; ve her deneme, modelinin sana söyleyemediği şeyi söyleyerek bitiyor.", "w-ess-f": "Arz ve talep eğrilerini sürükle ve verginin yükünü kanunun belirlemediğini gör. İyi arabalar piyasadan çekilene kadar bir ikinci el pazarı çalıştır. Stratejiler arasında bir turnuva düzenle, sonra kazananların çoğalmasına izin ver. Bir iskonto oranını oynat ve bir asır sonraki felaketin yuvarlama hatasına dönüşmesini izle.", "w-ess-go": "Denemeleri oku →", "w-e1t": "Birinci deneme", "w-e1": "Verginin yükü. Parayı devlete kimin uzattığının bir önemi olmadığı ortaya çıkıyor; kararı esneklik veriyor.", "w-e2t": "İkinci deneme", "w-e2": "Ters seçim. Bir tarafın bildiği ve diğerinin bilmediği şey, iyi arabalar piyasayı terk edene kadar.", "w-e3t": "Üçüncü deneme", "w-e3": "Yinelenen mahkûm ikilemi, stratejiler arasında bir lig ve ardından çoğalan bir popülasyon.", "w-e4t": "Dördüncü deneme", "w-e4": "İskonto. Sessizce seçilen tek bir oran, uzaktaki bir felaketi bugün önlemeye değip değmeyeceğine karar veriyor.", "w-game-h": "Oyunlar", "w-game-p": "Bazı savlar okunarak ayakta kalmıyor. Aynı iki kişi tekrar tekrar karşılaştığında kısa bir kuralın zekice olanı yendiği sana söylenebilir, buna katılırsın ve hiçbir şey öğrenmezsin. Bunlar savı bunun yerine senin eline veriyor.", "w-game-f": "Elle boyanmış altı küçük oyun; her biri insanların gerçekten içinde bulunduğu bir durum. Kırk yıl boyunca her mevsim çite gelen bir komşu. Birlikte geyik, tek başına tavşan alabilen iki avcı. On para ve onları reddedebilecek bir yabancı. Dört hanenin paylaştığı bir mera. Herkesin herkes hakkında tahmin ettiği bir sayı. Ve kimsenin tahmin edilebilir olmayı göze alamayacağı bir yazı tura.", "w-game-go": "Oyunlara bak →", "w-built-h": "Bunlar nasıl kuruluyor", "w-b1": "Buradaki her sayfa tek bir HTML dosyası. Arka uç yok, veritabanı yok, hesap sistemi yok, hiçbir türden analiz yok. Yazdığın hiçbir şey bir yere gitmiyor, çünkü gidecek bir yer yok; ücretsiz kalabilmelerinin sebebi de bu: statik bir dosyayı sunmak hiçbir şeye mal olmuyor.", "w-b2": "Ortak tasarım ve ortak yardımcılar her sayfaya kurulurken içine yerleştiriliyor; yayına giden şey yine kaydedebileceğin, okuyabileceğin ya da bütün olarak kopyalayabileceğin tek bir dosya. Bu sayfanın üstündeki çubukla her aletin üstündeki çubuk aynı birkaç satırdan üretiliyor; aynı çubuk olmalarının sebebi bu.", "w-b3": "Sitenin ve içindeki her aletin kaynağı açık: <a href=\"https://github.com/Keremozdemirra/keremozdemirra.github.io\" rel=\"noopener noreferrer\">github.com/Keremozdemirra</a>."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "w-h1": "Werkzeuge", "w-lede": "Arbeitende Instrumente für die Art von Rechnung, die sonst eine Tabelle, einen Berater oder beides verlangt. Sie laufen in dieser Website, sie kosten nichts, und sie verlangen nichts.", "w-what-h": "Was das hier ist", "w-what-p": "Jedes davon ist eine Seite, die eine einzige Aufgabe erledigt und ihre Rechnung auf dem Bildschirm stehen lässt. Kein Konto, keine Testphase, kein Cookie-Banner und keine Analyse, denn hier gibt es nichts, was Sie beobachtet. Alles, was Sie eintippen, wird in Ihrem eigenen Browser gerechnet und verlässt ihn nie.", "w-p1": "Kostenlos, und ohne Konto", "w-p1d": "Keine Anmeldung, keine Testphase, nichts zu kaufen. Eine statische Seite auszuliefern kostet nichts, also steht hinter alledem kein Abonnement und es gibt keinen Grund, je eines daraus zu machen.", "w-p2": "Nichts wird verfolgt", "w-p2d": "Keine Analyse, keine Cookies, keine Datenbank, kein Server. Sobald die Schriften geladen sind, bleibt der Seite kein einziger Netzwerkaufruf mehr.", "w-p3": "Im eigenen Browser gerechnet", "w-p3d": "Ihre Zahlen bleiben auf der Seite, auf der Sie sie eingetragen haben. Nach dem ersten Laden arbeitet sie auch ohne Verbindung weiter.", "w-p4": "Jede Konstante trägt ihre Quelle", "w-p4d": "Wo ein Werkzeug einen Satz, eine Schwelle oder einen Emissionsfaktor hält, druckt es den Herausgeber, den Wert und das Datum, an dem dieser Wert gelesen wurde.", "w-p5": "Eine fehlende Zahl wird benannt, nicht erfunden", "w-p5d": "Wo ein Werkzeug eine Zahl nicht kennen kann, sagt es, welche Zahl fehlt und wer sie hat, und weigert sich, die Lücke mit einer plausiblen Schätzung zu schließen.", "w-inst-h": "Die Instrumente", "w-open": "Werkzeug öffnen →", "w-g1": "CO₂ und Compliance", "w-c1": "Für Importeure, die Stahl, Aluminium, Zement, Dünger, Wasserstoff oder Strom in die EU bringen. Sagt, ob Sie die Schwelle von fünfzig Tonnen überschreiten, druckt die Zertifikatskosten Rechenschritt für Rechenschritt und listet jede Emissionszahl auf, die Ihnen noch fehlt, samt dem Lieferanten, der sie hat.", "w-g1n": "Im Bau: eine CO₂-Bilanz für kleine Hersteller, ein Haushalts-Fußabdruck, der seine Unsicherheit neben jede Zeile schreibt, und ein Wörterbuch der Emissionsfaktoren, in dem jede Zahl das Dokument trägt, aus dem sie stammt.", "w-g2": "Finanzen und Analyse", "w-c2": "Für Studierende, Analysten und Gründer, die vor einem Termin etwas überschlagen. Eine Discounted-Cash-Flow-Rechnung, die zeigt, wie viel des Werts die ewige Rente hinter der Prognose ist, zwei Marktgrößen mit der Lücke dazwischen sichtbar gelassen, eine Reichweite, die den Monat benennt, in dem das Geld endet, und ein Umrechner, der eine Umrechnung verweigert, die er nicht sicher machen kann.", "w-g2n": "Im Bau: ein Rechnungs- und Kleinunternehmerwerkzeug für die Freiberuflichkeit aus Deutschland und ein Register von Klima- und Energiereihen, das die Revisionsgeschichte behält statt sie zu überschreiben.", "w-g3": "Leben und Arbeiten in Deutschland", "w-c3": "Für internationale Studierende, die neben dem Studium arbeiten. Was aus einem Werkstudentenjob oder einem Minijob tatsächlich auf dem Konto ankommt, Zeile für Zeile. Die zwei Arbeitsgrenzen, die ständig verwechselt werden, nebeneinander. Was ein Monat in sechs Städten kostet. Und die Ankunftsbürokratie in der Reihenfolge, in der sie geschehen muss. Dieses Werkzeug spricht bis nach unten Englisch, Türkisch und Deutsch.", "w-g3n": "Im Bau: ein Umzugsleitfaden von der Türkei nach Deutschland in der Reihenfolge, in der die Dinge wirklich passieren, und ein Entschlüsseler für eine deutsche Strom- oder Gasrechnung.", "w-ess-h": "Die Essays", "w-ess-p": "Explorable Economics ist kein Instrument und steht genau deshalb für sich. Sie bringen nichts mit. Das Modell in der Mitte jedes Essays steht dort, damit das Argument geprüft und nicht geglaubt wird, und jedes Essay endet damit, zu sagen, was sein Modell nicht zeigen kann.", "w-ess-f": "Ziehen Sie an Angebot und Nachfrage und stellen Sie fest, dass das Gesetz nicht entscheidet, wer eine Steuer trägt. Lassen Sie einen Gebrauchtwagenmarkt laufen, bis die guten Wagen sich zurückziehen. Halten Sie ein Turnier zwischen Strategien ab und lassen Sie dann die Sieger sich vermehren. Bewegen Sie einen Diskontsatz und sehen Sie zu, wie eine Katastrophe in hundert Jahren zum Rundungsfehler wird.", "w-ess-go": "Die Essays lesen →", "w-e1t": "Essay eins", "w-e1": "Steuerinzidenz. Wer das Geld an den Staat reicht, stellt sich als gleichgültig heraus; die Elastizität entscheidet.", "w-e2t": "Essay zwei", "w-e2": "Adverse Selektion. Was die eine Seite weiß und die andere nicht, bis die guten Wagen den Markt verlassen.", "w-e3t": "Essay drei", "w-e3": "Das wiederholte Gefangenendilemma, ein Turnier zwischen Strategien und danach eine Population, die sich vermehrt.", "w-e4t": "Essay vier", "w-e4": "Diskontierung. Ein einziger, leise gewählter Satz entscheidet, ob eine ferne Katastrophe es heute wert ist, verhindert zu werden.", "w-game-h": "Die Spiele", "w-game-p": "Manche Argumente überleben das Lesen nicht. Man kann Ihnen sagen, dass eine kurze Regel eine kluge schlägt, wenn dieselben zwei Menschen einander immer wieder begegnen, Sie stimmen zu und lernen nichts. Diese Seiten legen Ihnen die Behauptung stattdessen in die Hand.", "w-game-f": "Sechs kleine gemalte Spiele, jedes davon eine Lage, in der Menschen tatsächlich stecken. Ein Nachbar, der vierzig Jahre lang jede Saison an den Zaun kommt. Zwei Jäger, die gemeinsam einen Hirsch nehmen können oder allein einen Hasen. Zehn Münzen und eine Fremde, die sie ablehnen kann. Eine Weide, die vier Haushalte teilen. Eine Zahl, die alle über alle raten. Und eine Münze, bei der niemand sich Vorhersagbarkeit leisten kann.", "w-game-go": "Zu den Spielen →", "w-built-h": "Wie das gebaut ist", "w-b1": "Jede Seite hier ist eine einzige HTML-Datei. Kein Backend, keine Datenbank, kein Kontosystem, keinerlei Analyse. Nichts, was Sie eintippen, wird irgendwohin gesendet, weil es kein Wohin gibt; und genau deshalb können sie kostenlos bleiben: eine statische Datei auszuliefern kostet nichts.", "w-b2": "Das gemeinsame Design und die gemeinsamen Helfer werden beim Bauen in jede Seite hineingelegt, sodass am Ende wieder eine einzige Datei ausgeliefert wird, die Sie speichern, lesen oder ganz kopieren können. Die Leiste oben auf dieser Seite und die Leiste über jedem Instrument werden aus denselben paar Zeilen erzeugt; deshalb sind es dieselben Leisten.", "w-b3": "Der Quelltext der Website und jedes Instruments darin ist öffentlich: <a href=\"https://github.com/Keremozdemirra/keremozdemirra.github.io\" rel=\"noopener noreferrer\">github.com/Keremozdemirra</a>."}};
+
+(function(){
+  "use strict";
+  /* arrival: the page rises section by section */
+  try {
+    var rises = [].slice.call(document.querySelectorAll(".crown, main > section, footer .wrap"));
+    rises.forEach(function (el) { el.classList.add("rise"); });
+    rises.forEach(function (el, i) {
+      setTimeout(function () { el.classList.add("in"); }, 160 + i * 90);
+    });
+  } catch (e) {}
+  /* language: the same dictionaries drive every inner page */
+  var lang = "en";
+  try { lang = localStorage.getItem("lang") || "en"; } catch(e){}
+  window.__lang = lang;
+  var base = {}, baseA = {};
+  /* one lookup the whole page shares: text nodes, attributes and anything a
+     script writes after the fact all ask the same dictionary */
+  window.__t = function(k, fallback){
+    var l = window.__lang || "en";
+    var dict = (l !== "en" && window.I18N && window.I18N[l]) || null;
+    return (dict && dict[k] !== undefined) ? dict[k] : fallback;
+  };
+  function attr(sel, name){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if(!(id in baseA)) baseA[id] = el.getAttribute(name) || "";
+      el.setAttribute(name, window.__t(k, baseA[id]));
+    });
+  }
+  function apply(l){
+    window.__lang = l;
+    var dict = (window.I18N && window.I18N[l]) || {};
+    document.querySelectorAll("[data-i]").forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if(!(k in base)) base[k] = el.innerHTML;
+      if(l === "en"){ el.innerHTML = base[k]; return; }
+      if(dict[k] !== undefined) el.innerHTML = dict[k];
+    });
+    attr("data-ia", "aria-label");
+    attr("data-it", "title");
+    attr("data-ip", "placeholder");
+    document.documentElement.setAttribute("lang", l);
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true":"false");
+    });
+    try { localStorage.setItem("lang", l); } catch(e){}
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch(e){}
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  apply(lang);
+
+  /* soft travel: no internal link jumps straight */
+  var fadeEl = document.createElement("div");
+  fadeEl.id = "fadeout";
+  document.body.appendChild(fadeEl);
+  document.querySelectorAll('a[href$=".html"], a[href="index.html"]').forEach(function(a){
+    var h = a.getAttribute("href");
+    if (/^https?:/.test(h)) return;
+    a.addEventListener("click", function(e){
+      if (e.metaKey || e.ctrlKey) return;
+      e.preventDefault();
+      fadeEl.classList.add("on");
+      setTimeout(function(){ location.href = h; }, 280);
+    });
+  });
+
+  /* copy buttons */
+  document.querySelectorAll(".copy[data-copy]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var t = b.getAttribute("data-copy");
+      var idle = function(){ return window.__t(b.getAttribute("data-i") || "", b.getAttribute("data-label") || "copy"); };
+      var done = function(){ return window.__t(b.getAttribute("data-i-done") || "", b.getAttribute("data-done") || "copied"); };
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject())
+        .then(function(){ b.classList.add("done"); b.textContent = done();
+          setTimeout(function(){ b.classList.remove("done"); b.textContent = idle(); }, 1600); })
+        .catch(function(){});
+    });
+  });
+
+  /* the world continues here: now and then a leaf drifts by, and once in a
+     while something small walks across a rule line. Never louder than that. */
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function oneLeaf(){
+    if(still || document.hidden) return;
+    var leaf = document.createElement("div");
+    leaf.className = "leaf-mark";
+    var hue = ["#b06a24","#9c5a1e","#c07c2e"][Math.floor(Math.random()*3)];
+    leaf.innerHTML = '<svg width="16" height="23" viewBox="0 0 18 26"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="'+hue+'" opacity=".85"/><path d="M9 3 L9 23" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg>';
+    document.body.appendChild(leaf);
+    var x = 8 + Math.random() * 80, t0 = null, dur = 8000 + Math.random() * 5000;
+    function fall(ts){
+      if(!t0) t0 = ts;
+      var p = (ts - t0) / dur;
+      if(p >= 1){ leaf.remove(); return; }
+      leaf.style.left = "calc(" + x + "vw + " + (Math.sin(p * 8) * 44) + "px)";
+      leaf.style.top = (p * 108) + "vh";
+      leaf.style.transform = "rotate(" + (p * 460) + "deg)";
+      leaf.style.opacity = p > .85 ? (1 - p) / .15 : 1;
+      requestAnimationFrame(fall);
+    }
+    requestAnimationFrame(fall);
+  }
+  if(!still){
+    setTimeout(oneLeaf, 1500);
+    setInterval(oneLeaf, 21000 + Math.random() * 9000);
+  }
+
+  /* the ladybird: crosses one section rule, once, slowly */
+  function ladybird(){
+    if(still || document.hidden) return;
+    var rules = document.querySelectorAll("main>section + section");
+    if(!rules.length) return;
+    var host = rules[Math.floor(Math.random() * rules.length)];
+    var bug = document.createElement("div");
+    bug.setAttribute("aria-hidden","true");
+    bug.style.cssText = "position:absolute;width:9px;height:7px;margin-top:-4px;pointer-events:none;z-index:4;";
+    bug.innerHTML = '<svg width="9" height="7" viewBox="0 0 9 7"><ellipse cx="5" cy="3.5" rx="3.6" ry="3" fill="#8a3b1e"/><circle cx="1.6" cy="3.5" r="1.4" fill="#2b2118"/><line x1="5" y1="1" x2="5" y2="6" stroke="#2b2118" stroke-width=".5"/><circle cx="4" cy="2.6" r=".5" fill="#2b2118"/><circle cx="6.2" cy="4.2" r=".5" fill="#2b2118"/></svg>';
+    host.style.position = "relative";
+    host.appendChild(bug);
+    var dir = Math.random() < .5 ? 1 : -1, t0 = null, dur = 26000;
+    if(dir < 0) bug.firstChild.style.transform = "scaleX(-1)";
+    function walk(ts){
+      if(!t0) t0 = ts;
+      var p = (ts - t0) / dur;
+      if(p >= 1){ bug.remove(); return; }
+      var wob = Math.sin(p * 90) * 0.6;
+      var xx = dir > 0 ? p * 100 : 100 - p * 100;
+      bug.style.left = xx + "%";
+      bug.style.top = wob + "px";
+      bug.style.opacity = p < .05 ? p / .05 : p > .95 ? (1 - p) / .05 : .8;
+      requestAnimationFrame(walk);
+    }
+    requestAnimationFrame(walk);
+  }
+  if(!still) setTimeout(ladybird, 9000 + Math.random() * 14000);
+})();
+
+
+</script>
+</body>
+</html>

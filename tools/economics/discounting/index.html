@@ -1,0 +1,2363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why the future is cheap</title>
+<meta name="description" content="An explorable essay on discounting. Move the rate and watch a fixed benefit in a distant year lose almost all of its present value. The same climate damage is a catastrophe at one rate and a rounding error at another, and choosing the rate is an ethical act.">
+<meta name="author" content="Kerem Ozdemir">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Instrument+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="canonical" href="https://keremozdemir.de/tools/economics/discounting/">
+<meta property="og:title" content="Why the future is cheap">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   kit.css
+   House visual system for the open instruments at keremozdemir.de
+   Paper palette, Fraunces display, Newsreader body, IBM Plex Mono
+   for every number. No framework, no build step.
+
+   The host document loads three families from Google Fonts and nothing
+   else, with preconnect to fonts.googleapis.com and fonts.gstatic.com:
+     Fraunces      opsz,wght 9..144 at 300, 400, 500
+     Newsreader    ital,opsz,wght 6..72 at 400, 500 and italic 400
+     IBM Plex Mono 400, 500
+   Every family here has a real fallback stack, so the page stays legible
+   if the fonts never arrive.
+   ============================================================ */
+
+/* ---------- 1. tokens ---------- */
+
+:root {
+  color-scheme: light;
+
+  --paper:      #f2efe6;
+  --paper-sunk: #ebe7dc;
+  --panel:      #f7f5ee;
+  --field:      #fdfcf8;
+  --ink:        #2b2620;
+  --ink-soft:   #4b443b;
+  --dim:        #6f6558;
+  --faint:      #8d8375;
+  --rule:       #d8d2c4;
+  --rule-firm:  #bdb5a4;
+  --accent:     #8a5a24;
+  --accent-lit: #f0e6d6;
+  --flag:       #8c3b1e;
+  --flag-lit:   #f3e4de;
+  --good:       #3f5c3a;
+  --good-lit:   #e5eade;
+
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --serif:   "Newsreader", Georgia, "Times New Roman", serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 66ch;
+  --gap:     clamp(1rem, 2.4vw, 1.6rem);
+  --pad:     clamp(0.95rem, 2.4vw, 1.5rem);
+  --edge:    clamp(1.1rem, 5vw, 3.25rem);
+}
+
+/* The instruments used to flip to a dark palette with the system.  They
+   sit inside keremozdemir.de now, whose paper is light and whose top bar
+   and footer are painted from the site's own tokens, so a page that went
+   dark underneath a light bar would only look broken.  One palette. */
+
+/* ---------- 2. reset and page ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, 0.97rem + 0.16vw, 1.08rem);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.15; letter-spacing: -0.02em; }
+
+p { margin: 0 0 0.9em; max-width: var(--measure); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-firm); }
+a:hover { border-bottom-color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+.k-shell :focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--accent-lit); color: var(--ink); }
+
+.k-vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0);
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.k-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  background: var(--ink); color: var(--paper); border: 0;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+}
+.k-skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- 3. shell ---------- */
+
+.k-shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+.k-wrap { width: 100%; max-width: 74rem; margin: 0 auto; padding-inline: var(--edge); }
+
+/* The top bar is the site's, spliced in from pagegen.py by build.sh, so
+   there is no header of the kit's own any more. */
+
+.k-main { flex: 1 0 auto; padding-block: clamp(1.8rem, 5vw, 3.2rem) clamp(2.5rem, 6vw, 4rem); }
+
+.k-lede { max-width: 62ch; }
+.k-lede h1 {
+  font-size: clamp(1.85rem, 1.2rem + 2.6vw, 3rem);
+  letter-spacing: -0.032em; margin-bottom: 0.5rem;
+}
+.k-lede .k-standfirst {
+  font-size: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  color: var(--ink-soft); line-height: 1.5;
+}
+
+.k-sect { margin-top: clamp(2.2rem, 5.5vw, 3.4rem); }
+.k-sect > h2 {
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule-firm);
+  margin-bottom: 1.1rem;
+}
+.k-sect > h2 .k-num {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+}
+.k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
+
+/* ---------- 4. input row ---------- */
+
+.k-row {
+  display: grid; gap: 0.7rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  align-items: end;
+}
+.k-row.k-row-tight { gap: 0.55rem 0.9rem; }
+
+.k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.k-field > label, .k-lab {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+}
+.k-field .k-hint {
+  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
+  line-height: 1.45; letter-spacing: 0.02em;
+}
+
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
+  width: 100%; min-width: 0;
+  background: var(--field);
+  border: 1px solid var(--rule-firm);
+  border-radius: 0;
+  color: var(--ink);
+  font-family: var(--mono); font-size: 0.88rem; font-weight: 400;
+  padding: 0.55rem 0.6rem;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+input[type="number"] { font-variant-numeric: tabular-nums; text-align: right; }
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.9rem;
+}
+input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--panel); }
+input::placeholder { color: var(--faint); }
+input[aria-invalid="true"] { border-color: var(--flag); }
+
+.k-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--rule-firm); border-radius: 0;
+  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  padding: 0.62rem 0.95rem; cursor: pointer;
+  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.k-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.k-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
+.k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.k-btn-key { color: #f7f5ee; }
+.k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+
+.k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+
+/* ---------- 5. result panel ---------- */
+
+.k-panel {
+  background: var(--panel);
+  border: 1px solid var(--rule-firm);
+  padding: var(--pad);
+}
+.k-panel + .k-panel { margin-top: var(--gap); }
+.k-panel > h3, .k-panel-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+.k-panel-sunk { background: var(--paper-sunk); }
+
+.k-stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem; }
+.k-stat .k-big {
+  font-family: var(--mono); font-weight: 500;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+  line-height: 1.05; color: var(--ink);
+}
+.k-stat .k-unit { font-family: var(--mono); font-size: 0.78rem; color: var(--dim); letter-spacing: 0.05em; }
+
+.k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+
+.k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
+.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dd {
+  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
+}
+.k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
+
+/* arithmetic trace: every step printed */
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem; padding: 0.3rem 0;
+  border-bottom: 1px dotted var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+.k-steps li:last-child { border-bottom: 0; }
+.k-steps .k-op { color: var(--dim); }
+.k-steps .k-res { color: var(--ink); font-weight: 500; text-align: right; white-space: nowrap; }
+.k-steps li.k-step-final { border-top: 1px solid var(--rule-firm); border-bottom: 0; margin-top: 0.3rem; padding-top: 0.5rem; }
+.k-steps li.k-step-final .k-res { color: var(--accent); font-size: 0.92rem; }
+
+/* ---------- 6. source line ---------- */
+
+.k-source {
+  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  margin-top: 0.7rem; padding-top: 0.55rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-source::before {
+  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--faint); flex: none;
+}
+.k-source.k-source-bare::before { content: none; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.k-source .k-checked { color: var(--faint); white-space: nowrap; }
+
+/* ---------- 7. warning and refusal ---------- */
+
+.k-warn {
+  background: var(--flag-lit);
+  border: 1px solid var(--flag);
+  border-left-width: 3px;
+  padding: var(--pad);
+}
+.k-warn > h3, .k-warn .k-panel-h { color: var(--flag); }
+.k-warn p { color: var(--ink); }
+.k-warn + .k-warn, .k-panel + .k-warn, .k-warn + .k-panel { margin-top: var(--gap); }
+
+.k-ok { background: var(--good-lit); border: 1px solid var(--good); border-left-width: 3px; padding: var(--pad); }
+.k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
+
+.k-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
+  white-space: nowrap;
+}
+.k-tag-gap { color: var(--flag); background: var(--flag-lit); }
+.k-tag-known { color: var(--good); background: var(--good-lit); }
+.k-tag-quiet { color: var(--faint); background: transparent; }
+
+.k-ask { margin: 0.85rem 0 0; padding: 0; list-style: none; }
+.k-ask li {
+  display: grid; grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.2rem 0.9rem; padding: 0.4rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.92rem;
+}
+.k-ask li > b {
+  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.22rem;
+}
+
+/* ---------- 8. tables ---------- */
+
+.k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-table th, .k-table td {
+  text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule); vertical-align: top;
+}
+.k-table th {
+  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  border-bottom-color: var(--rule-firm); white-space: nowrap;
+}
+.k-table td.k-n, .k-table th.k-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  text-align: right; padding-right: 0; white-space: nowrap;
+}
+.k-table tbody tr:last-child td { border-bottom: 0; }
+.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell a { word-break: break-all; }
+
+/* ---------- 9. timeline ---------- */
+
+.k-time { margin: 0; padding: 0; list-style: none; }
+.k-time li {
+  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0.25rem 1.1rem; padding: 0.7rem 0;
+  border-top: 1px solid var(--rule);
+}
+.k-time li:first-child { border-top: 0; padding-top: 0; }
+.k-time .k-when {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
+}
+.k-time .k-what { font-size: 0.96rem; color: var(--ink); }
+.k-time .k-what small {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+}
+.k-time li.k-past .k-when { color: var(--faint); }
+.k-time li.k-past .k-what { color: var(--dim); }
+
+/* ---------- 10. the closing note ---------- */
+/* Each instrument ends with its own disclaimer and its own privacy line.
+   That is the page's last word, not the site's, so it is a closing panel
+   and the site's footer follows it. */
+
+.k-endnote {
+  border-top: 1px solid var(--rule-firm);
+  background: var(--paper-sunk);
+  padding-block: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: 0.9rem; color: var(--dim);
+}
+.k-endnote .k-wrap { display: grid; gap: 1.1rem; }
+.k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
+.k-endnote .k-fine {
+  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
+.k-endnote a:hover { color: var(--accent); }
+
+/* ---------- 11. toast for copy actions ---------- */
+
+.k-toast {
+  position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.k-toast[data-on="1"] { opacity: 1; }
+
+/* ---------- 12. responsive ---------- */
+
+@media (max-width: 640px) {
+  .k-ask li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-time li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-steps li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .k-steps .k-res { text-align: left; }
+}
+
+@media print {
+  .k-btnbar, .k-skip, .k-toast { display: none; }
+  body { background: #fff; color: #000; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   essay.css
+   The shared chrome for Explorable Economics. It sits on top of
+   kit.css and adds only what an essay with a live model needs:
+   a reading column, a model figure that breaks out of it, a
+   control rack, a live readout, and a running summary line that
+   says in words what the picture is showing.
+
+   Spliced into every essay by build.sh at the ESSAY_CSS marker,
+   so that each page still ships as one self contained file.
+   ============================================================ */
+
+/* ---------- reading column ---------- */
+
+.ex-body {
+  display: grid;
+  /* minmax(0, 1fr) rather than auto, so that one wide child can never
+     stretch the whole reading column past the width of the screen */
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 0;
+}
+.ex-body > * {
+  width: 100%;
+  max-width: 40rem;
+  min-width: 0;
+  justify-self: center;
+}
+
+.ex-body > p {
+  max-width: 40rem;
+  font-size: clamp(1.02rem, 0.99rem + 0.2vw, 1.13rem);
+  line-height: 1.68;
+  margin: 0 0 1.05em;
+}
+.ex-body > h2 {
+  font-size: clamp(1.25rem, 1.08rem + 0.7vw, 1.62rem);
+  margin: clamp(2.3rem, 5vw, 3.3rem) 0 0.9rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--rule-firm);
+}
+.ex-body > h2 .k-num {
+  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
+}
+.ex-body > h3 {
+  font-size: 1.1rem; margin: 1.9rem 0 0.6rem; color: var(--ink);
+}
+.ex-body > ul, .ex-body > ol { max-width: 40rem; padding-left: 1.15rem; margin: 0 0 1.05em; }
+.ex-body > ul li, .ex-body > ol li { margin-bottom: 0.45em; }
+
+.ex-lead {
+  font-size: clamp(1.1rem, 1.03rem + 0.4vw, 1.28rem) !important;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.ex-aside {
+  border-left: 2px solid var(--rule-firm);
+  padding: 0.1rem 0 0.1rem 1rem;
+  margin: 0 0 1.15em;
+  font-size: 0.94rem;
+  color: var(--dim);
+}
+.ex-aside p { font-size: inherit; margin-bottom: 0.6em; }
+
+.ex-em { font-style: italic; }
+.ex-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 0.94em; color: var(--accent); font-weight: 500;
+  white-space: nowrap;
+}
+.ex-n-flag { color: var(--flag); }
+.ex-n-long { white-space: normal; }
+
+/* a formula set on its own line, in words rather than symbols */
+.ex-formula {
+  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  color: var(--ink); background: var(--panel);
+  border-left: 2px solid var(--accent);
+  padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
+  max-width: 40rem; overflow-wrap: break-word;
+}
+.ex-formula small {
+  display: block; font-size: 0.66rem; color: var(--faint);
+  margin-top: 0.35rem; letter-spacing: 0.02em;
+}
+
+/* ---------- the model figure, wider than the prose ---------- */
+
+.ex-model {
+  max-width: 60rem;
+  margin: clamp(1.5rem, 4vw, 2.3rem) 0 clamp(1.7rem, 4.5vw, 2.6rem);
+  border: 1px solid var(--rule-firm);
+  background: var(--panel);
+  padding: var(--pad);
+}
+.ex-model > figcaption,
+.ex-model-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.85rem;
+  display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
+}
+.ex-model > figcaption .ex-model-sub,
+.ex-model-h .ex-model-sub {
+  color: var(--faint); letter-spacing: 0.1em; text-transform: none;
+  font-family: var(--mono); font-weight: 400;
+}
+
+.ex-plot { width: 100%; overflow: hidden; }
+.ex-plot svg {
+  display: block; width: 100%; height: auto;
+  touch-action: none;
+  -webkit-user-select: none; user-select: none;
+}
+.ex-plot.ex-draggable { cursor: grab; touch-action: none; }
+.ex-plot.ex-dragging { cursor: grabbing; }
+.ex-plot.ex-draggable svg { cursor: inherit; }
+
+.ex-plot + .ex-plot { margin-top: 0.9rem; }
+
+/* ---------- control rack ---------- */
+
+.ex-ctrls {
+  display: grid; gap: 0.85rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
+  margin-bottom: 1.1rem;
+}
+.ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
+}
+.ex-ctrl .ex-val {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+.ex-ctrl .k-hint {
+  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
+  line-height: 1.5; letter-spacing: 0.02em;
+}
+
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; min-width: 0; height: 1.9rem; margin: 0;
+  background: transparent; color: var(--accent);
+  display: block;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px; background: var(--rule-firm); border: 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 1.15rem; height: 1.15rem; margin-top: -0.53rem;
+  border-radius: 50%; border: 0; background: var(--accent); cursor: pointer;
+}
+input[type="range"]::-moz-range-track { height: 2px; background: var(--rule-firm); border: 0; }
+input[type="range"]::-moz-range-thumb {
+  width: 1.15rem; height: 1.15rem; border: 0; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+}
+input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type="range"]:hover::-webkit-slider-thumb { background: var(--ink); }
+input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
+
+/* segmented radio group */
+.ex-seg { border: 0; margin: 0; padding: 0; min-width: 0; }
+.ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
+.ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
+.ex-seg-row > label {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
+  border: 1px solid var(--rule-firm); margin-left: -1px;
+  background: var(--field); line-height: 1.3; white-space: nowrap;
+}
+.ex-seg-row > label:first-of-type { margin-left: 0; }
+.ex-seg-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ex-seg-row > label:has(input:checked) { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+:root[data-theme="dark"] .ex-seg-row > label:has(input:checked) { color: #17140f; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ex-seg-row > label:has(input:checked) { color: #17140f; }
+}
+.ex-seg-row > label:hover { border-color: var(--accent); color: var(--ink); }
+.ex-seg-row > label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* fallback for browsers without :has, checked state still readable */
+.ex-seg-row > label.ex-on { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.ex-check {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--dim); cursor: pointer;
+}
+.ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
+
+/* ---------- readout and running summary ---------- */
+
+.ex-read {
+  display: grid; gap: 0.55rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  margin-top: 1rem; padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+}
+.ex-read > div { min-width: 0; }
+.ex-read dt, .ex-read .ex-read-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  margin: 0 0 0.15rem;
+}
+.ex-read dd, .ex-read .ex-read-v {
+  margin: 0; font-family: var(--mono); font-weight: 500;
+  font-size: 1.06rem; font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
+}
+.ex-read .ex-read-v small {
+  display: block; font-size: 0.63rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+}
+.ex-read-hot .ex-read-v { color: var(--accent); }
+.ex-read-flag .ex-read-v { color: var(--flag); }
+
+.ex-sum {
+  margin-top: 0.9rem; padding-top: 0.7rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
+  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+}
+.ex-sum b { color: var(--ink-soft); font-weight: 500; }
+.ex-sum::before {
+  content: "reading"; display: block;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 0.3rem;
+}
+
+/* the paragraph of prose that answers what the reader just did */
+.ex-says {
+  max-width: 40rem;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-lit);
+  padding: 0.85rem 1.05rem;
+  margin: 0 0 1.15em;
+  font-size: 1rem; line-height: 1.6; color: var(--ink);
+}
+.ex-says p { max-width: none; margin-bottom: 0.55em; font-size: inherit; }
+.ex-says p:last-child { margin-bottom: 0; }
+
+/* ---------- legend ---------- */
+
+.ex-key {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
+  margin-top: 0.7rem;
+  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
+  letter-spacing: 0.02em;
+}
+.ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
+.ex-key i.ex-line { height: 0; border-top: 2px solid currentColor; width: 0.95rem; }
+
+/* stacked bar for a two way split */
+.ex-split { display: flex; height: 1.5rem; border: 1px solid var(--rule-firm); overflow: hidden; }
+.ex-split i { display: block; height: 100%; transition: width 0.12s linear; }
+.ex-split .a { background: var(--accent); }
+.ex-split .b { background: var(--rule); }
+@media (prefers-reduced-motion: reduce) { .ex-split i { transition: none; } }
+
+/* ---------- essay foot: limits, sources, next ---------- */
+
+.ex-limits { max-width: 46rem; }
+.ex-limits .k-ask li > b { padding-top: 0.25rem; }
+
+.ex-cites { max-width: 46rem; margin: 0; padding: 0; list-style: none; }
+.ex-cites li {
+  border-top: 1px solid var(--rule);
+  padding: 0.75rem 0;
+  font-size: 0.92rem; line-height: 1.55; color: var(--ink-soft);
+  max-width: none;
+}
+.ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
+.ex-cites .ex-cite-w {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.65;
+}
+.ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.ex-cites .ex-cite-t { font-style: italic; }
+
+.ex-next {
+  max-width: 60rem;
+  margin-top: clamp(2.4rem, 6vw, 3.6rem);
+  border-top: 1px solid var(--rule-firm);
+  padding-top: 1.2rem;
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+.ex-next a {
+  display: flex; flex-direction: column; gap: 0.3rem;
+  border: 1px solid var(--rule-firm); background: var(--panel);
+  padding: var(--pad); color: inherit; text-decoration: none;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+.ex-next a:hover { border-color: var(--accent); background: var(--field); }
+.ex-next a:hover .ex-next-t { color: var(--accent); }
+.ex-next .ex-next-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--faint);
+}
+.ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
+.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+
+/* ---------- mobile ---------- */
+
+@media (max-width: 640px) {
+  .ex-model { padding: 0.85rem 0.8rem 0.95rem; }
+  .ex-ctrls { grid-template-columns: minmax(0, 1fr); gap: 0.7rem; }
+  .ex-read { grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.5rem 0.9rem; }
+  .ex-read dd, .ex-read .ex-read-v { font-size: 0.98rem; }
+  .ex-seg-row { width: 100%; }
+  .ex-seg-row > label { flex: 1 1 auto; text-align: center; }
+  .ex-says { padding: 0.7rem 0.85rem; }
+}
+
+/* ---------- essay four ---------- */
+
+.dc-ramsey {
+  font-family: var(--mono); font-size: 0.85rem; line-height: 1.9;
+  color: var(--ink); background: var(--paper-sunk);
+  border: 1px solid var(--rule-firm);
+  padding: 0.8rem 0.9rem; margin: 1rem 0 0;
+  display: flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; align-items: baseline;
+}
+.dc-ramsey b { color: var(--accent); font-weight: 500; font-variant-numeric: tabular-nums; }
+.dc-ramsey .dc-eq { color: var(--faint); }
+.dc-ramsey .dc-out { color: var(--ink); font-weight: 500; font-size: 1.05rem; }
+
+.dc-positions td b { color: var(--accent); font-weight: 500; }
+.dc-positions .k-n { min-width: 5rem; }
+
+.dc-note { font-family: var(--mono); font-size: 0.68rem; color: var(--faint); line-height: 1.7; }
+
+/* ---------- the site's clothes, worn by an instrument ---------- */
+.bar,footer.site-foot,.leaf-mark{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#f2efe6;
+  --fg:#221e17;
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --accent:#8a5a24;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+.bar,footer.site-foot{color:var(--fg)}
+footer.site-foot{background:var(--paper)}
+.bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
+
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
+.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+.langs{display:flex;gap:.1rem;margin-left:.6rem}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
+    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* six nav items on a narrow phone: the row is allowed to take a second
+   line rather than push the page sideways, and the words are set a little
+   tighter so that on most phones it does not have to */
+@media (max-width:430px){
+  .bar nav{gap:.34rem .55rem}
+  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+
+/* ---------- the crown, on a page whose interior is its own ---------- */
+.k-crown-no{
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;
+  font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;
+  color:var(--accent);
+}
+.k-crown-no svg{flex:none}
+.k-lede h1{margin-top:0}
+
+
+</style>
+</head>
+<body>
+
+<a class="k-skip" href="#essay">Skip to the essay</a>
+
+<div class="k-shell">
+
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="../../../index.html">Kerem Özdemir</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../profile.html" data-i="nav-p">Profile</a><a href="../../../projects.html" data-i="nav-j">Projects</a><a href="../../../notes.html" data-i="nav-n">Notes</a><a href="../../../contact.html" data-i="nav-c">Contact</a><a href="../../../tools.html" aria-current="page" data-i="nav-t">Tools</a><a href="../../../game.html" data-i="nav-g">Game Theory</a>
+      <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+
+  <main class="k-main" id="essay">
+    <div class="k-wrap">
+
+      <div class="k-lede k-crown">
+        <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Essay four of four</i></span>
+        <h1>Why the future is cheap</h1>
+        <p class="k-standfirst">One number decides whether a catastrophe a century out is worth spending money
+        on today. It is chosen, not measured, and reasonable people choose it differently. Move it below and
+        watch what it does.</p>
+      </div>
+
+      <div class="ex-body">
+
+        <p class="ex-lead">Anything that happens later is worth less now. That is not a moral claim, it is what
+        a positive interest rate means: given the choice between a hundred euro today and a hundred euro in a
+        year, the first is better because it can be turned into more than a hundred by the time the year is out.
+        Run that forward far enough and the arithmetic does something violent.</p>
+
+        <p>Below is a single benefit of a hundred euro, delivered in one future year. The curve is what it is
+        worth today at every horizon from now to three hundred years out. Move the rate and watch the curve
+        collapse against the axis.</p>
+
+        <h2 id="s1"><span class="k-num">01</span>One hundred euro, later</h2>
+
+        <figure class="ex-model" id="m1">
+          <figcaption>Figure one <span class="ex-model-sub">what a fixed sum in a future year is worth today</span></figcaption>
+          <div class="ex-ctrls" id="dc-ctrls"></div>
+          <p class="dc-ramsey" id="dc-ramsey"></p>
+          <div class="ex-plot" id="dc-plot1" style="margin-top:1rem"></div>
+          <p class="ex-key" id="dc-key1"></p>
+          <div id="dc-read1"></div>
+          <p class="ex-sum" id="dc-sum1" role="status" aria-live="polite"></p>
+          <div class="k-btnbar" style="margin-top:1rem">
+            <button type="button" class="k-btn k-btn-quiet" id="dc-stern">Set the Stern parameters</button>
+            <button type="button" class="k-btn k-btn-quiet" id="dc-nord">Set the Nordhaus parameters</button>
+            <button type="button" class="k-btn k-btn-quiet" id="dc-share">Copy link</button>
+          </div>
+        </figure>
+
+        <div class="ex-says" id="dc-says"></div>
+
+        <h2 id="s2"><span class="k-num">02</span>The formula is an ethical statement</h2>
+
+        <p>The rate is not usually picked out of the air. The standard construction is the Ramsey rule, which
+        builds it out of three quantities, and it is the reason the three sliders above are separate rather than
+        one.</p>
+
+        <p class="ex-formula">discount rate = pure time preference + (elasticity x growth rate)
+        <small>The second term is uncontroversial. The first is not.</small></p>
+
+        <p>The second term is a statement about wealth. If people in the future are richer, an extra euro means
+        less to them than it does to somebody today, so a benefit that lands on them counts for less. The
+        elasticity is how quickly the value of a euro falls as you get richer. Both parts of that are empirical
+        questions, at least in principle, and disagreement about them is ordinary disagreement.</p>
+
+        <p>The first term is different. Pure time preference is the rate at which you discount a person's
+        wellbeing purely because it happens later. Not because they will be richer. Not because the world might
+        end before then. Simply because they are further away in time. Set it to two per cent and you have said
+        that a person alive in a hundred years counts for about an eighth of a person alive now, and you have
+        said it in a spreadsheet rather than out loud.</p>
+
+        <p>There is no measurement that settles this. It is a position about how much a stranger who does not
+        exist yet is owed, and it goes into an equation that then produces a number that looks technical. That
+        is the whole difficulty with discounting: the ethics enters early, gets multiplied by three hundred
+        years of compounding, and comes out the other end looking like arithmetic.</p>
+
+        <h2 id="s3"><span class="k-num">03</span>The same damage, two answers</h2>
+
+        <p>Here is what that does to a policy question. Suppose an unmitigated climate produces damage of a
+        fixed size in every year from some point onward, for ever. The most that would be rational to spend
+        today to prevent it is the present value of that damage. That is one calculation and one damage, priced
+        at four different rates.</p>
+
+        <figure class="ex-model" id="m2">
+          <figcaption>Figure two <span class="ex-model-sub">one damage, four rates</span></figcaption>
+          <div class="ex-ctrls" id="dc-ctrls2"></div>
+          <div class="ex-plot" id="dc-plot2"></div>
+          <div id="dc-read2"></div>
+          <p class="ex-sum" id="dc-sum2" role="status" aria-live="polite"></p>
+        </figure>
+
+        <div class="ex-says" id="dc-says2"></div>
+
+        <p>Nothing about the physical world changed between those bars. The damage is the same damage. What
+        changed is a parameter that no experiment can settle, and the answer to whether the problem is worth
+        acting on moved by an order of magnitude. Goulder and Williams make the point with a clean arithmetic
+        example: a given loss of consumption a hundred years from now is about seventeen times smaller under a
+        discount rate of 4.3 per cent than under one of 1.4 per cent. Those two rates are not invented for the
+        illustration. They are the two positions.</p>
+
+        <h2 id="s4"><span class="k-num">04</span>Stern and Nordhaus, side by side</h2>
+
+        <p>The disagreement has two names attached to it. Both are set out below as their own parameters, with
+        the sources underneath. I am not going to tell you which is right, because the disagreement is not the
+        kind that gets settled by being told.</p>
+
+        <div class="k-scroll">
+          <table class="k-table dc-positions">
+            <caption class="k-vh">Discount rate parameters used by Stern and by Nordhaus</caption>
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col" class="k-n">Pure time preference</th>
+                <th scope="col" class="k-n">Elasticity</th>
+                <th scope="col" class="k-n">Growth</th>
+                <th scope="col" class="k-n">Discount rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Stern, 2007</th>
+                <td class="k-n">0.1 %</td><td class="k-n">1.0</td><td class="k-n">1.3 %</td>
+                <td class="k-n"><b>1.4 %</b></td>
+              </tr>
+              <tr>
+                <th scope="row">Nordhaus, 2007</th>
+                <td class="k-n">3.0 %</td><td class="k-n">1.0</td><td class="k-n">1.3 %</td>
+                <td class="k-n"><b>4.3 %</b></td>
+              </tr>
+              <tr>
+                <th scope="row">United States regulatory guidance, 2023</th>
+                <td class="k-n" colspan="3">estimated as a social rate of time preference, updated every three years</td>
+                <td class="k-n"><b>2.0 %</b></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="dc-note" style="margin-top:0.8rem">Sources for every figure in the table are in section seven.
+        The two positions share the same elasticity and the same assumed growth. The entire gap between them is
+        the first column.</p>
+
+        <h3>What each position holds</h3>
+
+        <p><span class="ex-em">Stern</span> takes pure time preference to be very close to zero, and the small
+        remainder to represent the chance that there is no future generation at all rather than any lower claim
+        on our concern. The argument is that every generation counts equally, and that discounting a person
+        because they are born later is not defensible as ethics whatever it may be as description. The
+        consequence is a low rate, a large present value for distant damage, and a case for spending
+        substantially now.</p>
+
+        <p><span class="ex-em">Nordhaus</span> takes the position that the parameters should be disciplined by
+        what people and markets actually do. Real interest rates and savings rates reveal how societies in fact
+        trade the present against the future, and an analysis built on parameters that contradict observed
+        behaviour will recommend a level of saving that nobody would accept. In his review of the Stern Review
+        he argues that its conclusions depend decisively on the near zero discount rate and would not survive
+        assumptions consistent with market interest rates. The consequence is a higher rate, a smaller present
+        value for distant damage, and a case for acting more gradually.</p>
+
+        <p>Both of those are coherent. The first says that an ethical parameter should be argued from ethics.
+        The second says that a parameter used to make real decisions should be consistent with the revealed
+        choices of the people the decisions are for. Neither of them is making an arithmetic mistake, and no
+        amount of better data will resolve it, because the question is not empirical. What you can do, and what
+        this page is for, is see exactly how much rides on it before you take a side.</p>
+
+        <h2 id="s5"><span class="k-num">05</span>The same arithmetic in a suit</h2>
+
+        <p>This is not a problem peculiar to climate. It is the same problem that sits in the middle of every
+        discounted cash flow, where it wears better clothes and attracts less scrutiny. A valuation forecasts a
+        few years explicitly, then reduces everything after that to a single terminal value, and discounts the
+        lot. The terminal value is the same object as the distant damage above: a long tail of the future,
+        collapsed into one figure by a rate somebody chose.</p>
+
+        <figure class="ex-model" id="m3">
+          <figcaption>Figure three <span class="ex-model-sub">how much of a valuation is the part nobody forecast</span></figcaption>
+          <div class="ex-ctrls" id="dc-ctrls3"></div>
+          <div class="ex-plot" id="dc-plot3"></div>
+          <div id="dc-read3"></div>
+          <p class="ex-sum" id="dc-sum3" role="status" aria-live="polite"></p>
+        </figure>
+
+        <div class="ex-says" id="dc-says3"></div>
+
+        <p>The number to watch is the share carried by the terminal value. On ordinary settings, most of what a
+        company is said to be worth is the part of the forecast that was never actually forecast. The five year
+        model that took three weeks is the small piece. The perpetuity assumption typed into one cell is the
+        large one. Move the terminal growth rate by half a point and see how much of the valuation moves with
+        it.</p>
+
+        <p>The instrument I built for that work, the analyst desk, prints that share on every run for exactly
+        this reason, along with the arithmetic that produced it.
+        <a href="../../analyst/index.html">It is here</a>, and the reasoning behind it is written up as
+        <a href="../../../case-dcf-lab.html" rel="noreferrer noopener">the dcf lab case study</a>.
+        A valuation that does not tell you how much of itself is the terminal value is not telling you what it
+        is.</p>
+
+        <h2 id="s6"><span class="k-num">06</span>Where the model stops</h2>
+
+        <div class="k-warn ex-limits">
+          <h3>Assumptions and limits</h3>
+          <ul class="k-ask">
+            <li><b>A constant rate</b>Every calculation here uses one rate applied to every year. Much of the
+            serious literature argues that the rate should decline with the horizon, because of uncertainty
+            about future growth, and the 2023 United States regulatory guidance in the table does exactly that.
+            A declining rate raises the weight on distant damage substantially and this page does not model it.</li>
+            <li><b>Certainty</b>The damage arrives with certainty and in a known amount. In reality both the
+            size and the timing are deeply uncertain, and a large part of the case for acting rests on the tail
+            of that distribution rather than on the central estimate. Nothing on this page carries a
+            probability.</li>
+            <li><b>One consumption good</b>The Ramsey rule assumes a single good whose quantity grows. It has
+            no way to express the possibility that some of what is lost, a coastline or a species, is not
+            substitutable for anything the extra growth buys. If some damages cannot be compensated by being
+            richer, the whole framework understates them.</li>
+            <li><b>The damage is a flat stream</b>Real climate damage is neither flat nor starting at a single
+            date. The stream in figure two is a shape chosen so that the effect of the rate is visible, not an
+            estimate of anything.</li>
+            <li><b>Numbers, not estimates</b>The hundred euro, the damage of a hundred a year, and the cash
+            flows in figure three are units chosen for legibility. They are not measurements, and no figure
+            produced on this page belongs in a real appraisal.</li>
+            <li><b>Two positions, not the field</b>Section four sets out two named positions because they are
+            the two most cited. There is a wide literature between and beyond them, including arguments for
+            rates below Stern's and above Nordhaus's, and the table should not be read as the range of
+            respectable opinion.</li>
+          </ul>
+        </div>
+
+        <h2 id="s7"><span class="k-num">07</span>Sources</h2>
+
+        <ul class="ex-cites">
+          <li>
+            The parameters in the table. Stern: pure time preference 0.1 per cent, elasticity of marginal
+            utility 1.0, growth 1.3 per cent, giving a consumption discount rate of 1.40 per cent. Nordhaus:
+            pure time preference 3.0 per cent, the same elasticity and growth, giving 4.30 per cent. The same
+            paper states that a given loss of consumption a hundred years from now is seventeen times smaller
+            at 4.3 per cent than at 1.4 per cent.
+            <span class="ex-cite-w">Lawrence H. Goulder and Roberton C. Williams III,
+            <span class="ex-cite-t">The Choice of Discount Rate for Climate Change Policy Evaluation</span>,
+            NBER Working Paper 18301, 2012.
+            <a href="https://www.nber.org/system/files/working_papers/w18301/w18301.pdf" target="_blank" rel="noreferrer noopener">nber.org/system/files/working_papers/w18301/w18301.pdf</a>
+            Checked 2026 08 21.</span>
+          </li>
+          <li>
+            The same two figures, 1.4 per cent for Stern as 1.3 per cent of productivity growth plus 0.1 per
+            cent for the risk of extinction, and 4.3 per cent for Nordhaus, with the framing of the
+            disagreement as ethical rather than technical.
+            <span class="ex-cite-w">The CORE Econ Project, <span class="ex-cite-t">The Economy</span>,
+            microeconomics, section 9.5, Discounting, external effects, and the future of the planet.
+            <a href="https://books.core-econ.org/the-economy/microeconomics/09-lenders-borrowers-05-discounting-external-effects.html" target="_blank" rel="noreferrer noopener">books.core-econ.org</a>
+            Checked 2026 08 21.</span>
+          </li>
+          <li>
+            The Stern Review's own parameters: a pure rate of time preference of 0.1 per cent per year,
+            justified by the risk of extinction, and an elasticity of marginal utility of one.
+            <span class="ex-cite-w">House of Commons Library, <span class="ex-cite-t">The Stern Review and the
+            discount rate</span>, Standard Note SN/EP/4739.
+            <a href="https://researchbriefings.files.parliament.uk/documents/SN04739/SN04739.pdf" target="_blank" rel="noreferrer noopener">researchbriefings.files.parliament.uk/documents/SN04739/SN04739.pdf</a>
+            Checked 2026 08 21.</span>
+          </li>
+          <li>
+            Nordhaus's own statement of his objection: that the Stern Review's conclusions depend decisively on
+            the assumption of a near zero time discount rate combined with a specific utility function, and
+            would not survive the substitution of assumptions consistent with market real interest rates and
+            savings rates.
+            <span class="ex-cite-w">William D. Nordhaus, <span class="ex-cite-t">A Review of the Stern Review on
+            the Economics of Climate Change</span>, Journal of Economic Literature, volume 45, number 3, 2007,
+            pages 686 to 702.
+            <a href="https://www.aeaweb.org/articles?id=10.1257/jel.45.3.686" target="_blank" rel="noreferrer noopener">aeaweb.org/articles?id=10.1257/jel.45.3.686</a>
+            Checked 2026 08 21.</span>
+          </li>
+          <li>
+            The regulatory figure: the November 2023 revision of Circular A-4 adopts a 2.0 per cent real social
+            rate of time preference for near term analysis, updated every three years, with a schedule of
+            declining rates for long horizons reaching 1.1 per cent for the years 2164 to 2172.
+            <span class="ex-cite-w">Office of Management and Budget, <span class="ex-cite-t">Circular No. A-4
+            discount rate history and appendix</span>, 9 November 2023.
+            <a href="https://www.whitehouse.gov/wp-content/uploads/2023/11/CircularA-4DiscountHistory.pdf" target="_blank" rel="noreferrer noopener">whitehouse.gov/wp-content/uploads/2023/11/CircularA-4DiscountHistory.pdf</a>
+            Checked 2026 08 21.</span>
+          </li>
+        </ul>
+
+        <nav class="ex-next" aria-label="More essays">
+          <a href="../index.html">
+            <span class="ex-next-k">Back</span>
+            <span class="ex-next-t">All four essays</span>
+            <span class="ex-next-d">Explorable Economics: models you run rather than conclusions you are
+            handed.</span>
+          </a>
+          <a href="../tax/index.html">
+            <span class="ex-next-k">Start again</span>
+            <span class="ex-next-t">Who actually pays a tax</span>
+            <span class="ex-next-d">Drag the curves, set a tax, and find out that the statute does not decide
+            who bears it.</span>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </main>
+
+  <aside class="k-endnote">
+    <div class="k-wrap">
+      <p><strong>This is a teaching model, not an appraisal.</strong> The damages, cash flows and horizons on
+      this page are units chosen so that the effect of the discount rate is visible. The parameters attributed
+      to Stern and to Nordhaus are sourced in section seven and are stated as their positions, not as
+      recommendations.</p>
+      <p class="k-fine">
+        Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no network
+        call after the fonts have loaded. Part of
+        <a href="../index.html">Explorable Economics</a>, built by
+        <a href="../../../index.html">Kerem Ozdemir</a>.
+      </p>
+    </div>
+  </aside>
+
+<footer class="site-foot"><div class="wrap">
+  <span>© 2026 Kerem Özdemir</span>
+  <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
+</div></footer>
+
+
+</div>
+
+<script>
+/* ============================================================
+   kit.js
+   Shared behaviour for the open instruments at keremozdemir.de
+   No dependencies. No network calls. Safe to inline.
+
+   Kit.el        small DOM builder
+   Kit.fmt       number and date formatting
+   Kit.state     read and write tool state in the URL hash
+   Kit.share     copy the link that restores the current state
+   Kit.csv       build CSV, copy to clipboard, offer a download
+   Kit.toast     brief confirmation line
+   ============================================================ */
+
+var Kit = (function () {
+  "use strict";
+
+  /* ---------- DOM ---------- */
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v;
+        else if (k === "html") n.innerHTML = v;
+        else if (k.slice(0, 2) === "on" && typeof v === "function") {
+          n.addEventListener(k.slice(2).toLowerCase(), v);
+        } else n.setAttribute(k, v === true ? "" : String(v));
+      });
+    }
+    (kids || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+
+  /* ---------- numbers ---------- */
+
+  var LOCALE = "en-GB";
+
+  function num(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function money(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return "EUR " + num(v, dp === undefined ? 2 : dp);
+  }
+  function pct(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return num(v * 100, dp === undefined ? 1 : dp) + " %";
+  }
+  function toNum(raw) {
+    if (raw === null || raw === undefined) return null;
+    var s = String(raw).trim().replace(/\s+/g, "").replace(/,/g, ".");
+    if (s === "") return null;
+    var n = Number(s);
+    return isFinite(n) ? n : null;
+  }
+
+  /* ---------- URL hash state ---------- */
+
+  function b64urlEncode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64urlDecode(str) {
+    var s = String(str).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var bin = atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  var state = {
+    /* Serialise the object into the location hash without adding a history entry. */
+    write: function (obj) {
+      var h = "";
+      try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
+      if (h.length > 8000) return "";
+      try {
+        history.replaceState(null, "", location.pathname + location.search + h);
+      } catch (e) {
+        location.hash = h;
+      }
+      return location.href;
+    },
+    /* Read the object back. Returns null when the hash is absent or unreadable. */
+    read: function () {
+      var m = /(?:^|[#&])s=([A-Za-z0-9\-_]+)/.exec(location.hash || "");
+      if (!m) return null;
+      try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
+    },
+    clear: function () {
+      try { history.replaceState(null, "", location.pathname + location.search); }
+      catch (e) { location.hash = ""; }
+    }
+  };
+
+  /* ---------- clipboard ---------- */
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; },
+        function () { return legacyCopy(text); });
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  /* ---------- share ---------- */
+
+  function share(obj, msg) {
+    var url = state.write(obj) || location.href;
+    return copyText(url).then(function (ok) {
+      toast(ok ? (msg || "Link copied. It reopens with these inputs.")
+               : "Copy blocked by the browser. The address bar now holds the link.");
+      return ok;
+    });
+  }
+
+  /* ---------- CSV ---------- */
+
+  function csvCell(v) {
+    if (v === null || v === undefined) return "";
+    var s = String(v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function csvBuild(rows) {
+    return rows.map(function (r) { return r.map(csvCell).join(","); }).join("\r\n");
+  }
+  function csvDownload(rows, filename) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    /* BOM so that spreadsheet software reads UTF-8 correctly */
+    var blob = new Blob(["﻿" + text], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = el("a", { href: url, download: filename || "export.csv" });
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1200);
+  }
+  function csvCopy(rows) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    return copyText(text).then(function (ok) {
+      toast(ok ? "Table copied. Paste it into a spreadsheet." : "Copy blocked by the browser. Use the download instead.");
+      return ok;
+    });
+  }
+
+  /* ---------- toast ---------- */
+
+  var toastNode = null, toastTimer = null;
+  function toast(msg) {
+    if (!toastNode) {
+      toastNode = el("div", { class: "k-toast", role: "status", "aria-live": "polite" });
+      document.body.appendChild(toastNode);
+    }
+    toastNode.textContent = msg;
+    toastNode.setAttribute("data-on", "1");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastNode.setAttribute("data-on", "0"); }, 3600);
+  }
+
+  /* ---------- source line ---------- */
+
+  /* src: { what, url, checked } -> the standard line that says where a number came from */
+  function sourceLine(src, bare) {
+    var kids = [];
+    if (src.what) kids.push(el("span", { text: src.what }));
+    if (src.url) kids.push(el("a", { href: src.url, rel: "noreferrer noopener", target: "_blank", text: src.label || src.url }));
+    if (src.checked) kids.push(el("span", { class: "k-checked", text: "checked " + src.checked }));
+    return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
+  }
+
+  return {
+    el: el, qs: qs, qsa: qsa, clear: clear,
+    num: num, money: money, pct: pct, toNum: toNum,
+    state: state, share: share,
+    copyText: copyText,
+    csvBuild: csvBuild, csvDownload: csvDownload, csvCopy: csvCopy,
+    toast: toast, sourceLine: sourceLine
+  };
+})();
+
+/* ============================================================
+   essay.js
+   The shared machinery behind every model in Explorable
+   Economics. It sits on top of kit.js and adds only what a
+   drawn, dragged and keyboard driven model needs.
+
+     Ex.s        make an SVG element
+     Ex.plot     set up a plot with a scale and a drag surface
+     Ex.slider   a labelled range control wired to a callback
+     Ex.seg      a segmented radio group, arrow keys included
+     Ex.drag     pointer and touch dragging in plot coordinates
+     Ex.rng      a seeded generator so a shared link replays
+     Ex.round    rounding that does not lie about precision
+     Ex.words    small helpers for prose that has to agree with
+                 the arithmetic on screen
+
+   No dependencies beyond kit.js. No network calls.
+   Spliced into every essay by build.sh at the ESSAY_JS marker.
+   ============================================================ */
+
+var Ex = (function () {
+  "use strict";
+
+  var NS = "http://www.w3.org/2000/svg";
+
+  /* ---------- svg ---------- */
+
+  function s(tag, attrs, text) {
+    var n = document.createElementNS(NS, tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        n.setAttribute(k, String(v));
+      });
+    }
+    if (text !== undefined && text !== null) n.appendChild(document.createTextNode(String(text)));
+    return n;
+  }
+
+  function svgRoot(w, h, label) {
+    var n = s("svg", {
+      viewBox: "0 0 " + w + " " + h,
+      width: w, height: h,
+      preserveAspectRatio: "xMidYMid meet",
+      role: "img",
+      "aria-label": label || ""
+    });
+    return n;
+  }
+
+  /* text sized for the plot, in the house mono */
+  function label(x, y, str, opt) {
+    var o = opt || {};
+    return s("text", {
+      x: x, y: y,
+      "text-anchor": o.anchor || "middle",
+      fill: o.fill || "var(--dim)",
+      "font-family": "var(--mono)",
+      "font-size": o.size || 10,
+      "font-weight": o.weight || 400,
+      "letter-spacing": o.track === undefined ? 0.2 : o.track,
+      opacity: o.opacity === undefined ? 1 : o.opacity
+    }, str);
+  }
+
+  /* ---------- dragging, in plot coordinates ---------- */
+
+  /* Convert a pointer event into the svg user coordinate system,
+     which is what every plot here draws in. */
+  function toLocal(svg, evt) {
+    var r = svg.getBoundingClientRect();
+    var vb = svg.viewBox.baseVal;
+    var w = vb && vb.width ? vb.width : r.width;
+    var h = vb && vb.height ? vb.height : r.height;
+    if (!r.width || !r.height) return { x: 0, y: 0 };
+    return { x: (evt.clientX - r.left) * w / r.width, y: (evt.clientY - r.top) * h / r.height };
+  }
+
+  /* drag(surface, { start, move, end }, measure) where each handler
+     receives the point in plot coordinates. The surface is the element
+     that listens, which must survive a redraw. The optional measure
+     function returns the svg currently inside it, so the plot can be
+     rebuilt mid gesture without the gesture being dropped.
+     Works with mouse, pen and touch. */
+  function drag(surface, handlers, measure) {
+    var active = false, id = null;
+    function box() { return (measure ? measure() : surface) || surface; }
+
+    function down(e) {
+      if (e.button !== undefined && e.button !== 0) return;
+      var p = toLocal(box(), e);
+      if (handlers.start && handlers.start(p, e) === false) return;
+      active = true; id = e.pointerId;
+      surface.classList.add("ex-dragging");
+      if (surface.setPointerCapture && id !== undefined && id !== null) {
+        try { surface.setPointerCapture(id); } catch (err) { /* capture is a nicety */ }
+      }
+      e.preventDefault();
+    }
+    function move(e) {
+      if (!active) {
+        if (handlers.hover) handlers.hover(toLocal(box(), e), e);
+        return;
+      }
+      if (id !== null && e.pointerId !== id) return;
+      if (handlers.move) handlers.move(toLocal(box(), e), e);
+      e.preventDefault();
+    }
+    function up(e) {
+      if (!active) return;
+      active = false;
+      surface.classList.remove("ex-dragging");
+      if (surface.releasePointerCapture && id !== undefined && id !== null) {
+        try { surface.releasePointerCapture(id); } catch (err) { /* already gone */ }
+      }
+      id = null;
+      if (handlers.end) handlers.end(toLocal(box(), e), e);
+    }
+
+    surface.addEventListener("pointerdown", down);
+    surface.addEventListener("pointermove", move);
+    surface.addEventListener("pointerup", up);
+    surface.addEventListener("pointercancel", up);
+    surface.addEventListener("pointerleave", function (e) { if (handlers.leave) handlers.leave(e); });
+    surface.classList.add("ex-draggable");
+    return { active: function () { return active; } };
+  }
+
+  /* ---------- controls ---------- */
+
+  var uid = 0;
+  function nextId(p) { uid += 1; return (p || "ex") + "-" + uid; }
+
+  /* slider(host, spec) -> { input, set, el }
+     spec: { label, min, max, step, value, format, hint, onInput, unit } */
+  function slider(host, spec) {
+    var id = nextId("sl");
+    var wrap = Kit.el("div", { class: "ex-ctrl" });
+    var valSpan = Kit.el("span", { class: "ex-val" });
+    var lab = Kit.el("label", { for: id }, [
+      Kit.el("span", { text: spec.label }),
+      valSpan
+    ]);
+    var input = Kit.el("input", {
+      type: "range", id: id,
+      min: spec.min, max: spec.max, step: spec.step,
+      value: spec.value
+    });
+    input.setAttribute("aria-describedby", id + "-v");
+    valSpan.id = id + "-v";
+
+    function paint(v) { valSpan.textContent = spec.format ? spec.format(v) : String(v); }
+    paint(Number(spec.value));
+
+    input.addEventListener("input", function () {
+      var v = Number(input.value);
+      paint(v);
+      if (spec.onInput) spec.onInput(v);
+    });
+
+    wrap.appendChild(lab);
+    wrap.appendChild(input);
+    if (spec.hint) wrap.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(wrap);
+
+    return {
+      el: wrap, input: input,
+      get: function () { return Number(input.value); },
+      set: function (v, quiet) {
+        input.value = String(v);
+        paint(Number(input.value));
+        if (!quiet && spec.onInput) spec.onInput(Number(input.value));
+      }
+    };
+  }
+
+  /* seg(host, spec) -> { get, set, el }
+     spec: { label, name, options: [{value,label}], value, onChange } */
+  function seg(host, spec) {
+    var fs = Kit.el("fieldset", { class: "ex-ctrl ex-seg" });
+    fs.appendChild(Kit.el("legend", {}, [Kit.el("span", { text: spec.label })]));
+    var row = Kit.el("div", { class: "ex-seg-row" });
+    var inputs = [];
+
+    spec.options.forEach(function (o) {
+      var lid = nextId("sg");
+      var inp = Kit.el("input", { type: "radio", name: spec.name, id: lid, value: o.value });
+      if (String(o.value) === String(spec.value)) inp.checked = true;
+      var lb = Kit.el("label", { for: lid }, [inp, document.createTextNode(o.label)]);
+      if (inp.checked) lb.classList.add("ex-on");
+      inp.addEventListener("change", function () {
+        paintOn();
+        if (inp.checked && spec.onChange) spec.onChange(o.value);
+      });
+      inputs.push({ inp: inp, lb: lb, value: o.value });
+      row.appendChild(lb);
+    });
+
+    function paintOn() {
+      inputs.forEach(function (r) { r.lb.classList.toggle("ex-on", r.inp.checked); });
+    }
+
+    fs.appendChild(row);
+    if (spec.hint) fs.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(fs);
+
+    return {
+      el: fs,
+      get: function () {
+        for (var i = 0; i < inputs.length; i++) if (inputs[i].inp.checked) return inputs[i].value;
+        return null;
+      },
+      set: function (v, quiet) {
+        inputs.forEach(function (r) { r.inp.checked = String(r.value) === String(v); });
+        paintOn();
+        if (!quiet && spec.onChange) spec.onChange(v);
+      }
+    };
+  }
+
+  /* check(host, spec) -> { get, set, el } */
+  function check(host, spec) {
+    var id = nextId("ck");
+    var inp = Kit.el("input", { type: "checkbox", id: id });
+    inp.checked = !!spec.value;
+    var lb = Kit.el("label", { class: "ex-check", for: id }, [inp, document.createTextNode(spec.label)]);
+    inp.addEventListener("change", function () { if (spec.onChange) spec.onChange(inp.checked); });
+    host.appendChild(lb);
+    return {
+      el: lb, get: function () { return inp.checked; },
+      set: function (v, quiet) { inp.checked = !!v; if (!quiet && spec.onChange) spec.onChange(inp.checked); }
+    };
+  }
+
+  /* readout(host, keys) -> set(key, value, sub)
+     The row of large figures under a plot. */
+  function readout(host, keys) {
+    var map = {};
+    var wrap = Kit.el("div", { class: "ex-read" });
+    keys.forEach(function (k) {
+      var v = Kit.el("p", { class: "ex-read-v" });
+      var cell = Kit.el("div", { class: k.tone ? "ex-read-" + k.tone : null }, [
+        Kit.el("p", { class: "ex-read-k", text: k.label }), v
+      ]);
+      map[k.id] = v;
+      wrap.appendChild(cell);
+    });
+    host.appendChild(wrap);
+    return function (id, value, sub) {
+      var n = map[id];
+      if (!n) return;
+      Kit.clear(n);
+      n.appendChild(document.createTextNode(String(value)));
+      if (sub) n.appendChild(Kit.el("small", { text: sub }));
+    };
+  }
+
+  /* ---------- numbers and words ---------- */
+
+  function round(v, dp) {
+    var f = Math.pow(10, dp === undefined ? 2 : dp);
+    return Math.round(v * f) / f;
+  }
+  function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+
+  /* Percentage of a whole, written the way the prose reads it. */
+  function share(part, whole, dp) {
+    if (!isFinite(whole) || whole === 0) return "not defined";
+    return Kit.num(100 * part / whole, dp === undefined ? 0 : dp) + " per cent";
+  }
+
+  var ORD = ["zeroth", "first", "second", "third", "fourth", "fifth", "sixth",
+    "seventh", "eighth", "ninth", "tenth"];
+  function ordinal(n) { return ORD[n] || (String(n) + "th"); }
+
+  var CARD = ["no", "one", "two", "three", "four", "five", "six", "seven",
+    "eight", "nine", "ten", "eleven", "twelve"];
+  function cardinal(n) { return CARD[n] !== undefined ? CARD[n] : String(n); }
+
+  /* ---------- a seeded generator ---------- */
+
+  /* mulberry32. Small, fast and identical in every browser, which is
+     what makes a shared link reproduce the same tournament. */
+  function rng(seed) {
+    var a = (seed >>> 0) || 1;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /* ---------- deferred redraw, one frame at a time ---------- */
+
+  function frames(fn) {
+    var queued = false;
+    return function () {
+      if (queued) return;
+      queued = true;
+      var run = function () { queued = false; fn(); };
+      if (window.requestAnimationFrame) window.requestAnimationFrame(run);
+      else setTimeout(run, 16);
+    };
+  }
+
+  /* ---------- responsive plot width ---------- */
+
+  /* Report the pixel width available to a plot so that the drawing code
+     can choose a viewBox that keeps the labels legible on a narrow
+     screen instead of scaling them down with the picture. */
+  function widthOf(host, fallback) {
+    var w = host.clientWidth || 0;
+    if (!w && host.parentNode) w = host.parentNode.clientWidth || 0;
+    return Math.max(260, Math.round(w || fallback || 640));
+  }
+
+  function onResize(fn) {
+    var t = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(t);
+      t = setTimeout(fn, 120);
+    });
+  }
+
+  return {
+    s: s, svgRoot: svgRoot, label: label,
+    drag: drag, toLocal: toLocal,
+    slider: slider, seg: seg, check: check, readout: readout,
+    round: round, clamp: clamp, share: share,
+    ordinal: ordinal, cardinal: cardinal,
+    rng: rng, frames: frames, widthOf: widthOf, onResize: onResize,
+    nextId: nextId
+  };
+})();
+
+/* ============================================================
+   Essay four: why the future is cheap
+
+   Three models, all of them the same arithmetic.
+
+   1. The Ramsey rule, r = delta + eta * g, and the discount
+      factor 1 / (1 + r)^t drawn from year zero to year 300,
+      with the Stern and Nordhaus rates drawn beside it.
+
+   2. A flat stream of damage of D per year from a start year
+      to year 300, priced at four rates. The present value is
+      the plain sum, computed year by year rather than by a
+      closed form, so that the arithmetic can be checked.
+
+   3. A discounted cash flow with an explicit forecast and a
+      Gordon terminal value, to show that the share of the
+      valuation carried by the terminal value is the same
+      quantity as the weight on the far future above.
+
+   Every figure is derived from the controls. Nothing is
+   fetched and nothing is estimated.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var E = Kit.el, Q = Kit.qs;
+
+  var HORIZON = 300;        /* the far edge of every calculation on this page */
+  var BENEFIT = 100;        /* the fixed sum in figure one */
+  var DAMAGE = 100;         /* damage per year in figure two */
+
+  /* the two positions, with the sources in section seven */
+  var STERN = { d: 0.1, e: 1.0, g: 1.3, r: 0.014, name: "Stern" };
+  var NORD = { d: 3.0, e: 1.0, g: 1.3, r: 0.043, name: "Nordhaus" };
+  var OMB_R = 0.020;
+
+  var S = {
+    delta: 1.0,     /* pure time preference, per cent */
+    eta: 1.0,       /* elasticity of marginal utility */
+    growth: 1.3,    /* consumption growth, per cent */
+    year: 100,      /* the horizon marked in figure one */
+    start: 50,      /* the year damage begins in figure two */
+    fyears: 5,      /* explicit forecast years in figure three */
+    wacc: 9.0,      /* cost of capital, per cent */
+    tg: 2.0         /* terminal growth, per cent */
+  };
+
+  function rate() { return (S.delta + S.eta * S.growth) / 100; }
+  function factor(r, t) { return Math.pow(1 + r, -t); }
+
+  /* present value of D per year from `from` to HORIZON, summed year by year */
+  function pvStream(r, from, D) {
+    var s = 0;
+    for (var t = from; t <= HORIZON; t++) s += D * factor(r, t);
+    return s;
+  }
+
+  /* ---------- figure one ---------- */
+
+  var host1 = Q("#dc-plot1");
+
+  function draw1() {
+    Kit.clear(host1);
+    var W = Ex.widthOf(host1, 620);
+    var narrow = W < 520;
+    var H = narrow ? 250 : 300;
+    var padL = narrow ? 40 : 52, padR = narrow ? 14 : 20, padT = 16, padB = narrow ? 38 : 40;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    var fs = narrow ? 9 : 10;
+    var r = rate();
+
+    function X(t) { return padL + t * iw / HORIZON; }
+    function Y(f) { return padT + (1 - f) * ih; }
+
+    var svg = Ex.svgRoot(W, H, summary1());
+
+    svg.appendChild(Ex.s("rect", { x: padL, y: padT, width: iw, height: ih,
+      fill: "var(--field)", stroke: "var(--rule)", "stroke-width": 1 }));
+
+    [0.25, 0.5, 0.75].forEach(function (f) {
+      svg.appendChild(Ex.s("line", { x1: padL, y1: Y(f), x2: padL + iw, y2: Y(f),
+        stroke: "var(--rule)", "stroke-width": 1, "stroke-dasharray": "1 5" }));
+    });
+
+    function curve(rr, colour, width, dash) {
+      var d = "";
+      for (var t = 0; t <= HORIZON; t += 1) {
+        d += (t ? " L" : "M") + X(t).toFixed(2) + " " + Y(factor(rr, t)).toFixed(2);
+      }
+      svg.appendChild(Ex.s("path", { d: d, fill: "none", stroke: colour, "stroke-width": width,
+        "stroke-dasharray": dash || null, "stroke-linejoin": "round" }));
+    }
+
+    curve(STERN.r, "var(--good)", 1.3, "4 3");
+    curve(NORD.r, "var(--flag)", 1.3, "4 3");
+    curve(r, "var(--accent)", 2.4);
+
+    /* the marked year */
+    var f = factor(r, S.year);
+    svg.appendChild(Ex.s("line", { x1: X(S.year), y1: padT, x2: X(S.year), y2: padT + ih,
+      stroke: "var(--ink)", "stroke-width": 1, "stroke-dasharray": "3 3", opacity: 0.7 }));
+    svg.appendChild(Ex.s("circle", { cx: X(S.year), cy: Y(f), r: 5,
+      fill: "var(--accent)", stroke: "var(--paper)", "stroke-width": 2 }));
+
+    var lx = X(S.year) + 9, anc = "start";
+    if (X(S.year) > padL + iw * 0.55) { lx = X(S.year) - 9; anc = "end"; }
+    svg.appendChild(Ex.label(lx, Math.max(padT + 12, Y(f) - 10),
+      "year " + S.year + ": " + Kit.num(BENEFIT * f, 2) + " EUR",
+      { anchor: anc, fill: "var(--accent)", size: fs + 1, weight: 500 }));
+
+    /* Label each reference curve at the year where it has fallen to about a
+       third, which puts the two labels at the same height and well apart. */
+    [[STERN, "var(--good)"], [NORD, "var(--flag)"]].forEach(function (p) {
+      var t = Ex.clamp(Math.round(Math.log(1 / 0.35) / Math.log(1 + p[0].r)), 8, HORIZON - 8);
+      svg.appendChild(Ex.label(X(t) + 7, Y(0.35) - 5, p[0].name + " " + Kit.num(p[0].r * 100, 1) + " %",
+        { anchor: "start", fill: p[1], size: fs, weight: 500 }));
+    });
+
+    [[1, "100"], [0.5, "50"], [0, "0"]].forEach(function (t) {
+      svg.appendChild(Ex.label(padL - 6, Y(t[0]) + 3.5, t[1],
+        { anchor: "end", fill: "var(--faint)", size: fs }));
+    });
+    for (var yr = 0; yr <= HORIZON; yr += narrow ? 100 : 50) {
+      svg.appendChild(Ex.label(X(yr), padT + ih + 14, String(yr), { fill: "var(--faint)", size: fs }));
+    }
+    svg.appendChild(Ex.label(padL + iw / 2, H - 3, "years from now", { fill: "var(--faint)", size: fs }));
+    var yl = Ex.label(0, 0, "worth today, EUR", { fill: "var(--faint)", size: fs });
+    yl.setAttribute("transform", "translate(" + (fs + 1) + "," + (padT + ih / 2) + ") rotate(-90)");
+    svg.appendChild(yl);
+
+    host1.appendChild(svg);
+  }
+
+  /* ---------- figure two ---------- */
+
+  var host2 = Q("#dc-plot2");
+
+  function bars() {
+    var r = rate();
+    var list = [
+      { name: "Stern, 1.4 %", r: STERN.r, c: "var(--good)" },
+      { name: "Regulatory guidance, 2.0 %", r: OMB_R, c: "var(--c-omb)" },
+      { name: "Your rate, " + Kit.num(r * 100, 2) + " %", r: r, c: "var(--accent)" },
+      { name: "Nordhaus, 4.3 %", r: NORD.r, c: "var(--flag)" }
+    ];
+    list.forEach(function (b) { b.pv = pvStream(b.r, S.start, DAMAGE); });
+    return list;
+  }
+
+  function draw2() {
+    Kit.clear(host2);
+    var W = Ex.widthOf(host2, 620);
+    var narrow = W < 520;
+    var rowH = narrow ? 42 : 46;
+    var padL = 4, padR = narrow ? 66 : 84, padT = 6, padB = 20;
+    var list = bars();
+    var H = padT + padB + list.length * rowH;
+    var iw = W - padL - padR;
+    var fs = narrow ? 9 : 10;
+
+    var svg = Ex.svgRoot(W, H, summary2());
+    var hi = 0;
+    list.forEach(function (b) { if (b.pv > hi) hi = b.pv; });
+    if (hi <= 0) hi = 1;
+
+    list.forEach(function (b, k) {
+      var y = padT + k * rowH;
+      svg.appendChild(Ex.label(padL, y + 11, b.name,
+        { anchor: "start", fill: "var(--ink)", size: fs + 1, weight: 500 }));
+      svg.appendChild(Ex.s("rect", { x: padL, y: y + 17, width: iw, height: narrow ? 12 : 14,
+        fill: "var(--rule)", opacity: 0.45 }));
+      svg.appendChild(Ex.s("rect", { x: padL, y: y + 17,
+        width: Math.max(1, b.pv / hi * iw).toFixed(1), height: narrow ? 12 : 14,
+        fill: b.c === "var(--c-omb)" ? "var(--dim)" : b.c }));
+      svg.appendChild(Ex.label(padL + iw + 6, y + (narrow ? 27 : 29), Kit.num(b.pv, 0),
+        { anchor: "start", fill: "var(--ink)", size: fs + 1, weight: 500 }));
+    });
+
+    svg.appendChild(Ex.label(padL, H - 5,
+      "present value of the whole damage stream, billion EUR of today's money",
+      { anchor: "start", fill: "var(--faint)", size: fs }));
+
+    host2.appendChild(svg);
+  }
+
+  /* ---------- figure three ---------- */
+
+  var host3 = Q("#dc-plot3");
+
+  function dcf() {
+    var r = S.wacc / 100, g = S.tg / 100, n = Math.round(S.fyears);
+    var cf = [], pv = [], pvSum = 0, base = 100;
+    for (var t = 1; t <= n; t++) {
+      var c = base * Math.pow(1 + g, t - 1);
+      var p = c / Math.pow(1 + r, t);
+      cf.push(c); pv.push(p); pvSum += p;
+    }
+    var ok = r > g;
+    var tv = ok ? cf[n - 1] * (1 + g) / (r - g) : null;
+    var pvTv = ok ? tv / Math.pow(1 + r, n) : null;
+    var total = ok ? pvSum + pvTv : null;
+    return { n: n, r: r, g: g, cf: cf, pv: pv, pvSum: pvSum, tv: tv, pvTv: pvTv,
+      total: total, ok: ok, share: ok && total > 0 ? pvTv / total : null };
+  }
+
+  function draw3() {
+    Kit.clear(host3);
+    var d = dcf();
+    var W = Ex.widthOf(host3, 620);
+    var narrow = W < 520;
+    var H = narrow ? 200 : 230;
+    var padL = narrow ? 36 : 46, padR = narrow ? 12 : 18, padT = 14, padB = narrow ? 40 : 42;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    var fs = narrow ? 9 : 10;
+
+    var svg = Ex.svgRoot(W, H, summary3());
+
+    if (!d.ok) {
+      svg.appendChild(Ex.label(W / 2, H / 2,
+        "terminal growth is at or above the cost of capital, so there is no finite answer",
+        { fill: "var(--flag)", size: fs + 1, weight: 500 }));
+      host3.appendChild(svg);
+      return;
+    }
+
+    var cols = d.n + 1;
+    var hi = Math.max(d.pvTv, Math.max.apply(null, d.pv));
+    var bw = iw / cols * 0.66;
+
+    function X(i) { return padL + (i + 0.5) * iw / cols; }
+    function Y(v) { return padT + (1 - v / hi) * ih; }
+
+    svg.appendChild(Ex.s("line", { x1: padL, y1: padT + ih, x2: padL + iw, y2: padT + ih,
+      stroke: "var(--rule-firm)", "stroke-width": 1 }));
+
+    for (var i = 0; i < d.n; i++) {
+      svg.appendChild(Ex.s("rect", { x: (X(i) - bw / 2).toFixed(1), y: Y(d.pv[i]).toFixed(1),
+        width: bw.toFixed(1), height: Math.max(1, padT + ih - Y(d.pv[i])).toFixed(1),
+        fill: "var(--dim)", opacity: 0.75 }));
+      svg.appendChild(Ex.label(X(i), padT + ih + 14, "y" + (i + 1),
+        { fill: "var(--faint)", size: fs }));
+    }
+    svg.appendChild(Ex.s("rect", { x: (X(d.n) - bw / 2).toFixed(1), y: Y(d.pvTv).toFixed(1),
+      width: bw.toFixed(1), height: Math.max(1, padT + ih - Y(d.pvTv)).toFixed(1),
+      fill: "var(--accent)" }));
+    svg.appendChild(Ex.label(X(d.n), padT + ih + 14, "after", { fill: "var(--accent)", size: fs, weight: 500 }));
+
+    /* The terminal bar is usually the tallest thing on the plot, so the figure
+       goes inside it rather than above it, where there is no room. */
+    var above = Y(d.pvTv) - 7 >= padT + 9;
+    svg.appendChild(Ex.label(X(d.n), above ? Y(d.pvTv) - 7 : Y(d.pvTv) + 17,
+      Kit.num(d.share * 100, 0) + " %",
+      { fill: above ? "var(--accent)" : "var(--paper)", size: fs + 2, weight: 500 }));
+
+    svg.appendChild(Ex.label(padL + iw / 2, H - 4,
+      "present value contributed by each forecast year and by everything after them",
+      { fill: "var(--faint)", size: fs }));
+
+    host3.appendChild(svg);
+  }
+
+  /* ---------- prose ---------- */
+
+  function summary1() {
+    var r = rate();
+    return "The present value of 100 EUR delivered in a future year, from now to year " + HORIZON
+      + ". At a pure time preference of " + Kit.num(S.delta, 1) + " per cent, an elasticity of "
+      + Kit.num(S.eta, 1) + " and growth of " + Kit.num(S.growth, 1) + " per cent, the discount rate is "
+      + Kit.num(r * 100, 2) + " per cent. One hundred EUR in year " + S.year + " is worth "
+      + Kit.num(BENEFIT * factor(r, S.year), 2) + " EUR today. At the Stern rate of 1.4 per cent it would be "
+      + Kit.num(BENEFIT * factor(STERN.r, S.year), 2) + " EUR and at the Nordhaus rate of 4.3 per cent "
+      + Kit.num(BENEFIT * factor(NORD.r, S.year), 2) + " EUR.";
+  }
+
+  function summary2() {
+    var list = bars();
+    return "The present value of damage of " + DAMAGE + " billion EUR every year from year " + S.start
+      + " to year " + HORIZON + ", priced at four rates: "
+      + list.map(function (b) { return b.name + ", " + Kit.num(b.pv, 0) + " billion"; }).join("; ") + ".";
+  }
+
+  function summary3() {
+    var d = dcf();
+    if (!d.ok) {
+      return "Terminal growth of " + Kit.num(S.tg, 1) + " per cent is at or above the cost of capital of "
+        + Kit.num(S.wacc, 1) + " per cent, so the perpetuity has no finite value and the model refuses to "
+        + "print one.";
+    }
+    return "A cash flow of 100 in the first year growing at " + Kit.num(S.tg, 1) + " per cent, discounted at "
+      + Kit.num(S.wacc, 1) + " per cent over " + d.n + " explicit years plus a terminal value. The explicit "
+      + "years are worth " + Kit.num(d.pvSum, 1) + " today and the terminal value " + Kit.num(d.pvTv, 1)
+      + ", so the terminal value carries " + Kit.num(d.share * 100, 1) + " per cent of the total of "
+      + Kit.num(d.total, 1) + ".";
+  }
+
+  function n(t, flag) { return E("span", { class: "ex-n" + (flag ? " ex-n-flag" : ""), text: t }); }
+
+  function says1() {
+    var host = Q("#dc-says");
+    Kit.clear(host);
+    var r = rate();
+    var v = BENEFIT * factor(r, S.year);
+    var half = r > 0 ? Math.log(2) / Math.log(1 + r) : Infinity;
+
+    var p = E("p");
+    p.appendChild(document.createTextNode("At "));
+    p.appendChild(n(Kit.num(r * 100, 2) + " per cent"));
+    p.appendChild(document.createTextNode(", one hundred euro arriving in year " + S.year + " is worth "));
+    p.appendChild(n(Kit.num(v, 2) + " EUR", v < 5));
+    p.appendChild(document.createTextNode(" today. "));
+    if (isFinite(half)) {
+      p.appendChild(document.createTextNode("Value halves every "));
+      p.appendChild(n(Kit.num(half, 0) + " years"));
+      p.appendChild(document.createTextNode(", so anything beyond about "));
+      p.appendChild(n(Kit.num(half * 6.644, 0)));
+      p.appendChild(document.createTextNode(" years from now is worth less than one per cent of its face "
+        + "value and effectively disappears from the calculation."));
+    } else {
+      p.appendChild(document.createTextNode("With a rate of zero nothing is discounted at all: a euro in "
+        + "year three hundred counts exactly as much as a euro today."));
+    }
+    host.appendChild(p);
+
+    var p2 = E("p");
+    var vs = BENEFIT * factor(STERN.r, S.year), vn = BENEFIT * factor(NORD.r, S.year);
+    p2.appendChild(document.createTextNode("The same hundred euro in that year is worth "));
+    p2.appendChild(n(Kit.num(vs, 2) + " EUR"));
+    p2.appendChild(document.createTextNode(" at the Stern rate and "));
+    p2.appendChild(n(Kit.num(vn, 2) + " EUR", true));
+    p2.appendChild(document.createTextNode(" at the Nordhaus rate, a factor of "));
+    p2.appendChild(n(Kit.num(vs / vn, 1)));
+    p2.appendChild(document.createTextNode(". Neither of them is wrong about the arithmetic."));
+    host.appendChild(p2);
+  }
+
+  function says2() {
+    var host = Q("#dc-says2");
+    Kit.clear(host);
+    var list = bars();
+    var st = list[0].pv, nd = list[3].pv, you = list[2].pv;
+
+    var p = E("p");
+    p.appendChild(document.createTextNode("Damage of " + DAMAGE + " billion euro in every year from year "
+      + S.start + " onward is worth "));
+    p.appendChild(n(Kit.num(st, 0) + " billion"));
+    p.appendChild(document.createTextNode(" today at the Stern rate and "));
+    p.appendChild(n(Kit.num(nd, 0) + " billion", true));
+    p.appendChild(document.createTextNode(" at the Nordhaus rate. That is a factor of "));
+    p.appendChild(n(Kit.num(st / nd, 1)));
+    p.appendChild(document.createTextNode(" between two positions that agree about the climate, agree about "
+      + "the elasticity and agree about growth, and differ only about how much a person born later counts."));
+    host.appendChild(p);
+
+    var p2 = E("p");
+    p2.appendChild(document.createTextNode("Your own parameters put it at "));
+    p2.appendChild(n(Kit.num(you, 0) + " billion"));
+    p2.appendChild(document.createTextNode(", which is "));
+    if (you >= st * 0.9) p2.appendChild(document.createTextNode("at the Stern end of the argument. "));
+    else if (you <= nd * 1.1) p2.appendChild(document.createTextNode("at the Nordhaus end of the argument. "));
+    else p2.appendChild(document.createTextNode("between the two named positions. "));
+    p2.appendChild(document.createTextNode("Push the pure time preference slider up by one point and watch "
+      + "how much of the problem you have just made disappear without touching a single physical assumption."));
+    host.appendChild(p2);
+  }
+
+  function says3() {
+    var host = Q("#dc-says3");
+    Kit.clear(host);
+    var d = dcf();
+    var p = E("p");
+    if (!d.ok) {
+      p.appendChild(document.createTextNode("Terminal growth is at or above the cost of capital, so the "
+        + "perpetuity is infinite and there is no answer to print. A valuation that quietly returns a number "
+        + "here is not doing arithmetic."));
+      host.appendChild(p);
+      return;
+    }
+    p.appendChild(document.createTextNode("Of the whole value, "));
+    p.appendChild(n(Kit.num(d.share * 100, 0) + " per cent", d.share > 0.6));
+    p.appendChild(document.createTextNode(" sits in the terminal value: the years nobody forecast, reduced to "
+      + "one figure by a growth rate typed into one cell. The " + Ex.cardinal(d.n)
+      + " explicit years carry the remaining "));
+    p.appendChild(n(Kit.num((1 - d.share) * 100, 0) + " per cent"));
+    p.appendChild(document.createTextNode("."));
+    host.appendChild(p);
+  }
+
+  /* ---------- controls ---------- */
+
+  var c = {}, setRead1, setRead2, setRead3;
+
+  function buildControls() {
+    var rack = Q("#dc-ctrls");
+
+    c.delta = Ex.slider(rack, {
+      label: "Pure time preference",
+      min: 0, max: 4, step: 0.1, value: S.delta,
+      format: function (v) { return Kit.num(v, 1) + " %"; },
+      hint: "How much less a person counts for being later. This is the ethical parameter.",
+      onInput: function (v) { S.delta = v; render(); }
+    });
+    c.eta = Ex.slider(rack, {
+      label: "Elasticity of marginal utility",
+      min: 0.5, max: 3, step: 0.1, value: S.eta,
+      format: function (v) { return Kit.num(v, 1); },
+      hint: "How fast an extra euro loses value as people get richer.",
+      onInput: function (v) { S.eta = v; render(); }
+    });
+    c.growth = Ex.slider(rack, {
+      label: "Consumption growth",
+      min: 0, max: 3, step: 0.1, value: S.growth,
+      format: function (v) { return Kit.num(v, 1) + " %"; },
+      hint: "How much richer each year is assumed to be than the one before it.",
+      onInput: function (v) { S.growth = v; render(); }
+    });
+    c.year = Ex.slider(rack, {
+      label: "Year to price",
+      min: 0, max: HORIZON, step: 5, value: S.year,
+      format: function (v) { return "year " + Kit.num(v, 0); },
+      hint: "The horizon marked on the curve.",
+      onInput: function (v) { S.year = v; render(); }
+    });
+
+    var rack2 = Q("#dc-ctrls2");
+    c.start = Ex.slider(rack2, {
+      label: "Damage begins in",
+      min: 0, max: 200, step: 5, value: S.start,
+      format: function (v) { return "year " + Kit.num(v, 0); },
+      hint: "Damage of 100 billion a year runs from this year to year 300.",
+      onInput: function (v) { S.start = v; render(); }
+    });
+
+    var rack3 = Q("#dc-ctrls3");
+    c.fyears = Ex.slider(rack3, {
+      label: "Explicit forecast years",
+      min: 3, max: 15, step: 1, value: S.fyears,
+      format: function (v) { return Kit.num(v, 0) + " years"; },
+      hint: "How far the model forecasts before it gives up and uses a perpetuity.",
+      onInput: function (v) { S.fyears = v; render(); }
+    });
+    c.wacc = Ex.slider(rack3, {
+      label: "Cost of capital",
+      min: 4, max: 16, step: 0.5, value: S.wacc,
+      format: function (v) { return Kit.num(v, 1) + " %"; },
+      hint: "The rate the cash flows are discounted at.",
+      onInput: function (v) { S.wacc = v; render(); }
+    });
+    c.tg = Ex.slider(rack3, {
+      label: "Terminal growth",
+      min: 0, max: 6, step: 0.25, value: S.tg,
+      format: function (v) { return Kit.num(v, 2) + " %"; },
+      hint: "Growth assumed for ever after the forecast ends. It must stay below the cost of capital.",
+      onInput: function (v) { S.tg = v; render(); }
+    });
+
+    setRead1 = Ex.readout(Q("#dc-read1"), [
+      { id: "r", label: "Discount rate", tone: "hot" },
+      { id: "v", label: "100 EUR in that year" },
+      { id: "half", label: "Value halves every" },
+      { id: "gone", label: "Under one per cent after" }
+    ]);
+    setRead2 = Ex.readout(Q("#dc-read2"), [
+      { id: "st", label: "At the Stern rate" },
+      { id: "you", label: "At your rate", tone: "hot" },
+      { id: "nd", label: "At the Nordhaus rate" },
+      { id: "ratio", label: "Stern over Nordhaus", tone: "flag" }
+    ]);
+    setRead3 = Ex.readout(Q("#dc-read3"), [
+      { id: "share", label: "Carried by terminal value", tone: "hot" },
+      { id: "pvf", label: "Explicit years" },
+      { id: "pvt", label: "Terminal value" },
+      { id: "tot", label: "Total value" }
+    ]);
+
+    var key = Q("#dc-key1");
+    [["var(--accent)", "your rate"], ["var(--good)", "Stern, 1.4 per cent"],
+     ["var(--flag)", "Nordhaus, 4.3 per cent"]].forEach(function (k) {
+      var mark = E("i", { class: "ex-line" });
+      mark.style.color = k[0];
+      key.appendChild(E("span", {}, [mark, document.createTextNode(k[1])]));
+    });
+
+    Q("#dc-stern").addEventListener("click", function () {
+      S.delta = STERN.d; S.eta = STERN.e; S.growth = STERN.g;
+      sync(); render();
+    });
+    Q("#dc-nord").addEventListener("click", function () {
+      S.delta = NORD.d; S.eta = NORD.e; S.growth = NORD.g;
+      sync(); render();
+    });
+    Q("#dc-share").addEventListener("click", function () { Kit.share(hashOut()); });
+  }
+
+  function sync() {
+    c.delta.set(S.delta, true); c.eta.set(S.eta, true); c.growth.set(S.growth, true);
+    c.year.set(S.year, true); c.start.set(S.start, true);
+    c.fyears.set(S.fyears, true); c.wacc.set(S.wacc, true); c.tg.set(S.tg, true);
+  }
+
+  /* ---------- state ---------- */
+
+  function hashOut() {
+    return { d: Ex.round(S.delta, 2), e: Ex.round(S.eta, 2), g: Ex.round(S.growth, 2),
+      y: S.year, s: S.start, f: S.fyears, w: Ex.round(S.wacc, 2), t: Ex.round(S.tg, 2) };
+  }
+  function hashIn() {
+    var o = Kit.state.read();
+    if (!o) return false;
+    if (isFinite(o.d)) S.delta = Ex.clamp(Number(o.d), 0, 4);
+    if (isFinite(o.e)) S.eta = Ex.clamp(Number(o.e), 0.5, 3);
+    if (isFinite(o.g)) S.growth = Ex.clamp(Number(o.g), 0, 3);
+    if (isFinite(o.y)) S.year = Ex.clamp(Number(o.y), 0, HORIZON);
+    if (isFinite(o.s)) S.start = Ex.clamp(Number(o.s), 0, 200);
+    if (isFinite(o.f)) S.fyears = Ex.clamp(Math.round(Number(o.f)), 3, 15);
+    if (isFinite(o.w)) S.wacc = Ex.clamp(Number(o.w), 4, 16);
+    if (isFinite(o.t)) S.tg = Ex.clamp(Number(o.t), 0, 6);
+    return true;
+  }
+
+  /* ---------- render ---------- */
+
+  var paint = Ex.frames(function () {
+    var r = rate();
+
+    /* the Ramsey line, written out rather than hidden in the code */
+    var rm = Q("#dc-ramsey");
+    Kit.clear(rm);
+    rm.appendChild(E("span", { class: "dc-eq", text: "discount rate = " }));
+    rm.appendChild(E("b", { text: Kit.num(S.delta, 1) + " % " }));
+    rm.appendChild(E("span", { class: "dc-eq", text: " + " }));
+    rm.appendChild(E("b", { text: Kit.num(S.eta, 1) + " " }));
+    rm.appendChild(E("span", { class: "dc-eq", text: " x " }));
+    rm.appendChild(E("b", { text: Kit.num(S.growth, 1) + " % " }));
+    rm.appendChild(E("span", { class: "dc-eq", text: " = " }));
+    rm.appendChild(E("span", { class: "dc-out", text: Kit.num(r * 100, 2) + " %" }));
+
+    draw1(); draw2(); draw3();
+
+    var half = r > 0 ? Math.log(2) / Math.log(1 + r) : Infinity;
+    setRead1("r", Kit.num(r * 100, 2) + " %", "pure time preference plus elasticity times growth");
+    setRead1("v", Kit.num(BENEFIT * factor(r, S.year), 2), "EUR, out of 100 in year " + S.year);
+    setRead1("half", isFinite(half) ? Kit.num(half, 0) : "never", isFinite(half) ? "years" : "the rate is zero");
+    setRead1("gone", isFinite(half) ? Kit.num(half * 6.644, 0) : "never", isFinite(half) ? "years from now" : null);
+
+    var list = bars();
+    setRead2("st", Kit.num(list[0].pv, 0), "billion EUR");
+    setRead2("you", Kit.num(list[2].pv, 0), "billion EUR");
+    setRead2("nd", Kit.num(list[3].pv, 0), "billion EUR");
+    setRead2("ratio", list[3].pv > 0 ? Kit.num(list[0].pv / list[3].pv, 1) + " times" : "not defined",
+      "larger at the Stern rate");
+
+    var d = dcf();
+    setRead3("share", d.ok ? Kit.num(d.share * 100, 0) + " %" : "no answer",
+      d.ok ? "of the whole value" : "growth is above the discount rate");
+    setRead3("pvf", d.ok ? Kit.num(d.pvSum, 1) : "none", d.ok ? "present value of the forecast" : null);
+    setRead3("pvt", d.ok ? Kit.num(d.pvTv, 1) : "none", d.ok ? "present value of the perpetuity" : null);
+    setRead3("tot", d.ok ? Kit.num(d.total, 1) : "none", d.ok ? "enterprise value" : null);
+
+    Q("#dc-sum1").textContent = summary1();
+    Q("#dc-sum2").textContent = summary2();
+    Q("#dc-sum3").textContent = summary3();
+    says1(); says2(); says3();
+
+    Kit.state.write(hashOut());
+  });
+
+  function render() { paint(); }
+
+  function init() {
+    hashIn();
+    buildControls();
+    sync();
+    render();
+    Ex.onResize(render);
+    window.addEventListener("hashchange", function () { if (hashIn()) { sync(); render(); } });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+
+<script>
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Dört denemeden dördüncüsü</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Essay vier von vier</i>"}};
+
+(function(){
+  "use strict";
+  var KEY = "lang", lang = "en";
+  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
+  var D = window.CHROME_I18N || {};
+  var base = {}, baseA = {};
+  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
+  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function apply(l){
+    if(!D[l]) l = "en";
+    var d = D[l] || {};
+    document.querySelectorAll(SEL).forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if(!(k in base)) base[k] = el.innerHTML;
+      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
+    });
+    document.querySelectorAll(SELA).forEach(function(el){
+      var k = el.getAttribute("data-ia");
+      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
+      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
+    });
+    document.documentElement.setAttribute("lang", l);
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    window.__lang = l;
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  window.__chrome = apply;
+  apply(lang);
+})();
+
+</script>
+
+</body>
+</html>

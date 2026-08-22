@@ -86,20 +86,27 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
 @keyframes breathe{0%,100%{opacity:.4}50%{opacity:.9}}
 
 /* ---------- the doors ---------- */
+/* six doors: three across and two down where there is room, two columns on a
+   tablet, one on a phone. The box is kept short on purpose, because the
+   museum below reads the real height of this grid and lays its three strata
+   in whatever soil the cards leave clear. */
 #portal{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:min(1060px,92vw);
-  display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(.9rem,2vw,2rem);
+  width:min(1020px,94vw);
+  display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.7rem,1.4vw,1.25rem);
   opacity:0;pointer-events:none;transition:opacity .8s ease;
 }
-@media (max-width:980px){#portal{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:520px){#portal{grid-template-columns:1fr;top:52%}}
-#portal.live{opacity:1;pointer-events:auto}
+@media (max-width:860px){#portal{grid-template-columns:repeat(2,1fr);width:min(660px,92vw)}}
+@media (max-width:560px){#portal{grid-template-columns:1fr;top:52%}}
+/* the nav box itself lets the cursor through: only the cards catch it, so
+   the soil between and beside them still belongs to the museum */
+#portal.live{opacity:1;pointer-events:none}
+#portal.live .door{pointer-events:auto}
 .door{
-  width:auto;min-height:188px;
+  width:auto;min-height:0;
   display:flex;flex-direction:column;justify-content:flex-start;
   text-decoration:none;text-align:center;
-  padding:2rem 1.2rem 1.3rem;border-radius:3px;
+  padding:1.15rem 1.05rem .9rem;border-radius:3px;
   color:#e9e2d2;
   background:rgba(26,19,11,.46);
   border:1px solid rgba(224,170,96,.22);
@@ -111,25 +118,28 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
 }
 .door:hover{transform:translateY(-4px)!important}
 #portal.live .door{transform:none;opacity:1}
-#portal.live .door:nth-child(2){transition-delay:.12s}
-#portal.live .door:nth-child(3){transition-delay:.24s}
+#portal.live .door:nth-child(2){transition-delay:.10s}
+#portal.live .door:nth-child(3){transition-delay:.20s}
+#portal.live .door:nth-child(4){transition-delay:.30s}
+#portal.live .door:nth-child(5){transition-delay:.40s}
+#portal.live .door:nth-child(6){transition-delay:.50s}
 .door:hover{border-color:rgba(224,170,96,.55);background:rgba(30,22,13,.6);box-shadow:0 0 60px rgba(224,160,80,.12), inset 0 0 30px rgba(0,0,0,.3)}
 
 .door h2{
-  font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,2.6vw,2rem);
-  letter-spacing:.01em;
+  font-family:var(--serif);font-weight:300;font-size:clamp(1.25rem,1.95vw,1.7rem);
+  letter-spacing:.01em;line-height:1.15;
 }
-.door .peek{height:52px;margin-top:.8rem;opacity:0;transform:translateY(6px);
+.door .peek{height:42px;margin-top:.6rem;opacity:0;transform:translateY(6px);
   transition:opacity .4s ease,transform .45s cubic-bezier(.22,1,.36,1)}
 .door:hover .peek,.door:focus-visible .peek{opacity:1;transform:none}
-.peek .pg{width:76px;height:48px;margin:0 auto;border:1px solid rgba(224,170,96,.35);border-radius:2px;
+.peek .pg{width:70px;height:40px;margin:0 auto;border:1px solid rgba(224,170,96,.35);border-radius:2px;
   background:rgba(238,233,222,.07);padding:5px 6px;display:flex;flex-direction:column;gap:3px;align-items:flex-start}
 .peek .ln{height:3px;border-radius:1px;background:rgba(233,226,210,.5)}
 .peek .ln.a{width:60%;background:rgba(224,170,96,.75)}
 .peek .ln.b{width:88%}.peek .ln.c{width:74%}.peek .ln.d{width:40%}
 .peek .blk{width:100%;height:10px;border-radius:1px;background:rgba(224,170,96,.22)}
 @media (hover:none){.door .peek{display:none}}
-.door p{margin-top:.55rem;min-height:3em;font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:.92rem;line-height:1.5;color:rgba(233,226,210,.62)}
+.door p{margin-top:.5rem;min-height:2.6em;font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:.92rem;line-height:1.5;color:rgba(233,226,210,.62)}
 
 /* ---------- after the film ---------- */
 footer{
@@ -153,8 +163,20 @@ footer a:hover{color:#fff}
 }
 @media (max-width:700px){
   #portal{align-content:center}
-  .door{width:78vw;padding:1.4rem 1rem 1.2rem}
+  /* six cards stacked have to be short, or the column swallows the screen
+     and buries the museum behind it */
+  .door{width:78vw;padding:.75rem .95rem .7rem}
+  .door h2{font-size:1.16rem}
+  .door p{margin-top:.32rem;min-height:0;font-size:.85rem;line-height:1.4}
   #theName{top:34%}
+}
+/* a small phone held upright: six cards will not stand in that screen at
+   the size above, so the stack comes down to its shortest reading */
+@media (max-width:560px) and (max-height:720px){
+  #portal{gap:.45rem}
+  .door{padding:.55rem .8rem .5rem}
+  .door h2{font-size:1.02rem}
+  .door p{margin-top:.22rem;font-size:.78rem;line-height:1.3}
 }
 /* a phone held sideways: the sky is a strip, so the name comes up out of
    the canopy and the invitation with it */
@@ -163,10 +185,11 @@ footer a:hover{color:#fff}
   #sig{width:min(430px,52vw)}
   #hint{top:29%;font-size:.82rem}
   #hint::after{height:15px;margin-top:4px}
-  /* two rows of doors do not fit under a strip of sky: put them in one */
-  #portal{grid-template-columns:repeat(4,1fr);top:52%}
-  .door{min-height:0;width:auto;padding:.9rem .75rem .85rem}
-  .door h2{font-size:clamp(1.05rem,2.2vw,1.45rem)}
+  /* two rows of doors do not fit under a strip of sky: put the six in one */
+  #portal{grid-template-columns:repeat(6,1fr);top:52%;width:min(1020px,96vw);
+    gap:clamp(.4rem,1vw,.9rem)}
+  .door{min-height:0;width:auto;padding:.8rem .5rem .75rem}
+  .door h2{font-size:clamp(.95rem,1.9vw,1.28rem)}
   .door p{margin-top:.35rem;min-height:0;font-size:.8rem;line-height:1.4}
   .door .peek{display:none}
   footer{padding-top:.5rem;padding-bottom:calc(.5rem + env(safe-area-inset-bottom,0px))}
@@ -253,9 +276,10 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   .langs button{padding:.9em .8em}
   .edgeNav{padding:.9rem .7rem}
   #sndWrap.open #sndPanel{width:140px}
-  /* four doors in a column, short enough that the stack stands in one screen */
+  /* six doors in a column, short enough that the stack stands in one screen
+     and still leaves the museum clear soil to lie in */
   .door{min-height:0}
-  .door p{min-height:2.4em}
+  .door p{min-height:0}
   /* the two fixed corners fade out over the footer, so this only needs the
      room the row itself asks for */
   footer{flex-direction:column;align-items:center;gap:.5rem;
@@ -306,6 +330,16 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         <h2 data-i="d3">Contact</h2>
         <p data-i="d3p">Email, LinkedIn, GitHub.</p>
         <span class="peek" aria-hidden="true"><span class="pg"><span class="ln a"></span><span class="ln d"></span><span class="ln d"></span></span></span>
+      </a>
+      <a class="door" href="tools.html">
+        <h2 data-i="d5">Tools</h2>
+        <p data-i="d5p">Free instruments and four essays.</p>
+        <span class="peek" aria-hidden="true"><span class="pg"><span class="ln a"></span><span class="blk"></span><span class="ln b"></span><span class="ln d"></span></span></span>
+      </a>
+      <a class="door" href="game.html">
+        <h2 data-i="d6">Game Theory</h2>
+        <p data-i="d6p">Six small games, played rather than read.</p>
+        <span class="peek" aria-hidden="true"><span class="pg"><span class="ln a"></span><span class="blk"></span><span class="blk"></span><span class="ln d"></span></span></span>
       </a>
     </nav>
 
@@ -1148,7 +1182,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     RELICS.length = 0;
     MUSE.length = 0;
     (function museum() {
-      /* the four door cards own the middle of the last frame; the strata are
+      /* the six door cards own the middle of the last frame; the strata are
          laid above and below them so every object stays reachable there */
       var pel = document.getElementById("portal");
       DOORS.t = H * 0.38; DOORS.b = H * 0.62;
@@ -1167,16 +1201,18 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       /* three bands go wherever the doors leave clear soil. Every way of
          splitting them between the zone above the cards and the zone below
          is tried, and the one that leaves the most air between bands wins.
-         A frame that leaves no clear soil at all spreads them through the
-         whole depth instead, where the descent still finds them. */
+         A plan that uses the soil on both sides of the cards is preferred
+         while it still leaves each band real air, because a museum that
+         keeps its depth reads better than one crammed into one end. */
       var zA = zaB - zaT, zB = zbB - zbT;
       var plans = [[2, 1], [3, 0], [0, 3], [1, 2]];
-      var best = null, bestGap = -1;
+      var best = null, bestGap = -1, bestScore = -1;
       for (var pl = 0; pl < plans.length; pl++) {
         var na = plans[pl][0], nb = plans[pl][1];
         if ((na && zA <= 0) || (nb && zB <= 0)) continue;
         var gap = Math.min(na ? zA / na : 1e9, nb ? zB / nb : 1e9);
-        if (gap > bestGap) { bestGap = gap; best = plans[pl]; }
+        var score = gap + (na && nb && gap >= 30 ? 500 : 0);
+        if (score > bestScore) { bestScore = score; bestGap = gap; best = plans[pl]; }
       }
       var sy = [];
       var spread = function (t0, t1, n) {
@@ -1185,6 +1221,12 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       if (best && bestGap >= 26) {
         if (best[0]) spread(zaT, zaB, best[0]);
         if (best[1]) spread(zbT, zbB, best[1]);
+      } else if (Math.max(zA, zB) > 24) {
+        /* a tall stack of cards on a phone leaves only one usable strip:
+           all three bands go into the roomier one and draw closer together,
+           which is still where a finger can reach them */
+        if (zA >= zB) { bestGap = zA / 3; spread(zaT, zaB, 3); }
+        else { bestGap = zB / 3; spread(zbT, zbB, 3); }
       } else {
         bestGap = Math.max(140, aqY - 64) / 3;
         spread(34, Math.max(174, aqY - 30), 3);
@@ -3883,6 +3925,40 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   var RAIN = { on: 0, until: 0 };
   var SNOWMAN = { stage: 0, x: 0 };          // 0 none · 1..3 built
   var SWING = { ax: 0, ay: 0, len: 0, amp: 0, until: 0 };   // the swing on the low left branch
+  /* two quiet things in the grass that are also doors. They read as
+     scenery until the cursor finds them, then they lift a little and say
+     where they go. Both fade with the ground as the camera descends. */
+  var BENCH = { hov: 0 };                     // the workbench, beside the house
+  var TABLE = { hov: 0 };                     // the game table, across the meadow
+  /* where each of them stands, and how wide it may be there. Both take the
+     measure of what is already on that patch of grass, so neither can end up
+     inside the well, the washing line, the swing, the mound that becomes a
+     snowman, his door, or the two fixed controls in the bottom corners. */
+  function benchBox() {
+    var hiE = H < 620 ? W - 67 : W - 4;            // the sound button's corner
+    var doorR = houseX() + (small ? 9 : 13) + 3;   // his doorway ends about here
+    var half = Math.min(small || H < 620 ? 20 : 27, (hiE - doorR) / 2);
+    var bx = Math.min(houseX() + (small ? 46 : 74), hiE - half);
+    if (half >= 12 && bx - half >= doorR) return { x: bx, half: half };
+    /* that side of the house is full: the bench stands in the yard between
+       the well and the wall instead, where a screen this narrow hangs no
+       washing line to be in the way of */
+    var wR = wellX() + 17, hL = houseX() - (small ? 45 : 70);
+    return { x: (wR + hL) / 2,
+             half: Math.min(small ? 20 : 27, Math.max(10, (hL - wR) / 2 - 2)) };
+  }
+  function tableBox() {
+    // the free grass on the far side of the tree, short of the swing's branch
+    var hiE = Math.min(SWING.ax ? SWING.ax - 22 : W * 0.18, W * 0.24 - 22) - 8;
+    var loE = (H < 620 && hiE - 75 > 34) ? 75 : 4;   // the season dial's corner
+    var half = Math.max(11, Math.min(small ? 24 : 33, (hiE - loE) / 2));
+    return { x: clamp(W * 0.115, loE + half, Math.max(loE + half, hiE - half)),
+             half: half };
+  }
+  function tone(r, g, b, dk, a) {
+    return "rgba(" + ((r * dk) | 0) + "," + ((g * dk) | 0) + "," + ((b * dk) | 0) +
+           "," + (a === undefined ? 1 : a) + ")";
+  }
   var SAPLING = [];                           // planted acorns
   var ACORN = null;                           // {x,y,vy,landed}
   var SQUIRREL = { state: 0, t0: 0 };
@@ -4414,6 +4490,17 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     }
     return MOLEUP < 0.05 && near(W * 0.78, H * 0.94, 24);
   };
+  /* the two meadow entrances answer a finger the same way the relics do:
+     the first tap asks them what they are, the second one takes you there */
+  EGG.surfaceUnder = function (cx8, cy8) {
+    var r9 = canvas.getBoundingClientRect();
+    var x9 = cx8 - r9.left + camXs;
+    var y9 = cy8 - r9.top - gSkyS * H * 0.62;
+    function in9(R9) {
+      return R9 && x9 > R9.x && x9 < R9.x + R9.w && y9 > R9.y && y9 < R9.y + R9.h;
+    }
+    return in9(EGG.benchRect) || in9(EGG.tableRect);
+  };
   /* which of the twelve is under a finger or a cursor, if any */
   EGG.museumAt = function (cx8, cy8) {
     if (!ARCH.live) return null;
@@ -4439,6 +4526,28 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     // relic auras + captions; the pointer is client space, the canvas may sit
     // above the fold at the very end, so correct by the canvas offset
     var cvTop = canvas.getBoundingClientRect().top;
+    /* the six door cards are opaque and sit on top of the canvas. Any card of
+       text that would land under them steps into the clear soil above or
+       below instead, so nothing the ground says is ever half read. On a
+       narrow screen the cards fill the middle, so it always takes the strip
+       under them and reads like a plinth card. */
+    function dodgeDoors(top5, ch5, sy5, lo5) {
+      if (!(portal && portal.classList.contains("live") && DOORS.h > 20)) return top5;
+      var above5 = DOORS.t - 10 - ch5, below5 = DOORS.b + 10;
+      var fitA = above5 >= lo5, fitB = below5 + ch5 <= H - 8;
+      if (small) {
+        if (fitB) return below5;
+        if (fitA) return above5;
+        return top5;
+      }
+      if (!(top5 < DOORS.b + 4 && top5 + ch5 > DOORS.t - 4)) return top5;
+      var nearAbove = sy5 <= (DOORS.t + DOORS.b) / 2;
+      if (nearAbove && fitA) return above5;
+      if (!nearAbove && fitB) return below5;
+      if (fitA) return above5;
+      if (fitB) return below5;
+      return top5;
+    }
     function hoverCap(x6, yRel, r6, cap6, ri6, ring6) {
       var wy = H * 0.885 + yRel;
       var sy2 = wy - camY;
@@ -4467,8 +4576,10 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         ctx.strokeStyle = "rgba(224,170,96,.35)";
         ctx.lineWidth = 1;
         // kept on screen; in the lower half the caption sits below its relic
+        var lo2 = 8 - Math.min(0, cvTop);
         var capTop = clamp(sy2 > H * 0.52 ? sy2 + 18 : sy2 - 20 - ch2,
-                           8 - Math.min(0, cvTop), H - ch2 - 8) + camY;
+                           lo2, H - ch2 - 8);
+        capTop = dodgeDoors(capTop, ch2, sy2, lo2) + camY;
         ctx.beginPath();
         ctx.roundRect(cx7 - cw2 / 2, capTop, cw2, ch2, 4);
         ctx.fill(); ctx.stroke();
@@ -4501,24 +4612,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       var cx4 = clamp(M.x, cw4 / 2 + 8, W - cw4 / 2 - 8);
       var lo4 = 8 - Math.min(0, cvTop), hi4 = H - ch4 - 8;
       var top4 = sy4 > H * 0.55 ? sy4 + M.r + 6 : sy4 - M.r - 6 - ch4;
-      top4 = clamp(top4, lo4, hi4);
-      /* the four door cards are opaque and sit on top of the canvas: the
-         label steps into the clear soil above or below them. On a narrow
-         screen the doors fill the middle, so it always takes the strip
-         below them and reads like a plinth card. */
-      if (portal && portal.classList.contains("live") && DOORS.h > 20) {
-        var above4 = DOORS.t - 10 - ch4, below4 = DOORS.b + 10;
-        var fitA = above4 >= lo4, fitB = below4 + ch4 <= H - 8;
-        if (small) {
-          if (fitB) top4 = below4; else if (fitA) top4 = above4;
-        } else if (top4 < DOORS.b + 4 && top4 + ch4 > DOORS.t - 4) {
-          var nearAbove = sy4 <= (DOORS.t + DOORS.b) / 2;
-          if (nearAbove && fitA) top4 = above4;
-          else if (!nearAbove && fitB) top4 = below4;
-          else if (fitA) top4 = above4;
-          else if (fitB) top4 = below4;
-        }
-      }
+      top4 = dodgeDoors(clamp(top4, lo4, hi4), ch4, sy4, lo4);
       var by4 = top4 + camY;
       ctx.fillStyle = "rgba(20,14,8,.90)";
       ctx.strokeStyle = "rgba(224,170,96,.38)";
@@ -4609,6 +4703,144 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     ctx.globalAlpha = 1;
     // it hears the cursor come close, though it would not say so
     hoverCap(FISH.x, fy2 - H * 0.885, 34, "It has never seen the sun. It does not mind.", RELICS.length + 1, false);
+    ctx.restore();
+  }
+
+  /* ---- the workbench: a low timber bench with a day's work left on it ---- */
+  function drawWorkbench(x, gy, dk, sc9) {
+    ctx.save();
+    ctx.translate(x, gy);
+    ctx.scale(sc9, sc9);
+    // the two legs at the back, half a step further away
+    ctx.fillStyle = tone(58, 44, 30, dk);
+    ctx.fillRect(-15, -14, 3, 14);
+    ctx.fillRect(13, -14, 3, 14);
+    // the frame at the front
+    ctx.fillStyle = tone(74, 56, 38, dk);
+    ctx.fillRect(-19, -14, 4.2, 14);
+    ctx.fillRect(15, -14, 4.2, 14);
+    ctx.fillStyle = tone(64, 48, 32, dk);
+    ctx.fillRect(-17, -6.5, 34, 2.2);              // the stretcher
+    ctx.fillRect(-19, -14.5, 38, 3);               // the apron under the top
+    // the top: two planks, worn pale where the work happens
+    var tg2 = ctx.createLinearGradient(0, -19.5, 0, -14.5);
+    tg2.addColorStop(0, tone(140, 112, 76, dk));
+    tg2.addColorStop(1, tone(94, 72, 48, dk));
+    ctx.fillStyle = tg2;
+    ctx.fillRect(-22, -19.5, 44, 5);
+    ctx.strokeStyle = tone(34, 24, 14, dk, 0.5); ctx.lineWidth = 0.7;
+    ctx.beginPath(); ctx.moveTo(-22, -17.2); ctx.lineTo(22, -17.2); ctx.stroke();
+    ctx.fillStyle = tone(196, 168, 122, dk, 0.28);
+    ctx.fillRect(-22, -19.5, 44, 1);
+    // the clamp at the left end, iron, screw out towards you
+    ctx.fillStyle = tone(96, 88, 78, dk);
+    ctx.fillRect(-26.5, -17.5, 5.5, 8);
+    ctx.fillStyle = tone(70, 64, 56, dk);
+    ctx.fillRect(-21.5, -18.5, 2, 9.5);
+    ctx.strokeStyle = tone(126, 118, 104, dk); ctx.lineWidth = 1.3;
+    ctx.beginPath(); ctx.moveTo(-25, -13.5); ctx.lineTo(-27, -13.5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-27, -16); ctx.lineTo(-27, -11); ctx.stroke();
+    // a saw leaning on the right leg
+    ctx.fillStyle = tone(196, 194, 186, dk, 0.9);
+    ctx.beginPath();
+    ctx.moveTo(17.5, -20.5); ctx.lineTo(21, -20.8); ctx.lineTo(27, -2.5); ctx.lineTo(23.6, -2.2);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = tone(92, 88, 80, dk, 0.75); ctx.lineWidth = 0.7;
+    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(20, -20.7); ctx.lineTo(25.8, -2.4); ctx.stroke();
+    ctx.fillStyle = tone(122, 78, 40, dk);
+    ctx.beginPath(); ctx.roundRect(15.6, -24.6, 6.4, 4.6, 1.6); ctx.fill();
+    // a mallet lying where it was put down
+    ctx.strokeStyle = tone(150, 118, 78, dk); ctx.lineWidth = 1.6; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(-11, -21); ctx.lineTo(-2.5, -21); ctx.stroke();
+    ctx.fillStyle = tone(104, 76, 46, dk);
+    ctx.beginPath(); ctx.roundRect(-2, -23.6, 7, 5.2, 1.2); ctx.fill();
+    // a chisel, and the square it was set against
+    ctx.strokeStyle = tone(188, 186, 178, dk, 0.8); ctx.lineWidth = 1.1;
+    ctx.beginPath(); ctx.moveTo(2.5, -20.4); ctx.lineTo(9, -20.4); ctx.stroke();
+    ctx.strokeStyle = tone(80, 56, 32, dk); ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(9, -20.4); ctx.lineTo(12.4, -20.4); ctx.stroke();
+    ctx.strokeStyle = tone(150, 146, 136, dk, 0.6); ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.moveTo(-19, -20.2); ctx.lineTo(-13, -20.2); ctx.moveTo(-19, -20.2); ctx.lineTo(-19, -24.4);
+    ctx.stroke();
+    // shavings, curled where they fell
+    ctx.strokeStyle = tone(210, 180, 128, dk, 0.7); ctx.lineWidth = 1.1;
+    var shv = [[-25, -1.2, 2.4], [-9, -0.8, 1.9], [6, -1.4, 2.2], [21, -0.9, 1.7]];
+    for (var sv2 = 0; sv2 < shv.length; sv2++) {
+      ctx.beginPath();
+      ctx.arc(shv[sv2][0], shv[sv2][1], shv[sv2][2], 3.5, 6.1);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /* ---- the game table: two stools, and a game somebody walked away from ---- */
+  function drawGameTable(x, gy, dk, sc9) {
+    ctx.save();
+    ctx.translate(x, gy);
+    ctx.scale(sc9, sc9);
+    // the two stools, facing each other across it
+    for (var st6 = 0; st6 < 2; st6++) {
+      var sx6 = st6 ? 25 : -25;
+      ctx.strokeStyle = tone(74, 56, 38, dk); ctx.lineWidth = 1.6; ctx.lineCap = "butt";
+      ctx.beginPath();
+      ctx.moveTo(sx6 - 3.4, -11.4); ctx.lineTo(sx6 - 4.8, 0);
+      ctx.moveTo(sx6 + 3.4, -11.4); ctx.lineTo(sx6 + 4.8, 0);
+      ctx.stroke();
+      ctx.fillStyle = tone(112, 86, 58, dk);
+      ctx.beginPath(); ctx.ellipse(sx6, -12, 6.2, 2.5, 0, 0, 6.284); ctx.fill();
+      ctx.strokeStyle = tone(38, 28, 18, dk, 0.5); ctx.lineWidth = 0.7;
+      ctx.beginPath(); ctx.ellipse(sx6, -12, 6.2, 2.5, 0, 0, 6.284); ctx.stroke();
+    }
+    // the pedestal and its foot
+    ctx.fillStyle = tone(64, 48, 32, dk);
+    ctx.beginPath(); ctx.ellipse(0, -1, 7, 2.4, 0, 0, 6.284); ctx.fill();
+    ctx.fillStyle = tone(78, 58, 40, dk);
+    ctx.fillRect(-2.2, -17, 4.4, 16);
+    // the round top
+    ctx.fillStyle = tone(70, 52, 34, dk);
+    ctx.beginPath();
+    ctx.moveTo(-16, -18); ctx.lineTo(-16, -15.6);
+    ctx.ellipse(0, -15.6, 16, 5, 0, Math.PI, 0, true);
+    ctx.lineTo(16, -18);
+    ctx.closePath(); ctx.fill();
+    var tgr = ctx.createLinearGradient(-16, -21, 16, -15);
+    tgr.addColorStop(0, tone(132, 102, 68, dk));
+    tgr.addColorStop(1, tone(96, 72, 48, dk));
+    ctx.fillStyle = tgr;
+    ctx.beginPath(); ctx.ellipse(0, -18, 16, 5, 0, 0, 6.284); ctx.fill();
+    ctx.strokeStyle = tone(36, 26, 16, dk, 0.55); ctx.lineWidth = 0.8;
+    ctx.beginPath(); ctx.ellipse(0, -18, 16, 5, 0, 0, 6.284); ctx.stroke();
+    // the board, drawn flat on the top the way it lies
+    ctx.save();
+    ctx.translate(0, -18); ctx.scale(1, 0.32);
+    ctx.fillStyle = tone(230, 220, 194, dk, 0.22);
+    ctx.beginPath(); ctx.rect(-8.4, -8.4, 16.8, 16.8); ctx.fill();
+    ctx.strokeStyle = tone(236, 226, 200, dk, 0.44); ctx.lineWidth = 1.3;
+    ctx.beginPath(); ctx.rect(-8.4, -8.4, 16.8, 16.8); ctx.stroke();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = tone(232, 222, 196, dk, 0.28);
+    for (var gl6 = 1; gl6 < 3; gl6++) {
+      ctx.beginPath();
+      ctx.moveTo(-8.4 + gl6 * 5.6, -8.4); ctx.lineTo(-8.4 + gl6 * 5.6, 8.4);
+      ctx.moveTo(-8.4, -8.4 + gl6 * 5.6); ctx.lineTo(8.4, -8.4 + gl6 * 5.6);
+      ctx.stroke();
+    }
+    ctx.restore();
+    // the stones, left where the last two moves put them
+    var stn = [[-5.4, -18.9, 0], [0.2, -18.4, 1], [4.8, -17.6, 0],
+               [-2.4, -17.2, 1], [7.6, -19.2, 1], [-9.8, -16.6, 0]];
+    for (var sn6 = 0; sn6 < stn.length; sn6++) {
+      ctx.fillStyle = stn[sn6][2]
+        ? tone(232, 226, 208, dk, 0.9) : tone(44, 34, 24, dk, 0.9);
+      ctx.beginPath();
+      ctx.ellipse(stn[sn6][0], stn[sn6][1], 1.9, 1.1, 0, 0, 6.284);
+      ctx.fill();
+    }
+    // one that rolled off and stayed in the grass
+    ctx.fillStyle = tone(44, 34, 24, dk, 0.75);
+    ctx.beginPath(); ctx.ellipse(11.5, -1.4, 1.8, 1.1, 0.2, 0, 6.284); ctx.fill();
     ctx.restore();
   }
 
@@ -4754,6 +4986,73 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       }
       ctx.globalAlpha = 1;
     }
+
+    /* ---- the two hidden entrances in the grass ---- */
+    if (groundVis > 0.02) {
+      var mdDk = 1 - Math.max(night, gNightIdle) * 0.42;
+      var mdTop = canvas.getBoundingClientRect().top;
+      var mdLift = gSkyS * H * 0.62;
+      var mdLive = groundVis > 0.32 && p < 0.5;
+      var mdPX = pointer.x + camXs;
+      var mdPY = pointer.y - mdTop - mdLift + camY;
+      /* one object: hover it, lift it, ring it, say where it goes, and hand
+         back the rectangle the cursor and the finger both work from */
+      function meadowDoor(S, box6, sc6, high6, cap6, paint) {
+        var mx6 = box6.x, half = box6.half, high = high6 * sc6;
+        var gy6 = guyGround();
+        var over6 = mdLive && pointer.x > 0 &&
+                    mdPX > mx6 - half && mdPX < mx6 + half &&
+                    mdPY > gy6 - high && mdPY < gy6 + 7;
+        S.hov += ((over6 ? 1 : 0) - S.hov) * 0.18;
+        if (S.hov < 0.002) S.hov = 0;
+        ctx.save();
+        ctx.globalAlpha = groundVis;
+        groundShadow(mx6, half * 1.35, 0.15 + S.hov * 0.05);
+        ctx.translate(0, -S.hov * 3.4);
+        paint(mx6, gy6, mdDk, sc6);
+        // a ring that breathes only once the cursor is near, so it stays scenery
+        if (S.hov > 0.01) {
+          ctx.strokeStyle = "rgba(224,170,96," + (0.34 * S.hov * groundVis) + ")";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.ellipse(mx6, gy6 - high * 0.52, half + 5, high * 0.62 + 6, 0, 0, 6.284);
+          ctx.stroke();
+        }
+        ctx.restore();
+        if (S.hov > 0.55 && over6) {
+          ctx.font = "italic 12.5px Georgia";
+          var lns6 = capWrap(cap6, Math.min(W * 0.7, 300));
+          var lw6 = 0;
+          for (var l6 = 0; l6 < lns6.length; l6++) {
+            lw6 = Math.max(lw6, ctx.measureText(lns6[l6]).width);
+          }
+          var cw6b = lw6 + 18, ch6 = 8 + lns6.length * 16;
+          var sx6b = clamp(mx6 - camXs, cw6b / 2 + 8, W - cw6b / 2 - 8);
+          var sy6b = clamp(gy6 + mdLift - camY - high - 16 - ch6, 12, H - ch6 - 12);
+          var bx6 = sx6b + camXs - cw6b / 2, by6 = sy6b - mdLift + camY;
+          ctx.save();
+          ctx.globalAlpha = Math.min(1, (S.hov - 0.55) / 0.25) * groundVis;
+          ctx.fillStyle = "rgba(20,14,8,.88)";
+          ctx.strokeStyle = "rgba(224,170,96,.35)";
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.roundRect(bx6, by6, cw6b, ch6, 4);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = "rgba(233,226,210,.92)";
+          for (var l7 = 0; l7 < lns6.length; l7++) {
+            ctx.fillText(lns6[l7], bx6 + 9, by6 + 17 + l7 * 16);
+          }
+          ctx.restore();
+        }
+        return mdLive
+          ? { x: mx6 - half, y: gy6 - high - camY, w: half * 2, h: high + 7 }
+          : null;
+      }
+      var bBox = benchBox(), tBox = tableBox();
+      EGG.benchRect = meadowDoor(BENCH, bBox, bBox.half / 27, 26,
+        "The workbench. Every instrument I keep in the open.", drawWorkbench);
+      EGG.tableRect = meadowDoor(TABLE, tBox, tBox.half / 33, 23,
+        "A game left standing. Six of them, played rather than read.", drawGameTable);
+    } else { EGG.benchRect = null; EGG.tableRect = null; BENCH.hov = TABLE.hov = 0; }
 
     /* two butterflies in the warm half of the year, working the wildflowers */
     var wWarmB = sw(0) + sw(1);
@@ -5797,13 +6096,15 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   var D = {
     tr: {"d1":"Profil","d1p":"Kim olduğum, nerede okuduğum, ne yaptığım.",
          "d2":"Projeler","d2p":"Çalışan araçlar, repolar ve CoLaunch.",
-         "d3":"İletişim","d3p":"E-posta, LinkedIn, GitHub.","d4":"Notlar","d4p":"Yazmaya değer şeyler.","hint":"Kaydır",
+         "d3":"İletişim","d3p":"E-posta, LinkedIn, GitHub.","d4":"Notlar","d4p":"Yazmaya değer şeyler.","d5":"Araçlar","d5p":"Ücretsiz aletler ve dört deneme.",
+         "d6":"Oyun Teorisi","d6p":"Altı küçük oyun, okunmak yerine oynanan.","hint":"Kaydır",
          "a-site":"Site","a-lang":"Dil","a-season":"Mevsimi değiştir","t-season":"Mevsim",
          "a-vol":"Ses düzeyi","a-snd":"Sesi aç veya kapat","t-snd":"Ses",
          "s0":"İlkbahar","s1":"Yaz","s2":"Sonbahar","s3":"Kış"},
     de: {"d1":"Profil","d1p":"Wer ich bin, wo ich studiere, was ich gemacht habe.",
          "d2":"Projekte","d2p":"Laufende Instrumente, Repositories und CoLaunch.",
-         "d3":"Kontakt","d3p":"E-Mail, LinkedIn, GitHub.","d4":"Notizen","d4p":"Dinge, die es wert sind.","hint":"Scrollen",
+         "d3":"Kontakt","d3p":"E-Mail, LinkedIn, GitHub.","d4":"Notizen","d4p":"Dinge, die es wert sind.","d5":"Werkzeuge","d5p":"Freie Instrumente und vier Essays.",
+         "d6":"Spieltheorie","d6p":"Sechs kleine Spiele, gespielt statt gelesen.","hint":"Scrollen",
          "a-site":"Website","a-lang":"Sprache","a-season":"Jahreszeit wechseln","t-season":"Jahreszeit",
          "a-vol":"Lautstärke","a-snd":"Ton an oder aus","t-snd":"Ton",
          "s0":"Frühling","s1":"Sommer","s2":"Herbst","s3":"Winter"}
@@ -6232,6 +6533,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       var ps = EGG.panState && EGG.panState();
       if (ps && ps.atCover &&
           !hit(EGG.bikeRect, q.x, q.y) && !hit(EGG.snowRect, q.x, q.y) &&
+          !hit(EGG.benchRect, q.x, q.y) && !hit(EGG.tableRect, q.x, q.y) &&
           !hit(EGG.trunkRect, q.x, q.y) && !hit(EGG.balloonRect, q.x, q.y)) {
         panDrag = { x0: e.clientX, y0: e.clientY, cam0: ps.camX, moved: false, dead: false };
         film.setPointerCapture(e.pointerId);
@@ -6273,6 +6575,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
            hit(EGG.houseDoorRect, q.x, q.y) || hit(EGG.bannerRect, q.x, q.y) ||
            hit(EGG.iuRect, q.x, q.y) || hit(EGG.tumRect, q.x, q.y) ||
            hit(EGG.birdRect, q.x, q.y) || hit(EGG.scrollRect, q.x, q.y) ||
+           hit(EGG.benchRect, q.x, q.y) || hit(EGG.tableRect, q.x, q.y) ||
            hit(EGG.swingRect, q.x, q.y)) ? "pointer" : "";
     });
     film.addEventListener("pointerup", function(e){
@@ -6305,7 +6608,8 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   if (film) film.addEventListener("click", function(e){
     if (window.__panMovedAt && performance.now() - window.__panMovedAt < 350) return;
     if (EGG.lastTouchAt && performance.now() - EGG.lastTouchAt < 700 &&
-        EGG.relicUnder && EGG.relicUnder(e.clientX, e.clientY)) {
+        ((EGG.relicUnder && EGG.relicUnder(e.clientX, e.clientY)) ||
+         (EGG.surfaceUnder && EGG.surfaceUnder(e.clientX, e.clientY)))) {
       var nw8 = performance.now();
       if (relicArm && nw8 - relicArm.t < 2500 &&
           Math.abs(e.clientX - relicArm.x) < 44 && Math.abs(e.clientY - relicArm.y) < 44) {
@@ -6336,6 +6640,16 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       if (window.__horn) window.__horn();
       var sP = toScreen(x, y);
       setTimeout(function(){ window.__travel("profile.html", sP.x, sP.y); }, 220);
+      return;
+    }
+    if (hit(EGG.benchRect, x, y) && window.__travel) {
+      var sWb = toScreen(x, y);
+      window.__travel("tools.html", sWb.x, sWb.y);
+      return;
+    }
+    if (hit(EGG.tableRect, x, y) && window.__travel) {
+      var sGt = toScreen(x, y);
+      window.__travel("game.html", sGt.x, sGt.y);
       return;
     }
     if (hit(EGG.ubahnRect, x, y) && window.__travel) {
@@ -6406,20 +6720,32 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   var BOOK_PAGES = [
     { title: "The notebook", h: "How to read this", ps: [
       "This is the notebook I kept while building this place. It explains what the site does, how each part works, and every hidden thing in it. Nothing here is a riddle. If something is listed, it happens.",
-      "The site is one page of drawing instructions. There are no images and no video. Everything you see, including this notebook, is drawn line by line while you watch.",
+      "The cover is one page of drawing instructions. There are no images and no video. Everything you see, including this notebook, is drawn line by line while you watch.",
       "Turn the pages with the arrows, the arrow keys, or by swiping. Press Escape to close."
     ] },
     { h: "The film", ps: [
-      "Scrolling down runs a year in the life of one tree: summer, then the turn, then the fall, then dusk, then the camera goes underground to the roots and the four doors.",
+      "Scrolling down runs a year in the life of one tree: summer, then the turn, then the fall, then dusk, then the camera goes underground to the roots and the doors.",
       "The film is scrubbed, not played. Every leaf's flight is calculated from your scroll position, so scrolling back up runs it exactly in reverse and the leaves return to their branches.",
-      "The four doors at the bottom lead to the four pages of the site: Profile, Projects, Notes and Contact.",
-      "The arrow keys scrub the film. The space bar plays it by itself. Both work anywhere on the page."
+      "The arrow keys scrub the film. The space bar plays it by itself. Both work anywhere on the page.",
+      "Nothing in the film depends on the clock except a light idle sway, which is why it can be run backwards at all."
+    ] },
+    { h: "The six doors", ps: [
+      "Six cards stand at the bottom of the film. Profile is who I am, where I study and what I have done. Projects is the working instruments and the repositories behind them, CoLaunch among them. Notes is what I think is worth writing down. Contact is email, LinkedIn and GitHub.",
+      "Tools opens the instruments that run inside this site, together with four essays. Game Theory opens six small games that are played rather than read.",
+      "The six lie in three columns and two rows where there is room, two columns on a tablet, and one column on a phone. A phone held sideways puts all six in a single row.",
+      "The museum buried below reads the real height of those cards every time the window changes, and lays its three bands in whatever soil they leave clear. That is why nothing down there is ever hidden behind a card.",
+      "Every door leaves the same way. A dark circle opens from the point you pressed and the next page is already there by the time it fills the screen. Every other way into the site does the same, so nothing ever flashes white."
     ] },
     { h: "The world", ps: [
       "The cover is not the whole map. Scroll up from it and the sky opens: clouds, a hot air balloon towing a banner, birds circling a thermal, and at night the stars.",
       "Drag sideways at the cover, or use the arrows at the left and right edges, and the camera pans off the meadow. To the west lies Istanbul, with the Bosphorus, Kiz Kulesi, a working ferry and the Beyazit gate of Istanbul University. To the east lies Munich, with the Alps, the Frauenkirche, the Eisbach and its surfer, a beer garden, the U Bahn and TUM.",
-      "Each place has its own way into the site. The wooden sign on the pier opens the Profile page. The U Bahn stairs go down to Projects. The banner behind the balloon opens Notes. Knocking on the door of the house opens Contact.",
-      "Underground there is more than roots: a cellar under the house, a well whose rope reaches the water table, an ant colony with branching galleries, a mole, a sleeping rabbit, and a small museum of twelve objects laid out along the taproot in three bands, the deepest being the earliest."
+      "Underground there is more than roots: a cellar under the house, a well whose rope reaches the water table, an ant colony with branching galleries, a mole, a sleeping rabbit, a buried amphora, an aquifer with a blind fish in it, and a museum of twelve objects laid along the taproot in three bands, the deepest being the earliest."
+    ] },
+    { h: "The two in the grass", ps: [
+      "Six things in the world are doors as well as scenery. The wooden sign on the pier in Istanbul opens Profile. The U Bahn stairs in Munich go down to Projects. The banner behind the balloon opens Notes. Knocking on the door of the house opens Contact.",
+      "The last two are new and quiet on purpose. The workbench stands on the far side of his door: a low timber bench with an iron clamp at one end, a saw leaning on it, a mallet and a chisel put down where he left them, and shavings in the grass. It opens Tools.",
+      "The game table sits on the other side of the tree, well away from the bench. A small round table, two stools facing each other, and the stones of a game nobody finished still on the board. It opens Game Theory.",
+      "Both are meant to read as scenery until you point at them. Then they rise a little, a ring comes up around them, and a caption says where they go. On a phone the first tap asks and the second one goes, which is the same rule everything else here follows."
     ] },
     { h: "What is real", ps: [
       "The weather is Munich's, fetched live. If it is raining there while you read this, it rains here too.",
@@ -6439,15 +6765,16 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     ] },
     { h: "Things to try", ps: [
       "Type 3523 anywhere on the cover. The tree blossoms as it did in the spring it was planted.",
-      "The dial in the bottom left corner: one click moves the season forward, a double click grows an entirely new tree with a new shape, and holding it down brings rain.",
-      "Click the red bicycle. He rides off on it, and about fifteen seconds later he rides back and parks it where it was.",
+      "The dial in the bottom left corner: one click moves the season on, a double click grows a new tree with a new shape, and holding it down brings rain.",
+      "Click the red bicycle. He rides off, and about fifteen seconds later he rides back and parks it where it was.",
       "Click a falling leaf in mid air. He catches it, looks at it, and keeps it.",
-      "Double click him while it is raining. He gets thoroughly soaked and his hair goes flat.",
-      "Click the swing hanging from the low branch and he will come over and use it.",
+      "Double click him in the rain. He gets soaked and his hair goes flat.",
+      "Click the swing on the low branch and he will come over and use it.",
       "Knock on the door of the house. It opens before the page turns.",
+      "Point at the workbench beside the house, or the game table across the meadow. Both are easy to walk past, and both are doors.",
       "Click the mole when it surfaces. It takes my CV down the hole with it, and every other visit it brings the document up to read.",
-      "In winter, click the small mound of snow. He builds a snowman out of it and lends it his scarf.",
-      "When a squirrel drops an acorn, click the acorn. He plants it, and a sapling grows on that spot."
+      "In winter, click the mound of snow. He builds a snowman and lends it his scarf.",
+      "When a squirrel drops an acorn, click it. He plants it, and a sapling grows there."
     ] },
     { h: "After dark", ps: [
       "Stay completely still for thirty five seconds at the cover and evening falls early, just for you. Every season has its own night sky.",
@@ -6466,24 +6793,38 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     ] },
     { h: "Below the ground", ps: [
       "Twelve objects are buried along the taproot, in three bands. Nearest the surface, Won: the Boğaziçi Enterprize medal for CoLaunch, the JA Startup badge, the brass plate for the Microbify study that came back graded 1.0, and six certificates kept rolled in one stack.",
-      "Below them, Made: five fossils, one for each instrument I keep in the open. A cracked spreadsheet for unitguard, ribs that read as a bar chart for the abatement cost curve, a river delta splitting four ways for the carbon decomposition, a coil for the discounted cash flow, and a stone tablet cut with the letters SIMEA.",
+      "Below them, Made: five things I made. A cracked spreadsheet for unitguard, ribs that read as a bar chart for the abatement cost curve, a river delta splitting four ways for the carbon decomposition, a coil for the discounted cash flow, and a stone tablet cut with the letters SIMEA.",
       "Deepest, Lived: an Istanbul ferry token, a punched Munich U Bahn ticket, and the torn half of a boarding pass between the two cities.",
-      "Hover any of the twelve, or tap it once on a phone, and it shows a museum label: its name, its year, and two lines about what it was and what came of it. Click it, or tap it a second time, and it opens the page it belongs to.",
-      "The cellar under the house keeps last summer in jars. The well rope goes all the way down to the water, where a blind fish follows your cursor without ever seeing it.",
-      "The ants run a working colony with a main gallery, three branch tunnels and chambers at the ends. Click them and the whole line stops to look at you."
+      "Hover any of the twelve, or tap it once on a phone, and a museum label gives its name, its year, and two lines about what came of it. Click it, or tap it again, and it opens the page it belongs to.",
+      "The rest of the ground answers a hover too. An amphora lies half buried where an old sea reached. The cellar keeps last summer in jars. The well rope goes down to the water, where a blind fish follows your cursor without ever seeing it. A rabbit sleeps in her burrow through every season but spring.",
+      "The ants run a colony with a main gallery, three branch tunnels and chambers at the ends. Click them and the line stops to look at you."
+    ] },
+    { h: "The instruments", ps: [
+      "Tools holds three instruments, and they run inside this site rather than somewhere else.",
+      "A CBAM cost and data gap tool, for importers bringing steel, aluminium, cement, fertiliser, hydrogen or electricity into the EU. It says whether you cross the fifty tonne threshold and lists every emissions figure you are still missing.",
+      "An analyst desk, with a discounted cash flow that takes the terminal value apart, two market sizings with the gap between them left visible, a runway that names the month the money ends, and a converter that refuses a conversion it cannot make safely.",
+      "And Werkstudent, which works out what actually arrives in your account from a working student job or a minijob in Germany. It speaks English, Turkish and German all the way down.",
+      "None of them asks for an account and none of them costs anything. Nothing you type leaves your browser, because there is no server for it to go to. Where a tool holds a rate, a threshold or an emission factor it prints the publisher, the value and the date that value was read. Where it cannot know a figure it says which figure is missing and who holds it, instead of guessing."
+    ] },
+    { h: "The essays and the games", ps: [
+      "Four essays sit beside the instruments, under the name Explorable Economics. Who actually pays a tax, on incidence, where the statute turns out not to decide who bears the cost. The market for lemons, on what one side knows and the other does not. The evolution of cooperation, which holds a tournament between strategies and then lets the winners reproduce. And why the future is cheap, on discounting.",
+      "You bring nothing to an essay. The model in the middle of each one is there so the argument can be checked rather than believed, and every essay ends by saying what its model cannot tell you.",
+      "Game Theory holds six games: The Long Game, The Stag Hunt, The Ultimatum, The Commons, The Beauty Contest and Matching Pennies. Each is a situation people are actually in, written in as few numbers as it takes. Four more are named there and not built yet, because a plan nobody can see is not a plan.",
+      "None of the games is evidence about people. Every opponent in them is a short rule written by hand, and each one ends by saying what it left out.",
+      "Projects carries a case study for each of the five instruments behind it. Notes carries the first note on SIMEA, and a guestbook anyone can write in."
     ] },
     { h: "The controls", ps: [
       "The dial in the bottom left corner changes the season, regrows the tree and calls the rain, as described above.",
       "The button in the bottom right corner turns the sound on and opens a volume slider. Every sound is synthesised on the spot: wind that follows the film, crickets at dusk, a ferry horn, a church bell, his whistling. Nothing was recorded.",
       "The site speaks English, Turkish and German. The buttons are at the bottom of every page, and it remembers your choice.",
-      "The console answers to kerem. Try kerem.ride(), kerem.rain(), kerem.season('winter'), kerem.regrow(), kerem.istanbul(), kerem.munich(), kerem.sky(), kerem.throwMe() and kerem.secrets(), which opens this notebook.",
-      "If your system asks for reduced motion, the film stops moving and the site becomes a plain, quiet document. Nothing is lost."
+      "The console answers to kerem. Try kerem.wave(), kerem.ride(), kerem.rain(), kerem.season('winter'), kerem.regrow(), kerem.istanbul(), kerem.munich(), kerem.home(), kerem.sky(), kerem.throwMe() and kerem.secrets(), which opens this notebook.",
+      "If your system asks for reduced motion, the film stops moving and the site becomes a plain, quiet document with the doors already open. Nothing is lost."
     ] },
     { h: "How it was made", ps: [
-      "One HTML file. No frameworks, no images, no video, no tracking. The tree, the roots and the grass are grown by a seeded random function, so the same seed always produces the same tree, and a new seed produces a genuinely different one.",
+      "This page is one HTML file. No frameworks, no images, no video, no tracking, and every other page here is built the same way. The tree, the roots and the grass are grown by a seeded random function, so the same seed always produces the same tree, and a new seed produces a genuinely different one.",
       "The heavy parts are drawn once into off screen canvases and reused every frame: the trunk, the roots, the grass, the stars, the clouds, the two cities. That is why it stays smooth while so much is moving.",
       "The name at the top is not a font. It is drawn stroke by stroke as a signature, and the dots on the O land last.",
-      "The bird brought you this notebook because you clicked on it while it was perched. That was the only way in.",
+      "The bird brought you this notebook. You clicked it while it was perched, it fetched the parchment, and the parchment opened this. The console is the only other way in.",
       "Thank you for reading this far. Kerem"
     ] },
     null   // the last leaf is blank, as it should be

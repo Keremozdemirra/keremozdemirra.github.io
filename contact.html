@@ -64,10 +64,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
-.bar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--paper) 86%,transparent);
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
-.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
 .bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
 .bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
@@ -78,6 +79,56 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
   border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
 .langs button:hover{color:var(--fg)}
 .langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
+    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* six nav items on a narrow phone: the row is allowed to take a second
+   line rather than push the page sideways, and the words are set a little
+   tighter so that on most phones it does not have to */
+@media (max-width:430px){
+  .bar nav{gap:.34rem .55rem}
+  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
 
 /* ---------- page head ---------- */
 .crown{padding:clamp(3.4rem,9vh,6rem) 0 clamp(2rem,5vh,3rem)}
@@ -148,31 +199,8 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 .share-link:hover{color:var(--fg);border-color:var(--fg)}
 .share-link.done{color:var(--accent);border-color:var(--accent)}
 
-/* ---------- footer ---------- */
-footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem)}
-footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
-  font-size:.74rem;color:var(--dim)}
-footer a{text-decoration:none;color:var(--dim)}
-footer a:hover{color:var(--fg)}
-
-/* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
-@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
-
 /* ---------- the narrow reading, where a thumb does the work ---------- */
 @media (max-width:640px){
-  /* the bar gives the pages a line of their own instead of crowding them */
-  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
-    padding-top:.5rem;padding-bottom:.15rem}
-  .bar .home{white-space:nowrap;font-size:1rem}
-  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
-  .bar nav a{font-size:.8rem;padding:.55rem 0}
-  /* the three languages take the right end of the name's own line: a third
-     row of bar would eat a fifth of the screen */
-  .bar .wrap{position:relative}
-  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
-  .langs button{font-size:.7rem;padding:.2em .4em}
 
   /* stacks: one column reads better than four squeezed ones */
   .tl .row{grid-template-columns:1fr;gap:.2rem}
@@ -194,7 +222,6 @@ footer a:hover{color:var(--fg)}
   body select,body textarea{font-size:16px}
   body .frow input,body input[type="text"],body input[type="email"]{min-height:46px}
   .socials{gap:1.3rem;flex-wrap:wrap}
-  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 
   /* room to breathe: on one column the rules were sitting on the text */
   .crown{padding-bottom:clamp(1.4rem,4vh,2.2rem)}
@@ -207,17 +234,8 @@ footer a:hover{color:var(--fg)}
   .mail-line a.addr{word-break:break-all;line-height:1.25}
 }
 
-/* a finger, not a cursor: every control a thumb has to find is at least a
-   thumb wide, in either orientation */
+/* the same thumb, on the page itself */
 @media (pointer:coarse){
-  .bar .home{display:inline-flex;align-items:center;min-height:44px}
-  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
-    justify-content:center;padding:.3rem .3rem}
-  .langs{gap:.05rem}
-  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
-    display:inline-flex;align-items:center;justify-content:center}
-  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
-    align-items:center;justify-content:flex-end}
   .cv-btn{min-height:44px;padding:.8rem 1.25rem}
   .copy,.share-link{min-height:44px;min-width:44px;
     display:inline-flex;align-items:center;justify-content:center}
@@ -280,7 +298,7 @@ footer a:hover{color:var(--fg)}
 <header class="bar">
   <div class="wrap">
     <a class="home" href="index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" aria-current="page" data-i="nav-c">Contact</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" aria-current="page" data-i="nav-c">Contact</a><a href="tools.html" data-i="nav-t">Tools</a><a href="game.html" data-i="nav-g">Game Theory</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -324,12 +342,12 @@ footer a:hover{color:var(--fg)}
 </section>
 
 </main>
-<footer><div class="wrap">
+<footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 <script>
-window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "a-site": "Site", "a-lang": "Dil", "a-email": "E-posta", "cp-done": "kopyalandı", "c-h1": "İletişim", "c-lede": "Roller, iş birlikleri ve çalışmalarımla ilgili sorular için.", "cp": "kopyala", "c-note": "Münih'teyim. Her mesajı okur, bir gün içinde yanıtlarım.", "c-gb": "Ya da <a href=\"defter.html\">ziyaretçi defterine</a> herkese açık bir not bırak.", "f-h": "Doğrudan yaz", "f-name": "İsim", "f-email": "E-posta", "f-msg": "Mesaj", "f-send": "Gönder", "f-ok": "Gönderildi. Her şeyi okurum.", "f-err": "Gitmedi. E-posta her zaman çalışır."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "a-site": "Website", "a-lang": "Sprache", "a-email": "E-Mail", "cp-done": "kopiert", "c-h1": "Kontakt", "c-lede": "Für Positionen, Kooperationen und Fragen zu meiner Arbeit.", "cp": "kopieren", "c-note": "In München. Ich lese jede Nachricht und antworte innerhalb eines Tages.", "c-gb": "Oder hinterlasse eine öffentliche Notiz im <a href=\"defter.html\">Gästebuch</a>.", "f-h": "Direkt schreiben", "f-name": "Name", "f-email": "E-Mail", "f-msg": "Nachricht", "f-send": "Senden", "f-ok": "Gesendet. Ich lese alles.", "f-err": "Es ist nicht durchgegangen. E-Mail funktioniert stattdessen."}};
+window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "a-email": "E-posta", "cp-done": "kopyalandı", "c-h1": "İletişim", "c-lede": "Roller, iş birlikleri ve çalışmalarımla ilgili sorular için.", "cp": "kopyala", "c-note": "Münih'teyim. Her mesajı okur, bir gün içinde yanıtlarım.", "c-gb": "Ya da <a href=\"defter.html\">ziyaretçi defterine</a> herkese açık bir not bırak.", "f-h": "Doğrudan yaz", "f-name": "İsim", "f-email": "E-posta", "f-msg": "Mesaj", "f-send": "Gönder", "f-ok": "Gönderildi. Her şeyi okurum.", "f-err": "Gitmedi. E-posta her zaman çalışır."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "a-email": "E-Mail", "cp-done": "kopiert", "c-h1": "Kontakt", "c-lede": "Für Positionen, Kooperationen und Fragen zu meiner Arbeit.", "cp": "kopieren", "c-note": "In München. Ich lese jede Nachricht und antworte innerhalb eines Tages.", "c-gb": "Oder hinterlasse eine öffentliche Notiz im <a href=\"defter.html\">Gästebuch</a>.", "f-h": "Direkt schreiben", "f-name": "Name", "f-email": "E-Mail", "f-msg": "Nachricht", "f-send": "Senden", "f-ok": "Gesendet. Ich lese alles.", "f-err": "Es ist nicht durchgegangen. E-Mail funktioniert stattdessen."}};
 
 (function(){
   "use strict";

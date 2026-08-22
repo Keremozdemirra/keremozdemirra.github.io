@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The agent was never alone: SIMEA. Kerem Özdemir</title>
-<meta name="description" content="My research programme, kept in the open.">
+<title>Game Theory. Kerem Özdemir</title>
+<meta name="description" content="Six small playable games: the repeated prisoner's dilemma, the stag hunt, the ultimatum, the commons, the beauty contest and matching pennies. Each one teaches by being played, cites its sources, and says what it does not show.">
 <meta name="color-scheme" content="light">
-<link rel="canonical" href="https://keremozdemir.de/note-simea.html">
-<meta property="og:title" content="The agent was never alone: SIMEA. Kerem Özdemir">
-<meta property="og:description" content="My research programme, kept in the open.">
+<link rel="canonical" href="https://keremozdemir.de/game.html">
+<meta property="og:title" content="Game Theory. Kerem Özdemir">
+<meta property="og:description" content="Six small playable games: the repeated prisoner's dilemma, the stag hunt, the ultimatum, the commons, the beauty contest and matching pennies. Each one teaches by being played, cites its sources, and says what it does not show.">
 <meta property="og:type" content="profile">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -282,23 +282,39 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
   #cvsheet .sk{margin:.1em 0}
 }
 
-.note-item{padding:1.4rem 0}
-.note-item + .note-item{border-top:1px solid var(--line)}
-.note-date{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var(--accent);margin-bottom:.3rem}
-.note-item h3{font-family:var(--serif);font-weight:400;font-size:1.5rem;line-height:1.2}
-.note-item h3 a{text-decoration:none;border-bottom:1px solid var(--line)}
-.note-item h3 a:hover{border-bottom-color:var(--accent)}
-.note-x{font-family:var(--text);font-size:1rem;color:#4c463b;max-width:60ch;margin-top:.4rem}
-.note-read{display:inline-block;margin-top:.6rem;font-size:.84rem;font-weight:500;color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)}
-.note-read:hover{border-bottom-color:var(--accent)}
-.quiet-line{color:var(--dim);font-family:var(--text);font-size:1rem;max-width:56ch}
+.gcard{border:1px solid var(--line);background:var(--raised);padding:clamp(1.1rem,3vw,1.8rem);
+  display:grid;grid-template-columns:1fr auto;gap:.8rem 1.4rem;align-items:start;margin-top:1rem}
+.gcard h3{font-family:var(--serif);font-weight:400;font-size:1.45rem}
+.gcard .mins{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--dim);
+  display:block;margin-top:.15rem}
+.gcard p{max-width:60ch;font-family:var(--text);font-size:1.02rem;color:#4c463b;margin-top:.55rem}
+.gcard p .lbl{font-family:var(--serif);font-style:italic;color:var(--accent);margin-right:.35rem}
+.gcard .go{font-size:.84rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:nowrap;
+  border-bottom:1px solid var(--line);transition:border-color .18s var(--ease);align-self:start}
+.gcard .go:hover{border-bottom-color:var(--accent)}
+.game-group{margin-top:2rem}
+.game-group:first-of-type{margin-top:.2rem}
+.game-group > h3.sub{font-family:var(--serif);font-style:italic;font-size:1.02rem;color:var(--accent);
+  margin-bottom:.2rem}
+.soon{margin-top:.6rem}
+.soon .item{display:grid;grid-template-columns:12rem 1fr;gap:.4rem 1.2rem;padding:.85rem 0;
+  border-top:1px solid var(--line)}
+.soon .item h3{font-family:var(--sans);font-weight:500;font-size:.98rem}
+.soon .item p{font-family:var(--text);font-size:.98rem;color:#4c463b;max-width:62ch}
+.honest p{font-family:var(--text);font-size:1.06rem;color:#4c463b;max-width:62ch;line-height:1.6}
+.honest p + p{margin-top:.8rem}
+@media (max-width:640px){
+  .gcard{grid-template-columns:1fr}
+  .soon .item{grid-template-columns:1fr;gap:.2rem}
+  .game-group{margin-top:1.6rem}
+}
 </style>
 </head>
 <body>
 <header class="bar">
   <div class="wrap">
     <a class="home" href="index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" aria-current="page" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a><a href="tools.html" data-i="nav-t">Tools</a><a href="game.html" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a><a href="tools.html" data-i="nav-t">Tools</a><a href="game.html" aria-current="page" data-i="nav-g">Game Theory</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -311,17 +327,115 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 
 <div class="crown">
   <span class="no"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg></span>
-  <p class="note-date" data-i="sm-date">First note · August 2026</p>
-  <h1 data-i="sm-h">The agent was never alone: SIMEA</h1>
+  <h1 data-i="g-h1">Game Theory</h1>
+  <p class="lede" data-i="g-lede">Six small games, each one a situation people are actually in, written down in as few numbers as it takes. They are played rather than read, and none of them explains itself before you have felt it.</p>
 </div>
 
-<section aria-label="Note" data-ia="a-note">
-  <div class="story">
-    <p data-i="sm1">My research programme, kept in the open. Classical economics models the agent as a rational maximiser; behavioural economics keeps the maximiser and catalogues its failures. SIMEA starts elsewhere: the agent as a decision subject, embedded in and steered by systems. Algorithms, platforms, recommender architectures. The framework proposes three measurable constructs: the influence gradient a system exerts on a choice, the autonomy threshold that remains the agent's own, and the entropy of the choice environment itself.</p>
-    <p data-i="sm2">A second paper takes the framework seriously and asks what it implies for forecasting: if determinism holds, does it follow that financial futures are predictable? It argues that it does not, and that predictability is a function of autonomy. The bibliography is verified line by line; the papers say so themselves.</p>
+<section aria-labelledby="g-why">
+  <h2 id="g-why" data-i="g-why-h">Why a game and not a chapter</h2>
+  <p class="story" data-i="g-why-p1">A game in this sense is the smallest complete description of a situation: who is deciding, what each of them can do, and what each of them ends up with for every combination of those choices. That is the whole apparatus. Everything else in the subject is a consequence of writing a situation down that carefully.</p>
+  <p class="story" style="margin-top:.9rem" data-i="g-why-p2">The trouble is that the consequences are easy to agree with and almost impossible to feel. You can be told that doubt rather than greed is what keeps two hunters apart, agree with it, and learn nothing. Playing one round in which you go hungry because you trusted somebody is a different kind of knowledge, and it is the only kind that changes what you do afterwards. That is what these are for.</p>
+  <p class="story" style="margin-top:.9rem" data-i="g-why-p3">Every one of them runs in this page, saves nothing anywhere but your own browser, works without a connection once it has loaded, and ends by saying plainly what it does not show. Where a game states a fact about the world it names the paper it came from and the date it was read.</p>
+</section>
+
+<section aria-labelledby="g-cat">
+  <h2 id="g-cat" data-i="g-cat-h">The games</h2>
+<div class="game-group">
+  <h3 class="sub" data-i="g-grp-co">Where you can both do well, and might not</h3>
+  <div class="gcard">
+    <div>
+      <h3>The Long Game</h3>
+      <span class="mins" data-i="g-lg-min">20 to 30 minutes</span>
+      <p><i class="lbl" data-i="g-lbl-m">The situation</i><span data-i="g-lg-m">The same two people meet again and again, and each time either can take more by giving nothing.</span></p>
+      <p><i class="lbl" data-i="g-lbl-t">What it teaches</i><span data-i="g-lg-t">Why a future changes the arithmetic of the present, why a short rule beats a clever one, and why a rule that answers every observation will answer an accident as though it were a decision.</span></p>
+    </div>
+    <a class="go" href="game/long-game/index.html" data-i="g-play">Play it →</a>
   </div>
-  <div style="margin-top:1.4rem"><a class="note-read" style="font-size:.9rem" href="https://github.com/Keremozdemirra/simea" rel="noopener noreferrer" data-i="sm3">Read the papers on GitHub</a></div>
-  <p style="margin-top:2.6rem"><a class="note-read" href="notes.html" data-i="all-notes">All notes</a></p>
+  <div class="gcard">
+    <div>
+      <h3>The Stag Hunt</h3>
+      <span class="mins" data-i="g-sh-min">5 to 10 minutes</span>
+      <p><i class="lbl" data-i="g-lbl-m">The situation</i><span data-i="g-sh-m">Two hunters can take a stag together and eat well, or a hare alone and eat a little, and whoever waits alone goes hungry.</span></p>
+      <p><i class="lbl" data-i="g-lbl-t">What it teaches</i><span data-i="g-sh-t">That the trap is not greed but doubt. There are two equilibria here, and which one a village lives in is settled by what each person believes the other will do.</span></p>
+    </div>
+    <a class="go" href="game/stag-hunt/index.html" data-i="g-play">Play it →</a>
+  </div>
+</div>
+<div class="game-group">
+  <h3 class="sub" data-i="g-grp-fair">Where the question is what is acceptable</h3>
+  <div class="gcard">
+    <div>
+      <h3>The Ultimatum</h3>
+      <span class="mins" data-i="g-ul-min">5 to 10 minutes</span>
+      <p><i class="lbl" data-i="g-lbl-m">The situation</i><span data-i="g-ul-m">One person says how a sum is split and the other can only accept it or destroy it for both of them.</span></p>
+      <p><i class="lbl" data-i="g-lbl-t">What it teaches</i><span data-i="g-ul-t">That fairness is a force in real bargaining rather than a soft feeling about it. You will see your own threshold measured and put beside what a purely self interested player would do.</span></p>
+    </div>
+    <a class="go" href="game/ultimatum/index.html" data-i="g-play">Play it →</a>
+  </div>
+</div>
+<div class="game-group">
+  <h3 class="sub" data-i="g-grp-many">Where everyone is reading everyone else</h3>
+  <div class="gcard">
+    <div>
+      <h3>The Commons</h3>
+      <span class="mins" data-i="g-cm-min">8 to 12 minutes</span>
+      <p><i class="lbl" data-i="g-lbl-m">The situation</i><span data-i="g-cm-m">One pasture, four households, and an animal that is worth a whole year to whoever owns it and costs the grass to everybody.</span></p>
+      <p><i class="lbl" data-i="g-lbl-t">What it teaches</i><span data-i="g-cm-t">That the tragedy is a result about rules rather than about people. You watch the grass go, then live in a rule the four of you agree, and Ostrom's finding is quoted with its source.</span></p>
+    </div>
+    <a class="go" href="game/commons/index.html" data-i="g-play">Play it →</a>
+  </div>
+  <div class="gcard">
+    <div>
+      <h3>The Beauty Contest</h3>
+      <span class="mins" data-i="g-bc-min">5 to 8 minutes</span>
+      <p><i class="lbl" data-i="g-lbl-m">The situation</i><span data-i="g-bc-m">Everyone writes a number from zero to one hundred and whoever is nearest to two thirds of the average takes the purse.</span></p>
+      <p><i class="lbl" data-i="g-lbl-t">What it teaches</i><span data-i="g-bc-t">How deep you should reason about other people, which is a fact about the room you are in rather than about mathematics. Keynes on the newspaper competition, quoted with its source.</span></p>
+    </div>
+    <a class="go" href="game/beauty-contest/index.html" data-i="g-play">Play it →</a>
+  </div>
+</div>
+<div class="game-group">
+  <h3 class="sub" data-i="g-grp-war">Where one of you has to lose</h3>
+  <div class="gcard">
+    <div>
+      <h3>Matching Pennies</h3>
+      <span class="mins" data-i="g-mp-min">5 to 10 minutes</span>
+      <p><i class="lbl" data-i="g-lbl-m">The situation</i><span data-i="g-mp-m">Pure conflict. She wins when the two coins agree and you win when they differ, and there is nothing else in it.</span></p>
+      <p><i class="lbl" data-i="g-lbl-t">What it teaches</i><span data-i="g-mp-t">That sometimes the only unexploitable strategy is to be genuinely random, and that people are not. The opponent learns your habits and the game measures your predictability while you play.</span></p>
+    </div>
+    <a class="go" href="game/matching-pennies/index.html" data-i="g-play">Play it →</a>
+  </div>
+</div>
+
+</section>
+
+<section aria-labelledby="g-soon">
+  <h2 id="g-soon" data-i="g-soon-h">Named, not built</h2>
+  <p class="story" data-i="g-soon-p">Four more belong in this family and are not written yet. They are listed because a plan nobody can see is not a plan.</p>
+<div class="soon">
+  <div class="item"><h3>The Centipede</h3><p data-i="g-s1">A pile of money that doubles every time somebody passes it on, and backward induction says take it at the first move. Almost nobody does.</p></div>
+  <div class="item"><h3>The Traveler's Dilemma</h3><p data-i="g-s2">Two travellers name the value of an identical lost bag and the lower claim is paid to both, with a bonus for undercutting. The equilibrium is the lowest number allowed.</p></div>
+  <div class="item"><h3>Nash bargaining</h3><p data-i="g-s3">Two people divide a gain that exists only if they agree, and what each can walk away to decides most of the split.</p></div>
+  <div class="item"><h3>Battle of the Sexes</h3><p data-i="g-s4">Two people want to be together more than they want their own preference, and there are two ways to manage it and no way to choose between them.</p></div>
+</div>
+
+</section>
+
+<section aria-labelledby="g-formal">
+  <h2 id="g-formal" data-i="g-formal-h">The formal treatment</h2>
+  <div class="feature" style="margin-top:1rem">
+    <div>
+      <h3>The evolution of cooperation</h3>
+      <p data-i="g-formal-p">The repeated prisoner's dilemma with the payoffs editable, a full round robin tournament between strategies, an evolutionary run in which the winners reproduce, and every source named and dated. Read this one if you would rather check the arithmetic than feel it.</p>
+    </div>
+    <a class="go" href="tools/economics/cooperation/index.html" data-i="g-formal-go">Read the essay →</a>
+  </div>
+</section>
+
+<section aria-labelledby="g-honest" class="honest">
+  <h2 id="g-honest" data-i="g-honest-h">What none of these are</h2>
+  <p data-i="g-hon1">None of these games is evidence about people. Every opponent in them is a short rule written by hand, and where a rule was chosen to make a point the game says so on its last screen. The experimental findings that are quoted are quoted from the papers and linked to them, and nothing that could not be verified was used.</p>
+  <p data-i="g-hon2">A model is a claim about which parts of a situation matter. Each of these pages ends with the parts it left out, because that list is usually more useful than the model itself.</p>
 </section>
 
 </main>
@@ -330,7 +444,7 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 <script>
-window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "all-notes": "Tüm notlar", "a-note": "Not", "sm-date": "İlk not · Ağustos 2026", "sm-h": "Özne hiç yalnız değildi: SIMEA", "sm1": "Araştırma programım, açıkta tutuluyor. Klasik iktisat, insanı rasyonel bir maksimize edici olarak modeller; davranışsal iktisat bu modeli korur ve hatalarını kataloglar. SIMEA başka bir yerden başlar: sistemlerin içine gömülü ve onlar tarafından yönlendirilen bir karar öznesi. Algoritmalar, platformlar, öneri mimarileri. Çerçeve ölçülebilir üç kavram önerir: bir sistemin seçim üzerindeki etki eğimi, öznenin kendinde kalan özerklik eşiği ve seçim ortamının entropisi.", "sm2": "İkinci makale çerçeveyi ciddiye alır ve öngörü için ne anlama geldiğini sorar: determinizm doğruysa finansal gelecekler öngörülebilir mi? Makale bunun çıkmadığını, öngörülebilirliğin özerkliğin bir fonksiyonu olduğunu savunur. Kaynakça satır satır doğrulanmıştır; makaleler bunu kendileri söyler.", "sm3": "Makaleleri GitHub'da oku", "sm-x": "Araştırma programım, açıkta tutuluyor."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "all-notes": "Alle Notizen", "a-note": "Notiz", "sm-date": "Erste Notiz · August 2026", "sm-h": "Das Subjekt war nie allein: SIMEA", "sm1": "Mein Forschungsprogramm, offen geführt. Die klassische Ökonomik modelliert den Menschen als rationalen Maximierer; die Verhaltensökonomik behält ihn und katalogisiert seine Fehler. SIMEA beginnt woanders: beim Entscheidungssubjekt, eingebettet in Systeme und von ihnen gelenkt. Algorithmen, Plattformen, Empfehlungsarchitekturen. Der Rahmen schlägt drei messbare Konstrukte vor: den Einflussgradienten eines Systems auf eine Wahl, die Autonomieschwelle, die beim Subjekt bleibt, und die Entropie der Wahlumgebung selbst.", "sm2": "Ein zweites Papier nimmt den Rahmen ernst und fragt, was er für Prognosen bedeutet: Wenn Determinismus gilt, folgt daraus die Vorhersagbarkeit der Finanzmärkte? Es argumentiert: nein. Vorhersagbarkeit ist eine Funktion der Autonomie. Die Bibliographie ist Zeile für Zeile geprüft; die Papiere sagen es selbst.", "sm3": "Die Papiere auf GitHub lesen", "sm-x": "Mein Forschungsprogramm, offen geführt."}};
+window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "g-h1": "Oyun Teorisi", "g-lede": "Altı küçük oyun; her biri insanların gerçekten içinde bulunduğu bir durumu, gerektiği kadar az sayıyla yazıya dökülmüş hâlde. Okunmak için değil oynanmak için varlar ve hiçbiri sen hissetmeden kendini açıklamıyor.", "g-why-h": "Neden bir bölüm değil de bir oyun", "g-why-p1": "Buradaki anlamıyla bir oyun, bir durumun mümkün olan en kısa eksiksiz tarifi: kimin karar verdiği, her birinin ne yapabildiği ve bu seçimlerin her bileşimi için her birinin eline ne geçtiği. Bütün donanım bu. Konunun geri kalanı, bir durumu bu kadar dikkatle yazmanın sonucu.", "g-why-p2": "Sorun şu ki bu sonuçlara katılmak kolay, onları hissetmek neredeyse imkânsız. İki avcıyı ayıran şeyin açgözlülük değil şüphe olduğu sana söylenebilir, katılırsın ve hiçbir şey öğrenmezsin. Birine güvendiğin için aç kaldığın tek bir el oynamak başka türden bir bilgi ve sonrasında ne yaptığını değiştiren tek tür bu. Bunlar bunun için var.", "g-why-p3": "Hepsi bu sitenin içinde çalışıyor, kendi tarayıcının dışında hiçbir yere bir şey kaydetmiyor, bir kez yüklendikten sonra bağlantı olmadan da çalışıyor ve neyi göstermediğini açıkça söyleyerek bitiyor. Bir oyun dünya hakkında bir olgu söylüyorsa, geldiği makaleyi ve okunduğu tarihi de yazıyor.", "g-cat-h": "Oyunlar", "g-play": "Oyna →", "g-lbl-m": "Durum", "g-lbl-t": "Öğrettiği", "g-soon-h": "Adı konmuş, henüz yapılmamış", "g-soon-p": "Bu aileye ait dört oyun daha var ve henüz yazılmadılar. Burada olmalarının sebebi şu: kimsenin göremediği bir plan, plan değildir.", "g-formal-h": "Biçimsel hâli", "g-formal-p": "Yinelenen mahkûm ikilemi; kazançlar değiştirilebilir hâlde, stratejiler arasında tam bir lig, kazananların çoğaldığı evrimsel bir koşu ve adı ve tarihi verilmiş her kaynak. Hissetmek yerine aritmetiği denetlemeyi tercih ediyorsan bunu oku.", "g-formal-go": "Denemeyi oku →", "g-honest-h": "Bunların hiçbiri ne değil", "g-hon1": "Bu oyunların hiçbiri insanlar hakkında kanıt değil. İçlerindeki her rakip elle yazılmış kısa bir kural ve bir kural bir noktayı göstermek için seçildiyse oyun bunu son ekranında söylüyor. Aktarılan deneysel bulgular makalelerinden aktarılıyor ve onlara bağlanıyor; doğrulanamayan hiçbir şey kullanılmadı.", "g-hon2": "Bir model, bir durumun hangi parçalarının önemli olduğuna dair bir iddiadır. Bu sayfaların her biri dışarıda bıraktığı parçaları sayarak bitiyor, çünkü o liste çoğu zaman modelin kendisinden daha işe yarıyor.", "g-lg-m": "Aynı iki kişi tekrar tekrar karşılaşır ve her seferinde ikisi de hiçbir şey vermeyerek daha fazlasını alabilir.", "g-lg-t": "Bir geleceğin bugünün aritmetiğini neden değiştirdiğini, kısa bir kuralın zekice olanı neden yendiğini ve her gözleme cevap veren bir kuralın bir kazayı neden bir karar sanıp cevapladığını.", "g-lg-min": "20 to 30 dakika", "g-sh-m": "İki avcı birlikte bir geyik alıp doyabilir ya da tek başına bir tavşan alıp az yiyebilir; yalnız bekleyen aç kalır.", "g-sh-t": "Tuzağın açgözlülük değil şüphe olduğunu. Burada iki denge var ve bir köyün hangisinde yaşadığına, herkesin diğerinin ne yapacağına dair inancı karar veriyor.", "g-sh-min": "5 to 10 dakika", "g-ul-m": "Bir kişi bir paranın nasıl bölüneceğini söyler, diğeri ya kabul eder ya da ikisi için birden yok eder.", "g-ul-t": "Adaletin pazarlıkta yumuşak bir duygu değil gerçek bir güç olduğunu. Kendi eşiğinin ölçülüp yalnızca kendi çıkarını gözeten bir oyuncunun yapacağının yanına konduğunu göreceksin.", "g-ul-min": "5 to 10 dakika", "g-cm-m": "Tek bir mera, dört hane ve sahibine bütün bir yıl değen, bedelini ise otlağın herkes adına ödediği bir hayvan.", "g-cm-t": "Trajedinin insanlarla değil kurallarla ilgili bir sonuç olduğunu. Otun bitişini izliyorsun, sonra dördünüzün anlaştığı bir kuralın içinde yaşıyorsun; Ostrom'un bulgusu kaynağıyla birlikte aktarılıyor.", "g-cm-min": "8 to 12 dakika", "g-bc-m": "Herkes sıfırla yüz arasında bir sayı yazar ve ortalamanın üçte ikisine en yakın olan keseyi alır.", "g-bc-t": "Başkaları hakkında ne kadar derin düşünmen gerektiğini; bu, matematikle değil içinde bulunduğun odayla ilgili bir olgu. Keynes'in gazete yarışması, kaynağıyla birlikte aktarılıyor.", "g-bc-min": "5 to 8 dakika", "g-mp-m": "Saf çatışma. İki para aynı gelirse o kazanır, farklı gelirse sen kazanırsın; içinde başka hiçbir şey yok.", "g-mp-t": "Bazen sömürülemeyecek tek stratejinin gerçekten rastgele olmak olduğunu ve insanların bunu beceremediğini. Rakip alışkanlıklarını öğreniyor, oyun da sen oynarken tahmin edilebilirliğini ölçüyor.", "g-mp-min": "5 to 10 dakika", "g-s1": "Her devredilişinde ikiye katlanan bir para yığını; geriye doğru tümevarım ilk hamlede al diyor. Neredeyse kimse öyle yapmıyor.", "g-s2": "İki yolcu aynı kayıp çantanın değerini söyler; düşük olan ikisine de ödenir, altta kalana da bir prim verilir. Denge, izin verilen en düşük sayıdır.", "g-s3": "İki kişi ancak anlaşırlarsa var olan bir kazancı bölüşür; paylaşımın çoğunu, her birinin çekip gidebileceği yer belirler.", "g-s4": "İki kişi birlikte olmayı kendi tercihlerinden çok istiyor; bunu başarmanın iki yolu var ve aralarında seçim yapmanın bir yolu yok.", "g-grp-co": "İkinizin de kazanabileceği, ama kazanamayabileceği yerler", "g-grp-fair": "Sorunun neyin kabul edilebilir olduğu olduğu yerler", "g-grp-many": "Herkesin herkesi okuduğu yerler", "g-grp-war": "Birinizin kaybetmek zorunda olduğu yerler"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "g-h1": "Spieltheorie", "g-lede": "Sechs kleine Spiele, jedes davon eine Lage, in der Menschen tatsächlich stecken, aufgeschrieben in so wenigen Zahlen wie nötig. Sie werden gespielt und nicht gelesen, und keines erklärt sich, bevor Sie es gespürt haben.", "g-why-h": "Warum ein Spiel und kein Kapitel", "g-why-p1": "Ein Spiel in diesem Sinn ist die kürzeste vollständige Beschreibung einer Lage: wer entscheidet, was jeder tun kann und was jeder für jede Kombination dieser Entscheidungen am Ende hat. Das ist der ganze Apparat. Alles Übrige im Fach folgt daraus, eine Lage so sorgfältig aufgeschrieben zu haben.", "g-why-p2": "Das Problem ist, dass man den Folgerungen leicht zustimmt und sie fast unmöglich spürt. Man kann Ihnen sagen, dass Zweifel und nicht Gier zwei Jäger auseinanderhält, Sie stimmen zu und lernen nichts. Eine einzige Runde zu spielen, in der Sie hungrig heimgehen, weil Sie jemandem vertraut haben, ist eine andere Art von Wissen, und es ist die einzige, die ändert, was Sie danach tun. Dafür sind diese Seiten da.", "g-why-p3": "Jedes davon läuft in dieser Website, speichert nichts außerhalb Ihres eigenen Browsers, arbeitet nach dem ersten Laden auch ohne Verbindung und endet damit, klar zu sagen, was es nicht zeigt. Wo ein Spiel eine Tatsache über die Welt behauptet, nennt es die Arbeit, aus der sie stammt, und das Datum, an dem sie gelesen wurde.", "g-cat-h": "Die Spiele", "g-play": "Spielen →", "g-lbl-m": "Die Lage", "g-lbl-t": "Was es lehrt", "g-soon-h": "Benannt, nicht gebaut", "g-soon-p": "Vier weitere gehören in diese Familie und sind noch nicht geschrieben. Sie stehen hier, weil ein Plan, den niemand sehen kann, kein Plan ist.", "g-formal-h": "Die formale Fassung", "g-formal-p": "Das wiederholte Gefangenendilemma mit veränderbaren Auszahlungen, ein vollständiges Turnier zwischen Strategien, ein evolutionärer Lauf, in dem die Sieger sich vermehren, und jede Quelle mit Namen und Datum. Lesen Sie diese Seite, wenn Sie die Rechnung lieber prüfen als fühlen.", "g-formal-go": "Das Essay lesen →", "g-honest-h": "Was das alles nicht ist", "g-hon1": "Keines dieser Spiele ist ein Beleg über Menschen. Jeder Gegner darin ist eine kurze, von Hand geschriebene Regel, und wo eine Regel gewählt wurde, um etwas zu zeigen, sagt das Spiel es auf seiner letzten Seite. Die zitierten experimentellen Befunde stammen aus den Arbeiten und sind mit ihnen verlinkt, und nichts Unbelegbares wurde verwendet.", "g-hon2": "Ein Modell ist eine Behauptung darüber, welche Teile einer Lage zählen. Jede dieser Seiten endet mit den Teilen, die sie weggelassen hat, denn diese Liste ist meistens nützlicher als das Modell selbst.", "g-lg-m": "Dieselben zwei Menschen begegnen einander immer wieder, und jedes Mal kann jeder mehr bekommen, indem er nichts gibt.", "g-lg-t": "Warum eine Zukunft die Arithmetik der Gegenwart verändert, warum eine kurze Regel eine kluge schlägt, und warum eine Regel, die auf jede Beobachtung antwortet, einen Unfall behandelt, als wäre er eine Entscheidung.", "g-lg-min": "20 to 30 Minuten", "g-sh-m": "Zwei Jäger können gemeinsam einen Hirsch erlegen und gut essen oder allein einen Hasen und wenig, und wer allein wartet, geht hungrig heim.", "g-sh-t": "Dass die Falle nicht Gier ist, sondern Zweifel. Es gibt hier zwei Gleichgewichte, und in welchem ein Dorf lebt, entscheidet, was jeder vom anderen erwartet.", "g-sh-min": "5 to 10 Minuten", "g-ul-m": "Einer sagt, wie eine Summe geteilt wird, und der andere kann sie nur annehmen oder für beide vernichten.", "g-ul-t": "Dass Fairness in echten Verhandlungen eine Kraft ist und kein weiches Gefühl. Ihre eigene Schwelle wird gemessen und neben das gestellt, was ein rein eigennütziger Spieler täte.", "g-ul-min": "5 to 10 Minuten", "g-cm-m": "Eine Weide, vier Haushalte, und ein Tier, das seinem Besitzer ein ganzes Jahr wert ist und dessen Kosten das Gras für alle trägt.", "g-cm-t": "Dass die Tragödie ein Ergebnis über Regeln ist und nicht über Menschen. Sie sehen das Gras verschwinden und leben dann in einer Regel, die die vier vereinbaren; Ostroms Befund steht mit Quelle da.", "g-cm-min": "8 to 12 Minuten", "g-bc-m": "Alle schreiben eine Zahl von null bis hundert, und wer zwei Dritteln des Durchschnitts am nächsten kommt, bekommt den Beutel.", "g-bc-t": "Wie tief man über andere nachdenken sollte, was eine Tatsache über den Raum ist, in dem man sitzt, und nicht über die Mathematik. Keynes über den Zeitungswettbewerb, mit Quelle zitiert.", "g-bc-min": "5 to 8 Minuten", "g-mp-m": "Reiner Konflikt. Sie gewinnt, wenn die zwei Münzen übereinstimmen, Sie gewinnen, wenn sie sich unterscheiden, und mehr ist nicht darin.", "g-mp-t": "Dass manchmal die einzige nicht ausnutzbare Strategie darin besteht, wirklich zufällig zu sein, und dass Menschen das nicht sind. Die Gegnerin lernt Ihre Gewohnheiten, und das Spiel misst währenddessen Ihre Vorhersagbarkeit.", "g-mp-min": "5 to 10 Minuten", "g-s1": "Ein Geldstapel, der sich bei jedem Weitergeben verdoppelt, und die Rückwärtsinduktion sagt: nimm ihn im ersten Zug. Fast niemand tut das.", "g-s2": "Zwei Reisende nennen den Wert eines identischen verlorenen Koffers, der niedrigere Betrag wird beiden gezahlt, mit einem Bonus fürs Unterbieten. Das Gleichgewicht ist die kleinste erlaubte Zahl.", "g-s3": "Zwei Menschen teilen einen Gewinn, den es nur gibt, wenn sie sich einigen, und was jeder als Alternative hat, entscheidet den größten Teil der Teilung.", "g-s4": "Zwei Menschen wollen lieber zusammen sein als ihre eigene Vorliebe durchsetzen, und es gibt zwei Wege dorthin und keinen Weg, zwischen ihnen zu wählen.", "g-grp-co": "Wo beide gut wegkommen können und es vielleicht nicht tun", "g-grp-fair": "Wo die Frage ist, was annehmbar ist", "g-grp-many": "Wo alle einander lesen", "g-grp-war": "Wo einer von beiden verlieren muss"}};
 
 (function(){
   "use strict";

@@ -64,10 +64,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
-.bar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--paper) 86%,transparent);
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
-.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
 .bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
 .bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
@@ -78,6 +79,56 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
   border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
 .langs button:hover{color:var(--fg)}
 .langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
+    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* six nav items on a narrow phone: the row is allowed to take a second
+   line rather than push the page sideways, and the words are set a little
+   tighter so that on most phones it does not have to */
+@media (max-width:430px){
+  .bar nav{gap:.34rem .55rem}
+  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
 
 /* ---------- page head ---------- */
 .crown{padding:clamp(3.4rem,9vh,6rem) 0 clamp(2rem,5vh,3rem)}
@@ -148,31 +199,8 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 .share-link:hover{color:var(--fg);border-color:var(--fg)}
 .share-link.done{color:var(--accent);border-color:var(--accent)}
 
-/* ---------- footer ---------- */
-footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem)}
-footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
-  font-size:.74rem;color:var(--dim)}
-footer a{text-decoration:none;color:var(--dim)}
-footer a:hover{color:var(--fg)}
-
-/* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
-@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
-
 /* ---------- the narrow reading, where a thumb does the work ---------- */
 @media (max-width:640px){
-  /* the bar gives the pages a line of their own instead of crowding them */
-  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
-    padding-top:.5rem;padding-bottom:.15rem}
-  .bar .home{white-space:nowrap;font-size:1rem}
-  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
-  .bar nav a{font-size:.8rem;padding:.55rem 0}
-  /* the three languages take the right end of the name's own line: a third
-     row of bar would eat a fifth of the screen */
-  .bar .wrap{position:relative}
-  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
-  .langs button{font-size:.7rem;padding:.2em .4em}
 
   /* stacks: one column reads better than four squeezed ones */
   .tl .row{grid-template-columns:1fr;gap:.2rem}
@@ -194,7 +222,6 @@ footer a:hover{color:var(--fg)}
   body select,body textarea{font-size:16px}
   body .frow input,body input[type="text"],body input[type="email"]{min-height:46px}
   .socials{gap:1.3rem;flex-wrap:wrap}
-  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 
   /* room to breathe: on one column the rules were sitting on the text */
   .crown{padding-bottom:clamp(1.4rem,4vh,2.2rem)}
@@ -207,17 +234,8 @@ footer a:hover{color:var(--fg)}
   .mail-line a.addr{word-break:break-all;line-height:1.25}
 }
 
-/* a finger, not a cursor: every control a thumb has to find is at least a
-   thumb wide, in either orientation */
+/* the same thumb, on the page itself */
 @media (pointer:coarse){
-  .bar .home{display:inline-flex;align-items:center;min-height:44px}
-  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
-    justify-content:center;padding:.3rem .3rem}
-  .langs{gap:.05rem}
-  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
-    display:inline-flex;align-items:center;justify-content:center}
-  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
-    align-items:center;justify-content:flex-end}
   .cv-btn{min-height:44px;padding:.8rem 1.25rem}
   .copy,.share-link{min-height:44px;min-width:44px;
     display:inline-flex;align-items:center;justify-content:center}
@@ -269,7 +287,7 @@ footer a:hover{color:var(--fg)}
 <header class="bar">
   <div class="wrap">
     <a class="home" href="index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" aria-current="page" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" aria-current="page" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a><a href="tools.html" data-i="nav-t">Tools</a><a href="game.html" data-i="nav-g">Game Theory</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -399,12 +417,12 @@ footer a:hover{color:var(--fg)}
 </div>
 
 </main>
-<footer><div class="wrap">
+<footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 <script>
-window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "a-site": "Site", "a-lang": "Dil", "a-story": "Hikâye", "yr-now": "Şimdi", "bg-grade": "Not 1.0", "ed1": "TUM · Sürdürülebilir Yönetim ve Teknoloji lisansı", "ed1v": "2024 ile 2027 arası", "ed2": "İstanbul Üniversitesi · Ekonomi lisansı, uzaktan", "ed2v": "2025 ile 2029 arası", "ed3": "Yeditepe Üniversitesi · Yönetim Bilişim Sistemleri, TUM'a yatay geçiş", "ed3v": "2023 ile 2024 arası", "ct2": "BCG Digital Transformation simülasyonu", "ct3": "Yönetim Danışmanlığı · Emory", "ct4": "Sürdürülebilirlik Danışmanlığı · UIUC", "ct5": "Google Proje Yönetimi", "mb1": "UN MGCY · Kimyasallar ve Atık Gençlik Platformu", "mb1v": "2025'ten beri", "mb2": "Enactus Straubing e.V. · mali denetçi", "mb2v": "2024 ile 2026 arası", "p-h1": "Profil", "p-lede": "Münih. Aynı anda iki lisans, altı iş deneyimi, kurulmakta olan bir şirket.", "st1": "TUM'da Sürdürülebilir Yönetim ve Teknoloji, yanında İstanbul Üniversitesi'nde Ekonomi okuyorum. Bu eşleşme bilinçli: biri sanayinin nasıl değişmek zorunda olduğunu, diğeri arkasındaki paranın nasıl davrandığını anlatıyor.", "st2": "Asıl sevdiğim şey, yaptığım işin sağlam olması. Başkasının kontrol edebildiği bir emisyon envanteri. Her varsayımın üzerinde bir isim taşıdığı bir pazar modeli. Bir sayı eksikken tahmin etmeyi reddedip tam olarak neyin eksik olduğunu söyleyen bir araç. Repolarımın çoğu, bir yerlerde bir tablonun sessizce yanlış hesapladığını gördüğüm için var.", "st3": "Küçük bir ekiple CoLaunch'ı kuruyorum ve karbon muhasebesi ile finansal analiz için bir dizi açık araç tutuyorum. beşi projeler sayfasında canlı çalışıyor. Adımla yayımlanan her şey kaynağını taşır.", "cv": "CV indir (PDF)", "exp-h": "Deneyim", "cr-h": "Belgeler", "cr-edu": "Eğitim", "cr-lang": "Diller", "cr-cert": "Sertifikalar", "cr-mem": "Üyelikler", "l-tr": "Türkçe", "l-trv": "ana dil", "l-en": "İngilizce", "l-de": "Almanca", "l-dev": "A2, öz değerlendirme", "r7": "Pazarlama müdürü, yarı zamanlı · Münih", "e7": "Okulun yanında, B2B bir yapay zekâ satış otomasyonu platformunun sosyal medya varlığını ve marka kimliğini yönetiyorum.", "l-wp": "Çalışma izni", "l-wpv": "Almanya'da çalışmaya uygun", "r6": "Kurucu ortak · colaunch.app", "r5": "TUM'da döngüsel ekonomi projesi · beş kişilik ekip", "r4": "Danışman stajyer · Berlin", "r3": "Pazar genişleme danışmanı · Straubing", "r2": "Sürdürülebilirlik danışmanı stajyer · İstanbul", "r1": "Sürdürülebilirlik stajyeri · İstanbul", "e6": "Startup fikirlerini onları inşa edecek yetenekle eşleştiren bir platform. Boğaziçi Enterprize'da üçüncülük; JA Startup takımları arasında ulusal düzeyde yarıştı, YTU Girişimcilik'te yarı final.", "e5": "Endüstriyel kompresörler için geri alım şeması ve hizmet-olarak-ürün modeli tasarlandı. Scope 3 analizi ve ESPR + Dijital Ürün Pasaportu rotası.", "e4": "Sağlık ve tüketici ürünleri müşterisi için Çin pazarına giriş raporu. Müşteri sunumları ve içindeki grafikler.", "e3": "Gaz akışları ve sıvılardan mikrobiyolojik örnekleme için üç B2B segmenti haritalandı ve boyutlandırıldı. KPI'lar ve risk değerlendirmesiyle pazar giriş stratejisi.", "e2": "Raporlama yükümlülükleri tarandı; bir kontrol sistemleri üreticisine uygulananlar uygulanmayanlardan ayrıldı.", "e1": "Üretim sahalarında yakıt ve elektrik verisi toplandı; şirketin ilk Scope 1 ve Scope 2 envanteri kuruldu."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "a-site": "Website", "a-lang": "Sprache", "a-story": "Werdegang", "yr-now": "Jetzt", "bg-grade": "Note 1,0", "ed1": "TUM · BSc Sustainable Management and Technology", "ed1v": "2024 bis 2027", "ed2": "Universität Istanbul · BSc Volkswirtschaft, im Fernstudium", "ed2v": "2025 bis 2029", "ed3": "Yeditepe Universität · Wirtschaftsinformatik, Wechsel an die TUM", "ed3v": "2023 bis 2024", "ct2": "BCG Digital Transformation Simulation", "ct3": "Management Consulting · Emory", "ct4": "Nachhaltigkeitsberatung · UIUC", "ct5": "Google Projektmanagement", "mb1": "UN MGCY · Jugendplattform für Chemikalien und Abfall", "mb1v": "seit 2025", "mb2": "Enactus Straubing e.V. · Finanzprüfer", "mb2v": "2024 bis 2026", "p-h1": "Profil", "p-lede": "München. Zwei Studiengänge parallel, sechs Praxisstationen, ein Unternehmen im Aufbau.", "st1": "Ich studiere Sustainable Management & Technology an der TU München und daneben Volkswirtschaft an der Universität Istanbul. Die Kombination ist Absicht: das eine Fach handelt davon, wie die Industrie sich ändern muss, das andere davon, wie sich das Geld dahinter verhält.", "st2": "Was mir wirklich liegt: Dinge zu bauen, die halten. Ein Emissionsinventar, das jemand anderes prüfen kann. Ein Marktmodell, in dem jede Annahme einen Namen trägt. Ein Werkzeug, das nicht rät, wenn eine Zahl fehlt, sondern sagt, was genau fehlt. Die meisten meiner Repositories existieren, weil irgendwo eine Tabelle still versagt hat.", "st3": "Mit einem kleinen Team baue ich CoLaunch, und ich pflege öffentliche Instrumente für Carbon Accounting und Finanzanalyse. fünf davon laufen live auf der Projektseite. Alles unter meinem Namen trägt seine Quelle.", "cv": "CV herunterladen (PDF)", "exp-h": "Werdegang", "cr-h": "Nachweise", "cr-edu": "Ausbildung", "cr-lang": "Sprachen", "cr-cert": "Zertifikate", "cr-mem": "Mitgliedschaften", "l-tr": "Türkisch", "l-trv": "Muttersprache", "l-en": "Englisch", "l-de": "Deutsch", "l-dev": "A2, Selbsteinschätzung", "r7": "Marketing Manager, Teilzeit · München", "e7": "Social-Media-Präsenz und Markenidentität einer B2B-KI-Vertriebsplattform, neben dem Studium.", "l-wp": "Arbeitserlaubnis", "l-wpv": "berechtigt, in Deutschland zu arbeiten", "r6": "Mitgründer · colaunch.app", "r5": "Kreislaufwirtschaftsprojekt an der TUM · Fünferteam", "r4": "Consultant Praktikant · Berlin", "r3": "Market Expansion Consultant · Straubing", "r2": "Praktikant Nachhaltigkeitsberatung · Istanbul", "r1": "Praktikant Nachhaltigkeit · Istanbul", "e6": "Eine Plattform, die Startup-Ideen mit den passenden Talenten zusammenbringt. Dritter Platz beim Boğaziçi Enterprize; national unter JA-Startup-Teams angetreten, Halbfinale bei YTU Entrepreneurship.", "e5": "Rücknahmesystem und Product-as-a-Service-Modell für Industriekompressoren entworfen. Scope-3-Analyse und Weg zu ESPR und digitalem Produktpass.", "e4": "China-Markteintrittsbericht für einen Kunden aus Healthcare und Konsumgütern. Kundenpräsentationen samt Grafiken.", "e3": "Drei B2B-Segmente für mikrobiologische Probenahme kartiert und dimensioniert. Markteintrittsstrategie mit KPIs und Risikobewertung.", "e2": "Berichtspflichten durchgearbeitet und getrennt, was für einen Steuerungshersteller gilt und was nicht.", "e1": "Brennstoff- und Stromdaten der Produktionsstandorte erhoben; erstes Scope-1- und Scope-2-Inventar der Firma aufgebaut."}};
+window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "a-story": "Hikâye", "yr-now": "Şimdi", "bg-grade": "Not 1.0", "ed1": "TUM · Sürdürülebilir Yönetim ve Teknoloji lisansı", "ed1v": "2024 ile 2027 arası", "ed2": "İstanbul Üniversitesi · Ekonomi lisansı, uzaktan", "ed2v": "2025 ile 2029 arası", "ed3": "Yeditepe Üniversitesi · Yönetim Bilişim Sistemleri, TUM'a yatay geçiş", "ed3v": "2023 ile 2024 arası", "ct2": "BCG Digital Transformation simülasyonu", "ct3": "Yönetim Danışmanlığı · Emory", "ct4": "Sürdürülebilirlik Danışmanlığı · UIUC", "ct5": "Google Proje Yönetimi", "mb1": "UN MGCY · Kimyasallar ve Atık Gençlik Platformu", "mb1v": "2025'ten beri", "mb2": "Enactus Straubing e.V. · mali denetçi", "mb2v": "2024 ile 2026 arası", "p-h1": "Profil", "p-lede": "Münih. Aynı anda iki lisans, altı iş deneyimi, kurulmakta olan bir şirket.", "st1": "TUM'da Sürdürülebilir Yönetim ve Teknoloji, yanında İstanbul Üniversitesi'nde Ekonomi okuyorum. Bu eşleşme bilinçli: biri sanayinin nasıl değişmek zorunda olduğunu, diğeri arkasındaki paranın nasıl davrandığını anlatıyor.", "st2": "Asıl sevdiğim şey, yaptığım işin sağlam olması. Başkasının kontrol edebildiği bir emisyon envanteri. Her varsayımın üzerinde bir isim taşıdığı bir pazar modeli. Bir sayı eksikken tahmin etmeyi reddedip tam olarak neyin eksik olduğunu söyleyen bir araç. Repolarımın çoğu, bir yerlerde bir tablonun sessizce yanlış hesapladığını gördüğüm için var.", "st3": "Küçük bir ekiple CoLaunch'ı kuruyorum ve karbon muhasebesi ile finansal analiz için bir dizi açık araç tutuyorum. beşi projeler sayfasında canlı çalışıyor. Adımla yayımlanan her şey kaynağını taşır.", "cv": "CV indir (PDF)", "exp-h": "Deneyim", "cr-h": "Belgeler", "cr-edu": "Eğitim", "cr-lang": "Diller", "cr-cert": "Sertifikalar", "cr-mem": "Üyelikler", "l-tr": "Türkçe", "l-trv": "ana dil", "l-en": "İngilizce", "l-de": "Almanca", "l-dev": "A2, öz değerlendirme", "r7": "Pazarlama müdürü, yarı zamanlı · Münih", "e7": "Okulun yanında, B2B bir yapay zekâ satış otomasyonu platformunun sosyal medya varlığını ve marka kimliğini yönetiyorum.", "l-wp": "Çalışma izni", "l-wpv": "Almanya'da çalışmaya uygun", "r6": "Kurucu ortak · colaunch.app", "r5": "TUM'da döngüsel ekonomi projesi · beş kişilik ekip", "r4": "Danışman stajyer · Berlin", "r3": "Pazar genişleme danışmanı · Straubing", "r2": "Sürdürülebilirlik danışmanı stajyer · İstanbul", "r1": "Sürdürülebilirlik stajyeri · İstanbul", "e6": "Startup fikirlerini onları inşa edecek yetenekle eşleştiren bir platform. Boğaziçi Enterprize'da üçüncülük; JA Startup takımları arasında ulusal düzeyde yarıştı, YTU Girişimcilik'te yarı final.", "e5": "Endüstriyel kompresörler için geri alım şeması ve hizmet-olarak-ürün modeli tasarlandı. Scope 3 analizi ve ESPR + Dijital Ürün Pasaportu rotası.", "e4": "Sağlık ve tüketici ürünleri müşterisi için Çin pazarına giriş raporu. Müşteri sunumları ve içindeki grafikler.", "e3": "Gaz akışları ve sıvılardan mikrobiyolojik örnekleme için üç B2B segmenti haritalandı ve boyutlandırıldı. KPI'lar ve risk değerlendirmesiyle pazar giriş stratejisi.", "e2": "Raporlama yükümlülükleri tarandı; bir kontrol sistemleri üreticisine uygulananlar uygulanmayanlardan ayrıldı.", "e1": "Üretim sahalarında yakıt ve elektrik verisi toplandı; şirketin ilk Scope 1 ve Scope 2 envanteri kuruldu."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "a-story": "Werdegang", "yr-now": "Jetzt", "bg-grade": "Note 1,0", "ed1": "TUM · BSc Sustainable Management and Technology", "ed1v": "2024 bis 2027", "ed2": "Universität Istanbul · BSc Volkswirtschaft, im Fernstudium", "ed2v": "2025 bis 2029", "ed3": "Yeditepe Universität · Wirtschaftsinformatik, Wechsel an die TUM", "ed3v": "2023 bis 2024", "ct2": "BCG Digital Transformation Simulation", "ct3": "Management Consulting · Emory", "ct4": "Nachhaltigkeitsberatung · UIUC", "ct5": "Google Projektmanagement", "mb1": "UN MGCY · Jugendplattform für Chemikalien und Abfall", "mb1v": "seit 2025", "mb2": "Enactus Straubing e.V. · Finanzprüfer", "mb2v": "2024 bis 2026", "p-h1": "Profil", "p-lede": "München. Zwei Studiengänge parallel, sechs Praxisstationen, ein Unternehmen im Aufbau.", "st1": "Ich studiere Sustainable Management & Technology an der TU München und daneben Volkswirtschaft an der Universität Istanbul. Die Kombination ist Absicht: das eine Fach handelt davon, wie die Industrie sich ändern muss, das andere davon, wie sich das Geld dahinter verhält.", "st2": "Was mir wirklich liegt: Dinge zu bauen, die halten. Ein Emissionsinventar, das jemand anderes prüfen kann. Ein Marktmodell, in dem jede Annahme einen Namen trägt. Ein Werkzeug, das nicht rät, wenn eine Zahl fehlt, sondern sagt, was genau fehlt. Die meisten meiner Repositories existieren, weil irgendwo eine Tabelle still versagt hat.", "st3": "Mit einem kleinen Team baue ich CoLaunch, und ich pflege öffentliche Instrumente für Carbon Accounting und Finanzanalyse. fünf davon laufen live auf der Projektseite. Alles unter meinem Namen trägt seine Quelle.", "cv": "CV herunterladen (PDF)", "exp-h": "Werdegang", "cr-h": "Nachweise", "cr-edu": "Ausbildung", "cr-lang": "Sprachen", "cr-cert": "Zertifikate", "cr-mem": "Mitgliedschaften", "l-tr": "Türkisch", "l-trv": "Muttersprache", "l-en": "Englisch", "l-de": "Deutsch", "l-dev": "A2, Selbsteinschätzung", "r7": "Marketing Manager, Teilzeit · München", "e7": "Social-Media-Präsenz und Markenidentität einer B2B-KI-Vertriebsplattform, neben dem Studium.", "l-wp": "Arbeitserlaubnis", "l-wpv": "berechtigt, in Deutschland zu arbeiten", "r6": "Mitgründer · colaunch.app", "r5": "Kreislaufwirtschaftsprojekt an der TUM · Fünferteam", "r4": "Consultant Praktikant · Berlin", "r3": "Market Expansion Consultant · Straubing", "r2": "Praktikant Nachhaltigkeitsberatung · Istanbul", "r1": "Praktikant Nachhaltigkeit · Istanbul", "e6": "Eine Plattform, die Startup-Ideen mit den passenden Talenten zusammenbringt. Dritter Platz beim Boğaziçi Enterprize; national unter JA-Startup-Teams angetreten, Halbfinale bei YTU Entrepreneurship.", "e5": "Rücknahmesystem und Product-as-a-Service-Modell für Industriekompressoren entworfen. Scope-3-Analyse und Weg zu ESPR und digitalem Produktpass.", "e4": "China-Markteintrittsbericht für einen Kunden aus Healthcare und Konsumgütern. Kundenpräsentationen samt Grafiken.", "e3": "Drei B2B-Segmente für mikrobiologische Probenahme kartiert und dimensioniert. Markteintrittsstrategie mit KPIs und Risikobewertung.", "e2": "Berichtspflichten durchgearbeitet und getrennt, was für einen Steuerungshersteller gilt und was nicht.", "e1": "Brennstoff- und Stromdaten der Produktionsstandorte erhoben; erstes Scope-1- und Scope-2-Inventar der Firma aufgebaut."}};
 
 (function(){
   "use strict";

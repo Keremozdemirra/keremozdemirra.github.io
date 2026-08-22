@@ -1,0 +1,2979 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analyst Desk</title>
+<meta name="description" content="Four instruments for students, analysts and founders. A discounted cash flow that prints the terminal share, two market sizings reconciled by inversion, a runway that prices one more hire in weeks, and a unit converter that refuses unsafe conversions. Runs entirely in the browser.">
+<meta name="author" content="Kerem Ozdemir">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Instrument+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="canonical" href="https://keremozdemir.de/tools/analyst/">
+<meta property="og:title" content="Analyst Desk">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   kit.css
+   House visual system for the open instruments at keremozdemir.de
+   Paper palette, Fraunces display, Newsreader body, IBM Plex Mono
+   for every number. No framework, no build step.
+
+   The host document loads three families from Google Fonts and nothing
+   else, with preconnect to fonts.googleapis.com and fonts.gstatic.com:
+     Fraunces      opsz,wght 9..144 at 300, 400, 500
+     Newsreader    ital,opsz,wght 6..72 at 400, 500 and italic 400
+     IBM Plex Mono 400, 500
+   Every family here has a real fallback stack, so the page stays legible
+   if the fonts never arrive.
+   ============================================================ */
+
+/* ---------- 1. tokens ---------- */
+
+:root {
+  color-scheme: light;
+
+  --paper:      #f2efe6;
+  --paper-sunk: #ebe7dc;
+  --panel:      #f7f5ee;
+  --field:      #fdfcf8;
+  --ink:        #2b2620;
+  --ink-soft:   #4b443b;
+  --dim:        #6f6558;
+  --faint:      #8d8375;
+  --rule:       #d8d2c4;
+  --rule-firm:  #bdb5a4;
+  --accent:     #8a5a24;
+  --accent-lit: #f0e6d6;
+  --flag:       #8c3b1e;
+  --flag-lit:   #f3e4de;
+  --good:       #3f5c3a;
+  --good-lit:   #e5eade;
+
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --serif:   "Newsreader", Georgia, "Times New Roman", serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 66ch;
+  --gap:     clamp(1rem, 2.4vw, 1.6rem);
+  --pad:     clamp(0.95rem, 2.4vw, 1.5rem);
+  --edge:    clamp(1.1rem, 5vw, 3.25rem);
+}
+
+/* The instruments used to flip to a dark palette with the system.  They
+   sit inside keremozdemir.de now, whose paper is light and whose top bar
+   and footer are painted from the site's own tokens, so a page that went
+   dark underneath a light bar would only look broken.  One palette. */
+
+/* ---------- 2. reset and page ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, 0.97rem + 0.16vw, 1.08rem);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.15; letter-spacing: -0.02em; }
+
+p { margin: 0 0 0.9em; max-width: var(--measure); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-firm); }
+a:hover { border-bottom-color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+.k-shell :focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--accent-lit); color: var(--ink); }
+
+.k-vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0);
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.k-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  background: var(--ink); color: var(--paper); border: 0;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+}
+.k-skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- 3. shell ---------- */
+
+.k-shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+.k-wrap { width: 100%; max-width: 74rem; margin: 0 auto; padding-inline: var(--edge); }
+
+/* The top bar is the site's, spliced in from pagegen.py by build.sh, so
+   there is no header of the kit's own any more. */
+
+.k-main { flex: 1 0 auto; padding-block: clamp(1.8rem, 5vw, 3.2rem) clamp(2.5rem, 6vw, 4rem); }
+
+.k-lede { max-width: 62ch; }
+.k-lede h1 {
+  font-size: clamp(1.85rem, 1.2rem + 2.6vw, 3rem);
+  letter-spacing: -0.032em; margin-bottom: 0.5rem;
+}
+.k-lede .k-standfirst {
+  font-size: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  color: var(--ink-soft); line-height: 1.5;
+}
+
+.k-sect { margin-top: clamp(2.2rem, 5.5vw, 3.4rem); }
+.k-sect > h2 {
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule-firm);
+  margin-bottom: 1.1rem;
+}
+.k-sect > h2 .k-num {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+}
+.k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
+
+/* ---------- 4. input row ---------- */
+
+.k-row {
+  display: grid; gap: 0.7rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  align-items: end;
+}
+.k-row.k-row-tight { gap: 0.55rem 0.9rem; }
+
+.k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.k-field > label, .k-lab {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+}
+.k-field .k-hint {
+  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
+  line-height: 1.45; letter-spacing: 0.02em;
+}
+
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
+  width: 100%; min-width: 0;
+  background: var(--field);
+  border: 1px solid var(--rule-firm);
+  border-radius: 0;
+  color: var(--ink);
+  font-family: var(--mono); font-size: 0.88rem; font-weight: 400;
+  padding: 0.55rem 0.6rem;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+input[type="number"] { font-variant-numeric: tabular-nums; text-align: right; }
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.9rem;
+}
+input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--panel); }
+input::placeholder { color: var(--faint); }
+input[aria-invalid="true"] { border-color: var(--flag); }
+
+.k-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--rule-firm); border-radius: 0;
+  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  padding: 0.62rem 0.95rem; cursor: pointer;
+  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.k-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.k-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
+.k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.k-btn-key { color: #f7f5ee; }
+.k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+
+.k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+
+/* ---------- 5. result panel ---------- */
+
+.k-panel {
+  background: var(--panel);
+  border: 1px solid var(--rule-firm);
+  padding: var(--pad);
+}
+.k-panel + .k-panel { margin-top: var(--gap); }
+.k-panel > h3, .k-panel-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+.k-panel-sunk { background: var(--paper-sunk); }
+
+.k-stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem; }
+.k-stat .k-big {
+  font-family: var(--mono); font-weight: 500;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+  line-height: 1.05; color: var(--ink);
+}
+.k-stat .k-unit { font-family: var(--mono); font-size: 0.78rem; color: var(--dim); letter-spacing: 0.05em; }
+
+.k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+
+.k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
+.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dd {
+  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
+}
+.k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
+
+/* arithmetic trace: every step printed */
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem; padding: 0.3rem 0;
+  border-bottom: 1px dotted var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+.k-steps li:last-child { border-bottom: 0; }
+.k-steps .k-op { color: var(--dim); }
+.k-steps .k-res { color: var(--ink); font-weight: 500; text-align: right; white-space: nowrap; }
+.k-steps li.k-step-final { border-top: 1px solid var(--rule-firm); border-bottom: 0; margin-top: 0.3rem; padding-top: 0.5rem; }
+.k-steps li.k-step-final .k-res { color: var(--accent); font-size: 0.92rem; }
+
+/* ---------- 6. source line ---------- */
+
+.k-source {
+  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  margin-top: 0.7rem; padding-top: 0.55rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-source::before {
+  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--faint); flex: none;
+}
+.k-source.k-source-bare::before { content: none; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.k-source .k-checked { color: var(--faint); white-space: nowrap; }
+
+/* ---------- 7. warning and refusal ---------- */
+
+.k-warn {
+  background: var(--flag-lit);
+  border: 1px solid var(--flag);
+  border-left-width: 3px;
+  padding: var(--pad);
+}
+.k-warn > h3, .k-warn .k-panel-h { color: var(--flag); }
+.k-warn p { color: var(--ink); }
+.k-warn + .k-warn, .k-panel + .k-warn, .k-warn + .k-panel { margin-top: var(--gap); }
+
+.k-ok { background: var(--good-lit); border: 1px solid var(--good); border-left-width: 3px; padding: var(--pad); }
+.k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
+
+.k-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
+  white-space: nowrap;
+}
+.k-tag-gap { color: var(--flag); background: var(--flag-lit); }
+.k-tag-known { color: var(--good); background: var(--good-lit); }
+.k-tag-quiet { color: var(--faint); background: transparent; }
+
+.k-ask { margin: 0.85rem 0 0; padding: 0; list-style: none; }
+.k-ask li {
+  display: grid; grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.2rem 0.9rem; padding: 0.4rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.92rem;
+}
+.k-ask li > b {
+  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.22rem;
+}
+
+/* ---------- 8. tables ---------- */
+
+.k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-table th, .k-table td {
+  text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule); vertical-align: top;
+}
+.k-table th {
+  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  border-bottom-color: var(--rule-firm); white-space: nowrap;
+}
+.k-table td.k-n, .k-table th.k-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  text-align: right; padding-right: 0; white-space: nowrap;
+}
+.k-table tbody tr:last-child td { border-bottom: 0; }
+.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell a { word-break: break-all; }
+
+/* ---------- 9. timeline ---------- */
+
+.k-time { margin: 0; padding: 0; list-style: none; }
+.k-time li {
+  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0.25rem 1.1rem; padding: 0.7rem 0;
+  border-top: 1px solid var(--rule);
+}
+.k-time li:first-child { border-top: 0; padding-top: 0; }
+.k-time .k-when {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
+}
+.k-time .k-what { font-size: 0.96rem; color: var(--ink); }
+.k-time .k-what small {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+}
+.k-time li.k-past .k-when { color: var(--faint); }
+.k-time li.k-past .k-what { color: var(--dim); }
+
+/* ---------- 10. the closing note ---------- */
+/* Each instrument ends with its own disclaimer and its own privacy line.
+   That is the page's last word, not the site's, so it is a closing panel
+   and the site's footer follows it. */
+
+.k-endnote {
+  border-top: 1px solid var(--rule-firm);
+  background: var(--paper-sunk);
+  padding-block: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: 0.9rem; color: var(--dim);
+}
+.k-endnote .k-wrap { display: grid; gap: 1.1rem; }
+.k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
+.k-endnote .k-fine {
+  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
+.k-endnote a:hover { color: var(--accent); }
+
+/* ---------- 11. toast for copy actions ---------- */
+
+.k-toast {
+  position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.k-toast[data-on="1"] { opacity: 1; }
+
+/* ---------- 12. responsive ---------- */
+
+@media (max-width: 640px) {
+  .k-ask li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-time li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-steps li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .k-steps .k-res { text-align: left; }
+}
+
+@media print {
+  .k-btnbar, .k-skip, .k-toast { display: none; }
+  body { background: #fff; color: #000; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- analyst desk ---------- */
+
+.ad-rows { display: grid; gap: 0.6rem; }
+#v-rows { grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr)); align-items: start; }
+#v-rows > .ad-empty { grid-column: 1 / -1; }
+
+.ad-item {
+  border: 1px solid var(--rule-firm);
+  background: var(--panel);
+  padding: 0.7rem var(--pad) 0.85rem;
+}
+.ad-item-top {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 0.4rem 1rem; margin-bottom: 0.55rem; flex-wrap: wrap;
+}
+.ad-item-n {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--faint);
+}
+.ad-grid {
+  display: grid; gap: 0.6rem 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  align-items: end;
+}
+.ad-grid-wide { grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); }
+@media (max-width: 560px) { .ad-grid, .ad-grid-wide { grid-template-columns: minmax(0, 1fr); } }
+
+.ad-empty {
+  border: 1px dashed var(--rule-firm); background: transparent;
+  padding: var(--pad); color: var(--dim); font-size: 0.95rem;
+}
+
+.ad-two {
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  align-items: start;
+}
+
+.ad-lead {
+  font-size: 0.98rem; color: var(--ink-soft); max-width: 64ch;
+  margin: 0 0 0.7rem;
+}
+.ad-case {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--dim); margin: 0 0 1.1rem;
+}
+.ad-case a { color: var(--dim); border-bottom: 1px solid var(--rule); }
+.ad-case a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+.ad-bar { display: flex; height: 1.4rem; border: 1px solid var(--rule-firm); overflow: hidden; }
+.ad-bar i { display: block; height: 100%; }
+.ad-bar .a { background: var(--rule); }
+.ad-bar .b { background: var(--accent); }
+.ad-key {
+  display: flex; flex-wrap: wrap; gap: 0.3rem 1.2rem; margin-top: 0.55rem;
+  font-family: var(--mono); font-size: 0.7rem; color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+.ad-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.ad-key i { display: inline-block; width: 0.7rem; height: 0.7rem; flex: none; }
+.ad-key i.a { background: var(--rule); border: 1px solid var(--rule-firm); }
+.ad-key i.b { background: var(--accent); }
+
+.ad-chart { width: 100%; overflow: hidden; margin-top: 0.4rem; }
+.ad-chart svg { display: block; max-width: 100%; height: auto; }
+
+.ad-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.ad-fs { border: 0; padding: 0; margin: 0; min-width: 0; }
+.ad-fs > legend { padding: 0; }
+
+.ad-sub {
+  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  margin: 0 0 0.6rem;
+}
+
+.ad-mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.ad-no { color: var(--flag); }
+.ad-flagnum { color: var(--flag); }
+
+/* ---------- the site's clothes, worn by an instrument ---------- */
+.bar,footer.site-foot,.leaf-mark{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#f2efe6;
+  --fg:#221e17;
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --accent:#8a5a24;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+.bar,footer.site-foot{color:var(--fg)}
+footer.site-foot{background:var(--paper)}
+.bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
+
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
+.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+.langs{display:flex;gap:.1rem;margin-left:.6rem}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
+    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* six nav items on a narrow phone: the row is allowed to take a second
+   line rather than push the page sideways, and the words are set a little
+   tighter so that on most phones it does not have to */
+@media (max-width:430px){
+  .bar nav{gap:.34rem .55rem}
+  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+
+/* ---------- the crown, on a page whose interior is its own ---------- */
+.k-crown-no{
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;
+  font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;
+  color:var(--accent);
+}
+.k-crown-no svg{flex:none}
+.k-lede h1{margin-top:0}
+
+
+</style>
+</head>
+<body>
+
+<a class="k-skip" href="#work">Skip to the instruments</a>
+
+<div class="k-shell">
+
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="../../index.html">Kerem Özdemir</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" aria-current="page" data-i="nav-t">Tools</a><a href="../../game.html" data-i="nav-g">Game Theory</a>
+      <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+
+  <main class="k-main" id="work">
+    <div class="k-wrap">
+
+      <div class="k-lede k-crown">
+        <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Instrument · finance and analysis</i></span>
+        <h1>Four instruments, and what each of them refuses to do</h1>
+        <p class="k-standfirst">A valuation that prints how much of itself is the perpetuity behind the forecast.
+        Two market sizings with the gap between them left on the page. A runway that says which month the money
+        runs out and what one more hire costs in weeks. A unit converter that names the missing input rather than
+        guessing it. Every figure is arithmetic on numbers you type. Each instrument saves its state in the address
+        bar, so a result is a link, and each one exports its table.</p>
+      </div>
+
+      <!-- ============ 01 valuation ============ -->
+      <section class="k-sect" aria-labelledby="h-v">
+        <h2 id="h-v"><span class="k-num">01</span>Valuation</h2>
+        <p class="ad-lead">For seeing how much of an enterprise value is the years you forecast and how much is the
+        perpetuity attached behind the last of them. Enter your own cash flows, cost of capital and terminal growth.</p>
+        <p class="ad-case">Method behind it:
+          <a href="../../case-dcf-lab.html" rel="noreferrer noopener" target="_blank">the dcf lab case study</a>
+        </p>
+
+        <div class="k-row" style="max-width:34rem">
+          <div class="k-field">
+            <label for="v-w">Cost of capital, per cent</label>
+            <input type="number" id="v-w" step="0.01" inputmode="decimal">
+            <span class="k-hint">The rate that discounts every year and the perpetuity.</span>
+          </div>
+          <div class="k-field">
+            <label for="v-g">Terminal growth, per cent</label>
+            <input type="number" id="v-g" step="0.01" inputmode="decimal">
+            <span class="k-hint">Growth of the perpetuity after the last forecast year.</span>
+          </div>
+        </div>
+
+        <fieldset class="ad-fs" style="margin-top:1.1rem">
+          <legend class="ad-sub">Forecast free cash flows</legend>
+          <div class="ad-rows" id="v-rows"></div>
+        </fieldset>
+
+        <div class="k-btnbar" style="margin-top:1rem">
+          <button type="button" class="k-btn" id="b-v-add">Add year</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-v-example">Load an example</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-v-clear">Clear</button>
+        </div>
+        <p class="k-hint" style="margin-top:0.6rem">Any example loaded here is an example. The figures in it are
+        invented to show the arithmetic working and they value nothing.</p>
+        <p class="k-note" style="margin-top:0.9rem">Cash flows are in one unit of your choosing, the same unit
+        throughout. The share of the enterprise value carried by the terminal value does not depend on which unit
+        that is. There is no net debt, no share count and no per share figure here, because those would turn a
+        decomposition into a price.</p>
+
+        <div id="v-out" aria-live="polite" style="margin-top:var(--gap)"></div>
+
+        <div class="k-btnbar" style="margin-top:var(--gap)">
+          <button type="button" class="k-btn k-btn-key" id="b-v-csv">Download CSV</button>
+          <button type="button" class="k-btn" id="b-v-copy">Copy table</button>
+          <button type="button" class="k-btn" id="b-v-link">Copy link to these inputs</button>
+        </div>
+      </section>
+
+      <!-- ============ 02 market size ============ -->
+      <section class="k-sect" aria-labelledby="h-m">
+        <h2 id="h-m"><span class="k-num">02</span>Market size</h2>
+        <p class="ad-lead">For sizing a market twice, top down and bottom up, and reading the disagreement instead
+        of averaging it away. Every assumption is answered with the value it would have to take for the two sizings
+        to agree.</p>
+        <p class="ad-case">Method behind it:
+          <a href="../../case-market-sizer.html" rel="noreferrer noopener" target="_blank">the market sizer case study</a>
+        </p>
+
+        <div class="k-row" style="max-width:22rem">
+          <div class="k-field">
+            <label for="m-unit">Money label</label>
+            <input type="text" id="m-unit" maxlength="12" placeholder="EUR">
+            <span class="k-hint">A label only. It changes no arithmetic.</span>
+          </div>
+        </div>
+
+        <div class="ad-two" style="margin-top:1.1rem">
+          <fieldset class="ad-fs">
+            <legend class="ad-sub">Top down: a universe narrowed by factors</legend>
+            <div class="ad-rows" id="m-td"></div>
+            <div class="k-btnbar" style="margin-top:0.8rem">
+              <button type="button" class="k-btn k-btn-quiet" id="b-m-addf">Add factor</button>
+            </div>
+          </fieldset>
+          <fieldset class="ad-fs">
+            <legend class="ad-sub">Bottom up: segments, each a product of drivers</legend>
+            <div class="ad-rows" id="m-bu"></div>
+            <div class="k-btnbar" style="margin-top:0.8rem">
+              <button type="button" class="k-btn k-btn-quiet" id="b-m-addseg">Add segment</button>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="k-btnbar" style="margin-top:1rem">
+          <button type="button" class="k-btn k-btn-quiet" id="b-m-example">Load an example</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-m-clear">Clear</button>
+        </div>
+        <p class="k-hint" style="margin-top:0.6rem">Any example loaded here is an example. The figures in it are
+        invented to show the arithmetic working and they size nothing.</p>
+
+        <div id="m-out" aria-live="polite" style="margin-top:var(--gap)"></div>
+
+        <div class="k-btnbar" style="margin-top:var(--gap)">
+          <button type="button" class="k-btn k-btn-key" id="b-m-csv">Download CSV</button>
+          <button type="button" class="k-btn" id="b-m-copy">Copy table</button>
+          <button type="button" class="k-btn" id="b-m-link">Copy link to these inputs</button>
+        </div>
+      </section>
+
+      <!-- ============ 03 runway ============ -->
+      <section class="k-sect" aria-labelledby="h-r">
+        <h2 id="h-r"><span class="k-num">03</span>Runway</h2>
+        <p class="ad-lead">For the month the money runs out, the balance month by month up to a horizon you set,
+        and the question that follows: how many weeks of runway each planned hire costs.</p>
+        <p class="ad-case">No case study for this one. It is arithmetic on your own figures, and the method is
+        printed under the chart.</p>
+
+        <div class="k-row">
+          <div class="k-field">
+            <label for="r-cash">Cash in the bank</label>
+            <input type="number" id="r-cash" step="any" inputmode="decimal">
+            <span class="k-hint">The balance at the start of month one.</span>
+          </div>
+          <div class="k-field">
+            <label for="r-fixed">Fixed monthly costs</label>
+            <input type="number" id="r-fixed" step="any" inputmode="decimal">
+            <span class="k-hint">Everything that does not scale with headcount.</span>
+          </div>
+          <div class="k-field">
+            <label for="r-perhead">Monthly cost per head</label>
+            <input type="number" id="r-perhead" step="any" inputmode="decimal">
+            <span class="k-hint">Fully loaded, per person, per month.</span>
+          </div>
+          <div class="k-field">
+            <label for="r-heads">Heads today</label>
+            <input type="number" id="r-heads" step="1" min="0" inputmode="numeric">
+            <span class="k-hint">People on the payroll before any planned hire.</span>
+          </div>
+        </div>
+
+        <div class="k-row" style="margin-top:0.9rem">
+          <div class="k-field">
+            <label for="r-m0">First month of the plan</label>
+            <select id="r-m0"></select>
+          </div>
+          <div class="k-field">
+            <label for="r-y0">Year</label>
+            <input type="number" id="r-y0" step="1" inputmode="numeric">
+          </div>
+          <div class="k-field">
+            <label for="r-h">Horizon, months</label>
+            <input type="number" id="r-h" step="1" min="1" max="240" inputmode="numeric">
+            <span class="k-hint">The tool computes nothing past this point and says so.</span>
+          </div>
+        </div>
+
+        <div class="ad-two" style="margin-top:1.2rem">
+          <fieldset class="ad-fs">
+            <legend class="ad-sub">Planned hires</legend>
+            <div class="ad-rows" id="r-hires"></div>
+            <div class="k-btnbar" style="margin-top:0.8rem">
+              <button type="button" class="k-btn k-btn-quiet" id="b-r-addhire">Add hire</button>
+            </div>
+          </fieldset>
+          <fieldset class="ad-fs">
+            <legend class="ad-sub">Expected income</legend>
+            <div class="ad-rows" id="r-inc"></div>
+            <div class="k-btnbar" style="margin-top:0.8rem">
+              <button type="button" class="k-btn k-btn-quiet" id="b-r-addinc">Add income</button>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="k-btnbar" style="margin-top:1rem">
+          <button type="button" class="k-btn k-btn-quiet" id="b-r-example">Load an example</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-r-clear">Clear</button>
+        </div>
+        <p class="k-hint" style="margin-top:0.6rem">Any example loaded here is an example. The figures in it are
+        invented to show the arithmetic working and they plan nothing.</p>
+
+        <div id="r-out" aria-live="polite" style="margin-top:var(--gap)"></div>
+
+        <div class="k-btnbar" style="margin-top:var(--gap)">
+          <button type="button" class="k-btn k-btn-key" id="b-r-csv">Download CSV</button>
+          <button type="button" class="k-btn" id="b-r-copy">Copy table</button>
+          <button type="button" class="k-btn" id="b-r-link">Copy link to these inputs</button>
+        </div>
+      </section>
+
+      <!-- ============ 04 unit safety ============ -->
+      <section class="k-sect" aria-labelledby="h-u">
+        <h2 id="h-u"><span class="k-num">04</span>Unit safety</h2>
+        <p class="ad-lead">For converting energy, mass and greenhouse gas units, and for being told exactly what is
+        missing when a conversion has no answer. Quantities are read as exact rationals, not as floating point.</p>
+        <p class="ad-case">Method behind it:
+          <a href="../../case-unitguard.html" rel="noreferrer noopener" target="_blank">the unitguard case study</a>
+        </p>
+
+        <div class="k-row" style="max-width:44rem">
+          <div class="k-field">
+            <label for="u-q">Quantity</label>
+            <input type="text" id="u-q" inputmode="decimal" autocomplete="off" spellcheck="false">
+            <span class="k-hint">A plain decimal. 0.1 means one tenth exactly.</span>
+          </div>
+          <div class="k-field">
+            <label for="u-from">From</label>
+            <select id="u-from"></select>
+          </div>
+          <div class="k-field">
+            <label for="u-to">To</label>
+            <select id="u-to"></select>
+          </div>
+        </div>
+
+        <div class="k-btnbar" style="margin-top:1rem">
+          <button type="button" class="k-btn k-btn-key" id="b-u-go">Convert</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-u-clear">Clear</button>
+        </div>
+
+        <p class="k-lab" style="margin:1.1rem 0 0.5rem">Four conversions worth trying</p>
+        <div class="ad-chips" id="u-chips"></div>
+
+        <div id="u-out" aria-live="polite" style="margin-top:var(--gap)"></div>
+
+        <div class="k-panel" style="margin-top:var(--gap)">
+          <h3>Conversions you ran in this session</h3>
+          <div class="k-scroll"><table class="k-table" id="u-log"></table></div>
+          <p class="k-note" style="margin-top:0.8rem">The list is not carried in the link. A shared link restores the
+          quantity and the two units, and the instrument recomputes the same verdict from them.</p>
+        </div>
+
+        <div class="k-btnbar" style="margin-top:var(--gap)">
+          <button type="button" class="k-btn k-btn-key" id="b-u-csv">Download CSV</button>
+          <button type="button" class="k-btn" id="b-u-copy">Copy table</button>
+          <button type="button" class="k-btn" id="b-u-link">Copy link to these inputs</button>
+        </div>
+      </section>
+
+      <!-- ============ 05 method ============ -->
+      <section class="k-sect" aria-labelledby="h-meth">
+        <h2 id="h-meth"><span class="k-num">05</span>Method and constants</h2>
+
+        <p class="k-note">Three of the four instruments contain no constants at all. They are arithmetic on the
+        numbers you type, so there is nothing in them to source. The only fixed values on this page are the global
+        warming potentials named inside the unit converter, and it names them in order to refuse to choose between
+        them. They are listed below with the assessment report and the time horizon each one belongs to.</p>
+
+        <div class="k-panel" style="margin-top:1rem">
+          <h3>The global warming potentials the converter names and does not use</h3>
+          <div class="k-scroll"><table class="k-table" id="out-gwp"></table></div>
+          <p class="k-source">
+            <span>Carried over unchanged from unitguard, which names all four and picks none</span>
+            <a href="../../case-unitguard.html" target="_blank" rel="noreferrer noopener">the unitguard case study on keremozdemir.de</a>
+          </p>
+        </div>
+
+        <div class="k-panel">
+          <h3>Exact ratios used in the converter</h3>
+          <div class="k-scroll"><table class="k-table" id="out-ratio"></table></div>
+          <p class="k-note" style="margin-top:0.8rem">These are ratios of molar masses and a definition, not
+          measurements, so they carry no report and no horizon.</p>
+        </div>
+
+        <div class="k-panel">
+          <h3>The arithmetic, written out</h3>
+          <ul class="k-ask" id="out-formulas"></ul>
+        </div>
+
+        <div class="k-warn" style="margin-top:var(--gap)">
+          <h3>What this page does not know</h3>
+          <ul class="k-ask" id="out-unknowns"></ul>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <aside class="k-endnote">
+    <div class="k-wrap">
+      <p><strong>Every number on this page is arithmetic on figures you supplied.</strong>
+      None of it is a valuation, a market size, a forecast or advice. There are no benchmarks, no industry averages
+      and no default assumptions anywhere in it. Where an example is loaded it is labelled as an example and exists
+      only to show the arithmetic working.</p>
+      <p class="k-fine">
+        Runs entirely in your browser. Nothing you type leaves this page. No server, no database, no analytics,
+        no network calls after the fonts have loaded, so it works offline once the page is cached.
+        Built by <a href="../../index.html">Kerem Ozdemir</a>, TUM and Istanbul University.
+      </p>
+    </div>
+  </aside>
+
+<footer class="site-foot"><div class="wrap">
+  <span>© 2026 Kerem Özdemir</span>
+  <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
+</div></footer>
+
+
+</div>
+
+<script>
+/* ============================================================
+   kit.js
+   Shared behaviour for the open instruments at keremozdemir.de
+   No dependencies. No network calls. Safe to inline.
+
+   Kit.el        small DOM builder
+   Kit.fmt       number and date formatting
+   Kit.state     read and write tool state in the URL hash
+   Kit.share     copy the link that restores the current state
+   Kit.csv       build CSV, copy to clipboard, offer a download
+   Kit.toast     brief confirmation line
+   ============================================================ */
+
+var Kit = (function () {
+  "use strict";
+
+  /* ---------- DOM ---------- */
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v;
+        else if (k === "html") n.innerHTML = v;
+        else if (k.slice(0, 2) === "on" && typeof v === "function") {
+          n.addEventListener(k.slice(2).toLowerCase(), v);
+        } else n.setAttribute(k, v === true ? "" : String(v));
+      });
+    }
+    (kids || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+
+  /* ---------- numbers ---------- */
+
+  var LOCALE = "en-GB";
+
+  function num(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function money(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return "EUR " + num(v, dp === undefined ? 2 : dp);
+  }
+  function pct(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return num(v * 100, dp === undefined ? 1 : dp) + " %";
+  }
+  function toNum(raw) {
+    if (raw === null || raw === undefined) return null;
+    var s = String(raw).trim().replace(/\s+/g, "").replace(/,/g, ".");
+    if (s === "") return null;
+    var n = Number(s);
+    return isFinite(n) ? n : null;
+  }
+
+  /* ---------- URL hash state ---------- */
+
+  function b64urlEncode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64urlDecode(str) {
+    var s = String(str).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var bin = atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  var state = {
+    /* Serialise the object into the location hash without adding a history entry. */
+    write: function (obj) {
+      var h = "";
+      try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
+      if (h.length > 8000) return "";
+      try {
+        history.replaceState(null, "", location.pathname + location.search + h);
+      } catch (e) {
+        location.hash = h;
+      }
+      return location.href;
+    },
+    /* Read the object back. Returns null when the hash is absent or unreadable. */
+    read: function () {
+      var m = /(?:^|[#&])s=([A-Za-z0-9\-_]+)/.exec(location.hash || "");
+      if (!m) return null;
+      try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
+    },
+    clear: function () {
+      try { history.replaceState(null, "", location.pathname + location.search); }
+      catch (e) { location.hash = ""; }
+    }
+  };
+
+  /* ---------- clipboard ---------- */
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; },
+        function () { return legacyCopy(text); });
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  /* ---------- share ---------- */
+
+  function share(obj, msg) {
+    var url = state.write(obj) || location.href;
+    return copyText(url).then(function (ok) {
+      toast(ok ? (msg || "Link copied. It reopens with these inputs.")
+               : "Copy blocked by the browser. The address bar now holds the link.");
+      return ok;
+    });
+  }
+
+  /* ---------- CSV ---------- */
+
+  function csvCell(v) {
+    if (v === null || v === undefined) return "";
+    var s = String(v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function csvBuild(rows) {
+    return rows.map(function (r) { return r.map(csvCell).join(","); }).join("\r\n");
+  }
+  function csvDownload(rows, filename) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    /* BOM so that spreadsheet software reads UTF-8 correctly */
+    var blob = new Blob(["﻿" + text], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = el("a", { href: url, download: filename || "export.csv" });
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1200);
+  }
+  function csvCopy(rows) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    return copyText(text).then(function (ok) {
+      toast(ok ? "Table copied. Paste it into a spreadsheet." : "Copy blocked by the browser. Use the download instead.");
+      return ok;
+    });
+  }
+
+  /* ---------- toast ---------- */
+
+  var toastNode = null, toastTimer = null;
+  function toast(msg) {
+    if (!toastNode) {
+      toastNode = el("div", { class: "k-toast", role: "status", "aria-live": "polite" });
+      document.body.appendChild(toastNode);
+    }
+    toastNode.textContent = msg;
+    toastNode.setAttribute("data-on", "1");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastNode.setAttribute("data-on", "0"); }, 3600);
+  }
+
+  /* ---------- source line ---------- */
+
+  /* src: { what, url, checked } -> the standard line that says where a number came from */
+  function sourceLine(src, bare) {
+    var kids = [];
+    if (src.what) kids.push(el("span", { text: src.what }));
+    if (src.url) kids.push(el("a", { href: src.url, rel: "noreferrer noopener", target: "_blank", text: src.label || src.url }));
+    if (src.checked) kids.push(el("span", { class: "k-checked", text: "checked " + src.checked }));
+    return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
+  }
+
+  return {
+    el: el, qs: qs, qsa: qsa, clear: clear,
+    num: num, money: money, pct: pct, toNum: toNum,
+    state: state, share: share,
+    copyText: copyText,
+    csvBuild: csvBuild, csvDownload: csvDownload, csvCopy: csvCopy,
+    toast: toast, sourceLine: sourceLine
+  };
+})();
+
+/* ============================================================
+   Analyst Desk
+   Four instruments on one page.
+
+   1  valuation      discounted cash flow, terminal share surfaced
+   2  market size    top down against bottom up, reconciled by inversion
+   3  runway         balance month by month, weeks of runway per hire
+   4  unit safety    dimensional analysis over exact rationals
+
+   The valuation, the market sizer and the unit converter carry over the
+   logic of dcf-lab, market-sizer and unitguard from keremozdemir.de.
+   The runway instrument is new.
+
+   The only fixed values in this file are the global warming potentials
+   quoted inside the unit converter's refusal, which are the values
+   unitguard quotes, each with its assessment report and time horizon.
+   Nothing else here is a constant. Everything else is arithmetic on
+   figures the reader types.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var E = Kit.el, Q = Kit.qs, C = Kit.clear;
+  var seq = 0;
+  function nid() { seq++; return "r" + seq; }
+
+  var MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
+                     "July", "August", "September", "October", "November", "December"];
+
+  /* weeks in a month, stated so the reader can check it: 52 weeks over 12 months */
+  var WEEKS_PER_MONTH = 52 / 12;
+
+  var now = new Date();
+
+  /* =========================================================
+     state
+     ========================================================= */
+
+  var S = {
+    v: { w: null, g: null, f: [] },
+    m: { unit: "", td: [], bu: [] },
+    r: {
+      cash: null, fixed: null, perHead: null, heads: null,
+      m0: now.getMonth(), y0: now.getFullYear(), h: 36,
+      hires: [], inc: []
+    },
+    u: { q: "", from: "tCH4", to: "tCO2e" }
+  };
+
+  var uLog = [];
+
+  /* =========================================================
+     shared helpers
+     ========================================================= */
+
+  function n2(v, dp) { return Kit.num(v, dp === undefined ? 2 : dp); }
+
+  function short(v) {
+    var a = Math.abs(v);
+    if (a >= 1e9) return Kit.num(v / 1e9, 2) + "bn";
+    if (a >= 1e6) return Kit.num(v / 1e6, 2) + "m";
+    if (a >= 1e4) return Kit.num(v / 1e3, 1) + "k";
+    return Kit.num(v, 0);
+  }
+
+  function monthLabel(i) {
+    /* i is one based: month 1 is the first month of the plan */
+    var off = S.r.m0 + (i - 1);
+    var y = S.r.y0 + Math.floor(off / 12);
+    return MONTH_NAMES[((off % 12) + 12) % 12] + " " + y;
+  }
+
+  function numField(id, labelText, hint, value, onSet, opts) {
+    opts = opts || {};
+    var inp = E("input", {
+      type: "number", id: id, step: opts.step || "any",
+      min: opts.min === undefined ? null : opts.min,
+      inputmode: opts.inputmode || "decimal",
+      value: value === null || value === undefined ? "" : String(value)
+    });
+    inp.addEventListener("input", function () { onSet(Kit.toNum(inp.value)); });
+    return E("div", { class: "k-field" }, [
+      E("label", { for: id, text: labelText }),
+      inp,
+      hint ? E("span", { class: "k-hint", text: hint }) : null
+    ]);
+  }
+
+  function textField(id, labelText, hint, value, onSet) {
+    var inp = E("input", { type: "text", id: id, value: value === null ? "" : String(value) });
+    inp.addEventListener("input", function () { onSet(inp.value); });
+    return E("div", { class: "k-field" }, [
+      E("label", { for: id, text: labelText }),
+      inp,
+      hint ? E("span", { class: "k-hint", text: hint }) : null
+    ]);
+  }
+
+  function selField(id, labelText, hint, options, value, onSet) {
+    var sel = E("select", { id: id });
+    options.forEach(function (o) { sel.appendChild(E("option", { value: o[0], text: o[1] })); });
+    sel.value = value;
+    sel.addEventListener("change", function () { onSet(sel.value); });
+    return E("div", { class: "k-field" }, [
+      E("label", { for: id, text: labelText }),
+      sel,
+      hint ? E("span", { class: "k-hint", text: hint }) : null
+    ]);
+  }
+
+  function removeBtn(label, fn) {
+    return E("button", { type: "button", class: "k-btn k-btn-quiet", text: "Remove",
+      "aria-label": "Remove " + label, onclick: fn });
+  }
+
+  function panel(title, kids, cls) {
+    return E("div", { class: cls || "k-panel" },
+      [ title ? E("h3", { text: title }) : null ].concat(kids || []));
+  }
+
+  function kv(pairs) {
+    var d = E("dl", { class: "k-kv" });
+    pairs.forEach(function (p) {
+      if (!p) return;
+      d.appendChild(E("dt", { class: p[2] ? "k-tot" : null, text: p[0] }));
+      d.appendChild(E("dd", { class: p[2] ? "k-tot" : null, text: p[1] }));
+    });
+    return d;
+  }
+
+  function stepList(items) {
+    var ul = E("ul", { class: "k-steps" });
+    items.forEach(function (it) {
+      if (!it) return;
+      ul.appendChild(E("li", { class: it[2] ? "k-step-final" : null }, [
+        E("span", { class: "k-op", text: it[0] }),
+        E("span", { class: "k-res", text: it[1] })
+      ]));
+    });
+    return ul;
+  }
+
+  function tableOf(headers, rows, emptyText) {
+    var t = E("table", { class: "k-table" });
+    var htr = E("tr");
+    headers.forEach(function (h) {
+      htr.appendChild(E("th", { scope: "col", class: h[1] ? "k-n" : null, text: h[0] }));
+    });
+    t.appendChild(E("thead", {}, [htr]));
+    var tb = E("tbody");
+    if (!rows.length) {
+      tb.appendChild(E("tr", {}, [ E("td", { colspan: String(headers.length), class: "k-src-cell",
+        text: emptyText || "Nothing to show yet." }) ]));
+    }
+    rows.forEach(function (r) {
+      var tr = E("tr");
+      r.forEach(function (cell, i) {
+        var isN = headers[i] && headers[i][1];
+        var cls = (isN ? "k-n" : "") + (cell && cell.flag ? " ad-no" : "");
+        tr.appendChild(E("td", { class: cls.trim() || null, text: cell && cell.text !== undefined ? cell.text : String(cell) }));
+      });
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    return E("div", { class: "k-scroll" }, [t]);
+  }
+
+  function bad(v) { return { text: v, flag: true }; }
+
+  /* =========================================================
+     1  VALUATION
+     Carried over from dcf-lab. Present value of each forecast
+     year on the end year convention, a Gordon perpetuity behind
+     the last one, and the share of the enterprise value that the
+     perpetuity carries. g at or above w is refused.
+     ========================================================= */
+
+  function vCompute() {
+    var r = { rows: S.v.f.slice(), w: null, g: null, state: "empty" };
+    if (!S.v.f.length) return r;
+
+    var w = S.v.w === null ? null : S.v.w / 100;
+    var g = S.v.g === null ? null : S.v.g / 100;
+    r.w = w; r.g = g;
+
+    if (w === null || g === null) { r.state = "needrates"; return r; }
+
+    if (1 + w <= 0) {
+      r.state = "refused";
+      r.head = "Refused. No number to report";
+      r.line = "A cost of capital of " + n2(S.v.w, 2) + " per cent leaves nothing to discount with.";
+      r.why = "The discount factor is one over one plus the rate raised to the year. At minus one hundred per "
+            + "cent or below that expression has no meaning, so no present value can be printed for any year.";
+      r.note = "";
+      return r;
+    }
+
+    var n = S.v.f.length;
+    var flows = S.v.f.map(function (x) { return x.val === null ? 0 : x.val; });
+    var factors = flows.map(function (_, i) { return Math.pow(1 + w, -(i + 1)); });
+    var pv = flows.map(function (c, i) { return c * factors[i]; });
+    var pvForecast = pv.reduce(function (a, b) { return a + b; }, 0);
+
+    r.flows = flows; r.factors = factors; r.pv = pv; r.pvForecast = pvForecast; r.n = n;
+
+    if (g >= w) {
+      r.state = "refused";
+      r.head = "Refused. No number to report";
+      r.line = "Terminal growth of " + n2(S.v.g, 2) + " per cent is not below the cost of capital of "
+             + n2(S.v.w, 2) + " per cent.";
+      r.why = "A perpetuity growing at or above its discount rate has unbounded value, so there is no enterprise "
+            + "value to print. Clamping the growth rate to just under the cost of capital is worse than refusing, "
+            + "because it swaps in a different model whose answer runs away as the clamp tightens. Either the "
+            + "growth rate or the cost of capital is wrong.";
+      r.note = "The forecast years still discount normally. It is only the terminal value that has no answer.";
+      return r;
+    }
+
+    var last = flows[n - 1];
+    var tv = last * (1 + g) / (w - g);
+    var pvTerminal = tv * factors[n - 1];
+    var ev = pvForecast + pvTerminal;
+
+    r.state = "ok";
+    r.last = last; r.tv = tv; r.pvTerminal = pvTerminal; r.ev = ev;
+    r.share = ev === 0 ? null : pvTerminal / ev;
+    return r;
+  }
+
+  function vBuild() {
+    var host = C(Q("#v-rows"));
+    if (!S.v.f.length) {
+      host.appendChild(E("p", { class: "ad-empty", text:
+        "No forecast years yet. Add the first year, or load the example to see the arithmetic working." }));
+      return;
+    }
+    S.v.f.forEach(function (row, i) {
+      host.appendChild(E("div", { class: "ad-item" }, [
+        E("div", { class: "ad-item-top" }, [
+          E("span", { class: "ad-item-n", text: "Year " + (i + 1) }),
+          removeBtn("year " + (i + 1), function () {
+            S.v.f = S.v.f.filter(function (x) { return x.id !== row.id; });
+            vBuild(); vRender(); write();
+            var b = Q("#b-v-add"); if (b) b.focus();
+          })
+        ]),
+        E("div", { class: "ad-grid" }, [
+          numField("v-f-" + row.id, "Cash flow, year " + (i + 1), null, row.val,
+            function (val) { row.val = val; vRender(); write(); })
+        ])
+      ]));
+    });
+  }
+
+  function vRender() {
+    var host = C(Q("#v-out"));
+    var r = vCompute();
+    lastV = r;
+
+    if (r.state === "empty") {
+      host.appendChild(E("p", { class: "ad-empty", text:
+        "Nothing to compute. Enter a cost of capital, a terminal growth rate and at least one forecast cash flow." }));
+      return;
+    }
+    if (r.state === "needrates") {
+      host.appendChild(E("p", { class: "ad-empty", text:
+        "The cash flows are in. Enter the cost of capital and the terminal growth rate and the rest follows." }));
+      return;
+    }
+
+    if (r.state === "refused") {
+      var w1 = E("div", { class: "k-warn" }, [
+        E("h3", { text: r.head }),
+        E("p", { text: r.line }),
+        E("p", { text: r.why }),
+        r.note ? E("p", { class: "k-note", text: r.note }) : null
+      ]);
+      host.appendChild(w1);
+      if (r.pv) {
+        host.appendChild(panel("The forecast years, discounted normally", [
+          tableOf(
+            [["Year", false], ["Free cash flow", true], ["Discount factor", true], ["Present value", true]],
+            r.flows.map(function (c, i) {
+              return [String(i + 1), n2(c, 2), Kit.num(r.factors[i], 4), n2(r.pv[i], 2)];
+            }), ""),
+          kv([["Present value of the forecast years", n2(r.pvForecast, 2), true]])
+        ]));
+      }
+      return;
+    }
+
+    /* headline */
+    var head = panel(null, [
+      E("p", { class: "k-panel-h", text: "Share of the enterprise value carried by the terminal value" }),
+      E("div", { class: "k-stat" }, [
+        E("span", { class: "k-big", text: r.share === null ? "not available" : Kit.pct(r.share, 1) })
+      ]),
+      E("p", { style: "margin-top:0.6rem", text: r.share === null
+        ? "The enterprise value is zero, so there is no share to take of it."
+        : "The " + r.n + " forecast " + (r.n === 1 ? "year accounts" : "years account")
+          + " for the other " + Kit.pct(1 - r.share, 1) + "." })
+    ]);
+    if (r.share !== null && isFinite(r.share)) {
+      var sh = Math.max(0, Math.min(1, r.share));
+      var barWrap = E("div", { style: "margin-top:0.9rem" }, [
+        E("div", { class: "ad-bar", role: "img",
+          "aria-label": "Bar split. Forecast present value " + Kit.pct(1 - sh, 1)
+            + ". Terminal present value " + Kit.pct(sh, 1) + "." }, [
+          E("i", { class: "a", style: "width:" + ((1 - sh) * 100) + "%" }),
+          E("i", { class: "b", style: "width:" + (sh * 100) + "%" })
+        ]),
+        E("div", { class: "ad-key" }, [
+          E("span", {}, [E("i", { class: "a" }), E("span", { text: "Forecast present value " + n2(r.pvForecast, 2) })]),
+          E("span", {}, [E("i", { class: "b" }), E("span", { text: "Terminal present value " + n2(r.pvTerminal, 2) })])
+        ])
+      ]);
+      head.appendChild(barWrap);
+    }
+    host.appendChild(head);
+
+    /* the table */
+    var rows = r.flows.map(function (c, i) {
+      return [String(i + 1), n2(c, 2), Kit.num(r.factors[i], 4), n2(r.pv[i], 2)];
+    });
+    rows.push(["Terminal", n2(r.tv, 2), Kit.num(r.factors[r.n - 1], 4), n2(r.pvTerminal, 2)]);
+
+    host.appendChild(panel("Year by year", [
+      tableOf([["Year", false], ["Cash flow", true], ["Discount factor", true], ["Present value", true]], rows, ""),
+      kv([
+        ["Present value of the forecast years", n2(r.pvForecast, 2)],
+        ["Present value of the terminal value", n2(r.pvTerminal, 2)],
+        ["Enterprise value", n2(r.ev, 2), true]
+      ])
+    ]));
+
+    /* the arithmetic */
+    host.appendChild(panel("The terminal value, written out", [
+      stepList([
+        ["Last forecast cash flow, year " + r.n, n2(r.last, 2)],
+        ["Grown once at " + n2(S.v.g, 2) + " per cent", n2(r.last * (1 + r.g), 2)],
+        ["Divided by the cost of capital less growth, " + n2(S.v.w, 2) + " less " + n2(S.v.g, 2) + " per cent",
+          n2(r.tv, 2)],
+        ["Discounted back " + r.n + " " + (r.n === 1 ? "year" : "years") + " at "
+          + Kit.num(r.factors[r.n - 1], 4), n2(r.pvTerminal, 2)],
+        ["Terminal share of the enterprise value", r.share === null ? "not available" : Kit.pct(r.share, 1), true]
+      ]),
+      E("p", { class: "k-note", style: "margin-top:0.8rem", text:
+        "The terminal value is taken at the end of the last forecast year and brought back with that same year's "
+        + "discount factor. Cash flows are in one unit throughout and the unit does not matter to the share." })
+    ], "k-panel k-panel-sunk"));
+  }
+
+  var lastV = null;
+
+  function vCsv() {
+    var r = lastV || vCompute();
+    var rows = [];
+    rows.push(["Analyst Desk", "Valuation"]);
+    rows.push(["Cost of capital, per cent", S.v.w === null ? "not entered" : n2(S.v.w, 2)]);
+    rows.push(["Terminal growth, per cent", S.v.g === null ? "not entered" : n2(S.v.g, 2)]);
+    rows.push([]);
+    if (r.state === "empty" || r.state === "needrates") {
+      rows.push(["Nothing computed. Cash flows or rates are missing."]);
+      return rows;
+    }
+    rows.push(["Year", "Cash flow", "Discount factor", "Present value"]);
+    (r.flows || []).forEach(function (c, i) {
+      rows.push([String(i + 1), n2(c, 4), Kit.num(r.factors[i], 6), n2(r.pv[i], 4)]);
+    });
+    if (r.state === "refused") {
+      rows.push([]);
+      rows.push(["REFUSED", r.line]);
+      rows.push(["", r.why]);
+      if (r.note) rows.push(["", r.note]);
+      if (r.pvForecast !== undefined) rows.push(["Present value of the forecast years", n2(r.pvForecast, 4)]);
+      return rows;
+    }
+    rows.push(["Terminal", n2(r.tv, 4), Kit.num(r.factors[r.n - 1], 6), n2(r.pvTerminal, 4)]);
+    rows.push([]);
+    rows.push(["Present value of the forecast years", n2(r.pvForecast, 4)]);
+    rows.push(["Present value of the terminal value", n2(r.pvTerminal, 4)]);
+    rows.push(["Enterprise value", n2(r.ev, 4)]);
+    rows.push(["Terminal share of the enterprise value, per cent",
+      r.share === null ? "not available" : n2(r.share * 100, 2)]);
+    rows.push([]);
+    rows.push(["Notes"]);
+    rows.push(["", "Cash flows are in one unit of the reader's choosing, the same unit throughout."]);
+    rows.push(["", "Present value of year t is the cash flow divided by one plus the cost of capital to the power t."]);
+    rows.push(["", "Terminal value is the last forecast cash flow grown once, divided by the cost of capital less growth."]);
+    rows.push(["", "This is arithmetic on figures entered by the reader. It is not a valuation."]);
+    return rows;
+  }
+
+  /* =========================================================
+     2  MARKET SIZE
+     Carried over from market-sizer. Top down is a product.
+     Bottom up is a sum of products. The gap is the finding, and
+     each assumption is answered by inversion.
+     ========================================================= */
+
+  var KINDS = [["count", "count"], ["share", "share"], ["value", "value"]];
+
+  function mkAssum(name, val, kind) { return { id: nid(), name: name, val: val, kind: kind || "count" }; }
+  function mkSeg(name, drivers) { return { id: nid(), name: name, d: drivers || [] }; }
+
+  function segValue(s) {
+    if (!s.d.length) return 0;
+    return s.d.reduce(function (p, d) { return p * (d.val === null ? 0 : d.val); }, 1);
+  }
+  function tdTotal() {
+    if (!S.m.td.length) return 0;
+    return S.m.td.reduce(function (p, a) { return p * (a.val === null ? 0 : a.val); }, 1);
+  }
+  function buTotal() {
+    return S.m.bu.reduce(function (s, seg) { return s + segValue(seg); }, 0);
+  }
+  function unitLabel() { return S.m.unit ? " " + S.m.unit : ""; }
+
+  function fmtAssum(a, v) {
+    if (a.kind === "share") return Kit.num(v, 4);
+    return Kit.num(v, Math.abs(v) < 100 ? 2 : 0);
+  }
+
+  function inversionVerdict(a, implied) {
+    if (!isFinite(implied)) return { ok: false, why: "implied value is not a number" };
+    if (a.kind === "share" && implied > 1) {
+      return { ok: false, why: "implied share of " + Kit.num(implied * 100, 1) + " per cent exceeds 100 per cent" };
+    }
+    if (implied < 0) return { ok: false, why: "implied value is negative" };
+    return { ok: true };
+  }
+
+  function mCompute() {
+    var td = tdTotal(), bu = buTotal();
+    var r = {
+      td: td, bu: bu, gap: bu - td,
+      hasTd: S.m.td.length > 0, hasBu: S.m.bu.length > 0,
+      groups: []
+    };
+    if (!r.hasTd && !r.hasBu) { r.state = "empty"; return r; }
+    if (!r.hasTd || !r.hasBu) { r.state = "half"; return r; }
+    r.state = "ok";
+    r.ratio = td > 0 ? bu / td : null;
+
+    var gTd = { title: "Top down, every factor shares the same multiple", note: null, rows: [] };
+    if (td > 0) {
+      gTd.title = "Top down, every factor shares the multiple " + Kit.num(bu / td, 4);
+    } else {
+      gTd.note = "The top down total is zero, so no factor can be scaled to close the gap.";
+    }
+    S.m.td.forEach(function (a) {
+      var v = a.val === null ? 0 : a.val;
+      if (td === 0) { gTd.rows.push({ a: a, val: v, no: "the top down total is zero, so no factor can scale it" }); return; }
+      if (v === 0) { gTd.rows.push({ a: a, val: v, no: "a factor pinned at zero cannot be scaled to close a gap" }); return; }
+      var implied = v * (bu / td);
+      var ver = inversionVerdict(a, implied);
+      gTd.rows.push({ a: a, val: v, implied: ver.ok ? implied : null, no: ver.ok ? null : ver.why });
+    });
+    r.groups.push(gTd);
+
+    S.m.bu.forEach(function (seg) {
+      var sv = segValue(seg);
+      var rest = S.m.bu.reduce(function (s, o) { return s + (o === seg ? 0 : segValue(o)); }, 0);
+      var required = td - rest;
+      var g = { title: "Bottom up, " + (seg.name || "unnamed segment"), note: null, rows: [] };
+      if (!seg.d.length) {
+        g.note = "This segment has no drivers, so there is nothing to solve for in it.";
+      } else if (sv === 0) {
+        g.note = "This segment is worth zero, so scaling any of its drivers cannot move the total.";
+      } else if (required < 0) {
+        g.note = "The other segments alone come to " + short(rest) + unitLabel()
+               + ", already above the top down total of " + short(td) + unitLabel()
+               + ". No value of any driver in this segment closes the gap.";
+      }
+      seg.d.forEach(function (d) {
+        var v = d.val === null ? 0 : d.val;
+        if (sv === 0 || required < 0) { g.rows.push({ a: d, val: v, no: "infeasible" }); return; }
+        var implied = v * (required / sv);
+        var ver = inversionVerdict(d, implied);
+        g.rows.push({ a: d, val: v, implied: ver.ok ? implied : null, no: ver.ok ? null : ver.why });
+      });
+      r.groups.push(g);
+    });
+    return r;
+  }
+
+  function assumRow(a, onChange, onRemove, labelPrefix) {
+    return E("div", { class: "ad-grid ad-grid-wide" }, [
+      textField("m-n-" + a.id, labelPrefix + " name", null, a.name, function (v) { a.name = v; onChange(); }),
+      numField("m-v-" + a.id, "Value", null, a.val, function (v) { a.val = v; onChange(); }),
+      selField("m-k-" + a.id, "Kind", null, KINDS, a.kind, function (v) { a.kind = v; onChange(); }),
+      E("div", { class: "k-field" }, [
+        removeBtn(labelPrefix + " " + (a.name || ""), onRemove)
+      ])
+    ]);
+  }
+
+  function mBuild() {
+    var tdHost = C(Q("#m-td"));
+    if (!S.m.td.length) {
+      tdHost.appendChild(E("p", { class: "ad-empty", text:
+        "No top down factors yet. A top down sizing is a universe multiplied by the factors that narrow it." }));
+    }
+    S.m.td.forEach(function (a, i) {
+      tdHost.appendChild(E("div", { class: "ad-item" }, [
+        E("div", { class: "ad-item-top" }, [ E("span", { class: "ad-item-n", text: "Factor " + (i + 1) }) ]),
+        assumRow(a, function () { mRender(); write(); }, function () {
+          S.m.td = S.m.td.filter(function (x) { return x.id !== a.id; });
+          mBuild(); mRender(); write();
+          var b = Q("#b-m-addf"); if (b) b.focus();
+        }, "Factor")
+      ]));
+    });
+
+    var buHost = C(Q("#m-bu"));
+    if (!S.m.bu.length) {
+      buHost.appendChild(E("p", { class: "ad-empty", text:
+        "No segments yet. A bottom up sizing is a sum of segments, each one a product of its own drivers." }));
+    }
+    S.m.bu.forEach(function (seg, si) {
+      var box = E("div", { class: "ad-item" });
+      box.appendChild(E("div", { class: "ad-item-top" }, [
+        E("span", { class: "ad-item-n", text: "Segment " + (si + 1) }),
+        removeBtn("segment " + (si + 1), function () {
+          S.m.bu = S.m.bu.filter(function (x) { return x.id !== seg.id; });
+          mBuild(); mRender(); write();
+          var b = Q("#b-m-addseg"); if (b) b.focus();
+        })
+      ]));
+      box.appendChild(E("div", { class: "ad-grid" }, [
+        textField("m-sn-" + seg.id, "Segment name", null, seg.name, function (v) { seg.name = v; mRender(); write(); })
+      ]));
+      seg.d.forEach(function (d) {
+        box.appendChild(E("div", { style: "margin-top:0.55rem" }, [
+          assumRow(d, function () { mRender(); write(); }, function () {
+            seg.d = seg.d.filter(function (x) { return x.id !== d.id; });
+            mBuild(); mRender(); write();
+          }, "Driver")
+        ]));
+      });
+      box.appendChild(E("div", { class: "k-btnbar", style: "margin-top:0.7rem" }, [
+        E("button", { type: "button", class: "k-btn k-btn-quiet", text: "Add driver",
+          "aria-label": "Add driver to segment " + (si + 1),
+          onclick: function () {
+            seg.d.push(mkAssum("", null, "count"));
+            mBuild(); mRender(); write();
+            var last = seg.d[seg.d.length - 1];
+            var f = Q("#m-n-" + last.id); if (f) f.focus();
+          } })
+      ]));
+      buHost.appendChild(box);
+    });
+  }
+
+  var lastM = null;
+
+  function mRender() {
+    var host = C(Q("#m-out"));
+    var r = mCompute();
+    lastM = r;
+
+    if (r.state === "empty") {
+      host.appendChild(E("p", { class: "ad-empty", text:
+        "Nothing to reconcile. Enter a top down chain and at least one bottom up segment, or load the example." }));
+      return;
+    }
+    if (r.state === "half") {
+      host.appendChild(E("p", { class: "ad-empty", text:
+        "One sizing is present and the other is not. A single sizing is not evidence, and the gap is the finding, "
+        + "so this instrument prints nothing until both sides exist." }));
+      return;
+    }
+
+    var pct = r.td > 0 ? (r.bu / r.td - 1) : null;
+    var grid = E("div", { class: "k-grid" }, [
+      panel(null, [
+        E("p", { class: "k-panel-h", text: "Top down" }),
+        E("div", { class: "k-stat" }, [
+          E("span", { class: "k-big", text: short(r.td) }),
+          E("span", { class: "k-unit", text: S.m.unit || "" })
+        ])
+      ]),
+      panel(null, [
+        E("p", { class: "k-panel-h", text: "Bottom up" }),
+        E("div", { class: "k-stat" }, [
+          E("span", { class: "k-big", text: short(r.bu) }),
+          E("span", { class: "k-unit", text: S.m.unit || "" })
+        ])
+      ]),
+      panel(null, [
+        E("p", { class: "k-panel-h", text: "Gap, bottom up less top down" }),
+        E("div", { class: "k-stat" }, [
+          E("span", { class: "k-big ad-flagnum", text: (r.gap >= 0 ? "+" : "") + short(r.gap) }),
+          E("span", { class: "k-unit", text: S.m.unit || "" })
+        ]),
+        E("p", { class: "k-note", style: "margin-top:0.5rem", text: pct === null
+          ? "The top down total is zero, so the gap cannot be expressed as a share of it."
+          : Kit.num(pct * 100, 1) + " per cent of the top down total." })
+      ])
+    ]);
+    host.appendChild(grid);
+
+    host.appendChild(panel("What each assumption would have to become for the two sizings to agree", [
+      mInvTable(r),
+      E("p", { class: "k-note", style: "margin-top:0.9rem", text:
+        "There is no third number here. No average, no midpoint, no recommendation about which sizing to believe. "
+        + "Every top down factor shares the same multiple, because top down is one product and it does not matter "
+        + "which factor absorbs the correction. A bottom up driver's multiple differs in every segment, because "
+        + "the other segments are held where they are." })
+    ]));
+  }
+
+  function mInvTable(r) {
+    var t = E("table", { class: "k-table" });
+    t.appendChild(E("thead", {}, [ E("tr", {}, [
+      E("th", { scope: "col", text: "Assumption" }),
+      E("th", { scope: "col", class: "k-n", text: "Now" }),
+      E("th", { scope: "col", class: "k-n", text: "Would have to be" }),
+      E("th", { scope: "col", class: "k-n", text: "Multiple" })
+    ]) ]));
+    var tb = E("tbody");
+    r.groups.forEach(function (g) {
+      var tr = E("tr");
+      var td = E("td", { colspan: "4", class: "k-src-cell", text: g.title });
+      tr.appendChild(td); tb.appendChild(tr);
+      if (g.note) {
+        var tr2 = E("tr");
+        tr2.appendChild(E("td", { colspan: "4", class: "k-src-cell ad-no", text: g.note }));
+        tb.appendChild(tr2);
+      }
+      if (!g.rows.length) {
+        tb.appendChild(E("tr", {}, [ E("td", { colspan: "4", class: "k-src-cell", text: "No assumptions in this group." }) ]));
+      }
+      g.rows.forEach(function (row) {
+        var tr3 = E("tr");
+        tr3.appendChild(E("td", { text: row.a.name || "unnamed" }));
+        tr3.appendChild(E("td", { class: "k-n", text: fmtAssum(row.a, row.val) }));
+        if (row.no) {
+          tr3.appendChild(E("td", { class: "k-n ad-no", text: "impossible" }));
+          tr3.appendChild(E("td", { class: "k-n ad-no", text: "none" }));
+          tb.appendChild(tr3);
+          if (row.no !== "infeasible") {
+            var tr4 = E("tr");
+            tr4.appendChild(E("td", { text: "" }));
+            tr4.appendChild(E("td", { colspan: "3", class: "k-src-cell ad-no", text: row.no }));
+            tb.appendChild(tr4);
+          }
+        } else {
+          tr3.appendChild(E("td", { class: "k-n", text: fmtAssum(row.a, row.implied) }));
+          tr3.appendChild(E("td", { class: "k-n", text: row.val === 0 ? "not defined"
+            : Kit.num(row.implied / row.val, 4) }));
+          tb.appendChild(tr3);
+        }
+      });
+    });
+    t.appendChild(tb);
+    return E("div", { class: "k-scroll" }, [t]);
+  }
+
+  function mCsv() {
+    var r = lastM || mCompute();
+    var rows = [];
+    rows.push(["Analyst Desk", "Market size"]);
+    rows.push(["Money label", S.m.unit || "none given"]);
+    rows.push([]);
+    if (r.state !== "ok") {
+      rows.push(["Nothing reconciled. Both a top down chain and at least one bottom up segment are needed."]);
+      return rows;
+    }
+    rows.push(["Top down total", n2(r.td, 2)]);
+    rows.push(["Bottom up total", n2(r.bu, 2)]);
+    rows.push(["Gap, bottom up less top down", n2(r.gap, 2)]);
+    rows.push(["Gap as a share of the top down total, per cent",
+      r.td > 0 ? n2((r.bu / r.td - 1) * 100, 2) : "not defined"]);
+    rows.push([]);
+    rows.push(["Group", "Assumption", "Kind", "Now", "Would have to be", "Multiple", "Status"]);
+    r.groups.forEach(function (g) {
+      if (g.note) rows.push([g.title, "", "", "", "", "", g.note]);
+      g.rows.forEach(function (row) {
+        rows.push([
+          g.title,
+          row.a.name || "unnamed",
+          row.a.kind,
+          n2(row.val, 4),
+          row.no ? "" : n2(row.implied, 4),
+          row.no ? "" : (row.val === 0 ? "not defined" : n2(row.implied / row.val, 4)),
+          row.no ? ("impossible: " + row.no) : "solvable"
+        ]);
+      });
+    });
+    rows.push([]);
+    rows.push(["Notes"]);
+    rows.push(["", "Top down is a universe multiplied by narrowing factors. Bottom up is a sum of segments, each a product of drivers."]);
+    rows.push(["", "A top down factor's implied value is its value times the ratio of the two totals."]);
+    rows.push(["", "A bottom up driver's implied value is its value times the top down total less the other segments, over this segment."]);
+    rows.push(["", "Rows marked impossible carry no implied value. No number has been substituted for them."]);
+    rows.push(["", "This file contains two sizings and their difference. It contains no market size."]);
+    return rows;
+  }
+
+  /* =========================================================
+     3  RUNWAY
+     Balance month by month to a horizon the reader states, the
+     month the money runs out, and the weeks of runway each
+     planned hire costs. Nothing is computed past the horizon.
+     ========================================================= */
+
+  function mkHire(name, start, cost) { return { id: nid(), name: name, start: start, cost: cost }; }
+  function mkInc(name, start, end, amt) { return { id: nid(), name: name, start: start, end: end, amt: amt }; }
+
+  function runSeries(hires) {
+    var H = S.r.h;
+    var cash = S.r.cash === null ? 0 : S.r.cash;
+    var fixed = S.r.fixed === null ? 0 : S.r.fixed;
+    var per = S.r.perHead === null ? 0 : S.r.perHead;
+    var heads = S.r.heads === null ? 0 : S.r.heads;
+    var out = { bal: [cash], months: [], H: H };
+    for (var m = 1; m <= H; m++) {
+      var hireCost = 0, added = 0;
+      hires.forEach(function (h) {
+        var st = h.start === null ? 1 : h.start;
+        if (st <= m && (h.cost !== null)) { hireCost += h.cost; }
+        if (st <= m) added++;
+      });
+      var inc = 0;
+      S.r.inc.forEach(function (r) {
+        var st = r.start === null ? 1 : r.start;
+        var en = (r.end === null || r.end === undefined || r.end === "") ? H : r.end;
+        if (m >= st && m <= en && r.amt !== null) inc += r.amt;
+      });
+      var burn = fixed + per * heads + hireCost;
+      var net = inc - burn;
+      out.bal.push(out.bal[m - 1] + net);
+      out.months.push({ m: m, heads: heads + added, burn: burn, inc: inc, net: net, bal: out.bal[m] });
+    }
+    return out;
+  }
+
+  /* runway in months, fractional. null when the balance survives the horizon. */
+  function runwayOf(series) {
+    if (series.bal[0] < 0) return 0;
+    for (var m = 1; m <= series.H; m++) {
+      if (series.bal[m] < 0) {
+        var prev = series.bal[m - 1];
+        var net = series.months[m - 1].net;
+        var frac = net < 0 ? prev / (-net) : 0;
+        if (frac < 0) frac = 0;
+        if (frac > 1) frac = 1;
+        return (m - 1) + frac;
+      }
+    }
+    return null;
+  }
+
+  function rCompute() {
+    var r = { H: S.r.h };
+    var anyInput = S.r.cash !== null || S.r.fixed !== null || S.r.perHead !== null
+      || S.r.heads !== null || S.r.hires.length || S.r.inc.length;
+    if (!anyInput) { r.state = "empty"; return r; }
+    if (!S.r.h || S.r.h < 1) { r.state = "nohorizon"; return r; }
+
+    var s = runSeries(S.r.hires);
+    r.series = s;
+    r.runway = runwayOf(s);
+    r.zeroMonth = null;
+    if (r.runway !== null) {
+      for (var m = 1; m <= s.H; m++) { if (s.bal[m] < 0) { r.zeroMonth = m; break; } }
+      if (s.bal[0] < 0) r.zeroMonth = 0;
+    }
+    r.state = "ok";
+    r.startCash = S.r.cash === null ? 0 : S.r.cash;
+    r.month1 = s.months[0] || null;
+    r.endBal = s.bal[s.H];
+
+    /* weeks of runway each planned hire costs */
+    r.hireCost = S.r.hires.map(function (h) {
+      var without = runSeries(S.r.hires.filter(function (x) { return x.id !== h.id; }));
+      var rwWithout = runwayOf(without);
+      var o = { h: h, rwWithout: rwWithout };
+      if (r.runway === null && rwWithout === null) {
+        o.state = "both beyond";
+      } else if (rwWithout === null) {
+        o.state = "without beyond";
+      } else if (r.runway === null) {
+        o.state = "with beyond";
+      } else {
+        o.state = "ok";
+        o.months = rwWithout - r.runway;
+        o.weeks = o.months * WEEKS_PER_MONTH;
+      }
+      return o;
+    });
+    return r;
+  }
+
+  function rBuild() {
+    var hHost = C(Q("#r-hires"));
+    if (!S.r.hires.length) {
+      hHost.appendChild(E("p", { class: "ad-empty", text:
+        "No planned hires. Add one to see what it costs in weeks of runway." }));
+    }
+    S.r.hires.forEach(function (h, i) {
+      hHost.appendChild(E("div", { class: "ad-item" }, [
+        E("div", { class: "ad-item-top" }, [
+          E("span", { class: "ad-item-n", text: "Hire " + (i + 1) }),
+          removeBtn("hire " + (i + 1), function () {
+            S.r.hires = S.r.hires.filter(function (x) { return x.id !== h.id; });
+            rBuild(); rRender(); write();
+            var b = Q("#b-r-addhire"); if (b) b.focus();
+          })
+        ]),
+        E("div", { class: "ad-grid ad-grid-wide" }, [
+          textField("r-hn-" + h.id, "Role", null, h.name, function (v) { h.name = v; rRender(); write(); }),
+          numField("r-hs-" + h.id, "Starts in month", "1 is the first month of the plan", h.start,
+            function (v) { h.start = v; rRender(); write(); }, { step: "1", min: "1", inputmode: "numeric" }),
+          numField("r-hc-" + h.id, "Monthly cost", null, h.cost,
+            function (v) { h.cost = v; rRender(); write(); })
+        ])
+      ]));
+    });
+
+    var iHost = C(Q("#r-inc"));
+    if (!S.r.inc.length) {
+      iHost.appendChild(E("p", { class: "ad-empty", text:
+        "No expected income. Leave it empty and the balance is cash less burn." }));
+    }
+    S.r.inc.forEach(function (r, i) {
+      iHost.appendChild(E("div", { class: "ad-item" }, [
+        E("div", { class: "ad-item-top" }, [
+          E("span", { class: "ad-item-n", text: "Income " + (i + 1) }),
+          removeBtn("income " + (i + 1), function () {
+            S.r.inc = S.r.inc.filter(function (x) { return x.id !== r.id; });
+            rBuild(); rRender(); write();
+            var b = Q("#b-r-addinc"); if (b) b.focus();
+          })
+        ]),
+        E("div", { class: "ad-grid ad-grid-wide" }, [
+          textField("r-in-" + r.id, "Source", null, r.name, function (v) { r.name = v; rRender(); write(); }),
+          numField("r-is-" + r.id, "From month", null, r.start,
+            function (v) { r.start = v; rRender(); write(); }, { step: "1", min: "1", inputmode: "numeric" }),
+          numField("r-ie-" + r.id, "To month", "empty runs to the horizon", r.end,
+            function (v) { r.end = v; rRender(); write(); }, { step: "1", min: "1", inputmode: "numeric" }),
+          numField("r-ia-" + r.id, "Monthly amount", null, r.amt,
+            function (v) { r.amt = v; rRender(); write(); })
+        ])
+      ]));
+    });
+  }
+
+  var lastR = null;
+
+  function rRender() {
+    var host = C(Q("#r-out"));
+    var r = rCompute();
+    lastR = r;
+
+    if (r.state === "empty") {
+      host.appendChild(E("p", { class: "ad-empty", text:
+        "Nothing to compute. Enter the cash in the bank and what leaves it every month, or load the example." }));
+      return;
+    }
+    if (r.state === "nohorizon") {
+      host.appendChild(E("div", { class: "k-warn" }, [
+        E("h3", { text: "No horizon" }),
+        E("p", { text: "This instrument computes month by month up to a horizon and not one month past it. "
+          + "Set the horizon to at least one month." })
+      ]));
+      return;
+    }
+
+    /* headline */
+    if (r.runway === null) {
+      host.appendChild(E("div", { class: "k-warn" }, [
+        E("h3", { text: "Beyond the horizon. No month named" }),
+        E("p", { text: "The balance is still " + short(r.endBal) + " at the end of month " + r.H + ", "
+          + monthLabel(r.H) + ". On these figures the money does not run out inside the horizon you set." }),
+        E("p", { text: "This tool does not extend the arithmetic past that horizon, and it will not name a month "
+          + "it has not computed. A burn plan carried further than the assumptions behind it is a guess wearing a "
+          + "date. Raise the horizon if you want to look further, and read what it prints there as arithmetic on "
+          + "your assumptions rather than as a forecast." })
+      ]));
+    } else {
+      var lbl = r.zeroMonth === 0 ? "already" : monthLabel(r.zeroMonth);
+      host.appendChild(panel(null, [
+        E("p", { class: "k-panel-h", text: "The money runs out in" }),
+        E("div", { class: "k-stat" }, [
+          E("span", { class: "k-big", text: lbl }),
+          E("span", { class: "k-unit", text: r.zeroMonth === 0 ? "the opening balance is below zero"
+            : "month " + r.zeroMonth + " of the plan" })
+        ]),
+        E("p", { style: "margin-top:0.6rem", text: "Runway is " + Kit.num(r.runway, 1) + " months, which is "
+          + Kit.num(r.runway * WEEKS_PER_MONTH, 1) + " weeks. The balance first goes below zero during "
+          + (r.zeroMonth === 0 ? "month one" : monthLabel(r.zeroMonth)) + "." })
+      ]));
+    }
+
+    /* summary */
+    var m1 = r.month1;
+    host.appendChild(panel("Month one", [
+      kv([
+        ["Cash in the bank at the start", n2(r.startCash, 2)],
+        ["Fixed monthly costs", n2(S.r.fixed === null ? 0 : S.r.fixed, 2)],
+        ["People, " + (S.r.heads === null ? 0 : S.r.heads) + " heads at "
+          + n2(S.r.perHead === null ? 0 : S.r.perHead, 2) + " each",
+          n2((S.r.heads === null ? 0 : S.r.heads) * (S.r.perHead === null ? 0 : S.r.perHead), 2)],
+        m1 && m1.burn !== undefined ? ["Hires already started in month one",
+          n2(m1.burn - (S.r.fixed === null ? 0 : S.r.fixed)
+            - (S.r.heads === null ? 0 : S.r.heads) * (S.r.perHead === null ? 0 : S.r.perHead), 2)] : null,
+        m1 ? ["Income in month one", n2(m1.inc, 2)] : null,
+        m1 ? ["Net movement in month one", n2(m1.net, 2), true] : null
+      ])
+    ]));
+
+    /* chart */
+    var chartBox = panel("Balance to the end of month " + r.H, []);
+    var chartHost = E("div", { class: "ad-chart", id: "r-chart" });
+    chartBox.appendChild(chartHost);
+    chartBox.appendChild(E("p", { class: "k-note", style: "margin-top:0.7rem", text:
+      "Closing balance at the end of each month, from month one to month " + r.H + ". The line stops at the "
+      + "horizon because the arithmetic stops there." }));
+    host.appendChild(chartBox);
+    drawRunway(chartHost, r);
+
+    /* weeks per hire */
+    var hireRows = r.hireCost.map(function (o, i) {
+      var name = o.h.name || ("Hire " + (i + 1));
+      var start = o.h.start === null ? 1 : o.h.start;
+      var cost = o.h.cost === null ? 0 : o.h.cost;
+      if (o.state === "ok") {
+        return [name, "month " + start, n2(cost, 2), Kit.num(o.weeks, 1) + " weeks",
+          Kit.num(o.months, 2) + " months"];
+      }
+      if (o.state === "both beyond" || o.state === "without beyond") {
+        return [name, "month " + start, n2(cost, 2),
+          bad("not measurable inside " + r.H + " months"),
+          bad("the balance survives the horizon with and without this hire")];
+      }
+      return [name, "month " + start, n2(cost, 2),
+        bad("more than the horizon"),
+        bad("without this hire the money lasts past month " + r.H)];
+    });
+
+    host.appendChild(panel("What each planned hire costs in runway", [
+      tableOf([["Hire", false], ["Starts", false], ["Monthly cost", true],
+               ["Runway it costs", true], ["In months", true]], hireRows,
+        "No planned hires yet, so there is nothing to price."),
+      E("p", { class: "k-note", style: "margin-top:0.9rem", text:
+        "Each line is the runway without that hire less the runway with it, holding every other figure still. "
+        + "One month is taken as 52 over 12 weeks, which is " + Kit.num(WEEKS_PER_MONTH, 4) + " weeks. Where the "
+        + "money lasts past the horizon in either case the difference is not measurable, and the tool says so "
+        + "rather than printing a number it has not computed." })
+    ]));
+
+    /* table */
+    var rows = r.series.months.map(function (mm) {
+      return [String(mm.m), monthLabel(mm.m), n2(mm.inc, 2), n2(mm.burn, 2), n2(mm.net, 2),
+        mm.bal < 0 ? bad(n2(mm.bal, 2)) : n2(mm.bal, 2)];
+    });
+    host.appendChild(panel("Month by month", [
+      tableOf([["Month", false], ["Calendar", false], ["Income", true], ["Burn", true],
+               ["Net", true], ["Closing balance", true]], rows, ""),
+      E("p", { class: "k-note", style: "margin-top:0.9rem", text:
+        "Burn in a month is the fixed costs plus the cost per head times the heads on the payroll that month, "
+        + "counting every planned hire whose start month has arrived. The closing balance is the previous closing "
+        + "balance plus income less burn. Nothing is smoothed and nothing is annualised." })
+    ]));
+  }
+
+  /* inline SVG, drawn here, no chart library */
+  function drawRunway(host, r) {
+    C(host);
+    var W = Math.max(260, Math.floor(host.clientWidth || 640));
+    var H = W < 480 ? 210 : 270;
+    var padL = W < 480 ? 48 : 66, padR = 12, padT = 16, padB = 34;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    var ser = r.series.bal;
+    var N = r.series.H;
+
+    var lo = Math.min.apply(null, ser.concat([0]));
+    var hi = Math.max.apply(null, ser.concat([0]));
+    if (hi === lo) { hi = lo + 1; }
+    var span = hi - lo;
+    lo -= span * 0.06; hi += span * 0.06;
+
+    function X(i) { return padL + (N === 0 ? 0 : (i * iw / N)); }
+    function Y(v) { return padT + (hi - v) * ih / (hi - lo); }
+
+    var NS = "http://www.w3.org/2000/svg";
+    function s(tag, attrs, text) {
+      var n = document.createElementNS(NS, tag);
+      Object.keys(attrs || {}).forEach(function (k) { n.setAttribute(k, String(attrs[k])); });
+      if (text !== undefined && text !== null) n.appendChild(document.createTextNode(text));
+      return n;
+    }
+
+    var svg = s("svg", {
+      width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "Closing balance from month one to month " + N + ". Opening balance " + short(ser[0])
+        + ". Balance at the horizon " + short(ser[N]) + "."
+        + (r.runway === null ? " The balance stays above zero to the horizon."
+          : " The balance goes below zero in month " + r.zeroMonth + ".")
+    });
+
+    /* axes */
+    var ink = "var(--ink)", dim = "var(--dim)", rule = "var(--rule)", ruleF = "var(--rule-firm)";
+    svg.appendChild(s("line", { x1: padL, y1: padT, x2: padL, y2: padT + ih, stroke: ruleF, "stroke-width": 1 }));
+    svg.appendChild(s("line", { x1: padL, y1: padT + ih, x2: padL + iw, y2: padT + ih, stroke: ruleF, "stroke-width": 1 }));
+
+    /* horizontal guides at hi, zero, lo */
+    [hi, 0, lo].forEach(function (v, k) {
+      if (k === 1 && (0 < lo || 0 > hi)) return;
+      var y = Y(v);
+      svg.appendChild(s("line", {
+        x1: padL, y1: y, x2: padL + iw, y2: y,
+        stroke: k === 1 ? "var(--flag)" : rule, "stroke-width": 1,
+        "stroke-dasharray": k === 1 ? "4 3" : "1 4"
+      }));
+      var t = s("text", {
+        x: padL - 6, y: y + 3.5, "text-anchor": "end",
+        fill: k === 1 ? "var(--flag)" : dim,
+        "font-size": W < 480 ? 9 : 10, "font-family": "var(--mono)"
+      }, k === 1 ? "0" : short(v));
+      svg.appendChild(t);
+    });
+
+    /* the balance line */
+    var d = "";
+    for (var i = 0; i <= N; i++) { d += (i ? " L" : "M") + X(i).toFixed(2) + " " + Y(ser[i]).toFixed(2); }
+    svg.appendChild(s("path", { d: d, fill: "none", stroke: ink, "stroke-width": 1.75,
+      "stroke-linejoin": "round", "stroke-linecap": "round" }));
+
+    /* the crossing */
+    if (r.runway !== null && r.runway <= N) {
+      var xc = X(r.runway);
+      svg.appendChild(s("line", { x1: xc, y1: padT, x2: xc, y2: padT + ih,
+        stroke: "var(--flag)", "stroke-width": 1, "stroke-dasharray": "3 3" }));
+      svg.appendChild(s("circle", { cx: xc, cy: Y(0), r: 3.5, fill: "var(--flag)" }));
+      var lx = xc + 6, anchor = "start";
+      if (xc > padL + iw * 0.62) { lx = xc - 6; anchor = "end"; }
+      svg.appendChild(s("text", { x: lx, y: padT + 11, "text-anchor": anchor, fill: "var(--flag)",
+        "font-size": W < 480 ? 9 : 10, "font-family": "var(--mono)" },
+        r.zeroMonth === 0 ? "already below zero" : monthLabel(r.zeroMonth)));
+    }
+
+    /* month ticks */
+    var ticks = [0];
+    var stepN = Math.max(1, Math.round(N / (W < 480 ? 3 : 6)));
+    for (var m = stepN; m < N; m += stepN) ticks.push(m);
+    ticks.push(N);
+    ticks.forEach(function (m) {
+      var x = X(m);
+      svg.appendChild(s("line", { x1: x, y1: padT + ih, x2: x, y2: padT + ih + 4, stroke: ruleF, "stroke-width": 1 }));
+      svg.appendChild(s("text", { x: x, y: padT + ih + 16, "text-anchor": "middle", fill: dim,
+        "font-size": W < 480 ? 9 : 10, "font-family": "var(--mono)" }, m === 0 ? "start" : String(m)));
+    });
+    svg.appendChild(s("text", { x: padL + iw / 2, y: H - 3, "text-anchor": "middle", fill: "var(--faint)",
+      "font-size": W < 480 ? 9 : 10, "font-family": "var(--mono)" }, "months from the start of the plan"));
+
+    host.appendChild(svg);
+  }
+
+  function rCsv() {
+    var r = lastR || rCompute();
+    var rows = [];
+    rows.push(["Analyst Desk", "Runway"]);
+    rows.push(["Cash in the bank", S.r.cash === null ? "not entered" : n2(S.r.cash, 2)]);
+    rows.push(["Fixed monthly costs", S.r.fixed === null ? "not entered" : n2(S.r.fixed, 2)]);
+    rows.push(["Monthly cost per head", S.r.perHead === null ? "not entered" : n2(S.r.perHead, 2)]);
+    rows.push(["Heads today", S.r.heads === null ? "not entered" : String(S.r.heads)]);
+    rows.push(["First month of the plan", MONTH_NAMES[S.r.m0] + " " + S.r.y0]);
+    rows.push(["Horizon, months", String(S.r.h)]);
+    rows.push([]);
+    if (r.state !== "ok") { rows.push(["Nothing computed."]); return rows; }
+    rows.push(["Runway, months", r.runway === null ? "beyond the horizon of " + r.H + " months" : n2(r.runway, 2)]);
+    rows.push(["Runway, weeks", r.runway === null ? "beyond the horizon of " + r.H + " months"
+      : n2(r.runway * WEEKS_PER_MONTH, 1)]);
+    rows.push(["Month the money runs out", r.runway === null ? "not inside the horizon"
+      : (r.zeroMonth === 0 ? "the opening balance is already below zero" : monthLabel(r.zeroMonth))]);
+    rows.push([]);
+    rows.push(["Month", "Calendar", "Heads", "Income", "Burn", "Net", "Closing balance"]);
+    r.series.months.forEach(function (mm) {
+      rows.push([String(mm.m), monthLabel(mm.m), String(mm.heads), n2(mm.inc, 2), n2(mm.burn, 2),
+        n2(mm.net, 2), n2(mm.bal, 2)]);
+    });
+    rows.push([]);
+    rows.push(["Hire", "Starts in month", "Monthly cost", "Runway it costs, weeks", "Runway it costs, months"]);
+    r.hireCost.forEach(function (o, i) {
+      var name = o.h.name || ("Hire " + (i + 1));
+      if (o.state === "ok") {
+        rows.push([name, String(o.h.start === null ? 1 : o.h.start), n2(o.h.cost === null ? 0 : o.h.cost, 2),
+          n2(o.weeks, 2), n2(o.months, 3)]);
+      } else {
+        rows.push([name, String(o.h.start === null ? 1 : o.h.start), n2(o.h.cost === null ? 0 : o.h.cost, 2),
+          "not measurable inside " + r.H + " months", "not measurable inside " + r.H + " months"]);
+      }
+    });
+    rows.push([]);
+    rows.push(["Notes"]);
+    rows.push(["", "Burn is fixed costs plus cost per head times heads, counting planned hires from their start month."]);
+    rows.push(["", "Closing balance is the previous closing balance plus income less burn."]);
+    rows.push(["", "Runway is fractional: the whole months survived plus the share of the crossing month the balance covers."]);
+    rows.push(["", "One month is taken as 52 over 12 weeks."]);
+    rows.push(["", "Nothing in this file is computed past month " + S.r.h + ", the horizon set by the reader."]);
+    return rows;
+  }
+
+  /* =========================================================
+     4  UNIT SAFETY
+     Carried over from unitguard. Exact rational arithmetic. A
+     unit is a dimension, a scale to the SI coherent unit, and
+     for greenhouse gases a species. Conversion is refused
+     rather than guessed, and the refusal names what is missing.
+     ========================================================= */
+
+  function bgcd(a, b) { if (a < 0n) a = -a; if (b < 0n) b = -b; while (b) { var t = a % b; a = b; b = t; } return a; }
+  function R(n, d) {
+    if (d === undefined) d = 1n;
+    if (d === 0n) return null;
+    if (d < 0n) { n = -n; d = -d; }
+    var g = bgcd(n, d); if (g > 1n) { n = n / g; d = d / g; }
+    return { n: n, d: d };
+  }
+  function rmul(a, b) { return R(a.n * b.n, a.d * b.d); }
+  function rdiv(a, b) { return R(a.n * b.d, a.d * b.n); }
+  function parseR(s) {
+    s = String(s).trim().replace(/[,\s]/g, "");
+    if (!/^-?\d+(\.\d+)?$/.test(s)) return null;
+    var neg = s.charAt(0) === "-"; if (neg) s = s.slice(1);
+    var p = s.split("."), frac = p[1] || "";
+    var n = BigInt(p[0] + frac), d = BigInt("1" + new Array(frac.length + 1).join("0"));
+    if (neg) n = -n;
+    return R(n, d);
+  }
+  function group(intPart) { return intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+  function fmtR(r) {
+    var neg = r.n < 0n, d = r.d;
+    var n = neg ? -r.n : r.n;
+    for (var k = 0; k <= 24; k++) {
+      var pow = BigInt("1" + new Array(k + 1).join("0"));
+      var p = n * pow;
+      if (p % d === 0n) {
+        var v = (p / d).toString();
+        if (k > 0) {
+          while (v.length <= k) v = "0" + v;
+          v = v.slice(0, v.length - k) + "." + v.slice(v.length - k);
+          v = v.replace(/0+$/, "").replace(/\.$/, "");
+        }
+        var dot = v.indexOf(".");
+        var ip = dot < 0 ? v : v.slice(0, dot), fp = dot < 0 ? "" : v.slice(dot);
+        return (neg ? "-" : "") + group(ip) + fp;
+      }
+    }
+    var approx = Number(n) / Number(d);
+    return "~" + (neg ? "-" : "") + approx.toLocaleString("en-GB", { maximumFractionDigits: 6 });
+  }
+
+  var UG_UNITS = [
+    { s: "J",     dim: "energy", sc: R(1n) },
+    { s: "kJ",    dim: "energy", sc: R(1000n) },
+    { s: "MJ",    dim: "energy", sc: R(1000000n) },
+    { s: "GJ",    dim: "energy", sc: R(1000000000n) },
+    { s: "TJ",    dim: "energy", sc: R(1000000000000n) },
+    { s: "Wh",    dim: "energy", sc: R(3600n) },
+    { s: "kWh",   dim: "energy", sc: R(3600000n) },
+    { s: "MWh",   dim: "energy", sc: R(3600000000n) },
+    { s: "GWh",   dim: "energy", sc: R(3600000000000n) },
+    { s: "g",     dim: "mass",   sc: R(1n, 1000n) },
+    { s: "kg",    dim: "mass",   sc: R(1n) },
+    { s: "t",     dim: "mass",   sc: R(1000n) },
+    { s: "kt",    dim: "mass",   sc: R(1000000n) },
+    { s: "Mt",    dim: "mass",   sc: R(1000000000n) },
+    { s: "tC",    dim: "ghg",    sp: "C" },
+    { s: "tCO2",  dim: "ghg",    sp: "CO2" },
+    { s: "tCO2e", dim: "ghg",    sp: "CO2e" },
+    { s: "tCH4",  dim: "ghg",    sp: "CH4" }
+  ];
+  var UG_BY = {};
+  UG_UNITS.forEach(function (u) { UG_BY[u.s] = u; });
+  function dimName(d) { return { energy: "energy", mass: "mass", ghg: "greenhouse gas mass" }[d]; }
+
+  function noAnswer(fromS, toS) { return fromS + " to " + toS + " has no answer here."; }
+
+  /* ---------------------------------------------------------
+     The only fixed values on this page. They appear inside a
+     refusal, are named in order not to be chosen between, and
+     each carries its assessment report and its time horizon.
+     They are the values unitguard carries.
+     --------------------------------------------------------- */
+  var GWP_NAMED = [
+    { gas: "Methane", value: "25",   report: "AR4", horizon: "100 years", note: "" },
+    { gas: "Methane", value: "28",   report: "AR5", horizon: "100 years", note: "" },
+    { gas: "Methane", value: "27.0", report: "AR6", horizon: "100 years", note: "biogenic methane" },
+    { gas: "Methane", value: "29.8", report: "AR6", horizon: "100 years", note: "fossil methane" }
+  ];
+
+  function ghgFactor(from, to, fromS, toS) {
+    if (from === to) return { ok: true, f: R(1n) };
+    if (from === "CH4" || to === "CH4") {
+      return { ok: false,
+        head: "No global warming potential was given",
+        line: noAnswer(fromS, toS),
+        why: "A tonne of CH4 becomes tCO2e only through a global warming potential, and a GWP only exists inside "
+           + "a stated IPCC assessment report and time horizon. Over 100 years AR4 puts methane at 25, AR5 at 28, "
+           + "and AR6 at 27.0 for biogenic and 29.8 for fossil methane. Name the report and the horizon and this "
+           + "is one multiplication.",
+        missing: "an IPCC assessment report and a time horizon",
+        note: "unitguard refuses rather than pick one." };
+    }
+    if (from === "CO2e") {
+      return { ok: false,
+        head: "No gas mix was given",
+        line: noAnswer(fromS, toS),
+        why: "tCO2e is a unit of account, not a substance. It records how much warming a bundle of gases is held "
+           + "to cause, not how much of any single gas is present. Without the mix that produced the figure there "
+           + "is no mass of " + to + " to return.",
+        missing: "the gas mix behind the CO2e figure",
+        note: "The direction that does work is CO2 to CO2e, where the potential is 1 by definition." };
+    }
+    if (from === "C" && to === "CO2") return { ok: true, f: R(44n, 12n), note: "Exactly 44/12, the ratio of the molar masses." };
+    if (from === "CO2" && to === "C") return { ok: true, f: R(12n, 44n), note: "Exactly 12/44, the ratio of the molar masses." };
+    if (from === "CO2" && to === "CO2e") return { ok: true, f: R(1n), note: "The potential of CO2 is 1 by definition of the metric." };
+    if (from === "C" && to === "CO2e") return { ok: true, f: R(44n, 12n), note: "Carbon to CO2 at 44/12, then CO2 to CO2e at a potential of 1." };
+    return { ok: false, head: "Not defined", line: noAnswer(fromS, toS),
+      missing: "a defined route between these two species",
+      why: "unitguard has no defined route between these two species.", note: "" };
+  }
+
+  function ugConvert(qty, fromS, toS) {
+    var a = UG_BY[fromS], b = UG_BY[toS];
+    if (a.dim !== b.dim) {
+      if (a.dim === "mass" && b.dim === "ghg") {
+        return { ok: false,
+          head: "No gas species was given",
+          line: noAnswer(fromS, toS),
+          missing: "the gas species on the input side",
+          why: fromS + " is a bare mass. " + toS + " counts one specific gas. Naming the species is the whole "
+             + "difference between the two, and a converter that guessed it would be inventing the number.",
+          note: "State the species on the input side and the conversion goes through." };
+      }
+      if (a.dim === "ghg" && b.dim === "mass") {
+        return { ok: false,
+          head: "The species would be discarded",
+          line: noAnswer(fromS, toS),
+          missing: "a target unit that keeps the gas species",
+          why: "unitguard carries the gas species as part of the unit. Converting " + fromS + " to a bare " + toS
+             + " drops it, and the figure stops being an emissions figure. Keep the species in the target unit.",
+          note: "" };
+      }
+      return { ok: false,
+        head: "Different dimensions",
+        line: noAnswer(fromS, toS),
+        missing: "an energy density or an emission factor",
+        why: fromS + " measures " + dimName(a.dim) + " and " + toS + " measures " + dimName(b.dim)
+           + ". Nothing converts one into the other on its own. An energy density or an emission factor would, "
+           + "and neither was supplied.",
+        note: "" };
+    }
+    if (a.dim === "ghg") {
+      var g = ghgFactor(a.sp, b.sp, fromS, toS);
+      if (!g.ok) return g;
+      return { ok: true, value: rmul(qty, g.f), note: g.note || "" };
+    }
+    return { ok: true, value: rmul(qty, rdiv(a.sc, b.sc)),
+      note: "Scale factors are exact rationals, so this round trips without loss." };
+  }
+
+  var UG_EX = [
+    { q: "1200", f: "tCH4", t: "tCO2e" },
+    { q: "8000", f: "tCO2e", t: "tCO2" },
+    { q: "1", f: "kWh", t: "MJ" },
+    { q: "500", f: "tC", t: "tCO2" }
+  ];
+
+  var lastU = null;
+
+  function uEvaluate() {
+    var raw = S.u.q;
+    var out = { q: raw, from: S.u.from, to: S.u.to };
+    if (String(raw).trim() === "") { out.state = "empty"; return out; }
+    var q = parseR(raw);
+    if (q === null) {
+      out.state = "nan";
+      out.head = "Not a number";
+      out.line = "“" + String(raw).trim() + "” is not a magnitude.";
+      out.why = "Type a plain decimal. Magnitudes are read as exact rationals, so 0.1 means one tenth rather than "
+              + "the binary double nearest to it.";
+      out.missing = "a plain decimal quantity";
+      return out;
+    }
+    var res = ugConvert(q, S.u.from, S.u.to);
+    out.qFmt = fmtR(q);
+    if (res.ok) {
+      out.state = "ok";
+      out.value = fmtR(res.value);
+      out.note = res.note;
+      out.tilde = out.value.charAt(0) === "~";
+      return out;
+    }
+    out.state = "refused";
+    out.head = res.head; out.line = res.line; out.why = res.why;
+    out.note = res.note; out.missing = res.missing;
+    return out;
+  }
+
+  function uRender() {
+    var host = C(Q("#u-out"));
+    var o = uEvaluate();
+    lastU = o;
+
+    if (o.state === "empty") {
+      host.appendChild(E("p", { class: "ad-empty", text:
+        "Type a quantity. The instrument answers on every keystroke, and the answer is sometimes a refusal." }));
+      uLogRender();
+      return;
+    }
+    if (o.state === "ok") {
+      host.appendChild(E("div", { class: "k-ok" }, [
+        E("h3", { text: "Converted" }),
+        E("div", { class: "k-stat" }, [
+          E("span", { class: "k-big", text: o.value }),
+          E("span", { class: "k-unit", text: o.to })
+        ]),
+        E("p", { style: "margin-top:0.6rem", text: o.qFmt + " " + o.from + " is " + o.value + " " + o.to + "." }),
+        o.note ? E("p", { class: "k-note", text: o.note }) : null,
+        o.tilde ? E("p", { class: "k-note", text:
+          "The leading tilde marks a rational that does not terminate in decimal. The stored value is exact; the "
+          + "printed one is not." }) : null
+      ]));
+    } else {
+      host.appendChild(E("div", { class: "k-warn" }, [
+        E("h3", { text: "Refused. " + o.head }),
+        E("p", { text: o.line }),
+        E("p", { text: o.why }),
+        E("ul", { class: "k-ask" }, [
+          E("li", {}, [ E("b", { text: "Missing" }), E("span", { text: o.missing }) ])
+        ]),
+        o.note ? E("p", { class: "k-note", text: o.note }) : null
+      ]));
+    }
+    uLogRender();
+  }
+
+  function uLogPush() {
+    var o = lastU || uEvaluate();
+    if (o.state === "empty") return;
+    uLog.unshift({
+      q: String(o.q).trim(), from: o.from, to: o.to,
+      result: o.state === "ok" ? o.value + " " + o.to : "refused",
+      status: o.state === "ok" ? "converted" : ("refused: " + o.head),
+      missing: o.state === "ok" ? "" : o.missing
+    });
+    if (uLog.length > 40) uLog.length = 40;
+    uLogRender();
+  }
+
+  function uLogRender() {
+    var t = C(Q("#u-log"));
+    t.appendChild(E("thead", {}, [ E("tr", {}, [
+      E("th", { scope: "col", text: "Quantity" }),
+      E("th", { scope: "col", text: "From" }),
+      E("th", { scope: "col", text: "To" }),
+      E("th", { scope: "col", text: "Result" }),
+      E("th", { scope: "col", text: "Status" }),
+      E("th", { scope: "col", text: "What is missing" })
+    ]) ]));
+    var tb = E("tbody");
+    if (!uLog.length) {
+      tb.appendChild(E("tr", {}, [ E("td", { colspan: "6", class: "k-src-cell",
+        text: "Nothing yet. Press Convert, or pick one of the four conversions above." }) ]));
+    }
+    uLog.forEach(function (r) {
+      tb.appendChild(E("tr", {}, [
+        E("td", { class: "ad-mono", text: r.q }),
+        E("td", { text: r.from }),
+        E("td", { text: r.to }),
+        E("td", { class: r.result === "refused" ? "ad-no" : null, text: r.result }),
+        E("td", { class: r.status.indexOf("refused") === 0 ? "ad-no" : null, text: r.status }),
+        E("td", { class: "k-src-cell", text: r.missing })
+      ]));
+    });
+    t.appendChild(tb);
+  }
+
+  function uCsv() {
+    var rows = [];
+    rows.push(["Analyst Desk", "Unit safety"]);
+    rows.push(["Current quantity", S.u.q]);
+    rows.push(["From", S.u.from]);
+    rows.push(["To", S.u.to]);
+    rows.push([]);
+    rows.push(["Quantity", "From", "To", "Result", "Status", "What is missing"]);
+    if (!uLog.length) {
+      var o = lastU || uEvaluate();
+      if (o.state !== "empty") {
+        rows.push([String(o.q).trim(), o.from, o.to,
+          o.state === "ok" ? o.value + " " + o.to : "refused",
+          o.state === "ok" ? "converted" : ("refused: " + o.head),
+          o.state === "ok" ? "" : o.missing]);
+      }
+    }
+    uLog.forEach(function (r) { rows.push([r.q, r.from, r.to, r.result, r.status, r.missing]); });
+    rows.push([]);
+    rows.push(["Notes"]);
+    rows.push(["", "Quantities are read as exact rationals over big integers, not as floating point."]);
+    rows.push(["", "A greenhouse gas unit carries its species. tC to tCO2 is 44/12, tCO2 to tC is 12/44, tCO2 to tCO2e is 1 by definition."]);
+    rows.push(["", "Methane to CO2e is refused: it needs an IPCC assessment report and a time horizon, and there is no single answer."]);
+    rows.push(["", "CO2e back into a single gas is refused: CO2e is a unit of account and the mix behind it is not recoverable."]);
+    rows.push(["", "A bare mass into a gas unit is refused, and a gas unit into a bare mass is refused."]);
+    rows.push(["", "Conversions across dimensions are refused."]);
+    return rows;
+  }
+
+  /* =========================================================
+     method tables
+     ========================================================= */
+
+  function renderMethod() {
+    var t1 = C(Q("#out-gwp"));
+    t1.appendChild(E("thead", {}, [ E("tr", {}, [
+      E("th", { scope: "col", text: "Gas" }),
+      E("th", { scope: "col", class: "k-n", text: "Potential" }),
+      E("th", { scope: "col", text: "Assessment report" }),
+      E("th", { scope: "col", text: "Time horizon" }),
+      E("th", { scope: "col", text: "Applies to" })
+    ]) ]));
+    var b1 = E("tbody");
+    GWP_NAMED.forEach(function (g) {
+      b1.appendChild(E("tr", {}, [
+        E("td", { text: g.gas }),
+        E("td", { class: "k-n", text: g.value }),
+        E("td", { text: g.report }),
+        E("td", { text: g.horizon }),
+        E("td", { text: g.note || "methane as a whole" })
+      ]));
+    });
+    t1.appendChild(b1);
+
+    var t2 = C(Q("#out-ratio"));
+    t2.appendChild(E("thead", {}, [ E("tr", {}, [
+      E("th", { scope: "col", text: "Conversion" }),
+      E("th", { scope: "col", class: "k-n", text: "Factor" }),
+      E("th", { scope: "col", text: "Why it is exact" })
+    ]) ]));
+    var b2 = E("tbody");
+    [
+      ["tC to tCO2", "44/12", "the ratio of the molar masses"],
+      ["tCO2 to tC", "12/44", "the ratio of the molar masses"],
+      ["tCO2 to tCO2e", "1", "the potential of CO2 is 1 by definition of the metric"],
+      ["tC to tCO2e", "44/12 then 1", "carbon to CO2, then CO2 to CO2e at a potential of 1"],
+      ["kWh to J", "3 600 000", "the definition of the watt hour"]
+    ].forEach(function (r) {
+      b2.appendChild(E("tr", {}, [
+        E("td", { text: r[0] }), E("td", { class: "k-n", text: r[1] }), E("td", { class: "k-src-cell", text: r[2] })
+      ]));
+    });
+    t2.appendChild(b2);
+
+    var f = C(Q("#out-formulas"));
+    [
+      ["Valuation", "present value of year t is the cash flow divided by one plus the cost of capital, raised to t. "
+        + "The terminal value is the last forecast cash flow grown once, divided by the cost of capital less growth, "
+        + "then discounted with the last year's factor. The share is the terminal present value over the sum of both parts."],
+      ["Market size", "top down is a universe multiplied by its factors. Bottom up is a sum of segments, each a "
+        + "product of its drivers. A top down factor's implied value is its value times the ratio of the two totals. "
+        + "A bottom up driver's implied value is its value times the top down total less the other segments, over "
+        + "this segment."],
+      ["Runway", "burn in a month is the fixed costs plus the cost per head times the heads on the payroll, counting "
+        + "planned hires from their start month. The closing balance is the previous closing balance plus income less "
+        + "burn. Runway is the whole months survived plus the share of the crossing month the balance covers. One "
+        + "month is 52 over 12 weeks."],
+      ["Unit safety", "a unit is a dimension and an exact scale to the SI coherent unit of that dimension. A "
+        + "greenhouse gas unit carries a third thing, the species it counts. A conversion is allowed when the "
+        + "dimensions match, and for gases only when a route between the two species is defined. Everything else is "
+        + "refused, and the refusal names the input that would make it possible."]
+    ].forEach(function (r) {
+      f.appendChild(E("li", {}, [ E("b", { text: r[0] }), E("span", { text: r[1] }) ]));
+    });
+
+    var u = C(Q("#out-unknowns"));
+    [
+      ["Your numbers", "nothing on this page checks whether the figures you typed are right. It checks only that "
+        + "the arithmetic done with them is."],
+      ["Benchmarks", "there are none here. No industry averages, no typical burn, no usual cost of capital, no "
+        + "standard attach rate. A default would be read as a fact and it would not be one."],
+      ["Emission factors", "none. The unit converter carries scale factors and molar mass ratios and nothing else. "
+        + "Where an emission factor would be needed it says so and stops."],
+      ["Global warming potentials", "the four named above are quoted so that the converter can refuse to choose "
+        + "between them. None of them is applied to any number on this page."],
+      ["Beyond the horizon", "the runway instrument computes to the month you set and no further. Where the money "
+        + "outlasts the horizon it names no month."],
+      ["Prices and currency", "the valuation prints no per share figure and no currency, and the market sizer's "
+        + "money label is a label and not a unit conversion."]
+    ].forEach(function (r) {
+      u.appendChild(E("li", {}, [ E("b", { text: r[0] }), E("span", { text: r[1] }) ]));
+    });
+  }
+
+  /* =========================================================
+     url state
+     ========================================================= */
+
+  function toHashState() {
+    return {
+      v: { w: S.v.w, g: S.v.g, f: S.v.f.map(function (x) { return x.val; }) },
+      m: { u: S.m.unit,
+           t: S.m.td.map(function (a) { return [a.name, a.val, a.kind]; }),
+           b: S.m.bu.map(function (s) {
+             return [s.name, s.d.map(function (d) { return [d.name, d.val, d.kind]; })];
+           }) },
+      r: { c: S.r.cash, f: S.r.fixed, p: S.r.perHead, n: S.r.heads,
+           m0: S.r.m0, y0: S.r.y0, h: S.r.h,
+           hi: S.r.hires.map(function (h) { return [h.name, h.start, h.cost]; }),
+           in: S.r.inc.map(function (i) { return [i.name, i.start, i.end, i.amt]; }) },
+      u: { q: S.u.q, f: S.u.from, t: S.u.to }
+    };
+  }
+
+  function numOrNull(v) { return typeof v === "number" && isFinite(v) ? v : null; }
+  function strOr(v, d) { return typeof v === "string" ? v : d; }
+
+  function fromHashState(o) {
+    if (!o || typeof o !== "object") return false;
+
+    if (o.v && typeof o.v === "object") {
+      S.v.w = numOrNull(o.v.w);
+      S.v.g = numOrNull(o.v.g);
+      S.v.f = Array.isArray(o.v.f) ? o.v.f.slice(0, 60).map(function (x) {
+        return { id: nid(), val: numOrNull(x) };
+      }) : [];
+    }
+    if (o.m && typeof o.m === "object") {
+      S.m.unit = strOr(o.m.u, "");
+      S.m.td = Array.isArray(o.m.t) ? o.m.t.slice(0, 30).map(function (a) {
+        return mkAssum(strOr(a && a[0], ""), numOrNull(a && a[1]), strOr(a && a[2], "count"));
+      }) : [];
+      S.m.bu = Array.isArray(o.m.b) ? o.m.b.slice(0, 30).map(function (s) {
+        return mkSeg(strOr(s && s[0], ""), Array.isArray(s && s[1]) ? s[1].slice(0, 20).map(function (d) {
+          return mkAssum(strOr(d && d[0], ""), numOrNull(d && d[1]), strOr(d && d[2], "count"));
+        }) : []);
+      }) : [];
+    }
+    if (o.r && typeof o.r === "object") {
+      S.r.cash = numOrNull(o.r.c);
+      S.r.fixed = numOrNull(o.r.f);
+      S.r.perHead = numOrNull(o.r.p);
+      S.r.heads = numOrNull(o.r.n);
+      var m0 = numOrNull(o.r.m0); S.r.m0 = (m0 !== null && m0 >= 0 && m0 <= 11) ? Math.round(m0) : now.getMonth();
+      var y0 = numOrNull(o.r.y0); S.r.y0 = (y0 !== null && y0 > 1900 && y0 < 2200) ? Math.round(y0) : now.getFullYear();
+      var h = numOrNull(o.r.h); S.r.h = (h !== null && h >= 1 && h <= 240) ? Math.round(h) : 36;
+      S.r.hires = Array.isArray(o.r.hi) ? o.r.hi.slice(0, 40).map(function (a) {
+        return mkHire(strOr(a && a[0], ""), numOrNull(a && a[1]), numOrNull(a && a[2]));
+      }) : [];
+      S.r.inc = Array.isArray(o.r["in"]) ? o.r["in"].slice(0, 40).map(function (a) {
+        return mkInc(strOr(a && a[0], ""), numOrNull(a && a[1]), numOrNull(a && a[2]), numOrNull(a && a[3]));
+      }) : [];
+    }
+    if (o.u && typeof o.u === "object") {
+      S.u.q = strOr(o.u.q, "");
+      S.u.from = UG_BY[o.u.f] ? o.u.f : "tCH4";
+      S.u.to = UG_BY[o.u.t] ? o.u.t : "tCO2e";
+    }
+    return true;
+  }
+
+  var writeTimer = null;
+  function write() {
+    clearTimeout(writeTimer);
+    writeTimer = setTimeout(function () { Kit.state.write(toHashState()); }, 120);
+  }
+
+  /* =========================================================
+     examples, clearly labelled as examples
+     ========================================================= */
+
+  function vExample() {
+    S.v.w = 8.15; S.v.g = 2.10;
+    S.v.f = [88.2, 100.8, 115.6, 132.6, 152.2].map(function (x) { return { id: nid(), val: x }; });
+    Q("#v-w").value = String(S.v.w);
+    Q("#v-g").value = String(S.v.g);
+    vBuild(); vRender(); write();
+    Kit.toast("Example loaded. These are example figures, not a valuation of anything.");
+  }
+
+  function mExample() {
+    S.m.unit = "EUR";
+    S.m.td = [
+      mkAssum("Companies in the universe", 47000, "count"),
+      mkAssum("Share in scope", 0.62, "share"),
+      mkAssum("Share buying external software", 0.45, "share"),
+      mkAssum("Annual licence", 22000, "value")
+    ];
+    S.m.bu = [
+      mkSeg("Large listed", [
+        mkAssum("Companies", 4200, "count"),
+        mkAssum("Attach rate", 0.71, "share"),
+        mkAssum("Annual licence", 62000, "value")
+      ]),
+      mkSeg("Large private", [
+        mkAssum("Companies", 11500, "count"),
+        mkAssum("Attach rate", 0.38, "share"),
+        mkAssum("Annual licence", 26000, "value")
+      ]),
+      mkSeg("Mid market", [
+        mkAssum("Companies", 26000, "count"),
+        mkAssum("Attach rate", 0.31, "share"),
+        mkAssum("Annual licence", 11000, "value")
+      ])
+    ];
+    Q("#m-unit").value = S.m.unit;
+    mBuild(); mRender(); write();
+    Kit.toast("Example loaded. Every figure in it is illustrative and sizes nothing.");
+  }
+
+  function rExample() {
+    S.r.cash = 420000; S.r.fixed = 18000; S.r.perHead = 6200; S.r.heads = 6;
+    S.r.h = 36;
+    S.r.hires = [
+      mkHire("Second engineer", 4, 6800),
+      mkHire("Sales lead", 7, 7400)
+    ];
+    S.r.inc = [ mkInc("Signed contracts", 3, null, 9000) ];
+    rSyncInputs();
+    rBuild(); rRender(); write();
+    Kit.toast("Example loaded. These are example figures, not a plan for any company.");
+  }
+
+  function uExample(e) {
+    S.u.q = e.q; S.u.from = e.f; S.u.to = e.t;
+    Q("#u-q").value = e.q; Q("#u-from").value = e.f; Q("#u-to").value = e.t;
+    uRender(); uLogPush(); write();
+  }
+
+  function rSyncInputs() {
+    Q("#r-cash").value = S.r.cash === null ? "" : String(S.r.cash);
+    Q("#r-fixed").value = S.r.fixed === null ? "" : String(S.r.fixed);
+    Q("#r-perhead").value = S.r.perHead === null ? "" : String(S.r.perHead);
+    Q("#r-heads").value = S.r.heads === null ? "" : String(S.r.heads);
+    Q("#r-m0").value = String(S.r.m0);
+    Q("#r-y0").value = String(S.r.y0);
+    Q("#r-h").value = String(S.r.h);
+  }
+
+  /* =========================================================
+     wiring
+     ========================================================= */
+
+  function bindNum(sel, get, set) {
+    var el = Q(sel);
+    el.value = get() === null ? "" : String(get());
+    el.addEventListener("input", function () { set(Kit.toNum(el.value)); });
+    return el;
+  }
+
+  function init() {
+    var restored = fromHashState(Kit.state.read());
+
+    /* month select */
+    var msel = Q("#r-m0");
+    MONTH_NAMES.forEach(function (m, i) { msel.appendChild(E("option", { value: String(i), text: m })); });
+
+    /* unit selects */
+    var fromEl = Q("#u-from"), toEl = Q("#u-to");
+    UG_UNITS.forEach(function (u) {
+      fromEl.appendChild(E("option", { value: u.s, text: u.s }));
+      toEl.appendChild(E("option", { value: u.s, text: u.s }));
+    });
+
+    /* ---- valuation ---- */
+    bindNum("#v-w", function () { return S.v.w; }, function (v) { S.v.w = v; vRender(); write(); });
+    bindNum("#v-g", function () { return S.v.g; }, function (v) { S.v.g = v; vRender(); write(); });
+    Q("#b-v-add").addEventListener("click", function () {
+      S.v.f.push({ id: nid(), val: null });
+      vBuild(); vRender(); write();
+      var last = S.v.f[S.v.f.length - 1];
+      var f = Q("#v-f-" + last.id); if (f) f.focus();
+    });
+    Q("#b-v-example").addEventListener("click", vExample);
+    Q("#b-v-clear").addEventListener("click", function () {
+      S.v = { w: null, g: null, f: [] };
+      Q("#v-w").value = ""; Q("#v-g").value = "";
+      vBuild(); vRender(); write();
+      Q("#b-v-add").focus();
+    });
+    Q("#b-v-csv").addEventListener("click", function () {
+      Kit.csvDownload(vCsv(), "analyst-desk-valuation.csv"); Kit.toast("CSV downloaded.");
+    });
+    Q("#b-v-copy").addEventListener("click", function () { Kit.csvCopy(vCsv()); });
+    Q("#b-v-link").addEventListener("click", function () { Kit.share(toHashState()); });
+
+    /* ---- market size ---- */
+    var mu = Q("#m-unit");
+    mu.value = S.m.unit;
+    mu.addEventListener("input", function () { S.m.unit = mu.value; mRender(); write(); });
+    Q("#b-m-addf").addEventListener("click", function () {
+      S.m.td.push(mkAssum("", null, "count"));
+      mBuild(); mRender(); write();
+      var last = S.m.td[S.m.td.length - 1];
+      var f = Q("#m-n-" + last.id); if (f) f.focus();
+    });
+    Q("#b-m-addseg").addEventListener("click", function () {
+      S.m.bu.push(mkSeg("", [mkAssum("", null, "count")]));
+      mBuild(); mRender(); write();
+      var last = S.m.bu[S.m.bu.length - 1];
+      var f = Q("#m-sn-" + last.id); if (f) f.focus();
+    });
+    Q("#b-m-example").addEventListener("click", mExample);
+    Q("#b-m-clear").addEventListener("click", function () {
+      S.m = { unit: "", td: [], bu: [] };
+      mu.value = "";
+      mBuild(); mRender(); write();
+      Q("#b-m-addf").focus();
+    });
+    Q("#b-m-csv").addEventListener("click", function () {
+      Kit.csvDownload(mCsv(), "analyst-desk-market-size.csv"); Kit.toast("CSV downloaded.");
+    });
+    Q("#b-m-copy").addEventListener("click", function () { Kit.csvCopy(mCsv()); });
+    Q("#b-m-link").addEventListener("click", function () { Kit.share(toHashState()); });
+
+    /* ---- runway ---- */
+    bindNum("#r-cash", function () { return S.r.cash; }, function (v) { S.r.cash = v; rRender(); write(); });
+    bindNum("#r-fixed", function () { return S.r.fixed; }, function (v) { S.r.fixed = v; rRender(); write(); });
+    bindNum("#r-perhead", function () { return S.r.perHead; }, function (v) { S.r.perHead = v; rRender(); write(); });
+    bindNum("#r-heads", function () { return S.r.heads; }, function (v) { S.r.heads = v; rRender(); write(); });
+    msel.value = String(S.r.m0);
+    msel.addEventListener("change", function () { S.r.m0 = parseInt(msel.value, 10); rRender(); write(); });
+    bindNum("#r-y0", function () { return S.r.y0; }, function (v) {
+      S.r.y0 = (v === null ? now.getFullYear() : Math.round(v)); rRender(); write();
+    });
+    bindNum("#r-h", function () { return S.r.h; }, function (v) {
+      S.r.h = (v === null || v < 1) ? 0 : Math.min(240, Math.round(v)); rRender(); write();
+    });
+    Q("#b-r-addhire").addEventListener("click", function () {
+      S.r.hires.push(mkHire("", S.r.hires.length + 1, null));
+      rBuild(); rRender(); write();
+      var last = S.r.hires[S.r.hires.length - 1];
+      var f = Q("#r-hn-" + last.id); if (f) f.focus();
+    });
+    Q("#b-r-addinc").addEventListener("click", function () {
+      S.r.inc.push(mkInc("", 1, null, null));
+      rBuild(); rRender(); write();
+      var last = S.r.inc[S.r.inc.length - 1];
+      var f = Q("#r-in-" + last.id); if (f) f.focus();
+    });
+    Q("#b-r-example").addEventListener("click", rExample);
+    Q("#b-r-clear").addEventListener("click", function () {
+      S.r = { cash: null, fixed: null, perHead: null, heads: null,
+              m0: now.getMonth(), y0: now.getFullYear(), h: 36, hires: [], inc: [] };
+      rSyncInputs(); rBuild(); rRender(); write();
+      Q("#r-cash").focus();
+    });
+    Q("#b-r-csv").addEventListener("click", function () {
+      Kit.csvDownload(rCsv(), "analyst-desk-runway.csv"); Kit.toast("CSV downloaded.");
+    });
+    Q("#b-r-copy").addEventListener("click", function () { Kit.csvCopy(rCsv()); });
+    Q("#b-r-link").addEventListener("click", function () { Kit.share(toHashState()); });
+
+    /* ---- unit safety ---- */
+    var qEl = Q("#u-q");
+    qEl.value = S.u.q;
+    fromEl.value = S.u.from;
+    toEl.value = S.u.to;
+    qEl.addEventListener("input", function () { S.u.q = qEl.value; uRender(); write(); });
+    qEl.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); S.u.q = qEl.value; uRender(); uLogPush(); write(); }
+    });
+    fromEl.addEventListener("change", function () { S.u.from = fromEl.value; uRender(); write(); });
+    toEl.addEventListener("change", function () { S.u.to = toEl.value; uRender(); write(); });
+    Q("#b-u-go").addEventListener("click", function () { uRender(); uLogPush(); write(); });
+    Q("#b-u-clear").addEventListener("click", function () {
+      S.u.q = ""; qEl.value = ""; uRender(); write(); qEl.focus();
+    });
+    var chips = C(Q("#u-chips"));
+    UG_EX.forEach(function (e) {
+      chips.appendChild(E("button", { type: "button", class: "k-btn k-btn-quiet",
+        text: e.q + " " + e.f + " to " + e.t,
+        onclick: function () { uExample(e); } }));
+    });
+    Q("#b-u-csv").addEventListener("click", function () {
+      Kit.csvDownload(uCsv(), "analyst-desk-unit-safety.csv"); Kit.toast("CSV downloaded.");
+    });
+    Q("#b-u-copy").addEventListener("click", function () { Kit.csvCopy(uCsv()); });
+    Q("#b-u-link").addEventListener("click", function () { Kit.share(toHashState()); });
+
+    /* ---- first paint ---- */
+    rSyncInputs();
+    vBuild(); vRender();
+    mBuild(); mRender();
+    rBuild(); rRender();
+    uRender();
+    renderMethod();
+
+    if (restored) Kit.toast("Inputs restored from the link.");
+
+    var rt = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(rt);
+      rt = setTimeout(function () {
+        var host = Q("#r-chart");
+        if (host && lastR && lastR.state === "ok") drawRunway(host, lastR);
+      }, 160);
+    });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+<script>
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Araç · finans ve analiz</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Instrument · Finanzen und Analyse</i>"}};
+
+(function(){
+  "use strict";
+  var KEY = "lang", lang = "en";
+  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
+  var D = window.CHROME_I18N || {};
+  var base = {}, baseA = {};
+  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
+  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function apply(l){
+    if(!D[l]) l = "en";
+    var d = D[l] || {};
+    document.querySelectorAll(SEL).forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if(!(k in base)) base[k] = el.innerHTML;
+      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
+    });
+    document.querySelectorAll(SELA).forEach(function(el){
+      var k = el.getAttribute("data-ia");
+      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
+      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
+    });
+    document.documentElement.setAttribute("lang", l);
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    window.__lang = l;
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  window.__chrome = apply;
+  apply(lang);
+})();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The market for lemons</title>
+<meta name="description" content="An explorable essay on adverse selection. Set the spread of quality and how much buyers can see, then run a used car market round by round and watch the good cars withdraw. Switch on a warranty or a certificate and watch it come back.">
+<meta name="author" content="Kerem Ozdemir">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Instrument+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="canonical" href="https://keremozdemir.de/tools/economics/lemons/">
+<meta property="og:title" content="The market for lemons">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   kit.css
+   House visual system for the open instruments at keremozdemir.de
+   Paper palette, Fraunces display, Newsreader body, IBM Plex Mono
+   for every number. No framework, no build step.
+
+   The host document loads three families from Google Fonts and nothing
+   else, with preconnect to fonts.googleapis.com and fonts.gstatic.com:
+     Fraunces      opsz,wght 9..144 at 300, 400, 500
+     Newsreader    ital,opsz,wght 6..72 at 400, 500 and italic 400
+     IBM Plex Mono 400, 500
+   Every family here has a real fallback stack, so the page stays legible
+   if the fonts never arrive.
+   ============================================================ */
+
+/* ---------- 1. tokens ---------- */
+
+:root {
+  color-scheme: light;
+
+  --paper:      #f2efe6;
+  --paper-sunk: #ebe7dc;
+  --panel:      #f7f5ee;
+  --field:      #fdfcf8;
+  --ink:        #2b2620;
+  --ink-soft:   #4b443b;
+  --dim:        #6f6558;
+  --faint:      #8d8375;
+  --rule:       #d8d2c4;
+  --rule-firm:  #bdb5a4;
+  --accent:     #8a5a24;
+  --accent-lit: #f0e6d6;
+  --flag:       #8c3b1e;
+  --flag-lit:   #f3e4de;
+  --good:       #3f5c3a;
+  --good-lit:   #e5eade;
+
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --serif:   "Newsreader", Georgia, "Times New Roman", serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 66ch;
+  --gap:     clamp(1rem, 2.4vw, 1.6rem);
+  --pad:     clamp(0.95rem, 2.4vw, 1.5rem);
+  --edge:    clamp(1.1rem, 5vw, 3.25rem);
+}
+
+/* The instruments used to flip to a dark palette with the system.  They
+   sit inside keremozdemir.de now, whose paper is light and whose top bar
+   and footer are painted from the site's own tokens, so a page that went
+   dark underneath a light bar would only look broken.  One palette. */
+
+/* ---------- 2. reset and page ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, 0.97rem + 0.16vw, 1.08rem);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.15; letter-spacing: -0.02em; }
+
+p { margin: 0 0 0.9em; max-width: var(--measure); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-firm); }
+a:hover { border-bottom-color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+.k-shell :focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--accent-lit); color: var(--ink); }
+
+.k-vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0);
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.k-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  background: var(--ink); color: var(--paper); border: 0;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+}
+.k-skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- 3. shell ---------- */
+
+.k-shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+.k-wrap { width: 100%; max-width: 74rem; margin: 0 auto; padding-inline: var(--edge); }
+
+/* The top bar is the site's, spliced in from pagegen.py by build.sh, so
+   there is no header of the kit's own any more. */
+
+.k-main { flex: 1 0 auto; padding-block: clamp(1.8rem, 5vw, 3.2rem) clamp(2.5rem, 6vw, 4rem); }
+
+.k-lede { max-width: 62ch; }
+.k-lede h1 {
+  font-size: clamp(1.85rem, 1.2rem + 2.6vw, 3rem);
+  letter-spacing: -0.032em; margin-bottom: 0.5rem;
+}
+.k-lede .k-standfirst {
+  font-size: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  color: var(--ink-soft); line-height: 1.5;
+}
+
+.k-sect { margin-top: clamp(2.2rem, 5.5vw, 3.4rem); }
+.k-sect > h2 {
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule-firm);
+  margin-bottom: 1.1rem;
+}
+.k-sect > h2 .k-num {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+}
+.k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
+
+/* ---------- 4. input row ---------- */
+
+.k-row {
+  display: grid; gap: 0.7rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  align-items: end;
+}
+.k-row.k-row-tight { gap: 0.55rem 0.9rem; }
+
+.k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.k-field > label, .k-lab {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+}
+.k-field .k-hint {
+  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
+  line-height: 1.45; letter-spacing: 0.02em;
+}
+
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
+  width: 100%; min-width: 0;
+  background: var(--field);
+  border: 1px solid var(--rule-firm);
+  border-radius: 0;
+  color: var(--ink);
+  font-family: var(--mono); font-size: 0.88rem; font-weight: 400;
+  padding: 0.55rem 0.6rem;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+input[type="number"] { font-variant-numeric: tabular-nums; text-align: right; }
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.9rem;
+}
+input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--panel); }
+input::placeholder { color: var(--faint); }
+input[aria-invalid="true"] { border-color: var(--flag); }
+
+.k-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--rule-firm); border-radius: 0;
+  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  padding: 0.62rem 0.95rem; cursor: pointer;
+  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.k-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.k-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
+.k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.k-btn-key { color: #f7f5ee; }
+.k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+
+.k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+
+/* ---------- 5. result panel ---------- */
+
+.k-panel {
+  background: var(--panel);
+  border: 1px solid var(--rule-firm);
+  padding: var(--pad);
+}
+.k-panel + .k-panel { margin-top: var(--gap); }
+.k-panel > h3, .k-panel-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+.k-panel-sunk { background: var(--paper-sunk); }
+
+.k-stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem; }
+.k-stat .k-big {
+  font-family: var(--mono); font-weight: 500;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+  line-height: 1.05; color: var(--ink);
+}
+.k-stat .k-unit { font-family: var(--mono); font-size: 0.78rem; color: var(--dim); letter-spacing: 0.05em; }
+
+.k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+
+.k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
+.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dd {
+  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
+}
+.k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
+
+/* arithmetic trace: every step printed */
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem; padding: 0.3rem 0;
+  border-bottom: 1px dotted var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+.k-steps li:last-child { border-bottom: 0; }
+.k-steps .k-op { color: var(--dim); }
+.k-steps .k-res { color: var(--ink); font-weight: 500; text-align: right; white-space: nowrap; }
+.k-steps li.k-step-final { border-top: 1px solid var(--rule-firm); border-bottom: 0; margin-top: 0.3rem; padding-top: 0.5rem; }
+.k-steps li.k-step-final .k-res { color: var(--accent); font-size: 0.92rem; }
+
+/* ---------- 6. source line ---------- */
+
+.k-source {
+  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  margin-top: 0.7rem; padding-top: 0.55rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-source::before {
+  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--faint); flex: none;
+}
+.k-source.k-source-bare::before { content: none; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.k-source .k-checked { color: var(--faint); white-space: nowrap; }
+
+/* ---------- 7. warning and refusal ---------- */
+
+.k-warn {
+  background: var(--flag-lit);
+  border: 1px solid var(--flag);
+  border-left-width: 3px;
+  padding: var(--pad);
+}
+.k-warn > h3, .k-warn .k-panel-h { color: var(--flag); }
+.k-warn p { color: var(--ink); }
+.k-warn + .k-warn, .k-panel + .k-warn, .k-warn + .k-panel { margin-top: var(--gap); }
+
+.k-ok { background: var(--good-lit); border: 1px solid var(--good); border-left-width: 3px; padding: var(--pad); }
+.k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
+
+.k-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
+  white-space: nowrap;
+}
+.k-tag-gap { color: var(--flag); background: var(--flag-lit); }
+.k-tag-known { color: var(--good); background: var(--good-lit); }
+.k-tag-quiet { color: var(--faint); background: transparent; }
+
+.k-ask { margin: 0.85rem 0 0; padding: 0; list-style: none; }
+.k-ask li {
+  display: grid; grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.2rem 0.9rem; padding: 0.4rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.92rem;
+}
+.k-ask li > b {
+  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.22rem;
+}
+
+/* ---------- 8. tables ---------- */
+
+.k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-table th, .k-table td {
+  text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule); vertical-align: top;
+}
+.k-table th {
+  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  border-bottom-color: var(--rule-firm); white-space: nowrap;
+}
+.k-table td.k-n, .k-table th.k-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  text-align: right; padding-right: 0; white-space: nowrap;
+}
+.k-table tbody tr:last-child td { border-bottom: 0; }
+.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell a { word-break: break-all; }
+
+/* ---------- 9. timeline ---------- */
+
+.k-time { margin: 0; padding: 0; list-style: none; }
+.k-time li {
+  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0.25rem 1.1rem; padding: 0.7rem 0;
+  border-top: 1px solid var(--rule);
+}
+.k-time li:first-child { border-top: 0; padding-top: 0; }
+.k-time .k-when {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
+}
+.k-time .k-what { font-size: 0.96rem; color: var(--ink); }
+.k-time .k-what small {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+}
+.k-time li.k-past .k-when { color: var(--faint); }
+.k-time li.k-past .k-what { color: var(--dim); }
+
+/* ---------- 10. the closing note ---------- */
+/* Each instrument ends with its own disclaimer and its own privacy line.
+   That is the page's last word, not the site's, so it is a closing panel
+   and the site's footer follows it. */
+
+.k-endnote {
+  border-top: 1px solid var(--rule-firm);
+  background: var(--paper-sunk);
+  padding-block: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: 0.9rem; color: var(--dim);
+}
+.k-endnote .k-wrap { display: grid; gap: 1.1rem; }
+.k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
+.k-endnote .k-fine {
+  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
+.k-endnote a:hover { color: var(--accent); }
+
+/* ---------- 11. toast for copy actions ---------- */
+
+.k-toast {
+  position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.k-toast[data-on="1"] { opacity: 1; }
+
+/* ---------- 12. responsive ---------- */
+
+@media (max-width: 640px) {
+  .k-ask li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-time li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-steps li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .k-steps .k-res { text-align: left; }
+}
+
+@media print {
+  .k-btnbar, .k-skip, .k-toast { display: none; }
+  body { background: #fff; color: #000; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   essay.css
+   The shared chrome for Explorable Economics. It sits on top of
+   kit.css and adds only what an essay with a live model needs:
+   a reading column, a model figure that breaks out of it, a
+   control rack, a live readout, and a running summary line that
+   says in words what the picture is showing.
+
+   Spliced into every essay by build.sh at the ESSAY_CSS marker,
+   so that each page still ships as one self contained file.
+   ============================================================ */
+
+/* ---------- reading column ---------- */
+
+.ex-body {
+  display: grid;
+  /* minmax(0, 1fr) rather than auto, so that one wide child can never
+     stretch the whole reading column past the width of the screen */
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 0;
+}
+.ex-body > * {
+  width: 100%;
+  max-width: 40rem;
+  min-width: 0;
+  justify-self: center;
+}
+
+.ex-body > p {
+  max-width: 40rem;
+  font-size: clamp(1.02rem, 0.99rem + 0.2vw, 1.13rem);
+  line-height: 1.68;
+  margin: 0 0 1.05em;
+}
+.ex-body > h2 {
+  font-size: clamp(1.25rem, 1.08rem + 0.7vw, 1.62rem);
+  margin: clamp(2.3rem, 5vw, 3.3rem) 0 0.9rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--rule-firm);
+}
+.ex-body > h2 .k-num {
+  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
+}
+.ex-body > h3 {
+  font-size: 1.1rem; margin: 1.9rem 0 0.6rem; color: var(--ink);
+}
+.ex-body > ul, .ex-body > ol { max-width: 40rem; padding-left: 1.15rem; margin: 0 0 1.05em; }
+.ex-body > ul li, .ex-body > ol li { margin-bottom: 0.45em; }
+
+.ex-lead {
+  font-size: clamp(1.1rem, 1.03rem + 0.4vw, 1.28rem) !important;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.ex-aside {
+  border-left: 2px solid var(--rule-firm);
+  padding: 0.1rem 0 0.1rem 1rem;
+  margin: 0 0 1.15em;
+  font-size: 0.94rem;
+  color: var(--dim);
+}
+.ex-aside p { font-size: inherit; margin-bottom: 0.6em; }
+
+.ex-em { font-style: italic; }
+.ex-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 0.94em; color: var(--accent); font-weight: 500;
+  white-space: nowrap;
+}
+.ex-n-flag { color: var(--flag); }
+.ex-n-long { white-space: normal; }
+
+/* a formula set on its own line, in words rather than symbols */
+.ex-formula {
+  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  color: var(--ink); background: var(--panel);
+  border-left: 2px solid var(--accent);
+  padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
+  max-width: 40rem; overflow-wrap: break-word;
+}
+.ex-formula small {
+  display: block; font-size: 0.66rem; color: var(--faint);
+  margin-top: 0.35rem; letter-spacing: 0.02em;
+}
+
+/* ---------- the model figure, wider than the prose ---------- */
+
+.ex-model {
+  max-width: 60rem;
+  margin: clamp(1.5rem, 4vw, 2.3rem) 0 clamp(1.7rem, 4.5vw, 2.6rem);
+  border: 1px solid var(--rule-firm);
+  background: var(--panel);
+  padding: var(--pad);
+}
+.ex-model > figcaption,
+.ex-model-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.85rem;
+  display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
+}
+.ex-model > figcaption .ex-model-sub,
+.ex-model-h .ex-model-sub {
+  color: var(--faint); letter-spacing: 0.1em; text-transform: none;
+  font-family: var(--mono); font-weight: 400;
+}
+
+.ex-plot { width: 100%; overflow: hidden; }
+.ex-plot svg {
+  display: block; width: 100%; height: auto;
+  touch-action: none;
+  -webkit-user-select: none; user-select: none;
+}
+.ex-plot.ex-draggable { cursor: grab; touch-action: none; }
+.ex-plot.ex-dragging { cursor: grabbing; }
+.ex-plot.ex-draggable svg { cursor: inherit; }
+
+.ex-plot + .ex-plot { margin-top: 0.9rem; }
+
+/* ---------- control rack ---------- */
+
+.ex-ctrls {
+  display: grid; gap: 0.85rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
+  margin-bottom: 1.1rem;
+}
+.ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
+}
+.ex-ctrl .ex-val {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+.ex-ctrl .k-hint {
+  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
+  line-height: 1.5; letter-spacing: 0.02em;
+}
+
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; min-width: 0; height: 1.9rem; margin: 0;
+  background: transparent; color: var(--accent);
+  display: block;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px; background: var(--rule-firm); border: 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 1.15rem; height: 1.15rem; margin-top: -0.53rem;
+  border-radius: 50%; border: 0; background: var(--accent); cursor: pointer;
+}
+input[type="range"]::-moz-range-track { height: 2px; background: var(--rule-firm); border: 0; }
+input[type="range"]::-moz-range-thumb {
+  width: 1.15rem; height: 1.15rem; border: 0; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+}
+input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type="range"]:hover::-webkit-slider-thumb { background: var(--ink); }
+input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
+
+/* segmented radio group */
+.ex-seg { border: 0; margin: 0; padding: 0; min-width: 0; }
+.ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
+.ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
+.ex-seg-row > label {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
+  border: 1px solid var(--rule-firm); margin-left: -1px;
+  background: var(--field); line-height: 1.3; white-space: nowrap;
+}
+.ex-seg-row > label:first-of-type { margin-left: 0; }
+.ex-seg-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ex-seg-row > label:has(input:checked) { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+:root[data-theme="dark"] .ex-seg-row > label:has(input:checked) { color: #17140f; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ex-seg-row > label:has(input:checked) { color: #17140f; }
+}
+.ex-seg-row > label:hover { border-color: var(--accent); color: var(--ink); }
+.ex-seg-row > label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* fallback for browsers without :has, checked state still readable */
+.ex-seg-row > label.ex-on { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.ex-check {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--dim); cursor: pointer;
+}
+.ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
+
+/* ---------- readout and running summary ---------- */
+
+.ex-read {
+  display: grid; gap: 0.55rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  margin-top: 1rem; padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+}
+.ex-read > div { min-width: 0; }
+.ex-read dt, .ex-read .ex-read-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  margin: 0 0 0.15rem;
+}
+.ex-read dd, .ex-read .ex-read-v {
+  margin: 0; font-family: var(--mono); font-weight: 500;
+  font-size: 1.06rem; font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
+}
+.ex-read .ex-read-v small {
+  display: block; font-size: 0.63rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+}
+.ex-read-hot .ex-read-v { color: var(--accent); }
+.ex-read-flag .ex-read-v { color: var(--flag); }
+
+.ex-sum {
+  margin-top: 0.9rem; padding-top: 0.7rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
+  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+}
+.ex-sum b { color: var(--ink-soft); font-weight: 500; }
+.ex-sum::before {
+  content: "reading"; display: block;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 0.3rem;
+}
+
+/* the paragraph of prose that answers what the reader just did */
+.ex-says {
+  max-width: 40rem;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-lit);
+  padding: 0.85rem 1.05rem;
+  margin: 0 0 1.15em;
+  font-size: 1rem; line-height: 1.6; color: var(--ink);
+}
+.ex-says p { max-width: none; margin-bottom: 0.55em; font-size: inherit; }
+.ex-says p:last-child { margin-bottom: 0; }
+
+/* ---------- legend ---------- */
+
+.ex-key {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
+  margin-top: 0.7rem;
+  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
+  letter-spacing: 0.02em;
+}
+.ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
+.ex-key i.ex-line { height: 0; border-top: 2px solid currentColor; width: 0.95rem; }
+
+/* stacked bar for a two way split */
+.ex-split { display: flex; height: 1.5rem; border: 1px solid var(--rule-firm); overflow: hidden; }
+.ex-split i { display: block; height: 100%; transition: width 0.12s linear; }
+.ex-split .a { background: var(--accent); }
+.ex-split .b { background: var(--rule); }
+@media (prefers-reduced-motion: reduce) { .ex-split i { transition: none; } }
+
+/* ---------- essay foot: limits, sources, next ---------- */
+
+.ex-limits { max-width: 46rem; }
+.ex-limits .k-ask li > b { padding-top: 0.25rem; }
+
+.ex-cites { max-width: 46rem; margin: 0; padding: 0; list-style: none; }
+.ex-cites li {
+  border-top: 1px solid var(--rule);
+  padding: 0.75rem 0;
+  font-size: 0.92rem; line-height: 1.55; color: var(--ink-soft);
+  max-width: none;
+}
+.ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
+.ex-cites .ex-cite-w {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.65;
+}
+.ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.ex-cites .ex-cite-t { font-style: italic; }
+
+.ex-next {
+  max-width: 60rem;
+  margin-top: clamp(2.4rem, 6vw, 3.6rem);
+  border-top: 1px solid var(--rule-firm);
+  padding-top: 1.2rem;
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+.ex-next a {
+  display: flex; flex-direction: column; gap: 0.3rem;
+  border: 1px solid var(--rule-firm); background: var(--panel);
+  padding: var(--pad); color: inherit; text-decoration: none;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+.ex-next a:hover { border-color: var(--accent); background: var(--field); }
+.ex-next a:hover .ex-next-t { color: var(--accent); }
+.ex-next .ex-next-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--faint);
+}
+.ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
+.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+
+/* ---------- mobile ---------- */
+
+@media (max-width: 640px) {
+  .ex-model { padding: 0.85rem 0.8rem 0.95rem; }
+  .ex-ctrls { grid-template-columns: minmax(0, 1fr); gap: 0.7rem; }
+  .ex-read { grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.5rem 0.9rem; }
+  .ex-read dd, .ex-read .ex-read-v { font-size: 0.98rem; }
+  .ex-seg-row { width: 100%; }
+  .ex-seg-row > label { flex: 1 1 auto; text-align: center; }
+  .ex-says { padding: 0.7rem 0.85rem; }
+}
+
+/* ---------- essay two ---------- */
+
+.lm-runbar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.9rem 0 0.2rem; }
+.lm-round {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--dim); margin-left: auto;
+}
+.lm-round b { color: var(--accent); font-weight: 500; }
+@media (max-width: 640px) { .lm-round { margin-left: 0; width: 100%; } }
+
+/* ---------- the site's clothes, worn by an instrument ---------- */
+.bar,footer.site-foot,.leaf-mark{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#f2efe6;
+  --fg:#221e17;
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --accent:#8a5a24;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+.bar,footer.site-foot{color:var(--fg)}
+footer.site-foot{background:var(--paper)}
+.bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
+
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
+.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+.langs{display:flex;gap:.1rem;margin-left:.6rem}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
+    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* six nav items on a narrow phone: the row is allowed to take a second
+   line rather than push the page sideways, and the words are set a little
+   tighter so that on most phones it does not have to */
+@media (max-width:430px){
+  .bar nav{gap:.34rem .55rem}
+  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+
+/* ---------- the crown, on a page whose interior is its own ---------- */
+.k-crown-no{
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;
+  font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;
+  color:var(--accent);
+}
+.k-crown-no svg{flex:none}
+.k-lede h1{margin-top:0}
+
+
+</style>
+</head>
+<body>
+
+<a class="k-skip" href="#essay">Skip to the essay</a>
+
+<div class="k-shell">
+
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="../../../index.html">Kerem Özdemir</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../profile.html" data-i="nav-p">Profile</a><a href="../../../projects.html" data-i="nav-j">Projects</a><a href="../../../notes.html" data-i="nav-n">Notes</a><a href="../../../contact.html" data-i="nav-c">Contact</a><a href="../../../tools.html" aria-current="page" data-i="nav-t">Tools</a><a href="../../../game.html" data-i="nav-g">Game Theory</a>
+      <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+
+  <main class="k-main" id="essay">
+    <div class="k-wrap">
+
+      <div class="k-lede k-crown">
+        <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Essay two of four</i></span>
+        <h1>The market for lemons</h1>
+        <p class="k-standfirst">A used car market where the seller knows what the car is and the buyer does not.
+        Set how far quality varies and how much of it a buyer can see, then run the market and watch the good
+        cars leave one round at a time.</p>
+      </div>
+
+      <div class="ex-body">
+
+        <p class="ex-lead">A hundred and twenty people each want to sell a car. Each knows exactly what their
+        own car is worth. The buyers know only that the cars in front of them are somewhere in a range. Every
+        car is worth half again as much to a buyer as to its current owner, so there is a gain to be had on
+        every single one of them, and under full information every one of them would sell.</p>
+
+        <p>What follows is not a story about dishonest dealers. Nobody in the model lies. Every seller makes the
+        one decision available to them, which is to accept the offered price or to keep the car. Every buyer
+        offers what the cars in front of them are worth on average. From those two entirely reasonable rules,
+        the market takes itself apart.</p>
+
+        <h2 id="s1"><span class="k-num">01</span>The lot</h2>
+
+        <p>Each mark below is one car, ordered from the worst on the left to the best on the right, with its
+        quality on the vertical scale. Set how wide the spread of quality is and how much of that quality a
+        buyer can actually see before handing over money, then run the market. The line that appears is the
+        quality above which an owner would rather keep the car than take the price on offer.</p>
+
+        <figure class="ex-model" id="m1">
+          <figcaption>Figure one <span class="ex-model-sub">the cars, round by round</span></figcaption>
+          <div class="ex-ctrls" id="lm-ctrls"></div>
+          <div class="lm-runbar" id="lm-runbar"></div>
+          <div class="ex-plot" id="lm-plot"></div>
+          <p class="ex-key" id="lm-key"></p>
+          <div id="lm-read"></div>
+          <p class="ex-sum" id="lm-sum" role="status" aria-live="polite"></p>
+        </figure>
+
+        <div class="ex-says" id="lm-says"></div>
+
+        <h2 id="s2"><span class="k-num">02</span>Why it unravels</h2>
+
+        <p>The loop has four steps and it closes on itself. Buyers offer a price built on what they believe the
+        average car on the lot is worth. At that price the owners of the best cars decline, because their car is
+        worth more to them than the offer. The cars actually on offer are therefore worse than the cars in
+        principle available. Buyers see that, revise the average down, and offer less. Which drives out the next
+        layer of good cars.</p>
+
+        <p>Step through the rounds and watch the line come down. The two series below are the average quality of
+        the cars that changed hands in each round and the average price paid for them. They fall together,
+        because the price is only ever an estimate of the quality, and the estimate is chasing a quantity that
+        the estimate itself is pushing down.</p>
+
+        <figure class="ex-model" id="m2">
+          <figcaption>Figure two <span class="ex-model-sub">quality and price over the rounds</span></figcaption>
+          <div class="ex-plot" id="lm-plot2"></div>
+          <p class="ex-key" id="lm-key2"></p>
+          <p class="ex-sum" id="lm-sum2" role="status" aria-live="polite"></p>
+        </figure>
+
+        <p>Two things are worth noticing about where it stops. First, it does not always go to zero. If the
+        worst car on the lot is still a decent car, the spiral runs out of room and the market settles smaller
+        and worse than it should be, but alive. Second, if the worst car is worthless, there is no floor to stop
+        it, and the market falls all the way through. Push the spread control to its maximum and watch that
+        happen.</p>
+
+        <h2 id="s3"><span class="k-num">03</span>The number that decides it</h2>
+
+        <p>The whole spiral is one line of arithmetic. A buyer who sees a fraction of the quality and guesses the
+        rest offers a price built from both. An owner sells when that offer is at least what the car is worth to
+        them. Working the inequality through gives the highest quality that will still be offered for sale.</p>
+
+        <p class="ex-formula">highest quality still offered = 1.5 x (1 minus visibility) x believed average / (1 minus 1.5 x visibility)
+        <small>With no visibility at all the expression is just one and a half times the believed average. As
+        visibility rises towards two thirds the denominator goes to zero and every car sells whatever the
+        belief.</small></p>
+
+        <p>That gives a clean threshold, and it is the reason the visibility control has a point where the
+        behaviour changes rather than a smooth slope. When the worst car on the lot is worthless, the market
+        survives only if buyers can see more than a third of what they are buying. Below a third the belief
+        falls faster than the floor can hold it and the whole thing goes to nothing. Above a third it holds.
+        Set the spread to its maximum and move visibility across a third to see the switch.</p>
+
+        <h2 id="s4"><span class="k-num">04</span>Two ways to put it back together</h2>
+
+        <p>Nothing above required anybody to behave badly, so nothing above is fixed by asking people to behave
+        better. What fixes it is changing what a buyer's money is exposed to. The remedy control offers two ways
+        of doing that, and they work differently enough to be worth trying one after the other.</p>
+
+        <p>A <span class="ex-em">certificate</span> attacks the ignorance directly. An independent inspection
+        reveals most of what the buyer could not see, for a fee. Switch it on and the line jumps above the top
+        of the lot: with quality visible, there is no gap between what a car is and what it fetches, so nobody
+        has a reason to withdraw. The fee is a real cost and it is subtracted from what the seller receives, so
+        the market that comes back is slightly smaller than the ideal one. Information is not free.</p>
+
+        <p>A <span class="ex-em">warranty</span> attacks the exposure instead. The seller promises to make good
+        any shortfall against a stated standard, so the buyer is paying for the standard rather than for a
+        guess. Switch it on and watch what happens at the two ends of the lot. The bad cars now sell, because
+        their owners can carry the repair bill and still come out ahead. The very best cars withdraw, because a
+        warranty pays the same for an excellent car as for an adequate one and the owner of an excellent car
+        will not accept that. The remedy rescues the market and truncates it at the top.</p>
+
+        <h2 id="s5"><span class="k-num">05</span>What Akerlof actually wrote</h2>
+
+        <p>The paper is George Akerlof's, it is thirteen pages long, and it was published in the Quarterly
+        Journal of Economics in August 1970. The used car market is the opening illustration rather than the
+        subject. Akerlof was after something more general: that where one side of a trade knows the quality and
+        the other does not, the bad drives out the good, and the loss falls on the honest seller who can no
+        longer prove that their car is good.</p>
+
+        <p>The model above is a numerical version of that argument, not a reproduction of his. Akerlof's
+        arithmetic is starker. In his example buyers value cars at three halves of what owners do and quality is
+        spread evenly from zero upward, and he shows that the only price consistent with itself is zero: the
+        market does not shrink, it vanishes. The spread control on this page reaches that case at its maximum,
+        which is why the maximum is worth visiting once.</p>
+
+        <p>It is worth knowing how the paper was received. Akerlof has written that the American Economic Review
+        and the Review of Economic Studies both turned it down as too trivial to publish, and that a referee at
+        the Journal of Political Economy objected that if the argument were correct then no goods could be
+        traded at all. It went into the Quarterly Journal of Economics. Thirty one years later Akerlof shared
+        the 2001 economics prize with Michael Spence and Joseph Stiglitz for the analysis of markets with
+        asymmetric information.</p>
+
+        <h2 id="s6"><span class="k-num">06</span>Where the model stops</h2>
+
+        <div class="k-warn ex-limits">
+          <h3>Assumptions and limits</h3>
+          <ul class="k-ask">
+            <li><b>One shot buyers</b>Every buyer in the model arrives once, buys or does not, and leaves. There
+            are no repeat customers, no reputation and no word of mouth, which in a real used car market are
+            among the strongest forces holding quality up. Their absence is what makes the unravelling as clean
+            as it is here.</li>
+            <li><b>Beliefs update crudely</b>Buyers set this round's belief to last round's realised average.
+            That is adaptive rather than rational: a fully rational buyer would jump straight to the fixed point
+            in one step, and there would be no spiral to watch. The rounds are a teaching device. The place the
+            model ends up is the same either way.</li>
+            <li><b>Quality is one number</b>Real cars are good in some ways and bad in others, and buyers can
+            usually see some dimensions and not others. Compressing that into a single hidden scalar is what
+            makes the picture drawable and is also the largest thing the picture leaves out.</li>
+            <li><b>The remedies are sketches</b>The certificate is modelled as a jump in visibility with a flat
+            fee attached. The warranty is modelled as a promise to make up any shortfall against a fixed
+            standard, again with a flat administrative fee. Real warranties are priced, limited, disputed and
+            sometimes not honoured, and real certification schemes can be captured by the sellers who pay for
+            them. Neither is the clean instrument drawn here.</li>
+            <li><b>The warranty is a transfer</b>The repair a warranty pays for is treated as money moving
+            from seller to buyer rather than as work that consumes real resources, so the only cost the warranty
+            adds to the total is its administrative fee. A treatment in which repairs consume resources would
+            leave the market smaller than it appears here.</li>
+            <li><b>Nothing is estimated</b>The multiplier of one and a half, the hundred and twenty cars, the
+            fees and the fourteen rounds are chosen so that the mechanism is visible. None of them is measured
+            from any real market, and no number on this page describes the price of any real car.</li>
+            <li><b>Adverse selection is not the only reading</b>Used cars sell below new cars for reasons that
+            have nothing to do with hidden information, wear and depreciation among them. That a market shows
+            the pattern is not proof that this mechanism produced it.</li>
+          </ul>
+        </div>
+
+        <h2 id="s7"><span class="k-num">07</span>Sources</h2>
+
+        <ul class="ex-cites">
+          <li>
+            The paper itself, and the numerical example in which buyers value cars at three halves of the
+            owner's valuation and quality is spread evenly, so that no price above zero is consistent with
+            itself.
+            <span class="ex-cite-w">George A. Akerlof, <span class="ex-cite-t">The Market for &ldquo;Lemons&rdquo;:
+            Quality Uncertainty and the Market Mechanism</span>, The Quarterly Journal of Economics, volume 84,
+            number 3, August 1970, pages 488 to 500. DOI 10.2307/1879431.
+            <a href="https://doi.org/10.2307/1879431" target="_blank" rel="noreferrer noopener">doi.org/10.2307/1879431</a>
+            Bibliographic details confirmed at
+            <a href="https://en.wikipedia.org/wiki/The_Market_for_Lemons" target="_blank" rel="noreferrer noopener">en.wikipedia.org/wiki/The_Market_for_Lemons</a>.
+            The setup, a buyer willing to pay three halves of the seller's valuation, quality distributed
+            uniformly, and a unique equilibrium price of zero at which no car is sold, is set out in
+            George Georgiadis, <span class="ex-cite-t">Information Economics, Module 14: Adverse
+            Selection</span>, Kellogg School of Management,
+            <a href="https://www.kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf" target="_blank" rel="noreferrer noopener">kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf</a>.
+            Checked 2026 08 21.</span>
+          </li>
+          <li>
+            Akerlof's own account of the rejections: the American Economic Review and the Review of Economic
+            Studies declined the paper on the ground that they did not publish work on subjects of such
+            triviality, and a referee at the Journal of Political Economy held that if the paper were correct
+            then no goods could be traded.
+            <span class="ex-cite-w">George A. Akerlof, <span class="ex-cite-t">Writing the &ldquo;The Market for
+            &lsquo;Lemons&rsquo;&rdquo;: A Personal and Interpretive Essay</span>, published by the Nobel
+            Foundation, 2001.
+            <a href="https://www.nobelprize.org/prizes/economic-sciences/2001/akerlof/article/" target="_blank" rel="noreferrer noopener">nobelprize.org/prizes/economic-sciences/2001/akerlof/article</a>
+            Read through the summary at
+            <a href="https://equitablegrowth.org/must-read-george-akerlof-2001-writing-the-the-market-for-lemons-a-personal-interpretive-essay/" target="_blank" rel="noreferrer noopener">equitablegrowth.org</a>.
+            Checked 2026 08 21.</span>
+          </li>
+          <li>
+            The 2001 Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel was awarded jointly
+            to George A. Akerlof, A. Michael Spence and Joseph E. Stiglitz for their analyses of markets with
+            asymmetric information.
+            <span class="ex-cite-w">The Nobel Foundation, prize summary for 2001.
+            <a href="https://www.nobelprize.org/prizes/economic-sciences/2001/summary/" target="_blank" rel="noreferrer noopener">nobelprize.org/prizes/economic-sciences/2001/summary</a>
+            Checked 2026 08 21.</span>
+          </li>
+          <li>
+            Warranties, vehicle history reports, brand reputation and licensing are the institutions usually
+            named as market answers to the problem, rather than statutory ones.
+            <span class="ex-cite-w">David R. Henderson, editor, <span class="ex-cite-t">The Concise Encyclopedia
+            of Economics</span>, biography of George Akerlof, Library of Economics and Liberty.
+            <a href="https://www.econlib.org/library/Enc/bios/Akerlof.html" target="_blank" rel="noreferrer noopener">econlib.org/library/Enc/bios/Akerlof.html</a>
+            Checked 2026 08 21.</span>
+          </li>
+        </ul>
+
+        <nav class="ex-next" aria-label="More essays">
+          <a href="../cooperation/index.html">
+            <span class="ex-next-k">Next essay</span>
+            <span class="ex-next-t">The evolution of cooperation</span>
+            <span class="ex-next-d">Run a tournament between strategies, then let the winners reproduce, and see
+            what survives when the future is long.</span>
+          </a>
+          <a href="../tax/index.html">
+            <span class="ex-next-k">Previous essay</span>
+            <span class="ex-next-t">Who actually pays a tax</span>
+            <span class="ex-next-d">Drag the curves, set a tax, and find out that the statute does not decide
+            who bears it.</span>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </main>
+
+  <aside class="k-endnote">
+    <div class="k-wrap">
+      <p><strong>This is a teaching model, not a measurement.</strong> Every figure on this page comes from the
+      settings you chose and the arithmetic described in section three. Nothing here is an estimate of any real
+      used car market, and the remedies are sketches of institutions rather than descriptions of them.</p>
+      <p class="k-fine">
+        Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no network
+        call after the fonts have loaded. Part of
+        <a href="../index.html">Explorable Economics</a>, built by
+        <a href="../../../index.html">Kerem Ozdemir</a>.
+      </p>
+    </div>
+  </aside>
+
+<footer class="site-foot"><div class="wrap">
+  <span>© 2026 Kerem Özdemir</span>
+  <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
+</div></footer>
+
+
+</div>
+
+<script>
+/* ============================================================
+   kit.js
+   Shared behaviour for the open instruments at keremozdemir.de
+   No dependencies. No network calls. Safe to inline.
+
+   Kit.el        small DOM builder
+   Kit.fmt       number and date formatting
+   Kit.state     read and write tool state in the URL hash
+   Kit.share     copy the link that restores the current state
+   Kit.csv       build CSV, copy to clipboard, offer a download
+   Kit.toast     brief confirmation line
+   ============================================================ */
+
+var Kit = (function () {
+  "use strict";
+
+  /* ---------- DOM ---------- */
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v;
+        else if (k === "html") n.innerHTML = v;
+        else if (k.slice(0, 2) === "on" && typeof v === "function") {
+          n.addEventListener(k.slice(2).toLowerCase(), v);
+        } else n.setAttribute(k, v === true ? "" : String(v));
+      });
+    }
+    (kids || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+
+  /* ---------- numbers ---------- */
+
+  var LOCALE = "en-GB";
+
+  function num(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function money(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return "EUR " + num(v, dp === undefined ? 2 : dp);
+  }
+  function pct(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return num(v * 100, dp === undefined ? 1 : dp) + " %";
+  }
+  function toNum(raw) {
+    if (raw === null || raw === undefined) return null;
+    var s = String(raw).trim().replace(/\s+/g, "").replace(/,/g, ".");
+    if (s === "") return null;
+    var n = Number(s);
+    return isFinite(n) ? n : null;
+  }
+
+  /* ---------- URL hash state ---------- */
+
+  function b64urlEncode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64urlDecode(str) {
+    var s = String(str).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var bin = atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  var state = {
+    /* Serialise the object into the location hash without adding a history entry. */
+    write: function (obj) {
+      var h = "";
+      try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
+      if (h.length > 8000) return "";
+      try {
+        history.replaceState(null, "", location.pathname + location.search + h);
+      } catch (e) {
+        location.hash = h;
+      }
+      return location.href;
+    },
+    /* Read the object back. Returns null when the hash is absent or unreadable. */
+    read: function () {
+      var m = /(?:^|[#&])s=([A-Za-z0-9\-_]+)/.exec(location.hash || "");
+      if (!m) return null;
+      try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
+    },
+    clear: function () {
+      try { history.replaceState(null, "", location.pathname + location.search); }
+      catch (e) { location.hash = ""; }
+    }
+  };
+
+  /* ---------- clipboard ---------- */
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; },
+        function () { return legacyCopy(text); });
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  /* ---------- share ---------- */
+
+  function share(obj, msg) {
+    var url = state.write(obj) || location.href;
+    return copyText(url).then(function (ok) {
+      toast(ok ? (msg || "Link copied. It reopens with these inputs.")
+               : "Copy blocked by the browser. The address bar now holds the link.");
+      return ok;
+    });
+  }
+
+  /* ---------- CSV ---------- */
+
+  function csvCell(v) {
+    if (v === null || v === undefined) return "";
+    var s = String(v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function csvBuild(rows) {
+    return rows.map(function (r) { return r.map(csvCell).join(","); }).join("\r\n");
+  }
+  function csvDownload(rows, filename) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    /* BOM so that spreadsheet software reads UTF-8 correctly */
+    var blob = new Blob(["﻿" + text], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = el("a", { href: url, download: filename || "export.csv" });
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1200);
+  }
+  function csvCopy(rows) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    return copyText(text).then(function (ok) {
+      toast(ok ? "Table copied. Paste it into a spreadsheet." : "Copy blocked by the browser. Use the download instead.");
+      return ok;
+    });
+  }
+
+  /* ---------- toast ---------- */
+
+  var toastNode = null, toastTimer = null;
+  function toast(msg) {
+    if (!toastNode) {
+      toastNode = el("div", { class: "k-toast", role: "status", "aria-live": "polite" });
+      document.body.appendChild(toastNode);
+    }
+    toastNode.textContent = msg;
+    toastNode.setAttribute("data-on", "1");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastNode.setAttribute("data-on", "0"); }, 3600);
+  }
+
+  /* ---------- source line ---------- */
+
+  /* src: { what, url, checked } -> the standard line that says where a number came from */
+  function sourceLine(src, bare) {
+    var kids = [];
+    if (src.what) kids.push(el("span", { text: src.what }));
+    if (src.url) kids.push(el("a", { href: src.url, rel: "noreferrer noopener", target: "_blank", text: src.label || src.url }));
+    if (src.checked) kids.push(el("span", { class: "k-checked", text: "checked " + src.checked }));
+    return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
+  }
+
+  return {
+    el: el, qs: qs, qsa: qsa, clear: clear,
+    num: num, money: money, pct: pct, toNum: toNum,
+    state: state, share: share,
+    copyText: copyText,
+    csvBuild: csvBuild, csvDownload: csvDownload, csvCopy: csvCopy,
+    toast: toast, sourceLine: sourceLine
+  };
+})();
+
+/* ============================================================
+   essay.js
+   The shared machinery behind every model in Explorable
+   Economics. It sits on top of kit.js and adds only what a
+   drawn, dragged and keyboard driven model needs.
+
+     Ex.s        make an SVG element
+     Ex.plot     set up a plot with a scale and a drag surface
+     Ex.slider   a labelled range control wired to a callback
+     Ex.seg      a segmented radio group, arrow keys included
+     Ex.drag     pointer and touch dragging in plot coordinates
+     Ex.rng      a seeded generator so a shared link replays
+     Ex.round    rounding that does not lie about precision
+     Ex.words    small helpers for prose that has to agree with
+                 the arithmetic on screen
+
+   No dependencies beyond kit.js. No network calls.
+   Spliced into every essay by build.sh at the ESSAY_JS marker.
+   ============================================================ */
+
+var Ex = (function () {
+  "use strict";
+
+  var NS = "http://www.w3.org/2000/svg";
+
+  /* ---------- svg ---------- */
+
+  function s(tag, attrs, text) {
+    var n = document.createElementNS(NS, tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        n.setAttribute(k, String(v));
+      });
+    }
+    if (text !== undefined && text !== null) n.appendChild(document.createTextNode(String(text)));
+    return n;
+  }
+
+  function svgRoot(w, h, label) {
+    var n = s("svg", {
+      viewBox: "0 0 " + w + " " + h,
+      width: w, height: h,
+      preserveAspectRatio: "xMidYMid meet",
+      role: "img",
+      "aria-label": label || ""
+    });
+    return n;
+  }
+
+  /* text sized for the plot, in the house mono */
+  function label(x, y, str, opt) {
+    var o = opt || {};
+    return s("text", {
+      x: x, y: y,
+      "text-anchor": o.anchor || "middle",
+      fill: o.fill || "var(--dim)",
+      "font-family": "var(--mono)",
+      "font-size": o.size || 10,
+      "font-weight": o.weight || 400,
+      "letter-spacing": o.track === undefined ? 0.2 : o.track,
+      opacity: o.opacity === undefined ? 1 : o.opacity
+    }, str);
+  }
+
+  /* ---------- dragging, in plot coordinates ---------- */
+
+  /* Convert a pointer event into the svg user coordinate system,
+     which is what every plot here draws in. */
+  function toLocal(svg, evt) {
+    var r = svg.getBoundingClientRect();
+    var vb = svg.viewBox.baseVal;
+    var w = vb && vb.width ? vb.width : r.width;
+    var h = vb && vb.height ? vb.height : r.height;
+    if (!r.width || !r.height) return { x: 0, y: 0 };
+    return { x: (evt.clientX - r.left) * w / r.width, y: (evt.clientY - r.top) * h / r.height };
+  }
+
+  /* drag(surface, { start, move, end }, measure) where each handler
+     receives the point in plot coordinates. The surface is the element
+     that listens, which must survive a redraw. The optional measure
+     function returns the svg currently inside it, so the plot can be
+     rebuilt mid gesture without the gesture being dropped.
+     Works with mouse, pen and touch. */
+  function drag(surface, handlers, measure) {
+    var active = false, id = null;
+    function box() { return (measure ? measure() : surface) || surface; }
+
+    function down(e) {
+      if (e.button !== undefined && e.button !== 0) return;
+      var p = toLocal(box(), e);
+      if (handlers.start && handlers.start(p, e) === false) return;
+      active = true; id = e.pointerId;
+      surface.classList.add("ex-dragging");
+      if (surface.setPointerCapture && id !== undefined && id !== null) {
+        try { surface.setPointerCapture(id); } catch (err) { /* capture is a nicety */ }
+      }
+      e.preventDefault();
+    }
+    function move(e) {
+      if (!active) {
+        if (handlers.hover) handlers.hover(toLocal(box(), e), e);
+        return;
+      }
+      if (id !== null && e.pointerId !== id) return;
+      if (handlers.move) handlers.move(toLocal(box(), e), e);
+      e.preventDefault();
+    }
+    function up(e) {
+      if (!active) return;
+      active = false;
+      surface.classList.remove("ex-dragging");
+      if (surface.releasePointerCapture && id !== undefined && id !== null) {
+        try { surface.releasePointerCapture(id); } catch (err) { /* already gone */ }
+      }
+      id = null;
+      if (handlers.end) handlers.end(toLocal(box(), e), e);
+    }
+
+    surface.addEventListener("pointerdown", down);
+    surface.addEventListener("pointermove", move);
+    surface.addEventListener("pointerup", up);
+    surface.addEventListener("pointercancel", up);
+    surface.addEventListener("pointerleave", function (e) { if (handlers.leave) handlers.leave(e); });
+    surface.classList.add("ex-draggable");
+    return { active: function () { return active; } };
+  }
+
+  /* ---------- controls ---------- */
+
+  var uid = 0;
+  function nextId(p) { uid += 1; return (p || "ex") + "-" + uid; }
+
+  /* slider(host, spec) -> { input, set, el }
+     spec: { label, min, max, step, value, format, hint, onInput, unit } */
+  function slider(host, spec) {
+    var id = nextId("sl");
+    var wrap = Kit.el("div", { class: "ex-ctrl" });
+    var valSpan = Kit.el("span", { class: "ex-val" });
+    var lab = Kit.el("label", { for: id }, [
+      Kit.el("span", { text: spec.label }),
+      valSpan
+    ]);
+    var input = Kit.el("input", {
+      type: "range", id: id,
+      min: spec.min, max: spec.max, step: spec.step,
+      value: spec.value
+    });
+    input.setAttribute("aria-describedby", id + "-v");
+    valSpan.id = id + "-v";
+
+    function paint(v) { valSpan.textContent = spec.format ? spec.format(v) : String(v); }
+    paint(Number(spec.value));
+
+    input.addEventListener("input", function () {
+      var v = Number(input.value);
+      paint(v);
+      if (spec.onInput) spec.onInput(v);
+    });
+
+    wrap.appendChild(lab);
+    wrap.appendChild(input);
+    if (spec.hint) wrap.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(wrap);
+
+    return {
+      el: wrap, input: input,
+      get: function () { return Number(input.value); },
+      set: function (v, quiet) {
+        input.value = String(v);
+        paint(Number(input.value));
+        if (!quiet && spec.onInput) spec.onInput(Number(input.value));
+      }
+    };
+  }
+
+  /* seg(host, spec) -> { get, set, el }
+     spec: { label, name, options: [{value,label}], value, onChange } */
+  function seg(host, spec) {
+    var fs = Kit.el("fieldset", { class: "ex-ctrl ex-seg" });
+    fs.appendChild(Kit.el("legend", {}, [Kit.el("span", { text: spec.label })]));
+    var row = Kit.el("div", { class: "ex-seg-row" });
+    var inputs = [];
+
+    spec.options.forEach(function (o) {
+      var lid = nextId("sg");
+      var inp = Kit.el("input", { type: "radio", name: spec.name, id: lid, value: o.value });
+      if (String(o.value) === String(spec.value)) inp.checked = true;
+      var lb = Kit.el("label", { for: lid }, [inp, document.createTextNode(o.label)]);
+      if (inp.checked) lb.classList.add("ex-on");
+      inp.addEventListener("change", function () {
+        paintOn();
+        if (inp.checked && spec.onChange) spec.onChange(o.value);
+      });
+      inputs.push({ inp: inp, lb: lb, value: o.value });
+      row.appendChild(lb);
+    });
+
+    function paintOn() {
+      inputs.forEach(function (r) { r.lb.classList.toggle("ex-on", r.inp.checked); });
+    }
+
+    fs.appendChild(row);
+    if (spec.hint) fs.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(fs);
+
+    return {
+      el: fs,
+      get: function () {
+        for (var i = 0; i < inputs.length; i++) if (inputs[i].inp.checked) return inputs[i].value;
+        return null;
+      },
+      set: function (v, quiet) {
+        inputs.forEach(function (r) { r.inp.checked = String(r.value) === String(v); });
+        paintOn();
+        if (!quiet && spec.onChange) spec.onChange(v);
+      }
+    };
+  }
+
+  /* check(host, spec) -> { get, set, el } */
+  function check(host, spec) {
+    var id = nextId("ck");
+    var inp = Kit.el("input", { type: "checkbox", id: id });
+    inp.checked = !!spec.value;
+    var lb = Kit.el("label", { class: "ex-check", for: id }, [inp, document.createTextNode(spec.label)]);
+    inp.addEventListener("change", function () { if (spec.onChange) spec.onChange(inp.checked); });
+    host.appendChild(lb);
+    return {
+      el: lb, get: function () { return inp.checked; },
+      set: function (v, quiet) { inp.checked = !!v; if (!quiet && spec.onChange) spec.onChange(inp.checked); }
+    };
+  }
+
+  /* readout(host, keys) -> set(key, value, sub)
+     The row of large figures under a plot. */
+  function readout(host, keys) {
+    var map = {};
+    var wrap = Kit.el("div", { class: "ex-read" });
+    keys.forEach(function (k) {
+      var v = Kit.el("p", { class: "ex-read-v" });
+      var cell = Kit.el("div", { class: k.tone ? "ex-read-" + k.tone : null }, [
+        Kit.el("p", { class: "ex-read-k", text: k.label }), v
+      ]);
+      map[k.id] = v;
+      wrap.appendChild(cell);
+    });
+    host.appendChild(wrap);
+    return function (id, value, sub) {
+      var n = map[id];
+      if (!n) return;
+      Kit.clear(n);
+      n.appendChild(document.createTextNode(String(value)));
+      if (sub) n.appendChild(Kit.el("small", { text: sub }));
+    };
+  }
+
+  /* ---------- numbers and words ---------- */
+
+  function round(v, dp) {
+    var f = Math.pow(10, dp === undefined ? 2 : dp);
+    return Math.round(v * f) / f;
+  }
+  function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+
+  /* Percentage of a whole, written the way the prose reads it. */
+  function share(part, whole, dp) {
+    if (!isFinite(whole) || whole === 0) return "not defined";
+    return Kit.num(100 * part / whole, dp === undefined ? 0 : dp) + " per cent";
+  }
+
+  var ORD = ["zeroth", "first", "second", "third", "fourth", "fifth", "sixth",
+    "seventh", "eighth", "ninth", "tenth"];
+  function ordinal(n) { return ORD[n] || (String(n) + "th"); }
+
+  var CARD = ["no", "one", "two", "three", "four", "five", "six", "seven",
+    "eight", "nine", "ten", "eleven", "twelve"];
+  function cardinal(n) { return CARD[n] !== undefined ? CARD[n] : String(n); }
+
+  /* ---------- a seeded generator ---------- */
+
+  /* mulberry32. Small, fast and identical in every browser, which is
+     what makes a shared link reproduce the same tournament. */
+  function rng(seed) {
+    var a = (seed >>> 0) || 1;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /* ---------- deferred redraw, one frame at a time ---------- */
+
+  function frames(fn) {
+    var queued = false;
+    return function () {
+      if (queued) return;
+      queued = true;
+      var run = function () { queued = false; fn(); };
+      if (window.requestAnimationFrame) window.requestAnimationFrame(run);
+      else setTimeout(run, 16);
+    };
+  }
+
+  /* ---------- responsive plot width ---------- */
+
+  /* Report the pixel width available to a plot so that the drawing code
+     can choose a viewBox that keeps the labels legible on a narrow
+     screen instead of scaling them down with the picture. */
+  function widthOf(host, fallback) {
+    var w = host.clientWidth || 0;
+    if (!w && host.parentNode) w = host.parentNode.clientWidth || 0;
+    return Math.max(260, Math.round(w || fallback || 640));
+  }
+
+  function onResize(fn) {
+    var t = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(t);
+      t = setTimeout(fn, 120);
+    });
+  }
+
+  return {
+    s: s, svgRoot: svgRoot, label: label,
+    drag: drag, toLocal: toLocal,
+    slider: slider, seg: seg, check: check, readout: readout,
+    round: round, clamp: clamp, share: share,
+    ordinal: ordinal, cardinal: cardinal,
+    rng: rng, frames: frames, widthOf: widthOf, onResize: onResize,
+    nextId: nextId
+  };
+})();
+
+/* ============================================================
+   Essay two: the market for lemons
+
+   One hundred and twenty cars, quality spread evenly over a
+   range centred on 100. An owner values their car at its
+   quality. A buyer values any car at 1.5 times its quality,
+   so under full information every car would trade.
+
+   A buyer sees a fraction v of the quality and fills in the
+   rest from a believed average A, and so offers
+
+     price(q) = 1.5 (v q + (1 - v) A) - fee
+
+   The owner sells when price(q) is at least q. Rearranged,
+   every car up to a threshold is offered:
+
+     threshold = 1.5 (1 - v) A / (1 - 1.5 v)      for v < 2/3
+
+   and for v at or above 2/3 every car is offered whatever the
+   belief. Each round the belief is set to the realised average
+   quality of the cars that actually changed hands, which is
+   what produces the spiral.
+
+   Under a warranty the seller makes good any shortfall against
+   a stated standard g, so the buyer pays 1.5 g less the
+   administrative fee and the seller carries max(0, g - q).
+   Under a certificate the visibility is lifted to 0.9 and a
+   flat inspection fee is taken out of the price.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var E = Kit.el, Q = Kit.qs;
+
+  var N = 120;            /* cars on the lot */
+  var MU = 100;           /* mean quality */
+  var M = 1.5;            /* what a car is worth to a buyer, per unit of quality */
+  var ROUNDS = 14;
+  var CERT_V = 0.9;       /* how much an inspection reveals */
+  var CERT_FEE = 5;       /* what the inspection costs, taken from the seller */
+  var WAR_G = 100;        /* the standard a warranty promises */
+  var WAR_FEE = 4;        /* what administering the warranty costs */
+  var Y_MAX = 210;        /* fixed vertical scale, so the spread is visible */
+
+  var S = { spread: 70, vis: 10, remedy: "none", round: 1 };
+
+  /* ---------- the model ---------- */
+
+  function lot(spread) {
+    var lo = MU * (1 - spread / 100), hi = MU * (1 + spread / 100);
+    var q = [];
+    for (var i = 0; i < N; i++) q.push(lo + (hi - lo) * (i + 0.5) / N);
+    return { q: q, lo: lo, hi: hi };
+  }
+
+  /* One round given a belief. Returns what happened. */
+  function roundOf(cars, belief, remedy, vis) {
+    var v = vis, fee = 0, sold = [], prices = [], threshold = null, g = null;
+
+    if (remedy === "cert") { v = Math.max(vis, CERT_V); fee = CERT_FEE; }
+    if (remedy === "warranty") { g = WAR_G; fee = WAR_FEE; }
+
+    for (var i = 0; i < cars.q.length; i++) {
+      var q = cars.q[i], price, net;
+      if (remedy === "warranty") {
+        price = M * g - fee;
+        net = price - Math.max(0, g - q);
+      } else {
+        price = M * (v * q + (1 - v) * belief) - fee;
+        net = price;
+      }
+      if (net >= q) { sold.push(i); prices.push(price); }
+    }
+
+    if (remedy === "warranty") {
+      threshold = M * g - fee;                       /* every car up to here is offered */
+    } else if (v >= 1 / M) {
+      threshold = Infinity;
+    } else {
+      threshold = M * (1 - v) * belief / (1 - M * v);
+    }
+
+    var avgQ = 0, avgP = 0;
+    if (sold.length) {
+      for (var k = 0; k < sold.length; k++) { avgQ += cars.q[sold[k]]; avgP += prices[k]; }
+      avgQ /= sold.length; avgP /= sold.length;
+    }
+
+    /* surplus: 0.5 q per car is the gain from trade available on it, and any
+       fee paid is a real cost rather than a transfer */
+    var gained = 0;
+    for (var j = 0; j < sold.length; j++) gained += 0.5 * cars.q[sold[j]] - fee;
+    if (gained < 0) gained = 0;
+
+    return { sold: sold, prices: prices, avgQ: avgQ, avgP: avgP,
+      count: sold.length, threshold: threshold, belief: belief, gained: gained, v: v, fee: fee };
+  }
+
+  function run(st) {
+    var cars = lot(st.spread);
+    var belief = MU;
+    var hist = [];
+    for (var r = 0; r < ROUNDS; r++) {
+      var res = roundOf(cars, belief, st.remedy, st.vis / 100);
+      hist.push(res);
+      belief = res.count ? res.avgQ : 0;
+    }
+    var available = 0;
+    for (var i = 0; i < N; i++) available += 0.5 * cars.q[i];
+    return { cars: cars, hist: hist, available: available };
+  }
+
+  var R = null;   /* last full run */
+
+  function now() { return R.hist[Ex.clamp(S.round, 1, ROUNDS) - 1]; }
+
+  /* ---------- figure one: the lot ---------- */
+
+  var host1 = Q("#lm-plot");
+
+  function draw1() {
+    Kit.clear(host1);
+    var W = Ex.widthOf(host1, 620);
+    var narrow = W < 520;
+    var H = narrow ? 270 : 320;
+    var padL = narrow ? 34 : 46, padR = narrow ? 12 : 18, padT = 16, padB = narrow ? 34 : 36;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    var fs = narrow ? 9 : 10;
+    var d = now();
+
+    function X(i) { return padL + (i + 0.5) * iw / N; }
+    function Y(q) { return padT + (Y_MAX - q) * ih / Y_MAX; }
+
+    var svg = Ex.svgRoot(W, H, summary1());
+
+    svg.appendChild(Ex.s("rect", { x: padL, y: padT, width: iw, height: ih,
+      fill: "var(--field)", stroke: "var(--rule)", "stroke-width": 1 }));
+
+    for (var g = 50; g < Y_MAX; g += 50) {
+      svg.appendChild(Ex.s("line", { x1: padL, y1: Y(g), x2: padL + iw, y2: Y(g),
+        stroke: "var(--rule)", "stroke-width": 1, "stroke-dasharray": "1 5" }));
+      svg.appendChild(Ex.label(padL - 6, Y(g) + 3.5, String(g),
+        { anchor: "end", fill: "var(--faint)", size: fs }));
+    }
+
+    /* the band of quality actually on the lot */
+    svg.appendChild(Ex.s("rect", { x: padL, y: Y(R.cars.hi), width: iw,
+      height: Math.max(1, Y(R.cars.lo) - Y(R.cars.hi)),
+      fill: "var(--ink)", opacity: 0.04 }));
+
+    var soldSet = {};
+    d.sold.forEach(function (i) { soldSet[i] = 1; });
+
+    /* the cars */
+    var rad = narrow ? 2 : 2.6;
+    for (var i = 0; i < N; i++) {
+      var on = !!soldSet[i];
+      svg.appendChild(Ex.s("circle", {
+        cx: X(i).toFixed(2), cy: Y(R.cars.q[i]).toFixed(2), r: rad,
+        fill: on ? "var(--good)" : "var(--flag)",
+        opacity: on ? 0.95 : 0.45
+      }));
+    }
+
+    /* the threshold */
+    var binding = isFinite(d.threshold) && d.threshold < R.cars.hi;
+    if (binding) {
+      svg.appendChild(Ex.s("line", { x1: padL, y1: Y(d.threshold), x2: padL + iw, y2: Y(d.threshold),
+        stroke: "var(--ink)", "stroke-width": 1.6 }));
+      svg.appendChild(Ex.label(padL + 6, Y(d.threshold) - 6,
+        "above this line the owner keeps the car", { anchor: "start", fill: "var(--ink)", size: fs }));
+    } else {
+      svg.appendChild(Ex.label(padL + iw / 2, padT + 14,
+        "no car is priced below what it is worth to its owner",
+        { fill: "var(--good)", size: fs, weight: 500 }));
+    }
+
+    /* the average quality of what traded, and the average price paid */
+    if (d.count) {
+      /* Keep the three labels from landing on top of each other: each one is
+         placed below its own line unless that would collide with a line
+         already labelled, in which case it goes above. */
+      var taken = [];
+      if (binding) taken.push(Y(d.threshold) - 6);
+      function place(yLine) {
+        var below = yLine + 12, above = yLine - 6;
+        var clash = function (y) {
+          return taken.some(function (t) { return Math.abs(t - y) < 13; });
+        };
+        var pick = clash(below) ? (clash(above) ? below + 13 : above) : below;
+        taken.push(pick);
+        return pick;
+      }
+
+      svg.appendChild(Ex.s("line", { x1: padL, y1: Y(d.avgQ), x2: padL + iw, y2: Y(d.avgQ),
+        stroke: "var(--good)", "stroke-width": 1.2, "stroke-dasharray": "5 4" }));
+      svg.appendChild(Ex.label(padL + iw - 6, place(Y(d.avgQ)),
+        "average quality sold " + Kit.num(d.avgQ, 0), { anchor: "end", fill: "var(--good)", size: fs }));
+
+      if (d.avgP <= Y_MAX) {
+        svg.appendChild(Ex.s("line", { x1: padL, y1: Y(d.avgP), x2: padL + iw, y2: Y(d.avgP),
+          stroke: "var(--accent)", "stroke-width": 1.2, "stroke-dasharray": "2 4" }));
+        svg.appendChild(Ex.label(padL + iw - 6, place(Y(d.avgP)),
+          "average price paid " + Kit.num(d.avgP, 0), { anchor: "end", fill: "var(--accent)", size: fs }));
+      }
+    } else {
+      svg.appendChild(Ex.label(padL + iw / 2, padT + ih / 2,
+        "nothing trades", { fill: "var(--flag)", size: narrow ? 13 : 15, weight: 500 }));
+    }
+
+    svg.appendChild(Ex.label(padL + iw / 2, H - 4,
+      "the hundred and twenty cars, worst on the left", { fill: "var(--faint)", size: fs }));
+    var yl = Ex.label(0, 0, "quality", { fill: "var(--faint)", size: fs });
+    yl.setAttribute("transform", "translate(" + (fs + 1) + "," + (padT + ih / 2) + ") rotate(-90)");
+    svg.appendChild(yl);
+
+    host1.appendChild(svg);
+  }
+
+  /* ---------- figure two: the rounds ---------- */
+
+  var host2 = Q("#lm-plot2");
+
+  function draw2() {
+    Kit.clear(host2);
+    var W = Ex.widthOf(host2, 620);
+    var narrow = W < 520;
+    var H = narrow ? 230 : 260;
+    var padL = narrow ? 34 : 44, padR = narrow ? 36 : 46, padT = 16, padB = narrow ? 36 : 38;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    var fs = narrow ? 9 : 10;
+
+    function X(r) { return padL + (ROUNDS === 1 ? 0 : r * iw / (ROUNDS - 1)); }
+    function Y(q) { return padT + (Y_MAX - q) * ih / Y_MAX; }
+    function Yp(f) { return padT + (1 - f) * ih; }
+
+    var svg = Ex.svgRoot(W, H, summary2());
+
+    svg.appendChild(Ex.s("rect", { x: padL, y: padT, width: iw, height: ih,
+      fill: "var(--field)", stroke: "var(--rule)", "stroke-width": 1 }));
+
+    for (var g = 50; g < Y_MAX; g += 50) {
+      svg.appendChild(Ex.s("line", { x1: padL, y1: Y(g), x2: padL + iw, y2: Y(g),
+        stroke: "var(--rule)", "stroke-width": 1, "stroke-dasharray": "1 5" }));
+      svg.appendChild(Ex.label(padL - 6, Y(g) + 3.5, String(g),
+        { anchor: "end", fill: "var(--faint)", size: fs }));
+    }
+    [0, 0.5, 1].forEach(function (f) {
+      svg.appendChild(Ex.label(padL + iw + 6, Yp(f) + 3.5, Kit.num(f * 100, 0) + "%",
+        { anchor: "start", fill: "var(--faint)", size: fs }));
+    });
+
+    var upTo = Ex.clamp(S.round, 1, ROUNDS);
+
+    /* the share of cars trading, as a light area against the right scale */
+    var area = "M" + X(0) + " " + Yp(0);
+    for (var i = 0; i < upTo; i++) area += " L" + X(i).toFixed(2) + " " + Yp(R.hist[i].count / N).toFixed(2);
+    area += " L" + X(upTo - 1).toFixed(2) + " " + Yp(0) + " Z";
+    svg.appendChild(Ex.s("path", { d: area, fill: "var(--ink)", opacity: 0.08 }));
+    var edge = "";
+    for (var e = 0; e < upTo; e++) {
+      edge += (e ? " L" : "M") + X(e).toFixed(2) + " " + Yp(R.hist[e].count / N).toFixed(2);
+    }
+    svg.appendChild(Ex.s("path", { d: edge, fill: "none", stroke: "var(--dim)",
+      "stroke-width": 1, "stroke-dasharray": "2 3", opacity: 0.7 }));
+
+    function series(pick, colour, dash) {
+      var d = "";
+      for (var i = 0; i < upTo; i++) {
+        var v = pick(R.hist[i]);
+        d += (i ? " L" : "M") + X(i).toFixed(2) + " " + Y(Math.min(v, Y_MAX)).toFixed(2);
+      }
+      svg.appendChild(Ex.s("path", { d: d, fill: "none", stroke: colour, "stroke-width": 2,
+        "stroke-dasharray": dash || null, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+      for (var k = 0; k < upTo; k++) {
+        var vv = pick(R.hist[k]);
+        svg.appendChild(Ex.s("circle", { cx: X(k).toFixed(2), cy: Y(Math.min(vv, Y_MAX)).toFixed(2),
+          r: k === upTo - 1 ? 3.4 : 1.8, fill: colour }));
+      }
+    }
+    series(function (h) { return h.count ? h.avgQ : 0; }, "var(--good)");
+    series(function (h) { return h.count ? h.avgP : 0; }, "var(--accent)", "4 3");
+
+    /* round ticks */
+    for (var t = 0; t < ROUNDS; t += narrow ? 4 : 2) {
+      svg.appendChild(Ex.label(X(t), padT + ih + 14, String(t + 1), { fill: "var(--faint)", size: fs }));
+    }
+    svg.appendChild(Ex.label(padL + iw / 2, H - 3, "round", { fill: "var(--faint)", size: fs }));
+
+    host2.appendChild(svg);
+  }
+
+  /* ---------- prose ---------- */
+
+  function remedyWord() {
+    return S.remedy === "cert" ? "an independent certificate"
+      : (S.remedy === "warranty" ? "a warranty against a stated standard" : "no remedy");
+  }
+
+  function summary1() {
+    var d = now(), first = R.hist[0];
+    var out = "One hundred and twenty cars, quality spread evenly from " + Kit.num(R.cars.lo, 0)
+      + " to " + Kit.num(R.cars.hi, 0) + ", buyers able to see " + Kit.num(S.vis, 0)
+      + " per cent of quality, " + remedyWord() + " in force. At round " + S.round + " of " + ROUNDS + ", ";
+    if (!d.count) {
+      out += "no car at all is offered for sale. The market has gone.";
+      return out;
+    }
+    out += d.count + " of the 120 cars change hands, the average quality sold is "
+      + Kit.num(d.avgQ, 1) + " against a whole lot average of 100, and the average price paid is "
+      + Kit.num(d.avgP, 1) + ". ";
+    out += (isFinite(d.threshold) && d.threshold < R.cars.hi)
+      ? "Every car above a quality of " + Kit.num(d.threshold, 1) + " stays with its owner."
+      : "No car is worth more to its owner than the price on offer, so none withdraws.";
+    out += " In round one " + first.count + " cars traded at an average quality of "
+      + Kit.num(first.avgQ, 1) + ".";
+    return out;
+  }
+
+  function summary2() {
+    var upTo = Ex.clamp(S.round, 1, ROUNDS);
+    var a = R.hist[0], b = R.hist[upTo - 1];
+    if (upTo === 1) {
+      return "Average quality sold and average price paid, drawn as far as round one of " + ROUNDS
+        + ". In round one the average quality sold is " + Kit.num(a.avgQ, 1) + ", the average price paid is "
+        + Kit.num(a.avgP, 1) + ", and " + Kit.num(100 * a.count / N, 0)
+        + " per cent of the lot changes hands. Step or run the market to draw the rest.";
+    }
+    return "Average quality sold and average price paid, drawn as far as round " + upTo + " of " + ROUNDS
+      + ". Quality moves from " + Kit.num(a.avgQ, 1) + " in round one to " + Kit.num(b.avgQ, 1)
+      + " in round " + upTo + ". Price moves from " + Kit.num(a.avgP, 1) + " to " + Kit.num(b.avgP, 1)
+      + ". The share of the lot changing hands moves from " + Kit.num(100 * a.count / N, 0)
+      + " per cent to " + Kit.num(100 * b.count / N, 0) + " per cent.";
+  }
+
+  function says() {
+    var host = Q("#lm-says");
+    Kit.clear(host);
+    var d = now(), first = R.hist[0], last = R.hist[ROUNDS - 1];
+    function n(t, flag) { return E("span", { class: "ex-n" + (flag ? " ex-n-flag" : ""), text: t }); }
+
+    var p1 = E("p");
+
+    if (S.remedy === "cert") {
+      p1.appendChild(document.createTextNode("With an inspection revealing "));
+      p1.appendChild(n(Kit.num(CERT_V * 100, 0) + " per cent"));
+      p1.appendChild(document.createTextNode(" of quality, price follows the car rather than the average, so "
+        + "no owner has a reason to withdraw. "));
+      p1.appendChild(n(d.count + " of 120"));
+      p1.appendChild(document.createTextNode(" cars trade and the average quality sold stays at "));
+      p1.appendChild(n(Kit.num(d.avgQ, 1)));
+      p1.appendChild(document.createTextNode(". The fee of " + CERT_FEE
+        + " comes out of every sale, which is the price of finding out."));
+      host.appendChild(p1);
+      return;
+    }
+
+    if (S.remedy === "warranty") {
+      var top = N - d.count;
+      p1.appendChild(document.createTextNode("With a warranty against a standard of " + WAR_G
+        + ", the buyer is paying for the standard and not for a guess, so the belief never has to fall. "));
+      p1.appendChild(n(d.count + " of 120"));
+      p1.appendChild(document.createTextNode(" cars trade. "));
+      if (top > 0) {
+        p1.appendChild(document.createTextNode("The "));
+        p1.appendChild(n(Ex.cardinal(top) + " best"));
+        p1.appendChild(document.createTextNode(" cars withdraw anyway, because a warranty pays the same for "
+          + "an excellent car as for an adequate one and their owners will not take that price."));
+      } else {
+        p1.appendChild(document.createTextNode("At this spread no car is good enough to be worth more than "
+          + "the warranted price, so the whole lot trades."));
+      }
+      host.appendChild(p1);
+      return;
+    }
+
+    var fell = first.avgQ - last.avgQ;
+    p1.appendChild(document.createTextNode("Buyers can see "));
+    p1.appendChild(n(Kit.num(S.vis, 0) + " per cent"));
+    p1.appendChild(document.createTextNode(" of what they are buying and quality runs from "));
+    p1.appendChild(n(Kit.num(R.cars.lo, 0)));
+    p1.appendChild(document.createTextNode(" to "));
+    p1.appendChild(n(Kit.num(R.cars.hi, 0)));
+    p1.appendChild(document.createTextNode(". "));
+
+    if (!last.count) {
+      p1.appendChild(document.createTextNode("The market does not survive. By round "));
+      var deadAt = ROUNDS;
+      for (var i = 0; i < ROUNDS; i++) { if (!R.hist[i].count) { deadAt = i + 1; break; } }
+      p1.appendChild(n(String(deadAt), true));
+      p1.appendChild(document.createTextNode(" nothing at all is offered for sale. The worst car on this lot "
+        + "is worth " + Kit.num(R.cars.lo, 0) + ", which is not enough of a floor to stop the belief falling "
+        + "through it."));
+    } else if (fell < 0.5) {
+      p1.appendChild(document.createTextNode("Nothing much happens. The offer is high enough that even the "
+        + "best owner accepts it, so the belief is never disappointed and the spiral never starts. "));
+      p1.appendChild(n(Kit.num(100 * last.count / N, 0) + " per cent"));
+      p1.appendChild(document.createTextNode(" of the lot trades in every round."));
+    } else {
+      p1.appendChild(document.createTextNode("Over " + ROUNDS + " rounds the average quality sold falls from "));
+      p1.appendChild(n(Kit.num(first.avgQ, 1)));
+      p1.appendChild(document.createTextNode(" to "));
+      p1.appendChild(n(Kit.num(last.avgQ, 1), true));
+      p1.appendChild(document.createTextNode(" and the share of cars trading falls from "));
+      p1.appendChild(n(Kit.num(100 * first.count / N, 0) + " per cent"));
+      p1.appendChild(document.createTextNode(" to "));
+      p1.appendChild(n(Kit.num(100 * last.count / N, 0) + " per cent", true));
+      p1.appendChild(document.createTextNode(". Nobody cheated. The price simply stopped being able to tell "
+        + "a good car from a bad one, so the good cars stopped coming."));
+    }
+    host.appendChild(p1);
+
+    var p2 = E("p");
+    var lostShare = 100 * (R.available - last.gained) / R.available;
+    p2.appendChild(document.createTextNode("Every car here is worth half again as much to a buyer as to its "
+      + "owner, so under full information all 120 would sell. As it stands "));
+    p2.appendChild(n(Kit.num(lostShare, 0) + " per cent", lostShare > 20));
+    p2.appendChild(document.createTextNode(" of the gain from trade in this market is never realised. That "
+      + "loss is the cost of the ignorance, and it falls hardest on the owners of good cars, who cannot prove "
+      + "what they have."));
+    host.appendChild(p2);
+  }
+
+  /* ---------- controls ---------- */
+
+  var cSpread, cVis, cRem, cRound, setRead;
+
+  function buildControls() {
+    var rack = Q("#lm-ctrls");
+
+    cSpread = Ex.slider(rack, {
+      label: "Spread of quality",
+      min: 0, max: 100, step: 1, value: S.spread,
+      format: function (v) { return Kit.num(100 - v, 0) + " to " + Kit.num(100 + Number(v), 0); },
+      hint: "How far the best and worst cars sit either side of an average of 100.",
+      onInput: function (v) { S.spread = v; recompute(); }
+    });
+
+    cVis = Ex.slider(rack, {
+      label: "What a buyer can see",
+      min: 0, max: 100, step: 1, value: S.vis,
+      format: function (v) { return Kit.num(v, 0) + " %"; },
+      hint: "The share of a car's quality visible before money changes hands.",
+      onInput: function (v) { S.vis = v; recompute(); }
+    });
+
+    cRem = Ex.seg(rack, {
+      label: "Remedy in force",
+      name: "lm-rem", value: S.remedy,
+      options: [{ value: "none", label: "none" }, { value: "warranty", label: "warranty" },
+        { value: "cert", label: "certificate" }],
+      hint: "Section four explains what each of these does to the arithmetic.",
+      onChange: function (v) { S.remedy = v; recompute(); }
+    });
+
+    cRound = Ex.slider(rack, {
+      label: "Round",
+      min: 1, max: ROUNDS, step: 1, value: S.round,
+      format: function (v) { return Kit.num(v, 0) + " of " + ROUNDS; },
+      hint: "Scrub through the rounds, or use the buttons below.",
+      onInput: function (v) { S.round = v; render(); }
+    });
+
+    var bar = Q("#lm-runbar");
+    bar.appendChild(E("button", { type: "button", class: "k-btn k-btn-key", text: "Run the market",
+      onclick: function () { animate(); } }));
+    bar.appendChild(E("button", { type: "button", class: "k-btn", text: "Step one round",
+      onclick: function () { S.round = Math.min(ROUNDS, S.round + 1); cRound.set(S.round, true); render(); } }));
+    bar.appendChild(E("button", { type: "button", class: "k-btn k-btn-quiet", text: "Back to round one",
+      onclick: function () { stopAnim(); S.round = 1; cRound.set(1, true); render(); } }));
+    bar.appendChild(E("button", { type: "button", class: "k-btn k-btn-quiet", text: "Copy link",
+      onclick: function () { Kit.share(hashOut()); } }));
+    bar.appendChild(E("span", { class: "lm-round", id: "lm-roundlab" }));
+
+    setRead = Ex.readout(Q("#lm-read"), [
+      { id: "n", label: "Cars changing hands" },
+      { id: "aq", label: "Average quality sold", tone: "hot" },
+      { id: "ap", label: "Average price paid" },
+      { id: "th", label: "Withdrawal threshold" },
+      { id: "lost", label: "Gain from trade lost", tone: "flag" }
+    ]);
+
+    var keys = [
+      ["var(--good)", "car sold", "dot"],
+      ["var(--flag)", "car kept by its owner", "dot"],
+      ["var(--ink)", "withdrawal threshold", "line"]
+    ];
+    var key = Q("#lm-key");
+    keys.forEach(function (k) {
+      var mark = E("i", { class: k[2] === "line" ? "ex-line" : null });
+      mark.style.color = k[0];
+      if (k[2] === "dot") { mark.style.background = k[0]; mark.style.borderRadius = "50%"; mark.style.opacity = k[0] === "var(--flag)" ? "0.5" : "1"; }
+      key.appendChild(E("span", {}, [mark, document.createTextNode(k[1])]));
+    });
+
+    var key2 = Q("#lm-key2");
+    [["var(--good)", "average quality sold"], ["var(--accent)", "average price paid"],
+     ["var(--ink)", "share of the lot trading, right scale"]].forEach(function (k) {
+      var mark = E("i", { class: "ex-line" });
+      mark.style.color = k[0];
+      if (k[1].indexOf("share") === 0) { mark.className = ""; mark.style.background = k[0]; mark.style.opacity = "0.12"; }
+      key2.appendChild(E("span", {}, [mark, document.createTextNode(k[1])]));
+    });
+  }
+
+  /* ---------- the run animation ---------- */
+
+  var timer = null;
+  function stopAnim() { if (timer) { clearInterval(timer); timer = null; } }
+  function animate() {
+    stopAnim();
+    S.round = 1; cRound.set(1, true); render();
+    timer = setInterval(function () {
+      if (S.round >= ROUNDS) { stopAnim(); return; }
+      S.round += 1; cRound.set(S.round, true); render();
+    }, 420);
+  }
+
+  /* ---------- state ---------- */
+
+  function hashOut() { return { s: S.spread, v: S.vis, r: S.remedy, k: S.round }; }
+  function hashIn() {
+    var o = Kit.state.read();
+    if (!o) return false;
+    if (isFinite(o.s)) S.spread = Ex.clamp(Number(o.s), 0, 100);
+    if (isFinite(o.v)) S.vis = Ex.clamp(Number(o.v), 0, 100);
+    if (o.r === "none" || o.r === "warranty" || o.r === "cert") S.remedy = o.r;
+    if (isFinite(o.k)) S.round = Ex.clamp(Math.round(Number(o.k)), 1, ROUNDS);
+    return true;
+  }
+
+  /* ---------- render ---------- */
+
+  function recompute() { R = run(S); render(); }
+
+  var paint = Ex.frames(function () {
+    if (!R) R = run(S);
+    var d = now();
+
+    draw1();
+    draw2();
+
+    setRead("n", d.count + " of " + N, Kit.num(100 * d.count / N, 0) + " per cent of the lot");
+    setRead("aq", d.count ? Kit.num(d.avgQ, 1) : "none", d.count ? "whole lot average 100" : "no car offered");
+    setRead("ap", d.count ? Kit.num(d.avgP, 1) : "none", d.count ? "paid per car" : null);
+    var bind = isFinite(d.threshold) && d.threshold < R.cars.hi;
+    setRead("th", bind ? Kit.num(d.threshold, 1) : "none binds",
+      bind ? "quality above which owners keep" : "every car on the lot is offered");
+    var lost = R.available - R.hist[ROUNDS - 1].gained;
+    setRead("lost", Kit.num(100 * lost / R.available, 0) + " %", "of the gain available at the end");
+
+    Q("#lm-roundlab").innerHTML = "";
+    Q("#lm-roundlab").appendChild(document.createTextNode("round "));
+    Q("#lm-roundlab").appendChild(E("b", { text: String(S.round) }));
+    Q("#lm-roundlab").appendChild(document.createTextNode(" of " + ROUNDS));
+
+    Q("#lm-sum").textContent = summary1();
+    Q("#lm-sum2").textContent = summary2();
+    says();
+
+    Kit.state.write(hashOut());
+  });
+
+  function render() { paint(); }
+
+  function init() {
+    hashIn();
+    buildControls();
+    cSpread.set(S.spread, true); cVis.set(S.vis, true);
+    cRem.set(S.remedy, true); cRound.set(S.round, true);
+    recompute();
+    Ex.onResize(render);
+    window.addEventListener("hashchange", function () {
+      if (hashIn()) {
+        cSpread.set(S.spread, true); cVis.set(S.vis, true);
+        cRem.set(S.remedy, true); cRound.set(S.round, true);
+        recompute();
+      }
+    });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+
+<script>
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Dört denemeden ikincisi</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Essay zwei von vier</i>"}};
+
+(function(){
+  "use strict";
+  var KEY = "lang", lang = "en";
+  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
+  var D = window.CHROME_I18N || {};
+  var base = {}, baseA = {};
+  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
+  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function apply(l){
+    if(!D[l]) l = "en";
+    var d = D[l] || {};
+    document.querySelectorAll(SEL).forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if(!(k in base)) base[k] = el.innerHTML;
+      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
+    });
+    document.querySelectorAll(SELA).forEach(function(el){
+      var k = el.getAttribute("data-ia");
+      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
+      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
+    });
+    document.documentElement.setAttribute("lang", l);
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    window.__lang = l;
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  window.__chrome = apply;
+  apply(lang);
+})();
+
+</script>
+
+</body>
+</html>

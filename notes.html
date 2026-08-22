@@ -64,10 +64,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
-.bar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--paper) 86%,transparent);
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
-.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
 .bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
 .bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
@@ -78,6 +79,56 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
   border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
 .langs button:hover{color:var(--fg)}
 .langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
+    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* six nav items on a narrow phone: the row is allowed to take a second
+   line rather than push the page sideways, and the words are set a little
+   tighter so that on most phones it does not have to */
+@media (max-width:430px){
+  .bar nav{gap:.34rem .55rem}
+  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
 
 /* ---------- page head ---------- */
 .crown{padding:clamp(3.4rem,9vh,6rem) 0 clamp(2rem,5vh,3rem)}
@@ -148,31 +199,8 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 .share-link:hover{color:var(--fg);border-color:var(--fg)}
 .share-link.done{color:var(--accent);border-color:var(--accent)}
 
-/* ---------- footer ---------- */
-footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem)}
-footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
-  font-size:.74rem;color:var(--dim)}
-footer a{text-decoration:none;color:var(--dim)}
-footer a:hover{color:var(--fg)}
-
-/* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
-@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
-
 /* ---------- the narrow reading, where a thumb does the work ---------- */
 @media (max-width:640px){
-  /* the bar gives the pages a line of their own instead of crowding them */
-  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
-    padding-top:.5rem;padding-bottom:.15rem}
-  .bar .home{white-space:nowrap;font-size:1rem}
-  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
-  .bar nav a{font-size:.8rem;padding:.55rem 0}
-  /* the three languages take the right end of the name's own line: a third
-     row of bar would eat a fifth of the screen */
-  .bar .wrap{position:relative}
-  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
-  .langs button{font-size:.7rem;padding:.2em .4em}
 
   /* stacks: one column reads better than four squeezed ones */
   .tl .row{grid-template-columns:1fr;gap:.2rem}
@@ -194,7 +222,6 @@ footer a:hover{color:var(--fg)}
   body select,body textarea{font-size:16px}
   body .frow input,body input[type="text"],body input[type="email"]{min-height:46px}
   .socials{gap:1.3rem;flex-wrap:wrap}
-  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 
   /* room to breathe: on one column the rules were sitting on the text */
   .crown{padding-bottom:clamp(1.4rem,4vh,2.2rem)}
@@ -207,17 +234,8 @@ footer a:hover{color:var(--fg)}
   .mail-line a.addr{word-break:break-all;line-height:1.25}
 }
 
-/* a finger, not a cursor: every control a thumb has to find is at least a
-   thumb wide, in either orientation */
+/* the same thumb, on the page itself */
 @media (pointer:coarse){
-  .bar .home{display:inline-flex;align-items:center;min-height:44px}
-  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
-    justify-content:center;padding:.3rem .3rem}
-  .langs{gap:.05rem}
-  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
-    display:inline-flex;align-items:center;justify-content:center}
-  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
-    align-items:center;justify-content:flex-end}
   .cv-btn{min-height:44px;padding:.8rem 1.25rem}
   .copy,.share-link{min-height:44px;min-width:44px;
     display:inline-flex;align-items:center;justify-content:center}
@@ -280,7 +298,7 @@ footer a:hover{color:var(--fg)}
 <header class="bar">
   <div class="wrap">
     <a class="home" href="index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" aria-current="page" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" aria-current="page" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a><a href="tools.html" data-i="nav-t">Tools</a><a href="game.html" data-i="nav-g">Game Theory</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -311,12 +329,12 @@ footer a:hover{color:var(--fg)}
 </section>
 
 </main>
-<footer><div class="wrap">
+<footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 <script>
-window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "a-site": "Site", "a-lang": "Dil", "a-notes": "Notlar", "a-gbook": "Ziyaretçi defteri", "a-note": "Not", "n-h1": "Notlar", "n-lede": "Çalışma notları.", "read": "Oku", "gb-link": "Ya da <a href=\"defter.html\">ziyaretçi defterine</a> herkese açık bir not bırak.", "sm-date": "İlk not · Ağustos 2026", "sm-h": "Özne hiç yalnız değildi: SIMEA", "sm1": "Araştırma programım, açıkta tutuluyor. Klasik iktisat, insanı rasyonel bir maksimize edici olarak modeller; davranışsal iktisat bu modeli korur ve hatalarını kataloglar. SIMEA başka bir yerden başlar: sistemlerin içine gömülü ve onlar tarafından yönlendirilen bir karar öznesi. Algoritmalar, platformlar, öneri mimarileri. Çerçeve ölçülebilir üç kavram önerir: bir sistemin seçim üzerindeki etki eğimi, öznenin kendinde kalan özerklik eşiği ve seçim ortamının entropisi.", "sm2": "İkinci makale çerçeveyi ciddiye alır ve öngörü için ne anlama geldiğini sorar: determinizm doğruysa finansal gelecekler öngörülebilir mi? Makale bunun çıkmadığını, öngörülebilirliğin özerkliğin bir fonksiyonu olduğunu savunur. Kaynakça satır satır doğrulanmıştır; makaleler bunu kendileri söyler.", "sm3": "Makaleleri GitHub'da oku", "sm-x": "Araştırma programım, açıkta tutuluyor."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "a-site": "Website", "a-lang": "Sprache", "a-notes": "Notizen", "a-gbook": "Gästebuch", "a-note": "Notiz", "n-h1": "Notizen", "n-lede": "Arbeitsnotizen.", "read": "Lesen", "gb-link": "Oder hinterlasse eine öffentliche Notiz im <a href=\"defter.html\">Gästebuch</a>.", "sm-date": "Erste Notiz · August 2026", "sm-h": "Das Subjekt war nie allein: SIMEA", "sm1": "Mein Forschungsprogramm, offen geführt. Die klassische Ökonomik modelliert den Menschen als rationalen Maximierer; die Verhaltensökonomik behält ihn und katalogisiert seine Fehler. SIMEA beginnt woanders: beim Entscheidungssubjekt, eingebettet in Systeme und von ihnen gelenkt. Algorithmen, Plattformen, Empfehlungsarchitekturen. Der Rahmen schlägt drei messbare Konstrukte vor: den Einflussgradienten eines Systems auf eine Wahl, die Autonomieschwelle, die beim Subjekt bleibt, und die Entropie der Wahlumgebung selbst.", "sm2": "Ein zweites Papier nimmt den Rahmen ernst und fragt, was er für Prognosen bedeutet: Wenn Determinismus gilt, folgt daraus die Vorhersagbarkeit der Finanzmärkte? Es argumentiert: nein. Vorhersagbarkeit ist eine Funktion der Autonomie. Die Bibliographie ist Zeile für Zeile geprüft; die Papiere sagen es selbst.", "sm3": "Die Papiere auf GitHub lesen", "sm-x": "Mein Forschungsprogramm, offen geführt."}};
+window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "a-notes": "Notlar", "a-gbook": "Ziyaretçi defteri", "a-note": "Not", "n-h1": "Notlar", "n-lede": "Çalışma notları.", "read": "Oku", "gb-link": "Ya da <a href=\"defter.html\">ziyaretçi defterine</a> herkese açık bir not bırak.", "sm-date": "İlk not · Ağustos 2026", "sm-h": "Özne hiç yalnız değildi: SIMEA", "sm1": "Araştırma programım, açıkta tutuluyor. Klasik iktisat, insanı rasyonel bir maksimize edici olarak modeller; davranışsal iktisat bu modeli korur ve hatalarını kataloglar. SIMEA başka bir yerden başlar: sistemlerin içine gömülü ve onlar tarafından yönlendirilen bir karar öznesi. Algoritmalar, platformlar, öneri mimarileri. Çerçeve ölçülebilir üç kavram önerir: bir sistemin seçim üzerindeki etki eğimi, öznenin kendinde kalan özerklik eşiği ve seçim ortamının entropisi.", "sm2": "İkinci makale çerçeveyi ciddiye alır ve öngörü için ne anlama geldiğini sorar: determinizm doğruysa finansal gelecekler öngörülebilir mi? Makale bunun çıkmadığını, öngörülebilirliğin özerkliğin bir fonksiyonu olduğunu savunur. Kaynakça satır satır doğrulanmıştır; makaleler bunu kendileri söyler.", "sm3": "Makaleleri GitHub'da oku", "sm-x": "Araştırma programım, açıkta tutuluyor."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "a-notes": "Notizen", "a-gbook": "Gästebuch", "a-note": "Notiz", "n-h1": "Notizen", "n-lede": "Arbeitsnotizen.", "read": "Lesen", "gb-link": "Oder hinterlasse eine öffentliche Notiz im <a href=\"defter.html\">Gästebuch</a>.", "sm-date": "Erste Notiz · August 2026", "sm-h": "Das Subjekt war nie allein: SIMEA", "sm1": "Mein Forschungsprogramm, offen geführt. Die klassische Ökonomik modelliert den Menschen als rationalen Maximierer; die Verhaltensökonomik behält ihn und katalogisiert seine Fehler. SIMEA beginnt woanders: beim Entscheidungssubjekt, eingebettet in Systeme und von ihnen gelenkt. Algorithmen, Plattformen, Empfehlungsarchitekturen. Der Rahmen schlägt drei messbare Konstrukte vor: den Einflussgradienten eines Systems auf eine Wahl, die Autonomieschwelle, die beim Subjekt bleibt, und die Entropie der Wahlumgebung selbst.", "sm2": "Ein zweites Papier nimmt den Rahmen ernst und fragt, was er für Prognosen bedeutet: Wenn Determinismus gilt, folgt daraus die Vorhersagbarkeit der Finanzmärkte? Es argumentiert: nein. Vorhersagbarkeit ist eine Funktion der Autonomie. Die Bibliographie ist Zeile für Zeile geprüft; die Papiere sagen es selbst.", "sm3": "Die Papiere auf GitHub lesen", "sm-x": "Mein Forschungsprogramm, offen geführt."}};
 
 (function(){
   "use strict";

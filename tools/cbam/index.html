@@ -1,0 +1,2077 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CBAM cost and data gap</title>
+<meta name="description" content="For EU importers. Works out whether you cross the 50 tonne CBAM de minimis threshold, prints the certificate cost arithmetic step by step from figures you supply, and names every missing emissions figure and who can supply it.">
+<meta name="author" content="Kerem Ozdemir">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Instrument+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="canonical" href="https://keremozdemir.de/tools/cbam/">
+<meta property="og:title" content="CBAM cost and data gap">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   kit.css
+   House visual system for the open instruments at keremozdemir.de
+   Paper palette, Fraunces display, Newsreader body, IBM Plex Mono
+   for every number. No framework, no build step.
+
+   The host document loads three families from Google Fonts and nothing
+   else, with preconnect to fonts.googleapis.com and fonts.gstatic.com:
+     Fraunces      opsz,wght 9..144 at 300, 400, 500
+     Newsreader    ital,opsz,wght 6..72 at 400, 500 and italic 400
+     IBM Plex Mono 400, 500
+   Every family here has a real fallback stack, so the page stays legible
+   if the fonts never arrive.
+   ============================================================ */
+
+/* ---------- 1. tokens ---------- */
+
+:root {
+  color-scheme: light;
+
+  --paper:      #f2efe6;
+  --paper-sunk: #ebe7dc;
+  --panel:      #f7f5ee;
+  --field:      #fdfcf8;
+  --ink:        #2b2620;
+  --ink-soft:   #4b443b;
+  --dim:        #6f6558;
+  --faint:      #8d8375;
+  --rule:       #d8d2c4;
+  --rule-firm:  #bdb5a4;
+  --accent:     #8a5a24;
+  --accent-lit: #f0e6d6;
+  --flag:       #8c3b1e;
+  --flag-lit:   #f3e4de;
+  --good:       #3f5c3a;
+  --good-lit:   #e5eade;
+
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --serif:   "Newsreader", Georgia, "Times New Roman", serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 66ch;
+  --gap:     clamp(1rem, 2.4vw, 1.6rem);
+  --pad:     clamp(0.95rem, 2.4vw, 1.5rem);
+  --edge:    clamp(1.1rem, 5vw, 3.25rem);
+}
+
+/* The instruments used to flip to a dark palette with the system.  They
+   sit inside keremozdemir.de now, whose paper is light and whose top bar
+   and footer are painted from the site's own tokens, so a page that went
+   dark underneath a light bar would only look broken.  One palette. */
+
+/* ---------- 2. reset and page ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, 0.97rem + 0.16vw, 1.08rem);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.15; letter-spacing: -0.02em; }
+
+p { margin: 0 0 0.9em; max-width: var(--measure); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-firm); }
+a:hover { border-bottom-color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+.k-shell :focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--accent-lit); color: var(--ink); }
+
+.k-vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0);
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.k-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  background: var(--ink); color: var(--paper); border: 0;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+}
+.k-skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- 3. shell ---------- */
+
+.k-shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+.k-wrap { width: 100%; max-width: 74rem; margin: 0 auto; padding-inline: var(--edge); }
+
+/* The top bar is the site's, spliced in from pagegen.py by build.sh, so
+   there is no header of the kit's own any more. */
+
+.k-main { flex: 1 0 auto; padding-block: clamp(1.8rem, 5vw, 3.2rem) clamp(2.5rem, 6vw, 4rem); }
+
+.k-lede { max-width: 62ch; }
+.k-lede h1 {
+  font-size: clamp(1.85rem, 1.2rem + 2.6vw, 3rem);
+  letter-spacing: -0.032em; margin-bottom: 0.5rem;
+}
+.k-lede .k-standfirst {
+  font-size: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  color: var(--ink-soft); line-height: 1.5;
+}
+
+.k-sect { margin-top: clamp(2.2rem, 5.5vw, 3.4rem); }
+.k-sect > h2 {
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule-firm);
+  margin-bottom: 1.1rem;
+}
+.k-sect > h2 .k-num {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+}
+.k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
+
+/* ---------- 4. input row ---------- */
+
+.k-row {
+  display: grid; gap: 0.7rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  align-items: end;
+}
+.k-row.k-row-tight { gap: 0.55rem 0.9rem; }
+
+.k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.k-field > label, .k-lab {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+}
+.k-field .k-hint {
+  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
+  line-height: 1.45; letter-spacing: 0.02em;
+}
+
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
+  width: 100%; min-width: 0;
+  background: var(--field);
+  border: 1px solid var(--rule-firm);
+  border-radius: 0;
+  color: var(--ink);
+  font-family: var(--mono); font-size: 0.88rem; font-weight: 400;
+  padding: 0.55rem 0.6rem;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+input[type="number"] { font-variant-numeric: tabular-nums; text-align: right; }
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.9rem;
+}
+input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--panel); }
+input::placeholder { color: var(--faint); }
+input[aria-invalid="true"] { border-color: var(--flag); }
+
+.k-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--rule-firm); border-radius: 0;
+  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  padding: 0.62rem 0.95rem; cursor: pointer;
+  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.k-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.k-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
+.k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.k-btn-key { color: #f7f5ee; }
+.k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+
+.k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+
+/* ---------- 5. result panel ---------- */
+
+.k-panel {
+  background: var(--panel);
+  border: 1px solid var(--rule-firm);
+  padding: var(--pad);
+}
+.k-panel + .k-panel { margin-top: var(--gap); }
+.k-panel > h3, .k-panel-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+.k-panel-sunk { background: var(--paper-sunk); }
+
+.k-stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem; }
+.k-stat .k-big {
+  font-family: var(--mono); font-weight: 500;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+  line-height: 1.05; color: var(--ink);
+}
+.k-stat .k-unit { font-family: var(--mono); font-size: 0.78rem; color: var(--dim); letter-spacing: 0.05em; }
+
+.k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+
+.k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
+.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dd {
+  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
+}
+.k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
+
+/* arithmetic trace: every step printed */
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem; padding: 0.3rem 0;
+  border-bottom: 1px dotted var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+.k-steps li:last-child { border-bottom: 0; }
+.k-steps .k-op { color: var(--dim); }
+.k-steps .k-res { color: var(--ink); font-weight: 500; text-align: right; white-space: nowrap; }
+.k-steps li.k-step-final { border-top: 1px solid var(--rule-firm); border-bottom: 0; margin-top: 0.3rem; padding-top: 0.5rem; }
+.k-steps li.k-step-final .k-res { color: var(--accent); font-size: 0.92rem; }
+
+/* ---------- 6. source line ---------- */
+
+.k-source {
+  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  margin-top: 0.7rem; padding-top: 0.55rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-source::before {
+  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--faint); flex: none;
+}
+.k-source.k-source-bare::before { content: none; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.k-source .k-checked { color: var(--faint); white-space: nowrap; }
+
+/* ---------- 7. warning and refusal ---------- */
+
+.k-warn {
+  background: var(--flag-lit);
+  border: 1px solid var(--flag);
+  border-left-width: 3px;
+  padding: var(--pad);
+}
+.k-warn > h3, .k-warn .k-panel-h { color: var(--flag); }
+.k-warn p { color: var(--ink); }
+.k-warn + .k-warn, .k-panel + .k-warn, .k-warn + .k-panel { margin-top: var(--gap); }
+
+.k-ok { background: var(--good-lit); border: 1px solid var(--good); border-left-width: 3px; padding: var(--pad); }
+.k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
+
+.k-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
+  white-space: nowrap;
+}
+.k-tag-gap { color: var(--flag); background: var(--flag-lit); }
+.k-tag-known { color: var(--good); background: var(--good-lit); }
+.k-tag-quiet { color: var(--faint); background: transparent; }
+
+.k-ask { margin: 0.85rem 0 0; padding: 0; list-style: none; }
+.k-ask li {
+  display: grid; grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.2rem 0.9rem; padding: 0.4rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.92rem;
+}
+.k-ask li > b {
+  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.22rem;
+}
+
+/* ---------- 8. tables ---------- */
+
+.k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-table th, .k-table td {
+  text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule); vertical-align: top;
+}
+.k-table th {
+  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  border-bottom-color: var(--rule-firm); white-space: nowrap;
+}
+.k-table td.k-n, .k-table th.k-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  text-align: right; padding-right: 0; white-space: nowrap;
+}
+.k-table tbody tr:last-child td { border-bottom: 0; }
+.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell a { word-break: break-all; }
+
+/* ---------- 9. timeline ---------- */
+
+.k-time { margin: 0; padding: 0; list-style: none; }
+.k-time li {
+  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0.25rem 1.1rem; padding: 0.7rem 0;
+  border-top: 1px solid var(--rule);
+}
+.k-time li:first-child { border-top: 0; padding-top: 0; }
+.k-time .k-when {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
+}
+.k-time .k-what { font-size: 0.96rem; color: var(--ink); }
+.k-time .k-what small {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+}
+.k-time li.k-past .k-when { color: var(--faint); }
+.k-time li.k-past .k-what { color: var(--dim); }
+
+/* ---------- 10. the closing note ---------- */
+/* Each instrument ends with its own disclaimer and its own privacy line.
+   That is the page's last word, not the site's, so it is a closing panel
+   and the site's footer follows it. */
+
+.k-endnote {
+  border-top: 1px solid var(--rule-firm);
+  background: var(--paper-sunk);
+  padding-block: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: 0.9rem; color: var(--dim);
+}
+.k-endnote .k-wrap { display: grid; gap: 1.1rem; }
+.k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
+.k-endnote .k-fine {
+  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
+.k-endnote a:hover { color: var(--accent); }
+
+/* ---------- 11. toast for copy actions ---------- */
+
+.k-toast {
+  position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.k-toast[data-on="1"] { opacity: 1; }
+
+/* ---------- 12. responsive ---------- */
+
+@media (max-width: 640px) {
+  .k-ask li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-time li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-steps li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .k-steps .k-res { text-align: left; }
+}
+
+@media print {
+  .k-btnbar, .k-skip, .k-toast { display: none; }
+  body { background: #fff; color: #000; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- cbam tool ---------- */
+
+.cb-lines { display: grid; gap: 0.9rem; }
+
+.cb-line {
+  border: 1px solid var(--rule-firm);
+  background: var(--panel);
+  padding: 0.85rem var(--pad) 0.95rem;
+}
+.cb-line-top {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 0.6rem 1rem; margin-bottom: 0.7rem; flex-wrap: wrap;
+}
+.cb-line-n {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--faint);
+}
+.cb-line-grid {
+  display: grid; gap: 0.7rem 0.9rem;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.1fr) minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 1fr);
+}
+@media (max-width: 1000px) { .cb-line-grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+@media (max-width: 560px)  { .cb-line-grid { grid-template-columns: minmax(0,1fr); } }
+
+.cb-settings { align-items: end; }
+.cb-settings { grid-template-columns: repeat(auto-fit, minmax(11rem, 21rem)); justify-content: start; }
+
+.cb-verdict { display: grid; gap: 0.5rem; }
+.cb-verdict .k-big { color: var(--ink); }
+
+.cb-gapbox { margin-top: var(--gap); }
+.cb-gap-item { border-top: 1px solid var(--flag); padding-top: 0.7rem; margin-top: 0.8rem; }
+.cb-gap-item:first-of-type { border-top: 0; padding-top: 0; margin-top: 0.4rem; }
+.cb-gap-item > h4 { font-family: var(--serif); font-size: 1rem; margin-bottom: 0.15rem; }
+
+.cb-linecalc { border-top: 1px solid var(--rule); padding-top: 0.8rem; margin-top: 0.9rem; }
+.cb-linecalc:first-of-type { border-top: 0; padding-top: 0; margin-top: 0.3rem; }
+.cb-linecalc > h4 {
+  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim);
+  margin: 0 0 0.45rem; display: flex; flex-wrap: wrap; gap: 0.4rem 0.6rem; align-items: center;
+}
+
+.cb-empty {
+  border: 1px dashed var(--rule-firm); background: transparent;
+  padding: var(--pad); color: var(--dim); font-size: 0.95rem;
+}
+
+.cb-legend { border: 0; padding: 0; margin: 0; min-width: 0; }
+.cb-legend > legend { padding: 0; }
+
+/* ---------- the site's clothes, worn by an instrument ---------- */
+.bar,footer.site-foot,.leaf-mark{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#f2efe6;
+  --fg:#221e17;
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --accent:#8a5a24;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+.bar,footer.site-foot{color:var(--fg)}
+footer.site-foot{background:var(--paper)}
+.bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
+
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
+.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+.langs{display:flex;gap:.1rem;margin-left:.6rem}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
+    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* six nav items on a narrow phone: the row is allowed to take a second
+   line rather than push the page sideways, and the words are set a little
+   tighter so that on most phones it does not have to */
+@media (max-width:430px){
+  .bar nav{gap:.34rem .55rem}
+  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+
+/* ---------- the crown, on a page whose interior is its own ---------- */
+.k-crown-no{
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;
+  font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;
+  color:var(--accent);
+}
+.k-crown-no svg{flex:none}
+.k-lede h1{margin-top:0}
+
+
+</style>
+</head>
+<body>
+
+<a class="k-skip" href="#work">Skip to the tool</a>
+
+<div class="k-shell">
+
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="../../index.html">Kerem Özdemir</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" aria-current="page" data-i="nav-t">Tools</a><a href="../../game.html" data-i="nav-g">Game Theory</a>
+      <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+
+  <main class="k-main" id="work">
+    <div class="k-wrap">
+
+      <div class="k-lede k-crown">
+        <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Instrument · carbon and compliance</i></span>
+        <h1>What CBAM will cost you, and what you still do not know</h1>
+        <p class="k-standfirst">Enter the goods you import into the EU. This tool tells you whether you cross the
+        50 tonne de minimis threshold, prints the certificate cost arithmetic one step at a time from figures you
+        supply, and refuses to invent the emissions figures you do not have. Where a number is missing it names
+        the number, names who holds it, and gives you a list you can send to the supplier.</p>
+      </div>
+
+      <!-- 1. settings -->
+      <section class="k-sect" aria-labelledby="h-set">
+        <h2 id="h-set"><span class="k-num">01</span>Year and carbon price</h2>
+        <div class="k-row cb-settings">
+          <div class="k-field">
+            <label for="f-year">Year of import</label>
+            <select id="f-year"></select>
+            <span class="k-hint" id="f-year-hint"></span>
+          </div>
+          <div class="k-field">
+            <label for="f-price">Carbon price, EUR per tonne CO2e</label>
+            <input type="number" id="f-price" min="0" step="0.01" inputmode="decimal">
+            <span class="k-hint">Indicative only. Replace it with the figure your treasury uses.</span>
+          </div>
+        </div>
+        <p class="k-source" id="price-src"></p>
+      </section>
+
+      <!-- 2. line items -->
+      <section class="k-sect" aria-labelledby="h-lines">
+        <h2 id="h-lines"><span class="k-num">02</span>Line items</h2>
+        <fieldset class="cb-legend">
+          <legend class="k-vh">Imported line items</legend>
+          <div class="cb-lines" id="lines"></div>
+        </fieldset>
+        <div class="k-btnbar" style="margin-top:1rem">
+          <button type="button" class="k-btn" id="b-add">Add line item</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-example">Load an example</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-reset">Clear all</button>
+        </div>
+        <p class="k-note" style="margin-top:0.9rem">Quantity is net mass in tonnes, except electricity, which is
+        entered in megawatt hours. This tool does not classify goods. Confirm the CN code of each product against
+        Annex I of the Regulation and the current TARIC entry before you rely on any of this.</p>
+      </section>
+
+      <!-- 3. threshold -->
+      <section class="k-sect" aria-labelledby="h-thr">
+        <h2 id="h-thr"><span class="k-num">03</span>De minimis threshold</h2>
+        <div id="out-threshold" aria-live="polite"></div>
+      </section>
+
+      <!-- 4. emissions and gaps -->
+      <section class="k-sect" aria-labelledby="h-emis">
+        <h2 id="h-emis"><span class="k-num">04</span>Embedded emissions and data gaps</h2>
+        <div id="out-emissions" aria-live="polite"></div>
+      </section>
+
+      <!-- 5. cost -->
+      <section class="k-sect" aria-labelledby="h-cost">
+        <h2 id="h-cost"><span class="k-num">05</span>Indicative certificate cost</h2>
+        <div id="out-cost" aria-live="polite"></div>
+      </section>
+
+      <!-- 6. timeline -->
+      <section class="k-sect" aria-labelledby="h-time">
+        <h2 id="h-time"><span class="k-num">06</span>What you must do and when</h2>
+        <div class="k-panel"><ul class="k-time" id="out-time"></ul></div>
+      </section>
+
+      <!-- 7. export -->
+      <section class="k-sect" aria-labelledby="h-exp">
+        <h2 id="h-exp"><span class="k-num">07</span>Export and share</h2>
+        <div class="k-panel">
+          <h3>Supplier data request</h3>
+          <p style="font-size:0.95rem">One row per line item, with the emissions figure where you have it and a
+          plain statement of what is missing and who holds it where you do not. Column headings are written so
+          that a procurement team can send the file to a supplier without editing it.</p>
+          <div class="k-btnbar" style="margin-top:1rem">
+            <button type="button" class="k-btn k-btn-key" id="b-csv">Download CSV</button>
+            <button type="button" class="k-btn" id="b-csvcopy">Copy table</button>
+            <button type="button" class="k-btn" id="b-link">Copy link to these inputs</button>
+          </div>
+          <div style="margin-top:1.1rem">
+            <p class="k-lab" style="margin:0 0 0.4rem">Preview</p>
+            <div class="k-scroll"><table class="k-table" id="out-preview"></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. method -->
+      <section class="k-sect" aria-labelledby="h-meth">
+        <h2 id="h-meth"><span class="k-num">08</span>Method and sources</h2>
+
+        <p class="k-note">Every regulatory figure this tool uses is listed below with the value, the source and
+        the date the source was read. Nothing else is hard coded. If a figure below has moved, the tool is wrong
+        and the figure in the current Regulation is right.</p>
+
+        <div class="k-panel" style="margin-top:1rem">
+          <h3>Constants</h3>
+          <div class="k-scroll"><table class="k-table" id="out-const"></table></div>
+        </div>
+
+        <div class="k-panel">
+          <h3>Chargeable share of embedded emissions, year by year</h3>
+          <div class="k-scroll"><table class="k-table" id="out-factors"></table></div>
+          <p class="k-source">
+            <span>Directive (EU) 2023/959 recital 46 and Article 10a(1a) of Directive 2003/87/EC</span>
+            <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32023L0959" target="_blank" rel="noreferrer noopener">eur-lex.europa.eu</a>
+            <span class="k-checked">checked 2026 08 21</span>
+          </p>
+        </div>
+
+        <div class="k-warn" style="margin-top:var(--gap)">
+          <h3>What this tool does not know</h3>
+          <ul class="k-ask" id="out-unknowns"></ul>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <aside class="k-endnote">
+    <div class="k-wrap">
+      <p><strong>This is an estimate for planning. It is not legal, tax or customs advice.</strong>
+      The numbers it prints are only as good as the figures you enter and the constants listed in section 08.
+      Confirm every figure against the current text of Regulation (EU) 2023/956 as amended, the implementing acts
+      in force, and your own advisers before you file anything or commit money.</p>
+      <p class="k-fine">
+        Runs entirely in your browser. Nothing you type leaves this page. No server, no database, no analytics,
+        no network calls after the fonts have loaded, so it works offline once the page is cached.
+        Built by <a href="../../index.html">Kerem Ozdemir</a>, TUM,
+        Sustainable Management and Technology.
+      </p>
+    </div>
+  </aside>
+
+<footer class="site-foot"><div class="wrap">
+  <span>© 2026 Kerem Özdemir</span>
+  <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
+</div></footer>
+
+
+</div>
+
+<script>
+/* ============================================================
+   kit.js
+   Shared behaviour for the open instruments at keremozdemir.de
+   No dependencies. No network calls. Safe to inline.
+
+   Kit.el        small DOM builder
+   Kit.fmt       number and date formatting
+   Kit.state     read and write tool state in the URL hash
+   Kit.share     copy the link that restores the current state
+   Kit.csv       build CSV, copy to clipboard, offer a download
+   Kit.toast     brief confirmation line
+   ============================================================ */
+
+var Kit = (function () {
+  "use strict";
+
+  /* ---------- DOM ---------- */
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v;
+        else if (k === "html") n.innerHTML = v;
+        else if (k.slice(0, 2) === "on" && typeof v === "function") {
+          n.addEventListener(k.slice(2).toLowerCase(), v);
+        } else n.setAttribute(k, v === true ? "" : String(v));
+      });
+    }
+    (kids || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+
+  /* ---------- numbers ---------- */
+
+  var LOCALE = "en-GB";
+
+  function num(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function money(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return "EUR " + num(v, dp === undefined ? 2 : dp);
+  }
+  function pct(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return num(v * 100, dp === undefined ? 1 : dp) + " %";
+  }
+  function toNum(raw) {
+    if (raw === null || raw === undefined) return null;
+    var s = String(raw).trim().replace(/\s+/g, "").replace(/,/g, ".");
+    if (s === "") return null;
+    var n = Number(s);
+    return isFinite(n) ? n : null;
+  }
+
+  /* ---------- URL hash state ---------- */
+
+  function b64urlEncode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64urlDecode(str) {
+    var s = String(str).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var bin = atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  var state = {
+    /* Serialise the object into the location hash without adding a history entry. */
+    write: function (obj) {
+      var h = "";
+      try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
+      if (h.length > 8000) return "";
+      try {
+        history.replaceState(null, "", location.pathname + location.search + h);
+      } catch (e) {
+        location.hash = h;
+      }
+      return location.href;
+    },
+    /* Read the object back. Returns null when the hash is absent or unreadable. */
+    read: function () {
+      var m = /(?:^|[#&])s=([A-Za-z0-9\-_]+)/.exec(location.hash || "");
+      if (!m) return null;
+      try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
+    },
+    clear: function () {
+      try { history.replaceState(null, "", location.pathname + location.search); }
+      catch (e) { location.hash = ""; }
+    }
+  };
+
+  /* ---------- clipboard ---------- */
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; },
+        function () { return legacyCopy(text); });
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  /* ---------- share ---------- */
+
+  function share(obj, msg) {
+    var url = state.write(obj) || location.href;
+    return copyText(url).then(function (ok) {
+      toast(ok ? (msg || "Link copied. It reopens with these inputs.")
+               : "Copy blocked by the browser. The address bar now holds the link.");
+      return ok;
+    });
+  }
+
+  /* ---------- CSV ---------- */
+
+  function csvCell(v) {
+    if (v === null || v === undefined) return "";
+    var s = String(v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function csvBuild(rows) {
+    return rows.map(function (r) { return r.map(csvCell).join(","); }).join("\r\n");
+  }
+  function csvDownload(rows, filename) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    /* BOM so that spreadsheet software reads UTF-8 correctly */
+    var blob = new Blob(["﻿" + text], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = el("a", { href: url, download: filename || "export.csv" });
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1200);
+  }
+  function csvCopy(rows) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    return copyText(text).then(function (ok) {
+      toast(ok ? "Table copied. Paste it into a spreadsheet." : "Copy blocked by the browser. Use the download instead.");
+      return ok;
+    });
+  }
+
+  /* ---------- toast ---------- */
+
+  var toastNode = null, toastTimer = null;
+  function toast(msg) {
+    if (!toastNode) {
+      toastNode = el("div", { class: "k-toast", role: "status", "aria-live": "polite" });
+      document.body.appendChild(toastNode);
+    }
+    toastNode.textContent = msg;
+    toastNode.setAttribute("data-on", "1");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastNode.setAttribute("data-on", "0"); }, 3600);
+  }
+
+  /* ---------- source line ---------- */
+
+  /* src: { what, url, checked } -> the standard line that says where a number came from */
+  function sourceLine(src, bare) {
+    var kids = [];
+    if (src.what) kids.push(el("span", { text: src.what }));
+    if (src.url) kids.push(el("a", { href: src.url, rel: "noreferrer noopener", target: "_blank", text: src.label || src.url }));
+    if (src.checked) kids.push(el("span", { class: "k-checked", text: "checked " + src.checked }));
+    return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
+  }
+
+  return {
+    el: el, qs: qs, qsa: qsa, clear: clear,
+    num: num, money: money, pct: pct, toNum: toNum,
+    state: state, share: share,
+    copyText: copyText,
+    csvBuild: csvBuild, csvDownload: csvDownload, csvCopy: csvCopy,
+    toast: toast, sourceLine: sourceLine
+  };
+})();
+
+/* ============================================================
+   CBAM cost and data gap
+   All regulatory constants carry the value, the source URL and
+   the date the source was read. Nothing here is interpolated
+   or assumed. Where a figure could not be verified it appears
+   in UNKNOWNS below and the tool says so on screen.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var CHECKED = "2026 08 21";
+
+  /* ---------------------------------------------------------
+     CONSTANT: chargeable share of embedded emissions, by year.
+
+     Value: the ETS Directive sets a "CBAM factor" that multiplies the free
+     allocation still given to EU installations in CBAM sectors:
+       2026 97.5 %, 2027 95 %, 2028 90 %, 2029 77.5 %, 2030 51.5 %,
+       2031 39 %, 2032 26.5 %, 2033 14 %, and from 2034 no free allocation.
+     Article 31 of Regulation (EU) 2023/956 reduces the certificates an
+     importer surrenders to mirror that free allocation, so the share of
+     embedded emissions actually charged is 100 % minus the CBAM factor:
+       2026 2.5 %, 2027 5 %, 2028 10 %, 2029 22.5 %, 2030 48.5 %,
+       2031 61 %, 2032 73.5 %, 2033 86 %, 2034 100 %.
+     Source: Directive (EU) 2023/959, recital 46 and Article 10a(1a) of
+       Directive 2003/87/EC.
+       https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32023L0959
+       Corroborated by the Climate Leadership Council guide to the EU CBAM,
+       https://clcouncil.org/wp-content/uploads/2026/04/A-Guide-to-the-EU-CBAM.pdf
+     Checked: 2026 08 21
+     Each year is written out. No value here is interpolated.
+     --------------------------------------------------------- */
+  var YEARS = [
+    { y: 2026, freeAlloc: 0.975, charge: 0.025 },
+    { y: 2027, freeAlloc: 0.950, charge: 0.050 },
+    { y: 2028, freeAlloc: 0.900, charge: 0.100 },
+    { y: 2029, freeAlloc: 0.775, charge: 0.225 },
+    { y: 2030, freeAlloc: 0.515, charge: 0.485 },
+    { y: 2031, freeAlloc: 0.390, charge: 0.610 },
+    { y: 2032, freeAlloc: 0.265, charge: 0.735 },
+    { y: 2033, freeAlloc: 0.140, charge: 0.860 },
+    { y: 2034, freeAlloc: 0.000, charge: 1.000 }
+  ];
+
+  /* ---------------------------------------------------------
+     CONSTANT: de minimis threshold.
+     Value: 50 tonnes, cumulative net mass of CBAM goods imported by one
+       importer over one calendar year. Introduced by the simplification
+       Regulation, replacing the earlier 150 EUR per consignment test.
+       It applies to cement, fertilisers, iron and steel and aluminium.
+       Electricity and hydrogen get no threshold at all.
+       Crossing it in a year brings that whole calendar year into scope.
+     Source: Regulation (EU) 2025/2083 amending Regulation (EU) 2023/956,
+       new Article 2(3a) and Annex VII point 1.
+       https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202502083
+       European Commission, CBAM definitive regime.
+       https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-definitive-regime_en
+       Mayer Brown note on the simplification Regulation.
+       https://www.mayerbrown.com/en/insights/publications/2025/10/eu-adopts-cbam-simplification-regulation-10-key-amendments-and-challenges-ahead
+     Checked: 2026 08 21
+     --------------------------------------------------------- */
+  var DE_MINIMIS_T = 50;
+
+  /* ---------------------------------------------------------
+     CONSTANT: indicative EU ETS allowance price, used only as a starting
+       value in an editable field.
+     Value: 74.04 EUR per tonne CO2e, monthly average for May 2026.
+     Source: Initiativ, The Carbon Benchmark in 2026, quoting IndexBox
+       monthly average for May 2026.
+       https://www.takeinitiativ.com/articles/carbon-benchmark
+     Checked: 2026 08 21
+     This is not a live price and this tool never fetches one. The CBAM
+     certificate price is set by the Commission, not by the spot market:
+     for 2026 imports it is the quarterly average of 2026 EUA auction
+     prices, and from 2027 a weekly average. See CERT_PRICE_BASIS.
+     --------------------------------------------------------- */
+  var ETS_PRICE_INDICATIVE = 74.04;
+
+  /* ---------------------------------------------------------
+     Goods categories. Sector split and aggregated goods category names
+     follow the Commission guidance document on CBAM implementation for
+     importers.
+     Source: https://taxation-customs.ec.europa.eu/system/files/2023-11/CBAM%20Guidance_EU%20231121%20for%20web_0.pdf
+       and the sector list at
+       https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism_en
+     Checked: 2026 08 21
+     "counts" marks whether the goods count toward the 50 tonne mass
+     threshold. Electricity and hydrogen do not.
+     --------------------------------------------------------- */
+  var CATS = [
+    { id: "cem_clay",  sector: "Cement",          name: "Calcined clay",            counts: true,  unit: "t" },
+    { id: "cem_clink", sector: "Cement",          name: "Cement clinker",           counts: true,  unit: "t" },
+    { id: "cem_cem",   sector: "Cement",          name: "Cement",                   counts: true,  unit: "t" },
+    { id: "cem_alum",  sector: "Cement",          name: "Aluminous cement",         counts: true,  unit: "t" },
+
+    { id: "fer_nitr",  sector: "Fertilisers",     name: "Nitric acid",              counts: true,  unit: "t" },
+    { id: "fer_amm",   sector: "Fertilisers",     name: "Ammonia",                  counts: true,  unit: "t" },
+    { id: "fer_urea",  sector: "Fertilisers",     name: "Urea",                     counts: true,  unit: "t" },
+    { id: "fer_mix",   sector: "Fertilisers",     name: "Mixed fertilisers",        counts: true,  unit: "t" },
+
+    { id: "irn_sint",  sector: "Iron and steel",  name: "Sintered ore",             counts: true,  unit: "t" },
+    { id: "irn_pig",   sector: "Iron and steel",  name: "Pig iron",                 counts: true,  unit: "t" },
+    { id: "irn_alloy", sector: "Iron and steel",  name: "Ferro alloys, FeMn FeCr FeNi", counts: true, unit: "t" },
+    { id: "irn_dri",   sector: "Iron and steel",  name: "Direct reduced iron",      counts: true,  unit: "t" },
+    { id: "irn_crude", sector: "Iron and steel",  name: "Crude steel",              counts: true,  unit: "t" },
+    { id: "irn_prod",  sector: "Iron and steel",  name: "Iron or steel products",   counts: true,  unit: "t" },
+
+    { id: "alu_unwr",  sector: "Aluminium",       name: "Unwrought aluminium",      counts: true,  unit: "t" },
+    { id: "alu_prod",  sector: "Aluminium",       name: "Aluminium products",       counts: true,  unit: "t" },
+
+    { id: "hyd_hyd",   sector: "Hydrogen",        name: "Hydrogen",                 counts: false, unit: "t" },
+    { id: "ele_ele",   sector: "Electricity",     name: "Electricity",              counts: false, unit: "MWh" }
+  ];
+
+  /* Countries offered in the origin list. This is a convenience list of
+     common origins, not a legal list. ANNEX_III_WATCH holds origins that
+     may sit outside CBAM under Annex III of the Regulation. The current
+     Annex III list could not be read from a primary source during this
+     check, so the tool never removes their tonnage on its own. It raises
+     the question and leaves the decision to the reader. */
+  var COUNTRIES = [
+    "China", "India", "Turkey", "Ukraine", "United Kingdom", "Russia",
+    "South Korea", "Japan", "Taiwan", "Vietnam", "Indonesia", "Malaysia",
+    "Thailand", "United States", "Canada", "Mexico", "Brazil",
+    "Egypt", "Algeria", "Morocco", "South Africa",
+    "Saudi Arabia", "United Arab Emirates", "Qatar", "Oman", "Bahrain",
+    "Kazakhstan", "Serbia", "Bosnia and Herzegovina", "North Macedonia",
+    "Australia", "Other country outside the EU"
+  ];
+  var ANNEX_III_WATCH = ["Iceland", "Liechtenstein", "Norway", "Switzerland"];
+
+  /* ---------------------------------------------------------
+     Dated obligations. Each carries its own source.
+     --------------------------------------------------------- */
+  var TIMELINE = [
+    {
+      when: "1 January 2026",
+      what: "The definitive regime starts. Importers expecting to go over 50 tonnes of CBAM goods in the calendar year must hold authorised CBAM declarant status.",
+      src: "European Commission, CBAM definitive regime",
+      url: "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-definitive-regime_en"
+    },
+    {
+      when: "31 March 2026",
+      what: "Transitional relief. An importer who filed an application for authorised CBAM declarant status by this date could keep importing while the application was decided.",
+      src: "KPMG legal alert on Regulation (EU) 2025/2083",
+      url: "https://kpmg.com/pl/en/insights/law/legal-alert-cbam-mechanism-revised-key-changes-in-eu-regulation-2025-2083.html"
+    },
+    {
+      when: "1 February 2027",
+      what: "Sale of CBAM certificates begins, on a common central platform, for goods imported during 2026. No certificates are sold before this date.",
+      src: "Article 20 of Regulation (EU) 2023/956 as amended by Regulation (EU) 2025/2083",
+      url: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202502083"
+    },
+    {
+      when: "30 September 2027",
+      what: "First CBAM declaration, covering imports made in 2026, together with surrender of the certificates for that year. The same date applies every year after that.",
+      src: "Article 6 of Regulation (EU) 2023/956 as amended by Regulation (EU) 2025/2083",
+      url: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202502083"
+    },
+    {
+      when: "Each quarter from 2027",
+      what: "Hold certificates covering at least 50 per cent of the embedded emissions accumulated since the start of the year. The simplification Regulation cut this from 80 per cent.",
+      src: "Article 22 as amended, per Mayer Brown and KPMG notes",
+      url: "https://www.mayerbrown.com/en/insights/publications/2025/10/eu-adopts-cbam-simplification-regulation-10-key-amendments-and-challenges-ahead"
+    },
+    {
+      when: "Proposed for 2028",
+      what: "Extension of CBAM to downstream steel and aluminium goods. Proposed 17 December 2025, procedure 2025/0419(COD). Not adopted and not in force, so this tool does not price it.",
+      src: "European Parliament legislative observatory, procedure 2025/0419(COD)",
+      url: "https://oeil.europarl.europa.eu/oeil/en/document-summary?id=1879956"
+    }
+  ];
+
+  /* ---------------------------------------------------------
+     The full constant register printed in section 08.
+     --------------------------------------------------------- */
+  var CONSTANTS = [
+    {
+      k: "Sectors in scope from 1 January 2026",
+      v: "Cement, iron and steel, aluminium, fertilisers, electricity, hydrogen",
+      s: "European Commission, Carbon Border Adjustment Mechanism",
+      u: "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism_en"
+    },
+    {
+      k: "De minimis threshold",
+      v: "50 tonnes, cumulative net mass per importer per calendar year",
+      s: "Regulation (EU) 2025/2083, new Article 2(3a) and Annex VII point 1 of Regulation (EU) 2023/956",
+      u: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202502083"
+    },
+    {
+      k: "Goods outside the threshold",
+      v: "Electricity and hydrogen carry no de minimis relief at any volume",
+      s: "Mayer Brown and KPMG notes on Regulation (EU) 2025/2083",
+      u: "https://www.mayerbrown.com/en/insights/publications/2025/10/eu-adopts-cbam-simplification-regulation-10-key-amendments-and-challenges-ahead"
+    },
+    {
+      k: "Effect of crossing the threshold",
+      v: "All CBAM obligations apply to the whole calendar year, not only to the excess above 50 tonnes",
+      s: "Climate Leadership Council, A Guide to the EU CBAM, April 2026",
+      u: "https://clcouncil.org/wp-content/uploads/2026/04/A-Guide-to-the-EU-CBAM.pdf"
+    },
+    {
+      k: "Chargeable share of embedded emissions",
+      v: "2.5 per cent in 2026 rising to 100 per cent in 2034, being 100 per cent minus the CBAM factor on free allocation",
+      s: "Directive (EU) 2023/959 recital 46, Article 10a(1a) of Directive 2003/87/EC",
+      u: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32023L0959"
+    },
+    {
+      k: "Free allocation adjustment mechanism",
+      v: "Certificates are reduced by the free allocation embedded in the good, set out in a dedicated implementing act",
+      s: "Article 31 of Regulation (EU) 2023/956 and Commission Implementing Regulation (EU) 2025/2620",
+      u: "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en"
+    },
+    {
+      k: "Sale of certificates begins",
+      v: "1 February 2027",
+      s: "Article 20 of Regulation (EU) 2023/956 as amended by Regulation (EU) 2025/2083",
+      u: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202502083"
+    },
+    {
+      k: "First annual declaration",
+      v: "30 September 2027, for imports made in 2026, and 30 September each year after",
+      s: "Article 6 of Regulation (EU) 2023/956 as amended by Regulation (EU) 2025/2083",
+      u: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202502083"
+    },
+    {
+      k: "Quarterly certificate holding",
+      v: "At least 50 per cent of cumulative embedded emissions, reduced from 80 per cent",
+      s: "Article 22 as amended, per Mayer Brown and KPMG notes",
+      u: "https://kpmg.com/pl/en/insights/law/legal-alert-cbam-mechanism-revised-key-changes-in-eu-regulation-2025-2083.html"
+    },
+    {
+      k: "Penalty, authorised declarant",
+      v: "Equal to the EU ETS excess emissions penalty of EUR 100 per tonne under Article 16(3) of Directive 2003/87/EC, indexed under Article 16(4), for each certificate not surrendered. The indexed amount for a given year is not stated in this tool.",
+      s: "Article 26(1) of Regulation (EU) 2023/956",
+      u: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32023R0956"
+    },
+    {
+      k: "Penalty, importing over the threshold without authorisation",
+      v: "Three to five times the standard penalty, reported as EUR 300 to EUR 500 per tonne, reducible where the threshold is exceeded by no more than 10 per cent",
+      s: "Article 26(2) as amended, per Mayer Brown note",
+      u: "https://www.mayerbrown.com/en/insights/publications/2025/10/eu-adopts-cbam-simplification-regulation-10-key-amendments-and-challenges-ahead"
+    },
+    {
+      k: "Carbon price paid in the country of origin",
+      v: "Deductible. A declarant may claim a reduction in the number of certificates to reflect a carbon price effectively paid, net of any rebate or compensation, with evidence",
+      s: "Article 9 of Regulation (EU) 2023/956",
+      u: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32023R0956"
+    },
+    {
+      k: "Basis of the certificate price",
+      v: "Set by the Commission from EU ETS auction prices. Quarterly average for 2026 imports, weekly average from 2027",
+      s: "European Commission, CBAM definitive regime, and Implementing Regulation (EU) 2025/2548",
+      u: "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-definitive-regime_en"
+    },
+    {
+      k: "Indicative EU ETS allowance price offered as a starting value",
+      v: "EUR 74.04 per tonne CO2e, monthly average for May 2026. Editable, and not a live price",
+      s: "Initiativ, The Carbon Benchmark in 2026, quoting IndexBox",
+      u: "https://www.takeinitiativ.com/articles/carbon-benchmark"
+    },
+    {
+      k: "Scope extension to downstream goods",
+      v: "Proposed 17 December 2025, procedure 2025/0419(COD), proposed to apply from 2028. Not adopted, not in force, not priced here",
+      s: "European Parliament legislative observatory",
+      u: "https://oeil.europarl.europa.eu/oeil/en/document-summary?id=1879956"
+    }
+  ];
+
+  /* ---------------------------------------------------------
+     Things this tool does not know, stated plainly rather than guessed.
+     --------------------------------------------------------- */
+  var UNKNOWNS = [
+    {
+      k: "Default values",
+      v: "The Commission publishes default emission values for use where actual data is absent. This tool deliberately does not apply them. A default carried into a cost model becomes a number somebody quotes back to you as fact. Where you have no supplier figure, the tool leaves a gap and tells you who to ask."
+    },
+    {
+      k: "Benchmark deduction",
+      v: "Article 31 reduces certificates by the free allocation embedded in the good, computed from EU product benchmarks under Implementing Regulation (EU) 2025/2620. This tool applies the flat chargeable share for the year instead. The two agree only when the emission intensity of your good equals the EU benchmark. Treat the cost here as an order of magnitude, not a filing figure."
+    },
+    {
+      k: "Indexed penalty",
+      v: "The penalty tracks the EU ETS excess emissions penalty of EUR 100 per tonne as indexed under Article 16(4) of Directive 2003/87/EC. The indexed amount applicable to a given year of import was not verified in this check, so no penalty figure is calculated anywhere in this tool."
+    },
+    {
+      k: "Annex III origins",
+      v: "Goods from countries and territories listed in Annex III of the Regulation sit outside CBAM. The current Annex III list was not confirmed from a primary source in this check. Where you select an origin that may be listed, the tool flags the question and still counts the tonnage, so that it never understates your position."
+    },
+    {
+      k: "Certificate price",
+      v: "The price of a CBAM certificate is set by the Commission from EU ETS auction prices, quarterly for 2026 and weekly from 2027. It is not the spot price you see quoted. The field in section 01 is your own planning assumption and nothing more."
+    },
+    {
+      k: "Carbon price deduction method",
+      v: "Article 9 allows a reduction for a carbon price effectively paid abroad, subject to evidence and to any rebate being netted off. The exact conversion into a certificate reduction is set by implementing rules. This tool applies your figure to the chargeable emissions, which is a simplification. Confirm it before claiming anything."
+    }
+  ];
+
+  /* =========================================================
+     state
+     ========================================================= */
+
+  var S = { year: 2026, price: ETS_PRICE_INDICATIVE, lines: [] };
+  var nextId = 1;
+
+  function blankLine(seed) {
+    seed = seed || {};
+    return {
+      id: nextId++,
+      cat: seed.cat || "irn_prod",
+      country: seed.country || "China",
+      qty: seed.qty === undefined ? null : seed.qty,
+      see: seed.see === undefined ? null : seed.see,
+      cp: seed.cp === undefined ? null : seed.cp
+    };
+  }
+
+  function catById(id) {
+    for (var i = 0; i < CATS.length; i++) if (CATS[i].id === id) return CATS[i];
+    return CATS[0];
+  }
+  function yearRow(y) {
+    for (var i = 0; i < YEARS.length; i++) if (YEARS[i].y === y) return YEARS[i];
+    return YEARS[0];
+  }
+
+  /* =========================================================
+     building the form
+     ========================================================= */
+
+  var E = Kit.el;
+
+  function buildYearSelect() {
+    var sel = Kit.qs("#f-year");
+    Kit.clear(sel);
+    YEARS.forEach(function (r) {
+      sel.appendChild(E("option", { value: r.y, text: String(r.y) }));
+    });
+    sel.value = String(S.year);
+    sel.addEventListener("change", function () {
+      S.year = parseInt(sel.value, 10);
+      render();
+    });
+  }
+
+  function buildPrice() {
+    var f = Kit.qs("#f-price");
+    f.value = S.price === null ? "" : String(S.price);
+    f.addEventListener("input", function () { S.price = Kit.toNum(f.value); render(); });
+
+    var srcLine = Kit.sourceLine({
+      what: "Starting value EUR " + ETS_PRICE_INDICATIVE.toFixed(2) + " per tonne CO2e, monthly average for May 2026, from Initiativ quoting IndexBox. Indicative, not live, and not the CBAM certificate price, which the Commission sets from auction averages.",
+      url: "https://www.takeinitiativ.com/articles/carbon-benchmark",
+      label: "takeinitiativ.com",
+      checked: CHECKED
+    });
+    srcLine.id = "price-src";
+    var oldSrc = Kit.qs("#price-src");
+    oldSrc.parentNode.replaceChild(srcLine, oldSrc);
+  }
+
+  function catSelect(line) {
+    var sel = E("select", { id: "cat-" + line.id, "aria-label": "Goods category, line item" });
+    var bySector = {};
+    CATS.forEach(function (c) { (bySector[c.sector] = bySector[c.sector] || []).push(c); });
+    Object.keys(bySector).forEach(function (sec) {
+      var g = E("optgroup", { label: sec });
+      bySector[sec].forEach(function (c) {
+        g.appendChild(E("option", { value: c.id, text: c.name, selected: c.id === line.cat }));
+      });
+      sel.appendChild(g);
+    });
+    sel.value = line.cat;
+    sel.addEventListener("change", function () { line.cat = sel.value; render(); });
+    return sel;
+  }
+
+  function countrySelect(line) {
+    var sel = E("select", { id: "cty-" + line.id, "aria-label": "Country of origin, line item" });
+    var g1 = E("optgroup", { label: "Origin" });
+    COUNTRIES.forEach(function (c) { g1.appendChild(E("option", { value: c, text: c })); });
+    sel.appendChild(g1);
+    var g2 = E("optgroup", { label: "May be listed in Annex III, check" });
+    ANNEX_III_WATCH.forEach(function (c) { g2.appendChild(E("option", { value: c, text: c })); });
+    sel.appendChild(g2);
+    sel.value = line.country;
+    sel.addEventListener("change", function () { line.country = sel.value; render(); });
+    return sel;
+  }
+
+  function numField(labelText, hint, value, onSet, id, step) {
+    var inp = E("input", {
+      type: "number", id: id, min: "0", step: step || "any", inputmode: "decimal",
+      value: value === null || value === undefined ? "" : String(value)
+    });
+    inp.addEventListener("input", function () { onSet(Kit.toNum(inp.value)); });
+    return E("div", { class: "k-field" }, [
+      E("label", { for: id, text: labelText }),
+      inp,
+      hint ? E("span", { class: "k-hint", text: hint }) : null
+    ]);
+  }
+
+  function buildLines() {
+    var host = Kit.clear(Kit.qs("#lines"));
+
+    if (!S.lines.length) {
+      host.appendChild(E("p", { class: "cb-empty", text:
+        "No line items yet. Add one to begin, or load the example to see how the tool behaves when supplier data is present on one line and absent on another." }));
+      return;
+    }
+
+    S.lines.forEach(function (line, i) {
+      var cat = catById(line.cat);
+      var qtyUnit = cat.unit === "MWh" ? "megawatt hours" : "tonnes, net mass";
+      var seeUnit = cat.unit === "MWh" ? "tCO2e per MWh" : "tCO2e per tonne";
+
+      var missing = !(line.see !== null && line.see >= 0);
+      var box = E("div", { class: "cb-line" }, [
+        E("div", { class: "cb-line-top" }, [
+          E("span", { class: "cb-line-n" }, [
+            E("span", { text: "Line " + (i + 1) }),
+            missing ? E("span", { text: "  " }) : null,
+            missing ? E("span", { class: "k-tag k-tag-gap", text: "emissions figure missing" }) : null
+          ]),
+          E("button", {
+            type: "button", class: "k-btn k-btn-quiet",
+            text: "Remove",
+            "aria-label": "Remove line " + (i + 1),
+            onclick: function () {
+              S.lines = S.lines.filter(function (l) { return l.id !== line.id; });
+              render();
+              var add = Kit.qs("#b-add"); if (add) add.focus();
+            }
+          })
+        ]),
+        E("div", { class: "cb-line-grid" }, [
+          E("div", { class: "k-field" }, [
+            E("label", { for: "cat-" + line.id, text: "Goods category" }),
+            catSelect(line),
+            cat.sector === cat.name ? null : E("span", { class: "k-hint", text: cat.sector })
+          ]),
+          E("div", { class: "k-field" }, [
+            E("label", { for: "cty-" + line.id, text: "Country of origin" }),
+            countrySelect(line)
+          ]),
+          numField("Quantity", qtyUnit, line.qty,
+            function (v) { line.qty = v; render(); }, "qty-" + line.id),
+          numField("Supplier emissions figure", seeUnit + ", leave empty if you do not have it", line.see,
+            function (v) { line.see = v; render(); }, "see-" + line.id),
+          numField("Carbon price paid at origin", "EUR per tonne CO2e, optional", line.cp,
+            function (v) { line.cp = v; render(); }, "cp-" + line.id)
+        ])
+      ]);
+      host.appendChild(box);
+    });
+  }
+
+  /* =========================================================
+     computation
+     ========================================================= */
+
+  function compute() {
+    var yr = yearRow(S.year);
+    var r = {
+      year: S.year, charge: yr.charge, freeAlloc: yr.freeAlloc,
+      price: S.price,
+      countableMass: 0, uncountableMass: 0, watchMass: 0,
+      lines: [], known: [], gaps: [],
+      knownEmissions: 0, chargeable: 0, gross: 0, credit: 0, net: 0,
+      gapQty: 0, watch: false
+    };
+
+    S.lines.forEach(function (line, i) {
+      var cat = catById(line.cat);
+      var qty = line.qty;
+      var watch = ANNEX_III_WATCH.indexOf(line.country) !== -1;
+      if (watch) r.watch = true;
+
+      var L = {
+        n: i + 1, line: line, cat: cat, qty: qty, watch: watch,
+        hasQty: qty !== null && qty > 0,
+        hasSee: line.see !== null && line.see >= 0,
+        emissions: null, chargeable: null, gross: null, credit: 0, net: null
+      };
+
+      if (L.hasQty) {
+        if (cat.counts) r.countableMass += qty; else r.uncountableMass += qty;
+        if (watch) r.watchMass += qty;
+      }
+
+      if (L.hasQty && L.hasSee) {
+        L.emissions = qty * line.see;
+        L.chargeable = L.emissions * yr.charge;
+        if (r.price !== null && r.price >= 0) {
+          L.gross = L.chargeable * r.price;
+          if (line.cp !== null && line.cp > 0) {
+            L.credit = Math.min(L.chargeable * line.cp, L.gross);
+          }
+          L.net = L.gross - L.credit;
+        }
+        r.knownEmissions += L.emissions;
+        r.chargeable += L.chargeable;
+        if (L.gross !== null) { r.gross += L.gross; r.credit += L.credit; r.net += L.net; }
+        r.known.push(L);
+      } else {
+        if (L.hasQty) r.gapQty += qty;
+        r.gaps.push(L);
+      }
+
+      r.lines.push(L);
+    });
+
+    r.over = r.countableMass > DE_MINIMIS_T;
+    r.hasElectricityOrHydrogen = r.uncountableMass > 0;
+    return r;
+  }
+
+  /* =========================================================
+     rendering the results
+     ========================================================= */
+
+  function step(label, result) {
+    return E("li", {}, [ E("span", { class: "k-op", text: label }), E("span", { class: "k-res", text: result }) ]);
+  }
+  function finalStep(label, result) {
+    var li = step(label, result);
+    li.className = "k-step-final";
+    return li;
+  }
+
+  function renderThreshold(r) {
+    var host = Kit.clear(Kit.qs("#out-threshold"));
+
+    if (!S.lines.length) {
+      host.appendChild(E("p", { class: "cb-empty", text:
+        "Nothing entered yet. The threshold is 50 tonnes of cumulative net mass of CBAM goods, per importer, per calendar year." }));
+      return;
+    }
+
+    var over = r.over;
+    var panel = E("div", { class: over ? "k-warn" : "k-ok" }, [
+      E("h3", { class: "k-panel-h", text: over ? "Above the threshold" : "Below the threshold on these figures" }),
+      E("div", { class: "k-stat" }, [
+        E("span", { class: "k-big", text: Kit.num(r.countableMass, 2) }),
+        E("span", { class: "k-unit", text: "tonnes counting toward the 50 tonne threshold" })
+      ]),
+      E("p", { style: "margin-top:0.8rem", text: over
+        ? "On the quantities entered you are over 50 tonnes. Every CBAM obligation applies to the whole calendar year, not only to the tonnage above the threshold. You need authorised CBAM declarant status."
+        : "On the quantities entered you are under 50 tonnes and exempt. Read that narrowly. The threshold is cumulative across the entire calendar year, across every CBAM good, from every origin, for the whole importing entity. One further shipment can put you over, and crossing it pulls the whole year into scope retrospectively." })
+    ]);
+
+    var dl = E("dl", { class: "k-kv" }, [
+      E("dt", { text: "Mass counting toward the threshold" }),
+      E("dd", { text: Kit.num(r.countableMass, 2) + " t" }),
+      E("dt", { text: "Threshold" }),
+      E("dd", { text: Kit.num(DE_MINIMIS_T, 0) + " t" }),
+      E("dt", { class: "k-tot", text: over ? "Above by" : "Headroom left this year" }),
+      E("dd", { class: "k-tot", text: Kit.num(Math.abs(r.countableMass - DE_MINIMIS_T), 2) + " t" })
+    ]);
+    panel.appendChild(dl);
+    panel.appendChild(Kit.sourceLine({
+      what: "50 tonne cumulative net mass, Article 2(3a) and Annex VII of Regulation (EU) 2023/956 as amended by Regulation (EU) 2025/2083",
+      url: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202502083",
+      label: "eur-lex.europa.eu",
+      checked: CHECKED
+    }));
+    host.appendChild(panel);
+
+    if (r.hasElectricityOrHydrogen) {
+      var p2 = E("div", { class: "k-panel" }, [
+        E("h3", { text: "Electricity and hydrogen sit outside the threshold" }),
+        E("p", { text: "You entered " + Kit.num(r.uncountableMass, 2) + " units of electricity or hydrogen. "
+          + "These get no de minimis relief at any volume, so they carry CBAM obligations whatever the rest of your "
+          + "book looks like. They are excluded from the mass figure above rather than added to it." })
+      ]);
+      p2.appendChild(Kit.sourceLine({
+        what: "Threshold covers cement, fertilisers, iron and steel and aluminium only",
+        url: "https://www.mayerbrown.com/en/insights/publications/2025/10/eu-adopts-cbam-simplification-regulation-10-key-amendments-and-challenges-ahead",
+        label: "mayerbrown.com",
+        checked: CHECKED
+      }));
+      host.appendChild(p2);
+    }
+
+    if (r.watch) {
+      var p3 = E("div", { class: "k-warn" }, [
+        E("h3", { class: "k-panel-h", text: "Origin needs checking against Annex III" }),
+        E("p", { text: "One or more lines name an origin that may be listed in Annex III of the Regulation, in which "
+          + "case the goods sit outside CBAM entirely. This tool could not confirm the current Annex III list from a "
+          + "primary source, so it has counted the " + Kit.num(r.watchMass, 2) + " units concerned in full rather than "
+          + "quietly removing them. Check Annex III before treating them as exempt." })
+      ]);
+      host.appendChild(p3);
+    }
+  }
+
+  function renderEmissions(r) {
+    var host = Kit.clear(Kit.qs("#out-emissions"));
+
+    if (!S.lines.length) {
+      host.appendChild(E("p", { class: "cb-empty", text:
+        "Nothing entered yet. Where you give a supplier figure this tool uses it. Where you do not, it will not substitute a default." }));
+      return;
+    }
+
+    var summary = E("div", { class: "k-panel" }, [
+      E("h3", { text: "Position" }),
+      E("div", { class: "k-grid" }, [
+        E("div", {}, [
+          E("div", { class: "k-stat" }, [
+            E("span", { class: "k-big", text: Kit.num(r.knownEmissions, 2) }),
+            E("span", { class: "k-unit", text: "tCO2e established from supplier data" })
+          ]),
+          E("p", { class: "k-hint", style: "margin-top:0.4rem", text:
+            r.known.length + " of " + S.lines.length + (S.lines.length === 1 ? " line carries" : " lines carry")
+            + " a supplier figure." })
+        ]),
+        E("div", {}, [
+          E("div", { class: "k-stat" }, [
+            E("span", { class: "k-big", style: r.gaps.length ? "color:var(--flag)" : "", text: Kit.num(r.gapQty, 2) }),
+            E("span", { class: "k-unit", text: "units with no emissions figure at all" })
+          ]),
+          E("p", { class: "k-hint", style: "margin-top:0.4rem", text:
+            r.gaps.length
+              ? (r.gaps.length === 1
+                  ? "One line is unresolved. Its emissions are unknown, not zero."
+                  : r.gaps.length + " lines are unresolved. Their emissions are unknown, not zero.")
+              : "No gaps." })
+        ])
+      ])
+    ]);
+    host.appendChild(summary);
+
+    /* per line detail for the known ones */
+    if (r.known.length) {
+      var kp = E("div", { class: "k-panel" }, [ E("h3", { text: "Lines with supplier data" }) ]);
+      var tbl = E("table", { class: "k-table" }, [
+        E("thead", {}, [ E("tr", {}, [
+          E("th", { text: "Line" }), E("th", { text: "Goods" }), E("th", { text: "Origin" }),
+          E("th", { class: "k-n", text: "Quantity" }),
+          E("th", { class: "k-n", text: "Specific emissions" }),
+          E("th", { class: "k-n", text: "Embedded emissions" })
+        ]) ])
+      ]);
+      var tb = E("tbody");
+      r.known.forEach(function (L) {
+        tb.appendChild(E("tr", {}, [
+          E("td", { text: String(L.n) }),
+          E("td", {}, L.cat.sector === L.cat.name
+            ? [ E("span", { text: L.cat.name }) ]
+            : [ E("span", { text: L.cat.name }), E("br"), E("span", { class: "k-hint", text: L.cat.sector }) ]),
+          E("td", { text: L.line.country }),
+          E("td", { class: "k-n", text: Kit.num(L.qty, 2) + " " + L.cat.unit }),
+          E("td", { class: "k-n", text: Kit.num(L.line.see, 4) }),
+          E("td", { class: "k-n", text: Kit.num(L.emissions, 2) + " tCO2e" })
+        ]));
+      });
+      tbl.appendChild(tb);
+      kp.appendChild(E("div", { class: "k-scroll" }, [ tbl ]));
+      kp.appendChild(Kit.sourceLine({
+        what: "Figures supplied by you. This tool has not verified them. For a CBAM declaration the operator figures must be verified by an accredited verifier under Implementing Regulation (EU) 2025/2546",
+        url: "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+        label: "taxation-customs.ec.europa.eu",
+        checked: CHECKED
+      }, true));
+      host.appendChild(kp);
+    }
+
+    /* the heart of the tool: the gaps */
+    if (r.gaps.length) {
+      var gp = E("div", { class: "k-warn cb-gapbox" }, [
+        E("h3", { class: "k-panel-h", text: "Data gaps. These emissions are unknown" }),
+        E("p", { text: "A default value would fit here. This tool will not put one in. Once a default is written into "
+          + "a cost model somebody quotes it back as if it were measured, and by then nobody remembers it was invented. "
+          + "Below is what is missing on each line and who holds it." })
+      ]);
+
+      r.gaps.forEach(function (L) {
+        var reason = !L.hasQty
+          ? "No quantity entered, so nothing can be computed for this line."
+          : "No specific embedded emissions figure for this good.";
+        var unit = L.cat.unit === "MWh" ? "tonnes CO2e per megawatt hour" : "tonnes CO2e per tonne of product";
+
+        var item = E("div", { class: "cb-gap-item" }, [
+          E("h4", {}, [
+            E("span", { text: "Line " + L.n + ". " + L.cat.name + ", " + L.line.country }),
+            E("span", { text: " " }),
+            E("span", { class: "k-tag k-tag-gap", text: "gap" })
+          ]),
+          E("p", { class: "k-hint", style: "margin:0.1rem 0 0", text: reason })
+        ]);
+
+        if (L.hasQty) {
+          item.appendChild(E("ul", { class: "k-ask" }, [
+            E("li", {}, [ E("b", { text: "Missing" }), E("span", { text:
+              "Specific embedded emissions for " + L.cat.name + ", direct and indirect, in " + unit + ", "
+              + "for the actual installation that produced this consignment. Not a country average, not a sector figure." }) ]),
+            E("li", {}, [ E("b", { text: "Who holds it" }), E("span", { text:
+              "The operator of the production installation in " + L.line.country + ". Your supplier or exporter is the "
+              + "route to them, and is the party you can put a contractual obligation on." }) ]),
+            E("li", {}, [ E("b", { text: "In what form" }), E("span", { text:
+              "The Commission communication template for installations, completed by the operator. For the definitive "
+              + "regime an actual value has to be verified by an accredited verifier, and the verification report "
+              + "travels with the figure." }) ]),
+            E("li", {}, [ E("b", { text: "Ask for" }), E("span", { text:
+              "Installation name and identifier, production route, direct specific embedded emissions, indirect "
+              + "specific embedded emissions, electricity consumed per unit and the emission factor used for it, "
+              + "any carbon price paid on those emissions with evidence, and the verification report." }) ]),
+            E("li", {}, [ E("b", { text: "Effect here" }), E("span", { text:
+              Kit.num(L.qty, 2) + " " + L.cat.unit + " carries no emissions figure, so it appears in no total on this "
+              + "page. The cost below is not your cost until this line is filled in." }) ])
+          ]));
+        }
+        gp.appendChild(item);
+      });
+
+      gp.appendChild(Kit.sourceLine({
+        what: "Actual values must be verified by an accredited verifier, Implementing Regulation (EU) 2025/2546 and Implementing Regulation (EU) 2025/2547 on calculating embedded emissions",
+        url: "https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en",
+        label: "taxation-customs.ec.europa.eu",
+        checked: CHECKED
+      }));
+      host.appendChild(gp);
+    }
+  }
+
+  function renderCost(r) {
+    var host = Kit.clear(Kit.qs("#out-cost"));
+
+    if (!S.lines.length) {
+      host.appendChild(E("p", { class: "cb-empty", text:
+        "Nothing entered yet. Every step of the arithmetic is printed here once there is something to compute." }));
+      return;
+    }
+
+    if (r.price === null) {
+      host.appendChild(E("div", { class: "k-warn" }, [
+        E("h3", { class: "k-panel-h", text: "No carbon price entered" }),
+        E("p", { text: "Section 01 has no carbon price, so no cost is computed. There is no default price hidden in this tool." })
+      ]));
+      return;
+    }
+
+    if (!r.known.length) {
+      host.appendChild(E("div", { class: "k-warn" }, [
+        E("h3", { class: "k-panel-h", text: "No cost can be computed" }),
+        E("p", { text: "Not one line carries a supplier emissions figure. Multiplying an unknown by a carbon price "
+          + "produces a number with the shape of an answer and none of the content. Fill the gaps in section 04 first." })
+      ]));
+      return;
+    }
+
+    if (!r.over) {
+      host.appendChild(E("div", { class: "k-panel k-panel-sunk" }, [
+        E("h3", { text: "Read this as a contingency" }),
+        E("p", { text: "On the quantities entered you sit below the 50 tonne threshold and owe nothing. The arithmetic "
+          + "below is what the same goods would cost if further imports took you over during the same calendar year, "
+          + "at which point the whole year becomes chargeable." })
+      ]));
+    }
+
+    var yr = yearRow(S.year);
+
+    r.known.forEach(function (L) {
+      var box = E("div", { class: "k-panel cb-linecalc" }, [
+        E("h4", {}, [
+          E("span", { text: "Line " + L.n + ". " + L.cat.name + ", " + L.line.country }),
+          E("span", { class: "k-tag k-tag-known", text: "supplier data" })
+        ])
+      ]);
+      var steps = E("ol", { class: "k-steps" });
+      steps.appendChild(step(
+        Kit.num(L.qty, 2) + " " + L.cat.unit + "  times  " + Kit.num(L.line.see, 4) + " tCO2e per " + L.cat.unit,
+        Kit.num(L.emissions, 2) + " tCO2e"));
+      steps.appendChild(step(
+        Kit.num(L.emissions, 2) + " tCO2e  times  " + Kit.num(yr.charge * 100, 1) + " per cent chargeable in " + S.year,
+        Kit.num(L.chargeable, 3) + " tCO2e"));
+      steps.appendChild(step(
+        Kit.num(L.chargeable, 3) + " tCO2e  times  " + Kit.money(r.price, 2) + " per tCO2e",
+        Kit.money(L.gross, 2)));
+      if (L.credit > 0) {
+        steps.appendChild(step(
+          "less carbon price paid at origin, " + Kit.num(L.chargeable, 3) + " tCO2e times " + Kit.money(L.line.cp, 2),
+          "minus " + Kit.money(L.credit, 2)));
+      }
+      steps.appendChild(finalStep("Line " + L.n + " indicative cost", Kit.money(L.net, 2)));
+      box.appendChild(steps);
+      host.appendChild(box);
+    });
+
+    var tot = E("div", { class: "k-panel" }, [ E("h3", { text: "Total across the lines that have data" }) ]);
+    var ts = E("ol", { class: "k-steps" });
+    ts.appendChild(step("Embedded emissions established from supplier data", Kit.num(r.knownEmissions, 2) + " tCO2e"));
+    ts.appendChild(step("Chargeable share for " + S.year + ", 100 per cent minus the CBAM factor of "
+      + Kit.num(yr.freeAlloc * 100, 1) + " per cent", Kit.num(yr.charge * 100, 1) + " per cent"));
+    ts.appendChild(step("Chargeable emissions", Kit.num(r.chargeable, 3) + " tCO2e"));
+    ts.appendChild(step("Carbon price used", Kit.money(r.price, 2) + " per tCO2e"));
+    ts.appendChild(step("Gross certificate cost", Kit.money(r.gross, 2)));
+    if (r.credit > 0) ts.appendChild(step("Less carbon price paid at origin", "minus " + Kit.money(r.credit, 2)));
+    ts.appendChild(finalStep("Indicative certificate cost, lines with data only", Kit.money(r.net, 2)));
+    tot.appendChild(ts);
+    tot.appendChild(Kit.sourceLine({
+      what: "Chargeable share is 100 per cent minus the CBAM factor on free allocation, Directive (EU) 2023/959 recital 46. Reduction for a carbon price paid abroad, Article 9 of Regulation (EU) 2023/956",
+      url: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32023L0959",
+      label: "eur-lex.europa.eu",
+      checked: CHECKED
+    }));
+    host.appendChild(tot);
+
+    if (r.gaps.length) {
+      host.appendChild(E("div", { class: "k-warn" }, [
+        E("h3", { class: "k-panel-h", text: "This total is not your CBAM cost" }),
+        E("p", { text: "It covers " + r.known.length + " of " + S.lines.length
+          + (S.lines.length === 1 ? " line. " : " lines. ")
+          + Kit.num(r.gapQty, 2) + " units of goods have no emissions figure and are absent from every number above. "
+          + "The true figure is higher by an amount this tool refuses to guess. Section 04 lists what to ask for and "
+          + "section 07 exports it as a file you can send." })
+      ]));
+    }
+  }
+
+  function renderTimeline() {
+    var host = Kit.clear(Kit.qs("#out-time"));
+    var nowY = new Date().getFullYear();
+    TIMELINE.forEach(function (t) {
+      var m = /(\d{4})/.exec(t.when);
+      var past = m && parseInt(m[1], 10) < nowY;
+      host.appendChild(E("li", { class: past ? "k-past" : "" }, [
+        E("span", { class: "k-when", text: t.when }),
+        E("span", { class: "k-what" }, [
+          E("span", { text: t.what }),
+          E("small", {}, [ E("span", { text: t.src + ". " }), E("a", { href: t.url, target: "_blank", rel: "noreferrer noopener", text: "source" }) ])
+        ])
+      ]));
+    });
+  }
+
+  function renderMethod() {
+    var t1 = Kit.clear(Kit.qs("#out-const"));
+    t1.appendChild(E("thead", {}, [ E("tr", {}, [
+      E("th", { text: "Constant" }), E("th", { text: "Value used" }), E("th", { text: "Source and check date" })
+    ]) ]));
+    var b1 = E("tbody");
+    CONSTANTS.forEach(function (c) {
+      b1.appendChild(E("tr", {}, [
+        E("td", { text: c.k }),
+        E("td", { text: c.v }),
+        E("td", { class: "k-src-cell" }, [
+          E("span", { text: c.s + ". " }),
+          E("a", { href: c.u, target: "_blank", rel: "noreferrer noopener", text: c.u.replace(/^https?:\/\//, "").split("/")[0] }),
+          E("br"),
+          E("span", { text: "checked " + CHECKED })
+        ])
+      ]));
+    });
+    t1.appendChild(b1);
+
+    var t2 = Kit.clear(Kit.qs("#out-factors"));
+    t2.appendChild(E("thead", {}, [ E("tr", {}, [
+      E("th", { text: "Year of import" }),
+      E("th", { class: "k-n", text: "CBAM factor on free allocation" }),
+      E("th", { class: "k-n", text: "Chargeable share of embedded emissions" })
+    ]) ]));
+    var b2 = E("tbody");
+    YEARS.forEach(function (r) {
+      var tr = E("tr", {}, [
+        E("td", { text: String(r.y) + (r.y === S.year ? "  selected" : "") }),
+        E("td", { class: "k-n", text: Kit.num(r.freeAlloc * 100, 1) + " %" }),
+        E("td", { class: "k-n", text: Kit.num(r.charge * 100, 1) + " %" })
+      ]);
+      if (r.y === S.year) tr.style.color = "var(--accent)";
+      b2.appendChild(tr);
+    });
+    t2.appendChild(b2);
+
+    var u = Kit.clear(Kit.qs("#out-unknowns"));
+    UNKNOWNS.forEach(function (x) {
+      u.appendChild(E("li", {}, [ E("b", { text: x.k }), E("span", { text: x.v }) ]));
+    });
+  }
+
+  /* =========================================================
+     export
+     ========================================================= */
+
+  function csvRows(r) {
+    var rows = [];
+    rows.push(["CBAM line items and data gaps"]);
+    rows.push(["Generated by", "cbam cost and data gap, keremozdemir.de"]);
+    rows.push(["Year of import", S.year]);
+    rows.push(["Chargeable share of embedded emissions", Kit.num(r.charge * 100, 1) + " per cent"]);
+    rows.push(["Carbon price assumed, EUR per tCO2e", r.price === null ? "not entered" : Kit.num(r.price, 2)]);
+    rows.push(["Mass counting toward the 50 tonne threshold, tonnes", Kit.num(r.countableMass, 2)]);
+    rows.push(["Position against the threshold", r.over ? "above 50 tonnes" : "below 50 tonnes on the figures entered"]);
+    rows.push([]);
+    rows.push([
+      "Line", "Goods category", "Sector", "Country of origin", "Quantity", "Unit",
+      "Counts toward the 50 tonne threshold",
+      "Specific embedded emissions", "Emissions unit", "Source of the emissions figure",
+      "Embedded emissions tCO2e", "Chargeable emissions tCO2e",
+      "Carbon price paid at origin EUR per tCO2e",
+      "Indicative certificate cost EUR",
+      "Data gap", "What is missing", "Who can supply it", "In what form"
+    ]);
+
+    r.lines.forEach(function (L) {
+      var isGap = r.gaps.indexOf(L) !== -1;
+      var unit = L.cat.unit === "MWh" ? "MWh" : "tonnes";
+      var eUnit = L.cat.unit === "MWh" ? "tCO2e per MWh" : "tCO2e per tonne";
+      rows.push([
+        L.n,
+        L.cat.name,
+        L.cat.sector,
+        L.line.country,
+        L.hasQty ? Kit.num(L.qty, 3) : "",
+        unit,
+        L.cat.counts ? "yes" : "no, no de minimis relief applies",
+        L.hasSee ? Kit.num(L.line.see, 4) : "",
+        eUnit,
+        L.hasSee ? "supplier figure entered by the importer, not verified by this tool" : "MISSING",
+        L.emissions === null ? "" : Kit.num(L.emissions, 3),
+        L.chargeable === null ? "" : Kit.num(L.chargeable, 4),
+        L.line.cp === null ? "" : Kit.num(L.line.cp, 2),
+        L.net === null ? "" : Kit.num(L.net, 2),
+        isGap ? "YES" : "no",
+        isGap ? ("Specific embedded emissions for " + L.cat.name + ", direct and indirect, in " + eUnit
+          + ", for the installation that produced this consignment") : "",
+        isGap ? ("Operator of the production installation in " + L.line.country + ", reached through the supplier or exporter") : "",
+        isGap ? ("Commission communication template for installations, completed by the operator, with the accredited verifier report") : ""
+      ]);
+    });
+
+    rows.push([]);
+    rows.push(["Notes"]);
+    rows.push(["", "This file is an estimate for planning. It is not legal, tax or customs advice."]);
+    rows.push(["", "Rows marked MISSING carry no emissions figure. No default value has been substituted anywhere in this file."]);
+    rows.push(["", "Chargeable share is 100 per cent minus the CBAM factor on free allocation in Directive (EU) 2023/959 recital 46."]);
+    rows.push(["", "Article 31 of Regulation (EU) 2023/956 adjusts certificates using EU product benchmarks. The flat share used here agrees with it only when the emission intensity equals the benchmark."]);
+    rows.push(["", "De minimis threshold 50 tonnes cumulative net mass per importer per calendar year, Regulation (EU) 2025/2083."]);
+    rows.push(["", "First declaration 30 September 2027 for 2026 imports. Certificate sales begin 1 February 2027."]);
+    rows.push(["", "Constants checked " + CHECKED + ". Confirm every figure against the current Regulation before use."]);
+    return rows;
+  }
+
+  function renderPreview(r) {
+    var t = Kit.clear(Kit.qs("#out-preview"));
+    t.appendChild(E("thead", {}, [ E("tr", {}, [
+      E("th", { text: "Line" }), E("th", { text: "Goods" }), E("th", { text: "Origin" }),
+      E("th", { class: "k-n", text: "Quantity" }), E("th", { text: "Emissions figure" }), E("th", { text: "Status" })
+    ]) ]));
+    var b = E("tbody");
+    if (!r.lines.length) {
+      b.appendChild(E("tr", {}, [ E("td", { colspan: "6", class: "k-src-cell", text: "No line items yet." }) ]));
+    }
+    r.lines.forEach(function (L) {
+      var isGap = r.gaps.indexOf(L) !== -1;
+      b.appendChild(E("tr", {}, [
+        E("td", { text: String(L.n) }),
+        E("td", { text: L.cat.name }),
+        E("td", { text: L.line.country }),
+        E("td", { class: "k-n", text: L.hasQty ? Kit.num(L.qty, 2) + " " + L.cat.unit : "not entered" }),
+        E("td", { text: L.hasSee ? Kit.num(L.line.see, 4) + " tCO2e per " + L.cat.unit : "missing" }),
+        E("td", {}, [ E("span", { class: "k-tag " + (isGap ? "k-tag-gap" : "k-tag-known"), text: isGap ? "gap" : "supplier data" }) ])
+      ]));
+    });
+    t.appendChild(b);
+  }
+
+  /* =========================================================
+     url state
+     ========================================================= */
+
+  function toHashState() {
+    return {
+      y: S.year,
+      p: S.price,
+      l: S.lines.map(function (l) { return [l.cat, l.country, l.qty, l.see, l.cp]; })
+    };
+  }
+
+  function fromHashState(o) {
+    if (!o || typeof o !== "object") return false;
+    var yOk = YEARS.some(function (r) { return r.y === o.y; });
+    S.year = yOk ? o.y : 2026;
+    S.price = (typeof o.p === "number" && isFinite(o.p)) ? o.p : ETS_PRICE_INDICATIVE;
+    S.lines = [];
+    if (Array.isArray(o.l)) {
+      o.l.slice(0, 60).forEach(function (a) {
+        if (!Array.isArray(a)) return;
+        var cat = CATS.some(function (c) { return c.id === a[0]; }) ? a[0] : "irn_prod";
+        var country = (COUNTRIES.indexOf(a[1]) !== -1 || ANNEX_III_WATCH.indexOf(a[1]) !== -1) ? a[1] : "China";
+        S.lines.push(blankLine({
+          cat: cat, country: country,
+          qty: typeof a[2] === "number" && isFinite(a[2]) ? a[2] : null,
+          see: typeof a[3] === "number" && isFinite(a[3]) ? a[3] : null,
+          cp:  typeof a[4] === "number" && isFinite(a[4]) ? a[4] : null
+        }));
+      });
+    }
+    return true;
+  }
+
+  /* =========================================================
+     render loop
+     ========================================================= */
+
+  var lastResult = null;
+
+  function render() {
+    var r = compute();
+    lastResult = r;
+    buildLines();
+    renderThreshold(r);
+    renderEmissions(r);
+    renderCost(r);
+    renderPreview(r);
+    renderMethod();
+    Kit.qs("#f-year-hint").textContent =
+      Kit.num(yearRow(S.year).charge * 100, 1) + " per cent of embedded emissions is chargeable in " + S.year + ".";
+    Kit.state.write(toHashState());
+  }
+
+  /* =========================================================
+     wiring
+     ========================================================= */
+
+  function focusLastLine() {
+    var last = S.lines[S.lines.length - 1];
+    if (!last) return;
+    var f = Kit.qs("#qty-" + last.id);
+    if (f) f.focus();
+  }
+
+  function init() {
+    var restored = fromHashState(Kit.state.read());
+    if (!restored || !S.lines.length) {
+      if (!restored) { S.year = 2026; S.price = ETS_PRICE_INDICATIVE; S.lines = []; }
+    }
+
+    buildYearSelect();
+    buildPrice();
+    renderTimeline();
+
+    Kit.qs("#b-add").addEventListener("click", function () {
+      S.lines.push(blankLine());
+      render();
+      focusLastLine();
+    });
+
+    Kit.qs("#b-example").addEventListener("click", function () {
+      S.year = 2026;
+      S.price = ETS_PRICE_INDICATIVE;
+      S.lines = [
+        blankLine({ cat: "irn_prod", country: "India",  qty: 120, see: 2.1, cp: null }),
+        blankLine({ cat: "alu_unwr", country: "China",  qty: 45,  see: null, cp: null }),
+        blankLine({ cat: "cem_cem",  country: "Turkey", qty: 310, see: 0.72, cp: 8 })
+      ];
+      Kit.qs("#f-year").value = String(S.year);
+      Kit.qs("#f-price").value = String(S.price);
+      render();
+    });
+
+    Kit.qs("#b-reset").addEventListener("click", function () {
+      S.year = 2026; S.price = ETS_PRICE_INDICATIVE; S.lines = [];
+      Kit.qs("#f-year").value = String(S.year);
+      Kit.qs("#f-price").value = String(S.price);
+      Kit.state.clear();
+      render();
+      Kit.qs("#b-add").focus();
+    });
+
+    Kit.qs("#b-csv").addEventListener("click", function () {
+      Kit.csvDownload(csvRows(lastResult), "cbam-line-items-and-data-gaps-" + S.year + ".csv");
+      Kit.toast("CSV downloaded.");
+    });
+    Kit.qs("#b-csvcopy").addEventListener("click", function () {
+      Kit.csvCopy(csvRows(lastResult));
+    });
+    Kit.qs("#b-link").addEventListener("click", function () {
+      Kit.share(toHashState());
+    });
+
+    render();
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+<script>
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Araç · karbon ve uyum</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Instrument · CO₂ und Compliance</i>"}};
+
+(function(){
+  "use strict";
+  var KEY = "lang", lang = "en";
+  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
+  var D = window.CHROME_I18N || {};
+  var base = {}, baseA = {};
+  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
+  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function apply(l){
+    if(!D[l]) l = "en";
+    var d = D[l] || {};
+    document.querySelectorAll(SEL).forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if(!(k in base)) base[k] = el.innerHTML;
+      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
+    });
+    document.querySelectorAll(SELA).forEach(function(el){
+      var k = el.getAttribute("data-ia");
+      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
+      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
+    });
+    document.documentElement.setAttribute("lang", l);
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    window.__lang = l;
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  window.__chrome = apply;
+  apply(lang);
+})();
+
+</script>
+
+</body>
+</html>
