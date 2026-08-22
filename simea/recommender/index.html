@@ -1,0 +1,2810 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The recommender</title>
+<meta name="description" content="A population of agents, a feed that decides what each of them sees, and the same population run again with a neutral feed alongside it. The three SIMEA constructs, the influence gradient, the autonomy threshold and the entropy of the choice environment, are defined on screen and measured live.">
+<meta name="author" content="Kerem Ozdemir">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Instrument+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="canonical" href="https://keremozdemir.de/simea/recommender/">
+<meta property="og:title" content="The recommender">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   kit.css
+   House visual system for the open instruments at keremozdemir.de
+   Paper palette, Fraunces display, Newsreader body, IBM Plex Mono
+   for every number. No framework, no build step.
+
+   The host document loads three families from Google Fonts and nothing
+   else, with preconnect to fonts.googleapis.com and fonts.gstatic.com:
+     Fraunces      opsz,wght 9..144 at 300, 400, 500
+     Newsreader    ital,opsz,wght 6..72 at 400, 500 and italic 400
+     IBM Plex Mono 400, 500
+   Every family here has a real fallback stack, so the page stays legible
+   if the fonts never arrive.
+   ============================================================ */
+
+/* ---------- 1. tokens ---------- */
+
+:root {
+  color-scheme: light;
+
+  --paper:      #f2efe6;
+  --paper-sunk: #ebe7dc;
+  --panel:      #f7f5ee;
+  --field:      #fdfcf8;
+  --ink:        #2b2620;
+  --ink-soft:   #4b443b;
+  --dim:        #6f6558;
+  --faint:      #8d8375;
+  --rule:       #d8d2c4;
+  --rule-firm:  #bdb5a4;
+  --accent:     #8a5a24;
+  --accent-lit: #f0e6d6;
+  --flag:       #8c3b1e;
+  --flag-lit:   #f3e4de;
+  --good:       #3f5c3a;
+  --good-lit:   #e5eade;
+
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --serif:   "Newsreader", Georgia, "Times New Roman", serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 66ch;
+  --gap:     clamp(1rem, 2.4vw, 1.6rem);
+  --pad:     clamp(0.95rem, 2.4vw, 1.5rem);
+  --edge:    clamp(1.1rem, 5vw, 3.25rem);
+}
+
+/* The instruments used to flip to a dark palette with the system.  They
+   sit inside keremozdemir.de now, whose paper is light and whose top bar
+   and footer are painted from the site's own tokens, so a page that went
+   dark underneath a light bar would only look broken.  One palette. */
+
+/* ---------- 2. reset and page ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, 0.97rem + 0.16vw, 1.08rem);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.15; letter-spacing: -0.02em; }
+
+p { margin: 0 0 0.9em; max-width: var(--measure); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-firm); }
+a:hover { border-bottom-color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+.k-shell :focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--accent-lit); color: var(--ink); }
+
+.k-vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0);
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.k-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  background: var(--ink); color: var(--paper); border: 0;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+}
+.k-skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- 3. shell ---------- */
+
+.k-shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+.k-wrap { width: 100%; max-width: 74rem; margin: 0 auto; padding-inline: var(--edge); }
+
+/* The top bar is the site's, spliced in from pagegen.py by build.sh, so
+   there is no header of the kit's own any more. */
+
+.k-main { flex: 1 0 auto; padding-block: clamp(1.8rem, 5vw, 3.2rem) clamp(2.5rem, 6vw, 4rem); }
+
+.k-lede { max-width: 62ch; }
+.k-lede h1 {
+  font-size: clamp(1.85rem, 1.2rem + 2.6vw, 3rem);
+  letter-spacing: -0.032em; margin-bottom: 0.5rem;
+}
+.k-lede .k-standfirst {
+  font-size: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  color: var(--ink-soft); line-height: 1.5;
+}
+
+.k-sect { margin-top: clamp(2.2rem, 5.5vw, 3.4rem); }
+.k-sect > h2 {
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule-firm);
+  margin-bottom: 1.1rem;
+}
+.k-sect > h2 .k-num {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+}
+.k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
+
+/* ---------- 4. input row ---------- */
+
+.k-row {
+  display: grid; gap: 0.7rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  align-items: end;
+}
+.k-row.k-row-tight { gap: 0.55rem 0.9rem; }
+
+.k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.k-field > label, .k-lab {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+}
+.k-field .k-hint {
+  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
+  line-height: 1.45; letter-spacing: 0.02em;
+}
+
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
+  width: 100%; min-width: 0;
+  background: var(--field);
+  border: 1px solid var(--rule-firm);
+  border-radius: 0;
+  color: var(--ink);
+  font-family: var(--mono); font-size: 0.88rem; font-weight: 400;
+  padding: 0.55rem 0.6rem;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+input[type="number"] { font-variant-numeric: tabular-nums; text-align: right; }
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.9rem;
+}
+input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--panel); }
+input::placeholder { color: var(--faint); }
+input[aria-invalid="true"] { border-color: var(--flag); }
+
+.k-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--rule-firm); border-radius: 0;
+  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  padding: 0.62rem 0.95rem; cursor: pointer;
+  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.k-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.k-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
+.k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.k-btn-key { color: #f7f5ee; }
+.k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+
+.k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+
+/* ---------- 5. result panel ---------- */
+
+.k-panel {
+  background: var(--panel);
+  border: 1px solid var(--rule-firm);
+  padding: var(--pad);
+}
+.k-panel + .k-panel { margin-top: var(--gap); }
+.k-panel > h3, .k-panel-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+.k-panel-sunk { background: var(--paper-sunk); }
+
+.k-stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem; }
+.k-stat .k-big {
+  font-family: var(--mono); font-weight: 500;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+  line-height: 1.05; color: var(--ink);
+}
+.k-stat .k-unit { font-family: var(--mono); font-size: 0.78rem; color: var(--dim); letter-spacing: 0.05em; }
+
+.k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+
+.k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
+.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dd {
+  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
+}
+.k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
+
+/* arithmetic trace: every step printed */
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem; padding: 0.3rem 0;
+  border-bottom: 1px dotted var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+.k-steps li:last-child { border-bottom: 0; }
+.k-steps .k-op { color: var(--dim); }
+.k-steps .k-res { color: var(--ink); font-weight: 500; text-align: right; white-space: nowrap; }
+.k-steps li.k-step-final { border-top: 1px solid var(--rule-firm); border-bottom: 0; margin-top: 0.3rem; padding-top: 0.5rem; }
+.k-steps li.k-step-final .k-res { color: var(--accent); font-size: 0.92rem; }
+
+/* ---------- 6. source line ---------- */
+
+.k-source {
+  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  margin-top: 0.7rem; padding-top: 0.55rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-source::before {
+  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--faint); flex: none;
+}
+.k-source.k-source-bare::before { content: none; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.k-source .k-checked { color: var(--faint); white-space: nowrap; }
+
+/* ---------- 7. warning and refusal ---------- */
+
+.k-warn {
+  background: var(--flag-lit);
+  border: 1px solid var(--flag);
+  border-left-width: 3px;
+  padding: var(--pad);
+}
+.k-warn > h3, .k-warn .k-panel-h { color: var(--flag); }
+.k-warn p { color: var(--ink); }
+.k-warn + .k-warn, .k-panel + .k-warn, .k-warn + .k-panel { margin-top: var(--gap); }
+
+.k-ok { background: var(--good-lit); border: 1px solid var(--good); border-left-width: 3px; padding: var(--pad); }
+.k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
+
+.k-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
+  white-space: nowrap;
+}
+.k-tag-gap { color: var(--flag); background: var(--flag-lit); }
+.k-tag-known { color: var(--good); background: var(--good-lit); }
+.k-tag-quiet { color: var(--faint); background: transparent; }
+
+.k-ask { margin: 0.85rem 0 0; padding: 0; list-style: none; }
+.k-ask li {
+  display: grid; grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.2rem 0.9rem; padding: 0.4rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.92rem;
+}
+.k-ask li > b {
+  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.22rem;
+}
+
+/* ---------- 8. tables ---------- */
+
+.k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-table th, .k-table td {
+  text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule); vertical-align: top;
+}
+.k-table th {
+  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  border-bottom-color: var(--rule-firm); white-space: nowrap;
+}
+.k-table td.k-n, .k-table th.k-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  text-align: right; padding-right: 0; white-space: nowrap;
+}
+.k-table tbody tr:last-child td { border-bottom: 0; }
+.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell a { word-break: break-all; }
+
+/* ---------- 9. timeline ---------- */
+
+.k-time { margin: 0; padding: 0; list-style: none; }
+.k-time li {
+  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0.25rem 1.1rem; padding: 0.7rem 0;
+  border-top: 1px solid var(--rule);
+}
+.k-time li:first-child { border-top: 0; padding-top: 0; }
+.k-time .k-when {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
+}
+.k-time .k-what { font-size: 0.96rem; color: var(--ink); }
+.k-time .k-what small {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+}
+.k-time li.k-past .k-when { color: var(--faint); }
+.k-time li.k-past .k-what { color: var(--dim); }
+
+/* ---------- 10. the closing note ---------- */
+/* Each instrument ends with its own disclaimer and its own privacy line.
+   That is the page's last word, not the site's, so it is a closing panel
+   and the site's footer follows it. */
+
+.k-endnote {
+  border-top: 1px solid var(--rule-firm);
+  background: var(--paper-sunk);
+  padding-block: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: 0.9rem; color: var(--dim);
+}
+.k-endnote .k-wrap { display: grid; gap: 1.1rem; }
+.k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
+.k-endnote .k-fine {
+  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
+.k-endnote a:hover { color: var(--accent); }
+
+/* ---------- 11. toast for copy actions ---------- */
+
+.k-toast {
+  position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.k-toast[data-on="1"] { opacity: 1; }
+
+/* ---------- 12. responsive ---------- */
+
+@media (max-width: 640px) {
+  .k-ask li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-time li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-steps li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .k-steps .k-res { text-align: left; }
+}
+
+@media print {
+  .k-btnbar, .k-skip, .k-toast { display: none; }
+  body { background: #fff; color: #000; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   essay.css
+   The shared chrome for Explorable Economics. It sits on top of
+   kit.css and adds only what an essay with a live model needs:
+   a reading column, a model figure that breaks out of it, a
+   control rack, a live readout, and a running summary line that
+   says in words what the picture is showing.
+
+   Spliced into every essay by build.sh at the ESSAY_CSS marker,
+   so that each page still ships as one self contained file.
+   ============================================================ */
+
+/* ---------- reading column ---------- */
+
+.ex-body {
+  display: grid;
+  /* minmax(0, 1fr) rather than auto, so that one wide child can never
+     stretch the whole reading column past the width of the screen */
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 0;
+}
+.ex-body > * {
+  width: 100%;
+  max-width: 40rem;
+  min-width: 0;
+  justify-self: center;
+}
+
+.ex-body > p {
+  max-width: 40rem;
+  font-size: clamp(1.02rem, 0.99rem + 0.2vw, 1.13rem);
+  line-height: 1.68;
+  margin: 0 0 1.05em;
+}
+.ex-body > h2 {
+  font-size: clamp(1.25rem, 1.08rem + 0.7vw, 1.62rem);
+  margin: clamp(2.3rem, 5vw, 3.3rem) 0 0.9rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--rule-firm);
+}
+.ex-body > h2 .k-num {
+  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
+}
+.ex-body > h3 {
+  font-size: 1.1rem; margin: 1.9rem 0 0.6rem; color: var(--ink);
+}
+.ex-body > ul, .ex-body > ol { max-width: 40rem; padding-left: 1.15rem; margin: 0 0 1.05em; }
+.ex-body > ul li, .ex-body > ol li { margin-bottom: 0.45em; }
+
+.ex-lead {
+  font-size: clamp(1.1rem, 1.03rem + 0.4vw, 1.28rem) !important;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.ex-aside {
+  border-left: 2px solid var(--rule-firm);
+  padding: 0.1rem 0 0.1rem 1rem;
+  margin: 0 0 1.15em;
+  font-size: 0.94rem;
+  color: var(--dim);
+}
+.ex-aside p { font-size: inherit; margin-bottom: 0.6em; }
+
+.ex-em { font-style: italic; }
+.ex-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 0.94em; color: var(--accent); font-weight: 500;
+  white-space: nowrap;
+}
+.ex-n-flag { color: var(--flag); }
+.ex-n-long { white-space: normal; }
+
+/* a formula set on its own line, in words rather than symbols */
+.ex-formula {
+  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  color: var(--ink); background: var(--panel);
+  border-left: 2px solid var(--accent);
+  padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
+  max-width: 40rem; overflow-wrap: break-word;
+}
+.ex-formula small {
+  display: block; font-size: 0.66rem; color: var(--faint);
+  margin-top: 0.35rem; letter-spacing: 0.02em;
+}
+
+/* ---------- the model figure, wider than the prose ---------- */
+
+.ex-model {
+  max-width: 60rem;
+  margin: clamp(1.5rem, 4vw, 2.3rem) 0 clamp(1.7rem, 4.5vw, 2.6rem);
+  border: 1px solid var(--rule-firm);
+  background: var(--panel);
+  padding: var(--pad);
+}
+.ex-model > figcaption,
+.ex-model-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.85rem;
+  display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
+}
+.ex-model > figcaption .ex-model-sub,
+.ex-model-h .ex-model-sub {
+  color: var(--faint); letter-spacing: 0.1em; text-transform: none;
+  font-family: var(--mono); font-weight: 400;
+}
+
+.ex-plot { width: 100%; overflow: hidden; }
+.ex-plot svg {
+  display: block; width: 100%; height: auto;
+  touch-action: none;
+  -webkit-user-select: none; user-select: none;
+}
+.ex-plot.ex-draggable { cursor: grab; touch-action: none; }
+.ex-plot.ex-dragging { cursor: grabbing; }
+.ex-plot.ex-draggable svg { cursor: inherit; }
+
+.ex-plot + .ex-plot { margin-top: 0.9rem; }
+
+/* ---------- control rack ---------- */
+
+.ex-ctrls {
+  display: grid; gap: 0.85rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
+  margin-bottom: 1.1rem;
+}
+.ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
+}
+.ex-ctrl .ex-val {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+.ex-ctrl .k-hint {
+  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
+  line-height: 1.5; letter-spacing: 0.02em;
+}
+
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; min-width: 0; height: 1.9rem; margin: 0;
+  background: transparent; color: var(--accent);
+  display: block;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px; background: var(--rule-firm); border: 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 1.15rem; height: 1.15rem; margin-top: -0.53rem;
+  border-radius: 50%; border: 0; background: var(--accent); cursor: pointer;
+}
+input[type="range"]::-moz-range-track { height: 2px; background: var(--rule-firm); border: 0; }
+input[type="range"]::-moz-range-thumb {
+  width: 1.15rem; height: 1.15rem; border: 0; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+}
+input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type="range"]:hover::-webkit-slider-thumb { background: var(--ink); }
+input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
+
+/* segmented radio group */
+.ex-seg { border: 0; margin: 0; padding: 0; min-width: 0; }
+.ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
+.ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
+.ex-seg-row > label {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
+  border: 1px solid var(--rule-firm); margin-left: -1px;
+  background: var(--field); line-height: 1.3; white-space: nowrap;
+}
+.ex-seg-row > label:first-of-type { margin-left: 0; }
+.ex-seg-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ex-seg-row > label:has(input:checked) { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+:root[data-theme="dark"] .ex-seg-row > label:has(input:checked) { color: #17140f; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ex-seg-row > label:has(input:checked) { color: #17140f; }
+}
+.ex-seg-row > label:hover { border-color: var(--accent); color: var(--ink); }
+.ex-seg-row > label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* fallback for browsers without :has, checked state still readable */
+.ex-seg-row > label.ex-on { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.ex-check {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--dim); cursor: pointer;
+}
+.ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
+
+/* ---------- readout and running summary ---------- */
+
+.ex-read {
+  display: grid; gap: 0.55rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  margin-top: 1rem; padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+}
+.ex-read > div { min-width: 0; }
+.ex-read dt, .ex-read .ex-read-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  margin: 0 0 0.15rem;
+}
+.ex-read dd, .ex-read .ex-read-v {
+  margin: 0; font-family: var(--mono); font-weight: 500;
+  font-size: 1.06rem; font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
+}
+.ex-read .ex-read-v small {
+  display: block; font-size: 0.63rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+}
+.ex-read-hot .ex-read-v { color: var(--accent); }
+.ex-read-flag .ex-read-v { color: var(--flag); }
+
+.ex-sum {
+  margin-top: 0.9rem; padding-top: 0.7rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
+  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+}
+.ex-sum b { color: var(--ink-soft); font-weight: 500; }
+.ex-sum::before {
+  content: "reading"; display: block;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 0.3rem;
+}
+
+/* the paragraph of prose that answers what the reader just did */
+.ex-says {
+  max-width: 40rem;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-lit);
+  padding: 0.85rem 1.05rem;
+  margin: 0 0 1.15em;
+  font-size: 1rem; line-height: 1.6; color: var(--ink);
+}
+.ex-says p { max-width: none; margin-bottom: 0.55em; font-size: inherit; }
+.ex-says p:last-child { margin-bottom: 0; }
+
+/* ---------- legend ---------- */
+
+.ex-key {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
+  margin-top: 0.7rem;
+  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
+  letter-spacing: 0.02em;
+}
+.ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
+.ex-key i.ex-line { height: 0; border-top: 2px solid currentColor; width: 0.95rem; }
+
+/* stacked bar for a two way split */
+.ex-split { display: flex; height: 1.5rem; border: 1px solid var(--rule-firm); overflow: hidden; }
+.ex-split i { display: block; height: 100%; transition: width 0.12s linear; }
+.ex-split .a { background: var(--accent); }
+.ex-split .b { background: var(--rule); }
+@media (prefers-reduced-motion: reduce) { .ex-split i { transition: none; } }
+
+/* ---------- essay foot: limits, sources, next ---------- */
+
+.ex-limits { max-width: 46rem; }
+.ex-limits .k-ask li > b { padding-top: 0.25rem; }
+
+.ex-cites { max-width: 46rem; margin: 0; padding: 0; list-style: none; }
+.ex-cites li {
+  border-top: 1px solid var(--rule);
+  padding: 0.75rem 0;
+  font-size: 0.92rem; line-height: 1.55; color: var(--ink-soft);
+  max-width: none;
+}
+.ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
+.ex-cites .ex-cite-w {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.65;
+}
+.ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.ex-cites .ex-cite-t { font-style: italic; }
+
+.ex-next {
+  max-width: 60rem;
+  margin-top: clamp(2.4rem, 6vw, 3.6rem);
+  border-top: 1px solid var(--rule-firm);
+  padding-top: 1.2rem;
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+.ex-next a {
+  display: flex; flex-direction: column; gap: 0.3rem;
+  border: 1px solid var(--rule-firm); background: var(--panel);
+  padding: var(--pad); color: inherit; text-decoration: none;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+.ex-next a:hover { border-color: var(--accent); background: var(--field); }
+.ex-next a:hover .ex-next-t { color: var(--accent); }
+.ex-next .ex-next-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--faint);
+}
+.ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
+.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+
+/* ---------- mobile ---------- */
+
+@media (max-width: 640px) {
+  .ex-model { padding: 0.85rem 0.8rem 0.95rem; }
+  .ex-ctrls { grid-template-columns: minmax(0, 1fr); gap: 0.7rem; }
+  .ex-read { grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.5rem 0.9rem; }
+  .ex-read dd, .ex-read .ex-read-v { font-size: 0.98rem; }
+  .ex-seg-row { width: 100%; }
+  .ex-seg-row > label { flex: 1 1 auto; text-align: center; }
+  .ex-says { padding: 0.7rem 0.85rem; }
+}
+
+/* ============================================================
+   sim.css
+   The extra layer the SIMEA simulations need on top of kit.css
+   and essay.css. An essay figure here is a canvas rather than an
+   svg, it runs rather than sits still, and it has a transport:
+   run, step, reset. Everything else is the essay chrome.
+
+   Spliced into every simulation by build.sh at the SIM_CSS
+   marker, so each page still ships as one self contained file.
+   ============================================================ */
+
+/* ---------- the canvas itself ---------- */
+
+.sm-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--field);
+  border: 1px solid var(--rule);
+  touch-action: manipulation;
+}
+.sm-canvas + .sm-canvas { margin-top: 0.7rem; }
+.sm-canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.sm-canvas-lab {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--faint);
+  margin: 0.55rem 0 0.25rem;
+}
+
+/* ---------- transport ---------- */
+
+.sm-bar {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+  margin-top: 0.95rem; padding-top: 0.8rem;
+  border-top: 1px solid var(--rule);
+}
+.sm-bar .sm-clock {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--faint); font-variant-numeric: tabular-nums;
+  margin-left: auto; text-align: right;
+}
+.sm-btn-run[data-on="1"] { background: var(--accent); border-color: var(--accent); color: #f7f5ee; }
+.sm-btn-run[data-on="1"]:hover { background: var(--ink); border-color: var(--ink); }
+
+.sm-keys {
+  font-family: var(--mono); font-size: 0.63rem; line-height: 1.65;
+  color: var(--faint); letter-spacing: 0.02em;
+  margin: 0.6rem 0 0;
+}
+.sm-keys kbd {
+  font-family: var(--mono); font-size: 0.63rem;
+  border: 1px solid var(--rule-firm); border-radius: 2px;
+  padding: 0.05em 0.3em; color: var(--dim);
+}
+
+.sm-still {
+  font-family: var(--mono); font-size: 0.63rem; line-height: 1.6;
+  color: var(--accent); letter-spacing: 0.02em;
+  margin: 0.55rem 0 0;
+}
+
+/* ---------- a construct, defined where it is measured ---------- */
+
+.sm-constructs { margin: 0 0 1.15em; display: grid; gap: 0.75rem; }
+.sm-construct {
+  border: 1px solid var(--rule-firm);
+  border-left: 3px solid var(--accent);
+  background: var(--panel);
+  padding: 0.8rem 0.95rem;
+}
+.sm-construct h4 {
+  font-family: var(--mono); font-weight: 500; font-size: 0.66rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.4rem;
+}
+.sm-construct p { font-size: 0.95rem; margin-bottom: 0.5em; max-width: none; }
+.sm-construct .sm-eq {
+  font-family: var(--mono); font-size: 0.76rem; line-height: 1.65;
+  color: var(--ink); background: var(--field);
+  border: 1px solid var(--rule);
+  padding: 0.5rem 0.6rem; margin: 0 0 0.45em;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  white-space: pre-wrap; overflow-wrap: break-word;
+}
+.sm-construct .sm-honest {
+  font-family: var(--mono); font-size: 0.65rem; line-height: 1.7;
+  color: var(--faint); letter-spacing: 0.02em; margin: 0; max-width: none;
+}
+.sm-construct .sm-live {
+  font-family: var(--mono); font-weight: 500; font-size: 1.02rem;
+  font-variant-numeric: tabular-nums; color: var(--ink);
+  float: right; margin-left: 1rem;
+}
+
+/* ---------- the hub ---------- */
+
+.sm-cards {
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  margin-top: 1.4rem; max-width: 60rem;
+}
+.sm-card {
+  display: flex; flex-direction: column; gap: 0.4rem;
+  border: 1px solid var(--rule-firm); background: var(--panel);
+  padding: var(--pad); color: inherit; text-decoration: none;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+.sm-card:hover { border-color: var(--accent); background: var(--field); }
+.sm-card:hover .sm-card-t { color: var(--accent); }
+.sm-card-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--faint);
+}
+.sm-card-t { font-family: var(--display); font-size: 1.2rem; letter-spacing: -0.02em; }
+.sm-card-d { font-size: 0.92rem; color: var(--dim); line-height: 1.5; }
+.sm-card-w {
+  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
+  letter-spacing: 0.02em; line-height: 1.6; margin-top: 0.15rem;
+}
+.sm-card canvas {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--rule); background: var(--field);
+  margin-bottom: 0.15rem;
+}
+
+@media (max-width: 640px) {
+  .sm-cards { grid-template-columns: minmax(0, 1fr); }
+  .sm-construct { padding: 0.7rem 0.8rem; }
+  .sm-construct .sm-live { float: none; display: block; margin: 0 0 0.3rem; }
+  .sm-bar { gap: 0.45rem; }
+  .sm-bar .sm-clock { margin-left: 0; flex: 1 0 100%; text-align: left; }
+}
+
+@media (pointer: coarse) {
+  .sm-bar .k-btn { min-height: 44px; }
+}
+
+/* ---------- simulation two ---------- */
+
+.rc-verdict {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent);
+  border: 1px solid var(--accent); background: var(--accent-lit);
+  padding: 0.3rem 0.6rem; display: inline-block; margin-top: 0.9rem;
+}
+
+/* ---------- the site's clothes, worn by an instrument ---------- */
+.bar,footer.site-foot,.leaf-mark{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#f2efe6;
+  --fg:#221e17;
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --accent:#8a5a24;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+.bar,footer.site-foot{color:var(--fg)}
+footer.site-foot{background:var(--paper)}
+.bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
+
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
+.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+.langs{display:flex;gap:.1rem;margin-left:.6rem}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
+    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* six nav items on a narrow phone: the row is allowed to take a second
+   line rather than push the page sideways, and the words are set a little
+   tighter so that on most phones it does not have to */
+@media (max-width:430px){
+  .bar nav{gap:.34rem .55rem}
+  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+
+/* ---------- the crown, on a page whose interior is its own ---------- */
+.k-crown-no{
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;
+  font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;
+  color:var(--accent);
+}
+.k-crown-no svg{flex:none}
+.k-lede h1{margin-top:0}
+
+
+</style>
+</head>
+<body>
+
+<a class="k-skip" href="#sim">Skip to the simulation</a>
+
+<div class="k-shell">
+
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="../../index.html">Kerem Özdemir</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" aria-current="page" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../game.html" data-i="nav-g">Game Theory</a>
+      <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+
+  <main class="k-main" id="sim">
+    <div class="k-wrap">
+
+      <div class="k-lede k-crown">
+        <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Simulation two of five</i></span>
+        <h1>The recommender</h1>
+        <p class="k-standfirst">A thousand agents holding an opinion, and a system deciding what each of
+        them gets to see. The same population is run twice from the same starting point with the same
+        random draws, once with the system choosing and once with a neutral feed, so that the difference
+        between the two runs is the system and nothing else. That difference is a number, and it is on the
+        screen while it happens.</p>
+      </div>
+
+      <div class="ex-body">
+
+        <p class="ex-lead">This is the simulation the whole programme is for. The claim SIMEA makes is that
+        an agent embedded in a system is not the same object as an agent choosing alone, and that the
+        difference can be measured rather than merely asserted. A claim like that is empty until you can
+        watch it happen and read it off a dial.</p>
+
+        <p>So here is the smallest world in which the claim can be tested. Each agent holds a position on a
+        single axis, from one end to the other. Each round it is shown a handful of positions held by other
+        agents. It moves a little towards anything close enough to its own to be worth taking seriously,
+        and ignores anything too far away. The only thing the system does is choose which handful.</p>
+
+        <p>That is a very small power. It cannot make an agent believe anything. It cannot punish, pay,
+        persuade or lie. It selects. Run it and watch how far selection alone can carry a population.</p>
+
+        <h2 id="s1"><span class="k-num">01</span>Two worlds, one seed</h2>
+
+        <p>The picture below is two rasters. Time runs left to right. The axis of opinion runs from one end
+        of the vertical to the other. The darker a band, the more agents are standing there at that moment.</p>
+
+        <p>The upper raster is the world with the recommender in it. The lower one is the counterfactual:
+        the same agents, the same starting positions, the same random numbers drawn in the same order, and
+        a feed that selects uniformly at random. Set the recommender to favour agreement not at all and
+        the two rasters are identical, pixel for pixel, because at that setting the two worlds are the same
+        process. Every difference you see below is the system.</p>
+
+        <figure class="ex-model" id="m1">
+          <figcaption>Figure one <span class="ex-model-sub">set the feed, then run</span></figcaption>
+          <div class="ex-ctrls" id="rc-ctrls"></div>
+          <p class="sm-canvas-lab">Where the population stands, round by round</p>
+          <div id="rc-raster"></div>
+          <p class="ex-key" id="rc-key"></p>
+          <div id="rc-read"></div>
+          <p class="ex-sum" id="rc-sum" role="status" aria-live="polite"></p>
+          <p><span class="rc-verdict" id="rc-verdict">not run yet</span></p>
+          <div id="rc-bar"></div>
+        </figure>
+
+        <div class="ex-says" id="rc-says"></div>
+
+        <h2 id="s2"><span class="k-num">02</span>The three constructs, on the screen</h2>
+
+        <p>SIMEA proposes three measurable quantities: the influence gradient a system exerts on a choice,
+        the autonomy threshold that remains the agent's own, and the entropy of the choice environment
+        itself. Below is what each of them means here, how it is computed here, and what it currently
+        reads.</p>
+
+        <p>I want to be exact about the status of these three definitions. Each one is an
+        <span class="ex-em">operationalisation</span>: one way of turning a construct into arithmetic that
+        a machine can do, chosen because it is simple, bounded and legible. None of them is the construct.
+        A different operationalisation, on a different model, would give different numbers, and several
+        reasonable ones exist for each. What the three are good for is comparison within one model, where
+        the only thing that changed is the thing the reader changed.</p>
+
+        <div class="sm-constructs" id="rc-constructs">
+
+          <div class="sm-construct">
+            <h4>Influence gradient <span class="sm-live" id="rc-live-g">0.00</span></h4>
+            <p>How far along the axis the system's choosing carried the population, compared with where
+            the same population went without it. Both runs are binned into twenty four bins and the two
+            distributions are compared by asking how far the mass of one would have to be moved to lie
+            exactly on the other, as a share of the whole width of the axis. Zero means the steered
+            population sits exactly where the unsteered one does. One means it was carried from one end of
+            the axis to the other.</p>
+            <p class="sm-eq">F(b) = the share of the population at or below bin b
+G = ( sum over bins b of | F_steered(b) − F_neutral(b) | ) / 23</p>
+            <p class="sm-honest">This is a distance along the axis, and choosing it cost me a wrong answer
+            first. I began with the total variation distance, which asks only how much of the two
+            distributions fails to overlap. It reads zero correctly, but once a population has gathered
+            into one or two tight positions it jumps to one the moment those positions stop sharing a bin,
+            so a consensus nudged along by a hair and a population torn in half both scored one. The
+            distance along the axis distinguishes them, because it counts how far the mass moved rather
+            than whether it moved. It is still one operationalisation among several: the same construct
+            could be measured agent by agent against each agent's own counterfactual self, or as a shift
+            in the mean, and those would not agree with this one.</p>
+          </div>
+
+          <div class="sm-construct">
+            <h4>Autonomy threshold <span class="sm-live" id="rc-live-a">1.00</span></h4>
+            <p>Each round an agent's new position is a weighted average of where it already stood and what
+            it was shown. The autonomy threshold is the weight still carried by where it already stood,
+            averaged over the population. One means nothing it saw moved it. Lower means more of it came
+            from the feed.</p>
+            <p class="sm-eq">for agent i:  x_i(next) = (1 − μ·m_i)·x_i  +  μ · sum over accepted items j of x_j
+A = average over agents of ( 1 − μ·m_i )</p>
+            <p class="sm-honest">μ is the fixed step an agent takes towards one accepted item, 0.15 here,
+            and m_i is how many of the five items it accepted this round. With five slots and that step the
+            arithmetic floor of this measure is 0.25, so it cannot report a total loss of autonomy: it
+            reports how much of the population's movement is the feed's rather than its own, within a model
+            that never lets the feed have all of it. That floor is a property of my parameters, not of the
+            construct.</p>
+          </div>
+
+          <div class="sm-construct">
+            <h4>Entropy of the choice environment <span class="sm-live" id="rc-live-h">1.00</span></h4>
+            <p>Not what the population believes, but what it is being offered. For each agent the feed
+            has an exact distribution over the axis: the chance that a slot lands in each of the twenty
+            four bins, given the candidates drawn for it, the weight put on agreement and the random share.
+            The Shannon entropy of that distribution is taken, divided by the entropy of a flat one so it
+            runs from zero to one, and averaged over the population. One means an agent is being offered
+            the whole axis evenly. Falling means its feed has narrowed.</p>
+            <p class="sm-eq">for agent i:  q_i(b) = the chance that a slot in i's feed lands in bin b
+H = average over agents of ( − sum over bins b of q_i(b) · log q_i(b) ) / log 24</p>
+            <p class="sm-honest">Two remarks, and both of them cost me an assumption I had not noticed I
+            was making. First, this is one agent's environment averaged over agents, and not the
+            population's. Measured across everyone at once the number stays high even when every individual
+            feed is narrow, because narrow feeds pointed in different directions still cover the axis
+            between them. That figure is printed in the reading line under the picture so the two can be
+            compared, and the difference between them is most of what the word bubble is trying to say.
+            Second, the number falls both because the recommender is selecting narrowly and because the
+            population has collapsed and there is little left to serve, and it does not distinguish the two.
+            Read it beside the raster rather than instead of it.</p>
+          </div>
+
+        </div>
+
+        <figure class="ex-model" id="m2">
+          <figcaption>Figure two <span class="ex-model-sub">the three constructs, round by round</span></figcaption>
+          <div id="rc-plot"></div>
+          <p class="ex-sum" id="rc-sum2" role="status" aria-live="polite"></p>
+        </figure>
+
+        <h2 id="s3"><span class="k-num">03</span>Three things worth doing to it</h2>
+
+        <p>First, set the recommender to favour agreement not at all and run it. The influence gradient
+        holds at zero for the whole run and the two rasters stay identical. This is the control, and it is
+        worth watching once, because a measure that does not read zero when nothing is happening is not
+        worth reading at all.</p>
+
+        <p>Second, put the willingness to move at something moderate, turn the favouring of agreement up
+        hard, and run it again. The population splits, the two halves walk away from each other, and the
+        gradient climbs while it happens. The neutral world underneath, with the same agents and the same
+        draws, comes together instead.</p>
+
+        <p>Third, leave the recommender exactly where it is and raise the share of the feed drawn at
+        random. The entropy of each agent's environment goes back up, the halves stop separating, and above
+        a certain share the population comes together again. The system did not become less powerful. Its
+        selections were simply diluted, and dilution turns out to be enough.</p>
+
+        <h2 id="s4"><span class="k-num">04</span>What the rule actually is</h2>
+
+        <p>An agent updates towards what it is shown only when what it is shown is close enough to be worth
+        taking seriously. That is a bounded confidence rule, which is standard in the opinion dynamics
+        literature and cited below. Everything the model does follows from it and from the selection.</p>
+
+        <p class="ex-formula">candidates: thirty two other agents drawn at random for each agent, each round
+        selection: item j is picked with weight proportional to exp( − α · | x_j − x_i | )
+        with a share ρ of the slots drawn uniformly at random instead
+        update: accept item j when | x_j − x_i | ≤ c, then move x_i towards x_j by μ = 0.15
+        <small>α is the favouring of agreement, ρ the random share, c the willingness to move towards
+        disagreement. At α equal to zero the weights are all equal and the selection is uniform, which is
+        exactly the neutral feed, which is why the two worlds coincide there.</small></p>
+
+        <p>Notice what the recommender is not doing. It has no objective it is maximising, no model of the
+        agent beyond its current position, no memory, and no interest in the outcome. It is one exponential
+        weight on a distance. Almost every real system is more capable than this, and the more capable ones
+        would not be gentler.</p>
+
+        <h2 id="s5"><span class="k-num">05</span>Where the model stops</h2>
+
+        <p>This is the simulation I am most careful about, because it is the one most likely to be quoted
+        as though it said something about a real platform. It does not. Here is what it cannot tell you.</p>
+
+        <div class="k-warn ex-limits">
+          <h3>Assumptions and limits</h3>
+          <ul class="k-ask">
+            <li><b>One axis</b>An opinion is a single number on a single line. Real positions are many
+            dimensional and often not ordered at all, and a great deal of what makes a disagreement a
+            disagreement disappears when it is flattened to a line.</li>
+            <li><b>The rule is invented</b>The bounded confidence update is a modelling convention with a
+            literature behind it, not a measured law of how people change their minds. Agents here have no
+            memory, no identity, no group, no cost of changing position and no reason to hold one position
+            rather than another.</li>
+            <li><b>The system is a toy</b>One exponential weight on one distance. No engagement objective,
+            no advertising, no ranking model, no cold start, no moderation, no notion of what a real
+            recommender is trained on. Reading the number here as an estimate of any real system's
+            influence would be a category error.</li>
+            <li><b>The three constructs are one operationalisation</b>Said again because it matters. Total
+            variation distance, a weight in an update rule and a normalised Shannon entropy are three
+            defensible choices, and three other defensible choices would give three other sets of numbers.
+            The constructs are the ideas. These are one way of counting them.</li>
+            <li><b>The counterfactual is only available here</b>The influence gradient is computed by
+            running the world twice. In a real system there is exactly one run and no neutral twin, which
+            is precisely the measurement problem the programme exists to work on. What this page shows is
+            what the quantity would mean if you could get it, not a method for getting it.</li>
+            <li><b>The entropy is ambiguous</b>It falls when the feed narrows and it falls when the
+            population collapses, and it cannot tell you which. Read it beside the raster, not instead of
+            it.</li>
+            <li><b>No numbers here are estimates</b>Every figure on this page comes from the parameters
+            above it. None of them describes any platform, any population or any measured effect.</li>
+          </ul>
+        </div>
+
+        <h2 id="s6"><span class="k-num">06</span>Sources</h2>
+
+        <p>The framework is my own and the note behind it is linked below. The two pieces of standing work
+        the model borrows from are these.</p>
+
+        <ul class="ex-cites">
+          <li>
+            The update rule is a bounded confidence model: an agent takes account only of the opinions
+            within a confidence interval of its own, and the paper investigates how the width of that
+            interval decides whether a population reaches consensus, splits or fragments.
+            <span class="ex-cite-w">Rainer Hegselmann and Ulrich Krause, <span class="ex-cite-t">Opinion
+            Dynamics and Bounded Confidence: Models, Analysis and Simulation</span>, Journal of Artificial
+            Societies and Social Simulation 5(3), article 2, 2002.
+            <a href="https://www.jasss.org/5/3/2.html" target="_blank" rel="noreferrer noopener">jasss.org/5/3/2.html</a>
+            Checked 2026 08 22.</span>
+          </li>
+          <li>
+            The entropy of the choice environment is Shannon's entropy of the distribution of what is
+            served, normalised by the entropy of the flat distribution over the same bins.
+            <span class="ex-cite-w">Claude E. Shannon, <span class="ex-cite-t">A Mathematical Theory of
+            Communication</span>, The Bell System Technical Journal 27, 1948, pages 379 to 423 and 623 to
+            656.
+            <a href="https://onlinelibrary.wiley.com/doi/10.1002/j.1538-7305.1948.tb01338.x" target="_blank" rel="noreferrer noopener">doi.org 10.1002/j.1538-7305.1948.tb01338.x</a>
+            Full text read at
+            <a href="https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf" target="_blank" rel="noreferrer noopener">people.math.harvard.edu</a>.
+            Checked 2026 08 22.</span>
+          </li>
+          <li>
+            The three constructs and the reasons for wanting them.
+            <span class="ex-cite-w">Kerem Özdemir, <span class="ex-cite-t">The agent was never alone:
+            SIMEA</span>, a working note.
+            <a href="../../note-simea.html">keremozdemir.de/note-simea.html</a></span>
+          </li>
+        </ul>
+
+        <nav class="ex-next" aria-label="More simulations">
+          <a href="../diffusion/index.html">
+            <span class="ex-next-k">Next simulation</span>
+            <span class="ex-next-t">Diffusion</span>
+            <span class="ex-next-d">Hold the contagion fixed and change the shape of the network under it.
+            The same thing spreads three completely different ways.</span>
+          </a>
+          <a href="../index.html">
+            <span class="ex-next-k">Back</span>
+            <span class="ex-next-t">All five simulations</span>
+            <span class="ex-next-d">Why a research programme about systems and agents needs models you can
+            run.</span>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </main>
+
+  <aside class="k-endnote">
+    <div class="k-wrap">
+      <p><strong>This is a teaching model, not a measurement.</strong> Every number on this page is one you
+      set or one this model produced from what you set. Nothing here describes any real platform or any
+      real population, and no figure from this page belongs in an argument about one.</p>
+      <p class="k-fine">
+        Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no
+        network call after the fonts have loaded. Part of
+        <a href="../index.html">the SIMEA simulations</a>, built by
+        <a href="../../index.html">Kerem Ozdemir</a>.
+      </p>
+    </div>
+  </aside>
+
+<footer class="site-foot"><div class="wrap">
+  <span>© 2026 Kerem Özdemir</span>
+  <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
+</div></footer>
+
+
+</div>
+
+<script>
+/* ============================================================
+   kit.js
+   Shared behaviour for the open instruments at keremozdemir.de
+   No dependencies. No network calls. Safe to inline.
+
+   Kit.el        small DOM builder
+   Kit.fmt       number and date formatting
+   Kit.state     read and write tool state in the URL hash
+   Kit.share     copy the link that restores the current state
+   Kit.csv       build CSV, copy to clipboard, offer a download
+   Kit.toast     brief confirmation line
+   ============================================================ */
+
+var Kit = (function () {
+  "use strict";
+
+  /* ---------- DOM ---------- */
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v;
+        else if (k === "html") n.innerHTML = v;
+        else if (k.slice(0, 2) === "on" && typeof v === "function") {
+          n.addEventListener(k.slice(2).toLowerCase(), v);
+        } else n.setAttribute(k, v === true ? "" : String(v));
+      });
+    }
+    (kids || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+
+  /* ---------- numbers ---------- */
+
+  var LOCALE = "en-GB";
+
+  function num(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function money(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return "EUR " + num(v, dp === undefined ? 2 : dp);
+  }
+  function pct(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return num(v * 100, dp === undefined ? 1 : dp) + " %";
+  }
+  function toNum(raw) {
+    if (raw === null || raw === undefined) return null;
+    var s = String(raw).trim().replace(/\s+/g, "").replace(/,/g, ".");
+    if (s === "") return null;
+    var n = Number(s);
+    return isFinite(n) ? n : null;
+  }
+
+  /* ---------- URL hash state ---------- */
+
+  function b64urlEncode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64urlDecode(str) {
+    var s = String(str).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var bin = atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  var state = {
+    /* Serialise the object into the location hash without adding a history entry. */
+    write: function (obj) {
+      var h = "";
+      try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
+      if (h.length > 8000) return "";
+      try {
+        history.replaceState(null, "", location.pathname + location.search + h);
+      } catch (e) {
+        location.hash = h;
+      }
+      return location.href;
+    },
+    /* Read the object back. Returns null when the hash is absent or unreadable. */
+    read: function () {
+      var m = /(?:^|[#&])s=([A-Za-z0-9\-_]+)/.exec(location.hash || "");
+      if (!m) return null;
+      try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
+    },
+    clear: function () {
+      try { history.replaceState(null, "", location.pathname + location.search); }
+      catch (e) { location.hash = ""; }
+    }
+  };
+
+  /* ---------- clipboard ---------- */
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; },
+        function () { return legacyCopy(text); });
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  /* ---------- share ---------- */
+
+  function share(obj, msg) {
+    var url = state.write(obj) || location.href;
+    return copyText(url).then(function (ok) {
+      toast(ok ? (msg || "Link copied. It reopens with these inputs.")
+               : "Copy blocked by the browser. The address bar now holds the link.");
+      return ok;
+    });
+  }
+
+  /* ---------- CSV ---------- */
+
+  function csvCell(v) {
+    if (v === null || v === undefined) return "";
+    var s = String(v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function csvBuild(rows) {
+    return rows.map(function (r) { return r.map(csvCell).join(","); }).join("\r\n");
+  }
+  function csvDownload(rows, filename) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    /* BOM so that spreadsheet software reads UTF-8 correctly */
+    var blob = new Blob(["﻿" + text], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = el("a", { href: url, download: filename || "export.csv" });
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1200);
+  }
+  function csvCopy(rows) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    return copyText(text).then(function (ok) {
+      toast(ok ? "Table copied. Paste it into a spreadsheet." : "Copy blocked by the browser. Use the download instead.");
+      return ok;
+    });
+  }
+
+  /* ---------- toast ---------- */
+
+  var toastNode = null, toastTimer = null;
+  function toast(msg) {
+    if (!toastNode) {
+      toastNode = el("div", { class: "k-toast", role: "status", "aria-live": "polite" });
+      document.body.appendChild(toastNode);
+    }
+    toastNode.textContent = msg;
+    toastNode.setAttribute("data-on", "1");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastNode.setAttribute("data-on", "0"); }, 3600);
+  }
+
+  /* ---------- source line ---------- */
+
+  /* src: { what, url, checked } -> the standard line that says where a number came from */
+  function sourceLine(src, bare) {
+    var kids = [];
+    if (src.what) kids.push(el("span", { text: src.what }));
+    if (src.url) kids.push(el("a", { href: src.url, rel: "noreferrer noopener", target: "_blank", text: src.label || src.url }));
+    if (src.checked) kids.push(el("span", { class: "k-checked", text: "checked " + src.checked }));
+    return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
+  }
+
+  return {
+    el: el, qs: qs, qsa: qsa, clear: clear,
+    num: num, money: money, pct: pct, toNum: toNum,
+    state: state, share: share,
+    copyText: copyText,
+    csvBuild: csvBuild, csvDownload: csvDownload, csvCopy: csvCopy,
+    toast: toast, sourceLine: sourceLine
+  };
+})();
+
+/* ============================================================
+   essay.js
+   The shared machinery behind every model in Explorable
+   Economics. It sits on top of kit.js and adds only what a
+   drawn, dragged and keyboard driven model needs.
+
+     Ex.s        make an SVG element
+     Ex.plot     set up a plot with a scale and a drag surface
+     Ex.slider   a labelled range control wired to a callback
+     Ex.seg      a segmented radio group, arrow keys included
+     Ex.drag     pointer and touch dragging in plot coordinates
+     Ex.rng      a seeded generator so a shared link replays
+     Ex.round    rounding that does not lie about precision
+     Ex.words    small helpers for prose that has to agree with
+                 the arithmetic on screen
+
+   No dependencies beyond kit.js. No network calls.
+   Spliced into every essay by build.sh at the ESSAY_JS marker.
+   ============================================================ */
+
+var Ex = (function () {
+  "use strict";
+
+  var NS = "http://www.w3.org/2000/svg";
+
+  /* ---------- svg ---------- */
+
+  function s(tag, attrs, text) {
+    var n = document.createElementNS(NS, tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        n.setAttribute(k, String(v));
+      });
+    }
+    if (text !== undefined && text !== null) n.appendChild(document.createTextNode(String(text)));
+    return n;
+  }
+
+  function svgRoot(w, h, label) {
+    var n = s("svg", {
+      viewBox: "0 0 " + w + " " + h,
+      width: w, height: h,
+      preserveAspectRatio: "xMidYMid meet",
+      role: "img",
+      "aria-label": label || ""
+    });
+    return n;
+  }
+
+  /* text sized for the plot, in the house mono */
+  function label(x, y, str, opt) {
+    var o = opt || {};
+    return s("text", {
+      x: x, y: y,
+      "text-anchor": o.anchor || "middle",
+      fill: o.fill || "var(--dim)",
+      "font-family": "var(--mono)",
+      "font-size": o.size || 10,
+      "font-weight": o.weight || 400,
+      "letter-spacing": o.track === undefined ? 0.2 : o.track,
+      opacity: o.opacity === undefined ? 1 : o.opacity
+    }, str);
+  }
+
+  /* ---------- dragging, in plot coordinates ---------- */
+
+  /* Convert a pointer event into the svg user coordinate system,
+     which is what every plot here draws in. */
+  function toLocal(svg, evt) {
+    var r = svg.getBoundingClientRect();
+    var vb = svg.viewBox.baseVal;
+    var w = vb && vb.width ? vb.width : r.width;
+    var h = vb && vb.height ? vb.height : r.height;
+    if (!r.width || !r.height) return { x: 0, y: 0 };
+    return { x: (evt.clientX - r.left) * w / r.width, y: (evt.clientY - r.top) * h / r.height };
+  }
+
+  /* drag(surface, { start, move, end }, measure) where each handler
+     receives the point in plot coordinates. The surface is the element
+     that listens, which must survive a redraw. The optional measure
+     function returns the svg currently inside it, so the plot can be
+     rebuilt mid gesture without the gesture being dropped.
+     Works with mouse, pen and touch. */
+  function drag(surface, handlers, measure) {
+    var active = false, id = null;
+    function box() { return (measure ? measure() : surface) || surface; }
+
+    function down(e) {
+      if (e.button !== undefined && e.button !== 0) return;
+      var p = toLocal(box(), e);
+      if (handlers.start && handlers.start(p, e) === false) return;
+      active = true; id = e.pointerId;
+      surface.classList.add("ex-dragging");
+      if (surface.setPointerCapture && id !== undefined && id !== null) {
+        try { surface.setPointerCapture(id); } catch (err) { /* capture is a nicety */ }
+      }
+      e.preventDefault();
+    }
+    function move(e) {
+      if (!active) {
+        if (handlers.hover) handlers.hover(toLocal(box(), e), e);
+        return;
+      }
+      if (id !== null && e.pointerId !== id) return;
+      if (handlers.move) handlers.move(toLocal(box(), e), e);
+      e.preventDefault();
+    }
+    function up(e) {
+      if (!active) return;
+      active = false;
+      surface.classList.remove("ex-dragging");
+      if (surface.releasePointerCapture && id !== undefined && id !== null) {
+        try { surface.releasePointerCapture(id); } catch (err) { /* already gone */ }
+      }
+      id = null;
+      if (handlers.end) handlers.end(toLocal(box(), e), e);
+    }
+
+    surface.addEventListener("pointerdown", down);
+    surface.addEventListener("pointermove", move);
+    surface.addEventListener("pointerup", up);
+    surface.addEventListener("pointercancel", up);
+    surface.addEventListener("pointerleave", function (e) { if (handlers.leave) handlers.leave(e); });
+    surface.classList.add("ex-draggable");
+    return { active: function () { return active; } };
+  }
+
+  /* ---------- controls ---------- */
+
+  var uid = 0;
+  function nextId(p) { uid += 1; return (p || "ex") + "-" + uid; }
+
+  /* slider(host, spec) -> { input, set, el }
+     spec: { label, min, max, step, value, format, hint, onInput, unit } */
+  function slider(host, spec) {
+    var id = nextId("sl");
+    var wrap = Kit.el("div", { class: "ex-ctrl" });
+    var valSpan = Kit.el("span", { class: "ex-val" });
+    var lab = Kit.el("label", { for: id }, [
+      Kit.el("span", { text: spec.label }),
+      valSpan
+    ]);
+    var input = Kit.el("input", {
+      type: "range", id: id,
+      min: spec.min, max: spec.max, step: spec.step,
+      value: spec.value
+    });
+    input.setAttribute("aria-describedby", id + "-v");
+    valSpan.id = id + "-v";
+
+    function paint(v) { valSpan.textContent = spec.format ? spec.format(v) : String(v); }
+    paint(Number(spec.value));
+
+    input.addEventListener("input", function () {
+      var v = Number(input.value);
+      paint(v);
+      if (spec.onInput) spec.onInput(v);
+    });
+
+    wrap.appendChild(lab);
+    wrap.appendChild(input);
+    if (spec.hint) wrap.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(wrap);
+
+    return {
+      el: wrap, input: input,
+      get: function () { return Number(input.value); },
+      set: function (v, quiet) {
+        input.value = String(v);
+        paint(Number(input.value));
+        if (!quiet && spec.onInput) spec.onInput(Number(input.value));
+      }
+    };
+  }
+
+  /* seg(host, spec) -> { get, set, el }
+     spec: { label, name, options: [{value,label}], value, onChange } */
+  function seg(host, spec) {
+    var fs = Kit.el("fieldset", { class: "ex-ctrl ex-seg" });
+    fs.appendChild(Kit.el("legend", {}, [Kit.el("span", { text: spec.label })]));
+    var row = Kit.el("div", { class: "ex-seg-row" });
+    var inputs = [];
+
+    spec.options.forEach(function (o) {
+      var lid = nextId("sg");
+      var inp = Kit.el("input", { type: "radio", name: spec.name, id: lid, value: o.value });
+      if (String(o.value) === String(spec.value)) inp.checked = true;
+      var lb = Kit.el("label", { for: lid }, [inp, document.createTextNode(o.label)]);
+      if (inp.checked) lb.classList.add("ex-on");
+      inp.addEventListener("change", function () {
+        paintOn();
+        if (inp.checked && spec.onChange) spec.onChange(o.value);
+      });
+      inputs.push({ inp: inp, lb: lb, value: o.value });
+      row.appendChild(lb);
+    });
+
+    function paintOn() {
+      inputs.forEach(function (r) { r.lb.classList.toggle("ex-on", r.inp.checked); });
+    }
+
+    fs.appendChild(row);
+    if (spec.hint) fs.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(fs);
+
+    return {
+      el: fs,
+      get: function () {
+        for (var i = 0; i < inputs.length; i++) if (inputs[i].inp.checked) return inputs[i].value;
+        return null;
+      },
+      set: function (v, quiet) {
+        inputs.forEach(function (r) { r.inp.checked = String(r.value) === String(v); });
+        paintOn();
+        if (!quiet && spec.onChange) spec.onChange(v);
+      }
+    };
+  }
+
+  /* check(host, spec) -> { get, set, el } */
+  function check(host, spec) {
+    var id = nextId("ck");
+    var inp = Kit.el("input", { type: "checkbox", id: id });
+    inp.checked = !!spec.value;
+    var lb = Kit.el("label", { class: "ex-check", for: id }, [inp, document.createTextNode(spec.label)]);
+    inp.addEventListener("change", function () { if (spec.onChange) spec.onChange(inp.checked); });
+    host.appendChild(lb);
+    return {
+      el: lb, get: function () { return inp.checked; },
+      set: function (v, quiet) { inp.checked = !!v; if (!quiet && spec.onChange) spec.onChange(inp.checked); }
+    };
+  }
+
+  /* readout(host, keys) -> set(key, value, sub)
+     The row of large figures under a plot. */
+  function readout(host, keys) {
+    var map = {};
+    var wrap = Kit.el("div", { class: "ex-read" });
+    keys.forEach(function (k) {
+      var v = Kit.el("p", { class: "ex-read-v" });
+      var cell = Kit.el("div", { class: k.tone ? "ex-read-" + k.tone : null }, [
+        Kit.el("p", { class: "ex-read-k", text: k.label }), v
+      ]);
+      map[k.id] = v;
+      wrap.appendChild(cell);
+    });
+    host.appendChild(wrap);
+    return function (id, value, sub) {
+      var n = map[id];
+      if (!n) return;
+      Kit.clear(n);
+      n.appendChild(document.createTextNode(String(value)));
+      if (sub) n.appendChild(Kit.el("small", { text: sub }));
+    };
+  }
+
+  /* ---------- numbers and words ---------- */
+
+  function round(v, dp) {
+    var f = Math.pow(10, dp === undefined ? 2 : dp);
+    return Math.round(v * f) / f;
+  }
+  function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+
+  /* Percentage of a whole, written the way the prose reads it. */
+  function share(part, whole, dp) {
+    if (!isFinite(whole) || whole === 0) return "not defined";
+    return Kit.num(100 * part / whole, dp === undefined ? 0 : dp) + " per cent";
+  }
+
+  var ORD = ["zeroth", "first", "second", "third", "fourth", "fifth", "sixth",
+    "seventh", "eighth", "ninth", "tenth"];
+  function ordinal(n) { return ORD[n] || (String(n) + "th"); }
+
+  var CARD = ["no", "one", "two", "three", "four", "five", "six", "seven",
+    "eight", "nine", "ten", "eleven", "twelve"];
+  function cardinal(n) { return CARD[n] !== undefined ? CARD[n] : String(n); }
+
+  /* ---------- a seeded generator ---------- */
+
+  /* mulberry32. Small, fast and identical in every browser, which is
+     what makes a shared link reproduce the same tournament. */
+  function rng(seed) {
+    var a = (seed >>> 0) || 1;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /* ---------- deferred redraw, one frame at a time ---------- */
+
+  function frames(fn) {
+    var queued = false;
+    return function () {
+      if (queued) return;
+      queued = true;
+      var run = function () { queued = false; fn(); };
+      if (window.requestAnimationFrame) window.requestAnimationFrame(run);
+      else setTimeout(run, 16);
+    };
+  }
+
+  /* ---------- responsive plot width ---------- */
+
+  /* Report the pixel width available to a plot so that the drawing code
+     can choose a viewBox that keeps the labels legible on a narrow
+     screen instead of scaling them down with the picture. */
+  function widthOf(host, fallback) {
+    var w = host.clientWidth || 0;
+    if (!w && host.parentNode) w = host.parentNode.clientWidth || 0;
+    return Math.max(260, Math.round(w || fallback || 640));
+  }
+
+  function onResize(fn) {
+    var t = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(t);
+      t = setTimeout(fn, 120);
+    });
+  }
+
+  return {
+    s: s, svgRoot: svgRoot, label: label,
+    drag: drag, toLocal: toLocal,
+    slider: slider, seg: seg, check: check, readout: readout,
+    round: round, clamp: clamp, share: share,
+    ordinal: ordinal, cardinal: cardinal,
+    rng: rng, frames: frames, widthOf: widthOf, onResize: onResize,
+    nextId: nextId
+  };
+})();
+
+/* ============================================================
+   sim.js
+   The shared machinery behind the five SIMEA simulations. It
+   sits on top of kit.js and essay.js and adds only what a model
+   that runs needs and a model that sits still does not.
+
+     Sim.palette   the kit's colours, resolved into real values
+                   so that a canvas can paint in them
+     Sim.canvas    a crisp canvas that follows its container
+     Sim.transport run, step, reset, share, and a clock, wired
+                   to the keyboard and to prefers reduced motion
+     Sim.still     whether the reader has asked for stillness
+     Sim.line      a small time series plot on a canvas
+     Sim.axis      shared axis furniture for those plots
+
+   No dependencies beyond kit.js and essay.js. No network calls.
+   Spliced into every simulation by build.sh at the SIM_JS marker.
+   ============================================================ */
+
+var Sim = (function () {
+  "use strict";
+
+  /* ---------- stillness ---------- */
+
+  var stillQuery = null;
+  function still() {
+    if (!stillQuery && window.matchMedia) {
+      stillQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    }
+    return !!(stillQuery && stillQuery.matches);
+  }
+
+  /* ---------- palette ---------- */
+
+  /* A canvas cannot paint in var(--accent), so the kit's tokens are read
+     once from the document and handed over as real colours. */
+  var PAL = null;
+  function palette() {
+    if (PAL) return PAL;
+    var cs = getComputedStyle(document.documentElement);
+    function tok(name, fallback) {
+      var v = cs.getPropertyValue(name);
+      v = v ? v.trim() : "";
+      return v || fallback;
+    }
+    PAL = {
+      paper: tok("--paper", "#f2efe6"),
+      sunk: tok("--paper-sunk", "#ebe7dc"),
+      panel: tok("--panel", "#f7f5ee"),
+      field: tok("--field", "#fdfcf8"),
+      ink: tok("--ink", "#2b2620"),
+      inkSoft: tok("--ink-soft", "#4b443b"),
+      dim: tok("--dim", "#6f6558"),
+      faint: tok("--faint", "#8d8375"),
+      rule: tok("--rule", "#d8d2c4"),
+      ruleFirm: tok("--rule-firm", "#bdb5a4"),
+      accent: tok("--accent", "#8a5a24"),
+      accentLit: tok("--accent-lit", "#f0e6d6"),
+      flag: tok("--flag", "#8c3b1e"),
+      flagLit: tok("--flag-lit", "#f3e4de"),
+      good: tok("--good", "#3f5c3a"),
+      goodLit: tok("--good-lit", "#e5eade"),
+      mono: '11px "IBM Plex Mono", ui-monospace, Menlo, monospace',
+      monoSmall: '9px "IBM Plex Mono", ui-monospace, Menlo, monospace'
+    };
+    return PAL;
+  }
+
+  /* mix two hex colours, t from 0 (a) to 1 (b) */
+  function mix(a, b, t) {
+    function rgb(h) {
+      h = String(h).trim();
+      if (h.charAt(0) === "#") h = h.slice(1);
+      if (h.length === 3) h = h.charAt(0) + h.charAt(0) + h.charAt(1) + h.charAt(1) + h.charAt(2) + h.charAt(2);
+      var n = parseInt(h, 16);
+      if (!isFinite(n)) return [0, 0, 0];
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+    var x = rgb(a), y = rgb(b), o = [0, 0, 0];
+    for (var i = 0; i < 3; i++) o[i] = Math.round(x[i] + (y[i] - x[i]) * t);
+    return "rgb(" + o[0] + "," + o[1] + "," + o[2] + ")";
+  }
+
+  /* ---------- canvas ---------- */
+
+  /* canvas(host, spec) -> { cv, ctx, w, h, resize, label }
+     spec: { aspect, minH, maxH, label, id, focus }
+     w and h are css pixels; the context is already scaled by the device
+     pixel ratio, so everything is drawn in css pixels and stays crisp. */
+  function canvas(host, spec) {
+    var s = spec || {};
+    var cv = document.createElement("canvas");
+    cv.className = "sm-canvas";
+    if (s.id) cv.id = s.id;
+    cv.setAttribute("role", "img");
+    cv.setAttribute("aria-label", s.label || "");
+    if (s.focus) cv.setAttribute("tabindex", "0");
+    host.appendChild(cv);
+    var ctx = cv.getContext("2d");
+
+    var api = {
+      cv: cv, ctx: ctx, w: 300, h: 200,
+      label: function (text) { cv.setAttribute("aria-label", text); },
+      resize: function () {
+        var w = host.clientWidth || cv.clientWidth || 320;
+        if (w < 240) w = 240;
+        var h = Math.round(w * (s.aspect === undefined ? 0.62 : s.aspect));
+        if (s.minH && h < s.minH) h = s.minH;
+        if (s.maxH && h > s.maxH) h = s.maxH;
+        var dpr = Math.min(2, window.devicePixelRatio || 1);
+        api.w = w; api.h = h;
+        cv.style.height = h + "px";
+        cv.width = Math.round(w * dpr);
+        cv.height = Math.round(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return api;
+      }
+    };
+    api.resize();
+    return api;
+  }
+
+  function clear(c, colour) {
+    var p = palette();
+    c.ctx.fillStyle = colour || p.field;
+    c.ctx.fillRect(0, 0, c.w, c.h);
+  }
+
+  function text(c, str, x, y, opt) {
+    var o = opt || {}, p = palette();
+    c.ctx.save();
+    c.ctx.font = o.font || (o.small ? p.monoSmall : p.mono);
+    c.ctx.fillStyle = o.fill || p.faint;
+    c.ctx.textAlign = o.align || "left";
+    c.ctx.textBaseline = o.baseline || "alphabetic";
+    c.ctx.fillText(str, x, y);
+    c.ctx.restore();
+  }
+
+  /* ---------- a small time series plot ---------- */
+
+  /* line(c, spec)
+     spec: { series: [{ data, colour, name, dash }], yMin, yMax, xLabel,
+             yTicks: [{v,label}], pad, maxPoints } */
+  function line(c, spec) {
+    var p = palette(), ctx = c.ctx;
+    var padL = spec.padL === undefined ? 42 : spec.padL;
+    var padR = spec.padR === undefined ? 10 : spec.padR;
+    var padT = spec.padT === undefined ? 10 : spec.padT;
+    var padB = spec.padB === undefined ? 26 : spec.padB;
+    var iw = c.w - padL - padR, ih = c.h - padT - padB;
+    if (iw < 10 || ih < 10) return;
+
+    clear(c, p.field);
+    ctx.strokeStyle = p.rule;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(padL + 0.5, padT + 0.5, iw - 1, ih - 1);
+
+    var yMin = spec.yMin === undefined ? 0 : spec.yMin;
+    var yMax = spec.yMax === undefined ? 1 : spec.yMax;
+    if (yMax <= yMin) yMax = yMin + 1;
+    function Y(v) { return padT + ih - (v - yMin) / (yMax - yMin) * ih; }
+
+    var n = 0;
+    spec.series.forEach(function (s) { if (s.data.length > n) n = s.data.length; });
+    var span = Math.max(spec.minSpan || 40, n);
+    function X(i) { return padL + (span <= 1 ? 0 : i * iw / (span - 1)); }
+
+    (spec.yTicks || []).forEach(function (t) {
+      var yy = Y(t.v);
+      ctx.strokeStyle = p.rule;
+      ctx.setLineDash([1, 4]);
+      ctx.beginPath(); ctx.moveTo(padL, yy); ctx.lineTo(padL + iw, yy); ctx.stroke();
+      ctx.setLineDash([]);
+      text(c, t.label, padL - 6, yy + 3, { align: "right", small: true, fill: p.faint });
+    });
+
+    spec.series.forEach(function (s) {
+      if (!s.data.length) return;
+      ctx.strokeStyle = s.colour;
+      ctx.lineWidth = s.width || 1.8;
+      if (s.dash) ctx.setLineDash(s.dash); else ctx.setLineDash([]);
+      ctx.beginPath();
+      for (var i = 0; i < s.data.length; i++) {
+        var xx = X(i), yy = Y(s.data[i]);
+        if (i === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    if (spec.xLabel) {
+      text(c, spec.xLabel, padL + iw / 2, c.h - 8, { align: "center", small: true });
+    }
+    if (spec.legend !== false) {
+      var lx = padL + 6, ly = padT + 12;
+      spec.series.forEach(function (s) {
+        if (!s.name) return;
+        ctx.strokeStyle = s.colour; ctx.lineWidth = 2.2;
+        if (s.dash) ctx.setLineDash(s.dash); else ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(lx, ly - 3); ctx.lineTo(lx + 14, ly - 3); ctx.stroke();
+        ctx.setLineDash([]);
+        text(c, s.name, lx + 19, ly, { small: true, fill: p.dim });
+        ly += 13;
+      });
+    }
+  }
+
+  /* keep a series to a fixed number of points by dropping the oldest */
+  function push(arr, v, cap) {
+    arr.push(v);
+    if (arr.length > cap) arr.splice(0, arr.length - cap);
+    return arr;
+  }
+
+  /* ---------- transport ---------- */
+
+  /* transport(host, spec) -> { running, start, stop, toggle, tick, reset,
+                                setClock, el }
+     spec: { onStep, onDraw, onReset, onShare, stepsPerFrame, clock,
+             burst, focusEl, runLabel, stillLabel }
+
+     Under prefers reduced motion nothing animates by itself: the run
+     button becomes an advance button that computes a burst of steps and
+     paints once at the end, and the step button is always there, so the
+     model stays fully usable without a single frame of movement. */
+  function transport(host, spec) {
+    var s = spec || {};
+    var burst = s.burst || 25;
+    var spf = s.stepsPerFrame || 1;
+    var quiet = still();
+
+    var bar = Kit.el("div", { class: "sm-bar" });
+    var runBtn = Kit.el("button", {
+      type: "button", class: "k-btn sm-btn-run",
+      text: quiet ? ("Advance " + burst + " steps") : (s.runLabel || "Run")
+    });
+    var stepBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Step" });
+    var resetBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Reset" });
+    var shareBtn = s.onShare
+      ? Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Copy link to this run" })
+      : null;
+    var clock = Kit.el("span", { class: "sm-clock", text: "" });
+
+    bar.appendChild(runBtn);
+    bar.appendChild(stepBtn);
+    bar.appendChild(resetBtn);
+    if (shareBtn) bar.appendChild(shareBtn);
+    bar.appendChild(clock);
+    host.appendChild(bar);
+
+    if (quiet) {
+      host.appendChild(Kit.el("p", { class: "sm-still", text:
+        "Your system asks for reduced motion, so this model never animates. "
+        + "Advance moves it " + burst + " steps and draws the result once. Step moves it one." }));
+    }
+
+    host.appendChild(Kit.el("p", { class: "sm-keys", html:
+      "Keyboard: <kbd>Space</kbd> " + (quiet ? "advances" : "runs and pauses")
+      + ", <kbd>S</kbd> steps once, <kbd>R</kbd> resets. "
+      + "Every control below is a standard slider, radio group or button." }));
+
+    var api = {
+      el: bar, running: false, runBtn: runBtn,
+      setClock: function (t) { clock.textContent = t; },
+      /* how many steps a frame takes while running, which some models let
+         the reader set: it changes the waiting and not the model */
+      setRate: function (v) { spf = Math.max(1, Math.round(v)); }
+    };
+
+    var raf = null;
+    function frame() {
+      if (!api.running) return;
+      for (var i = 0; i < spf; i++) s.onStep();
+      if (s.onDraw) s.onDraw();
+      raf = window.requestAnimationFrame(frame);
+    }
+
+    api.start = function () {
+      if (quiet || api.running) return;
+      api.running = true;
+      runBtn.textContent = "Pause";
+      runBtn.setAttribute("data-on", "1");
+      raf = window.requestAnimationFrame(frame);
+    };
+    api.stop = function () {
+      if (!api.running) return;
+      api.running = false;
+      runBtn.textContent = s.runLabel || "Run";
+      runBtn.removeAttribute("data-on");
+      if (raf) window.cancelAnimationFrame(raf);
+      raf = null;
+      if (s.onSettle) s.onSettle();
+    };
+    api.toggle = function () {
+      if (quiet) {
+        for (var i = 0; i < burst; i++) s.onStep();
+        if (s.onDraw) s.onDraw();
+        if (s.onSettle) s.onSettle();
+        return;
+      }
+      if (api.running) api.stop(); else api.start();
+    };
+    api.tick = function () {
+      s.onStep();
+      if (s.onDraw) s.onDraw();
+      if (s.onSettle) s.onSettle();
+    };
+    api.reset = function () {
+      api.stop();
+      if (s.onReset) s.onReset();
+    };
+
+    runBtn.addEventListener("click", api.toggle);
+    stepBtn.addEventListener("click", function () { api.stop(); api.tick(); });
+    resetBtn.addEventListener("click", api.reset);
+    if (shareBtn) shareBtn.addEventListener("click", function () { s.onShare(); });
+
+    /* the keys work while the figure, or anything inside it, has focus */
+    var scope = s.scope || host;
+    scope.addEventListener("keydown", function (e) {
+      var tag = (e.target && e.target.tagName) || "";
+      if (tag === "INPUT" && e.key === " ") return;
+      if (tag === "BUTTON" && (e.key === " " || e.key === "Enter")) return;
+      if (e.key === " ") { e.preventDefault(); api.toggle(); }
+      else if (e.key === "s" || e.key === "S") { e.preventDefault(); api.stop(); api.tick(); }
+      else if (e.key === "r" || e.key === "R") { e.preventDefault(); api.reset(); }
+    });
+
+    /* a model that is running while its page is hidden is only heat */
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) api.stop();
+    });
+
+    api.quiet = quiet;
+    return api;
+  }
+
+  /* ---------- numbers ---------- */
+
+  function fix(v, dp) {
+    if (!isFinite(v)) return "not defined";
+    return Number(v).toFixed(dp === undefined ? 2 : dp);
+  }
+
+  /* Shannon entropy of a histogram of counts, in bits, normalised by the
+     entropy of the flat distribution over the same number of bins so that
+     it runs from zero to one. */
+  function entropy(counts) {
+    var total = 0, i;
+    for (i = 0; i < counts.length; i++) total += counts[i];
+    if (total <= 0 || counts.length < 2) return 0;
+    var h = 0;
+    for (i = 0; i < counts.length; i++) {
+      var q = counts[i] / total;
+      if (q > 0) h -= q * Math.log(q);
+    }
+    return h / Math.log(counts.length);
+  }
+
+  /* The distance between two histograms measured along the axis they sit
+     on: how far, on average, the mass of one would have to be carried to
+     lie exactly on the other, as a share of the whole width of the axis.
+     Zero when the two are identical, one when they sit at opposite ends.
+     Unlike a total variation distance it does not jump to one the moment
+     two collapsed distributions stop overlapping, which is what makes it
+     usable once a population has gathered into a few positions. */
+  function emd(a, b) {
+    var sa = 0, sb = 0, i;
+    for (i = 0; i < a.length; i++) sa += a[i];
+    for (i = 0; i < b.length; i++) sb += b[i];
+    if (sa <= 0 || sb <= 0 || a.length < 2) return 0;
+    var fa = 0, fb = 0, sum = 0;
+    for (i = 0; i < a.length - 1; i++) {
+      fa += a[i] / sa;
+      fb += b[i] / sb;
+      sum += Math.abs(fa - fb);
+    }
+    return sum / (a.length - 1);
+  }
+
+  /* total variation distance between two histograms of counts */
+  function tvd(a, b) {
+    var sa = 0, sb = 0, i;
+    for (i = 0; i < a.length; i++) sa += a[i];
+    for (i = 0; i < b.length; i++) sb += b[i];
+    if (sa <= 0 || sb <= 0) return 0;
+    var d = 0;
+    for (i = 0; i < a.length; i++) d += Math.abs(a[i] / sa - b[i] / sb);
+    return d / 2;
+  }
+
+  return {
+    still: still, palette: palette, mix: mix,
+    canvas: canvas, clear: clear, text: text, line: line, push: push,
+    transport: transport, fix: fix, entropy: entropy, tvd: tvd, emd: emd
+  };
+})();
+
+/* ============================================================
+   Simulation two: the recommender
+
+   Two worlds are advanced in lockstep from one seed. They hold
+   the same agents at the same starting positions and they draw
+   the same random numbers in the same order. The only difference
+   is the weight the feed puts on agreement: alpha in the steered
+   world, zero in the neutral one. At alpha zero the two are the
+   same process and every measure of the difference reads zero.
+
+   Per agent per round:
+     draw a candidate pool of POOL other agents          POOL draws
+     for each of SLOTS feed positions                    2 draws each
+       one draw decides random slot or ranked slot
+       one draw makes the pick from the pool
+   so the number of draws consumed is identical in both worlds
+   whatever alpha is, which is what keeps them in lockstep.
+
+   Accepting an item means it is within c of the agent's own
+   position. The update is then
+
+     x_i(next) = (1 - mu m_i) x_i + mu sum over accepted x_j
+
+   which is where the autonomy threshold comes from directly.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var Q = Kit.qs;
+
+  var BINS = 24;
+  var POOL = 32;
+  var SLOTS = 5;
+  var MU = 0.15;
+  var COLS = 240;          /* how many rounds the raster keeps */
+  var MAXT = 240;
+
+  var S = { alpha: 6, c: 0.6, rho: 0.05, n: 500, seed: 11 };
+
+  var W1 = null, W2 = null, rnd1 = null, rnd2 = null, tick = 0;
+  var ras1 = null, ras2 = null;     /* offscreen rasters, one column per round */
+  var hist = { g: [], a: [], h: [] };
+  var live = { g: 0, a: 1, h: 1, hn: 1, hAll: 1, clusters: 1, spread: 0 };
+
+  /* ---------- the two worlds ---------- */
+
+  function makeWorld(n, rand) {
+    var x = new Float64Array(n);
+    for (var i = 0; i < n; i++) x[i] = rand() * 2 - 1;
+    return { x: x, n: n, served: new Float64Array(BINS), accepted: 0, hFeed: 1, hAll: 1 };
+  }
+
+  function reset() {
+    var n = S.n;
+    rnd1 = Ex.rng(S.seed * 2654435761 + 7);
+    rnd2 = Ex.rng(S.seed * 2654435761 + 7);
+    W1 = makeWorld(n, rnd1);
+    W2 = makeWorld(n, rnd2);
+    tick = 0;
+    hist.g = []; hist.a = []; hist.h = [];
+    if (ras1) { clearRaster(ras1); clearRaster(ras2); }
+    measure();
+    pushHist();
+  }
+
+  function bin(v) {
+    var b = Math.floor((v + 1) / 2 * BINS);
+    return b < 0 ? 0 : (b >= BINS ? BINS - 1 : b);
+  }
+
+  /* One round of one world. alpha is the world's own weight on agreement. */
+  function advance(w, rand, alpha) {
+    var n = w.n, x = w.x;
+    var next = new Float64Array(n);
+    var pool = new Int32Array(POOL);
+    var wt = new Float64Array(POOL);
+    var served = w.served;
+    var probs = new Float64Array(BINS);
+    var i, k, s, b;
+    for (i = 0; i < BINS; i++) served[i] = 0;
+    var acceptedTotal = 0, hSum = 0;
+
+    for (i = 0; i < n; i++) {
+      for (k = 0; k < POOL; k++) pool[k] = Math.floor(rand() * n);
+
+      var sum = 0;
+      for (k = 0; k < POOL; k++) {
+        var d = x[pool[k]] - x[i];
+        if (d < 0) d = -d;
+        wt[k] = alpha > 0 ? Math.exp(-alpha * d) : 1;
+        sum += wt[k];
+      }
+
+      /* The environment this one agent is being offered, exactly rather than
+         as a sample of five: the probability that a slot in its feed lands in
+         each bin, mixing the ranked draw with the random one. */
+      for (b = 0; b < BINS; b++) probs[b] = 0;
+      for (k = 0; k < POOL; k++) {
+        var pk = S.rho / POOL + (1 - S.rho) * (sum > 0 ? wt[k] / sum : 1 / POOL);
+        probs[bin(x[pool[k]])] += pk;
+      }
+      hSum += Sim.entropy(probs);
+
+      var acc = 0, pull = 0;
+      for (s = 0; s < SLOTS; s++) {
+        var u1 = rand();
+        var u2 = rand();
+        var pick;
+        if (u1 < S.rho || sum <= 0) {
+          pick = pool[Math.min(POOL - 1, Math.floor(u2 * POOL))];
+        } else {
+          var target = u2 * sum, run = 0, kk = POOL - 1;
+          for (k = 0; k < POOL; k++) {
+            run += wt[k];
+            if (run >= target) { kk = k; break; }
+          }
+          pick = pool[kk];
+        }
+        var xv = x[pick];
+        served[bin(xv)] += 1;
+        var gap = xv - x[i];
+        if (gap < 0 ? -gap <= S.c : gap <= S.c) { acc++; pull += (xv - x[i]); }
+      }
+
+      var v = x[i] + MU * pull;
+      next[i] = v < -1 ? -1 : (v > 1 ? 1 : v);
+      acceptedTotal += acc;
+    }
+
+    w.x = next;
+    w.accepted = n ? acceptedTotal / n : 0;
+    w.hFeed = n ? hSum / n : 1;
+    w.hAll = Sim.entropy(served);
+  }
+
+  function histogram(w) {
+    var h = new Float64Array(BINS);
+    for (var i = 0; i < w.n; i++) h[bin(w.x[i])] += 1;
+    return h;
+  }
+
+  function clusters(w) {
+    var xs = Array.prototype.slice.call(w.x);
+    xs.sort(function (a, b) { return a - b; });
+    var groups = [], cur = [xs[0]];
+    for (var i = 1; i < xs.length; i++) {
+      if (xs[i] - xs[i - 1] > 0.12) { groups.push(cur); cur = []; }
+      cur.push(xs[i]);
+    }
+    groups.push(cur);
+    var big = groups.filter(function (gp) { return gp.length >= w.n * 0.05; });
+    if (!big.length) {
+      big = [groups.reduce(function (a, b) { return b.length > a.length ? b : a; }, groups[0])];
+    }
+    var centres = big.map(function (gp) {
+      var s = 0;
+      for (var j = 0; j < gp.length; j++) s += gp[j];
+      return s / gp.length;
+    });
+    var spread = centres.length > 1 ? centres[centres.length - 1] - centres[0] : 0;
+    return { count: big.length, spread: spread };
+  }
+
+  function measure() {
+    var h1 = histogram(W1), h2 = histogram(W2);
+    live.g = Sim.emd(h1, h2);
+    live.a = 1 - MU * W1.accepted;
+    if (live.a < 0) live.a = 0;
+    live.h = W1.hFeed;
+    live.hn = W2.hFeed;
+    live.hAll = W1.hAll;
+    var cl = clusters(W1);
+    live.clusters = cl.count;
+    live.spread = cl.spread;
+    return { h1: h1, h2: h2 };
+  }
+
+  function pushHist() {
+    Sim.push(hist.g, live.g, MAXT + 1);
+    Sim.push(hist.a, live.a, MAXT + 1);
+    Sim.push(hist.h, live.h, MAXT + 1);
+  }
+
+  function step() {
+    if (tick >= MAXT) return;
+    advance(W1, rnd1, S.alpha);
+    advance(W2, rnd2, 0);
+    tick++;
+    var hs = measure();
+    pushHist();
+    column(ras1, tick, hs.h1, W1.n);
+    column(ras2, tick, hs.h2, W2.n);
+  }
+
+  /* ---------- the rasters ---------- */
+
+  function makeRaster() {
+    var cv = document.createElement("canvas");
+    cv.width = COLS; cv.height = BINS;
+    var ctx = cv.getContext("2d");
+    return { cv: cv, ctx: ctx };
+  }
+
+  function clearRaster(r) {
+    var p = Sim.palette();
+    r.ctx.fillStyle = p.field;
+    r.ctx.fillRect(0, 0, COLS, BINS);
+  }
+
+  function column(r, t, h, n) {
+    if (t < 0 || t >= COLS) return;
+    var p = Sim.palette();
+    /* the darkest band on the column sets the top of the ramp, so a
+       collapsed population and a spread one are both legible */
+    var max = 0;
+    for (var b = 0; b < BINS; b++) if (h[b] > max) max = h[b];
+    var soft = Math.max(max, n * 0.12);
+    for (b = 0; b < BINS; b++) {
+      var q = soft > 0 ? h[b] / soft : 0;
+      if (q > 1) q = 1;
+      r.ctx.fillStyle = Sim.mix(p.field, p.accent, Math.pow(q, 0.75));
+      r.ctx.fillRect(t, BINS - 1 - b, 1, 1);
+    }
+  }
+
+  /* ---------- drawing ---------- */
+
+  var cRas = null, cPlot = null;
+
+  function drawRaster() {
+    var p = Sim.palette(), ctx = cRas.ctx;
+    Sim.clear(cRas, p.panel);
+    var padL = 46, padR = 8, padT = 16, padB = 22, gap = 24;
+    var iw = cRas.w - padL - padR;
+    var ih = (cRas.h - padT - padB - gap) / 2;
+    if (iw < 20 || ih < 20) return;
+
+    ctx.imageSmoothingEnabled = false;
+
+    function panel(r, y, title) {
+      ctx.drawImage(r.cv, 0, 0, COLS, BINS, padL, y, iw, ih);
+      ctx.strokeStyle = p.ruleFirm;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(padL + 0.5, y + 0.5, iw - 1, ih - 1);
+      Sim.text(cRas, title, padL + 5, y - 4, { small: true, fill: p.dim });
+      Sim.text(cRas, "+1", padL - 6, y + 8, { align: "right", small: true });
+      Sim.text(cRas, "0", padL - 6, y + ih / 2 + 3, { align: "right", small: true });
+      Sim.text(cRas, "−1", padL - 6, y + ih - 2, { align: "right", small: true });
+    }
+
+    panel(ras1, padT, "with the recommender");
+    panel(ras2, padT + ih + gap, "with a neutral feed");
+
+    /* the leading edge of the run */
+    if (tick > 0 && tick < COLS) {
+      var x = padL + tick / COLS * iw;
+      ctx.strokeStyle = p.flag;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, padT); ctx.lineTo(x, padT + ih);
+      ctx.moveTo(x, padT + ih + gap); ctx.lineTo(x, padT + ih + gap + ih);
+      ctx.stroke();
+    }
+
+    Sim.text(cRas, "rounds", padL + iw / 2, cRas.h - 7, { align: "center", small: true });
+    cRas.label(summary());
+  }
+
+  function drawPlot() {
+    var p = Sim.palette();
+    Sim.line(cPlot, {
+      series: [
+        { data: hist.g, colour: p.accent, name: "influence gradient" },
+        { data: hist.a, colour: p.good, name: "autonomy threshold" },
+        { data: hist.h, colour: p.ink, name: "entropy of one feed", dash: [5, 3] }
+      ],
+      yMin: 0, yMax: 1, minSpan: 80,
+      yTicks: [{ v: 0, label: "0" }, { v: 0.5, label: "0.5" }, { v: 1, label: "1" }],
+      xLabel: "rounds"
+    });
+    cPlot.label(summary2());
+  }
+
+  /* ---------- words ---------- */
+
+  function verdictWord() {
+    if (tick < 5) return "not run yet";
+    if (live.clusters <= 1) return "consensus";
+    if (live.clusters === 2 && live.spread > 0.8) return "hard polarisation";
+    if (live.clusters === 2) return "two camps";
+    return "fragmentation into " + live.clusters + " camps";
+  }
+
+  function summary() {
+    return "Two rasters of the same population over " + tick + " rounds, opinion on the vertical from "
+      + "minus one to plus one, time left to right, darker where more agents stand. The upper raster has "
+      + "the recommender in it, weighting agreement at " + Sim.fix(S.alpha, 2)
+      + " with " + Math.round(S.rho * 100) + " per cent of the feed drawn at random. The lower raster is "
+      + "the same agents and the same random draws with a neutral feed. The population currently sits in "
+      + Ex.cardinal(live.clusters) + " camp" + (live.clusters === 1 ? "" : "s")
+      + " and the reading is " + verdictWord() + ".";
+  }
+
+  function summary2() {
+    return "The three constructs over " + tick + " rounds, each running from zero to one. The influence "
+      + "gradient reads " + Sim.fix(live.g, 3) + ", the autonomy threshold " + Sim.fix(live.a, 3)
+      + ", and the entropy of one agent's choice environment " + Sim.fix(live.h, 3)
+      + " against " + Sim.fix(live.hn, 3) + " in the neutral world. Measured across the whole population "
+      + "at once rather than one agent at a time it reads " + Sim.fix(live.hAll, 3) + ".";
+  }
+
+  function says() {
+    var host = Q("#rc-says");
+    Kit.clear(host);
+    var e = Kit.el;
+    function n(t, flag) { return e("span", { class: "ex-n" + (flag ? " ex-n-flag" : ""), text: t }); }
+
+    var p1 = e("p");
+    if (tick === 0) {
+      p1.appendChild(document.createTextNode("Nothing has run yet. Both worlds hold the same "
+        + S.n + " agents spread evenly along the axis. Press run."));
+      host.appendChild(p1);
+      return;
+    }
+
+    if (S.alpha === 0) {
+      p1.appendChild(document.createTextNode("The recommender is set to favour agreement not at all, so "
+        + "it is doing the same thing a neutral feed does and the two worlds are the same process. The "
+        + "influence gradient reads "));
+      p1.appendChild(n(Sim.fix(live.g, 3)));
+      p1.appendChild(document.createTextNode(" after " + tick + " rounds. That is the control: a measure "
+        + "that cannot read zero when nothing is happening is not measuring anything."));
+      host.appendChild(p1);
+    } else {
+      p1.appendChild(document.createTextNode("After " + tick + " rounds the steered population and its "
+        + "unsteered twin differ by "));
+      p1.appendChild(n(Sim.fix(live.g, 3), live.g > 0.3));
+      p1.appendChild(document.createTextNode(" on the influence gradient. The same agents, the same "
+        + "starting positions and the same random numbers went to "));
+      p1.appendChild(document.createTextNode(live.g < 0.05
+        ? "almost the same place, so the selection has not yet carried them anywhere the neutral feed "
+          + "would not have taken them."
+        : "measurably different places, and the only thing that differed between the two runs was which "
+          + "handful of positions each agent was shown."));
+      host.appendChild(p1);
+    }
+
+    var p2 = e("p");
+    p2.appendChild(document.createTextNode("The average agent's next position is "));
+    p2.appendChild(n(Math.round(live.a * 100) + " per cent"));
+    p2.appendChild(document.createTextNode(" its own prior and the rest is what it was shown. The feed "
+      + "itself is currently at "));
+    p2.appendChild(n(Sim.fix(live.h, 2), live.h < 0.5));
+    p2.appendChild(document.createTextNode(" of the entropy it would have if it offered that agent the "
+      + "whole axis evenly, against " + Sim.fix(live.hn, 2) + " in the neutral world. Across the whole "
+      + "population at once the same measure reads " + Sim.fix(live.hAll, 2)
+      + ", which is higher because narrow feeds pointing in different directions still cover the axis "
+      + "between them. The population stands in "
+      + Ex.cardinal(live.clusters) + " camp" + (live.clusters === 1 ? "" : "s") + "."));
+    host.appendChild(p2);
+  }
+
+  /* ---------- controls ---------- */
+
+  var cA, cC, cR, cN, setRead, tr;
+
+  function buildControls() {
+    var rack = Q("#rc-ctrls");
+
+    cA = Ex.slider(rack, {
+      label: "Favouring of agreement",
+      min: 0, max: 8, step: 0.25, value: S.alpha,
+      format: function (v) { return Sim.fix(v, 2); },
+      hint: "How steeply the feed prefers positions close to the agent's own. Zero is a neutral feed.",
+      onInput: function (v) { S.alpha = v; restart(); }
+    });
+
+    cC = Ex.slider(rack, {
+      label: "Willingness to move",
+      min: 0.05, max: 2, step: 0.05, value: S.c,
+      format: function (v) { return Sim.fix(v, 2); },
+      hint: "How far away something can be and still move the agent. The axis is two units wide.",
+      onInput: function (v) { S.c = v; restart(); }
+    });
+
+    cR = Ex.slider(rack, {
+      label: "Random share of the feed",
+      min: 0, max: 1, step: 0.05, value: S.rho,
+      format: function (v) { return Math.round(v * 100) + " %"; },
+      hint: "Slots filled with genuinely random material rather than ranked material.",
+      onInput: function (v) { S.rho = v; restart(); }
+    });
+
+    cN = Ex.slider(rack, {
+      label: "Population",
+      min: 100, max: 1200, step: 100, value: S.n,
+      format: function (v) { return String(v); },
+      hint: "How many agents are in each of the two worlds.",
+      onInput: function (v) { S.n = v; restart(); }
+    });
+
+    setRead = Ex.readout(Q("#rc-read"), [
+      { id: "g", label: "Influence gradient", tone: "hot" },
+      { id: "a", label: "Autonomy threshold" },
+      { id: "h", label: "Entropy of one feed" },
+      { id: "hn", label: "The same, neutral feed" },
+      { id: "cl", label: "Camps" },
+      { id: "t", label: "Rounds" }
+    ]);
+
+    var p = Sim.palette();
+    var key = Q("#rc-key");
+    [[p.accent, "more agents standing here"], [p.flag, "the round now being drawn"]].forEach(function (k) {
+      var mark = Kit.el("i");
+      mark.style.background = k[0];
+      key.appendChild(Kit.el("span", {}, [mark, document.createTextNode(k[1])]));
+    });
+  }
+
+  function restart() {
+    if (tr) tr.stop();
+    reset();
+    paint();
+    Kit.state.write(hashOut());
+  }
+
+  /* ---------- state in the address ---------- */
+
+  function hashOut() {
+    return { a: Ex.round(S.alpha, 2), c: Ex.round(S.c, 2), r: Ex.round(S.rho, 2),
+             n: S.n, sd: S.seed, t: tick };
+  }
+
+  function hashIn() {
+    var o = Kit.state.read();
+    if (!o) return false;
+    if (isFinite(o.a)) S.alpha = Ex.clamp(Number(o.a), 0, 8);
+    if (isFinite(o.c)) S.c = Ex.clamp(Number(o.c), 0.05, 2);
+    if (isFinite(o.r)) S.rho = Ex.clamp(Number(o.r), 0, 1);
+    if (isFinite(o.n)) S.n = Math.round(Ex.clamp(Number(o.n), 100, 1200) / 100) * 100;
+    if (isFinite(o.sd)) S.seed = Math.round(Ex.clamp(Number(o.sd), 1, 999999));
+    reset();
+    var want = isFinite(o.t) ? Math.round(Ex.clamp(Number(o.t), 0, MAXT)) : 0;
+    while (tick < want) step();
+    return true;
+  }
+
+  function sync() {
+    cA.set(S.alpha, true); cC.set(S.c, true);
+    cR.set(S.rho, true); cN.set(S.n, true);
+  }
+
+  /* ---------- render ---------- */
+
+  function paint() {
+    drawRaster();
+    drawPlot();
+    setRead("g", Sim.fix(live.g, 3), "0 is no difference");
+    setRead("a", Sim.fix(live.a, 3), "1 is all its own");
+    setRead("h", Sim.fix(live.h, 3), "1 is the whole axis");
+    setRead("hn", Sim.fix(live.hn, 3), "across everyone: " + Sim.fix(live.hAll, 3));
+    setRead("cl", String(live.clusters), "spread " + Sim.fix(live.spread, 2));
+    setRead("t", String(tick), tick >= MAXT ? "run complete" : "of " + MAXT);
+    Q("#rc-sum").textContent = summary();
+    Q("#rc-sum2").textContent = summary2();
+    Q("#rc-verdict").textContent = verdictWord();
+    Q("#rc-live-g").textContent = Sim.fix(live.g, 3);
+    Q("#rc-live-a").textContent = Sim.fix(live.a, 3);
+    Q("#rc-live-h").textContent = Sim.fix(live.h, 3);
+    says();
+    if (tr) tr.setClock("round " + tick + " of " + MAXT);
+  }
+
+  function init() {
+    cRas = Sim.canvas(Q("#rc-raster"), { aspect: 0.66, minH: 260, maxH: 420, label: "" });
+    cPlot = Sim.canvas(Q("#rc-plot"), { aspect: 0.42, minH: 190, maxH: 280, label: "" });
+    ras1 = makeRaster(); ras2 = makeRaster();
+    clearRaster(ras1); clearRaster(ras2);
+
+    buildControls();
+    if (!hashIn()) reset();
+    sync();
+
+    tr = Sim.transport(Q("#rc-bar"), {
+      scope: Q("#m1"),
+      burst: 30,
+      onStep: function () { step(); },
+      onDraw: function () {
+        drawRaster();
+        if (tick % 3 === 0) drawPlot();
+        if (tr) tr.setClock("round " + tick + " of " + MAXT);
+        if (tick >= MAXT) { tr.stop(); paint(); }
+      },
+      onSettle: function () { paint(); Kit.state.write(hashOut()); },
+      onReset: function () { S.seed = (S.seed % 999999) + 1; reset(); paint(); Kit.state.write(hashOut()); },
+      onShare: function () { Kit.share(hashOut(), "Link copied. It reopens on this round."); }
+    });
+
+    paint();
+    Kit.state.write(hashOut());
+
+    Ex.onResize(function () { cRas.resize(); cPlot.resize(); paint(); });
+    window.addEventListener("hashchange", function () {
+      if (hashIn()) { sync(); paint(); }
+    });
+
+    /* a small door for the verification harness and for anybody who wants
+       to drive the model from the console rather than the sliders */
+    window.__rc = {
+      set: function (o) {
+        if (o.alpha !== undefined) S.alpha = o.alpha;
+        if (o.c !== undefined) S.c = o.c;
+        if (o.rho !== undefined) S.rho = o.rho;
+        if (o.n !== undefined) S.n = o.n;
+        if (o.seed !== undefined) S.seed = o.seed;
+        if (tr) tr.stop();
+        reset(); sync(); paint(); Kit.state.write(hashOut());
+      },
+      run: function (k) { for (var i = 0; i < k; i++) step(); paint(); Kit.state.write(hashOut()); return this.read(); },
+      read: function () {
+        return { g: live.g, a: live.a, h: live.h, hn: live.hn, hAll: live.hAll,
+                 clusters: live.clusters, tick: tick, alpha: S.alpha, rho: S.rho, c: S.c, n: S.n };
+      }
+    };
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+
+<script>
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Beş simülasyondan ikincisi</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Simulation zwei von fünf</i>"}};
+
+(function(){
+  "use strict";
+  var KEY = "lang", lang = "en";
+  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
+  var D = window.CHROME_I18N || {};
+  var base = {}, baseA = {};
+  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
+  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function apply(l){
+    if(!D[l]) l = "en";
+    var d = D[l] || {};
+    document.querySelectorAll(SEL).forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if(!(k in base)) base[k] = el.innerHTML;
+      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
+    });
+    document.querySelectorAll(SELA).forEach(function(el){
+      var k = el.getAttribute("data-ia");
+      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
+      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
+    });
+    document.documentElement.setAttribute("lang", l);
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    window.__lang = l;
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  window.__chrome = apply;
+  apply(lang);
+})();
+
+</script>
+
+</body>
+</html>

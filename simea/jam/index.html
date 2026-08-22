@@ -1,0 +1,2717 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The jam</title>
+<meta name="description" content="A ring road with nothing blocking it. Set the density and the drivers' reaction time, tap one brake, and watch a jam form out of nothing and travel backwards through the traffic. A catastrophe with no cause, made of ordinary local rules.">
+<meta name="author" content="Kerem Ozdemir">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Instrument+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="canonical" href="https://keremozdemir.de/simea/jam/">
+<meta property="og:title" content="The jam">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   kit.css
+   House visual system for the open instruments at keremozdemir.de
+   Paper palette, Fraunces display, Newsreader body, IBM Plex Mono
+   for every number. No framework, no build step.
+
+   The host document loads three families from Google Fonts and nothing
+   else, with preconnect to fonts.googleapis.com and fonts.gstatic.com:
+     Fraunces      opsz,wght 9..144 at 300, 400, 500
+     Newsreader    ital,opsz,wght 6..72 at 400, 500 and italic 400
+     IBM Plex Mono 400, 500
+   Every family here has a real fallback stack, so the page stays legible
+   if the fonts never arrive.
+   ============================================================ */
+
+/* ---------- 1. tokens ---------- */
+
+:root {
+  color-scheme: light;
+
+  --paper:      #f2efe6;
+  --paper-sunk: #ebe7dc;
+  --panel:      #f7f5ee;
+  --field:      #fdfcf8;
+  --ink:        #2b2620;
+  --ink-soft:   #4b443b;
+  --dim:        #6f6558;
+  --faint:      #8d8375;
+  --rule:       #d8d2c4;
+  --rule-firm:  #bdb5a4;
+  --accent:     #8a5a24;
+  --accent-lit: #f0e6d6;
+  --flag:       #8c3b1e;
+  --flag-lit:   #f3e4de;
+  --good:       #3f5c3a;
+  --good-lit:   #e5eade;
+
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --serif:   "Newsreader", Georgia, "Times New Roman", serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 66ch;
+  --gap:     clamp(1rem, 2.4vw, 1.6rem);
+  --pad:     clamp(0.95rem, 2.4vw, 1.5rem);
+  --edge:    clamp(1.1rem, 5vw, 3.25rem);
+}
+
+/* The instruments used to flip to a dark palette with the system.  They
+   sit inside keremozdemir.de now, whose paper is light and whose top bar
+   and footer are painted from the site's own tokens, so a page that went
+   dark underneath a light bar would only look broken.  One palette. */
+
+/* ---------- 2. reset and page ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, 0.97rem + 0.16vw, 1.08rem);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.15; letter-spacing: -0.02em; }
+
+p { margin: 0 0 0.9em; max-width: var(--measure); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-firm); }
+a:hover { border-bottom-color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+.k-shell :focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--accent-lit); color: var(--ink); }
+
+.k-vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0);
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.k-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  background: var(--ink); color: var(--paper); border: 0;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+}
+.k-skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- 3. shell ---------- */
+
+.k-shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+.k-wrap { width: 100%; max-width: 74rem; margin: 0 auto; padding-inline: var(--edge); }
+
+/* The top bar is the site's, spliced in from pagegen.py by build.sh, so
+   there is no header of the kit's own any more. */
+
+.k-main { flex: 1 0 auto; padding-block: clamp(1.8rem, 5vw, 3.2rem) clamp(2.5rem, 6vw, 4rem); }
+
+.k-lede { max-width: 62ch; }
+.k-lede h1 {
+  font-size: clamp(1.85rem, 1.2rem + 2.6vw, 3rem);
+  letter-spacing: -0.032em; margin-bottom: 0.5rem;
+}
+.k-lede .k-standfirst {
+  font-size: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  color: var(--ink-soft); line-height: 1.5;
+}
+
+.k-sect { margin-top: clamp(2.2rem, 5.5vw, 3.4rem); }
+.k-sect > h2 {
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule-firm);
+  margin-bottom: 1.1rem;
+}
+.k-sect > h2 .k-num {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+}
+.k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
+
+/* ---------- 4. input row ---------- */
+
+.k-row {
+  display: grid; gap: 0.7rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  align-items: end;
+}
+.k-row.k-row-tight { gap: 0.55rem 0.9rem; }
+
+.k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.k-field > label, .k-lab {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+}
+.k-field .k-hint {
+  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
+  line-height: 1.45; letter-spacing: 0.02em;
+}
+
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
+  width: 100%; min-width: 0;
+  background: var(--field);
+  border: 1px solid var(--rule-firm);
+  border-radius: 0;
+  color: var(--ink);
+  font-family: var(--mono); font-size: 0.88rem; font-weight: 400;
+  padding: 0.55rem 0.6rem;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+input[type="number"] { font-variant-numeric: tabular-nums; text-align: right; }
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.9rem;
+}
+input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--panel); }
+input::placeholder { color: var(--faint); }
+input[aria-invalid="true"] { border-color: var(--flag); }
+
+.k-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--rule-firm); border-radius: 0;
+  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  padding: 0.62rem 0.95rem; cursor: pointer;
+  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.k-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.k-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
+.k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.k-btn-key { color: #f7f5ee; }
+.k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+
+.k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+
+/* ---------- 5. result panel ---------- */
+
+.k-panel {
+  background: var(--panel);
+  border: 1px solid var(--rule-firm);
+  padding: var(--pad);
+}
+.k-panel + .k-panel { margin-top: var(--gap); }
+.k-panel > h3, .k-panel-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+.k-panel-sunk { background: var(--paper-sunk); }
+
+.k-stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem; }
+.k-stat .k-big {
+  font-family: var(--mono); font-weight: 500;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+  line-height: 1.05; color: var(--ink);
+}
+.k-stat .k-unit { font-family: var(--mono); font-size: 0.78rem; color: var(--dim); letter-spacing: 0.05em; }
+
+.k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+
+.k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
+.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dd {
+  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
+}
+.k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
+
+/* arithmetic trace: every step printed */
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem; padding: 0.3rem 0;
+  border-bottom: 1px dotted var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+.k-steps li:last-child { border-bottom: 0; }
+.k-steps .k-op { color: var(--dim); }
+.k-steps .k-res { color: var(--ink); font-weight: 500; text-align: right; white-space: nowrap; }
+.k-steps li.k-step-final { border-top: 1px solid var(--rule-firm); border-bottom: 0; margin-top: 0.3rem; padding-top: 0.5rem; }
+.k-steps li.k-step-final .k-res { color: var(--accent); font-size: 0.92rem; }
+
+/* ---------- 6. source line ---------- */
+
+.k-source {
+  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  margin-top: 0.7rem; padding-top: 0.55rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-source::before {
+  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--faint); flex: none;
+}
+.k-source.k-source-bare::before { content: none; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.k-source .k-checked { color: var(--faint); white-space: nowrap; }
+
+/* ---------- 7. warning and refusal ---------- */
+
+.k-warn {
+  background: var(--flag-lit);
+  border: 1px solid var(--flag);
+  border-left-width: 3px;
+  padding: var(--pad);
+}
+.k-warn > h3, .k-warn .k-panel-h { color: var(--flag); }
+.k-warn p { color: var(--ink); }
+.k-warn + .k-warn, .k-panel + .k-warn, .k-warn + .k-panel { margin-top: var(--gap); }
+
+.k-ok { background: var(--good-lit); border: 1px solid var(--good); border-left-width: 3px; padding: var(--pad); }
+.k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
+
+.k-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
+  white-space: nowrap;
+}
+.k-tag-gap { color: var(--flag); background: var(--flag-lit); }
+.k-tag-known { color: var(--good); background: var(--good-lit); }
+.k-tag-quiet { color: var(--faint); background: transparent; }
+
+.k-ask { margin: 0.85rem 0 0; padding: 0; list-style: none; }
+.k-ask li {
+  display: grid; grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.2rem 0.9rem; padding: 0.4rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.92rem;
+}
+.k-ask li > b {
+  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.22rem;
+}
+
+/* ---------- 8. tables ---------- */
+
+.k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-table th, .k-table td {
+  text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule); vertical-align: top;
+}
+.k-table th {
+  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  border-bottom-color: var(--rule-firm); white-space: nowrap;
+}
+.k-table td.k-n, .k-table th.k-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  text-align: right; padding-right: 0; white-space: nowrap;
+}
+.k-table tbody tr:last-child td { border-bottom: 0; }
+.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell a { word-break: break-all; }
+
+/* ---------- 9. timeline ---------- */
+
+.k-time { margin: 0; padding: 0; list-style: none; }
+.k-time li {
+  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0.25rem 1.1rem; padding: 0.7rem 0;
+  border-top: 1px solid var(--rule);
+}
+.k-time li:first-child { border-top: 0; padding-top: 0; }
+.k-time .k-when {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
+}
+.k-time .k-what { font-size: 0.96rem; color: var(--ink); }
+.k-time .k-what small {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+}
+.k-time li.k-past .k-when { color: var(--faint); }
+.k-time li.k-past .k-what { color: var(--dim); }
+
+/* ---------- 10. the closing note ---------- */
+/* Each instrument ends with its own disclaimer and its own privacy line.
+   That is the page's last word, not the site's, so it is a closing panel
+   and the site's footer follows it. */
+
+.k-endnote {
+  border-top: 1px solid var(--rule-firm);
+  background: var(--paper-sunk);
+  padding-block: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: 0.9rem; color: var(--dim);
+}
+.k-endnote .k-wrap { display: grid; gap: 1.1rem; }
+.k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
+.k-endnote .k-fine {
+  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
+.k-endnote a:hover { color: var(--accent); }
+
+/* ---------- 11. toast for copy actions ---------- */
+
+.k-toast {
+  position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.k-toast[data-on="1"] { opacity: 1; }
+
+/* ---------- 12. responsive ---------- */
+
+@media (max-width: 640px) {
+  .k-ask li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-time li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-steps li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .k-steps .k-res { text-align: left; }
+}
+
+@media print {
+  .k-btnbar, .k-skip, .k-toast { display: none; }
+  body { background: #fff; color: #000; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   essay.css
+   The shared chrome for Explorable Economics. It sits on top of
+   kit.css and adds only what an essay with a live model needs:
+   a reading column, a model figure that breaks out of it, a
+   control rack, a live readout, and a running summary line that
+   says in words what the picture is showing.
+
+   Spliced into every essay by build.sh at the ESSAY_CSS marker,
+   so that each page still ships as one self contained file.
+   ============================================================ */
+
+/* ---------- reading column ---------- */
+
+.ex-body {
+  display: grid;
+  /* minmax(0, 1fr) rather than auto, so that one wide child can never
+     stretch the whole reading column past the width of the screen */
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 0;
+}
+.ex-body > * {
+  width: 100%;
+  max-width: 40rem;
+  min-width: 0;
+  justify-self: center;
+}
+
+.ex-body > p {
+  max-width: 40rem;
+  font-size: clamp(1.02rem, 0.99rem + 0.2vw, 1.13rem);
+  line-height: 1.68;
+  margin: 0 0 1.05em;
+}
+.ex-body > h2 {
+  font-size: clamp(1.25rem, 1.08rem + 0.7vw, 1.62rem);
+  margin: clamp(2.3rem, 5vw, 3.3rem) 0 0.9rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--rule-firm);
+}
+.ex-body > h2 .k-num {
+  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
+}
+.ex-body > h3 {
+  font-size: 1.1rem; margin: 1.9rem 0 0.6rem; color: var(--ink);
+}
+.ex-body > ul, .ex-body > ol { max-width: 40rem; padding-left: 1.15rem; margin: 0 0 1.05em; }
+.ex-body > ul li, .ex-body > ol li { margin-bottom: 0.45em; }
+
+.ex-lead {
+  font-size: clamp(1.1rem, 1.03rem + 0.4vw, 1.28rem) !important;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.ex-aside {
+  border-left: 2px solid var(--rule-firm);
+  padding: 0.1rem 0 0.1rem 1rem;
+  margin: 0 0 1.15em;
+  font-size: 0.94rem;
+  color: var(--dim);
+}
+.ex-aside p { font-size: inherit; margin-bottom: 0.6em; }
+
+.ex-em { font-style: italic; }
+.ex-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 0.94em; color: var(--accent); font-weight: 500;
+  white-space: nowrap;
+}
+.ex-n-flag { color: var(--flag); }
+.ex-n-long { white-space: normal; }
+
+/* a formula set on its own line, in words rather than symbols */
+.ex-formula {
+  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  color: var(--ink); background: var(--panel);
+  border-left: 2px solid var(--accent);
+  padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
+  max-width: 40rem; overflow-wrap: break-word;
+}
+.ex-formula small {
+  display: block; font-size: 0.66rem; color: var(--faint);
+  margin-top: 0.35rem; letter-spacing: 0.02em;
+}
+
+/* ---------- the model figure, wider than the prose ---------- */
+
+.ex-model {
+  max-width: 60rem;
+  margin: clamp(1.5rem, 4vw, 2.3rem) 0 clamp(1.7rem, 4.5vw, 2.6rem);
+  border: 1px solid var(--rule-firm);
+  background: var(--panel);
+  padding: var(--pad);
+}
+.ex-model > figcaption,
+.ex-model-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.85rem;
+  display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
+}
+.ex-model > figcaption .ex-model-sub,
+.ex-model-h .ex-model-sub {
+  color: var(--faint); letter-spacing: 0.1em; text-transform: none;
+  font-family: var(--mono); font-weight: 400;
+}
+
+.ex-plot { width: 100%; overflow: hidden; }
+.ex-plot svg {
+  display: block; width: 100%; height: auto;
+  touch-action: none;
+  -webkit-user-select: none; user-select: none;
+}
+.ex-plot.ex-draggable { cursor: grab; touch-action: none; }
+.ex-plot.ex-dragging { cursor: grabbing; }
+.ex-plot.ex-draggable svg { cursor: inherit; }
+
+.ex-plot + .ex-plot { margin-top: 0.9rem; }
+
+/* ---------- control rack ---------- */
+
+.ex-ctrls {
+  display: grid; gap: 0.85rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
+  margin-bottom: 1.1rem;
+}
+.ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
+}
+.ex-ctrl .ex-val {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+.ex-ctrl .k-hint {
+  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
+  line-height: 1.5; letter-spacing: 0.02em;
+}
+
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; min-width: 0; height: 1.9rem; margin: 0;
+  background: transparent; color: var(--accent);
+  display: block;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px; background: var(--rule-firm); border: 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 1.15rem; height: 1.15rem; margin-top: -0.53rem;
+  border-radius: 50%; border: 0; background: var(--accent); cursor: pointer;
+}
+input[type="range"]::-moz-range-track { height: 2px; background: var(--rule-firm); border: 0; }
+input[type="range"]::-moz-range-thumb {
+  width: 1.15rem; height: 1.15rem; border: 0; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+}
+input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type="range"]:hover::-webkit-slider-thumb { background: var(--ink); }
+input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
+
+/* segmented radio group */
+.ex-seg { border: 0; margin: 0; padding: 0; min-width: 0; }
+.ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
+.ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
+.ex-seg-row > label {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
+  border: 1px solid var(--rule-firm); margin-left: -1px;
+  background: var(--field); line-height: 1.3; white-space: nowrap;
+}
+.ex-seg-row > label:first-of-type { margin-left: 0; }
+.ex-seg-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ex-seg-row > label:has(input:checked) { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+:root[data-theme="dark"] .ex-seg-row > label:has(input:checked) { color: #17140f; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ex-seg-row > label:has(input:checked) { color: #17140f; }
+}
+.ex-seg-row > label:hover { border-color: var(--accent); color: var(--ink); }
+.ex-seg-row > label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* fallback for browsers without :has, checked state still readable */
+.ex-seg-row > label.ex-on { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.ex-check {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--dim); cursor: pointer;
+}
+.ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
+
+/* ---------- readout and running summary ---------- */
+
+.ex-read {
+  display: grid; gap: 0.55rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  margin-top: 1rem; padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+}
+.ex-read > div { min-width: 0; }
+.ex-read dt, .ex-read .ex-read-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  margin: 0 0 0.15rem;
+}
+.ex-read dd, .ex-read .ex-read-v {
+  margin: 0; font-family: var(--mono); font-weight: 500;
+  font-size: 1.06rem; font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
+}
+.ex-read .ex-read-v small {
+  display: block; font-size: 0.63rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+}
+.ex-read-hot .ex-read-v { color: var(--accent); }
+.ex-read-flag .ex-read-v { color: var(--flag); }
+
+.ex-sum {
+  margin-top: 0.9rem; padding-top: 0.7rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
+  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+}
+.ex-sum b { color: var(--ink-soft); font-weight: 500; }
+.ex-sum::before {
+  content: "reading"; display: block;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 0.3rem;
+}
+
+/* the paragraph of prose that answers what the reader just did */
+.ex-says {
+  max-width: 40rem;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-lit);
+  padding: 0.85rem 1.05rem;
+  margin: 0 0 1.15em;
+  font-size: 1rem; line-height: 1.6; color: var(--ink);
+}
+.ex-says p { max-width: none; margin-bottom: 0.55em; font-size: inherit; }
+.ex-says p:last-child { margin-bottom: 0; }
+
+/* ---------- legend ---------- */
+
+.ex-key {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
+  margin-top: 0.7rem;
+  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
+  letter-spacing: 0.02em;
+}
+.ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
+.ex-key i.ex-line { height: 0; border-top: 2px solid currentColor; width: 0.95rem; }
+
+/* stacked bar for a two way split */
+.ex-split { display: flex; height: 1.5rem; border: 1px solid var(--rule-firm); overflow: hidden; }
+.ex-split i { display: block; height: 100%; transition: width 0.12s linear; }
+.ex-split .a { background: var(--accent); }
+.ex-split .b { background: var(--rule); }
+@media (prefers-reduced-motion: reduce) { .ex-split i { transition: none; } }
+
+/* ---------- essay foot: limits, sources, next ---------- */
+
+.ex-limits { max-width: 46rem; }
+.ex-limits .k-ask li > b { padding-top: 0.25rem; }
+
+.ex-cites { max-width: 46rem; margin: 0; padding: 0; list-style: none; }
+.ex-cites li {
+  border-top: 1px solid var(--rule);
+  padding: 0.75rem 0;
+  font-size: 0.92rem; line-height: 1.55; color: var(--ink-soft);
+  max-width: none;
+}
+.ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
+.ex-cites .ex-cite-w {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.65;
+}
+.ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.ex-cites .ex-cite-t { font-style: italic; }
+
+.ex-next {
+  max-width: 60rem;
+  margin-top: clamp(2.4rem, 6vw, 3.6rem);
+  border-top: 1px solid var(--rule-firm);
+  padding-top: 1.2rem;
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+.ex-next a {
+  display: flex; flex-direction: column; gap: 0.3rem;
+  border: 1px solid var(--rule-firm); background: var(--panel);
+  padding: var(--pad); color: inherit; text-decoration: none;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+.ex-next a:hover { border-color: var(--accent); background: var(--field); }
+.ex-next a:hover .ex-next-t { color: var(--accent); }
+.ex-next .ex-next-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--faint);
+}
+.ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
+.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+
+/* ---------- mobile ---------- */
+
+@media (max-width: 640px) {
+  .ex-model { padding: 0.85rem 0.8rem 0.95rem; }
+  .ex-ctrls { grid-template-columns: minmax(0, 1fr); gap: 0.7rem; }
+  .ex-read { grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.5rem 0.9rem; }
+  .ex-read dd, .ex-read .ex-read-v { font-size: 0.98rem; }
+  .ex-seg-row { width: 100%; }
+  .ex-seg-row > label { flex: 1 1 auto; text-align: center; }
+  .ex-says { padding: 0.7rem 0.85rem; }
+}
+
+/* ============================================================
+   sim.css
+   The extra layer the SIMEA simulations need on top of kit.css
+   and essay.css. An essay figure here is a canvas rather than an
+   svg, it runs rather than sits still, and it has a transport:
+   run, step, reset. Everything else is the essay chrome.
+
+   Spliced into every simulation by build.sh at the SIM_CSS
+   marker, so each page still ships as one self contained file.
+   ============================================================ */
+
+/* ---------- the canvas itself ---------- */
+
+.sm-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--field);
+  border: 1px solid var(--rule);
+  touch-action: manipulation;
+}
+.sm-canvas + .sm-canvas { margin-top: 0.7rem; }
+.sm-canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.sm-canvas-lab {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--faint);
+  margin: 0.55rem 0 0.25rem;
+}
+
+/* ---------- transport ---------- */
+
+.sm-bar {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+  margin-top: 0.95rem; padding-top: 0.8rem;
+  border-top: 1px solid var(--rule);
+}
+.sm-bar .sm-clock {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--faint); font-variant-numeric: tabular-nums;
+  margin-left: auto; text-align: right;
+}
+.sm-btn-run[data-on="1"] { background: var(--accent); border-color: var(--accent); color: #f7f5ee; }
+.sm-btn-run[data-on="1"]:hover { background: var(--ink); border-color: var(--ink); }
+
+.sm-keys {
+  font-family: var(--mono); font-size: 0.63rem; line-height: 1.65;
+  color: var(--faint); letter-spacing: 0.02em;
+  margin: 0.6rem 0 0;
+}
+.sm-keys kbd {
+  font-family: var(--mono); font-size: 0.63rem;
+  border: 1px solid var(--rule-firm); border-radius: 2px;
+  padding: 0.05em 0.3em; color: var(--dim);
+}
+
+.sm-still {
+  font-family: var(--mono); font-size: 0.63rem; line-height: 1.6;
+  color: var(--accent); letter-spacing: 0.02em;
+  margin: 0.55rem 0 0;
+}
+
+/* ---------- a construct, defined where it is measured ---------- */
+
+.sm-constructs { margin: 0 0 1.15em; display: grid; gap: 0.75rem; }
+.sm-construct {
+  border: 1px solid var(--rule-firm);
+  border-left: 3px solid var(--accent);
+  background: var(--panel);
+  padding: 0.8rem 0.95rem;
+}
+.sm-construct h4 {
+  font-family: var(--mono); font-weight: 500; font-size: 0.66rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.4rem;
+}
+.sm-construct p { font-size: 0.95rem; margin-bottom: 0.5em; max-width: none; }
+.sm-construct .sm-eq {
+  font-family: var(--mono); font-size: 0.76rem; line-height: 1.65;
+  color: var(--ink); background: var(--field);
+  border: 1px solid var(--rule);
+  padding: 0.5rem 0.6rem; margin: 0 0 0.45em;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  white-space: pre-wrap; overflow-wrap: break-word;
+}
+.sm-construct .sm-honest {
+  font-family: var(--mono); font-size: 0.65rem; line-height: 1.7;
+  color: var(--faint); letter-spacing: 0.02em; margin: 0; max-width: none;
+}
+.sm-construct .sm-live {
+  font-family: var(--mono); font-weight: 500; font-size: 1.02rem;
+  font-variant-numeric: tabular-nums; color: var(--ink);
+  float: right; margin-left: 1rem;
+}
+
+/* ---------- the hub ---------- */
+
+.sm-cards {
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  margin-top: 1.4rem; max-width: 60rem;
+}
+.sm-card {
+  display: flex; flex-direction: column; gap: 0.4rem;
+  border: 1px solid var(--rule-firm); background: var(--panel);
+  padding: var(--pad); color: inherit; text-decoration: none;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+.sm-card:hover { border-color: var(--accent); background: var(--field); }
+.sm-card:hover .sm-card-t { color: var(--accent); }
+.sm-card-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--faint);
+}
+.sm-card-t { font-family: var(--display); font-size: 1.2rem; letter-spacing: -0.02em; }
+.sm-card-d { font-size: 0.92rem; color: var(--dim); line-height: 1.5; }
+.sm-card-w {
+  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
+  letter-spacing: 0.02em; line-height: 1.6; margin-top: 0.15rem;
+}
+.sm-card canvas {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--rule); background: var(--field);
+  margin-bottom: 0.15rem;
+}
+
+@media (max-width: 640px) {
+  .sm-cards { grid-template-columns: minmax(0, 1fr); }
+  .sm-construct { padding: 0.7rem 0.8rem; }
+  .sm-construct .sm-live { float: none; display: block; margin: 0 0 0.3rem; }
+  .sm-bar { gap: 0.45rem; }
+  .sm-bar .sm-clock { margin-left: 0; flex: 1 0 100%; text-align: left; }
+}
+
+@media (pointer: coarse) {
+  .sm-bar .k-btn { min-height: 44px; }
+}
+
+/* ---------- simulation four ---------- */
+
+.jm-two { display: grid; gap: 0.7rem; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); align-items: start; }
+@media (max-width: 640px) { .jm-two { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- the site's clothes, worn by an instrument ---------- */
+.bar,footer.site-foot,.leaf-mark{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#f2efe6;
+  --fg:#221e17;
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --accent:#8a5a24;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+.bar,footer.site-foot{color:var(--fg)}
+footer.site-foot{background:var(--paper)}
+.bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
+
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
+.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+.langs{display:flex;gap:.1rem;margin-left:.6rem}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
+    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* six nav items on a narrow phone: the row is allowed to take a second
+   line rather than push the page sideways, and the words are set a little
+   tighter so that on most phones it does not have to */
+@media (max-width:430px){
+  .bar nav{gap:.34rem .55rem}
+  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+
+/* ---------- the crown, on a page whose interior is its own ---------- */
+.k-crown-no{
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;
+  font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;
+  color:var(--accent);
+}
+.k-crown-no svg{flex:none}
+.k-lede h1{margin-top:0}
+
+
+</style>
+</head>
+<body>
+
+<a class="k-skip" href="#sim">Skip to the simulation</a>
+
+<div class="k-shell">
+
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="../../index.html">Kerem Özdemir</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" aria-current="page" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../game.html" data-i="nav-g">Game Theory</a>
+      <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+
+  <main class="k-main" id="sim">
+    <div class="k-wrap">
+
+      <div class="k-lede k-crown">
+        <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Simulation four of five</i></span>
+        <h1>The jam</h1>
+        <p class="k-standfirst">A circular road with no junction, no traffic light, no accident and no
+        bottleneck of any kind. Every driver follows the same undramatic rule. Touch one brake pedal for a
+        moment and a standing jam appears and starts travelling backwards through the traffic, and it will
+        still be there long after the driver who braked has gone round again.</p>
+      </div>
+
+      <div class="ex-body">
+
+        <p class="ex-lead">Most explanations of a traffic jam are hunts for a cause. There must have been
+        an accident. Someone must have merged badly. The road must narrow up ahead. Often there is such a
+        thing and often there is not, and the jams that have no cause at all are the ones worth
+        understanding, because they are the ones the causal habit cannot see.</p>
+
+        <p>The road below is a loop. Nothing is on it except cars, and every car obeys one rule: aim for
+        the speed that the gap in front of you can support, and change your speed towards that aim at the
+        rate your reaction allows. There is no aggression in the model and no distraction. Every driver is
+        equally competent and equally patient.</p>
+
+        <h2 id="s1"><span class="k-num">01</span>The road and the trace</h2>
+
+        <p>On the left is the road seen from above, with the cars on it shaded by speed: pale is moving
+        freely, dark is barely moving. On the right is the same road with time added. Position runs left to
+        right around the loop, time runs downwards, and the shade is the local speed. Free flow is a pale
+        field. A jam is a dark band, and the slope of that band is how fast the jam itself is moving.</p>
+
+        <figure class="ex-model" id="m1">
+          <figcaption>Figure one <span class="ex-model-sub">run it, then tap one brake</span></figcaption>
+          <div class="ex-ctrls" id="jm-ctrls"></div>
+          <div class="jm-two">
+            <div>
+              <p class="sm-canvas-lab">The loop from above</p>
+              <div id="jm-ring"></div>
+            </div>
+            <div>
+              <p class="sm-canvas-lab">The same road with time running downwards</p>
+              <div id="jm-st"></div>
+            </div>
+          </div>
+          <p class="ex-key" id="jm-key"></p>
+          <div id="jm-read"></div>
+          <p class="ex-sum" id="jm-sum" role="status" aria-live="polite"></p>
+          <div class="k-btnbar" style="margin-top:0.9rem">
+            <button type="button" class="k-btn" id="jm-tap">Tap one driver's brake</button>
+          </div>
+          <div id="jm-bar"></div>
+        </figure>
+
+        <div class="ex-says" id="jm-says"></div>
+
+        <h2 id="s2"><span class="k-num">02</span>The rule, written out</h2>
+
+        <p>There is only one, and it has two parts. A driver has a target speed set by the gap ahead, and a
+        rate at which it can move its actual speed towards that target. The reaction time does both jobs:
+        it is how stale the gap you are responding to is, and it is how long you take to respond to it.</p>
+
+        <p class="ex-formula">target speed for a gap g: V(g) = ( g − 6 metres ) / 1.2 seconds, capped at 30 metres per second
+        actual speed: dv/dt = ( V( gap as it was τ seconds ago ) − v ) / τ
+        <small>τ is the reaction time the reader sets. Six metres is a car plus a little, and one point two
+        seconds is the headway a driver keeps. Nothing else is in the model.</small></p>
+
+        <p>When the road is empty the gap is large, the target speed is at its cap, and the derivative of
+        the target with respect to the gap is zero. A driver who is already at the cap does not respond to
+        the gap at all, so nothing can propagate and nothing can grow. That is free flow, and it is stable
+        for any reaction time whatsoever.</p>
+
+        <p>Add cars. Below a certain gap every driver is on the sloping part of the rule, where a change in
+        the gap ahead changes the target speed, and now a disturbance has something to travel through. Each
+        driver amplifies what it receives by a factor that grows with its reaction time. When that factor
+        passes one, a disturbance that arrives small leaves larger, and it comes back round the loop larger
+        still.</p>
+
+        <h2 id="s3"><span class="k-num">03</span>Finding the edge</h2>
+
+        <p>Set the density low and the reaction time high, and tap a brake. The disturbance spreads
+        backwards a little, thins out and dies. Now raise the density one step at a time, tapping the brake
+        each time, until it does not die. There is a fairly sharp line, and either side of it the same tap
+        on the same brake produces two completely different futures.</p>
+
+        <p>Then do it the other way. Hold the density where the jam persists and lower the reaction time
+        instead. Attentive drivers absorb the same disturbance that inattentive ones amplify. Nothing about
+        the road changed and nothing about how many cars are on it changed.</p>
+
+        <p>Once a jam has formed, watch the trace on the right rather than the road on the left. The dark
+        band leans backwards. Cars are travelling forwards through it the whole time: a car reaches the
+        back of the jam, crawls through, and accelerates away at the front, while the jam itself walks in
+        the opposite direction. The jam is not made of any particular cars, and it outlives every car's
+        membership of it.</p>
+
+        <h2 id="s4"><span class="k-num">04</span>Why this belongs to SIMEA</h2>
+
+        <p>Because it is the cleanest case I know of a collective object that has no representation
+        anywhere inside any agent. No driver on the road knows there is a jam. No driver is doing anything
+        other than keeping a reasonable distance. The jam is real, it is stable, it moves at a definite
+        speed and it can be measured, and it exists at a level of description that none of the agents that
+        constitute it has access to.</p>
+
+        <p>The programme's interest in this is not traffic. It is the reminder that an outcome can be
+        produced entirely by the interaction of ordinary local rules, so that looking for a cause among the
+        agents is looking in the wrong place. When the collective object is a jam this is a curiosity. When
+        it is a panic, a run on a bank, or a population's opinion, the same mistake is expensive.</p>
+
+        <h2 id="s5"><span class="k-num">05</span>Where the model stops</h2>
+
+        <div class="k-warn ex-limits">
+          <h3>Assumptions and limits</h3>
+          <ul class="k-ask">
+            <li><b>One lane, one loop</b>No overtaking, no junctions, no entries, no exits, no other roads.
+            The loop is there so that the number of cars stays fixed, which is what makes the experiment
+            clean and also what makes it unlike any road you have driven on.</li>
+            <li><b>Identical drivers</b>Every driver has the same reaction time, the same headway and the
+            same target speed. Real variation between drivers matters and would change the numbers, though
+            it does not remove the effect.</li>
+            <li><b>A crude rule</b>The target speed is a straight line in the gap with a cap on it. Real
+            car following is more complicated and the literature has many rules. The instability shown here
+            is a general property of delayed following and not an artefact of this particular line, but the
+            precise threshold is an artefact of it.</li>
+            <li><b>One rule added by hand</b>At a long reaction time the following rule on its own will
+            let a car drive through the car in front, because the gap it is responding to is out of date.
+            A hard constraint stops that: no car may come closer to the one ahead than the six metres at
+            which the rule already puts its target speed at zero. It is a physical fact rather than a
+            driving behaviour, and it is the only thing in the model that is not in the formula above.</li>
+            <li><b>No noise</b>Nothing is random. A perfectly even line of cars stays perfectly even for
+            ever, which is why the brake has to be tapped by hand. Real traffic is never even, so real jams
+            do not need anybody to start them.</li>
+            <li><b>The jam speed is an estimate</b>The figure reported is fitted to the movement of the
+            slowest point on the loop over the last stretch of the run. It is a reading of this model, not
+            a measurement of anything on a road.</li>
+            <li><b>Not calibrated</b>The six metres, the one point two seconds and the thirty metres per
+            second are plausible round numbers chosen so the mechanism is visible. They are not measured
+            values and no number on this page describes real traffic.</li>
+          </ul>
+        </div>
+
+        <h2 id="s6"><span class="k-num">06</span>Source</h2>
+
+        <p>That a jam can appear on a circular road with no bottleneck at all is not a claim I am making
+        from a simulation. It has been done with real cars and real drivers.</p>
+
+        <ul class="ex-cites">
+          <li>
+            Vehicles were driven around a circuit, starting evenly spaced and moving uniformly, with no
+            bottleneck present. Below a critical density the uniform flow held. Above it the flow became
+            unstable, a tiny fluctuation grew, and a jam cluster appeared and propagated backward like a
+            solitary wave with the same speed as a jam cluster on a highway. The authors conclude that a
+            bottleneck is only a trigger and not the essential origin of a traffic jam, and present the
+            work as the first experimental evidence that a jam is a collective phenomenon.
+            <span class="ex-cite-w">Yuki Sugiyama, Minoru Fukui, Macoto Kikuchi, Katsuya Hasebe, Akihiro
+            Nakayama, Katsuhiro Nishinari, Shin-ichi Tadaki and Satoshi Yukawa,
+            <span class="ex-cite-t">Traffic jams without bottlenecks: experimental evidence for the
+            physical mechanism of the formation of a jam</span>, New Journal of Physics 10, 2008, article
+            033001.
+            <a href="https://iopscience.iop.org/article/10.1088/1367-2630/10/3/033001" target="_blank" rel="noreferrer noopener">iopscience.iop.org/article/10.1088/1367-2630/10/3/033001</a>
+            Checked 2026 08 22.</span>
+          </li>
+        </ul>
+
+        <nav class="ex-next" aria-label="More simulations">
+          <a href="../pile/index.html">
+            <span class="ex-next-k">Next simulation</span>
+            <span class="ex-next-t">The pile</span>
+            <span class="ex-next-d">Grains dropped one at a time onto a pile that organises itself to the
+            edge, where the next grain may do nothing or may bring down a quarter of it.</span>
+          </a>
+          <a href="../index.html">
+            <span class="ex-next-k">Back</span>
+            <span class="ex-next-t">All five simulations</span>
+            <span class="ex-next-d">Why a research programme about systems and agents needs models you can
+            run.</span>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </main>
+
+  <aside class="k-endnote">
+    <div class="k-wrap">
+      <p><strong>This is a teaching model, not a measurement.</strong> Every number on this page is one you
+      set or one this model produced from what you set. Nothing here is calibrated to real traffic.</p>
+      <p class="k-fine">
+        Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no
+        network call after the fonts have loaded. Part of
+        <a href="../index.html">the SIMEA simulations</a>, built by
+        <a href="../../index.html">Kerem Ozdemir</a>.
+      </p>
+    </div>
+  </aside>
+
+<footer class="site-foot"><div class="wrap">
+  <span>© 2026 Kerem Özdemir</span>
+  <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
+</div></footer>
+
+
+</div>
+
+<script>
+/* ============================================================
+   kit.js
+   Shared behaviour for the open instruments at keremozdemir.de
+   No dependencies. No network calls. Safe to inline.
+
+   Kit.el        small DOM builder
+   Kit.fmt       number and date formatting
+   Kit.state     read and write tool state in the URL hash
+   Kit.share     copy the link that restores the current state
+   Kit.csv       build CSV, copy to clipboard, offer a download
+   Kit.toast     brief confirmation line
+   ============================================================ */
+
+var Kit = (function () {
+  "use strict";
+
+  /* ---------- DOM ---------- */
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v;
+        else if (k === "html") n.innerHTML = v;
+        else if (k.slice(0, 2) === "on" && typeof v === "function") {
+          n.addEventListener(k.slice(2).toLowerCase(), v);
+        } else n.setAttribute(k, v === true ? "" : String(v));
+      });
+    }
+    (kids || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+
+  /* ---------- numbers ---------- */
+
+  var LOCALE = "en-GB";
+
+  function num(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function money(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return "EUR " + num(v, dp === undefined ? 2 : dp);
+  }
+  function pct(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    return num(v * 100, dp === undefined ? 1 : dp) + " %";
+  }
+  function toNum(raw) {
+    if (raw === null || raw === undefined) return null;
+    var s = String(raw).trim().replace(/\s+/g, "").replace(/,/g, ".");
+    if (s === "") return null;
+    var n = Number(s);
+    return isFinite(n) ? n : null;
+  }
+
+  /* ---------- URL hash state ---------- */
+
+  function b64urlEncode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64urlDecode(str) {
+    var s = String(str).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var bin = atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  var state = {
+    /* Serialise the object into the location hash without adding a history entry. */
+    write: function (obj) {
+      var h = "";
+      try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
+      if (h.length > 8000) return "";
+      try {
+        history.replaceState(null, "", location.pathname + location.search + h);
+      } catch (e) {
+        location.hash = h;
+      }
+      return location.href;
+    },
+    /* Read the object back. Returns null when the hash is absent or unreadable. */
+    read: function () {
+      var m = /(?:^|[#&])s=([A-Za-z0-9\-_]+)/.exec(location.hash || "");
+      if (!m) return null;
+      try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
+    },
+    clear: function () {
+      try { history.replaceState(null, "", location.pathname + location.search); }
+      catch (e) { location.hash = ""; }
+    }
+  };
+
+  /* ---------- clipboard ---------- */
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; },
+        function () { return legacyCopy(text); });
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  /* ---------- share ---------- */
+
+  function share(obj, msg) {
+    var url = state.write(obj) || location.href;
+    return copyText(url).then(function (ok) {
+      toast(ok ? (msg || "Link copied. It reopens with these inputs.")
+               : "Copy blocked by the browser. The address bar now holds the link.");
+      return ok;
+    });
+  }
+
+  /* ---------- CSV ---------- */
+
+  function csvCell(v) {
+    if (v === null || v === undefined) return "";
+    var s = String(v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function csvBuild(rows) {
+    return rows.map(function (r) { return r.map(csvCell).join(","); }).join("\r\n");
+  }
+  function csvDownload(rows, filename) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    /* BOM so that spreadsheet software reads UTF-8 correctly */
+    var blob = new Blob(["﻿" + text], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = el("a", { href: url, download: filename || "export.csv" });
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1200);
+  }
+  function csvCopy(rows) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    return copyText(text).then(function (ok) {
+      toast(ok ? "Table copied. Paste it into a spreadsheet." : "Copy blocked by the browser. Use the download instead.");
+      return ok;
+    });
+  }
+
+  /* ---------- toast ---------- */
+
+  var toastNode = null, toastTimer = null;
+  function toast(msg) {
+    if (!toastNode) {
+      toastNode = el("div", { class: "k-toast", role: "status", "aria-live": "polite" });
+      document.body.appendChild(toastNode);
+    }
+    toastNode.textContent = msg;
+    toastNode.setAttribute("data-on", "1");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastNode.setAttribute("data-on", "0"); }, 3600);
+  }
+
+  /* ---------- source line ---------- */
+
+  /* src: { what, url, checked } -> the standard line that says where a number came from */
+  function sourceLine(src, bare) {
+    var kids = [];
+    if (src.what) kids.push(el("span", { text: src.what }));
+    if (src.url) kids.push(el("a", { href: src.url, rel: "noreferrer noopener", target: "_blank", text: src.label || src.url }));
+    if (src.checked) kids.push(el("span", { class: "k-checked", text: "checked " + src.checked }));
+    return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
+  }
+
+  return {
+    el: el, qs: qs, qsa: qsa, clear: clear,
+    num: num, money: money, pct: pct, toNum: toNum,
+    state: state, share: share,
+    copyText: copyText,
+    csvBuild: csvBuild, csvDownload: csvDownload, csvCopy: csvCopy,
+    toast: toast, sourceLine: sourceLine
+  };
+})();
+
+/* ============================================================
+   essay.js
+   The shared machinery behind every model in Explorable
+   Economics. It sits on top of kit.js and adds only what a
+   drawn, dragged and keyboard driven model needs.
+
+     Ex.s        make an SVG element
+     Ex.plot     set up a plot with a scale and a drag surface
+     Ex.slider   a labelled range control wired to a callback
+     Ex.seg      a segmented radio group, arrow keys included
+     Ex.drag     pointer and touch dragging in plot coordinates
+     Ex.rng      a seeded generator so a shared link replays
+     Ex.round    rounding that does not lie about precision
+     Ex.words    small helpers for prose that has to agree with
+                 the arithmetic on screen
+
+   No dependencies beyond kit.js. No network calls.
+   Spliced into every essay by build.sh at the ESSAY_JS marker.
+   ============================================================ */
+
+var Ex = (function () {
+  "use strict";
+
+  var NS = "http://www.w3.org/2000/svg";
+
+  /* ---------- svg ---------- */
+
+  function s(tag, attrs, text) {
+    var n = document.createElementNS(NS, tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        n.setAttribute(k, String(v));
+      });
+    }
+    if (text !== undefined && text !== null) n.appendChild(document.createTextNode(String(text)));
+    return n;
+  }
+
+  function svgRoot(w, h, label) {
+    var n = s("svg", {
+      viewBox: "0 0 " + w + " " + h,
+      width: w, height: h,
+      preserveAspectRatio: "xMidYMid meet",
+      role: "img",
+      "aria-label": label || ""
+    });
+    return n;
+  }
+
+  /* text sized for the plot, in the house mono */
+  function label(x, y, str, opt) {
+    var o = opt || {};
+    return s("text", {
+      x: x, y: y,
+      "text-anchor": o.anchor || "middle",
+      fill: o.fill || "var(--dim)",
+      "font-family": "var(--mono)",
+      "font-size": o.size || 10,
+      "font-weight": o.weight || 400,
+      "letter-spacing": o.track === undefined ? 0.2 : o.track,
+      opacity: o.opacity === undefined ? 1 : o.opacity
+    }, str);
+  }
+
+  /* ---------- dragging, in plot coordinates ---------- */
+
+  /* Convert a pointer event into the svg user coordinate system,
+     which is what every plot here draws in. */
+  function toLocal(svg, evt) {
+    var r = svg.getBoundingClientRect();
+    var vb = svg.viewBox.baseVal;
+    var w = vb && vb.width ? vb.width : r.width;
+    var h = vb && vb.height ? vb.height : r.height;
+    if (!r.width || !r.height) return { x: 0, y: 0 };
+    return { x: (evt.clientX - r.left) * w / r.width, y: (evt.clientY - r.top) * h / r.height };
+  }
+
+  /* drag(surface, { start, move, end }, measure) where each handler
+     receives the point in plot coordinates. The surface is the element
+     that listens, which must survive a redraw. The optional measure
+     function returns the svg currently inside it, so the plot can be
+     rebuilt mid gesture without the gesture being dropped.
+     Works with mouse, pen and touch. */
+  function drag(surface, handlers, measure) {
+    var active = false, id = null;
+    function box() { return (measure ? measure() : surface) || surface; }
+
+    function down(e) {
+      if (e.button !== undefined && e.button !== 0) return;
+      var p = toLocal(box(), e);
+      if (handlers.start && handlers.start(p, e) === false) return;
+      active = true; id = e.pointerId;
+      surface.classList.add("ex-dragging");
+      if (surface.setPointerCapture && id !== undefined && id !== null) {
+        try { surface.setPointerCapture(id); } catch (err) { /* capture is a nicety */ }
+      }
+      e.preventDefault();
+    }
+    function move(e) {
+      if (!active) {
+        if (handlers.hover) handlers.hover(toLocal(box(), e), e);
+        return;
+      }
+      if (id !== null && e.pointerId !== id) return;
+      if (handlers.move) handlers.move(toLocal(box(), e), e);
+      e.preventDefault();
+    }
+    function up(e) {
+      if (!active) return;
+      active = false;
+      surface.classList.remove("ex-dragging");
+      if (surface.releasePointerCapture && id !== undefined && id !== null) {
+        try { surface.releasePointerCapture(id); } catch (err) { /* already gone */ }
+      }
+      id = null;
+      if (handlers.end) handlers.end(toLocal(box(), e), e);
+    }
+
+    surface.addEventListener("pointerdown", down);
+    surface.addEventListener("pointermove", move);
+    surface.addEventListener("pointerup", up);
+    surface.addEventListener("pointercancel", up);
+    surface.addEventListener("pointerleave", function (e) { if (handlers.leave) handlers.leave(e); });
+    surface.classList.add("ex-draggable");
+    return { active: function () { return active; } };
+  }
+
+  /* ---------- controls ---------- */
+
+  var uid = 0;
+  function nextId(p) { uid += 1; return (p || "ex") + "-" + uid; }
+
+  /* slider(host, spec) -> { input, set, el }
+     spec: { label, min, max, step, value, format, hint, onInput, unit } */
+  function slider(host, spec) {
+    var id = nextId("sl");
+    var wrap = Kit.el("div", { class: "ex-ctrl" });
+    var valSpan = Kit.el("span", { class: "ex-val" });
+    var lab = Kit.el("label", { for: id }, [
+      Kit.el("span", { text: spec.label }),
+      valSpan
+    ]);
+    var input = Kit.el("input", {
+      type: "range", id: id,
+      min: spec.min, max: spec.max, step: spec.step,
+      value: spec.value
+    });
+    input.setAttribute("aria-describedby", id + "-v");
+    valSpan.id = id + "-v";
+
+    function paint(v) { valSpan.textContent = spec.format ? spec.format(v) : String(v); }
+    paint(Number(spec.value));
+
+    input.addEventListener("input", function () {
+      var v = Number(input.value);
+      paint(v);
+      if (spec.onInput) spec.onInput(v);
+    });
+
+    wrap.appendChild(lab);
+    wrap.appendChild(input);
+    if (spec.hint) wrap.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(wrap);
+
+    return {
+      el: wrap, input: input,
+      get: function () { return Number(input.value); },
+      set: function (v, quiet) {
+        input.value = String(v);
+        paint(Number(input.value));
+        if (!quiet && spec.onInput) spec.onInput(Number(input.value));
+      }
+    };
+  }
+
+  /* seg(host, spec) -> { get, set, el }
+     spec: { label, name, options: [{value,label}], value, onChange } */
+  function seg(host, spec) {
+    var fs = Kit.el("fieldset", { class: "ex-ctrl ex-seg" });
+    fs.appendChild(Kit.el("legend", {}, [Kit.el("span", { text: spec.label })]));
+    var row = Kit.el("div", { class: "ex-seg-row" });
+    var inputs = [];
+
+    spec.options.forEach(function (o) {
+      var lid = nextId("sg");
+      var inp = Kit.el("input", { type: "radio", name: spec.name, id: lid, value: o.value });
+      if (String(o.value) === String(spec.value)) inp.checked = true;
+      var lb = Kit.el("label", { for: lid }, [inp, document.createTextNode(o.label)]);
+      if (inp.checked) lb.classList.add("ex-on");
+      inp.addEventListener("change", function () {
+        paintOn();
+        if (inp.checked && spec.onChange) spec.onChange(o.value);
+      });
+      inputs.push({ inp: inp, lb: lb, value: o.value });
+      row.appendChild(lb);
+    });
+
+    function paintOn() {
+      inputs.forEach(function (r) { r.lb.classList.toggle("ex-on", r.inp.checked); });
+    }
+
+    fs.appendChild(row);
+    if (spec.hint) fs.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(fs);
+
+    return {
+      el: fs,
+      get: function () {
+        for (var i = 0; i < inputs.length; i++) if (inputs[i].inp.checked) return inputs[i].value;
+        return null;
+      },
+      set: function (v, quiet) {
+        inputs.forEach(function (r) { r.inp.checked = String(r.value) === String(v); });
+        paintOn();
+        if (!quiet && spec.onChange) spec.onChange(v);
+      }
+    };
+  }
+
+  /* check(host, spec) -> { get, set, el } */
+  function check(host, spec) {
+    var id = nextId("ck");
+    var inp = Kit.el("input", { type: "checkbox", id: id });
+    inp.checked = !!spec.value;
+    var lb = Kit.el("label", { class: "ex-check", for: id }, [inp, document.createTextNode(spec.label)]);
+    inp.addEventListener("change", function () { if (spec.onChange) spec.onChange(inp.checked); });
+    host.appendChild(lb);
+    return {
+      el: lb, get: function () { return inp.checked; },
+      set: function (v, quiet) { inp.checked = !!v; if (!quiet && spec.onChange) spec.onChange(inp.checked); }
+    };
+  }
+
+  /* readout(host, keys) -> set(key, value, sub)
+     The row of large figures under a plot. */
+  function readout(host, keys) {
+    var map = {};
+    var wrap = Kit.el("div", { class: "ex-read" });
+    keys.forEach(function (k) {
+      var v = Kit.el("p", { class: "ex-read-v" });
+      var cell = Kit.el("div", { class: k.tone ? "ex-read-" + k.tone : null }, [
+        Kit.el("p", { class: "ex-read-k", text: k.label }), v
+      ]);
+      map[k.id] = v;
+      wrap.appendChild(cell);
+    });
+    host.appendChild(wrap);
+    return function (id, value, sub) {
+      var n = map[id];
+      if (!n) return;
+      Kit.clear(n);
+      n.appendChild(document.createTextNode(String(value)));
+      if (sub) n.appendChild(Kit.el("small", { text: sub }));
+    };
+  }
+
+  /* ---------- numbers and words ---------- */
+
+  function round(v, dp) {
+    var f = Math.pow(10, dp === undefined ? 2 : dp);
+    return Math.round(v * f) / f;
+  }
+  function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+
+  /* Percentage of a whole, written the way the prose reads it. */
+  function share(part, whole, dp) {
+    if (!isFinite(whole) || whole === 0) return "not defined";
+    return Kit.num(100 * part / whole, dp === undefined ? 0 : dp) + " per cent";
+  }
+
+  var ORD = ["zeroth", "first", "second", "third", "fourth", "fifth", "sixth",
+    "seventh", "eighth", "ninth", "tenth"];
+  function ordinal(n) { return ORD[n] || (String(n) + "th"); }
+
+  var CARD = ["no", "one", "two", "three", "four", "five", "six", "seven",
+    "eight", "nine", "ten", "eleven", "twelve"];
+  function cardinal(n) { return CARD[n] !== undefined ? CARD[n] : String(n); }
+
+  /* ---------- a seeded generator ---------- */
+
+  /* mulberry32. Small, fast and identical in every browser, which is
+     what makes a shared link reproduce the same tournament. */
+  function rng(seed) {
+    var a = (seed >>> 0) || 1;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /* ---------- deferred redraw, one frame at a time ---------- */
+
+  function frames(fn) {
+    var queued = false;
+    return function () {
+      if (queued) return;
+      queued = true;
+      var run = function () { queued = false; fn(); };
+      if (window.requestAnimationFrame) window.requestAnimationFrame(run);
+      else setTimeout(run, 16);
+    };
+  }
+
+  /* ---------- responsive plot width ---------- */
+
+  /* Report the pixel width available to a plot so that the drawing code
+     can choose a viewBox that keeps the labels legible on a narrow
+     screen instead of scaling them down with the picture. */
+  function widthOf(host, fallback) {
+    var w = host.clientWidth || 0;
+    if (!w && host.parentNode) w = host.parentNode.clientWidth || 0;
+    return Math.max(260, Math.round(w || fallback || 640));
+  }
+
+  function onResize(fn) {
+    var t = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(t);
+      t = setTimeout(fn, 120);
+    });
+  }
+
+  return {
+    s: s, svgRoot: svgRoot, label: label,
+    drag: drag, toLocal: toLocal,
+    slider: slider, seg: seg, check: check, readout: readout,
+    round: round, clamp: clamp, share: share,
+    ordinal: ordinal, cardinal: cardinal,
+    rng: rng, frames: frames, widthOf: widthOf, onResize: onResize,
+    nextId: nextId
+  };
+})();
+
+/* ============================================================
+   sim.js
+   The shared machinery behind the five SIMEA simulations. It
+   sits on top of kit.js and essay.js and adds only what a model
+   that runs needs and a model that sits still does not.
+
+     Sim.palette   the kit's colours, resolved into real values
+                   so that a canvas can paint in them
+     Sim.canvas    a crisp canvas that follows its container
+     Sim.transport run, step, reset, share, and a clock, wired
+                   to the keyboard and to prefers reduced motion
+     Sim.still     whether the reader has asked for stillness
+     Sim.line      a small time series plot on a canvas
+     Sim.axis      shared axis furniture for those plots
+
+   No dependencies beyond kit.js and essay.js. No network calls.
+   Spliced into every simulation by build.sh at the SIM_JS marker.
+   ============================================================ */
+
+var Sim = (function () {
+  "use strict";
+
+  /* ---------- stillness ---------- */
+
+  var stillQuery = null;
+  function still() {
+    if (!stillQuery && window.matchMedia) {
+      stillQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    }
+    return !!(stillQuery && stillQuery.matches);
+  }
+
+  /* ---------- palette ---------- */
+
+  /* A canvas cannot paint in var(--accent), so the kit's tokens are read
+     once from the document and handed over as real colours. */
+  var PAL = null;
+  function palette() {
+    if (PAL) return PAL;
+    var cs = getComputedStyle(document.documentElement);
+    function tok(name, fallback) {
+      var v = cs.getPropertyValue(name);
+      v = v ? v.trim() : "";
+      return v || fallback;
+    }
+    PAL = {
+      paper: tok("--paper", "#f2efe6"),
+      sunk: tok("--paper-sunk", "#ebe7dc"),
+      panel: tok("--panel", "#f7f5ee"),
+      field: tok("--field", "#fdfcf8"),
+      ink: tok("--ink", "#2b2620"),
+      inkSoft: tok("--ink-soft", "#4b443b"),
+      dim: tok("--dim", "#6f6558"),
+      faint: tok("--faint", "#8d8375"),
+      rule: tok("--rule", "#d8d2c4"),
+      ruleFirm: tok("--rule-firm", "#bdb5a4"),
+      accent: tok("--accent", "#8a5a24"),
+      accentLit: tok("--accent-lit", "#f0e6d6"),
+      flag: tok("--flag", "#8c3b1e"),
+      flagLit: tok("--flag-lit", "#f3e4de"),
+      good: tok("--good", "#3f5c3a"),
+      goodLit: tok("--good-lit", "#e5eade"),
+      mono: '11px "IBM Plex Mono", ui-monospace, Menlo, monospace',
+      monoSmall: '9px "IBM Plex Mono", ui-monospace, Menlo, monospace'
+    };
+    return PAL;
+  }
+
+  /* mix two hex colours, t from 0 (a) to 1 (b) */
+  function mix(a, b, t) {
+    function rgb(h) {
+      h = String(h).trim();
+      if (h.charAt(0) === "#") h = h.slice(1);
+      if (h.length === 3) h = h.charAt(0) + h.charAt(0) + h.charAt(1) + h.charAt(1) + h.charAt(2) + h.charAt(2);
+      var n = parseInt(h, 16);
+      if (!isFinite(n)) return [0, 0, 0];
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+    var x = rgb(a), y = rgb(b), o = [0, 0, 0];
+    for (var i = 0; i < 3; i++) o[i] = Math.round(x[i] + (y[i] - x[i]) * t);
+    return "rgb(" + o[0] + "," + o[1] + "," + o[2] + ")";
+  }
+
+  /* ---------- canvas ---------- */
+
+  /* canvas(host, spec) -> { cv, ctx, w, h, resize, label }
+     spec: { aspect, minH, maxH, label, id, focus }
+     w and h are css pixels; the context is already scaled by the device
+     pixel ratio, so everything is drawn in css pixels and stays crisp. */
+  function canvas(host, spec) {
+    var s = spec || {};
+    var cv = document.createElement("canvas");
+    cv.className = "sm-canvas";
+    if (s.id) cv.id = s.id;
+    cv.setAttribute("role", "img");
+    cv.setAttribute("aria-label", s.label || "");
+    if (s.focus) cv.setAttribute("tabindex", "0");
+    host.appendChild(cv);
+    var ctx = cv.getContext("2d");
+
+    var api = {
+      cv: cv, ctx: ctx, w: 300, h: 200,
+      label: function (text) { cv.setAttribute("aria-label", text); },
+      resize: function () {
+        var w = host.clientWidth || cv.clientWidth || 320;
+        if (w < 240) w = 240;
+        var h = Math.round(w * (s.aspect === undefined ? 0.62 : s.aspect));
+        if (s.minH && h < s.minH) h = s.minH;
+        if (s.maxH && h > s.maxH) h = s.maxH;
+        var dpr = Math.min(2, window.devicePixelRatio || 1);
+        api.w = w; api.h = h;
+        cv.style.height = h + "px";
+        cv.width = Math.round(w * dpr);
+        cv.height = Math.round(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return api;
+      }
+    };
+    api.resize();
+    return api;
+  }
+
+  function clear(c, colour) {
+    var p = palette();
+    c.ctx.fillStyle = colour || p.field;
+    c.ctx.fillRect(0, 0, c.w, c.h);
+  }
+
+  function text(c, str, x, y, opt) {
+    var o = opt || {}, p = palette();
+    c.ctx.save();
+    c.ctx.font = o.font || (o.small ? p.monoSmall : p.mono);
+    c.ctx.fillStyle = o.fill || p.faint;
+    c.ctx.textAlign = o.align || "left";
+    c.ctx.textBaseline = o.baseline || "alphabetic";
+    c.ctx.fillText(str, x, y);
+    c.ctx.restore();
+  }
+
+  /* ---------- a small time series plot ---------- */
+
+  /* line(c, spec)
+     spec: { series: [{ data, colour, name, dash }], yMin, yMax, xLabel,
+             yTicks: [{v,label}], pad, maxPoints } */
+  function line(c, spec) {
+    var p = palette(), ctx = c.ctx;
+    var padL = spec.padL === undefined ? 42 : spec.padL;
+    var padR = spec.padR === undefined ? 10 : spec.padR;
+    var padT = spec.padT === undefined ? 10 : spec.padT;
+    var padB = spec.padB === undefined ? 26 : spec.padB;
+    var iw = c.w - padL - padR, ih = c.h - padT - padB;
+    if (iw < 10 || ih < 10) return;
+
+    clear(c, p.field);
+    ctx.strokeStyle = p.rule;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(padL + 0.5, padT + 0.5, iw - 1, ih - 1);
+
+    var yMin = spec.yMin === undefined ? 0 : spec.yMin;
+    var yMax = spec.yMax === undefined ? 1 : spec.yMax;
+    if (yMax <= yMin) yMax = yMin + 1;
+    function Y(v) { return padT + ih - (v - yMin) / (yMax - yMin) * ih; }
+
+    var n = 0;
+    spec.series.forEach(function (s) { if (s.data.length > n) n = s.data.length; });
+    var span = Math.max(spec.minSpan || 40, n);
+    function X(i) { return padL + (span <= 1 ? 0 : i * iw / (span - 1)); }
+
+    (spec.yTicks || []).forEach(function (t) {
+      var yy = Y(t.v);
+      ctx.strokeStyle = p.rule;
+      ctx.setLineDash([1, 4]);
+      ctx.beginPath(); ctx.moveTo(padL, yy); ctx.lineTo(padL + iw, yy); ctx.stroke();
+      ctx.setLineDash([]);
+      text(c, t.label, padL - 6, yy + 3, { align: "right", small: true, fill: p.faint });
+    });
+
+    spec.series.forEach(function (s) {
+      if (!s.data.length) return;
+      ctx.strokeStyle = s.colour;
+      ctx.lineWidth = s.width || 1.8;
+      if (s.dash) ctx.setLineDash(s.dash); else ctx.setLineDash([]);
+      ctx.beginPath();
+      for (var i = 0; i < s.data.length; i++) {
+        var xx = X(i), yy = Y(s.data[i]);
+        if (i === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    if (spec.xLabel) {
+      text(c, spec.xLabel, padL + iw / 2, c.h - 8, { align: "center", small: true });
+    }
+    if (spec.legend !== false) {
+      var lx = padL + 6, ly = padT + 12;
+      spec.series.forEach(function (s) {
+        if (!s.name) return;
+        ctx.strokeStyle = s.colour; ctx.lineWidth = 2.2;
+        if (s.dash) ctx.setLineDash(s.dash); else ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(lx, ly - 3); ctx.lineTo(lx + 14, ly - 3); ctx.stroke();
+        ctx.setLineDash([]);
+        text(c, s.name, lx + 19, ly, { small: true, fill: p.dim });
+        ly += 13;
+      });
+    }
+  }
+
+  /* keep a series to a fixed number of points by dropping the oldest */
+  function push(arr, v, cap) {
+    arr.push(v);
+    if (arr.length > cap) arr.splice(0, arr.length - cap);
+    return arr;
+  }
+
+  /* ---------- transport ---------- */
+
+  /* transport(host, spec) -> { running, start, stop, toggle, tick, reset,
+                                setClock, el }
+     spec: { onStep, onDraw, onReset, onShare, stepsPerFrame, clock,
+             burst, focusEl, runLabel, stillLabel }
+
+     Under prefers reduced motion nothing animates by itself: the run
+     button becomes an advance button that computes a burst of steps and
+     paints once at the end, and the step button is always there, so the
+     model stays fully usable without a single frame of movement. */
+  function transport(host, spec) {
+    var s = spec || {};
+    var burst = s.burst || 25;
+    var spf = s.stepsPerFrame || 1;
+    var quiet = still();
+
+    var bar = Kit.el("div", { class: "sm-bar" });
+    var runBtn = Kit.el("button", {
+      type: "button", class: "k-btn sm-btn-run",
+      text: quiet ? ("Advance " + burst + " steps") : (s.runLabel || "Run")
+    });
+    var stepBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Step" });
+    var resetBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Reset" });
+    var shareBtn = s.onShare
+      ? Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Copy link to this run" })
+      : null;
+    var clock = Kit.el("span", { class: "sm-clock", text: "" });
+
+    bar.appendChild(runBtn);
+    bar.appendChild(stepBtn);
+    bar.appendChild(resetBtn);
+    if (shareBtn) bar.appendChild(shareBtn);
+    bar.appendChild(clock);
+    host.appendChild(bar);
+
+    if (quiet) {
+      host.appendChild(Kit.el("p", { class: "sm-still", text:
+        "Your system asks for reduced motion, so this model never animates. "
+        + "Advance moves it " + burst + " steps and draws the result once. Step moves it one." }));
+    }
+
+    host.appendChild(Kit.el("p", { class: "sm-keys", html:
+      "Keyboard: <kbd>Space</kbd> " + (quiet ? "advances" : "runs and pauses")
+      + ", <kbd>S</kbd> steps once, <kbd>R</kbd> resets. "
+      + "Every control below is a standard slider, radio group or button." }));
+
+    var api = {
+      el: bar, running: false, runBtn: runBtn,
+      setClock: function (t) { clock.textContent = t; },
+      /* how many steps a frame takes while running, which some models let
+         the reader set: it changes the waiting and not the model */
+      setRate: function (v) { spf = Math.max(1, Math.round(v)); }
+    };
+
+    var raf = null;
+    function frame() {
+      if (!api.running) return;
+      for (var i = 0; i < spf; i++) s.onStep();
+      if (s.onDraw) s.onDraw();
+      raf = window.requestAnimationFrame(frame);
+    }
+
+    api.start = function () {
+      if (quiet || api.running) return;
+      api.running = true;
+      runBtn.textContent = "Pause";
+      runBtn.setAttribute("data-on", "1");
+      raf = window.requestAnimationFrame(frame);
+    };
+    api.stop = function () {
+      if (!api.running) return;
+      api.running = false;
+      runBtn.textContent = s.runLabel || "Run";
+      runBtn.removeAttribute("data-on");
+      if (raf) window.cancelAnimationFrame(raf);
+      raf = null;
+      if (s.onSettle) s.onSettle();
+    };
+    api.toggle = function () {
+      if (quiet) {
+        for (var i = 0; i < burst; i++) s.onStep();
+        if (s.onDraw) s.onDraw();
+        if (s.onSettle) s.onSettle();
+        return;
+      }
+      if (api.running) api.stop(); else api.start();
+    };
+    api.tick = function () {
+      s.onStep();
+      if (s.onDraw) s.onDraw();
+      if (s.onSettle) s.onSettle();
+    };
+    api.reset = function () {
+      api.stop();
+      if (s.onReset) s.onReset();
+    };
+
+    runBtn.addEventListener("click", api.toggle);
+    stepBtn.addEventListener("click", function () { api.stop(); api.tick(); });
+    resetBtn.addEventListener("click", api.reset);
+    if (shareBtn) shareBtn.addEventListener("click", function () { s.onShare(); });
+
+    /* the keys work while the figure, or anything inside it, has focus */
+    var scope = s.scope || host;
+    scope.addEventListener("keydown", function (e) {
+      var tag = (e.target && e.target.tagName) || "";
+      if (tag === "INPUT" && e.key === " ") return;
+      if (tag === "BUTTON" && (e.key === " " || e.key === "Enter")) return;
+      if (e.key === " ") { e.preventDefault(); api.toggle(); }
+      else if (e.key === "s" || e.key === "S") { e.preventDefault(); api.stop(); api.tick(); }
+      else if (e.key === "r" || e.key === "R") { e.preventDefault(); api.reset(); }
+    });
+
+    /* a model that is running while its page is hidden is only heat */
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) api.stop();
+    });
+
+    api.quiet = quiet;
+    return api;
+  }
+
+  /* ---------- numbers ---------- */
+
+  function fix(v, dp) {
+    if (!isFinite(v)) return "not defined";
+    return Number(v).toFixed(dp === undefined ? 2 : dp);
+  }
+
+  /* Shannon entropy of a histogram of counts, in bits, normalised by the
+     entropy of the flat distribution over the same number of bins so that
+     it runs from zero to one. */
+  function entropy(counts) {
+    var total = 0, i;
+    for (i = 0; i < counts.length; i++) total += counts[i];
+    if (total <= 0 || counts.length < 2) return 0;
+    var h = 0;
+    for (i = 0; i < counts.length; i++) {
+      var q = counts[i] / total;
+      if (q > 0) h -= q * Math.log(q);
+    }
+    return h / Math.log(counts.length);
+  }
+
+  /* The distance between two histograms measured along the axis they sit
+     on: how far, on average, the mass of one would have to be carried to
+     lie exactly on the other, as a share of the whole width of the axis.
+     Zero when the two are identical, one when they sit at opposite ends.
+     Unlike a total variation distance it does not jump to one the moment
+     two collapsed distributions stop overlapping, which is what makes it
+     usable once a population has gathered into a few positions. */
+  function emd(a, b) {
+    var sa = 0, sb = 0, i;
+    for (i = 0; i < a.length; i++) sa += a[i];
+    for (i = 0; i < b.length; i++) sb += b[i];
+    if (sa <= 0 || sb <= 0 || a.length < 2) return 0;
+    var fa = 0, fb = 0, sum = 0;
+    for (i = 0; i < a.length - 1; i++) {
+      fa += a[i] / sa;
+      fb += b[i] / sb;
+      sum += Math.abs(fa - fb);
+    }
+    return sum / (a.length - 1);
+  }
+
+  /* total variation distance between two histograms of counts */
+  function tvd(a, b) {
+    var sa = 0, sb = 0, i;
+    for (i = 0; i < a.length; i++) sa += a[i];
+    for (i = 0; i < b.length; i++) sb += b[i];
+    if (sa <= 0 || sb <= 0) return 0;
+    var d = 0;
+    for (i = 0; i < a.length; i++) d += Math.abs(a[i] / sa - b[i] / sb);
+    return d / 2;
+  }
+
+  return {
+    still: still, palette: palette, mix: mix,
+    canvas: canvas, clear: clear, text: text, line: line, push: push,
+    transport: transport, fix: fix, entropy: entropy, tvd: tvd, emd: emd
+  };
+})();
+
+/* ============================================================
+   Simulation four: the jam
+
+   A single lane ring of L metres carrying M cars. Each car has a
+   position and a speed and follows
+
+     V(g) = clamp( (g - D0) / TH, 0, VMAX )
+     dv/dt = ( V(g delayed by tau) - v ) / tau
+
+   integrated at DT with a ring buffer holding the gap history so
+   that the delay is real rather than approximated. Nothing is
+   random: an evenly spaced line stays evenly spaced for ever,
+   which is why the disturbance has to be introduced by hand.
+
+   The trace on the right is a speed field: the road is cut into
+   bins and each bin takes the speed of the car immediately
+   behind it, which is the car whose behaviour governs that
+   stretch of road.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var Q = Kit.qs;
+
+  var L = 1000;            /* metres round the loop */
+  var D0 = 6;              /* a car plus a little */
+  var TH = 1.2;            /* seconds of headway */
+  var VMAX = 30;           /* metres per second */
+  var DT = 0.1;            /* seconds per step */
+  var BINS = 160;
+  var ROWS = 320;
+  var ROW_EVERY = 2;       /* steps between rows of the trace */
+  var MAXT = 6000;
+
+  var S = { m: 26, tau: 0.9, pt: -1 };
+
+  var pos = null, vel = null, gapLog = null, logLen = 0, logHead = 0;
+  var tick = 0, rows = [], jamHist = [];
+  var stat = { mean: 0, min: 0, max: 0, sd: 0, flow: 0, wave: 0, waveOk: false, stopgo: false };
+
+  /* ---------- the road ---------- */
+
+  function reset() {
+    var m = S.m;
+    pos = new Float64Array(m);
+    vel = new Float64Array(m);
+    var gap = L / m - D0;
+    var v0 = Math.max(0, Math.min(VMAX, gap / TH));
+    for (var i = 0; i < m; i++) { pos[i] = i * L / m; vel[i] = v0; }
+    logLen = Math.max(1, Math.round(S.tau / DT) + 1);
+    gapLog = new Float64Array(logLen * m);
+    for (i = 0; i < logLen * m; i++) gapLog[i] = gap;
+    logHead = 0;
+    tick = 0;
+    rows = [];
+    jamHist = [];
+    waveK = 0;
+    stat.waveOk = false;
+    stat.wave = 0;
+    S.pt = -1;
+    measure();
+  }
+
+  function gapAhead(i) {
+    var m = S.m;
+    var ahead = (i + 1) % m;
+    var g = pos[ahead] - pos[i];
+    if (g < 0) g += L;
+    if (m === 1) g = L;
+    return g < 0 ? 0 : g;
+  }
+
+  function step() {
+    if (tick >= MAXT) return;
+    var m = S.m, i;
+    var delayed = (logHead + 1) % logLen;   /* the oldest row in the buffer */
+    for (i = 0; i < m; i++) {
+      var g = gapLog[delayed * m + i];
+      var target = (g - D0) / TH;
+      if (target < 0) target = 0;
+      if (target > VMAX) target = VMAX;
+      var v = vel[i] + DT * (target - vel[i]) / S.tau;
+      if (v < 0) v = 0;
+      if (v > VMAX) v = VMAX;
+      /* a car cannot come closer to the car in front than the length of a
+         car, which the following rule on its own does not guarantee at a
+         long reaction time. Six metres is also where the rule already puts
+         the target speed at zero, so the two agree. */
+      var room = (gapAhead(i) - D0) / DT;
+      if (room < 0) room = 0;
+      if (v > room) v = room;
+      vel[i] = v;
+    }
+    for (i = 0; i < m; i++) {
+      pos[i] += vel[i] * DT;
+      if (pos[i] >= L) pos[i] -= L;
+    }
+    logHead = (logHead + 1) % logLen;
+    for (i = 0; i < m; i++) gapLog[logHead * m + i] = gapAhead(i);
+    tick++;
+    measure();
+    if (tick % ROW_EVERY === 0) addRow();
+  }
+
+  function tap() {
+    if (!S.m) return;
+    /* one driver eases off for a moment: a third of its speed, once */
+    vel[0] *= 0.62;
+    if (S.pt < 0) S.pt = tick;
+  }
+
+  function measure() {
+    var m = S.m, sum = 0, mn = Infinity, mx = -Infinity, i;
+    for (i = 0; i < m; i++) {
+      sum += vel[i];
+      if (vel[i] < mn) mn = vel[i];
+      if (vel[i] > mx) mx = vel[i];
+    }
+    var mean = m ? sum / m : 0;
+    var vv = 0;
+    for (i = 0; i < m; i++) vv += (vel[i] - mean) * (vel[i] - mean);
+    stat.mean = mean;
+    stat.min = m ? mn : 0;
+    stat.max = m ? mx : 0;
+    stat.sd = m ? Math.sqrt(vv / m) : 0;
+    stat.flow = mean * (m / L) * 3600;      /* vehicles past a point per hour */
+    stat.stopgo = stat.sd > 1.2;
+  }
+
+  /* ---------- the speed field and the trace ---------- */
+
+  function speedField(out) {
+    var m = S.m, b, i;
+    /* each bin takes the speed of the nearest car behind it */
+    var order = [];
+    for (i = 0; i < m; i++) order.push(i);
+    order.sort(function (a, z) { return pos[a] - pos[z]; });
+    var k = 0;
+    for (b = 0; b < BINS; b++) {
+      var x = (b + 0.5) * L / BINS;
+      while (k + 1 < m && pos[order[k + 1]] <= x) k++;
+      var idx = order[k];
+      if (pos[idx] > x) idx = order[m - 1];   /* before the first car: wrap to the last */
+      out[b] = vel[idx];
+    }
+    return out;
+  }
+
+  function addRow() {
+    var f = new Float32Array(BINS);
+    speedField(f);
+    rows.push(f);
+    if (rows.length > ROWS) rows.splice(0, rows.length - ROWS);
+    trackWave(f);
+  }
+
+  /* The jam is a wave in the slowness of the road, so its speed is the speed
+     of that wave and not of any car. The slowness field is decomposed into
+     its first few harmonics, the strongest one is taken as the jam pattern,
+     and the drift of that harmonic's phase is the jam's velocity. Tracking
+     the slowest point instead would jump between jams and report nonsense. */
+  var waveK = 0;
+
+  function trackWave(f) {
+    var b, k;
+    var slow = new Float64Array(BINS), total = 0;
+    for (b = 0; b < BINS; b++) {
+      var q = 1 - f[b] / VMAX;
+      slow[b] = q > 0 ? q : 0;
+      total += slow[b];
+    }
+    if (total < BINS * 0.01) { jamHist = []; waveK = 0; stat.waveOk = false; stat.wave = 0; return; }
+
+    var bestK = 0, bestAmp = 0, bestPhase = 0;
+    for (k = 1; k <= 10; k++) {
+      var re = 0, im = 0;
+      for (b = 0; b < BINS; b++) {
+        var a = 2 * Math.PI * k * b / BINS;
+        re += slow[b] * Math.cos(a);
+        im += slow[b] * Math.sin(a);
+      }
+      var amp = Math.sqrt(re * re + im * im);
+      if (amp > bestAmp) { bestAmp = amp; bestK = k; bestPhase = Math.atan2(im, re); }
+    }
+    if (!bestK || bestAmp < total * 0.06) { jamHist = []; waveK = 0; stat.waveOk = false; return; }
+    if (bestK !== waveK) { jamHist = []; waveK = bestK; }
+
+    var period = L / bestK;
+    var x = bestPhase / (2 * Math.PI * bestK) * L;
+    if (jamHist.length) {
+      var prev = jamHist[jamHist.length - 1];
+      while (x - prev > period / 2) x -= period;
+      while (prev - x > period / 2) x += period;
+    }
+    jamHist.push(x);
+    if (jamHist.length > 240) jamHist.splice(0, jamHist.length - 240);
+    fitWave();
+  }
+
+  function fitWave() {
+    var n = jamHist.length;
+    if (n < 40 || !stat.stopgo) { stat.waveOk = false; stat.wave = 0; return; }
+    var from = Math.max(0, n - 120);
+    var k = n - from;
+    var sx = 0, sy = 0, sxy = 0, sxx = 0;
+    for (var i = from; i < n; i++) {
+      var t = (i - from) * ROW_EVERY * DT;
+      sx += t; sy += jamHist[i]; sxy += t * jamHist[i]; sxx += t * t;
+    }
+    var den = k * sxx - sx * sx;
+    if (Math.abs(den) < 1e-9) { stat.waveOk = false; return; }
+    stat.wave = (k * sxy - sx * sy) / den;   /* metres per second */
+    stat.waveOk = true;
+  }
+
+  /* ---------- drawing ---------- */
+
+  var cRing = null, cST = null, off = null;
+
+  function drawRing() {
+    var p = Sim.palette(), ctx = cRing.ctx;
+    Sim.clear(cRing, p.panel);
+    var cx = cRing.w / 2, cy = cRing.h / 2;
+    var R = Math.min(cRing.w, cRing.h) / 2 - 16;
+    var band = Math.max(9, R * 0.16);
+
+    ctx.strokeStyle = p.sunk;
+    ctx.lineWidth = band;
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = p.rule;
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, R + band / 2, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, R - band / 2, 0, Math.PI * 2); ctx.stroke();
+
+    for (var i = 0; i < S.m; i++) {
+      var a = pos[i] / L * Math.PI * 2 - Math.PI / 2;
+      var q = vel[i] / VMAX;
+      ctx.save();
+      ctx.translate(cx + Math.cos(a) * R, cy + Math.sin(a) * R);
+      ctx.rotate(a + Math.PI / 2);
+      ctx.fillStyle = Sim.mix(p.ink, p.accentLit, Math.pow(q, 0.6));
+      ctx.fillRect(-band * 0.3, -band * 0.42, band * 0.6, band * 0.84);
+      ctx.restore();
+    }
+
+    /* the direction of travel */
+    Sim.text(cRing, "cars travel clockwise", cx, cy - 4, { align: "center", small: true, fill: p.faint });
+    Sim.text(cRing, Math.round(stat.mean * 3.6) + " km/h average", cx, cy + 10,
+      { align: "center", small: true, fill: p.dim });
+    cRing.label(summary());
+  }
+
+  function drawST() {
+    var p = Sim.palette(), ctx = cST.ctx;
+    Sim.clear(cST, p.panel);
+    var padL = 8, padR = 8, padT = 14, padB = 20;
+    var iw = cST.w - padL - padR, ih = cST.h - padT - padB;
+    if (iw < 20 || ih < 20 || !rows.length) {
+      Sim.text(cST, "nothing has run yet", cST.w / 2, cST.h / 2, { align: "center", fill: p.faint });
+      cST.label("The trace is empty because the model has not been run yet.");
+      return;
+    }
+
+    var h = rows.length;
+    if (!off || off.width !== BINS || off.height !== ROWS) {
+      off = document.createElement("canvas");
+      off.width = BINS; off.height = ROWS;
+    }
+    var octx = off.getContext("2d");
+    var img = octx.createImageData(BINS, h);
+    var d = img.data;
+    for (var y = 0; y < h; y++) {
+      var f = rows[y];
+      for (var x = 0; x < BINS; x++) {
+        var q = f[x] / VMAX;
+        if (q < 0) q = 0; if (q > 1) q = 1;
+        var t = Math.pow(1 - q, 0.85);
+        /* pale paper at full speed, dark ink at a standstill */
+        var i0 = (y * BINS + x) * 4;
+        d[i0] = Math.round(253 + (43 - 253) * t);
+        d[i0 + 1] = Math.round(252 + (38 - 252) * t);
+        d[i0 + 2] = Math.round(248 + (32 - 248) * t);
+        d[i0 + 3] = 255;
+      }
+    }
+    octx.putImageData(img, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    /* the trace fills upwards from the bottom, so the time scale is the
+       same whether the run has just started or has been going a while */
+    var drawH = Math.max(1, Math.round(ih * h / ROWS));
+    var y0 = padT + ih - drawH;
+    ctx.drawImage(off, 0, 0, BINS, h, padL, y0, iw, drawH);
+    ctx.strokeStyle = p.ruleFirm;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(padL + 0.5, padT + 0.5, iw - 1, ih - 1);
+
+    Sim.text(cST, "once round the loop", padL + iw / 2, padT - 4, { align: "center", small: true });
+    Sim.text(cST, "older", padL + 3, y0 + 11, { small: true, fill: p.faint });
+    Sim.text(cST, "now", padL + 3, padT + ih - 4, { small: true, fill: p.faint });
+    Sim.text(cST, stat.stopgo ? "dark bands lean backwards: that is the jam moving"
+                              : "an even field: free flow",
+      padL + iw / 2, cST.h - 6, { align: "center", small: true, fill: p.dim });
+    cST.label(traceWords());
+  }
+
+  /* ---------- words ---------- */
+
+  function traceWords() {
+    if (!rows.length) return "The trace is empty because the model has not been run yet.";
+    return "A trace of the local speed on the loop, position left to right and time downwards over the "
+      + "last " + Sim.fix(rows.length * ROW_EVERY * DT, 0) + " seconds. "
+      + (stat.stopgo
+        ? "Dark bands lean backwards across it, which is a jam travelling against the direction of the "
+          + "cars at " + Sim.fix(Math.abs(stat.wave) * 3.6, 1) + " kilometres per hour."
+        : "The field is even, which is free flow: nothing is propagating.");
+  }
+
+  function summary() {
+    return "A single lane loop one kilometre round carrying " + S.m + " cars, which is "
+      + Sim.fix(S.m / L * 1000, 0) + " cars per kilometre, with a driver reaction time of "
+      + Sim.fix(S.tau, 2) + " seconds. After " + Sim.fix(tick * DT, 0) + " seconds the average speed is "
+      + Sim.fix(stat.mean * 3.6, 1) + " kilometres per hour, the slowest car is doing "
+      + Sim.fix(stat.min * 3.6, 1) + " and the fastest " + Sim.fix(stat.max * 3.6, 1) + ". "
+      + (stat.stopgo ? "The traffic is in stop and go." : "The traffic is in free flow.");
+  }
+
+  function says() {
+    var host = Q("#jm-says");
+    Kit.clear(host);
+    var e = Kit.el;
+    function n(t, flag) { return e("span", { class: "ex-n" + (flag ? " ex-n-flag" : ""), text: t }); }
+
+    var p1 = e("p");
+    if (S.pt < 0) {
+      p1.appendChild(document.createTextNode("The cars are evenly spaced and all doing "));
+      p1.appendChild(n(Sim.fix(stat.mean * 3.6, 1) + " km/h"));
+      p1.appendChild(document.createTextNode(". Nothing in this model is random, so this will stay exactly "
+        + "as it is for ever. Press run, then tap one brake."));
+      host.appendChild(p1);
+      return;
+    }
+
+    p1.appendChild(document.createTextNode("One driver eased off for a moment, "));
+    p1.appendChild(n(Sim.fix((tick - S.pt) * DT, 0) + " seconds"));
+    p1.appendChild(document.createTextNode(" ago. Since then the spread of speeds around the loop has "
+      + "reached "));
+    p1.appendChild(n(Sim.fix(stat.sd * 3.6, 1) + " km/h", stat.stopgo));
+    p1.appendChild(document.createTextNode(stat.stopgo
+      ? ", the slowest car is down to " + Sim.fix(stat.min * 3.6, 1)
+        + " km/h, and the disturbance has not died out. It has become a jam."
+      : ", which is small and shrinking. The disturbance is being absorbed and the road stays in free "
+        + "flow. Raise the density or the reaction time and tap again."));
+    host.appendChild(p1);
+
+    var p2 = e("p");
+    if (stat.stopgo && stat.waveOk) {
+      p2.appendChild(document.createTextNode("The jam itself is moving "));
+      p2.appendChild(n(Sim.fix(Math.abs(stat.wave) * 3.6, 1) + " km/h", true));
+      p2.appendChild(document.createTextNode(stat.wave < 0 ? " backwards" : " forwards"));
+      p2.appendChild(document.createTextNode(", while every car in it is moving forwards. Nothing is "
+        + "blocking the road, nobody did anything wrong, and the driver who braked is long gone."));
+    } else if (stat.stopgo) {
+      p2.appendChild(document.createTextNode("The traffic is in stop and go but the trace is not long "
+        + "enough yet to fit a speed to the jam. Let it run."));
+    } else {
+      p2.appendChild(document.createTextNode("Free flow is stable at any reaction time when the gaps are "
+        + "large, because a driver already at its top speed does not respond to the gap ahead at all. "
+        + "There is nothing for a disturbance to travel through."));
+    }
+    host.appendChild(p2);
+  }
+
+  /* ---------- controls ---------- */
+
+  var cM, cTau, setRead, tr;
+
+  function buildControls() {
+    var rack = Q("#jm-ctrls");
+
+    cM = Ex.slider(rack, {
+      label: "Cars on the loop",
+      min: 5, max: 70, step: 1, value: S.m,
+      format: function (v) { return v + " (" + v + " per km)"; },
+      hint: "The loop is one kilometre round, so this is also the density.",
+      onInput: function (v) { S.m = v; restart(); }
+    });
+
+    cTau = Ex.slider(rack, {
+      label: "Reaction time, seconds",
+      min: 0.2, max: 2, step: 0.05, value: S.tau,
+      format: function (v) { return Sim.fix(v, 2) + " s"; },
+      hint: "How stale the gap a driver responds to is, and how long the response takes.",
+      onInput: function (v) { S.tau = v; restart(); }
+    });
+
+    setRead = Ex.readout(Q("#jm-read"), [
+      { id: "mean", label: "Average speed", tone: "hot" },
+      { id: "min", label: "Slowest car" },
+      { id: "sd", label: "Spread of speeds" },
+      { id: "flow", label: "Flow past a point" },
+      { id: "wave", label: "Jam speed", tone: "flag" },
+      { id: "t", label: "Elapsed" }
+    ]);
+
+    var p = Sim.palette();
+    var key = Q("#jm-key");
+    [[p.accentLit, "moving freely"], [p.ink, "at a standstill"]].forEach(function (k) {
+      var mark = Kit.el("i");
+      mark.style.background = k[0];
+      mark.style.border = "1px solid " + p.ruleFirm;
+      key.appendChild(Kit.el("span", {}, [mark, document.createTextNode(k[1])]));
+    });
+
+    Q("#jm-tap").addEventListener("click", function () {
+      tap();
+      paint();
+      Kit.state.write(hashOut());
+    });
+  }
+
+  function restart() {
+    if (tr) tr.stop();
+    reset();
+    paint();
+    Kit.state.write(hashOut());
+  }
+
+  /* ---------- state in the address ---------- */
+
+  function hashOut() {
+    return { m: S.m, tau: Ex.round(S.tau, 2), t: tick, pt: S.pt };
+  }
+
+  function hashIn() {
+    var o = Kit.state.read();
+    if (!o) return false;
+    if (isFinite(o.m)) S.m = Math.round(Ex.clamp(Number(o.m), 5, 70));
+    if (isFinite(o.tau)) S.tau = Ex.clamp(Number(o.tau), 0.2, 2);
+    reset();
+    var want = isFinite(o.t) ? Math.round(Ex.clamp(Number(o.t), 0, MAXT)) : 0;
+    var at = isFinite(o.pt) ? Math.round(Number(o.pt)) : -1;
+    while (tick < want) {
+      if (at >= 0 && tick === at) tap();
+      step();
+    }
+    if (at >= 0 && S.pt < 0 && tick === at) tap();
+    return true;
+  }
+
+  function sync() { cM.set(S.m, true); cTau.set(S.tau, true); }
+
+  /* ---------- render ---------- */
+
+  function paint() {
+    drawRing();
+    drawST();
+    setRead("mean", Sim.fix(stat.mean * 3.6, 1), "km/h");
+    setRead("min", Sim.fix(stat.min * 3.6, 1), "km/h");
+    setRead("sd", Sim.fix(stat.sd * 3.6, 1), stat.stopgo ? "stop and go" : "free flow");
+    setRead("flow", Sim.fix(stat.flow, 0), "cars per hour");
+    setRead("wave", stat.waveOk ? Sim.fix(stat.wave * 3.6, 1) : "no jam",
+      stat.waveOk ? "km/h, negative is backwards" : "nothing propagating");
+    setRead("t", Sim.fix(tick * DT, 0) + " s", S.pt < 0 ? "brake not tapped" : "brake tapped");
+    Q("#jm-sum").textContent = summary();
+    says();
+    if (tr) tr.setClock(Sim.fix(tick * DT, 1) + " s");
+  }
+
+  function init() {
+    cRing = Sim.canvas(Q("#jm-ring"), { aspect: 1, label: "" });
+    cST = Sim.canvas(Q("#jm-st"), { aspect: 1.0, minH: 240, maxH: 400, label: "" });
+
+    buildControls();
+    if (!hashIn()) reset();
+    sync();
+
+    tr = Sim.transport(Q("#jm-bar"), {
+      scope: Q("#m1"),
+      burst: 60,
+      stepsPerFrame: 4,
+      onStep: function () { step(); },
+      onDraw: function () {
+        drawRing();
+        drawST();
+        if (tr) tr.setClock(Sim.fix(tick * DT, 1) + " s");
+        if (tick >= MAXT) { tr.stop(); paint(); }
+      },
+      onSettle: function () { paint(); Kit.state.write(hashOut()); },
+      onReset: function () { reset(); paint(); Kit.state.write(hashOut()); },
+      onShare: function () { Kit.share(hashOut(), "Link copied. It reopens at this moment of the run."); }
+    });
+
+    paint();
+    Kit.state.write(hashOut());
+
+    Ex.onResize(function () { cRing.resize(); cST.resize(); paint(); });
+    window.addEventListener("hashchange", function () {
+      if (hashIn()) { sync(); paint(); }
+    });
+
+    window.__jm = {
+      set: function (o) {
+        Object.keys(o).forEach(function (k) { S[k] = o[k]; });
+        if (tr) tr.stop();
+        reset(); sync(); paint(); Kit.state.write(hashOut());
+      },
+      tap: function () { tap(); paint(); Kit.state.write(hashOut()); },
+      state: function () { return { pos: Array.prototype.slice.call(pos), vel: Array.prototype.slice.call(vel), t: tick * DT, waveK: waveK, wave: stat.wave }; },
+      run: function (k) { for (var i = 0; i < k; i++) step(); paint(); Kit.state.write(hashOut()); return this.read(); },
+      read: function () {
+        return { mean: stat.mean, min: stat.min, sd: stat.sd, flow: stat.flow,
+                 wave: stat.wave, waveOk: stat.waveOk, stopgo: stat.stopgo,
+                 t: tick * DT, m: S.m, tau: S.tau };
+      }
+    };
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+
+<script>
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Beş simülasyondan dördüncüsü</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Simulation vier von fünf</i>"}};
+
+(function(){
+  "use strict";
+  var KEY = "lang", lang = "en";
+  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
+  var D = window.CHROME_I18N || {};
+  var base = {}, baseA = {};
+  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
+  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function apply(l){
+    if(!D[l]) l = "en";
+    var d = D[l] || {};
+    document.querySelectorAll(SEL).forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if(!(k in base)) base[k] = el.innerHTML;
+      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
+    });
+    document.querySelectorAll(SELA).forEach(function(el){
+      var k = el.getAttribute("data-ia");
+      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
+      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
+    });
+    document.documentElement.setAttribute("lang", l);
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    window.__lang = l;
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  window.__chrome = apply;
+  apply(lang);
+})();
+
+</script>
+
+</body>
+</html>
