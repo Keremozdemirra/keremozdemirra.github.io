@@ -26,6 +26,12 @@ a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;
   border:1px solid rgba(224,160,80,.4);border-radius:3px;padding:.7rem 1.5rem;transition:border-color .2s,background .2s}
 a:hover{border-color:rgba(224,160,80,.8);background:rgba(224,160,80,.07)}
 a:focus-visible{outline:2px solid #e0a050;outline-offset:3px}
+/* the four doors that are usually the one that was wanted */
+.ways{display:flex;flex-wrap:wrap;gap:.2rem 1.4rem;justify-content:center;margin-top:1.9rem}
+.ways a{margin-top:0;border:0;border-radius:0;padding:.5rem 0;min-height:40px;
+  font-size:.92rem;color:rgba(233,226,210,.62);
+  border-bottom:1px solid rgba(224,160,80,.22)}
+.ways a:hover{background:none;color:#e0a050;border-bottom-color:rgba(224,160,80,.7)}
 .langs{display:flex;gap:.4rem;justify-content:center;margin-top:2.2rem}
 .langs button{background:none;border:0;cursor:pointer;color:rgba(233,226,210,.55);
   font-family:"Fraunces",Georgia,serif;font-size:.78rem;letter-spacing:.08em;
@@ -49,6 +55,12 @@ a:focus-visible{outline:2px solid #e0a050;outline-offset:3px}
   <h1 data-i="h">Nothing grows here.</h1>
   <p data-i="p">The page you dug for does not exist, or it was never planted.</p>
   <a href="/" data-i="back">Back to the tree</a>
+  <nav class="ways" aria-label="Rest of the site" data-ia="a-ways">
+    <a href="/profile.html" data-i="w-p">Profile</a>
+    <a href="/projects.html" data-i="w-j">Projects</a>
+    <a href="/tools.html" data-i="w-t">Tools</a>
+    <a href="/contact.html" data-i="w-c">Contact</a>
+  </nav>
   <nav class="langs" aria-label="Language" data-ia="a-lang">
     <button type="button" data-lang="en" aria-pressed="true">EN</button>
     <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -64,10 +76,12 @@ a:focus-visible{outline:2px solid #e0a050;outline-offset:3px}
   var D = {
     tr: { h: "Burada bir şey yetişmiyor.",
           p: "Kazdığın sayfa yok, ya da hiç ekilmedi.",
-          back: "Ağaca dön", "a-lang": "Dil" },
+          back: "Ağaca dön", "a-lang": "Dil", "a-ways": "Sitenin geri kalanı",
+          "w-p": "Profil", "w-j": "Projeler", "w-t": "Araçlar", "w-c": "İletişim" },
     de: { h: "Hier wächst nichts.",
-          p: "Die Seite, nach der du gegraben hast, gibt es nicht, oder sie wurde nie gepflanzt.",
-          back: "Zurück zum Baum", "a-lang": "Sprache" }
+          p: "Die Seite, nach der Sie gegraben haben, gibt es nicht, oder sie wurde nie gepflanzt.",
+          back: "Zurück zum Baum", "a-lang": "Sprache", "a-ways": "Der Rest der Seite",
+          "w-p": "Profil", "w-j": "Projekte", "w-t": "Werkzeuge", "w-c": "Kontakt" }
   };
   var base = {}, baseA = {};
   function apply(l){

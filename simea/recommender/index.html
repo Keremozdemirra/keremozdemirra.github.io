@@ -903,7 +903,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 footer.site-foot{background:var(--paper)}
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -911,8 +911,9 @@ footer.site-foot{background:var(--paper)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -931,7 +932,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -941,7 +942,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -951,12 +952,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -987,14 +988,14 @@ footer a:hover{color:var(--fg)}
 </head>
 <body>
 
-<a class="k-skip" href="#sim">Skip to the simulation</a>
+<a class="k-skip" href="#sim" data-i="rc-skip">Skip to the simulation</a>
 
 <div class="k-shell">
 
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" aria-current="page" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../game.html" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../tools/economics/" data-i="nav-e">Economics</a><a href="../../game.html" data-i="nav-g">Game Theory</a><a href="../../simea/" aria-current="page" data-i="nav-s">Simulations</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -1010,8 +1011,8 @@ footer a:hover{color:var(--fg)}
 
       <div class="k-lede k-crown">
         <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Simulation two of five</i></span>
-        <h1>The recommender</h1>
-        <p class="k-standfirst">A thousand agents holding an opinion, and a system deciding what each of
+        <h1 data-i="rc-001">The recommender</h1>
+        <p class="k-standfirst" data-i="rc-012">A thousand agents holding an opinion, and a system deciding what each of
         them gets to see. The same population is run twice from the same starting point with the same
         random draws, once with the system choosing and once with a neutral feed, so that the difference
         between the two runs is the system and nothing else. That difference is a number, and it is on the
@@ -1020,52 +1021,52 @@ footer a:hover{color:var(--fg)}
 
       <div class="ex-body">
 
-        <p class="ex-lead">This is the simulation the whole programme is for. The claim SIMEA makes is that
+        <p class="ex-lead" data-i="rc-013">This is the simulation the whole programme is for. The claim SIMEA makes is that
         an agent embedded in a system is not the same object as an agent choosing alone, and that the
         difference can be measured rather than merely asserted. A claim like that is empty until you can
         watch it happen and read it off a dial.</p>
 
-        <p>So here is the smallest world in which the claim can be tested. Each agent holds a position on a
+        <p data-i="rc-014">So here is the smallest world in which the claim can be tested. Each agent holds a position on a
         single axis, from one end to the other. Each round it is shown a handful of positions held by other
         agents. It moves a little towards anything close enough to its own to be worth taking seriously,
         and ignores anything too far away. The only thing the system does is choose which handful.</p>
 
-        <p>That is a very small power. It cannot make an agent believe anything. It cannot punish, pay,
+        <p data-i="rc-015">That is a very small power. It cannot make an agent believe anything. It cannot punish, pay,
         persuade or lie. It selects. Run it and watch how far selection alone can carry a population.</p>
 
-        <h2 id="s1"><span class="k-num">01</span>Two worlds, one seed</h2>
+        <h2 id="s1" data-i="rc-002"><span class="k-num">01</span>Two worlds, one seed</h2>
 
-        <p>The picture below is two rasters. Time runs left to right. The axis of opinion runs from one end
+        <p data-i="rc-016">The picture below is two rasters. Time runs left to right. The axis of opinion runs from one end
         of the vertical to the other. The darker a band, the more agents are standing there at that moment.</p>
 
-        <p>The upper raster is the world with the recommender in it. The lower one is the counterfactual:
+        <p data-i="rc-017">The upper raster is the world with the recommender in it. The lower one is the counterfactual:
         the same agents, the same starting positions, the same random numbers drawn in the same order, and
         a feed that selects uniformly at random. Set the recommender to favour agreement not at all and
         the two rasters are identical, pixel for pixel, because at that setting the two worlds are the same
         process. Every difference you see below is the system.</p>
 
         <figure class="ex-model" id="m1">
-          <figcaption>Figure one <span class="ex-model-sub">set the feed, then run</span></figcaption>
+          <figcaption data-i="rc-051">Figure one <span class="ex-model-sub">set the feed, then run</span></figcaption>
           <div class="ex-ctrls" id="rc-ctrls"></div>
-          <p class="sm-canvas-lab">Where the population stands, round by round</p>
+          <p class="sm-canvas-lab" data-i="rc-018">Where the population stands, round by round</p>
           <div id="rc-raster"></div>
           <p class="ex-key" id="rc-key"></p>
           <div id="rc-read"></div>
           <p class="ex-sum" id="rc-sum" role="status" aria-live="polite"></p>
-          <p><span class="rc-verdict" id="rc-verdict">not run yet</span></p>
+          <p data-i="rc-019"><span class="rc-verdict" id="rc-verdict">not run yet</span></p>
           <div id="rc-bar"></div>
         </figure>
 
         <div class="ex-says" id="rc-says"></div>
 
-        <h2 id="s2"><span class="k-num">02</span>The three constructs, on the screen</h2>
+        <h2 id="s2" data-i="rc-003"><span class="k-num">02</span>The three constructs, on the screen</h2>
 
-        <p>SIMEA proposes three measurable quantities: the influence gradient a system exerts on a choice,
+        <p data-i="rc-020">SIMEA proposes three measurable quantities: the influence gradient a system exerts on a choice,
         the autonomy threshold that remains the agent's own, and the entropy of the choice environment
         itself. Below is what each of them means here, how it is computed here, and what it currently
         reads.</p>
 
-        <p>I want to be exact about the status of these three definitions. Each one is an
+        <p data-i="rc-021">I want to be exact about the status of these three definitions. Each one is an
         <span class="ex-em">operationalisation</span>: one way of turning a construct into arithmetic that
         a machine can do, chosen because it is simple, bounded and legible. None of them is the construct.
         A different operationalisation, on a different model, would give different numbers, and several
@@ -1075,16 +1076,16 @@ footer a:hover{color:var(--fg)}
         <div class="sm-constructs" id="rc-constructs">
 
           <div class="sm-construct">
-            <h4>Influence gradient <span class="sm-live" id="rc-live-g">0.00</span></h4>
-            <p>How far along the axis the system's choosing carried the population, compared with where
+            <h4 data-i="rc-009">Influence gradient <span class="sm-live" id="rc-live-g">0.00</span></h4>
+            <p data-i="rc-022">How far along the axis the system's choosing carried the population, compared with where
             the same population went without it. Both runs are binned into twenty four bins and the two
             distributions are compared by asking how far the mass of one would have to be moved to lie
             exactly on the other, as a share of the whole width of the axis. Zero means the steered
             population sits exactly where the unsteered one does. One means it was carried from one end of
             the axis to the other.</p>
-            <p class="sm-eq">F(b) = the share of the population at or below bin b
+            <p class="sm-eq" data-i="rc-023">F(b) = the share of the population at or below bin b
 G = ( sum over bins b of | F_steered(b) − F_neutral(b) | ) / 23</p>
-            <p class="sm-honest">This is a distance along the axis, and choosing it cost me a wrong answer
+            <p class="sm-honest" data-i="rc-024">This is a distance along the axis, and choosing it cost me a wrong answer
             first. I began with the total variation distance, which asks only how much of the two
             distributions fails to overlap. It reads zero correctly, but once a population has gathered
             into one or two tight positions it jumps to one the moment those positions stop sharing a bin,
@@ -1096,14 +1097,14 @@ G = ( sum over bins b of | F_steered(b) − F_neutral(b) | ) / 23</p>
           </div>
 
           <div class="sm-construct">
-            <h4>Autonomy threshold <span class="sm-live" id="rc-live-a">1.00</span></h4>
-            <p>Each round an agent's new position is a weighted average of where it already stood and what
+            <h4 data-i="rc-010">Autonomy threshold <span class="sm-live" id="rc-live-a">1.00</span></h4>
+            <p data-i="rc-025">Each round an agent's new position is a weighted average of where it already stood and what
             it was shown. The autonomy threshold is the weight still carried by where it already stood,
             averaged over the population. One means nothing it saw moved it. Lower means more of it came
             from the feed.</p>
-            <p class="sm-eq">for agent i:  x_i(next) = (1 − μ·m_i)·x_i  +  μ · sum over accepted items j of x_j
+            <p class="sm-eq" data-i="rc-026">for agent i:  x_i(next) = (1 − μ·m_i)·x_i  +  μ · sum over accepted items j of x_j
 A = average over agents of ( 1 − μ·m_i )</p>
-            <p class="sm-honest">μ is the fixed step an agent takes towards one accepted item, 0.15 here,
+            <p class="sm-honest" data-i="rc-027">μ is the fixed step an agent takes towards one accepted item, 0.15 here,
             and m_i is how many of the five items it accepted this round. With five slots and that step the
             arithmetic floor of this measure is 0.25, so it cannot report a total loss of autonomy: it
             reports how much of the population's movement is the feed's rather than its own, within a model
@@ -1112,16 +1113,16 @@ A = average over agents of ( 1 − μ·m_i )</p>
           </div>
 
           <div class="sm-construct">
-            <h4>Entropy of the choice environment <span class="sm-live" id="rc-live-h">1.00</span></h4>
-            <p>Not what the population believes, but what it is being offered. For each agent the feed
+            <h4 data-i="rc-011">Entropy of the choice environment <span class="sm-live" id="rc-live-h">1.00</span></h4>
+            <p data-i="rc-028">Not what the population believes, but what it is being offered. For each agent the feed
             has an exact distribution over the axis: the chance that a slot lands in each of the twenty
             four bins, given the candidates drawn for it, the weight put on agreement and the random share.
             The Shannon entropy of that distribution is taken, divided by the entropy of a flat one so it
             runs from zero to one, and averaged over the population. One means an agent is being offered
             the whole axis evenly. Falling means its feed has narrowed.</p>
-            <p class="sm-eq">for agent i:  q_i(b) = the chance that a slot in i's feed lands in bin b
+            <p class="sm-eq" data-i="rc-029">for agent i:  q_i(b) = the chance that a slot in i's feed lands in bin b
 H = average over agents of ( − sum over bins b of q_i(b) · log q_i(b) ) / log 24</p>
-            <p class="sm-honest">Two remarks, and both of them cost me an assumption I had not noticed I
+            <p class="sm-honest" data-i="rc-030">Two remarks, and both of them cost me an assumption I had not noticed I
             was making. First, this is one agent's environment averaged over agents, and not the
             population's. Measured across everyone at once the number stays high even when every individual
             feed is narrow, because narrow feeds pointed in different directions still cover the axis
@@ -1135,89 +1136,89 @@ H = average over agents of ( − sum over bins b of q_i(b) · log q_i(b) ) / log
         </div>
 
         <figure class="ex-model" id="m2">
-          <figcaption>Figure two <span class="ex-model-sub">the three constructs, round by round</span></figcaption>
+          <figcaption data-i="rc-052">Figure two <span class="ex-model-sub">the three constructs, round by round</span></figcaption>
           <div id="rc-plot"></div>
           <p class="ex-sum" id="rc-sum2" role="status" aria-live="polite"></p>
         </figure>
 
-        <h2 id="s3"><span class="k-num">03</span>Three things worth doing to it</h2>
+        <h2 id="s3" data-i="rc-004"><span class="k-num">03</span>Three things worth doing to it</h2>
 
-        <p>First, set the recommender to favour agreement not at all and run it. The influence gradient
+        <p data-i="rc-031">First, set the recommender to favour agreement not at all and run it. The influence gradient
         holds at zero for the whole run and the two rasters stay identical. This is the control, and it is
         worth watching once, because a measure that does not read zero when nothing is happening is not
         worth reading at all.</p>
 
-        <p>Second, put the willingness to move at something moderate, turn the favouring of agreement up
+        <p data-i="rc-032">Second, put the willingness to move at something moderate, turn the favouring of agreement up
         hard, and run it again. The population splits, the two halves walk away from each other, and the
         gradient climbs while it happens. The neutral world underneath, with the same agents and the same
         draws, comes together instead.</p>
 
-        <p>Third, leave the recommender exactly where it is and raise the share of the feed drawn at
+        <p data-i="rc-033">Third, leave the recommender exactly where it is and raise the share of the feed drawn at
         random. The entropy of each agent's environment goes back up, the halves stop separating, and above
         a certain share the population comes together again. The system did not become less powerful. Its
         selections were simply diluted, and dilution turns out to be enough.</p>
 
-        <h2 id="s4"><span class="k-num">04</span>What the rule actually is</h2>
+        <h2 id="s4" data-i="rc-005"><span class="k-num">04</span>What the rule actually is</h2>
 
-        <p>An agent updates towards what it is shown only when what it is shown is close enough to be worth
+        <p data-i="rc-034">An agent updates towards what it is shown only when what it is shown is close enough to be worth
         taking seriously. That is a bounded confidence rule, which is standard in the opinion dynamics
         literature and cited below. Everything the model does follows from it and from the selection.</p>
 
-        <p class="ex-formula">candidates: thirty two other agents drawn at random for each agent, each round
+        <p class="ex-formula" data-i="rc-035">candidates: thirty two other agents drawn at random for each agent, each round
         selection: item j is picked with weight proportional to exp( − α · | x_j − x_i | )
         with a share ρ of the slots drawn uniformly at random instead
         update: accept item j when | x_j − x_i | ≤ c, then move x_i towards x_j by μ = 0.15
-        <small>α is the favouring of agreement, ρ the random share, c the willingness to move towards
+        <small data-i="rc-053">α is the favouring of agreement, ρ the random share, c the willingness to move towards
         disagreement. At α equal to zero the weights are all equal and the selection is uniform, which is
         exactly the neutral feed, which is why the two worlds coincide there.</small></p>
 
-        <p>Notice what the recommender is not doing. It has no objective it is maximising, no model of the
+        <p data-i="rc-036">Notice what the recommender is not doing. It has no objective it is maximising, no model of the
         agent beyond its current position, no memory, and no interest in the outcome. It is one exponential
         weight on a distance. Almost every real system is more capable than this, and the more capable ones
         would not be gentler.</p>
 
-        <h2 id="s5"><span class="k-num">05</span>Where the model stops</h2>
+        <h2 id="s5" data-i="rc-006"><span class="k-num">05</span>Where the model stops</h2>
 
-        <p>This is the simulation I am most careful about, because it is the one most likely to be quoted
+        <p data-i="rc-037">This is the simulation I am most careful about, because it is the one most likely to be quoted
         as though it said something about a real platform. It does not. Here is what it cannot tell you.</p>
 
         <div class="k-warn ex-limits">
-          <h3>Assumptions and limits</h3>
+          <h3 data-i="rc-008">Assumptions and limits</h3>
           <ul class="k-ask">
-            <li><b>One axis</b>An opinion is a single number on a single line. Real positions are many
+            <li data-i="rc-041"><b>One axis</b>An opinion is a single number on a single line. Real positions are many
             dimensional and often not ordered at all, and a great deal of what makes a disagreement a
             disagreement disappears when it is flattened to a line.</li>
-            <li><b>The rule is invented</b>The bounded confidence update is a modelling convention with a
+            <li data-i="rc-042"><b>The rule is invented</b>The bounded confidence update is a modelling convention with a
             literature behind it, not a measured law of how people change their minds. Agents here have no
             memory, no identity, no group, no cost of changing position and no reason to hold one position
             rather than another.</li>
-            <li><b>The system is a toy</b>One exponential weight on one distance. No engagement objective,
+            <li data-i="rc-043"><b>The system is a toy</b>One exponential weight on one distance. No engagement objective,
             no advertising, no ranking model, no cold start, no moderation, no notion of what a real
             recommender is trained on. Reading the number here as an estimate of any real system's
             influence would be a category error.</li>
-            <li><b>The three constructs are one operationalisation</b>Said again because it matters. Total
+            <li data-i="rc-044"><b>The three constructs are one operationalisation</b>Said again because it matters. Total
             variation distance, a weight in an update rule and a normalised Shannon entropy are three
             defensible choices, and three other defensible choices would give three other sets of numbers.
             The constructs are the ideas. These are one way of counting them.</li>
-            <li><b>The counterfactual is only available here</b>The influence gradient is computed by
+            <li data-i="rc-045"><b>The counterfactual is only available here</b>The influence gradient is computed by
             running the world twice. In a real system there is exactly one run and no neutral twin, which
             is precisely the measurement problem the programme exists to work on. What this page shows is
             what the quantity would mean if you could get it, not a method for getting it.</li>
-            <li><b>The entropy is ambiguous</b>It falls when the feed narrows and it falls when the
+            <li data-i="rc-046"><b>The entropy is ambiguous</b>It falls when the feed narrows and it falls when the
             population collapses, and it cannot tell you which. Read it beside the raster, not instead of
             it.</li>
-            <li><b>No numbers here are estimates</b>Every figure on this page comes from the parameters
+            <li data-i="rc-047"><b>No numbers here are estimates</b>Every figure on this page comes from the parameters
             above it. None of them describes any platform, any population or any measured effect.</li>
           </ul>
         </div>
 
-        <h2 id="s6"><span class="k-num">06</span>Sources</h2>
+        <h2 id="s6" data-i="rc-007"><span class="k-num">06</span>Sources</h2>
 
-        <p>The framework is my own and the note behind it is linked below. The two pieces of standing work
+        <p data-i="rc-038">The framework is my own and the note behind it is linked below. The two pieces of standing work
         the model borrows from are these.</p>
 
         <ul class="ex-cites">
-          <li>
+          <li data-i="rc-048">
             The update rule is a bounded confidence model: an agent takes account only of the opinions
             within a confidence interval of its own, and the paper investigates how the width of that
             interval decides whether a population reaches consensus, splits or fragments.
@@ -1227,7 +1228,7 @@ H = average over agents of ( − sum over bins b of q_i(b) · log q_i(b) ) / log
             <a href="https://www.jasss.org/5/3/2.html" target="_blank" rel="noreferrer noopener">jasss.org/5/3/2.html</a>
             Checked 2026 08 22.</span>
           </li>
-          <li>
+          <li data-i="rc-049">
             The entropy of the choice environment is Shannon's entropy of the distribution of what is
             served, normalised by the entropy of the flat distribution over the same bins.
             <span class="ex-cite-w">Claude E. Shannon, <span class="ex-cite-t">A Mathematical Theory of
@@ -1238,7 +1239,7 @@ H = average over agents of ( − sum over bins b of q_i(b) · log q_i(b) ) / log
             <a href="https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf" target="_blank" rel="noreferrer noopener">people.math.harvard.edu</a>.
             Checked 2026 08 22.</span>
           </li>
-          <li>
+          <li data-i="rc-050">
             The three constructs and the reasons for wanting them.
             <span class="ex-cite-w">Kerem Özdemir, <span class="ex-cite-t">The agent was never alone:
             SIMEA</span>, a working note.
@@ -1248,15 +1249,15 @@ H = average over agents of ( − sum over bins b of q_i(b) · log q_i(b) ) / log
 
         <nav class="ex-next" aria-label="More simulations">
           <a href="../diffusion/index.html">
-            <span class="ex-next-k">Next simulation</span>
-            <span class="ex-next-t">Diffusion</span>
-            <span class="ex-next-d">Hold the contagion fixed and change the shape of the network under it.
+            <span class="ex-next-k" data-i="xn-k-next-s">Next simulation</span>
+            <span class="ex-next-t" data-i="xn-t-dif">Diffusion</span>
+            <span class="ex-next-d" data-i="xn-d-dif">Hold the contagion fixed and change the shape of the network under it.
             The same thing spreads three completely different ways.</span>
           </a>
           <a href="../index.html">
-            <span class="ex-next-k">Back</span>
-            <span class="ex-next-t">All five simulations</span>
-            <span class="ex-next-d">Why a research programme about systems and agents needs models you can
+            <span class="ex-next-k" data-i="xn-k-back">Back</span>
+            <span class="ex-next-t" data-i="xn-t-all5">All five simulations</span>
+            <span class="ex-next-d" data-i="xn-d-all5">Why a research project about systems and agents needs models you can
             run.</span>
           </a>
         </nav>
@@ -1267,10 +1268,10 @@ H = average over agents of ( − sum over bins b of q_i(b) · log q_i(b) ) / log
 
   <aside class="k-endnote">
     <div class="k-wrap">
-      <p><strong>This is a teaching model, not a measurement.</strong> Every number on this page is one you
+      <p data-i="rc-039"><strong>This is a teaching model, not a measurement.</strong> Every number on this page is one you
       set or one this model produced from what you set. Nothing here describes any real platform or any
       real population, and no figure from this page belongs in an argument about one.</p>
-      <p class="k-fine">
+      <p class="k-fine" data-i="rc-040">
         Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no
         network call after the fonts have loaded. Part of
         <a href="../index.html">the SIMEA simulations</a>, built by
@@ -1281,6 +1282,7 @@ H = average over agents of ( − sum over bins b of q_i(b) · log q_i(b) ) / log
 
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="../../sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 
@@ -1333,19 +1335,25 @@ var Kit = (function () {
 
   /* ---------- numbers ---------- */
 
-  var LOCALE = "en-GB";
+  /* The page is read in three languages, so a number has to be written in
+     three. Turkish and German put the comma where English puts the point, and
+     "3,035 billion" read as Turkish says three, not three thousand. Read at
+     call time rather than cached, because the language changes under us. */
+  var LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
+  function locale() { return LOCALES[window.__lang] || "en-GB"; }
+  function na() { return window.__t ? window.__t("kit-na", "not available") : "not available"; }
 
   function num(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     var d = dp === undefined ? 2 : dp;
-    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+    return Number(v).toLocaleString(locale(), { minimumFractionDigits: d, maximumFractionDigits: d });
   }
   function money(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return "EUR " + num(v, dp === undefined ? 2 : dp);
   }
   function pct(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return num(v * 100, dp === undefined ? 1 : dp) + " %";
   }
   function toNum(raw) {
@@ -2061,21 +2069,29 @@ var Sim = (function () {
      button becomes an advance button that computes a burst of steps and
      paints once at the end, and the step button is always there, so the
      model stays fully usable without a single frame of movement. */
+  function tt(k, en, v) {
+    var out = window.__t ? window.__t(k, en) : en;
+    if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+    return out;
+  }
+
   function transport(host, spec) {
     var s = spec || {};
     var burst = s.burst || 25;
+    function runWord() { return tt(s.runKey || "sim-run", s.runLabel || "Run"); }
     var spf = s.stepsPerFrame || 1;
     var quiet = still();
 
     var bar = Kit.el("div", { class: "sm-bar" });
     var runBtn = Kit.el("button", {
       type: "button", class: "k-btn sm-btn-run",
-      text: quiet ? ("Advance " + burst + " steps") : (s.runLabel || "Run")
+      text: quiet ? tt("sim-advance", "Advance {n} steps", { n: burst }) : runWord()
     });
-    var stepBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Step" });
-    var resetBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Reset" });
+    var stepBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: tt("sim-step", "Step") });
+    var resetBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: tt("sim-reset", "Reset") });
     var shareBtn = s.onShare
-      ? Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Copy link to this run" })
+      ? Kit.el("button", { type: "button", class: "k-btn k-btn-quiet",
+                           text: tt("sim-share", "Copy link to this run") })
       : null;
     var clock = Kit.el("span", { class: "sm-clock", text: "" });
 
@@ -2087,15 +2103,20 @@ var Sim = (function () {
     host.appendChild(bar);
 
     if (quiet) {
-      host.appendChild(Kit.el("p", { class: "sm-still", text:
-        "Your system asks for reduced motion, so this model never animates. "
-        + "Advance moves it " + burst + " steps and draws the result once. Step moves it one." }));
+      host.appendChild(Kit.el("p", { class: "sm-still", text: tt("sim-still",
+        "Your system asks for reduced motion, so this model never animates. Advance moves it {n} steps "
+        + "and draws the result once. Step moves it one.", { n: burst }) }));
     }
 
-    host.appendChild(Kit.el("p", { class: "sm-keys", html:
-      "Keyboard: <kbd>Space</kbd> " + (quiet ? "advances" : "runs and pauses")
-      + ", <kbd>S</kbd> steps once, <kbd>R</kbd> resets. "
-      + "Every control below is a standard slider, radio group or button." }));
+    var keysNote = Kit.el("p", { class: "sm-keys" });
+    function paintKeys() {
+      keysNote.innerHTML = tt("sim-keys",
+        "Keyboard: <kbd>Space</kbd> {space}, <kbd>S</kbd> steps once, <kbd>R</kbd> resets. Every control "
+        + "below is a standard slider, radio group or button.",
+        { space: quiet ? tt("sim-keys-adv", "advances") : tt("sim-keys-run", "runs and pauses") });
+    }
+    paintKeys();
+    host.appendChild(keysNote);
 
     var api = {
       el: bar, running: false, runBtn: runBtn,
@@ -2116,14 +2137,14 @@ var Sim = (function () {
     api.start = function () {
       if (quiet || api.running) return;
       api.running = true;
-      runBtn.textContent = "Pause";
+      runBtn.textContent = tt("sim-pause", "Pause");
       runBtn.setAttribute("data-on", "1");
       raf = window.requestAnimationFrame(frame);
     };
     api.stop = function () {
       if (!api.running) return;
       api.running = false;
-      runBtn.textContent = s.runLabel || "Run";
+      runBtn.textContent = runWord();
       runBtn.removeAttribute("data-on");
       if (raf) window.cancelAnimationFrame(raf);
       raf = null;
@@ -2169,15 +2190,35 @@ var Sim = (function () {
       if (document.hidden) api.stop();
     });
 
+    document.addEventListener("langchange", function () {
+      runBtn.textContent = api.running
+        ? tt("sim-pause", "Pause")
+        : (quiet ? tt("sim-advance", "Advance {n} steps", { n: burst }) : runWord());
+      stepBtn.textContent = tt("sim-step", "Step");
+      resetBtn.textContent = tt("sim-reset", "Reset");
+      if (shareBtn) shareBtn.textContent = tt("sim-share", "Copy link to this run");
+      var still = host.querySelector(".sm-still");
+      if (still) still.textContent = tt("sim-still",
+        "Your system asks for reduced motion, so this model never animates. Advance moves it {n} steps "
+        + "and draws the result once. Step moves it one.", { n: burst });
+      paintKeys();
+    });
+
     api.quiet = quiet;
     return api;
   }
 
   /* ---------- numbers ---------- */
 
+  /* Fixed decimals, but written in the language being read: Turkish and
+     German put the comma where English puts the point, and every number in
+     every simulation comes through here. */
+  var FIX_LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
   function fix(v, dp) {
-    if (!isFinite(v)) return "not defined";
-    return Number(v).toFixed(dp === undefined ? 2 : dp);
+    if (!isFinite(v)) return window.__t ? window.__t("sim-undef", "not defined") : "not defined";
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(FIX_LOCALES[window.__lang] || "en-GB",
+      { minimumFractionDigits: d, maximumFractionDigits: d });
   }
 
   /* Shannon entropy of a histogram of counts, in bits, normalised by the
@@ -2233,6 +2274,49 @@ var Sim = (function () {
     transport: transport, fix: fix, entropy: entropy, tvd: tvd, emd: emd
   };
 })();
+
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"rc-001": "Öneri sistemi", "rc-002": "<span class=\"k-num\">01</span>İki dünya, tek tohum", "rc-003": "<span class=\"k-num\">02</span>Üç yapı, ekranda", "rc-004": "<span class=\"k-num\">03</span>Ona yapmaya değer üç şey", "rc-005": "<span class=\"k-num\">04</span>Kural aslında ne", "rc-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "rc-007": "<span class=\"k-num\">06</span>Kaynaklar", "rc-008": "Varsayımlar ve sınırlar", "rc-009": "Etki eğimi <span class=\"sm-live\" id=\"rc-live-g\">0.00</span>", "rc-010": "Özerklik eşiği <span class=\"sm-live\" id=\"rc-live-a\">1.00</span>", "rc-011": "Seçim ortamının entropisi <span class=\"sm-live\" id=\"rc-live-h\">1.00</span>", "rc-012": "Bir görüş taşıyan bin fail, ve her birinin ne göreceğine karar veren bir sistem. Aynı nüfus, aynı başlangıç noktasından aynı rastgele çekilişlerle iki kez çalıştırılıyor: bir kez sistem seçerken, bir kez nötr bir akışla. Böylece iki koşu arasındaki fark sistemin kendisi, başka hiçbir şey değil. O fark bir sayı, ve olup biterken ekranda duruyor.", "rc-013": "Bütün programın uğruna var olduğu simülasyon bu. SIMEA'nın iddiası şu: bir sistemin içine yerleşmiş bir fail, tek başına seçen bir faille aynı nesne değildir, ve bu fark yalnızca öne sürülmek yerine ölçülebilir. Böyle bir iddia, olup bittiğini izleyip bir kadrandan okuyana kadar boştur.", "rc-014": "İşte iddianın sınanabileceği en küçük dünya. Her fail tek bir eksen üzerinde bir konum tutuyor, bir uçtan öbürüne. Her tur ona başka faillerin tuttuğu birkaç konum gösteriliyor. Kendi konumuna ciddiye alınacak kadar yakın olan her şeye doğru biraz kayıyor, çok uzak olan her şeyi yok sayıyor. Sistemin yaptığı tek şey, o birkaç konumu seçmek.", "rc-015": "Bu çok küçük bir güç. Bir faile hiçbir şeye inandıramaz. Cezalandıramaz, ödeyemez, ikna edemez, yalan söyleyemez. Seçer. Çalıştır, ve tek başına seçmenin bir nüfusu ne kadar uzağa taşıyabildiğini izle.", "rc-016": "Aşağıdaki resim iki tarama görüntüsü. Zaman soldan sağa akıyor. Görüş ekseni dikeyin bir ucundan öbürüne uzanıyor. Bir bant ne kadar koyuysa, o anda orada o kadar çok fail duruyor.", "rc-017": "Üstteki tarama, içinde öneri sistemi olan dünya. Alttaki karşı olgu: aynı failler, aynı başlangıç konumları, aynı sırayla çekilen aynı rastgele sayılar, ve tekdüze rastgele seçen bir akış. Öneri sistemini uyuşmayı hiç kayırmayacak biçimde ayarla, iki tarama piksel piksel aynı olsun; çünkü o ayarda iki dünya aynı süreçtir. Aşağıda gördüğün her fark, sistemin kendisi.", "rc-018": "Nüfusun nerede durduğu, tur tur", "rc-019": "<span class=\"rc-verdict\" id=\"rc-verdict\">henüz çalıştırılmadı</span>", "rc-020": "SIMEA üç ölçülebilir büyüklük öneriyor: bir sistemin bir seçim üzerinde uyguladığı etki eğimi, faile kendisine kalan özerklik eşiği, ve seçim ortamının kendi entropisi. Aşağıda her birinin burada ne anlama geldiği, burada nasıl hesaplandığı, ve şu an ne okuduğu var.", "rc-021": "Bu üç tanımın statüsü konusunda kesin olmak istiyorum. Her biri bir <span class=\"ex-em\">işlevselleştirme</span>: bir yapıyı, bir makinenin yapabileceği aritmetiğe çevirmenin bir yolu; basit, sınırlı ve okunaklı olduğu için seçilmiş. Hiçbiri yapının kendisi değil. Farklı bir model üzerinde farklı bir işlevselleştirme farklı sayılar verirdi, ve her biri için makul olan birkaç tanesi mevcut. Bu üçünün işe yaradığı yer, tek bir modelin içinde, değişen tek şeyin okurun değiştirdiği şey olduğu karşılaştırma.", "rc-022": "Sistemin seçmesi nüfusu eksen boyunca ne kadar taşıdı, aynı nüfusun sistem olmadan gittiği yere kıyasla. İki koşu da yirmi dört kutuya bölünüyor ve iki dağılım şu soruyla karşılaştırılıyor: birinin kütlesi öbürünün tam üstüne oturmak için ne kadar taşınmalı, eksenin bütün genişliğine oran olarak. Sıfır, yönlendirilmiş nüfusun tam olarak yönlendirilmemiş olanın durduğu yerde durduğu anlamına geliyor. Bir, eksenin bir ucundan öbürüne taşındığı anlamına geliyor.", "rc-023": "F(b) = b kutusunda ya da altında kalan nüfus payı G = ( b kutuları üzerinden toplam | F_yönlendirilmiş(b) − F_nötr(b) | ) / 23", "rc-024": "Bu, eksen boyunca bir uzaklık, ve onu seçmek bana önce bir yanlış cevaba mal oldu. İşe toplam değişim uzaklığıyla başladım; o yalnızca iki dağılımın ne kadarının örtüşmediğini soruyor. Sıfırı doğru okuyor, ama bir nüfus bir ya da iki sıkı konumda toplandıktan sonra, o konumlar aynı kutuyu paylaşmayı bıraktığı anda bire sıçrıyor; yani kıl payı itilmiş bir uzlaşı ile ikiye bölünmüş bir nüfus aynı şekilde bir alıyordu. Eksen boyunca uzaklık bunları ayırt ediyor, çünkü kütlenin taşınıp taşınmadığını değil ne kadar taşındığını sayıyor. Yine de birkaç işlevselleştirmeden biri: aynı yapı, her failin kendi karşı olgusal ikizine karşı fail fail ölçülebilir, ya da ortalamadaki kayma olarak alınabilirdi, ve bunlar bununla uyuşmazdı.", "rc-025": "Her tur bir failin yeni konumu, halihazırda durduğu yerle kendisine gösterilenin ağırlıklı ortalaması. Özerklik eşiği, halihazırda durduğu yerin hâlâ taşıdığı ağırlık, nüfus üzerinden ortalanmış. Bir, gördüğü hiçbir şeyin onu kımıldatmadığı anlamına geliyor. Daha düşük olması, daha fazlasının akıştan geldiği anlamına geliyor.", "rc-026": "i faili için: x_i(sonraki) = (1 − μ·m_i)·x_i + μ · kabul edilen j öğeleri üzerinden toplam x_j A = failler üzerinden ortalama ( 1 − μ·m_i )", "rc-027": "μ, bir failin kabul ettiği bir öğeye doğru attığı sabit adım, burada 0,15; m_i ise beş öğeden kaçını bu turda kabul ettiği. Beş yuva ve bu adımla bu ölçünün aritmetik tabanı 0,25, yani tam bir özerklik kaybı bildiremiyor: akışın hiçbir zaman hepsini alamadığı bir modelin içinde, nüfusun hareketinin ne kadarının kendisinin değil akışın olduğunu bildiriyor. O taban benim parametrelerimin bir özelliği, yapının değil.", "rc-028": "Nüfusun neye inandığı değil, kendisine ne sunulduğu. Her fail için akışın eksen üzerinde tam bir dağılımı var: kendisi için çekilen adaylar, uyuşmaya verilen ağırlık ve rastgele pay verildiğinde bir yuvanın yirmi dört kutunun her birine düşme ihtimali. Bu dağılımın Shannon entropisi alınıyor, sıfırdan bire gitsin diye düz bir dağılımın entropisine bölünüyor, ve nüfus üzerinden ortalanıyor. Bir, faile bütün eksenin eşit olarak sunulduğu anlamına geliyor. Düşmesi, akışının daraldığı anlamına geliyor.", "rc-029": "i faili için: q_i(b) = i'nin akışındaki bir yuvanın b kutusuna düşme ihtimali H = failler üzerinden ortalama ( − b kutuları üzerinden toplam q_i(b) · log q_i(b) ) / log 24", "rc-030": "İki not, ve ikisi de bana yaptığımı fark etmediğim bir varsayıma mal oldu. Birincisi, bu, tek bir failin ortamının failler üzerinden ortalaması; nüfusun ortamı değil. Herkes üzerinden aynı anda ölçüldüğünde, her bireysel akış darken bile sayı yüksek kalıyor, çünkü farklı yönlere bakan dar akışlar aralarında yine de ekseni kaplıyor. O rakam resmin altındaki okuma satırında basılı, böylece ikisi karşılaştırılabiliyor; ve aralarındaki fark, balon sözcüğünün söylemeye çalıştığı şeyin çoğu. İkincisi, sayı hem öneri sistemi dar seçtiği için hem de nüfus çöküp sunulacak fazla bir şey kalmadığı için düşüyor, ve ikisini ayırt etmiyor. Onu taramanın yerine değil, yanında oku.", "rc-031": "Önce, öneri sistemini uyuşmayı hiç kayırmayacak biçimde ayarla ve çalıştır. Etki eğimi bütün koşu boyunca sıfırda kalıyor ve iki tarama aynı kalıyor. Bu, kontrol; ve bir kez izlemeye değer, çünkü hiçbir şey olmuyorken sıfır okumayan bir ölçü hiç okunmaya değmez.", "rc-032": "Sonra, hareket etme isteğini orta bir yere koy, uyuşmanın kayırılmasını sonuna kadar aç, ve tekrar çalıştır. Nüfus ikiye ayrılıyor, iki yarı birbirinden uzaklaşıyor, ve bu olurken eğim tırmanıyor. Altındaki nötr dünya, aynı failler ve aynı çekilişlerle, tersine bir araya geliyor.", "rc-033": "Üçüncü olarak, öneri sistemini olduğu yerde bırak ve akışın rastgele çekilen payını yükselt. Her failin ortamının entropisi geri yükseliyor, yarılar ayrışmayı bırakıyor, ve belli bir payın üstünde nüfus yeniden bir araya geliyor. Sistem daha az güçlü olmadı. Seçimleri yalnızca sulandı, ve sulanmanın yettiği ortaya çıkıyor.", "rc-034": "Bir fail, kendisine gösterilene doğru yalnızca gösterilen şey ciddiye alınacak kadar yakınken güncelleniyor. Bu, sınırlı güven kuralı; görüş dinamikleri literatüründe standart ve aşağıda kaynağı veriliyor. Modelin yaptığı her şey ondan ve seçmeden çıkıyor.", "rc-035": "adaylar: her fail için her tur rastgele çekilen otuz iki başka fail seçim: j öğesi exp( − α · | x_j − x_i | ) ile orantılı ağırlıkla seçiliyor, yuvaların ρ payı ise bunun yerine tekdüze rastgele çekiliyor güncelleme: | x_j − x_i | ≤ c olduğunda j öğesi kabul ediliyor, sonra x_i, x_j yönünde μ = 0,15 kadar kayıyor <small data-i=\"rc-053\">α uyuşmanın kayırılması, ρ rastgele pay, c ise uyuşmazlığa doğru hareket etme isteği. α sıfıra eşitken ağırlıkların hepsi eşit ve seçim tekdüze, ki bu tam olarak nötr akış; iki dünyanın orada çakışmasının sebebi de bu.</small>", "rc-036": "Öneri sisteminin ne yapmadığına dikkat et. Azamileştirdiği bir amacı yok, failin şu anki konumunun ötesinde bir modeli yok, belleği yok, ve sonuca ilgisi yok. Bir uzaklık üzerindeki tek bir üstel ağırlık. Neredeyse her gerçek sistem bundan daha yetenekli, ve daha yetenekli olanlar daha nazik olmazdı.", "rc-037": "En çok dikkat ettiğim simülasyon bu, çünkü gerçek bir platform hakkında bir şey söylüyormuş gibi alıntılanmaya en yatkın olan o. Söylemiyor. Sana söyleyemeyecekleri şunlar.", "rc-038": "Çerçeve bana ait ve arkasındaki not aşağıda bağlantılı. Modelin ödünç aldığı iki yerleşik çalışma şunlar.", "rc-039": "<strong>Bu bir öğretim modeli, ölçüm değil.</strong> Bu sayfadaki her sayı ya senin ayarladığın ya da bu modelin senin ayarladığından ürettiği bir sayı. Burada gerçek bir platform ya da gerçek bir nüfus tarif edilmiyor, ve bu sayfadan çıkan hiçbir rakamın böyle bir şey hakkındaki bir tartışmada yeri yok.", "rc-040": "Tamamen tarayıcında çalışır. Burada yaptığın hiçbir şey sayfadan çıkmaz. Sunucu yok, analitik yok, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Ozdemir</a>.", "rc-041": "<b>Tek eksen</b>Bir görüş, tek bir çizgi üzerinde tek bir sayı. Gerçek konumlar çok boyutludur ve çoğu zaman hiç sıralı değildir, ve bir anlaşmazlığı anlaşmazlık yapan şeyin büyük kısmı bir çizgiye yassıltıldığında kayboluyor.", "rc-042": "<b>Kural uydurma</b>Sınırlı güven güncellemesi, arkasında literatürü olan bir modelleme uzlaşımı; insanların fikirlerini nasıl değiştirdiğine dair ölçülmüş bir yasa değil. Buradaki faillerin belleği yok, kimliği yok, grubu yok, konum değiştirmenin maliyeti yok, ve bir konumu bir başkasına tercih etmek için sebepleri yok.", "rc-043": "<b>Sistem bir oyuncak</b>Bir uzaklık üzerinde tek bir üstel ağırlık. Etkileşim amacı yok, reklam yok, sıralama modeli yok, soğuk başlangıç yok, moderasyon yok, gerçek bir öneri sisteminin ne üzerinde eğitildiğine dair bir kavram yok. Buradaki sayıyı gerçek bir sistemin etkisinin tahmini olarak okumak bir kategori hatası olurdu.", "rc-044": "<b>Üç yapı tek bir işlevselleştirme</b>Önemli olduğu için yineliyorum. Toplam değişim uzaklığı, bir güncelleme kuralındaki bir ağırlık ve normalleştirilmiş bir Shannon entropisi savunulabilir üç seçim, ve savunulabilir üç başka seçim üç başka sayı kümesi verirdi. Yapılar fikirler. Bunlar onları saymanın bir yolu.", "rc-045": "<b>Karşı olgu yalnızca burada var</b>Etki eğimi, dünyayı iki kez çalıştırarak hesaplanıyor. Gerçek bir sistemde tam olarak bir koşu var ve nötr bir ikiz yok, ki bu tam da programın üzerinde çalışmak için var olduğu ölçüm sorunu. Bu sayfanın gösterdiği şey, o büyüklüğü elde edebilseydin ne anlama geleceği; onu elde etmenin bir yöntemi değil.", "rc-046": "<b>Entropi belirsiz</b>Akış daraldığında da düşüyor, nüfus çöktüğünde de, ve hangisi olduğunu söyleyemiyor. Onu taramanın yerine değil, yanında oku.", "rc-047": "<b>Buradaki hiçbir sayı tahmin değil</b>Bu sayfadaki her rakam üstündeki parametrelerden geliyor. Hiçbiri bir platformu, bir nüfusu ya da ölçülmüş bir etkiyi tarif etmiyor.", "rc-051": "Şekil bir <span class=\"ex-model-sub\">akışı ayarla, sonra çalıştır</span>", "rc-052": "Şekil iki <span class=\"ex-model-sub\">üç yapı, tur tur</span>", "rc-skip": "Simülasyona geç", "rc-v-notrun": "henüz çalıştırılmadı", "rc-v-consensus": "uzlaşı", "rc-v-hard": "sert kutuplaşma", "rc-v-two": "iki kamp", "rc-v-frag": "{n} kampa parçalanma", "rc-camps": "{n} kamp", "rc-pan-steered": "öneri sistemiyle", "rc-pan-neutral": "nötr akışla", "rc-ax-rounds": "tur", "rc-ln-g": "etki eğimi", "rc-ln-a": "özerklik eşiği", "rc-ln-h": "bir akışın entropisi", "rc-sl-a": "Uyuşmanın kayırılması", "rc-sl-a-h": "Akışın, failin kendi konumuna yakın konumları ne kadar dik biçimde tercih ettiği. Sıfır nötr bir akış.", "rc-sl-c": "Hareket etme isteği", "rc-sl-c-h": "Bir şeyin ne kadar uzakta olup faili yine de kımıldatabileceği. Eksen iki birim genişliğinde.", "rc-sl-r": "Akışın rastgele payı", "rc-sl-r-h": "Sıralanmış malzeme yerine gerçekten rastgele malzemeyle doldurulan yuvalar.", "rc-sl-n": "Nüfus", "rc-sl-n-h": "İki dünyanın her birinde kaç fail olduğu.", "rc-rd-g": "Etki eğimi", "rc-rd-a": "Özerklik eşiği", "rc-rd-h": "Bir akışın entropisi", "rc-rd-hn": "Aynısı, nötr akış", "rc-rd-cl": "Kamp", "rc-rd-t": "Tur", "rc-sub-g": "0 fark yok demek", "rc-sub-a": "1 tamamen kendisinin demek", "rc-sub-h": "1 bütün eksen demek", "rc-sub-hn": "herkes üzerinden: {v}", "rc-sub-cl": "yayılım {v}", "rc-sub-t-done": "koşu tamamlandı", "rc-sub-t": "toplam {n}", "rc-key-more": "burada duran fail sayısı", "rc-key-now": "şu an çizilen tur", "rc-clock": "tur {n} / {m}", "rc-share": "Bağlantı kopyalandı. Bu turdan açılıyor.", "rc-sum": "Aynı nüfusun {t} tur boyunca iki tarama görüntüsü; dikeyde görüş eksi birden artı bire, zaman soldan sağa, daha çok failin durduğu yerde daha koyu. Üstteki taramada öneri sistemi var, uyuşmayı {alpha} ağırlığıyla kayırıyor ve akışın yüzde {rho} kadarı rastgele çekiliyor. Alttaki tarama, aynı failler ve aynı rastgele çekilişlerle nötr bir akış. Nüfus şu an {camps} hâlinde ve okuma {verdict}.", "rc-sum2": "Üç yapı {t} tur boyunca, her biri sıfırdan bire. Etki eğimi {g} okuyor, özerklik eşiği {a}, ve tek bir failin seçim ortamının entropisi {h}; nötr dünyadaki {hn} değerine karşı. Tek tek failler yerine bütün nüfus üzerinden aynı anda ölçüldüğünde {hall} okuyor.", "rc-s0": "Henüz hiçbir şey çalışmadı. İki dünya da eksen boyunca eşit dağılmış aynı {n} faili tutuyor. Çalıştır'a bas.", "rc-s-ctrl": "Öneri sistemi uyuşmayı hiç kayırmayacak biçimde ayarlı, yani nötr bir akışın yaptığı şeyin aynısını yapıyor ve iki dünya aynı süreç. Etki eğimi {t} tur sonra {g} okuyor. Kontrol bu: hiçbir şey olmuyorken sıfır okuyamayan bir ölçü hiçbir şey ölçmüyordur.", "rc-s-steer": "{t} tur sonra yönlendirilmiş nüfus ile yönlendirilmemiş ikizi etki eğiminde {g} kadar ayrılıyor. Aynı failler, aynı başlangıç konumları ve aynı rastgele sayılar {where}", "rc-s-near": "neredeyse aynı yere gitti, yani seçme onları henüz nötr akışın götürmeyeceği bir yere taşımadı.", "rc-s-far": "ölçülebilir biçimde farklı yerlere gitti, ve iki koşu arasında farklı olan tek şey, her faile hangi birkaç konumun gösterildiğiydi.", "rc-s2": "Ortalama failin bir sonraki konumunun {a} kadarı kendi ön kanısı, kalanı kendisine gösterilen. Akışın kendisi şu an, o faile bütün ekseni eşit sunsaydı sahip olacağı entropinin {h} kadarında; nötr dünyadaki {hn} değerine karşı. Bütün nüfus üzerinden aynı anda aynı ölçü {hall} okuyor, ki bu daha yüksek, çünkü farklı yönlere bakan dar akışlar aralarında yine de ekseni kaplıyor. Nüfus {camps} hâlinde duruyor.", "rc-048": "Güncelleme kuralı bir sınırlı güven modeli: bir fail yalnızca kendi güven aralığındaki görüşleri hesaba katıyor, ve makale, o aralığın genişliğinin bir nüfusun uzlaşıya mı vardığını, ikiye mi ayrıldığını yoksa parçalandığını mı belirlediğini inceliyor. <span class=\"ex-cite-w\">Rainer Hegselmann and Ulrich Krause, <span class=\"ex-cite-t\">Opinion\n            Dynamics and Bounded Confidence: Models, Analysis and Simulation</span>, Journal of Artificial\n            Societies and Social Simulation 5(3), article 2, 2002.\n            <a href=\"https://www.jasss.org/5/3/2.html\" target=\"_blank\" rel=\"noreferrer noopener\">jasss.org/5/3/2.html</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "rc-049": "Seçim ortamının entropisi, sunulan şeyin dağılımının Shannon entropisi; aynı kutular üzerindeki düz dağılımın entropisiyle normalleştirilmiş. <span class=\"ex-cite-w\">Claude E. Shannon, <span class=\"ex-cite-t\">A Mathematical Theory of\n            Communication</span>, The Bell System Technical Journal 27, 1948, pages 379 to 423 and 623 to\n            656.\n            <a href=\"https://onlinelibrary.wiley.com/doi/10.1002/j.1538-7305.1948.tb01338.x\" target=\"_blank\" rel=\"noreferrer noopener\">doi.org 10.1002/j.1538-7305.1948.tb01338.x</a>\n            Tam metin şurada okundu:\n            <a href=\"https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">people.math.harvard.edu</a>.\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "rc-050": "Üç yapı, ve onları isteme sebepleri. <span class=\"ex-cite-w\">Kerem Özdemir, <span class=\"ex-cite-t\">The agent was never alone:\n            SIMEA</span>, a working note.\n            <a href=\"../../note-simea.html\">keremozdemir.de/note-simea.html</a></span>\n          ", "rc-camps-one": "tek bir kamp", "pg-title": "Öneri sistemi"}, "de": {"rc-001": "Das Empfehlungssystem", "rc-002": "<span class=\"k-num\">01</span>Zwei Welten, ein Startwert", "rc-003": "<span class=\"k-num\">02</span>Die drei Konstrukte, auf dem Bildschirm", "rc-004": "<span class=\"k-num\">03</span>Drei Dinge, die man damit tun sollte", "rc-005": "<span class=\"k-num\">04</span>Was die Regel tatsächlich ist", "rc-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "rc-007": "<span class=\"k-num\">06</span>Quellen", "rc-008": "Annahmen und Grenzen", "rc-009": "Einflussgradient <span class=\"sm-live\" id=\"rc-live-g\">0.00</span>", "rc-010": "Autonomieschwelle <span class=\"sm-live\" id=\"rc-live-a\">1.00</span>", "rc-011": "Entropie der Wahlumgebung <span class=\"sm-live\" id=\"rc-live-h\">1.00</span>", "rc-012": "Tausend Akteure mit einer Meinung, und ein System, das entscheidet, was jeder von ihnen zu sehen bekommt. Dieselbe Population läuft zweimal vom selben Ausgangspunkt mit denselben Zufallsziehungen, einmal mit dem wählenden System und einmal mit einem neutralen Feed, sodass der Unterschied zwischen den beiden Läufen das System ist und sonst nichts. Dieser Unterschied ist eine Zahl, und sie steht auf dem Bildschirm, während er entsteht.", "rc-013": "Das ist die Simulation, um die es dem ganzen Programm geht. SIMEA behauptet, dass ein in ein System eingebetteter Akteur nicht dasselbe Objekt ist wie ein Akteur, der allein wählt, und dass sich der Unterschied messen lässt, statt bloß behauptet zu werden. Eine solche Behauptung ist leer, solange man sie nicht laufen sehen und an einem Zeiger ablesen kann.", "rc-014": "Hier ist also die kleinste Welt, in der sich die Behauptung prüfen lässt. Jeder Akteur hält eine Position auf einer einzigen Achse, von einem Ende zum anderen. In jeder Runde bekommt er eine Handvoll Positionen anderer Akteure gezeigt. Er bewegt sich ein Stück auf alles zu, was seiner eigenen nahe genug ist, um ernst genommen zu werden, und ignoriert alles, was zu weit weg ist. Das Einzige, was das System tut, ist, diese Handvoll auszuwählen.", "rc-015": "Das ist eine sehr kleine Macht. Sie kann einen Akteur nichts glauben machen. Sie kann nicht bestrafen, bezahlen, überreden oder lügen. Sie wählt aus. Lassen Sie es laufen und sehen Sie, wie weit Auswahl allein eine Population tragen kann.", "rc-016": "Das Bild unten besteht aus zwei Rastern. Die Zeit läuft von links nach rechts. Die Meinungsachse läuft von einem Ende der Senkrechten zum anderen. Je dunkler ein Band, desto mehr Akteure stehen in diesem Moment dort.", "rc-017": "Das obere Raster ist die Welt mit dem Empfehlungssystem darin. Das untere ist das Kontrafaktische: dieselben Akteure, dieselben Startpositionen, dieselben Zufallszahlen in derselben Reihenfolge, und ein Feed, der gleichverteilt zufällig auswählt. Stellen Sie das Empfehlungssystem so ein, dass es Zustimmung überhaupt nicht bevorzugt, und die beiden Raster sind identisch, Pixel für Pixel, denn bei dieser Einstellung sind die beiden Welten derselbe Prozess. Jeder Unterschied, den Sie unten sehen, ist das System.", "rc-018": "Wo die Population steht, Runde für Runde", "rc-019": "<span class=\"rc-verdict\" id=\"rc-verdict\">noch nicht gelaufen</span>", "rc-020": "SIMEA schlägt drei messbare Größen vor: den Einflussgradienten, den ein System auf eine Entscheidung ausübt, die Autonomieschwelle, die dem Akteur bleibt, und die Entropie der Wahlumgebung selbst. Unten steht, was jede davon hier bedeutet, wie sie hier berechnet wird und was sie gerade anzeigt.", "rc-021": "Ich will über den Status dieser drei Definitionen genau sein. Jede ist eine <span class=\"ex-em\">Operationalisierung</span>: eine Art, ein Konstrukt in Arithmetik zu überführen, die eine Maschine ausführen kann, gewählt, weil sie einfach, beschränkt und lesbar ist. Keine davon ist das Konstrukt. Eine andere Operationalisierung auf einem anderen Modell ergäbe andere Zahlen, und für jede gibt es mehrere vernünftige. Wozu die drei taugen, ist der Vergleich innerhalb eines Modells, wo das Einzige, was sich geändert hat, das ist, was der Leser geändert hat.", "rc-022": "Wie weit entlang der Achse das Auswählen des Systems die Population getragen hat, verglichen damit, wohin dieselbe Population ohne es gegangen ist. Beide Läufe werden in vierundzwanzig Bins eingeteilt, und die beiden Verteilungen werden mit der Frage verglichen, wie weit die Masse der einen bewegt werden müsste, um genau auf der anderen zu liegen, als Anteil an der ganzen Breite der Achse. Null heißt, die gesteuerte Population sitzt genau dort, wo die ungesteuerte sitzt. Eins heißt, sie wurde von einem Ende der Achse zum anderen getragen.", "rc-023": "F(b) = der Anteil der Population auf oder unter Bin b G = ( Summe über Bins b von | F_gesteuert(b) − F_neutral(b) | ) / 23", "rc-024": "Das ist ein Abstand entlang der Achse, und ihn zu wählen kostete mich zuerst eine falsche Antwort. Ich begann mit der Totalvariationsdistanz, die nur fragt, wie viel der beiden Verteilungen sich nicht überlappt. Sie liest die Null richtig, aber sobald sich eine Population in ein oder zwei enge Positionen gesammelt hat, springt sie auf eins, sobald diese Positionen kein Bin mehr teilen. Ein um Haaresbreite verschobener Konsens und eine in zwei Teile gerissene Population bekamen so beide eine Eins. Der Abstand entlang der Achse unterscheidet sie, weil er zählt, wie weit die Masse sich bewegt hat, und nicht, ob sie sich bewegt hat. Er bleibt eine Operationalisierung unter mehreren: Dasselbe Konstrukt ließe sich Akteur für Akteur gegen dessen eigenes kontrafaktisches Selbst messen oder als Verschiebung des Mittelwerts, und beides stimmte mit diesem hier nicht überein.", "rc-025": "In jeder Runde ist die neue Position eines Akteurs ein gewichtetes Mittel aus dem, wo er schon stand, und dem, was ihm gezeigt wurde. Die Autonomieschwelle ist das Gewicht, das die alte Position noch trägt, über die Population gemittelt. Eins heißt, nichts von dem Gesehenen hat ihn bewegt. Niedriger heißt, mehr davon kam aus dem Feed.", "rc-026": "für Akteur i: x_i(nächste) = (1 − μ·m_i)·x_i + μ · Summe über angenommene Elemente j von x_j A = Mittel über Akteure von ( 1 − μ·m_i )", "rc-027": "μ ist der feste Schritt, den ein Akteur auf ein angenommenes Element zu macht, hier 0,15, und m_i ist, wie viele der fünf Elemente er in dieser Runde angenommen hat. Bei fünf Plätzen und diesem Schritt liegt der arithmetische Boden dieses Maßes bei 0,25, es kann also keinen völligen Verlust an Autonomie melden: Es meldet, wie viel der Bewegung der Population dem Feed und nicht ihr selbst gehört, innerhalb eines Modells, das den Feed nie alles bekommen lässt. Dieser Boden ist eine Eigenschaft meiner Parameter, nicht des Konstrukts.", "rc-028": "Nicht, was die Population glaubt, sondern was ihr angeboten wird. Für jeden Akteur hat der Feed eine exakte Verteilung über die Achse: die Wahrscheinlichkeit, dass ein Platz in jedem der vierundzwanzig Bins landet, gegeben die für ihn gezogenen Kandidaten, das Gewicht auf Zustimmung und den Zufallsanteil. Von dieser Verteilung wird die Shannon-Entropie genommen, durch die einer flachen geteilt, sodass sie von null bis eins läuft, und über die Population gemittelt. Eins heißt, einem Akteur wird die ganze Achse gleichmäßig angeboten. Ein Fallen heißt, sein Feed hat sich verengt.", "rc-029": "für Akteur i: q_i(b) = die Wahrscheinlichkeit, dass ein Platz in i's Feed in Bin b landet H = Mittel über Akteure von ( − Summe über Bins b von q_i(b) · log q_i(b) ) / log 24", "rc-030": "Zwei Anmerkungen, und beide kosteten mich eine Annahme, die ich unbemerkt gemacht hatte. Erstens ist das die Umgebung eines Akteurs, über Akteure gemittelt, und nicht die der Population. Über alle zugleich gemessen bleibt die Zahl hoch, selbst wenn jeder einzelne Feed eng ist, weil enge Feeds in verschiedene Richtungen zusammen die Achse trotzdem abdecken. Diese Zahl steht in der Lesezeile unter dem Bild, damit sich beide vergleichen lassen, und der Unterschied zwischen ihnen ist das meiste von dem, was das Wort Blase sagen will. Zweitens fällt die Zahl sowohl, weil das Empfehlungssystem eng auswählt, als auch, weil die Population zusammengebrochen ist und wenig übrig bleibt, das sich ausliefern ließe, und sie unterscheidet beides nicht. Lesen Sie sie neben dem Raster, nicht statt seiner.", "rc-031": "Erstens: Stellen Sie das Empfehlungssystem so ein, dass es Zustimmung überhaupt nicht bevorzugt, und lassen Sie es laufen. Der Einflussgradient bleibt den ganzen Lauf über bei null, und die beiden Raster bleiben identisch. Das ist die Kontrolle, und es lohnt sich, sie einmal anzusehen, denn ein Maß, das nicht null anzeigt, wenn nichts geschieht, ist überhaupt nicht lesenswert.", "rc-032": "Zweitens: Setzen Sie die Bewegungsbereitschaft auf etwas Mittleres, drehen Sie die Bevorzugung von Zustimmung kräftig hoch und lassen Sie es noch einmal laufen. Die Population spaltet sich, die beiden Hälften laufen voneinander weg, und der Gradient klettert dabei. Die neutrale Welt darunter, mit denselben Akteuren und denselben Ziehungen, findet stattdessen zusammen.", "rc-033": "Drittens: Lassen Sie das Empfehlungssystem genau dort, wo es ist, und erhöhen Sie den Anteil des Feeds, der zufällig gezogen wird. Die Entropie der Umgebung jedes Akteurs steigt wieder, die Hälften hören auf, sich zu trennen, und oberhalb eines bestimmten Anteils findet die Population wieder zusammen. Das System ist nicht schwächer geworden. Seine Auswahl wurde nur verdünnt, und Verdünnung erweist sich als genug.", "rc-034": "Ein Akteur aktualisiert sich nur dann in Richtung dessen, was ihm gezeigt wird, wenn das Gezeigte nahe genug ist, um ernst genommen zu werden. Das ist eine Regel beschränkten Vertrauens, in der Literatur zur Meinungsdynamik Standard und unten belegt. Alles, was das Modell tut, folgt aus ihr und aus der Auswahl.", "rc-035": "Kandidaten: zweiunddreißig andere Akteure, für jeden Akteur in jeder Runde zufällig gezogen Auswahl: Element j wird mit einem Gewicht proportional zu exp( − α · | x_j − x_i | ) gezogen, ein Anteil ρ der Plätze wird stattdessen gleichverteilt zufällig gezogen Aktualisierung: Element j wird angenommen, wenn | x_j − x_i | ≤ c, dann bewegt sich x_i um μ = 0,15 auf x_j zu <small data-i=\"rc-053\">α ist die Bevorzugung von Zustimmung, ρ der Zufallsanteil, c die Bereitschaft, sich auf Widerspruch zuzubewegen. Bei α gleich null sind alle Gewichte gleich und die Auswahl ist gleichverteilt, was genau der neutrale Feed ist, weshalb die beiden Welten dort zusammenfallen.</small>", "rc-036": "Achten Sie darauf, was das Empfehlungssystem nicht tut. Es hat kein Ziel, das es maximiert, kein Modell des Akteurs über dessen aktuelle Position hinaus, kein Gedächtnis und kein Interesse am Ergebnis. Es ist ein exponentielles Gewicht auf einem Abstand. Fast jedes reale System kann mehr, und die, die mehr können, wären nicht sanfter.", "rc-037": "Das ist die Simulation, bei der ich am vorsichtigsten bin, weil sie am ehesten so zitiert wird, als sagte sie etwas über eine reale Plattform. Tut sie nicht. Hier steht, was sie Ihnen nicht sagen kann.", "rc-038": "Der Rahmen ist mein eigener, und die Notiz dahinter ist unten verlinkt. Die zwei etablierten Arbeiten, von denen das Modell borgt, sind diese.", "rc-039": "<strong>Das ist ein Lehrmodell, keine Messung.</strong> Jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die dieses Modell daraus erzeugt hat. Nichts hier beschreibt eine reale Plattform oder eine reale Population, und keine Zahl von dieser Seite gehört in ein Argument über eine.", "rc-040": "Läuft vollständig in Ihrem Browser. Nichts, was Sie hier tun, verlässt die Seite. Kein Server, keine Analyse, kein Netzwerkaufruf, nachdem die Schriften geladen sind. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Ozdemir</a>.", "rc-041": "<b>Eine Achse</b>Eine Meinung ist eine einzige Zahl auf einer einzigen Linie. Reale Positionen sind vieldimensional und oft gar nicht geordnet, und vieles von dem, was eine Meinungsverschiedenheit ausmacht, verschwindet, wenn man sie auf eine Linie plattdrückt.", "rc-042": "<b>Die Regel ist erfunden</b>Die Aktualisierung bei beschränktem Vertrauen ist eine Modellierungskonvention mit Literatur dahinter, kein gemessenes Gesetz dafür, wie Menschen ihre Meinung ändern. Die Akteure hier haben kein Gedächtnis, keine Identität, keine Gruppe, keine Kosten für einen Positionswechsel und keinen Grund, die eine Position statt der anderen zu halten.", "rc-043": "<b>Das System ist ein Spielzeug</b>Ein exponentielles Gewicht auf einem Abstand. Kein Engagement-Ziel, keine Werbung, kein Ranking-Modell, kein Kaltstart, keine Moderation, kein Begriff davon, worauf ein reales Empfehlungssystem trainiert wird. Die Zahl hier als Schätzung des Einflusses irgendeines realen Systems zu lesen, wäre ein Kategorienfehler.", "rc-044": "<b>Die drei Konstrukte sind eine Operationalisierung</b>Noch einmal gesagt, weil es darauf ankommt. Totalvariationsdistanz, ein Gewicht in einer Aktualisierungsregel und eine normierte Shannon-Entropie sind drei vertretbare Wahlen, und drei andere vertretbare Wahlen ergäben drei andere Zahlenreihen. Die Konstrukte sind die Ideen. Das hier ist eine Art, sie zu zählen.", "rc-045": "<b>Das Kontrafaktische gibt es nur hier</b>Der Einflussgradient wird berechnet, indem die Welt zweimal läuft. In einem realen System gibt es genau einen Lauf und keinen neutralen Zwilling, und genau das ist das Messproblem, an dem zu arbeiten das Programm existiert. Was diese Seite zeigt, ist, was die Größe bedeuten würde, wenn man sie bekommen könnte, und keine Methode, sie zu bekommen.", "rc-046": "<b>Die Entropie ist mehrdeutig</b>Sie fällt, wenn der Feed sich verengt, und sie fällt, wenn die Population zusammenbricht, und sie kann Ihnen nicht sagen, welches von beidem. Lesen Sie sie neben dem Raster, nicht statt seiner.", "rc-047": "<b>Keine Zahl hier ist eine Schätzung</b>Jede Zahl auf dieser Seite kommt aus den Parametern darüber. Keine beschreibt eine Plattform, eine Population oder einen gemessenen Effekt.", "rc-051": "Abbildung eins <span class=\"ex-model-sub\">Feed einstellen, dann laufen lassen</span>", "rc-052": "Abbildung zwei <span class=\"ex-model-sub\">die drei Konstrukte, Runde für Runde</span>", "rc-skip": "Zur Simulation springen", "rc-v-notrun": "noch nicht gelaufen", "rc-v-consensus": "Konsens", "rc-v-hard": "harte Polarisierung", "rc-v-two": "zwei Lager", "rc-v-frag": "Zersplitterung in {n} Lager", "rc-camps": "{n} Lagern", "rc-pan-steered": "mit dem Empfehlungssystem", "rc-pan-neutral": "mit einem neutralen Feed", "rc-ax-rounds": "Runden", "rc-ln-g": "Einflussgradient", "rc-ln-a": "Autonomieschwelle", "rc-ln-h": "Entropie eines Feeds", "rc-sl-a": "Bevorzugung von Zustimmung", "rc-sl-a-h": "Wie steil der Feed Positionen nahe der eigenen des Akteurs bevorzugt. Null ist ein neutraler Feed.", "rc-sl-c": "Bewegungsbereitschaft", "rc-sl-c-h": "Wie weit etwas entfernt sein darf und den Akteur trotzdem bewegt. Die Achse ist zwei Einheiten breit.", "rc-sl-r": "Zufallsanteil des Feeds", "rc-sl-r-h": "Plätze, die mit wirklich zufälligem statt mit sortiertem Material gefüllt werden.", "rc-sl-n": "Population", "rc-sl-n-h": "Wie viele Akteure in jeder der beiden Welten sind.", "rc-rd-g": "Einflussgradient", "rc-rd-a": "Autonomieschwelle", "rc-rd-h": "Entropie eines Feeds", "rc-rd-hn": "Dasselbe, neutraler Feed", "rc-rd-cl": "Lager", "rc-rd-t": "Runden", "rc-sub-g": "0 heißt kein Unterschied", "rc-sub-a": "1 heißt ganz die eigene", "rc-sub-h": "1 heißt die ganze Achse", "rc-sub-hn": "über alle: {v}", "rc-sub-cl": "Spanne {v}", "rc-sub-t-done": "Lauf beendet", "rc-sub-t": "von {n}", "rc-key-more": "mehr Akteure stehen hier", "rc-key-now": "die gerade gezeichnete Runde", "rc-clock": "Runde {n} von {m}", "rc-share": "Link kopiert. Er öffnet auf dieser Runde.", "rc-sum": "Zwei Raster derselben Population über {t} Runden, Meinung auf der Senkrechten von minus eins bis plus eins, Zeit von links nach rechts, dunkler, wo mehr Akteure stehen. Das obere Raster hat das Empfehlungssystem darin, das Zustimmung mit {alpha} gewichtet, während {rho} Prozent des Feeds zufällig gezogen werden. Das untere Raster sind dieselben Akteure und dieselben Zufallsziehungen mit einem neutralen Feed. Die Population sitzt gerade in {camps}, und die Lesung lautet {verdict}.", "rc-sum2": "Die drei Konstrukte über {t} Runden, jedes von null bis eins. Der Einflussgradient zeigt {g}, die Autonomieschwelle {a}, und die Entropie der Wahlumgebung eines Akteurs {h}, gegen {hn} in der neutralen Welt. Über die ganze Population zugleich statt Akteur für Akteur gemessen zeigt sie {hall}.", "rc-s0": "Es ist noch nichts gelaufen. Beide Welten halten dieselben {n} Akteure, gleichmäßig entlang der Achse verteilt. Drücken Sie Starten.", "rc-s-ctrl": "Das Empfehlungssystem ist so eingestellt, dass es Zustimmung überhaupt nicht bevorzugt, es tut also dasselbe wie ein neutraler Feed, und die beiden Welten sind derselbe Prozess. Der Einflussgradient zeigt nach {t} Runden {g}. Das ist die Kontrolle: Ein Maß, das nicht null anzeigen kann, wenn nichts geschieht, misst nichts.", "rc-s-steer": "Nach {t} Runden unterscheiden sich die gesteuerte Population und ihr ungesteuerter Zwilling um {g} auf dem Einflussgradienten. Dieselben Akteure, dieselben Startpositionen und dieselben Zufallszahlen gingen {where}", "rc-s-near": "an fast denselben Ort, die Auswahl hat sie also noch nirgendwohin getragen, wohin der neutrale Feed sie nicht auch gebracht hätte.", "rc-s-far": "an messbar verschiedene Orte, und das Einzige, was sich zwischen den beiden Läufen unterschied, war, welche Handvoll Positionen jedem Akteur gezeigt wurde.", "rc-s2": "Die nächste Position des durchschnittlichen Akteurs besteht zu {a} aus seiner eigenen Vorannahme, der Rest ist das, was ihm gezeigt wurde. Der Feed selbst liegt gerade bei {h} der Entropie, die er hätte, wenn er diesem Akteur die ganze Achse gleichmäßig anböte, gegen {hn} in der neutralen Welt. Über die ganze Population zugleich zeigt dasselbe Maß {hall}, was höher ist, weil enge Feeds in verschiedene Richtungen zusammen die Achse trotzdem abdecken. Die Population steht in {camps}.", "rc-048": "Die Aktualisierungsregel ist ein Modell beschränkten Vertrauens: Ein Akteur berücksichtigt nur die Meinungen innerhalb eines Vertrauensintervalls um die eigene, und die Arbeit untersucht, wie die Breite dieses Intervalls entscheidet, ob eine Population zu Konsens gelangt, sich spaltet oder zersplittert. <span class=\"ex-cite-w\">Rainer Hegselmann and Ulrich Krause, <span class=\"ex-cite-t\">Opinion\n            Dynamics and Bounded Confidence: Models, Analysis and Simulation</span>, Journal of Artificial\n            Societies and Social Simulation 5(3), article 2, 2002.\n            <a href=\"https://www.jasss.org/5/3/2.html\" target=\"_blank\" rel=\"noreferrer noopener\">jasss.org/5/3/2.html</a>\n            Geprüft: 2026 08 22.</span>\n          ", "rc-049": "Die Entropie der Wahlumgebung ist Shannons Entropie der Verteilung dessen, was ausgeliefert wird, normiert durch die Entropie der flachen Verteilung über dieselben Bins. <span class=\"ex-cite-w\">Claude E. Shannon, <span class=\"ex-cite-t\">A Mathematical Theory of\n            Communication</span>, The Bell System Technical Journal 27, 1948, pages 379 to 423 and 623 to\n            656.\n            <a href=\"https://onlinelibrary.wiley.com/doi/10.1002/j.1538-7305.1948.tb01338.x\" target=\"_blank\" rel=\"noreferrer noopener\">doi.org 10.1002/j.1538-7305.1948.tb01338.x</a>\n            Volltext gelesen bei\n            <a href=\"https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">people.math.harvard.edu</a>.\n            Geprüft: 2026 08 22.</span>\n          ", "rc-050": "Die drei Konstrukte und die Gründe, sie zu wollen. <span class=\"ex-cite-w\">Kerem Özdemir, <span class=\"ex-cite-t\">The agent was never alone:\n            SIMEA</span>, a working note.\n            <a href=\"../../note-simea.html\">keremozdemir.de/note-simea.html</a></span>\n          ", "rc-camps-one": "einem Lager", "pg-title": "Das Empfehlungssystem"}};
+function T(k, en, v) {
+  var out = window.__t ? window.__t(k, en) : en;
+  if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+  return out;
+}
+function pctT(v) { return T("sim-pct", "{v} %", { v: v }); }
+
+/* Controls are built once in English, then rewritten in place. */
+var SWEEP = {
+  "Favouring of agreement": "rc-sl-a",
+  "How steeply the feed prefers positions close to the agent's own. Zero is a neutral feed.": "rc-sl-a-h",
+  "Willingness to move": "rc-sl-c",
+  "How far away something can be and still move the agent. The axis is two units wide.": "rc-sl-c-h",
+  "Random share of the feed": "rc-sl-r",
+  "Slots filled with genuinely random material rather than ranked material.": "rc-sl-r-h",
+  "Population": "rc-sl-n",
+  "How many agents are in each of the two worlds.": "rc-sl-n-h",
+  "Influence gradient": "rc-rd-g", "Autonomy threshold": "rc-rd-a",
+  "Entropy of one feed": "rc-rd-h", "The same, neutral feed": "rc-rd-hn",
+  "Camps": "rc-rd-cl", "Rounds": "rc-rd-t",
+  "more agents standing here": "rc-key-more", "the round now being drawn": "rc-key-now"
+};
+function sweepI18n() {
+  document.querySelectorAll(".ex-ctrl label > span:first-child, .ex-read-k, .k-hint, #rc-key span").forEach(function (n) {
+    var en = n.getAttribute("data-en");
+    if (en === null) {
+      en = (n.childNodes.length && n.lastChild.nodeType === 3 ? n.lastChild.textContent : n.textContent).trim();
+      n.setAttribute("data-en", en);
+    }
+    var k = SWEEP[en];
+    if (!k) return;
+    var tgt = n.lastChild && n.lastChild.nodeType === 3 ? n.lastChild : n;
+    tgt.textContent = T(k, en);
+  });
+}
+/* How many camps the population stands in, as one phrase rather than a
+   number glued to a noun that inflects differently in each language. */
+function campsT(k) {
+  return k === 1 ? T("rc-camps-one", "one camp") : T("rc-camps", "{n} camps", { n: k });
+}
 
 /* ============================================================
    Simulation two: the recommender
@@ -2485,8 +2569,8 @@ var Sim = (function () {
       Sim.text(cRas, "−1", padL - 6, y + ih - 2, { align: "right", small: true });
     }
 
-    panel(ras1, padT, "with the recommender");
-    panel(ras2, padT + ih + gap, "with a neutral feed");
+    panel(ras1, padT, T("rc-pan-steered", "with the recommender"));
+    panel(ras2, padT + ih + gap, T("rc-pan-neutral", "with a neutral feed"));
 
     /* the leading edge of the run */
     if (tick > 0 && tick < COLS) {
@@ -2499,7 +2583,7 @@ var Sim = (function () {
       ctx.stroke();
     }
 
-    Sim.text(cRas, "rounds", padL + iw / 2, cRas.h - 7, { align: "center", small: true });
+    Sim.text(cRas, T("rc-ax-rounds", "rounds"), padL + iw / 2, cRas.h - 7, { align: "center", small: true });
     cRas.label(summary());
   }
 
@@ -2507,13 +2591,13 @@ var Sim = (function () {
     var p = Sim.palette();
     Sim.line(cPlot, {
       series: [
-        { data: hist.g, colour: p.accent, name: "influence gradient" },
-        { data: hist.a, colour: p.good, name: "autonomy threshold" },
-        { data: hist.h, colour: p.ink, name: "entropy of one feed", dash: [5, 3] }
+        { data: hist.g, colour: p.accent, name: T("rc-ln-g", "influence gradient") },
+        { data: hist.a, colour: p.good, name: T("rc-ln-a", "autonomy threshold") },
+        { data: hist.h, colour: p.ink, name: T("rc-ln-h", "entropy of one feed"), dash: [5, 3] }
       ],
       yMin: 0, yMax: 1, minSpan: 80,
       yTicks: [{ v: 0, label: "0" }, { v: 0.5, label: "0.5" }, { v: 1, label: "1" }],
-      xLabel: "rounds"
+      xLabel: T("rc-ax-rounds", "rounds")
     });
     cPlot.label(summary2());
   }
@@ -2521,79 +2605,79 @@ var Sim = (function () {
   /* ---------- words ---------- */
 
   function verdictWord() {
-    if (tick < 5) return "not run yet";
-    if (live.clusters <= 1) return "consensus";
-    if (live.clusters === 2 && live.spread > 0.8) return "hard polarisation";
-    if (live.clusters === 2) return "two camps";
-    return "fragmentation into " + live.clusters + " camps";
+    if (tick < 5) return T("rc-v-notrun", "not run yet");
+    if (live.clusters <= 1) return T("rc-v-consensus", "consensus");
+    if (live.clusters === 2 && live.spread > 0.8) return T("rc-v-hard", "hard polarisation");
+    if (live.clusters === 2) return T("rc-v-two", "two camps");
+    return T("rc-v-frag", "fragmentation into {n} camps", { n: live.clusters });
   }
 
   function summary() {
-    return "Two rasters of the same population over " + tick + " rounds, opinion on the vertical from "
-      + "minus one to plus one, time left to right, darker where more agents stand. The upper raster has "
-      + "the recommender in it, weighting agreement at " + Sim.fix(S.alpha, 2)
-      + " with " + Math.round(S.rho * 100) + " per cent of the feed drawn at random. The lower raster is "
-      + "the same agents and the same random draws with a neutral feed. The population currently sits in "
-      + Ex.cardinal(live.clusters) + " camp" + (live.clusters === 1 ? "" : "s")
-      + " and the reading is " + verdictWord() + ".";
+    return T("rc-sum",
+      "Two rasters of the same population over {t} rounds, opinion on the vertical from minus one to plus "
+      + "one, time left to right, darker where more agents stand. The upper raster has the recommender in "
+      + "it, weighting agreement at {alpha} with {rho} per cent of the feed drawn at random. The lower "
+      + "raster is the same agents and the same random draws with a neutral feed. The population currently "
+      + "sits in {camps} and the reading is {verdict}.",
+      { t: tick, alpha: Sim.fix(S.alpha, 2), rho: Math.round(S.rho * 100),
+        camps: campsT(live.clusters), verdict: verdictWord() });
   }
 
   function summary2() {
-    return "The three constructs over " + tick + " rounds, each running from zero to one. The influence "
-      + "gradient reads " + Sim.fix(live.g, 3) + ", the autonomy threshold " + Sim.fix(live.a, 3)
-      + ", and the entropy of one agent's choice environment " + Sim.fix(live.h, 3)
-      + " against " + Sim.fix(live.hn, 3) + " in the neutral world. Measured across the whole population "
-      + "at once rather than one agent at a time it reads " + Sim.fix(live.hAll, 3) + ".";
+    return T("rc-sum2",
+      "The three constructs over {t} rounds, each running from zero to one. The influence gradient reads "
+      + "{g}, the autonomy threshold {a}, and the entropy of one agent's choice environment {h} against "
+      + "{hn} in the neutral world. Measured across the whole population at once rather than one agent at "
+      + "a time it reads {hall}.",
+      { t: tick, g: Sim.fix(live.g, 3), a: Sim.fix(live.a, 3), h: Sim.fix(live.h, 3),
+        hn: Sim.fix(live.hn, 3), hall: Sim.fix(live.hAll, 3) });
   }
 
   function says() {
     var host = Q("#rc-says");
     Kit.clear(host);
     var e = Kit.el;
-    function n(t, flag) { return e("span", { class: "ex-n" + (flag ? " ex-n-flag" : ""), text: t }); }
+    function nh(t, flag) { return '<span class="ex-n' + (flag ? " ex-n-flag" : "") + '">' + t + "</span>"; }
 
     var p1 = e("p");
     if (tick === 0) {
-      p1.appendChild(document.createTextNode("Nothing has run yet. Both worlds hold the same "
-        + S.n + " agents spread evenly along the axis. Press run."));
+      p1.textContent = T("rc-s0",
+        "Nothing has run yet. Both worlds hold the same {n} agents spread evenly along the axis. "
+        + "Press run.", { n: S.n });
       host.appendChild(p1);
       return;
     }
 
     if (S.alpha === 0) {
-      p1.appendChild(document.createTextNode("The recommender is set to favour agreement not at all, so "
-        + "it is doing the same thing a neutral feed does and the two worlds are the same process. The "
-        + "influence gradient reads "));
-      p1.appendChild(n(Sim.fix(live.g, 3)));
-      p1.appendChild(document.createTextNode(" after " + tick + " rounds. That is the control: a measure "
-        + "that cannot read zero when nothing is happening is not measuring anything."));
-      host.appendChild(p1);
+      p1.innerHTML = T("rc-s-ctrl",
+        "The recommender is set to favour agreement not at all, so it is doing the same thing a neutral "
+        + "feed does and the two worlds are the same process. The influence gradient reads {g} after {t} "
+        + "rounds. That is the control: a measure that cannot read zero when nothing is happening is not "
+        + "measuring anything.",
+        { g: nh(Sim.fix(live.g, 3)), t: tick });
     } else {
-      p1.appendChild(document.createTextNode("After " + tick + " rounds the steered population and its "
-        + "unsteered twin differ by "));
-      p1.appendChild(n(Sim.fix(live.g, 3), live.g > 0.3));
-      p1.appendChild(document.createTextNode(" on the influence gradient. The same agents, the same "
-        + "starting positions and the same random numbers went to "));
-      p1.appendChild(document.createTextNode(live.g < 0.05
-        ? "almost the same place, so the selection has not yet carried them anywhere the neutral feed "
-          + "would not have taken them."
-        : "measurably different places, and the only thing that differed between the two runs was which "
-          + "handful of positions each agent was shown."));
-      host.appendChild(p1);
+      p1.innerHTML = T("rc-s-steer",
+        "After {t} rounds the steered population and its unsteered twin differ by {g} on the influence "
+        + "gradient. The same agents, the same starting positions and the same random numbers went to "
+        + "{where}",
+        { t: tick, g: nh(Sim.fix(live.g, 3), live.g > 0.3),
+          where: live.g < 0.05
+            ? T("rc-s-near", "almost the same place, so the selection has not yet carried them anywhere "
+                + "the neutral feed would not have taken them.")
+            : T("rc-s-far", "measurably different places, and the only thing that differed between the "
+                + "two runs was which handful of positions each agent was shown.") });
     }
+    host.appendChild(p1);
 
     var p2 = e("p");
-    p2.appendChild(document.createTextNode("The average agent's next position is "));
-    p2.appendChild(n(Math.round(live.a * 100) + " per cent"));
-    p2.appendChild(document.createTextNode(" its own prior and the rest is what it was shown. The feed "
-      + "itself is currently at "));
-    p2.appendChild(n(Sim.fix(live.h, 2), live.h < 0.5));
-    p2.appendChild(document.createTextNode(" of the entropy it would have if it offered that agent the "
-      + "whole axis evenly, against " + Sim.fix(live.hn, 2) + " in the neutral world. Across the whole "
-      + "population at once the same measure reads " + Sim.fix(live.hAll, 2)
-      + ", which is higher because narrow feeds pointing in different directions still cover the axis "
-      + "between them. The population stands in "
-      + Ex.cardinal(live.clusters) + " camp" + (live.clusters === 1 ? "" : "s") + "."));
+    p2.innerHTML = T("rc-s2",
+      "The average agent's next position is {a} its own prior and the rest is what it was shown. The feed "
+      + "itself is currently at {h} of the entropy it would have if it offered that agent the whole axis "
+      + "evenly, against {hn} in the neutral world. Across the whole population at once the same measure "
+      + "reads {hall}, which is higher because narrow feeds pointing in different directions still cover "
+      + "the axis between them. The population stands in {camps}.",
+      { a: nh(pctT(Math.round(live.a * 100))), h: nh(Sim.fix(live.h, 2), live.h < 0.5),
+        hn: Sim.fix(live.hn, 2), hall: Sim.fix(live.hAll, 2), camps: campsT(live.clusters) });
     host.appendChild(p2);
   }
 
@@ -2623,7 +2707,7 @@ var Sim = (function () {
     cR = Ex.slider(rack, {
       label: "Random share of the feed",
       min: 0, max: 1, step: 0.05, value: S.rho,
-      format: function (v) { return Math.round(v * 100) + " %"; },
+      format: function (v) { return pctT(Math.round(v * 100)); },
       hint: "Slots filled with genuinely random material rather than ranked material.",
       onInput: function (v) { S.rho = v; restart(); }
     });
@@ -2647,7 +2731,8 @@ var Sim = (function () {
 
     var p = Sim.palette();
     var key = Q("#rc-key");
-    [[p.accent, "more agents standing here"], [p.flag, "the round now being drawn"]].forEach(function (k) {
+    [[p.accent, T("rc-key-more", "more agents standing here")],
+     [p.flag, T("rc-key-now", "the round now being drawn")]].forEach(function (k) {
       var mark = Kit.el("i");
       mark.style.background = k[0];
       key.appendChild(Kit.el("span", {}, [mark, document.createTextNode(k[1])]));
@@ -2689,15 +2774,19 @@ var Sim = (function () {
 
   /* ---------- render ---------- */
 
+  function clock() { return T("rc-clock", "round {n} of {m}", { n: tick, m: MAXT }); }
+
   function paint() {
     drawRaster();
     drawPlot();
-    setRead("g", Sim.fix(live.g, 3), "0 is no difference");
-    setRead("a", Sim.fix(live.a, 3), "1 is all its own");
-    setRead("h", Sim.fix(live.h, 3), "1 is the whole axis");
-    setRead("hn", Sim.fix(live.hn, 3), "across everyone: " + Sim.fix(live.hAll, 3));
-    setRead("cl", String(live.clusters), "spread " + Sim.fix(live.spread, 2));
-    setRead("t", String(tick), tick >= MAXT ? "run complete" : "of " + MAXT);
+    setRead("g", Sim.fix(live.g, 3), T("rc-sub-g", "0 is no difference"));
+    setRead("a", Sim.fix(live.a, 3), T("rc-sub-a", "1 is all its own"));
+    setRead("h", Sim.fix(live.h, 3), T("rc-sub-h", "1 is the whole axis"));
+    setRead("hn", Sim.fix(live.hn, 3),
+      T("rc-sub-hn", "across everyone: {v}", { v: Sim.fix(live.hAll, 3) }));
+    setRead("cl", String(live.clusters), T("rc-sub-cl", "spread {v}", { v: Sim.fix(live.spread, 2) }));
+    setRead("t", String(tick), tick >= MAXT
+      ? T("rc-sub-t-done", "run complete") : T("rc-sub-t", "of {n}", { n: MAXT }));
     Q("#rc-sum").textContent = summary();
     Q("#rc-sum2").textContent = summary2();
     Q("#rc-verdict").textContent = verdictWord();
@@ -2705,7 +2794,7 @@ var Sim = (function () {
     Q("#rc-live-a").textContent = Sim.fix(live.a, 3);
     Q("#rc-live-h").textContent = Sim.fix(live.h, 3);
     says();
-    if (tr) tr.setClock("round " + tick + " of " + MAXT);
+    if (tr) tr.setClock(clock());
   }
 
   function init() {
@@ -2725,17 +2814,19 @@ var Sim = (function () {
       onDraw: function () {
         drawRaster();
         if (tick % 3 === 0) drawPlot();
-        if (tr) tr.setClock("round " + tick + " of " + MAXT);
+        if (tr) tr.setClock(clock());
         if (tick >= MAXT) { tr.stop(); paint(); }
       },
       onSettle: function () { paint(); Kit.state.write(hashOut()); },
       onReset: function () { S.seed = (S.seed % 999999) + 1; reset(); paint(); Kit.state.write(hashOut()); },
-      onShare: function () { Kit.share(hashOut(), "Link copied. It reopens on this round."); }
+      onShare: function () { Kit.share(hashOut(), T("rc-share", "Link copied. It reopens on this round.")); }
     });
 
     paint();
     Kit.state.write(hashOut());
 
+    sweepI18n();
+    document.addEventListener("langchange", function () { sweepI18n(); sync(); paint(); });
     Ex.onResize(function () { cRas.resize(); cPlot.resize(); paint(); });
     window.addEventListener("hashchange", function () {
       if (hashIn()) { sync(); paint(); }
@@ -2767,40 +2858,97 @@ var Sim = (function () {
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Beş simülasyondan ikincisi</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Simulation zwei von fünf</i>"}};
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Beş simülasyondan ikincisi</i>"}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Simulation zwei von fünf</i>"}};
 
 (function(){
   "use strict";
   var KEY = "lang", lang = "en";
-  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
-  var D = window.CHROME_I18N || {};
-  var base = {}, baseA = {};
-  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
-  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  function known(l){
+    return l === "en"
+        || (window.CHROME_I18N && window.CHROME_I18N[l])
+        || (window.PAGE_I18N && window.PAGE_I18N[l]);
+  }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
   function apply(l){
-    if(!D[l]) l = "en";
-    var d = D[l] || {};
-    document.querySelectorAll(SEL).forEach(function(el){
-      var k = el.getAttribute("data-i");
-      if(!(k in base)) base[k] = el.innerHTML;
-      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
-    });
-    document.querySelectorAll(SELA).forEach(function(el){
-      var k = el.getAttribute("data-ia");
-      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
-      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
-    });
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
     });
     try { localStorage.setItem(KEY, l); } catch (e) {}
     window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
 })();
 

@@ -218,7 +218,7 @@ footer.site-foot{background:var(--paper)}
 .bar{position:relative;z-index:3}
 footer.site-foot{position:relative;z-index:3}
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -226,8 +226,9 @@ footer.site-foot{position:relative;z-index:3}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -246,7 +247,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -256,7 +257,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -266,12 +267,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -302,12 +303,12 @@ footer a:hover{color:var(--fg)}
 </head>
 <body>
 
-<a class="skip" href="#panel">Skip to the choices</a>
+<a class="skip" href="#panel" data-i="sh-skip">Skip to the choices</a>
 
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../game.html" aria-current="page" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../tools/economics/" data-i="nav-e">Economics</a><a href="../../game.html" aria-current="page" data-i="nav-g">Game Theory</a><a href="../../simea/" data-i="nav-s">Simulations</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -326,7 +327,7 @@ footer a:hover{color:var(--fg)}
     <p class="ch" id="chLabel">The Stag Hunt</p>
     <p class="meta" id="whenLabel">a ridge above the village, before dawn</p>
     <span class="spacer"></span>
-    <button type="button" class="quiet" id="menuBtn" hidden>Start over</button>
+    <button type="button" class="quiet" id="menuBtn" hidden data-i="sh-restart">Start over</button>
   </div>
 
   <main id="panel" tabindex="-1"></main>
@@ -335,6 +336,7 @@ footer a:hover{color:var(--fg)}
 
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="../../sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 
@@ -1395,6 +1397,19 @@ return api;
 "use strict";
 
 var el = KW.el, clamp = KW.clamp, lerp = KW.lerp, smooth = KW.smooth;
+
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"sh-skip": "Seçimlere atla", "sh-restart": "Baştan başla", "sh-name": "Geyik Avı", "sh-when-ridge": "köyün üstünde bir sırt, şafaktan önce", "sh-when-arg": "savın kendisi, açıkça", "sh-when-what": "bunun ne olduğu", "sh-when-hunts": "{n} seninle avlanıyor", "sh-when-morn": "{s}, sabah {a} / {b}", "sh-when-after": "{s}, ertesi gün", "sh-ch": "Bölüm {n}. {t}", "sh-ch1": "İlk av", "sh-ch2": "Haber yayılır", "sh-ch3": "Nehrin kabardığı sabah", "sh-sea-0": "İlkbahar", "sh-sea-1": "Yaz", "sh-sea-2": "Sonbahar", "sh-sea-3": "Kış", "sh-t-p1": "Bir geyik beş günlük yemek eder ve tek kişiyle alınamaz. Bir tavşan iki günlük eder ve alınır. İkiniz de sırta çıkıp beklerseniz geyik sizindir, ikiniz de iyi yersiniz. Biriniz diğeri hâlâ beklerken tavşan için sırttan inerse tavşan alınır ve beklemeye devam eden eve eli boş döner.", "sh-t-p2": "Burada kimse kimseyi kandırmak istemiyor. Her mevsim tek bir şeye karar veriyorsun: diğerinin orada olacağına inanıp inanmadığına.", "sh-b-resume": "{n}. bölümden devam et", "sh-b-climb": "Sırta çık", "sh-s-title": "Geyik Avı. İki avcı, bir geyik ve otların içinde tavşanlar.", "sh-tally-you": "Bu bölümde yediğin ", "sh-i1-kick": "Birinci bölüm", "sh-i1-head": "İlk av", "sh-i1-b1": "Tarik seninle aynı sırtta avlanıyor. Daha önce hiç birlikte çalışmadınız. Şafaktan önce diğerinin ne yapacağı hakkında ikinizin de hiçbir fikri yok ve bunu önceden kararlaştırmanın bir yolu da yok, çünkü köyün iki ucundan yola çıkıyorsunuz.", "sh-i1-b2": "Sekiz sabah. Her birinde sen geyiği ya da tavşanı seçiyorsun, o da öyle.", "sh-i2-kick": "İkinci bölüm", "sh-i2-head": "Haber yayılır", "sh-i2-b1": "Roza mevsimin nasıl geçtiğini duymuş. Seninle daha önce avlanmadı ama Tarik'in bildiğini biliyor ve sırta, seni orada bulmayı zaten bekleyerek çıkıyor.", "sh-i2-b2": "Geyikte değişen bir şey yok. Tavşanda değişen bir şey yok. Yalnızca onun beklentisi değişti.", "sh-i3-kick": "Üçüncü bölüm", "sh-i3-head": "Nehrin kabardığı sabah", "sh-i3-b1": "Yine Tarik ve bu kez ikiniz de bu işin nasıl yürüdüğünü biliyorsunuz. Ama onun eviyle sırt arasındaki nehir ilkbaharda kabarıyor ve bazı sabahlar hiç geçilemiyor.", "sh-i3-b2": "Böyle bir sabah kimse hiçbir şeye karar vermiş olmayacak. Ama görünüşü, yüzüstü bırakılmakla tıpatıp aynı olacak.", "sh-i-five": "Geyik beş, tavşan iki; tek başına beklemekse hiçbir şey.", "sh-b-firstmorn": "İlk sabah", "sh-a-kick": "Sabah {n}", "sh-a-h": "Sırt mı, otlar mı", "sh-a-fog": "Nehir buradan bile gürül gürül. Kimsenin karşıya geçip geçmediğini göremiyorsun.", "sh-a-first": "{n} seninle aynı saatte, köyün öbür yakasından yola çıktı. Henüz ikiniz de birbirinizi göremiyorsunuz.", "sh-a-was": "{n} dün sırttaydı.", "sh-a-wasnt": "{n} dün sırtta değildi.", "sh-b-stag": "Sırtta geyiği bekle", "sh-b-hare": "Tavşan için aşağı in", "sh-m-expect": "{n} ne bekliyor", "sh-of100": "100'de {x}", "sh-s-ask": "{s}, sabah {n}. Sırtta bekle ya da tavşan için aşağı in.", "sh-r-nobody": "Kimse yoktu", "sh-r-stag": "Geyik", "sh-r-twohares": "İki tavşan", "sh-r-onewaited": "Biriniz bekledi", "sh-rw-absS": "Güneş iyice yükselene kadar bekledin. Kimse gelmedi. Sonradan öğrendin ki nehir taşların üzerinden aşmış ve {n} kendi yakasından hiç ayrılmamış.", "sh-rw-absH": "Bir tavşan aldın. Sonradan öğrendin ki nehir taşların üzerinden aşmış ve {n} kendi yakasından hiç ayrılmamış; yani sırtta beklenecek kimse de yokmuş.", "sh-rw-ss": "İkiniz de sırttaydınız ve geyik ikinizin arasında indi. Adam başı beş günlük yemek; üstelik önceden tek kelime etmeniz gerekmedi.", "sh-rw-sh": "Sen bekledin. {n} otlara indi ve geyik olduğu yerde dururken onun eve bir tavşan taşımasını izledin.", "sh-rw-hs": "Tavşanını erkenden aldın. {n} öğlen olduğunda hâlâ sırttaydı ve eli boştu; senin patikadan elinde bir şeyle çıktığını gördü.", "sh-rw-hh": "İkiniz de tavşan için indiniz. Adam başı iki günlük yemek; sırttaki geyikse ikinizden de hiçbir zaman tehlikede olmadı.", "sh-r-youate": "Sen {d} yedin. {r}", "sh-r-day1": "bir gün", "sh-r-days": "{p} gün", "sh-r-theyate": "{n} {d} yedi.", "sh-r-riverate": "{n} nehrin kendi yakasında ne varsa onu yedi.", "sh-b-chend": "Bölüm bitiyor", "sh-b-nextmorn": "Ertesi sabah", "sh-ce-kick": "Bölüm {n} sonu", "sh-ce1-h": "Kimse açgözlü değildi", "sh-ce1-p1": "Dört sayıyı yeniden oku. Diğerini yüzüstü bırakmanın kazandırdığı tek bir hücre yok. Onun sırtta beklediğinden eminsen senin en iyi hamlen de beklemek, çünkü beş ikiyi geçer. Tavşana indiğinden eminsen senin en iyi hamlen de tavşan, çünkü iki hiçlikten iyidir.", "sh-ce1-p2": "Bunu bildik ikilemden ayıran da bu. İkinizin de beklemesi kararlı bir durum; ikinizin de otlarda olması da kararlı. İki cevap, ikisi de doğru ve hangisinde yaşayacağınıza sayıların içinde karar veren hiçbir şey yok.", "sh-ce1-p3": "Karar veren, her birinizin beklentisi. Tarik sırta ilk kez senden çok az şey bekleyerek çıktı; o yüzden tavşan aldı ve aldığı her tavşan seni beklemeye daha az istekli yaptı; otlarda geçirdiğin her sabah da onu haklı çıktığına daha çok inandırdı.", "sh-ce1-p4": "Bundan sonra onun ne düşündüğünü görebileceksin. Hep oradaydı; kımıldayan sayı buydu.", "sh-m-expectnow": "{n} şu an senden ne bekliyor", "sh-ce2-h": "Aynı av, farklı bir açılış", "sh-ce2-p1": "Roza, Tarik'le aynı kuralın kendisi. Geyik aynı beşi, tavşan aynı ikiyi ediyor. İki bölüm arasında değişen tek şey onun başladığı sayıydı ve sonrasında olan hemen her şeye o karar verdi.", "sh-ce2-p2": "Güvenli cevaptan çıkmanın bu kadar zor olmasının sebebi de bu. Kimse kimseden bir şey beklemiyorsa herkes tavşanı alır ve herkesin tavşanı alması, tam da kimsenin kimseden bir şey beklememesi gerektiğinin kanıtıdır.", "sh-ce3-h": "Kimsenin kararı olmayan bir sabah", "sh-ce3-p1": "Nehrin kabardığı sabah hiçbir şey seçilmedi. O sabahı Tarik hakkında kanıt olarak okuduysan yanlış bir şey öğrendin; sonrasında ona göre davrandıysan onu doğru yaptın.", "sh-ce3-p2": "Tavşan, önemli olan tam anlamıyla güvenli hamle: diğeri ne yaparsa yapsın iki öder; beklemekse başkasına bağlı olarak beş ya da hiç. Emin olmadığında güvenlik bir şeye değer ve ne kadar az eminsen o kadar çok değer. İyi yiyebilecek bir köyün az yemeye razı oluşu böyle olur.", "sh-b-ch2": "Bölüm {n}. {t}", "sh-b-endof": "Sonu", "sh-s-chend": "Bölüm {n} sonu.", "sh-pt-cap": "Her seçim çiftinin kaç günlük yemeğe denk geldiği, önce seninki", "sh-pt-theywait": "o bekler", "sh-pt-theyhare": "o tavşana gider", "sh-pt-youwait": "sen beklersen", "sh-pt-youhare": "sen tavşana gidersen", "sh-pt-note": "Gölgeli iki hücre, iki avcıdan hiçbirinin tek başına iyileştiremeyeceği hücreler", "sh-e-kick": "Sonu", "sh-e-h": "Üç bölüm ne içindi", "sh-e-p1": "Bu oyunun iki dengesi var. İki avcının da beklemesi biri, ikisinin de otlarda olması diğeri; ikisinde de hiç kimse tek başına yaptığını değiştirerek daha iyi edemez. Biri seni beş doyuruyor, diğeri iki ve hangisinde biteceğin konusunda aritmetiğin söyleyecek hiçbir sözü yok.", "sh-e-p2": "Aralarında seçim yapan şey inanç. Tercih değil, karakter değil, açgözlülük değil. Tavşan güvenli, çünkü sırtta ne olursa olsun aynı şeyi ödüyor; ve diğerinden ne kadar az eminsen güvenlik o kadar değerli. Şüphe böylece kendini doğruluyor: tavşanı doğru yapıyor, tavşanı almak diğerine senden şüphe etmeyi öğretiyor, onun şüphesi de tavşanı onun için doğru yapıyor.", "sh-e-l1": "Buradaki tuzak, kimsenin kimseden faydalanmak istemesi değil. Bu oyunda birini yüzüstü bırakarak kazanılan hiçbir şey olmadı; oyun sana o fırsatı hiç vermedi.", "sh-e-l2": "Kimsenin suçu olmayan tek bir sabah, bir köyü iyi dengeden güvenli olana taşıyabilir ve sırttan bakınca ikisinin farkını anlamanın yolu yoktur.", "sh-e-l3": "Bütün mesele dışarıdan bakınca kolay, içeriden bakınca çok zor. Şafaktan önce edilecek tek söz, mevsimlerin yapamadığını yapar.", "sh-e-sub1": "Nereden geliyor", "sh-e-rous": "Rousseau bu durumu 1754'te, daha adı bile yokken yazdı. Her avcı, geyik alınacaksa yerinde durması gerektiğini anlıyordu; yine de:", "sh-e-q1": "“Bir geyik alınacaksa herkes başarmak için yerine sadakatle bağlı kalması gerektiğini görüyordu; ama içlerinden birinin menziline bir tavşan girecek olsa hiç kuşku yok ki tereddütsüz peşine düşer ve avını yakaladıktan sonra, bu yüzden arkadaşlarının kendi avlarını kaçırmasına yol açmışsa buna pek de aldırmazdı.”", "sh-e-nash": "Buradaki anlamıyla denge sözcüğü Nash'in; 1950'de yayımlanan iki sayfalık bir makaleden.", "sh-e-sub2": "Bunun göstermediği", "sh-e-m1": "Ortağın bir kural, bir insan değil. Güveni sabit adımlarla oynuyor ve seçimi o güvenin üzerinde bir eşik. Gerçek bir av ortağının ruh hâlleri, başka ortakları ve seni kendi okuyuşu vardır; bu model bunları içermiyor.", "sh-e-m2": "Burada hiçbir şey, insanların eşgüdüm sorunlarında gerçekte nasıl davrandığına dair kanıt değil. Bu bir savın boyanmış örneği, bir deney değil; bu sayfadaki hiçbir sayı ölçülmedi.", "sh-e-m3": "Gerçek avlar konuşmaya izin verir ve konuşma cevabın büyük kısmıdır. Bu oyun, onsuz ne olduğunu göstermek için konuşmayı yasaklıyor; bu da onu olağan durumun değil en zor durumun resmi yapıyor.", "sh-e-m4": "Buradaki iki denge temiz biçimde sıralı, beşe karşı iki. Güvenli sonucun riskli olana neredeyse denk olduğu yerlerde güvenliğe çekilme, bu üç bölümde hissettiğin her şeyden çok daha güçlüdür.", "sh-e-m5": "Gerçek toplulukların kazanç baskın dengeye mi yoksa risk baskın dengeye mi oturduğu açık bir görgül sorudur ve bu oyun bu konuda taraf tutmuyor.", "sh-e-src": "Kaynaklar", "sh-src1": "Avın kendisi.", "sh-src2": "Denge noktası.", "sh-src-tail": "Okundu: 2026 08 21.", "sh-fam": "Diğer oyunlar ve aynı konunun sayıları açıkta yazılmış hâli: ", "sh-fam-a": "hepsi burada", "sh-b-again": "İlk sabahtan yeniden avlan", "sh-s-end": "Son. İki denge var ve hangisinde yaşayacağına inanç karar veriyor.", "sh-k-return": "enter", "sh-k-start": "başla", "sh-k-begin": "başla", "sh-k-go": "devam", "sh-k-again": "tekrar", "sh-k-s": "s tuşu", "sh-k-h": "h tuşu", "pg-title": "Geyik Avı"}, "de": {"sh-skip": "Zu den Entscheidungen springen", "sh-restart": "Von vorn beginnen", "sh-name": "Die Hirschjagd", "sh-when-ridge": "ein Grat über dem Dorf, vor der Dämmerung", "sh-when-arg": "das Argument, schlicht gesagt", "sh-when-what": "was das war", "sh-when-hunts": "{n} jagt mit Ihnen", "sh-when-morn": "{s}, Morgen {a} von {b}", "sh-when-after": "{s}, der Tag danach", "sh-ch": "Kapitel {n}. {t}", "sh-ch1": "Die erste Jagd", "sh-ch2": "Es spricht sich herum", "sh-ch3": "Der Morgen des hohen Flusses", "sh-sea-0": "Frühling", "sh-sea-1": "Sommer", "sh-sea-2": "Herbst", "sh-sea-3": "Winter", "sh-t-p1": "Ein Hirsch ist fünf Tage Essen wert und lässt sich nicht von einem allein erlegen. Ein Hase ist zwei Tage wert, und das geht allein. Steigen Sie beide auf den Grat und warten, gehört der Hirsch Ihnen, und beide essen gut. Verlässt einer den Grat für einen Hasen, während der andere noch wartet, ist der Hase genommen, und wer noch wartet, geht mit nichts nach Hause.", "sh-t-p2": "Niemand hier will irgendwen betrügen. Jede Saison entscheiden Sie nur eines: ob Sie glauben, dass der andere da sein wird.", "sh-b-resume": "Weiter ab Kapitel {n}", "sh-b-climb": "Auf den Grat steigen", "sh-s-title": "Die Hirschjagd. Zwei Jäger, ein Hirsch, und Hasen im Gras.", "sh-tally-you": "Was Sie in diesem Kapitel gegessen haben ", "sh-i1-kick": "Kapitel eins", "sh-i1-head": "Die erste Jagd", "sh-i1-b1": "Tarik jagt auf demselben Grat wie Sie. Sie haben nie zusammengearbeitet. Keiner von Ihnen hat vor der Dämmerung eine Ahnung, was der andere tun wird, und abzusprechen ist es nicht, denn Sie brechen an entgegengesetzten Enden des Dorfes auf.", "sh-i1-b2": "Acht Morgen. An jedem wählen Sie den Hirsch oder den Hasen, und er auch.", "sh-i2-kick": "Kapitel zwei", "sh-i2-head": "Es spricht sich herum", "sh-i2-b1": "Roza hat gehört, wie die Saison gelaufen ist. Sie hat noch nie mit Ihnen gejagt, aber sie weiß, was Tarik weiß, und sie steigt den Grat hinauf und erwartet schon, Sie dort zu finden.", "sh-i2-b2": "Am Hirsch hat sich nichts geändert. Am Hasen hat sich nichts geändert. Nur, was sie erwartet.", "sh-i3-kick": "Kapitel drei", "sh-i3-head": "Der Morgen des hohen Flusses", "sh-i3-b1": "Wieder Tarik, und diesmal wissen Sie beide, wie das hier funktioniert. Aber der Fluss zwischen seinem Haus und dem Grat steigt im Frühjahr, und an manchen Morgen ist er gar nicht zu überqueren.", "sh-i3-b2": "An so einem Morgen wird niemand irgendetwas entschieden haben. Aussehen wird es genau wie im Stich gelassen zu werden.", "sh-i-five": "Der Hirsch ist fünf, der Hase zwei, und allein zu warten ist gar nichts.", "sh-b-firstmorn": "Der erste Morgen", "sh-a-kick": "Morgen {n}", "sh-a-h": "Der Grat oder das Gras", "sh-a-fog": "Der Fluss ist von hier aus laut. Sie können nicht sehen, ob jemand hinübergekommen ist.", "sh-a-first": "{n} ist zur selben Stunde aufgebrochen wie Sie, vom anderen Ende des Dorfes. Noch sieht keiner von Ihnen den anderen.", "sh-a-was": "{n} war gestern auf dem Grat.", "sh-a-wasnt": "{n} war gestern nicht auf dem Grat.", "sh-b-stag": "Auf dem Grat auf den Hirsch warten", "sh-b-hare": "Für einen Hasen hinuntergehen", "sh-m-expect": "Was {n} erwartet", "sh-of100": "{x} von 100", "sh-s-ask": "{s}, Morgen {n}. Auf dem Grat warten oder für einen Hasen hinuntergehen.", "sh-r-nobody": "Niemand war da", "sh-r-stag": "Der Hirsch", "sh-r-twohares": "Zwei Hasen", "sh-r-onewaited": "Einer von Ihnen wartete", "sh-rw-absS": "Sie warteten, bis die Sonne hoch stand. Niemand kam. Später erfuhren Sie, dass der Fluss über die Steine ging und {n} seine Seite nie verlassen hat.", "sh-rw-absH": "Sie nahmen einen Hasen. Später erfuhren Sie, dass der Fluss über die Steine ging und {n} seine Seite nie verlassen hat; auf dem Grat gab es also ohnehin niemanden, auf den zu warten war.", "sh-rw-ss": "Sie waren beide auf dem Grat, und zwischen Ihnen beiden kam der Hirsch herunter. Fünf Tage Essen für jeden, und keiner von Ihnen musste vorher ein Wort darüber verlieren.", "sh-rw-sh": "Sie warteten. {n} ging hinunter ins Gras, und Sie sahen zu, wie er einen Hasen nach Hause trug, während der Hirsch genau dort blieb, wo er war.", "sh-rw-hs": "Sie nahmen Ihren Hasen früh. {n} stand am Mittag noch mit nichts auf dem Grat, und er sah Sie mit etwas in den Händen den Pfad heraufkommen.", "sh-rw-hh": "Sie gingen beide für Hasen hinunter. Zwei Tage Essen für jeden, und der Hirsch auf dem Grat war vor Ihnen beiden nie in Gefahr.", "sh-r-youate": "Sie aßen {d}. {r}", "sh-r-day1": "einen Tag", "sh-r-days": "{p} Tage", "sh-r-theyate": "{n} aß {d}.", "sh-r-riverate": "{n} aß, was auf seiner Seite des Flusses zu finden war.", "sh-b-chend": "Das Kapitel endet", "sh-b-nextmorn": "Der nächste Morgen", "sh-ce-kick": "Ende von Kapitel {n}", "sh-ce1-h": "Niemand war gierig", "sh-ce1-p1": "Lesen Sie die vier Zahlen noch einmal. Es gibt keine Zelle, in der es sich auszahlt, den anderen im Stich zu lassen. Sind Sie sicher, dass er auf dem Grat wartet, ist Ihr bester Zug ebenfalls zu warten, denn fünf schlägt zwei. Sind Sie sicher, dass er zum Hasen gegangen ist, ist Ihr bester Zug auch der Hase, denn zwei schlägt nichts.", "sh-ce1-p2": "Das ist der Unterschied zum üblichen Dilemma. Dass Sie beide warten, ist stabil, und dass Sie beide im Gras sind, ist auch stabil. Zwei Antworten, beide richtig, und nichts in den Zahlen entscheidet, in welcher Sie leben.", "sh-ce1-p3": "Was es entscheidet, ist, was jeder von Ihnen erwartet. Tarik kam zum ersten Mal den Grat herauf und erwartete sehr wenig von Ihnen, also nahm er Hasen, und jeder Hase machte Sie weniger bereit zu warten, und jeder Morgen, den Sie im Gras verbrachten, machte ihn sicherer, dass er recht gehabt hatte.", "sh-ce1-p4": "Von hier an können Sie sehen, was er denkt. Es war immer da; das ist die Zahl, die sich bewegt hat.", "sh-m-expectnow": "Was {n} jetzt von Ihnen erwartet", "sh-ce2-h": "Dieselbe Jagd, eine andere Eröffnung", "sh-ce2-p1": "Roza ist dieselbe Regel wie Tarik. Der Hirsch ist dieselben fünf wert, der Hase dieselben zwei. Das Einzige, was sich zwischen den beiden Kapiteln geändert hat, ist die Zahl, mit der sie begann, und sie entschied fast alles, was danach geschah.", "sh-ce2-p2": "Darum ist die sichere Antwort so schwer wieder loszuwerden. Erwartet niemand irgendwen, nimmt jeder den Hasen, und dass jeder den Hasen nimmt, ist genau der Beleg dafür, dass niemand irgendwen hätte erwarten sollen.", "sh-ce3-h": "Ein Morgen, der niemandes Entscheidung war", "sh-ce3-p1": "Am Morgen des hohen Flusses wurde nichts gewählt. Wer diesen Morgen als Beleg über Tarik las, hat etwas Falsches gelernt; wer danach handelte, hat es wahr gemacht.", "sh-ce3-p2": "Der Hase ist der sichere Zug in genau dem Sinn, auf den es ankommt: Er zahlt zwei, was auch immer der andere tut, während Warten fünf oder nichts zahlt, je nach jemand anderem. Wenn Sie unsicher sind, ist Sicherheit etwas wert, und je unsicherer Sie sind, desto mehr. So kommt es, dass ein Dorf, das gut essen könnte, wenig isst.", "sh-b-ch2": "Kapitel {n}. {t}", "sh-b-endof": "Das Ende", "sh-s-chend": "Ende von Kapitel {n}.", "sh-pt-cap": "Was jedes Paar von Entscheidungen wert ist, in Tagen Essen, Ihres zuerst", "sh-pt-theywait": "er wartet", "sh-pt-theyhare": "er nimmt einen Hasen", "sh-pt-youwait": "Sie warten", "sh-pt-youhare": "Sie nehmen einen Hasen", "sh-pt-note": "Die zwei schattierten Zellen sind die, die kein Jäger allein verbessern kann", "sh-e-kick": "Das Ende", "sh-e-h": "Wofür die drei Kapitel da waren", "sh-e-p1": "Dieses Spiel hat zwei Gleichgewichte. Dass beide Jäger warten, ist eines, dass beide im Gras sind, das andere, und in beiden kann sich niemand verbessern, indem er allein etwas ändert. Das eine gibt Ihnen fünf zu essen, das andere zwei, und die Arithmetik hat nichts dazu zu sagen, in welchem Sie landen.", "sh-e-p2": "Was zwischen ihnen wählt, ist Glaube. Nicht Vorliebe, nicht Charakter, nicht Gier. Der Hase ist sicher, weil er dasselbe zahlt, was auch immer auf dem Grat geschieht, und Sicherheit ist umso mehr wert, je weniger sicher Sie sich des anderen sind. So bestätigt sich der Zweifel selbst: Er macht den Hasen richtig, den Hasen zu nehmen lehrt den anderen, an Ihnen zu zweifeln, und sein Zweifel macht den Hasen für ihn richtig.", "sh-e-l1": "Die Falle hier ist nicht, dass irgendwer irgendwen ausnutzen will. In diesem Spiel wurde nichts dadurch gewonnen, jemanden im Stich zu lassen, und das Spiel gab Ihnen nie die Gelegenheit dazu.", "sh-e-l2": "Ein einziger Morgen, an dem niemand schuld war, kann ein Dorf vom guten Gleichgewicht ins sichere bewegen, und vom Grat aus gibt es keine Möglichkeit, den Unterschied zu erkennen.", "sh-e-l3": "Das Ganze ist von außen leicht zu beheben und von innen sehr schwer. Ein Wort vor der Dämmerung leistet, was die Jahreszeiten nicht konnten.", "sh-e-sub1": "Woher es kommt", "sh-e-rous": "Rousseau schrieb die Lage 1754 nieder, bevor es ein Wort dafür gab. Jeder Jäger verstand, dass er auf seinem Posten bleiben musste, wenn der Hirsch genommen werden sollte, und doch:", "sh-e-q1": "“Sollte ein Hirsch erlegt werden, sah jeder ein, dass er dazu treu auf seinem Posten bleiben musste; aber kam ein Hase in die Reichweite eines von ihnen, so ist nicht zu bezweifeln, dass er ihm ohne Bedenken nachjagte und, seine Beute gefasst, sich wenig darum kümmerte, ob er damit seine Gefährten um die ihre brachte.”", "sh-e-nash": "Das Wort Gleichgewicht im hier gebrauchten Sinn ist Nashs, aus einem zwei Seiten langen Aufsatz von 1950.", "sh-e-sub2": "Was das nicht zeigt", "sh-e-m1": "Ihr Partner ist eine Regel, kein Mensch. Sein Vertrauen bewegt sich in festen Schritten, und seine Wahl ist eine Schwelle darauf. Ein echter Jagdpartner hat Stimmungen, andere Partner und seine eigene Lesart von Ihnen, die dieses Modell nicht enthält.", "sh-e-m2": "Nichts hier ist ein Beleg dafür, wie Menschen sich in Koordinationsproblemen tatsächlich verhalten. Es ist das gemalte Beispiel eines Arguments, kein Experiment, und keine Zahl auf dieser Seite wurde gemessen.", "sh-e-m3": "Echte Jagden erlauben das Reden, und Reden ist der größte Teil der Antwort. Dieses Spiel verbietet es, um zu zeigen, was ohne es geschieht; das macht es zum Bild des härtesten Falls, nicht des üblichen.", "sh-e-m4": "Die zwei Gleichgewichte hier sind sauber geordnet, fünf gegen zwei. Wo das sichere Ergebnis fast so gut ist wie das riskante, ist der Zug zur Sicherheit weit stärker als alles, was Sie in diesen drei Kapiteln gespürt haben.", "sh-e-m5": "Ob echte Populationen sich im auszahlungsdominanten oder im risikodominanten Gleichgewicht einfinden, ist eine offene empirische Frage, und dieses Spiel bezieht dazu keine Stellung.", "sh-e-src": "Quellen", "sh-src1": "Die Jagd selbst.", "sh-src2": "Der Gleichgewichtspunkt.", "sh-src-tail": "Gelesen: 2026 08 21.", "sh-fam": "Die anderen Spiele, und dasselbe Thema mit offengelegten Zahlen ausgeschrieben: ", "sh-fam-a": "alle sind hier", "sh-b-again": "Vom ersten Morgen an noch einmal jagen", "sh-s-end": "Das Ende. Zwei Gleichgewichte, und der Glaube entscheidet, in welchem Sie leben.", "sh-k-return": "Enter", "sh-k-start": "Start", "sh-k-begin": "Start", "sh-k-go": "weiter", "sh-k-again": "erneut", "sh-k-s": "Taste s", "sh-k-h": "Taste h", "pg-title": "Die Hirschjagd"}};
+function T(k, en, v) {
+  var s = window.__t ? window.__t(k, en) : en;
+  if (v) for (var n in v) s = s.split("{" + n + "}").join(String(v[n]));
+  return s;
+}
+function seasonName() { var i = KW.world.season; return T("sh-sea-" + i, KW.SEASONS[i]); }
+function chTitle(n) { return T("sh-ch" + n, CHAPTERS[n - 1].title); }
+function chLine(n) { return T("sh-ch", "Chapter {n}. {t}", {n: n, t: chTitle(n)}); }
+function days(p) { return p === 1 ? T("sh-r-day1", "1 day") : T("sh-r-days", "{p} days", {p: p}); }
+
 var ui = KW.ui, ctx = null;
 var store = KW.store("kw.staghunt.v1");
 
@@ -1634,7 +1649,7 @@ function view(name) {
 
 function tally() {
   var d = el("div", "tally");
-  var a = el("span"); a.appendChild(document.createTextNode("What you have eaten this chapter "));
+  var a = el("span"); a.appendChild(document.createTextNode(T("sh-tally-you", "What you have eaten this chapter ")));
   a.appendChild(el("b", null, String(G.you)));
   var b = el("span"); b.appendChild(document.createTextNode(PEOPLE[G.who].name + " "));
   b.appendChild(el("b", null, String(G.them)));
@@ -1647,21 +1662,21 @@ VIEWS.title = function () {
   scene.both = false; scene.absent = false; scene.stag = 1; scene.t0 = -99;
   KW.season(0, true); KW.daylight(0.12, true);
   KW.$("menuBtn").hidden = true;
-  ui.top("The Stag Hunt", "a ridge above the village, before dawn");
-  ui.head("The Stag Hunt");
-  ui.para("A stag is worth five days of eating and cannot be taken by one person. A hare is worth two days and can. If you both climb the ridge and wait, the stag is yours and you both eat well. If one of you leaves the ridge for a hare while the other is still waiting, the hare is taken and the person still waiting goes home with nothing.");
-  ui.para("Nobody here wants to cheat anybody. Every season you decide only one thing: whether you believe the other one will be there.");
+  ui.top(T("sh-name", "The Stag Hunt"), T("sh-when-ridge", "a ridge above the village, before dawn"));
+  ui.head(T("sh-name", "The Stag Hunt"));
+  ui.para(T("sh-t-p1", "A stag is worth five days of eating and cannot be taken by one person. A hare is worth two days and can. If you both climb the ridge and wait, the stag is yours and you both eat well. If one of you leaves the ridge for a hare while the other is still waiting, the hare is taken and the person still waiting goes home with nothing."));
+  ui.para(T("sh-t-p2", "Nobody here wants to cheat anybody. Every season you decide only one thing: whether you believe the other one will be there."));
   var r = ui.actions();
   var s = store.load();
   if (s && (s.furthest > 1 || s.round > 0)) {
-    ui.btn(r, "Go on from chapter " + s.chapter, "return", function () { resume(s); }, "big");
+    ui.btn(r, T("sh-b-resume", "Go on from chapter {n}", {n: s.chapter}), T("sh-k-return", "return"), function () { resume(s); }, "big");
   }
-  ui.btn(r, "Climb the ridge", "start", function () {
+  ui.btn(r, T("sh-b-climb", "Climb the ridge"), T("sh-k-start", "start"), function () {
     ui.acted = true;
     G.chapter = 1; G.furthest = 1; G.showConf = false;
     startChapter(1);
   }, "big");
-  ui.say("The Stag Hunt. Two hunters, one stag, and hares in the grass.");
+  ui.say(T("sh-s-title", "The Stag Hunt. Two hunters, one stag, and hares in the grass."));
 };
 
 function resume(s) {
@@ -1726,16 +1741,18 @@ var INTRO = {
 
 VIEWS.intro = function () {
   var I = INTRO[G.chapter], ch = CHAPTERS[G.chapter - 1];
-  ui.top("Chapter " + G.chapter + ". " + ch.title, PEOPLE[G.who].name + " hunts with you");
-  ui.kick(I.kick);
-  ui.head(I.head);
-  I.body.forEach(function (b) { ui.para(b); });
+  ui.top(chLine(G.chapter), T("sh-when-hunts", "{n} hunts with you", {n: PEOPLE[G.who].name}));
+  var kick = T("sh-i" + G.chapter + "-kick", I.kick);
+  var head = T("sh-i" + G.chapter + "-head", I.head);
+  ui.kick(kick);
+  ui.head(head);
+  I.body.forEach(function (b, bi) { ui.para(T("sh-i" + G.chapter + "-b" + (bi + 1), b)); });
   if (G.chapter === 1) {
-    ui.para("The stag is five, the hare is two, and waiting alone is nothing at all.");
+    ui.para(T("sh-i-five", "The stag is five, the hare is two, and waiting alone is nothing at all."));
   }
   var r = ui.actions();
-  ui.btn(r, I.go, "begin", function () { beginRound(); }, "big");
-  ui.say(I.head + ". " + I.body[0]);
+  ui.btn(r, T("sh-b-firstmorn", I.go), T("sh-k-begin", "begin"), function () { beginRound(); }, "big");
+  ui.say(head + ". " + T("sh-i" + G.chapter + "-b1", I.body[0]));
 };
 
 function beginRound() {
@@ -1749,27 +1766,27 @@ VIEWS.ask = function () {
   var name = PEOPLE[G.who].name;
   KW.season((G.chapter - 1 + G.round) % 4, G.round === 0);
   KW.daylight(0.12 + (G.round / ch.rounds) * 0.7);
-  ui.top("Chapter " + G.chapter + ". " + ch.title,
-         KW.SEASONS[KW.world.season] + ", morning " + (G.round + 1) + " of " + ch.rounds);
-  ui.kick("Morning " + (G.round + 1));
-  ui.head("The ridge, or the grass");
+  ui.top(chLine(G.chapter),
+         T("sh-when-morn", "{s}, morning {a} of {b}", {s: seasonName(), a: G.round + 1, b: ch.rounds}));
+  ui.kick(T("sh-a-kick", "Morning {n}", {n: G.round + 1}));
+  ui.head(T("sh-a-h", "The ridge, or the grass"));
   if (G.chapter === 3 && G.round === ch.fog) {
-    ui.para("The river is loud from here. You cannot see whether anyone crossed it.");
+    ui.para(T("sh-a-fog", "The river is loud from here. You cannot see whether anyone crossed it."));
   } else if (G.round === 0) {
-    ui.para(name + " set out at the same hour you did, from the other side of the village. Neither of you can see the other yet.");
+    ui.para(T("sh-a-first", "{n} set out at the same hour you did, from the other side of the village. Neither of you can see the other yet.", {n: name}));
   } else {
     ui.para(G.last && G.last.them === "S"
-      ? name + " was on the ridge yesterday."
-      : name + " was not on the ridge yesterday.");
+      ? T("sh-a-was", "{n} was on the ridge yesterday.", {n: name})
+      : T("sh-a-wasnt", "{n} was not on the ridge yesterday.", {n: name}));
   }
   var r = ui.actions();
-  ui.btn(r, "Wait on the ridge for the stag", "press s", function () { resolve("S"); }, "big stag");
-  ui.btn(r, "Go down for a hare", "press h", function () { resolve("H"); }, "big hare");
+  ui.btn(r, T("sh-b-stag", "Wait on the ridge for the stag"), T("sh-k-s", "press s"), function () { resolve("S"); }, "big stag");
+  ui.btn(r, T("sh-b-hare", "Go down for a hare"), T("sh-k-h", "press h"), function () { resolve("H"); }, "big hare");
   if (G.showConf) {
-    ui.meter("What " + name + " expects", G.conf, Math.round(G.conf * 100) + " of 100", G.conf >= PEOPLE[G.who].thr);
+    ui.meter(T("sh-m-expect", "What {n} expects", {n: name}), G.conf, T("sh-of100", "{x} of 100", {x: Math.round(G.conf * 100)}), G.conf >= PEOPLE[G.who].thr);
   }
   tally();
-  ui.say(KW.SEASONS[KW.world.season] + ", morning " + (G.round + 1) + ". Wait on the ridge or go down for a hare.");
+  ui.say(T("sh-s-ask", "{s}, morning {n}. Wait on the ridge or go down for a hare.", {s: seasonName(), n: G.round + 1}));
 };
 
 function resolve(mine) {
@@ -1808,37 +1825,38 @@ function resolve(mine) {
 
 function resultWords(r, name) {
   if (r.absent) {
-    if (r.you === "S") return "You waited until the sun was well up. Nobody came. Later you found out the river was over the stones and " + name + " never left his own side of it.";
-    return "You took a hare. Later you found out the river was over the stones and " + name + " never left his own side of it, so there was nobody on the ridge to wait for anyway.";
+    if (r.you === "S") return T("sh-rw-absS", "You waited until the sun was well up. Nobody came. Later you found out the river was over the stones and {n} never left his own side of it.", {n: name});
+    return T("sh-rw-absH", "You took a hare. Later you found out the river was over the stones and {n} never left his own side of it, so there was nobody on the ridge to wait for anyway.", {n: name});
   }
-  if (r.you === "S" && r.them === "S") return "You were both on the ridge, and between the two of you the stag came down. Five days of eating each, and neither of you had to say a word about it beforehand.";
-  if (r.you === "S" && r.them === "H") return "You waited. " + name + " went down into the grass, and you watched him carry a hare home while the stag stayed exactly where it was.";
-  if (r.you === "H" && r.them === "S") return "You took your hare early. " + name + " was still on the ridge at noon with nothing, and he saw you come back up the path with something in your hands.";
-  return "You both went down for hares. Two days of eating each, and the stag on the ridge was never in any danger from either of you.";
+  if (r.you === "S" && r.them === "S") return T("sh-rw-ss", "You were both on the ridge, and between the two of you the stag came down. Five days of eating each, and neither of you had to say a word about it beforehand.");
+  if (r.you === "S" && r.them === "H") return T("sh-rw-sh", "You waited. {n} went down into the grass, and you watched him carry a hare home while the stag stayed exactly where it was.", {n: name});
+  if (r.you === "H" && r.them === "S") return T("sh-rw-hs", "You took your hare early. {n} was still on the ridge at noon with nothing, and he saw you come back up the path with something in your hands.", {n: name});
+  return T("sh-rw-hh", "You both went down for hares. Two days of eating each, and the stag on the ridge was never in any danger from either of you.");
 }
 
 VIEWS.result = function () {
   var ch = CHAPTERS[G.chapter - 1];
   var name = PEOPLE[G.who].name;
   var r = G.last;
-  ui.top("Chapter " + G.chapter + ". " + ch.title, KW.SEASONS[KW.world.season] + ", the day after");
-  ui.kick("Morning " + G.round);
-  ui.head(r.absent ? "Nobody was there" :
-          (r.you === "S" && r.them === "S") ? "The stag" :
-          (r.you === "H" && r.them === "H") ? "Two hares" : "One of you waited");
+  ui.top(chLine(G.chapter), T("sh-when-after", "{s}, the day after", {s: seasonName()}));
+  ui.kick(T("sh-a-kick", "Morning {n}", {n: G.round}));
+  ui.head(r.absent ? T("sh-r-nobody", "Nobody was there") :
+          (r.you === "S" && r.them === "S") ? T("sh-r-stag", "The stag") :
+          (r.you === "H" && r.them === "H") ? T("sh-r-twohares", "Two hares") : T("sh-r-onewaited", "One of you waited"));
   ui.para(resultWords(r, name), "say");
-  ui.para("You ate for " + r.youPay + (r.youPay === 1 ? " day" : " days") + ". " +
-          (r.absent ? name + " ate whatever was on his own side of the river."
-                    : name + " ate for " + r.themPay + (r.themPay === 1 ? " day" : " days") + "."));
+  ui.para(T("sh-r-youate", "You ate for {d}. {r}",
+          {d: days(r.youPay),
+           r: r.absent ? T("sh-r-riverate", "{n} ate whatever was on his own side of the river.", {n: name})
+                       : T("sh-r-theyate", "{n} ate for {d}.", {n: name, d: days(r.themPay)})}));
   if (G.showConf) {
-    ui.meter("What " + name + " expects", G.conf, Math.round(G.conf * 100) + " of 100", G.conf >= PEOPLE[G.who].thr);
+    ui.meter(T("sh-m-expect", "What {n} expects", {n: name}), G.conf, T("sh-of100", "{x} of 100", {x: Math.round(G.conf * 100)}), G.conf >= PEOPLE[G.who].thr);
   }
   tally();
   var row = ui.actions();
   if (G.round >= ch.rounds) {
-    ui.btn(row, "The chapter ends", "go on", function () { view("chapterEnd"); }, "big");
+    ui.btn(row, T("sh-b-chend", "The chapter ends"), T("sh-k-go", "go on"), function () { view("chapterEnd"); }, "big");
   } else {
-    ui.btn(row, "The next morning", "go on", function () { beginRound(); }, "big");
+    ui.btn(row, T("sh-b-nextmorn", "The next morning"), T("sh-k-go", "go on"), function () { beginRound(); }, "big");
   }
   ui.say(resultWords(r, name));
 };
@@ -1848,52 +1866,52 @@ VIEWS.result = function () {
 VIEWS.chapterEnd = function () {
   var ch = CHAPTERS[G.chapter - 1];
   var name = PEOPLE[G.who].name;
-  ui.top("Chapter " + G.chapter + ". " + ch.title, "what that was");
-  ui.kick("End of chapter " + G.chapter);
+  ui.top(chLine(G.chapter), T("sh-when-what", "what that was"));
+  ui.kick(T("sh-ce-kick", "End of chapter {n}", {n: G.chapter}));
 
   if (G.chapter === 1) {
-    ui.head("Nobody was greedy");
-    ui.para("Read the four numbers again. There is no cell in which betraying the other one pays. If you are sure they are waiting on the ridge, your best move is to wait as well, because five beats two. If you are sure they have gone down for a hare, your best move is the hare too, because two beats nothing.");
-    ui.para("That is the difference between this and the usual dilemma. Both of you waiting is stable, and both of you in the grass is also stable. Two answers, both of them correct, and nothing in the numbers decides which one you live in.");
-    ui.para("What decides it is what each of you expects. Tarik came up the ridge for the first time expecting very little of you, so he took hares, and every hare he took made you less willing to wait, and every morning you spent in the grass made him more certain he had been right.");
+    ui.head(T("sh-ce1-h", "Nobody was greedy"));
+    ui.para(T("sh-ce1-p1", "Read the four numbers again. There is no cell in which betraying the other one pays. If you are sure they are waiting on the ridge, your best move is to wait as well, because five beats two. If you are sure they have gone down for a hare, your best move is the hare too, because two beats nothing."));
+    ui.para(T("sh-ce1-p2", "That is the difference between this and the usual dilemma. Both of you waiting is stable, and both of you in the grass is also stable. Two answers, both of them correct, and nothing in the numbers decides which one you live in."));
+    ui.para(T("sh-ce1-p3", "What decides it is what each of you expects. Tarik came up the ridge for the first time expecting very little of you, so he took hares, and every hare he took made you less willing to wait, and every morning you spent in the grass made him more certain he had been right."));
     payTable();
-    ui.para("From here on you can see what he thinks. It was always there, and this is the number that was moving.");
+    ui.para(T("sh-ce1-p4", "From here on you can see what he thinks. It was always there, and this is the number that was moving."));
     G.showConf = true;
-    ui.meter("What " + name + " expects of you now", G.conf, Math.round(G.conf * 100) + " of 100", G.conf >= 0.5);
+    ui.meter(T("sh-m-expectnow", "What {n} expects of you now", {n: name}), G.conf, T("sh-of100", "{x} of 100", {x: Math.round(G.conf * 100)}), G.conf >= 0.5);
   } else if (G.chapter === 2) {
-    ui.head("The same hunt, a different opening");
-    ui.para("Roza is the same rule Tarik is. The stag is worth the same five, the hare the same two. The only thing that changed between the two chapters is the number she started with, and it decided almost everything that happened after it.");
-    ui.para("This is why the safe answer is so hard to get out of. If nobody expects anybody, everybody takes the hare, and everybody taking the hare is exactly the evidence that nobody should have expected anybody.");
-    ui.meter("What Roza expects of you now", G.conf, Math.round(G.conf * 100) + " of 100", G.conf >= 0.5);
+    ui.head(T("sh-ce2-h", "The same hunt, a different opening"));
+    ui.para(T("sh-ce2-p1", "Roza is the same rule Tarik is. The stag is worth the same five, the hare the same two. The only thing that changed between the two chapters is the number she started with, and it decided almost everything that happened after it."));
+    ui.para(T("sh-ce2-p2", "This is why the safe answer is so hard to get out of. If nobody expects anybody, everybody takes the hare, and everybody taking the hare is exactly the evidence that nobody should have expected anybody."));
+    ui.meter(T("sh-m-expectnow", "What {n} expects of you now", {n: "Roza"}), G.conf, T("sh-of100", "{x} of 100", {x: Math.round(G.conf * 100)}), G.conf >= 0.5);
   } else {
-    ui.head("A morning that was nobody's decision");
-    ui.para("On the morning of the high river nothing was chosen. If you read that morning as evidence about Tarik you learned something false, and if you acted on it afterwards you made it true.");
-    ui.para("The hare is the safe move in the exact sense that matters: it pays two whatever the other one does, while waiting pays five or nothing depending on somebody else. When you are unsure, safety is worth something, and the more unsure you are the more it is worth. That is how a village that could eat well ends up eating a little.");
+    ui.head(T("sh-ce3-h", "A morning that was nobody's decision"));
+    ui.para(T("sh-ce3-p1", "On the morning of the high river nothing was chosen. If you read that morning as evidence about Tarik you learned something false, and if you acted on it afterwards you made it true."));
+    ui.para(T("sh-ce3-p2", "The hare is the safe move in the exact sense that matters: it pays two whatever the other one does, while waiting pays five or nothing depending on somebody else. When you are unsure, safety is worth something, and the more unsure you are the more it is worth. That is how a village that could eat well ends up eating a little."));
   }
 
   var r = ui.actions();
   if (G.chapter < CHAPTERS.length) {
-    ui.btn(r, "Chapter " + (G.chapter + 1) + ". " + CHAPTERS[G.chapter].title, "go on", function () {
+    ui.btn(r, T("sh-b-ch2", "Chapter {n}. {t}", {n: G.chapter + 1, t: chTitle(G.chapter + 1)}), T("sh-k-go", "go on"), function () {
       startChapter(G.chapter + 1);
     }, "big");
   } else {
-    ui.btn(r, "The end of it", "go on", function () { view("ending"); }, "big");
+    ui.btn(r, T("sh-b-endof", "The end of it"), T("sh-k-go", "go on"), function () { view("ending"); }, "big");
   }
-  ui.say("End of chapter " + G.chapter + ".");
+  ui.say(T("sh-s-chend", "End of chapter {n}.", {n: G.chapter}));
 };
 
 function payTable() {
   var w = el("div", "tblwrap");
   var t = el("table", "pay");
-  var cap = el("caption", "vh", "What each pair of choices is worth, in days of eating, yours first");
+  var cap = el("caption", "vh", T("sh-pt-cap", "What each pair of choices is worth, in days of eating, yours first"));
   t.appendChild(cap);
   var head = el("tr");
   head.appendChild(el("th", null, ""));
-  head.appendChild(el("th", null, "they wait"));
-  head.appendChild(el("th", null, "they take a hare"));
+  head.appendChild(el("th", null, T("sh-pt-theywait", "they wait")));
+  head.appendChild(el("th", null, T("sh-pt-theyhare", "they take a hare")));
   t.appendChild(head);
-  [["you wait", [PAY.both, PAY.both], [PAY.alone, PAY.hare]],
-   ["you take a hare", [PAY.hare, PAY.alone], [PAY.hare, PAY.hare]]].forEach(function (row) {
+  [[T("sh-pt-youwait", "you wait"), [PAY.both, PAY.both], [PAY.alone, PAY.hare]],
+   [T("sh-pt-youhare", "you take a hare"), [PAY.hare, PAY.alone], [PAY.hare, PAY.hare]]].forEach(function (row) {
     var tr = el("tr");
     tr.appendChild(el("th", null, row[0]));
     [row[1], row[2]].forEach(function (c) {
@@ -1907,7 +1925,7 @@ function payTable() {
   });
   w.appendChild(t);
   ui.panel.appendChild(w);
-  var p = el("p", "kicker", "The two shaded cells are the ones neither hunter can improve on alone");
+  var p = el("p", "kicker", T("sh-pt-note", "The two shaded cells are the ones neither hunter can improve on alone"));
   ui.panel.appendChild(p);
 }
 
@@ -1918,60 +1936,60 @@ function payTable() {
 VIEWS.ending = function () {
   scene.you = null; scene.themMove = null; scene.both = false; scene.stag = 1;
   KW.season(0, true); KW.daylight(0.5);
-  ui.top("The Stag Hunt", "the argument, plainly");
-  ui.kick("The end of it");
-  ui.head("What the three chapters were for");
-  ui.para("This game has two equilibria. Both hunters waiting is one, and both hunters in the grass is the other, and in each of them neither person can do better by changing what they do alone. One of them feeds you five and the other feeds you two, and the arithmetic has nothing to say about which one you end up in.");
-  ui.para("What picks between them is belief. Not preference, not character, not greed. The hare is safe because it pays the same whatever happens on the ridge, and safety is worth more the less certain you are of the other person. So doubt is self confirming: it makes the hare correct, taking the hare teaches the other one to doubt you, and their doubt makes the hare correct for them.");
+  ui.top(T("sh-name", "The Stag Hunt"), T("sh-when-arg", "the argument, plainly"));
+  ui.kick(T("sh-e-kick", "The end of it"));
+  ui.head(T("sh-e-h", "What the three chapters were for"));
+  ui.para(T("sh-e-p1", "This game has two equilibria. Both hunters waiting is one, and both hunters in the grass is the other, and in each of them neither person can do better by changing what they do alone. One of them feeds you five and the other feeds you two, and the arithmetic has nothing to say about which one you end up in."));
+  ui.para(T("sh-e-p2", "What picks between them is belief. Not preference, not character, not greed. The hare is safe because it pays the same whatever happens on the ridge, and safety is worth more the less certain you are of the other person. So doubt is self confirming: it makes the hare correct, taking the hare teaches the other one to doubt you, and their doubt makes the hare correct for them."));
   ui.list([
-    "The trap here is not that anybody wants to take advantage of anybody. Nothing was gained in this game by letting somebody down, and the game never gave you the chance to.",
-    "One morning that was nobody's fault can move a village from the good equilibrium to the safe one, and there is no way to tell the difference from the ridge.",
-    "The whole thing is easy to fix from the outside and very hard to fix from the inside. A word before dawn does what the seasons could not."
+    T("sh-e-l1", "The trap here is not that anybody wants to take advantage of anybody. Nothing was gained in this game by letting somebody down, and the game never gave you the chance to."),
+    T("sh-e-l2", "One morning that was nobody's fault can move a village from the good equilibrium to the safe one, and there is no way to tell the difference from the ridge."),
+    T("sh-e-l3", "The whole thing is easy to fix from the outside and very hard to fix from the inside. A word before dawn does what the seasons could not.")
   ]);
 
-  ui.sub("Where it comes from");
-  ui.para("Rousseau wrote the situation down in 1754, before there was a word for it. Every hunter understood he had to hold his post if the deer was to be taken, and yet:");
+  ui.sub(T("sh-e-sub1", "Where it comes from"));
+  ui.para(T("sh-e-rous", "Rousseau wrote the situation down in 1754, before there was a word for it. Every hunter understood he had to hold his post if the deer was to be taken, and yet:"));
   var q = el("p", "say");
-  q.appendChild(document.createTextNode("“If a deer was to be taken, every one saw that, in order to succeed, he must abide faithfully by his post: but if a hare happened to come within the reach of any one of them, it is not to be doubted that he pursued it without scruple, and, having seized his prey, cared very little, if by so doing he caused his companions to miss theirs.”"));
+  q.appendChild(document.createTextNode(T("sh-e-q1", "“If a deer was to be taken, every one saw that, in order to succeed, he must abide faithfully by his post: but if a hare happened to come within the reach of any one of them, it is not to be doubted that he pursued it without scruple, and, having seized his prey, cared very little, if by so doing he caused his companions to miss theirs.”")));
   ui.panel.appendChild(q);
-  ui.para("The word equilibrium in the sense used here is Nash's, from a paper of two pages published in 1950.");
+  ui.para(T("sh-e-nash", "The word equilibrium in the sense used here is Nash's, from a paper of two pages published in 1950."));
 
-  ui.sub("What this does not show");
+  ui.sub(T("sh-e-sub2", "What this does not show"));
   ui.list([
-    "Your partner is a rule, not a person. Their confidence moves by fixed amounts and their choice is a threshold on it. A real hunting partner has moods, other partners, and their own reading of you that this model does not contain.",
-    "Nothing here is evidence about how people actually behave in coordination problems. It is a painted example of an argument, not an experiment, and no number on this page was measured.",
-    "Real hunts allow talking, and talking is most of the answer. This game forbids it in order to show what happens without it, which makes it a picture of the hardest case rather than the usual one.",
-    "The two equilibria here are ranked cleanly, five against two. Where the safe outcome is nearly as good as the risky one, the pull toward safety is far stronger than anything you felt in these three chapters.",
-    "Whether real populations settle in the payoff dominant or the risk dominant equilibrium is an open empirical question, and this game takes no position on it."
+    T("sh-e-m1", "Your partner is a rule, not a person. Their confidence moves by fixed amounts and their choice is a threshold on it. A real hunting partner has moods, other partners, and their own reading of you that this model does not contain."),
+    T("sh-e-m2", "Nothing here is evidence about how people actually behave in coordination problems. It is a painted example of an argument, not an experiment, and no number on this page was measured."),
+    T("sh-e-m3", "Real hunts allow talking, and talking is most of the answer. This game forbids it in order to show what happens without it, which makes it a picture of the hardest case rather than the usual one."),
+    T("sh-e-m4", "The two equilibria here are ranked cleanly, five against two. Where the safe outcome is nearly as good as the risky one, the pull toward safety is far stronger than anything you felt in these three chapters."),
+    T("sh-e-m5", "Whether real populations settle in the payoff dominant or the risk dominant equilibrium is an open empirical question, and this game takes no position on it.")
   ]);
 
-  ui.sub("Sources");
+  ui.sub(T("sh-e-src", "Sources"));
   ui.sources([
-    { what: "The hunt itself.",
+    { what: T("sh-src1", "The hunt itself."),
       cite: "Jean Jacques Rousseau, A Discourse on the Origin of Inequality (1754), second part.",
       url: "https://www.marxists.org/reference/subject/economics/rousseau/inequality/ch02.htm",
-      tail: "Read 2026 08 21." },
-    { what: "Equilibrium point.",
+      tail: T("sh-src-tail", "Read 2026 08 21.") },
+    { what: T("sh-src2", "Equilibrium point."),
       cite: "John F. Nash, Equilibrium Points in n Person Games, Proceedings of the National Academy of Sciences 36(1), 1950, pages 48 and 49.",
       url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC1063129/",
-      tail: "Read 2026 08 21." }
+      tail: T("sh-src-tail", "Read 2026 08 21.") }
   ]);
 
   var p = el("p");
-  p.appendChild(document.createTextNode("The other games, and the same subject written out with the numbers exposed: "));
-  var a = el("a", null, "all of them are here");
+  p.appendChild(document.createTextNode(T("sh-fam", "The other games, and the same subject written out with the numbers exposed: ")));
+  var a = el("a", null, T("sh-fam-a", "all of them are here"));
   a.href = "../../game.html";
   p.appendChild(a);
   p.appendChild(document.createTextNode("."));
   ui.panel.appendChild(p);
 
   var r = ui.actions();
-  ui.btn(r, "Hunt it again from the first morning", "again", function () {
+  ui.btn(r, T("sh-b-again", "Hunt it again from the first morning"), T("sh-k-again", "again"), function () {
     store.wipe();
     G.furthest = 1; G.showConf = false; G.log = [];
     startChapter(1);
   }, "big");
-  ui.say("The ending. Two equilibria, and belief decides which one you live in.");
+  ui.say(T("sh-s-end", "The ending. Two equilibria, and belief decides which one you live in."));
 };
 
 /* ============================================================
@@ -2009,6 +2027,10 @@ window.__G = {
   }
 };
 
+document.addEventListener("langchange", function () {
+  if (ctx) view(G.view);
+});
+
 KW.start({
   draw: drawWorld,
   resize: buildPines,
@@ -2019,40 +2041,97 @@ KW.start({
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache"}};
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}"}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %"}};
 
 (function(){
   "use strict";
   var KEY = "lang", lang = "en";
-  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
-  var D = window.CHROME_I18N || {};
-  var base = {}, baseA = {};
-  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
-  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  function known(l){
+    return l === "en"
+        || (window.CHROME_I18N && window.CHROME_I18N[l])
+        || (window.PAGE_I18N && window.PAGE_I18N[l]);
+  }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
   function apply(l){
-    if(!D[l]) l = "en";
-    var d = D[l] || {};
-    document.querySelectorAll(SEL).forEach(function(el){
-      var k = el.getAttribute("data-i");
-      if(!(k in base)) base[k] = el.innerHTML;
-      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
-    });
-    document.querySelectorAll(SELA).forEach(function(el){
-      var k = el.getAttribute("data-ia");
-      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
-      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
-    });
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
     });
     try { localStorage.setItem(KEY, l); } catch (e) {}
     window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
 })();
 

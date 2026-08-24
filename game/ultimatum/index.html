@@ -226,7 +226,7 @@ footer.site-foot{background:var(--paper)}
 .bar{position:relative;z-index:3}
 footer.site-foot{position:relative;z-index:3}
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -234,8 +234,9 @@ footer.site-foot{position:relative;z-index:3}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -254,7 +255,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -264,7 +265,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -274,12 +275,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -310,12 +311,12 @@ footer a:hover{color:var(--fg)}
 </head>
 <body>
 
-<a class="skip" href="#panel">Skip to the choices</a>
+<a class="skip" href="#panel" data-i="ul-skip">Skip to the choices</a>
 
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../game.html" aria-current="page" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../tools/economics/" data-i="nav-e">Economics</a><a href="../../game.html" aria-current="page" data-i="nav-g">Game Theory</a><a href="../../simea/" data-i="nav-s">Simulations</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -334,7 +335,7 @@ footer a:hover{color:var(--fg)}
     <p class="ch" id="chLabel">The Ultimatum</p>
     <p class="meta" id="whenLabel">market day, one table, ten coins</p>
     <span class="spacer"></span>
-    <button type="button" class="quiet" id="menuBtn" hidden>Start over</button>
+    <button type="button" class="quiet" id="menuBtn" hidden data-i="ul-restart">Start over</button>
   </div>
 
   <main id="panel" tabindex="-1"></main>
@@ -343,6 +344,7 @@ footer a:hover{color:var(--fg)}
 
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="../../sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 
@@ -1403,6 +1405,20 @@ return api;
 "use strict";
 
 var el = KW.el, clamp = KW.clamp, lerp = KW.lerp, smooth = KW.smooth;
+
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"ul-skip": "Seçimlere atla", "ul-restart": "Baştan başla", "ul-name": "Ültimatom Oyunu", "ul-when-market": "pazar günü, tek masa, on para", "ul-when-str": "{b} yabancıdan {a}.", "ul-when-off": "{b} tekliften {a}.", "ul-when-turn": "artık cevap veren sensin", "ul-when-nums": "kendi sayıların", "ul-when-arg": "savın kendisi, açıkça", "ul-top-split": "Sen bölüyorsun", "ul-top-turn": "Masa dönüyor", "ul-top-ans": "Sen cevaplıyorsun", "ul-n-0": "arabacı", "ul-n-1": "yüncü kadın", "ul-n-2": "tuzcu çocuk", "ul-n-3": "kantarcı kadın", "ul-n-4": "bir yabancı", "ul-note-0": "Yan vadiden gelmiş, acelesi var", "ul-note-1": "Sabahtan beri bu tezgâhta", "ul-note-2": "Genç ve ellerinle ne yaptığına bakıyor", "ul-note-3": "Pazarın kantarını o tutuyor", "ul-note-4": "Burada onu kimse tanımıyor", "ul-t-p1": "Hiç tanışmadığın ve bir daha karşılaşmayacağın biriyle aranıza, masaya on para konuyor. Nasıl bölüneceğini sen söylüyorsun. O evet ya da hayır diyor. Evet derse dediğin gibi bölünüyor. Hayır derse paralar kutuya geri dönüyor ve ikiniz de eve hiçbir şey götürmüyorsunuz.", "ul-t-p2": "Beş yabancı; sonra masa dönüyor ve cevap veren sen oluyorsun. İkisini de bitirene kadar hiçbir şey açıklanmıyor.", "ul-b-resume": "Kaldığın yerden devam et", "ul-b-sit": "Masaya otur", "ul-s-title": "Ültimatom. On para, tek teklif ve onu reddedebilecek bir yabancı.", "ul-purse-a": "Kesende ", "ul-purse-b": " para", "ul-o-kick": "Senin teklifin", "ul-o-h": "On para ve {n}", "ul-o-p1": "{note}. Sana tek kelime etmedi ve bu pazara bir daha gelmeyecek. On parayı senin kadar net görüyor.", "ul-o-keep": "sende kalıyor", "ul-o-get": "ona gidiyor", "ul-o-aria": "On paradan kaçını teklif ettiğin", "ul-b-put": "Teklifi masaya koy", "ul-b-less": "Bir eksik", "ul-b-more": "Bir fazla", "ul-s-offer": "Yabancı {n}: {w}. On paradan kaçını teklif edeceğini seç, sonra teklifi masaya koy.", "ul-or-kick-y": "Alındı", "ul-or-kick-n": "Reddedildi", "ul-or-h-y": "Aldı", "ul-or-h-n": "Hiç almamayı yeğledi", "ul-or-p-y": "{o} teklif ettin. {w} masaya baktı, {o} parayı alıp gitti; sen de keseye {m} koydun.", "ul-or-p-n": "{o} teklif ettin. {w} masaya baktı, hayır dedi ve paralar kutuya geri döndü. İkiniz de eve hiçbir şey götürmediniz ve o hayır derken bunu biliyordu.", "ul-b-turns": "Masa dönüyor", "ul-b-nextstr": "Sıradaki yabancı", "ul-s-or-y": "Alındı. Sende {m} kaldı.", "ul-s-or-n": "Reddedildi. Kimse bir şey almıyor.", "ul-p2-kick": "İkinci kısım", "ul-p2-h": "Şimdi paraları başkası tutuyor", "ul-p2-p1": "Altı yabancı daha; bu kez on para masanın onların tarafında. Nasıl bölüneceğini onlar söylüyor, sen evet ya da hayır diyorsun. Hayır, aynen önceki gibi ikinize de hiçbir şey kazandırmıyor.", "ul-p2-p2": "Onlar hakkında hiçbir şey ölçülmüyor. Oyunun izlediği sensin.", "ul-b-first": "İlk teklif", "ul-s-p2": "İkinci kısım. Artık cevap veren sensin.", "ul-a-kick": "Onun teklifi", "ul-a-h": "{w} sana {g} teklif ediyor", "ul-a-p": "On para. {k} kendinde tutuyor, {c} masanın üzerinden sana itiyor. Evet dersen senin. Hayır dersen kutu onu geri alıyor.", "ul-a-keep": "onda kalıyor", "ul-a-get": "sana geliyor", "ul-b-take": "Al", "ul-b-refuse": "Reddet", "ul-s-a": "{w} ondan {g} teklif ediyor. Al ya da reddet.", "ul-ar-h-y": "Aldın", "ul-ar-h-n": "Geri gönderdin", "ul-ar-p-y": "{c} aldın, {w} {k} tuttu. Kimse bu konuda bir şey söylemedi.", "ul-ar-p-n": "Hayır dedin. On para kutuya geri döndü. {w} eli boş gitti, sen de öyle; bunu yapmak kesenden {c} götürdü.", "ul-b-did": "Ne yaptın", "ul-b-nextoff": "Sıradaki teklif", "ul-s-ar-y": "Alındı.", "ul-s-ar-n": "Reddedildi. Kimse bir şey almıyor.", "ul-coin1": "{n} para", "ul-coinN": "{n} para", "ul-off1": "{n} teklifi", "ul-offN": "{n} teklifi", "ul-mi-kick": "Ne yaptın", "ul-mi-h": "Masanın senin tarafı, yazıya dökülmüş", "ul-mi-p1": "Bölen taraf olarak {list} teklif ettin. Bu, ondan ortalama {a} para eder; yani her yüzden {p}.", "ul-m-you": "Teklif ettiğin", "ul-m-selfish": "Yalnızca kendi çıkarını gözeten oyuncunun teklifi", "ul-of100": "100'de {x}", "ul-mi-none": "Cevap veren taraf olarak her teklifi aldın; masadaki en küçüğü bile. Bu tam olarak öz çıkar modelinin öngördüğü şey ve gerçek bir masada modelin sandığından daha nadirdir.", "ul-mi-ref1": "Cevap veren taraf olarak {c} geri çevirdin. Geri çevirdiğin en büyük şey {mx} idi{minpart}", "ul-mi-min": "; kabul ettiğin en küçük şey ise {mn} idi.", "ul-mi-dot": ".", "ul-mi-ref2": "{mx0} sayısını geri çevirmek kendi kesenden {mxc} götürdü. Karşılığında bir şey almadın ve yaptığını kimse görmedi. Bunu, öbür sayı o olduğu için yaptın.", "ul-mi-sub": "Öz çıkar modeli ne diyor", "ul-mi-p3": "Sondan başa doğru düşün. Cevap veren, bir şeyi hiçle karşılaştırır; o yüzden sıfırın üstündeki her şeyi alır. Bölen bunu bilir; o yüzden olabilecek en küçük miktarı teklif eder ve dokuzu tutar. Geriye doğru tümevarımdan sağ çıkan tek bölüşüm budur ve paradan başka hiçbir şeye değer vermeyen bir oyuncunun teorisinin öngördüğü de budur.", "ul-mi-p4": "Neredeyse hiç kimse böyle oynamıyor; büyük olasılıkla sen de öyle oynamadın.", "ul-b-real": "Gerçek masalarda gerçekte ne oluyor", "ul-s-mi": "Ortalama teklifin yüzde {p} idi; öz çıkarın öngördüğü ona karşılık.", "ul-e-kick": "Sonu", "ul-e-h": "Adalet yumuşaklık değildir", "ul-e-p1": "Bu oyun kırk yılı aşkın süredir laboratuvarlarda, birçok ülkede ve bozuk paradan birkaç aylık maaşa kadar uzanan meblağlarla oynatılıyor. 37 makaleyi ve 75 ayrı sonucu tutan bir meta analiz, bölen kişinin ortalama olarak her 100'den 40'ını teklif ettiğini ve tekliflerin yaklaşık 100'de 16'sının reddedildiğini buldu. Kese büyüdükçe teklif edilen pay biraz düşüyor; teklif yükseldikçe reddedilme olasılığı da düşüyor.", "ul-e-p2": "Bunun iki yarısı da önemli. Teklifler olabilecek en küçük miktarın yanına bile yaklaşmıyor ve retler gerçek: insanlar, hakaret saydıkları bir bölüşüme hayır deme hakkı için kendi ceplerinden ödüyor.", "ul-e-p3": "Tekliflerin yüksek olmasının sebebi ille de iyilik değil. Reddedilmeyi bekleyen ve para isteyen biri daha çok teklif eder; bu yüzden masanın bölen tarafında cömert davranışla hesapçı davranış dışarıdan tıpatıp aynı görünür. O yolla açıklanamayan şey retler, çünkü hesaplanacak bir şey kalmamıştır: oyunun son hamlesidir ve reddetmek para olarak kesinlikle daha kötüdür.", "ul-e-sub1": "Bu neden küçük bir nokta değil", "ul-e-l1": "Laboratuvarın dışındaki her pazarlıkta, az önce gösterdiğin gibi bir eşik vardır. Ücret görüşmeleri, bir boşanma, sözleşmeyi yeniden konuşan bir tedarikçi: bir tarafın kabul edeceği şey, alabileceği en iyi şeyden ibaret değildir.", "ul-e-l2": "İnsanların her pozitif miktarı alacağını varsayan bir model yanlış bölüşümü öngörür ve odadaki herkes için tamamen öngörülebilir olan masadan kalkışlara şaşırır.", "ul-e-l3": "Eşik sabit bir insan sabiti de değildir. Kesenin büyüklüğüyle, insanların kesenin nasıl oluştuğu hakkında bildikleriyle ve oyuncuların nereli olduğuyla oynar.", "ul-e-sub2": "Bunun göstermediği", "ul-e-m1": "Buradaki yabancılar, yazarın aralığa yayılsın diye seçtiği birer gizli sayı. Kimsenin ölçümü değiller ve yayımlanmış herhangi bir dağılımdan çekilmediler.", "ul-e-m2": "Kendi eşiğin altı cevaptan okundu. Altı, bir insanı ölçmek için fazlasıyla az ve gördüğün teklifler rastgele örneklenmedi, kenarı bulmak için seçildi.", "ul-e-m3": "Buradaki paralar para değil. Hiçbir şeyine oynamak bir haftalık maaşına oynamakla aynı şey değil; yayımlanmış çalışmalar meblağın davranışı değiştirdiğini, ama çoğu kişinin sandığından az değiştirdiğini buluyor.", "ul-e-m4": "Bir daha hiç karşılaşmayacağın bir yabancıyla tek el, saf durumdur. Gerçek pazarlığın çoğu tekrarlanır ve herkesin gözü önündedir; orada reddetmenin, bu oyunun bilerek dışarıda bıraktığı bir amacı daha vardır.", "ul-e-m5": "Her 100'den 40 ortalaması, ülkeler ve tasarımlar üzerinden bir ortalamadır. Pazarlık edeceğin bir sonraki kişi hakkında bir öngörü değildir.", "ul-e-src": "Kaynaklar", "ul-src1": "Deneysel kayıt.", "ul-src2": "İlk deney.", "ul-src3": "Denge ve geriye doğru tümevarım.", "ul-src-tail": "Okundu: 2026 08 21.", "ul-fam": "Ailenin geri kalanı; biri bir mera, biri bir yazı tura hakkında olan ikisi de dahil: ", "ul-fam-a": "bütün oyunlar burada", "ul-b-again": "Yeniden otur", "ul-s-end": "Son. İnsanlar ortalama her yüzden kırkını teklif ediyor ve tekliflerin yaklaşık yüzde on altısı reddediliyor.", "ul-k-return": "enter", "ul-k-start": "başla", "ul-k-go": "devam", "ul-k-again": "tekrar", "ul-k-enter": "enter", "ul-k-y": "y tuşu", "ul-k-n": "n tuşu", "pg-title": "Ültimatom"}, "de": {"ul-skip": "Zu den Entscheidungen springen", "ul-restart": "Von vorn beginnen", "ul-name": "Das Ultimatumspiel", "ul-when-market": "Markttag, ein Tisch, zehn Münzen", "ul-when-str": "Fremder {a} von {b}", "ul-when-off": "Angebot {a} von {b}", "ul-when-turn": "jetzt sind Sie es, der antwortet", "ul-when-nums": "Ihre eigenen Zahlen", "ul-when-arg": "das Argument, schlicht gesagt", "ul-top-split": "Sie teilen", "ul-top-turn": "Der Tisch dreht sich", "ul-top-ans": "Sie antworten", "ul-n-0": "der Fuhrmann", "ul-n-1": "die Wollhändlerin", "ul-n-2": "der Salzjunge", "ul-n-3": "die Waagemeisterin", "ul-n-4": "ein Fremder", "ul-note-0": "Aus dem Nachbartal herüber, in Eile", "ul-note-1": "Sie steht seit dem Morgen an diesem Stand", "ul-note-2": "Jung, und er beobachtet, was Sie mit den Händen tun", "ul-note-3": "Sie führt die Waage des Markts", "ul-note-4": "Hier kennt ihn niemand", "ul-t-p1": "Zehn Münzen liegen auf dem Tisch zwischen Ihnen und jemandem, den Sie nie getroffen haben und nie wiedersehen werden. Sie sagen, wie sie geteilt werden. Er sagt ja oder nein. Sagt er ja, wird geteilt, wie Sie es gesagt haben. Sagt er nein, gehen die Münzen zurück in die Kiste, und keiner von Ihnen nimmt etwas mit nach Hause.", "ul-t-p2": "Fünf Fremde, dann dreht sich der Tisch, und Sie sind der, der antwortet. Nichts wird erklärt, bevor Sie beides getan haben.", "ul-b-resume": "Dort weitermachen, wo Sie aufgehört haben", "ul-b-sit": "Setzen Sie sich an den Tisch", "ul-s-title": "Das Ultimatum. Zehn Münzen, ein Angebot, und ein Fremder, der es ablehnen kann.", "ul-purse-a": "Ihr Beutel ", "ul-purse-b": " Münzen", "ul-o-kick": "Ihr Angebot", "ul-o-h": "Zehn Münzen und {n}", "ul-o-p1": "{note}. Bis jetzt kein Wort an Sie, und nach diesem Markttag sehen Sie einander nie wieder. Die zehn Münzen sind von drüben so deutlich zu sehen wie von Ihrer Seite.", "ul-o-keep": "Sie behalten", "ul-o-get": "der andere bekommt", "ul-o-aria": "Wie viele der zehn Münzen Sie anbieten", "ul-b-put": "Das Angebot auf den Tisch legen", "ul-b-less": "Eine weniger", "ul-b-more": "Eine mehr", "ul-s-offer": "Fremder {n}: {w}. Wählen Sie, wie viele der zehn Münzen Sie anbieten, und legen Sie das Angebot auf den Tisch.", "ul-or-kick-y": "Angenommen", "ul-or-kick-n": "Abgelehnt", "ul-or-h-y": "Angenommen", "ul-or-h-n": "Lieber nichts", "ul-or-p-y": "Sie boten {o}. {w} sah auf den Tisch, nahm die {o} und ging; Sie steckten {m} in Ihren Beutel.", "ul-or-p-n": "Sie boten {o}. {w} sah auf den Tisch und sagte nein; die Münzen gingen zurück in die Kiste. Keiner von Ihnen nahm etwas mit nach Hause, und Ihr Gegenüber wusste das, als es nein sagte.", "ul-b-turns": "Der Tisch dreht sich", "ul-b-nextstr": "Der nächste Fremde", "ul-s-or-y": "Angenommen. Sie behalten {m}.", "ul-s-or-n": "Abgelehnt. Niemand nimmt etwas.", "ul-p2-kick": "Teil zwei", "ul-p2-h": "Jetzt hält jemand anderes die Münzen", "ul-p2-p1": "Sechs weitere Fremde, und diesmal liegen die zehn Münzen auf ihrer Seite des Tisches. Sie sagen, wie geteilt wird, und Sie sagen ja oder nein. Nein ist für beide nichts wert, genau wie zuvor.", "ul-p2-p2": "Über sie wird nichts gemessen. Was das Spiel beobachtet, sind Sie.", "ul-b-first": "Das erste Angebot", "ul-s-p2": "Teil zwei. Jetzt antworten Sie.", "ul-a-kick": "Das Angebot", "ul-a-h": "{w} bietet Ihnen {g}", "ul-a-p": "Zehn Münzen. {k} bleiben drüben, {c} werden über den Tisch zu Ihnen geschoben. Sagen Sie ja, gehört es Ihnen. Sagen Sie nein, nimmt die Kiste alle zehn zurück.", "ul-a-keep": "der andere behält", "ul-a-get": "Sie bekommen", "ul-b-take": "Annehmen", "ul-b-refuse": "Ablehnen", "ul-s-a": "{w} bietet Ihnen {g} von zehn. Nehmen Sie an oder lehnen Sie ab.", "ul-ar-h-y": "Sie nahmen es", "ul-ar-h-n": "Sie schickten es zurück", "ul-ar-p-y": "Sie nahmen {c}, und {w} behielt {k}. Niemand verlor ein Wort darüber.", "ul-ar-p-n": "Sie sagten nein. Die zehn Münzen gingen zurück in die Kiste. {w} ging mit nichts, Sie auch, und es kostete Sie {c}, das zu tun.", "ul-b-did": "Was Sie getan haben", "ul-b-nextoff": "Das nächste Angebot", "ul-s-ar-y": "Angenommen.", "ul-s-ar-n": "Abgelehnt. Niemand nimmt etwas.", "ul-coin1": "{n} Münze", "ul-coinN": "{n} Münzen", "ul-off1": "{n} Angebot", "ul-offN": "{n} Angebote", "ul-mi-kick": "Was Sie getan haben", "ul-mi-h": "Ihre Seite des Tisches, aufgeschrieben", "ul-mi-p1": "Als der Teilende boten Sie {list}. Das ist im Schnitt {a} von zehn Münzen, also {p} von hundert.", "ul-m-you": "Was Sie boten", "ul-m-selfish": "Was ein rein eigennütziger Spieler bietet", "ul-of100": "{x} von 100", "ul-mi-none": "Als der Antwortende nahmen Sie jedes Angebot an, auch das kleinste auf dem Tisch. Genau das sagt das eigennützige Modell voraus, und an einem echten Tisch ist es seltener, als das Modell erwartet.", "ul-mi-ref1": "Als der Antwortende lehnten Sie {c} ab. Das Größte, das Sie ausschlugen, waren {mx}{minpart}", "ul-mi-min": "; das Kleinste, das Sie annahmen, war {mn}.", "ul-mi-dot": ".", "ul-mi-ref2": "{mx0} auszuschlagen kostete Sie {mxc} aus dem eigenen Beutel. Bezahlt wurden Sie dafür nicht, und niemand sah es. Sie taten es wegen der anderen Zahl.", "ul-mi-sub": "Was das eigennützige Modell sagt", "ul-mi-p3": "Rechnen Sie es von hinten. Wer antwortet, vergleicht etwas mit nichts, also nimmt er alles über null. Wer teilt, weiß das, also bietet er den kleinstmöglichen Betrag und behält neun. Das ist die einzige Teilung, die die Rückwärtsinduktion übersteht, und sie ist, was die Theorie eines Spielers vorhersagt, der nichts außer Münzen schätzt.", "ul-mi-p4": "Fast niemand spielt so, sehr wahrscheinlich auch Sie nicht.", "ul-b-real": "Was an echten Tischen wirklich geschieht", "ul-s-mi": "Ihr durchschnittliches Angebot war {p} von hundert, gegen die eigennützige Vorhersage von zehn.", "ul-e-kick": "Das Ende", "ul-e-h": "Fairness ist keine Weichheit", "ul-e-p1": "Dieses Spiel läuft seit über vierzig Jahren in Laboren, in vielen Ländern und um Einsätze von Kleingeld bis zu mehreren Monatslöhnen. Eine Metaanalyse von 37 Arbeiten mit 75 einzelnen Ergebnissen fand, dass die teilende Person im Durchschnitt 40 von 100 bietet und dass etwa 16 von 100 Angeboten abgelehnt werden. Der gebotene Anteil sinkt etwas, wenn der Topf größer ist, und die Chance einer Ablehnung sinkt, je höher das Angebot ist.", "ul-e-p2": "Beide Hälften davon zählen. Die Angebote sind nirgendwo in der Nähe des kleinstmöglichen Betrags, und die Ablehnungen sind echt: Menschen bezahlen aus eigenem Geld für das Recht, zu einer Teilung nein zu sagen, die sie für eine Beleidigung halten.", "ul-e-p3": "Der Grund für die hohen Angebote ist nicht unbedingt Güte. Wer eine Ablehnung erwartet und Münzen will, bietet mehr; großzügiges und berechnendes Verhalten sehen auf der teilenden Seite des Tisches von außen gleich aus. Was sich so nicht erklären lässt, sind die Ablehnungen, denn da bleibt nichts zu berechnen: Es ist der letzte Zug des Spiels, und ablehnen ist in Münzen strikt schlechter.", "ul-e-sub1": "Warum das kein kleiner Punkt ist", "ul-e-l1": "Jeder Handel außerhalb des Labors hat eine Schwelle wie die, die Sie gerade gezeigt haben. Lohnverhandlungen, eine Scheidung, ein Lieferant, der den Vertrag neu verhandelt: Was eine Seite akzeptiert, ist nicht einfach das Beste, was sie bekommen kann.", "ul-e-l2": "Ein Modell, das annimmt, Menschen nähmen jeden positiven Betrag, sagt die falsche Teilung voraus und ist überrascht von Abbrüchen, die für jeden im Raum völlig vorhersehbar waren.", "ul-e-l3": "Die Schwelle ist auch keine feste menschliche Konstante. Sie bewegt sich mit der Größe des Topfes, mit dem, was die Leute über seine Herkunft wissen, und damit, woher die Spieler kommen.", "ul-e-sub2": "Was das nicht zeigt", "ul-e-m1": "Die Fremden hier sind je eine verborgene Zahl, vom Autor gewählt, um die Spanne abzudecken. Sie sind keine Messungen von irgendwem und wurden aus keiner veröffentlichten Verteilung gezogen.", "ul-e-m2": "Ihre eigene Schwelle wurde aus sechs Antworten abgelesen. Sechs sind viel zu wenige, um einen Menschen zu messen, und die Angebote, die Sie sahen, wurden gewählt, um die Kante zu finden, nicht zufällig gezogen.", "ul-e-m3": "Die Münzen sind kein Geld. Um nichts zu spielen ist nicht dasselbe wie um einen Wochenlohn, und die veröffentlichte Literatur findet, dass Einsätze das Verhalten ändern, wenn auch weniger, als die meisten erwarten.", "ul-e-m4": "Eine Runde mit einem Fremden, den Sie nie wiedersehen, ist der reine Fall. Das meiste echte Verhandeln ist wiederholt und öffentlich; dort hat das Ablehnen einen weiteren Zweck, den dieses Spiel mit Absicht entfernt.", "ul-e-m5": "Der Durchschnitt von 40 je 100 ist ein Durchschnitt über Länder und Designs. Er ist keine Vorhersage über den nächsten Menschen, mit dem Sie verhandeln.", "ul-e-src": "Quellen", "ul-src1": "Die experimentelle Bilanz.", "ul-src2": "Das erste Experiment.", "ul-src3": "Gleichgewicht und Rückwärtsinduktion.", "ul-src-tail": "Gelesen: 2026 08 21.", "ul-fam": "Der Rest der Familie, darunter eines über eine Weide und eines über eine Münze: ", "ul-fam-a": "alle Spiele sind hier", "ul-b-again": "Setzen Sie sich wieder", "ul-s-end": "Das Ende. Im Durchschnitt bieten Menschen vierzig von hundert, und etwa sechzehn von hundert Angeboten werden abgelehnt.", "ul-k-return": "Enter", "ul-k-start": "Start", "ul-k-go": "weiter", "ul-k-again": "erneut", "ul-k-enter": "Enter", "ul-k-y": "Taste y", "ul-k-n": "Taste n", "pg-title": "Das Ultimatum"}};
+function T(k, en, v) {
+  var s = window.__t ? window.__t(k, en) : en;
+  if (v) for (var n in v) s = s.split("{" + n + "}").join(String(v[n]));
+  return s;
+}
+var NAME_KEY = { "the carter": "ul-n-0", "the wool seller": "ul-n-1",
+                 "the salt boy": "ul-n-2", "the weigher": "ul-n-3", "a stranger": "ul-n-4" };
+function pName(en) { return T(NAME_KEY[en] || "", en); }
+function coinsW(n) { return n === 1 ? T("ul-coin1", "{n} coin", {n: n}) : T("ul-coinN", "{n} coins", {n: n}); }
+function offersW(n) { return n === 1 ? T("ul-off1", "{n} offer", {n: n}) : T("ul-offN", "{n} offers", {n: n}); }
+
 var ui = KW.ui, ctx = null;
 var store = KW.store("kw.ultimatum.v1");
 
@@ -1548,9 +1564,9 @@ function view(name) {
 function purse() {
   var d = el("div", "tally");
   var a = el("span");
-  a.appendChild(document.createTextNode("Your purse "));
+  a.appendChild(document.createTextNode(T("ul-purse-a", "Your purse ")));
   a.appendChild(el("b", null, String(G.coins)));
-  a.appendChild(document.createTextNode(" coins"));
+  a.appendChild(document.createTextNode(T("ul-purse-b", " coins")));
   d.appendChild(a);
   ui.panel.appendChild(d);
 }
@@ -1559,22 +1575,22 @@ VIEWS.title = function () {
   scene.shown = false; scene.absent = true; scene.refused = false;
   KW.season(1, true); KW.daylight(0.18, true);
   KW.$("menuBtn").hidden = true;
-  ui.top("The Ultimatum", "market day, one table, ten coins");
-  ui.head("The Ultimatum");
-  ui.para("Ten coins are put on the table between you and someone you have never met and will not meet again. You say how they are to be divided. They say yes or no. If they say yes it is divided the way you said. If they say no, the coins go back in the box and neither of you takes anything home.");
-  ui.para("Five strangers, then the table turns around and you are the one answering. Nothing is explained until you have done both.");
+  ui.top(T("ul-name", "The Ultimatum"), T("ul-when-market", "market day, one table, ten coins"));
+  ui.head(T("ul-name", "The Ultimatum"));
+  ui.para(T("ul-t-p1", "Ten coins are put on the table between you and someone you have never met and will not meet again. You say how they are to be divided. They say yes or no. If they say yes it is divided the way you said. If they say no, the coins go back in the box and neither of you takes anything home."));
+  ui.para(T("ul-t-p2", "Five strangers, then the table turns around and you are the one answering. Nothing is explained until you have done both."));
   var r = ui.actions();
   var s = store.load();
   if (s && (s.round > 0 || s.part > 1)) {
-    ui.btn(r, "Go on from where you stopped", "return", function () { resume(s); }, "big");
+    ui.btn(r, T("ul-b-resume", "Go on from where you stopped"), T("ul-k-return", "return"), function () { resume(s); }, "big");
   }
-  ui.btn(r, "Sit down at the table", "start", function () {
+  ui.btn(r, T("ul-b-sit", "Sit down at the table"), T("ul-k-start", "start"), function () {
     ui.acted = true;
     G.part = 1; G.round = 0; G.coins = 0; G.given = []; G.taken = [];
     KW.$("menuBtn").hidden = false;
     beginOffer();
   }, "big");
-  ui.say("The Ultimatum. Ten coins, one offer, and a stranger who can refuse it.");
+  ui.say(T("ul-s-title", "The Ultimatum. Ten coins, one offer, and a stranger who can refuse it."));
 };
 
 function resume(s) {
@@ -1601,27 +1617,27 @@ function beginOffer() {
 
 VIEWS.offer = function () {
   var st = STRANGERS[G.round];
-  ui.top("You split", "stranger " + (G.round + 1) + " of " + STRANGERS.length);
-  ui.kick("Your offer");
-  ui.head("Ten coins, and " + st.name);
-  ui.para("They are " + st.note + ". They have not said a word to you and they will not be at this market again. They can see the ten coins as clearly as you can.");
+  ui.top(T("ul-top-split", "You split"), T("ul-when-str", "stranger {a} of {b}", {a: G.round + 1, b: STRANGERS.length}));
+  ui.kick(T("ul-o-kick", "Your offer"));
+  ui.head(T("ul-o-h", "Ten coins, and {n}", {n: pName(st.name)}));
+  ui.para(T("ul-o-p1", "{note}. They have not said a word to you and they will not be at this market again. They can see the ten coins as clearly as you can.", {note: T("ul-note-" + G.round, st.note.charAt(0).toUpperCase() + st.note.slice(1))}));
 
   var wrap = el("div", "split");
   var mine = el("div"), theirs = el("div", "them");
   mine.appendChild(el("b", null, String(POT - G.offer)));
-  mine.appendChild(document.createTextNode("you keep"));
+  mine.appendChild(document.createTextNode(T("ul-o-keep", "you keep")));
   theirs.appendChild(el("b", null, String(G.offer)));
-  theirs.appendChild(document.createTextNode("they get"));
+  theirs.appendChild(document.createTextNode(T("ul-o-get", "they get")));
   wrap.appendChild(mine); wrap.appendChild(theirs);
   ui.panel.appendChild(wrap);
 
   var box = el("div", "slider");
-  var lab = el("label", "vh", "How many of the ten coins you offer");
+  var lab = el("label", "vh", T("ul-o-aria", "How many of the ten coins you offer"));
   lab.setAttribute("for", "off");
   var inp = el("input");
   inp.type = "range"; inp.id = "off"; inp.min = 0; inp.max = POT; inp.step = 1;
   inp.value = String(G.offer);
-  inp.setAttribute("aria-label", "How many of the ten coins you offer");
+  inp.setAttribute("aria-label", T("ul-o-aria", "How many of the ten coins you offer"));
   inp.addEventListener("input", function () {
     setOffer(parseInt(inp.value, 10) || 0);
   });
@@ -1635,13 +1651,13 @@ VIEWS.offer = function () {
   scene.mine = POT - G.offer; scene.theirs = G.offer;
 
   var r = ui.actions();
-  ui.btn(r, "Put the offer on the table", "press enter", function () { propose(G.offer); }, "big yes");
+  ui.btn(r, T("ul-b-put", "Put the offer on the table"), T("ul-k-enter", "press enter"), function () { propose(G.offer); }, "big yes");
   var r2 = ui.actions();
-  ui.btn(r2, "One less", null, function () { setOffer(G.offer - 1); }, "quiet");
-  ui.btn(r2, "One more", null, function () { setOffer(G.offer + 1); }, "quiet");
+  ui.btn(r2, T("ul-b-less", "One less"), null, function () { setOffer(G.offer - 1); }, "quiet");
+  ui.btn(r2, T("ul-b-more", "One more"), null, function () { setOffer(G.offer + 1); }, "quiet");
   purse();
   setTimeout(function () { if (ui.acted && G.view === "offer") inp.focus({ preventScroll: true }); }, 0);
-  ui.say("Stranger " + (G.round + 1) + ", " + st.name + ". Choose how many of the ten coins to offer, then put the offer on the table.");
+  ui.say(T("ul-s-offer", "Stranger {n}, {w}. Choose how many of the ten coins to offer, then put the offer on the table.", {n: G.round + 1, w: pName(st.name)}));
 };
 
 function setOffer(v) {
@@ -1671,23 +1687,23 @@ function propose(n) {
 
 VIEWS.offerResult = function () {
   var r = G.last;
-  ui.top("You split", "stranger " + G.round + " of " + STRANGERS.length);
-  ui.kick(r.taken ? "Taken" : "Refused");
-  ui.head(r.taken ? "They took it" : "They would rather have nothing");
+  ui.top(T("ul-top-split", "You split"), T("ul-when-str", "stranger {a} of {b}", {a: G.round, b: STRANGERS.length}));
+  ui.kick(r.taken ? T("ul-or-kick-y", "Taken") : T("ul-or-kick-n", "Refused"));
+  ui.head(r.taken ? T("ul-or-h-y", "They took it") : T("ul-or-h-n", "They would rather have nothing"));
   if (r.taken) {
-    ui.para("You offered " + r.offered + ". " + cap(r.who) + " looked at the table, took the " + r.offered +
-            " and went, and you put " + r.mine + " in your purse.", "say");
+    ui.para(T("ul-or-p-y", "You offered {o}. {w} looked at the table, took the {o} and went, and you put {m} in your purse.",
+            {o: r.offered, w: cap(pName(r.who)), m: r.mine}), "say");
   } else {
-    ui.para("You offered " + r.offered + ". " + cap(r.who) + " looked at the table, said no, and the coins went back in the box. Neither of you took anything home, and they knew that when they said it.", "say");
+    ui.para(T("ul-or-p-n", "You offered {o}. {w} looked at the table, said no, and the coins went back in the box. Neither of you took anything home, and they knew that when they said it.", {o: r.offered, w: cap(pName(r.who))}), "say");
   }
   purse();
   var row = ui.actions();
   if (G.round >= STRANGERS.length) {
-    ui.btn(row, "The table turns around", "go on", function () { view("partTwo"); }, "big");
+    ui.btn(row, T("ul-b-turns", "The table turns around"), T("ul-k-go", "go on"), function () { view("partTwo"); }, "big");
   } else {
-    ui.btn(row, "The next stranger", "go on", function () { beginOffer(); }, "big");
+    ui.btn(row, T("ul-b-nextstr", "The next stranger"), T("ul-k-go", "go on"), function () { beginOffer(); }, "big");
   }
-  ui.say(r.taken ? "Taken. You keep " + r.mine + "." : "Refused. Nobody takes anything.");
+  ui.say(r.taken ? T("ul-s-or-y", "Taken. You keep {m}.", {m: r.mine}) : T("ul-s-or-n", "Refused. Nobody takes anything."));
 };
 
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -1696,17 +1712,17 @@ function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 VIEWS.partTwo = function () {
   scene.shown = false; scene.absent = true; scene.refused = false;
-  ui.top("The table turns", "now you are the one answering");
-  ui.kick("Part two");
-  ui.head("Now somebody else holds the coins");
-  ui.para("Six more strangers, and this time the ten coins are on their side of the table. They say how it is split and you say yes or no. No is worth nothing to either of you, exactly as before.");
-  ui.para("Nothing is being measured about them. What the game is watching is you.");
+  ui.top(T("ul-top-turn", "The table turns"), T("ul-when-turn", "now you are the one answering"));
+  ui.kick(T("ul-p2-kick", "Part two"));
+  ui.head(T("ul-p2-h", "Now somebody else holds the coins"));
+  ui.para(T("ul-p2-p1", "Six more strangers, and this time the ten coins are on their side of the table. They say how it is split and you say yes or no. No is worth nothing to either of you, exactly as before."));
+  ui.para(T("ul-p2-p2", "Nothing is being measured about them. What the game is watching is you."));
   var r = ui.actions();
-  ui.btn(r, "The first offer", "go on", function () {
+  ui.btn(r, T("ul-b-first", "The first offer"), T("ul-k-go", "go on"), function () {
     G.part = 2; G.round = 0;
     beginAnswer();
   }, "big");
-  ui.say("Part two. Now you are the one answering.");
+  ui.say(T("ul-s-p2", "Part two. Now you are the one answering."));
 };
 
 function beginAnswer() {
@@ -1721,26 +1737,26 @@ function beginAnswer() {
 
 VIEWS.answer = function () {
   var inc = INCOMING[G.round];
-  ui.top("You answer", "offer " + (G.round + 1) + " of " + INCOMING.length);
-  ui.kick("Their offer");
-  ui.head(cap(inc.from) + " offers you " + inc.give);
-  ui.para("Ten coins. They keep " + (POT - inc.give) + " and push " + inc.give +
-          (inc.give === 1 ? " coin" : " coins") + " across the table to you. Say yes and it is yours. Say no and the box takes all ten back.");
+  ui.top(T("ul-top-ans", "You answer"), T("ul-when-off", "offer {a} of {b}", {a: G.round + 1, b: INCOMING.length}));
+  ui.kick(T("ul-a-kick", "Their offer"));
+  ui.head(T("ul-a-h", "{w} offers you {g}", {w: cap(pName(inc.from)), g: inc.give}));
+  ui.para(T("ul-a-p", "Ten coins. They keep {k} and push {c} across the table to you. Say yes and it is yours. Say no and the box takes all ten back.",
+          {k: POT - inc.give, c: coinsW(inc.give)}));
 
   var wrap = el("div", "split");
   var theirs = el("div"), mine = el("div", "them");
   theirs.appendChild(el("b", null, String(POT - inc.give)));
-  theirs.appendChild(document.createTextNode("they keep"));
+  theirs.appendChild(document.createTextNode(T("ul-a-keep", "they keep")));
   mine.appendChild(el("b", null, String(inc.give)));
-  mine.appendChild(document.createTextNode("you get"));
+  mine.appendChild(document.createTextNode(T("ul-a-get", "you get")));
   wrap.appendChild(theirs); wrap.appendChild(mine);
   ui.panel.appendChild(wrap);
 
   var r = ui.actions();
-  ui.btn(r, "Take it", "press y", function () { answer(true); }, "big yes");
-  ui.btn(r, "Refuse it", "press n", function () { answer(false); }, "big no");
+  ui.btn(r, T("ul-b-take", "Take it"), T("ul-k-y", "press y"), function () { answer(true); }, "big yes");
+  ui.btn(r, T("ul-b-refuse", "Refuse it"), T("ul-k-n", "press n"), function () { answer(false); }, "big no");
   purse();
-  ui.say(cap(inc.from) + " offers you " + inc.give + " of ten. Take it or refuse it.");
+  ui.say(T("ul-s-a", "{w} offers you {g} of ten. Take it or refuse it.", {w: cap(pName(inc.from)), g: inc.give}));
 };
 
 function answer(yes) {
@@ -1756,20 +1772,22 @@ function answer(yes) {
 
 VIEWS.answerResult = function () {
   var r = G.last;
-  ui.top("You answer", "offer " + G.round + " of " + INCOMING.length);
-  ui.kick(r.took ? "Taken" : "Refused");
-  ui.head(r.took ? "You took it" : "You sent it back");
+  ui.top(T("ul-top-ans", "You answer"), T("ul-when-off", "offer {a} of {b}", {a: G.round, b: INCOMING.length}));
+  ui.kick(r.took ? T("ul-or-kick-y", "Taken") : T("ul-or-kick-n", "Refused"));
+  ui.head(r.took ? T("ul-ar-h-y", "You took it") : T("ul-ar-h-n", "You sent it back"));
   ui.para(r.took
-    ? "You took the " + r.give + (r.give === 1 ? " coin" : " coins") + " and " + r.from + " kept " + (POT - r.give) + ". Nobody said anything about it."
-    : "You said no. The ten coins went back in the box. " + cap(r.from) + " walked away with nothing, and so did you, and it cost you " + r.give + (r.give === 1 ? " coin" : " coins") + " to do it.", "say");
+    ? T("ul-ar-p-y", "You took the {c} and {w} kept {k}. Nobody said anything about it.",
+        {c: coinsW(r.give), w: pName(r.from), k: POT - r.give})
+    : T("ul-ar-p-n", "You said no. The ten coins went back in the box. {w} walked away with nothing, and so did you, and it cost you {c} to do it.",
+        {w: cap(pName(r.from)), c: coinsW(r.give)}), "say");
   purse();
   var row = ui.actions();
   if (G.round >= INCOMING.length) {
-    ui.btn(row, "What you did", "go on", function () { view("mirror"); }, "big");
+    ui.btn(row, T("ul-b-did", "What you did"), T("ul-k-go", "go on"), function () { view("mirror"); }, "big");
   } else {
-    ui.btn(row, "The next offer", "go on", function () { beginAnswer(); }, "big");
+    ui.btn(row, T("ul-b-nextoff", "The next offer"), T("ul-k-go", "go on"), function () { beginAnswer(); }, "big");
   }
-  ui.say(r.took ? "Taken." : "Refused. Nobody takes anything.");
+  ui.say(r.took ? T("ul-s-ar-y", "Taken.") : T("ul-s-ar-n", "Refused. Nobody takes anything."));
 };
 
 /* ---- the mirror: your own threshold, beside the model's ---- */
@@ -1790,34 +1808,33 @@ VIEWS.mirror = function () {
   var offers = G.given.map(function (x) { return x.offered; });
   var avg = offers.length ? offers.reduce(function (a, b) { return a + b; }, 0) / offers.length : 0;
 
-  ui.top("The Ultimatum", "your own numbers");
-  ui.kick("What you did");
-  ui.head("Your side of the table, written down");
+  ui.top(T("ul-name", "The Ultimatum"), T("ul-when-nums", "your own numbers"));
+  ui.kick(T("ul-mi-kick", "What you did"));
+  ui.head(T("ul-mi-h", "Your side of the table, written down"));
 
-  ui.para("As the one who split, you offered " + offers.join(", ") + ". That is an average of " +
-          (Math.round(avg * 10) / 10) + " coins out of ten, which is " + Math.round(avg * 10) + " of every hundred.");
+  ui.para(T("ul-mi-p1", "As the one who split, you offered {list}. That is an average of {a} coins out of ten, which is {p} of every hundred.",
+          {list: offers.join(", "), a: Math.round(avg * 10) / 10, p: Math.round(avg * 10)}));
 
-  ui.meter("What you offered", avg / POT, Math.round(avg * 10) + " of 100", avg / POT >= 0.3);
-  ui.meter("What a purely self interested player offers", 0.1, "10 of 100", false);
+  ui.meter(T("ul-m-you", "What you offered"), avg / POT, T("ul-of100", "{x} of 100", {x: Math.round(avg * 10)}), avg / POT >= 0.3);
+  ui.meter(T("ul-m-selfish", "What a purely self interested player offers"), 0.1, T("ul-of100", "{x} of 100", {x: 10}), false);
 
   if (th.refusedCount === 0) {
-    ui.para("As the one answering, you took every offer, including the smallest one on the table. That is exactly what the self interested model predicts, and it is rarer at a real table than the model expects.");
+    ui.para(T("ul-mi-none", "As the one answering, you took every offer, including the smallest one on the table. That is exactly what the self interested model predicts, and it is rarer at a real table than the model expects."));
   } else {
-    ui.para("As the one answering, you refused " + th.refusedCount +
-            (th.refusedCount === 1 ? " offer" : " offers") + ". The largest thing you turned down was " +
-            th.maxRefused + (th.maxRefused === 1 ? " coin" : " coins") +
-            (th.minAccepted >= 0 ? ", and the smallest thing you accepted was " + th.minAccepted + "." : "."));
-    ui.para("Turning down " + th.maxRefused + " cost you " + th.maxRefused +
-            (th.maxRefused === 1 ? " coin" : " coins") + " out of your own purse. You were not paid for it and nobody saw you do it. You did it because of what the other number was.");
+    ui.para(T("ul-mi-ref1", "As the one answering, you refused {c}. The largest thing you turned down was {mx}{minpart}",
+            {c: offersW(th.refusedCount), mx: coinsW(th.maxRefused),
+             minpart: th.minAccepted >= 0 ? T("ul-mi-min", ", and the smallest thing you accepted was {mn}.", {mn: th.minAccepted}) : T("ul-mi-dot", ".")}));
+    ui.para(T("ul-mi-ref2", "Turning down {mx0} cost you {mxc} out of your own purse. You were not paid for it and nobody saw you do it. You did it because of what the other number was.",
+            {mx0: th.maxRefused, mxc: coinsW(th.maxRefused)}));
   }
 
-  ui.sub("What the self interested model says");
-  ui.para("Work it backwards. The person answering compares something with nothing, so they take anything above zero. The person splitting knows that, so they offer the smallest amount there is and keep nine. That is the only division that survives backward induction, and it is what the theory of a player who values nothing but coins predicts.");
-  ui.para("Almost nobody plays that way, including, most likely, you.");
+  ui.sub(T("ul-mi-sub", "What the self interested model says"));
+  ui.para(T("ul-mi-p3", "Work it backwards. The person answering compares something with nothing, so they take anything above zero. The person splitting knows that, so they offer the smallest amount there is and keep nine. That is the only division that survives backward induction, and it is what the theory of a player who values nothing but coins predicts."));
+  ui.para(T("ul-mi-p4", "Almost nobody plays that way, including, most likely, you."));
 
   var r = ui.actions();
-  ui.btn(r, "What actually happens at real tables", "go on", function () { view("ending"); }, "big");
-  ui.say("Your average offer was " + Math.round(avg * 10) + " of a hundred, against the self interested prediction of ten.");
+  ui.btn(r, T("ul-b-real", "What actually happens at real tables"), T("ul-k-go", "go on"), function () { view("ending"); }, "big");
+  ui.say(T("ul-s-mi", "Your average offer was {p} of a hundred, against the self interested prediction of ten.", {p: Math.round(avg * 10)}));
 };
 
 /* ============================================================
@@ -1826,61 +1843,61 @@ VIEWS.mirror = function () {
 
 VIEWS.ending = function () {
   KW.season(2, true); KW.daylight(0.66);
-  ui.top("The Ultimatum", "the argument, plainly");
-  ui.kick("The end of it");
-  ui.head("Fairness is not softness");
+  ui.top(T("ul-name", "The Ultimatum"), T("ul-when-arg", "the argument, plainly"));
+  ui.kick(T("ul-e-kick", "The end of it"));
+  ui.head(T("ul-e-h", "Fairness is not softness"));
 
-  ui.para("This game has been run in laboratories for more than forty years, in many countries and for stakes from small change to several months of wages. A meta analysis of 37 papers, holding 75 separate results, found that on average the person splitting offers 40 of every 100, and that about 16 of every 100 offers are refused. The share offered falls somewhat when the pot is larger, and the chance of refusal falls as the offer rises.");
-  ui.para("Both halves of that matter. The offers are nowhere near the smallest possible amount, and the refusals are real: people pay, out of their own money, for the right to say no to a division they consider an insult.");
-  ui.para("The reason the offers are high is not necessarily kindness. Someone who expects to be refused and wants coins will offer more, so generous behaviour and calculating behaviour look identical from the outside on the splitting side of the table. The refusals are what cannot be explained that way, because there is nothing left to calculate: it is the last move of the game and refusing is strictly worse in coins.");
+  ui.para(T("ul-e-p1", "This game has been run in laboratories for more than forty years, in many countries and for stakes from small change to several months of wages. A meta analysis of 37 papers, holding 75 separate results, found that on average the person splitting offers 40 of every 100, and that about 16 of every 100 offers are refused. The share offered falls somewhat when the pot is larger, and the chance of refusal falls as the offer rises."));
+  ui.para(T("ul-e-p2", "Both halves of that matter. The offers are nowhere near the smallest possible amount, and the refusals are real: people pay, out of their own money, for the right to say no to a division they consider an insult."));
+  ui.para(T("ul-e-p3", "The reason the offers are high is not necessarily kindness. Someone who expects to be refused and wants coins will offer more, so generous behaviour and calculating behaviour look identical from the outside on the splitting side of the table. The refusals are what cannot be explained that way, because there is nothing left to calculate: it is the last move of the game and refusing is strictly worse in coins."));
 
-  ui.sub("Why this is not a small point");
+  ui.sub(T("ul-e-sub1", "Why this is not a small point"));
   ui.list([
-    "Every bargain outside a laboratory has a threshold like the one you just showed. Wage talks, a divorce, a supplier renegotiating a contract: what one side will accept is not simply the best they can get.",
-    "A model that assumes people take any positive amount will predict the wrong split, and will be surprised by walkouts that were entirely predictable to anybody in the room.",
-    "The threshold is not a fixed human constant either. It moves with the size of the pot, with what people know about how the pot arose, and with where the players are from."
+    T("ul-e-l1", "Every bargain outside a laboratory has a threshold like the one you just showed. Wage talks, a divorce, a supplier renegotiating a contract: what one side will accept is not simply the best they can get."),
+    T("ul-e-l2", "A model that assumes people take any positive amount will predict the wrong split, and will be surprised by walkouts that were entirely predictable to anybody in the room."),
+    T("ul-e-l3", "The threshold is not a fixed human constant either. It moves with the size of the pot, with what people know about how the pot arose, and with where the players are from.")
   ]);
 
-  ui.sub("What this does not show");
+  ui.sub(T("ul-e-sub2", "What this does not show"));
   ui.list([
-    "The strangers here are one hidden number each, chosen by the author to spread across the range. They are not measurements of anybody and they were not drawn from any published distribution.",
-    "Your own threshold was read off six answers. Six is far too few to measure a person, and the offers you saw were picked to find the edge rather than sampled at random.",
-    "The coins are not money. Playing for nothing is not the same as playing for a week of wages, and the published work finds that stakes change behaviour, though less than most people expect.",
-    "One round with a stranger you never meet again is the pure case. Most real bargaining is repeated and public, where refusing has a further purpose this game removes on purpose.",
-    "The average offer of 40 of every 100 is an average across countries and designs. It is not a prediction about the next person you bargain with."
+    T("ul-e-m1", "The strangers here are one hidden number each, chosen by the author to spread across the range. They are not measurements of anybody and they were not drawn from any published distribution."),
+    T("ul-e-m2", "Your own threshold was read off six answers. Six is far too few to measure a person, and the offers you saw were picked to find the edge rather than sampled at random."),
+    T("ul-e-m3", "The coins are not money. Playing for nothing is not the same as playing for a week of wages, and the published work finds that stakes change behaviour, though less than most people expect."),
+    T("ul-e-m4", "One round with a stranger you never meet again is the pure case. Most real bargaining is repeated and public, where refusing has a further purpose this game removes on purpose."),
+    T("ul-e-m5", "The average offer of 40 of every 100 is an average across countries and designs. It is not a prediction about the next person you bargain with.")
   ]);
 
-  ui.sub("Sources");
+  ui.sub(T("ul-e-src", "Sources"));
   ui.sources([
-    { what: "The experimental record.",
+    { what: T("ul-src1", "The experimental record."),
       cite: "Hessel Oosterbeek, Randolph Sloof and Gijs van de Kuilen, Cultural Differences in Ultimatum Game Experiments: Evidence from a Meta Analysis, Experimental Economics 7(2), 2004, pages 171 to 188. Working paper text.",
       url: "https://econwpa.ub.uni-muenchen.de/econ-wp/exp/papers/0401/0401003.pdf",
-      tail: "Read 2026 08 21." },
-    { what: "The first experiment.",
+      tail: T("ul-src-tail", "Read 2026 08 21.") },
+    { what: T("ul-src2", "The first experiment."),
       cite: "Werner Güth, Rolf Schmittberger and Bernd Schwarze, An experimental analysis of ultimatum bargaining, Journal of Economic Behavior and Organization 3(4), 1982, pages 367 to 388.",
       url: "https://econpapers.repec.org/RePEc:eee:jeborg:v:3:y:1982:i:4:p:367-388",
-      tail: "Read 2026 08 21." },
-    { what: "Equilibrium and backward induction.",
+      tail: T("ul-src-tail", "Read 2026 08 21.") },
+    { what: T("ul-src3", "Equilibrium and backward induction."),
       cite: "John F. Nash, Equilibrium Points in n Person Games, Proceedings of the National Academy of Sciences 36(1), 1950, pages 48 and 49.",
       url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC1063129/",
-      tail: "Read 2026 08 21." }
+      tail: T("ul-src-tail", "Read 2026 08 21.") }
   ]);
 
   var p = el("p");
-  p.appendChild(document.createTextNode("The rest of the family, including one about a pasture and one about a coin: "));
-  var a = el("a", null, "all of the games are here");
+  p.appendChild(document.createTextNode(T("ul-fam", "The rest of the family, including one about a pasture and one about a coin: ")));
+  var a = el("a", null, T("ul-fam-a", "all of the games are here"));
   a.href = "../../game.html";
   p.appendChild(a);
   p.appendChild(document.createTextNode("."));
   ui.panel.appendChild(p);
 
   var r = ui.actions();
-  ui.btn(r, "Sit down again", "again", function () {
+  ui.btn(r, T("ul-b-again", "Sit down again"), T("ul-k-again", "again"), function () {
     store.wipe();
     G.part = 1; G.round = 0; G.coins = 0; G.given = []; G.taken = []; G.offer = 5;
     beginOffer();
   }, "big");
-  ui.say("The ending. On average people offer forty of every hundred, and about sixteen of every hundred offers are refused.");
+  ui.say(T("ul-s-end", "The ending. On average people offer forty of every hundred, and about sixteen of every hundred offers are refused."));
 };
 
 /* ============================================================
@@ -1920,6 +1937,10 @@ window.__G = {
   }
 };
 
+document.addEventListener("langchange", function () {
+  if (ctx) view(G.view);
+});
+
 KW.start({
   draw: drawWorld,
   ready: function () { ctx = KW.ctx; view("title"); }
@@ -1929,40 +1950,97 @@ KW.start({
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache"}};
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}"}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %"}};
 
 (function(){
   "use strict";
   var KEY = "lang", lang = "en";
-  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
-  var D = window.CHROME_I18N || {};
-  var base = {}, baseA = {};
-  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
-  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  function known(l){
+    return l === "en"
+        || (window.CHROME_I18N && window.CHROME_I18N[l])
+        || (window.PAGE_I18N && window.PAGE_I18N[l]);
+  }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
   function apply(l){
-    if(!D[l]) l = "en";
-    var d = D[l] || {};
-    document.querySelectorAll(SEL).forEach(function(el){
-      var k = el.getAttribute("data-i");
-      if(!(k in base)) base[k] = el.innerHTML;
-      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
-    });
-    document.querySelectorAll(SELA).forEach(function(el){
-      var k = el.getAttribute("data-ia");
-      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
-      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
-    });
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
     });
     try { localStorage.setItem(KEY, l); } catch (e) {}
     window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
 })();
 

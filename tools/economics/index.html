@@ -823,7 +823,7 @@ a.ix-card:hover .ix-foot { gap: 0.7rem; }
 footer.site-foot{background:var(--paper)}
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -831,8 +831,9 @@ footer.site-foot{background:var(--paper)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -851,7 +852,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -861,7 +862,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -871,12 +872,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -907,14 +908,14 @@ footer a:hover{color:var(--fg)}
 </head>
 <body>
 
-<a class="k-skip" href="#essays">Skip to the essays</a>
+<a class="k-skip" href="#essays" data-i="ec-skip">Skip to the essays</a>
 
 <div class="k-shell">
 
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" aria-current="page" data-i="nav-t">Tools</a><a href="../../game.html" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../tools/economics/" aria-current="page" data-i="nav-e">Economics</a><a href="../../game.html" data-i="nav-g">Game Theory</a><a href="../../simea/" data-i="nav-s">Simulations</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -930,51 +931,51 @@ footer a:hover{color:var(--fg)}
 
       <div class="k-lede k-crown">
         <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Explorable Economics · four essays</i></span>
-        <h1>Economics is a set of machines. Here are four of them, running</h1>
-        <p class="k-standfirst">Four essays in which you do not read about a model, you run it. Drag a curve,
+        <h1 data-i="ec-001">Economics is a set of machines. Here are four of them, running</h1>
+        <p class="k-standfirst" data-i="ec-011">Four essays in which you do not read about a model, you run it. Drag a curve,
         set a rate, hold a tournament, and the argument in the prose changes to match what you just did. Every
         empirical claim carries its source. Everything runs in your browser and nothing is sent anywhere.</p>
       </div>
 
       <section class="k-sect ix-argument" aria-labelledby="g-why">
-        <h2 id="g-why"><span class="k-num">01</span>Why this exists</h2>
+        <h2 id="g-why" data-i="ec-002"><span class="k-num">01</span>Why this exists</h2>
 
-        <p class="ex-lead">Economics is taught as a set of conclusions. Taxes fall on the inelastic side.
+        <p class="ex-lead" data-i="ec-012">Economics is taught as a set of conclusions. Taxes fall on the inelastic side.
         Asymmetric information destroys markets. Cooperation can be stable. The discount rate is a technical
         parameter. Each of those is a sentence you can be told, agree with, repeat, and never once check.</p>
 
-        <p>But none of them is really a conclusion. Each one is the output of a machine with inputs you can
+        <p data-i="ec-013">But none of them is really a conclusion. Each one is the output of a machine with inputs you can
         change, and the interesting part of every one of them is not what the machine says on its default
         settings, it is which settings make it say something else. A tax falls on the inelastic side, until you
         ask how elastic and find that the whole answer sits in a ratio. Cooperation is stable, until you shorten
         the future and watch every cooperative rule in the pool die out.</p>
 
-        <p>You cannot get at any of that from a sentence. You get at it by turning the dial yourself and seeing
+        <p data-i="ec-014">You cannot get at any of that from a sentence. You get at it by turning the dial yourself and seeing
         which way the number moves, which is why every essay here has a working model in the middle of it rather
         than a picture of one. The prose carries the argument. The model is what stops the argument being
         something you have to take on trust.</p>
 
-        <p>The point is not that models are right. Most of them are wrong in ways each essay tries to name
+        <p data-i="ec-015">The point is not that models are right. Most of them are wrong in ways each essay tries to name
         honestly in its closing section. The point is that a model you have played with is a model you cannot be
         lied to about. Once you have watched who bears a tax when the elasticities move, no one can tell you a
         story about that tax that you have no way of checking.</p>
       </section>
 
       <section class="k-sect" aria-labelledby="g-essays">
-        <h2 id="g-essays"><span class="k-num">02</span>The essays</h2>
+        <h2 id="g-essays" data-i="ec-003"><span class="k-num">02</span>The essays</h2>
 
         <div class="ix-cards">
 
           <a class="ix-card" href="tax/index.html">
             <div class="ix-head">
-              <h3>Who actually pays a tax</h3>
-              <span class="ix-num">One</span>
+              <h3 data-i="ec-006">Who actually pays a tax</h3>
+              <span class="ix-num" data-i="ec-n1">One</span>
             </div>
-            <p class="ix-sub">Tax incidence and elasticity</p>
-            <p class="ix-what">A parliament can decide who hands the money to the state. It cannot decide who
+            <p class="ix-sub" data-i="ec-016">Tax incidence and elasticity</p>
+            <p class="ix-what" data-i="ec-017">A parliament can decide who hands the money to the state. It cannot decide who
             ends up poorer. The statute names a payer; the market picks a different one, and the choice is made
             entirely by how easily each side can walk away.</p>
-            <p class="ix-do"><b>You do</b>Drag the supply and demand curves to change their slopes, set a tax
+            <p class="ix-do" data-i="ec-018"><b>You do</b>Drag the supply and demand curves to change their slopes, set a tax
             per unit, and switch which side the law tells to pay. Watch the burden split, and watch the
             deadweight loss grow faster than the tax that caused it.</p>
             <span class="ix-foot">Read and run it</span>
@@ -982,14 +983,14 @@ footer a:hover{color:var(--fg)}
 
           <a class="ix-card" href="lemons/index.html">
             <div class="ix-head">
-              <h3>The market for lemons</h3>
-              <span class="ix-num">Two</span>
+              <h3 data-i="ec-007">The market for lemons</h3>
+              <span class="ix-num" data-i="ec-n2">Two</span>
             </div>
-            <p class="ix-sub">Adverse selection, after Akerlof 1970</p>
-            <p class="ix-what">A used car market in which the seller knows what the car is and the buyer does
+            <p class="ix-sub" data-i="ec-019">Adverse selection, after Akerlof 1970</p>
+            <p class="ix-what" data-i="ec-020">A used car market in which the seller knows what the car is and the buyer does
             not. Nobody lies and nobody cheats, and the market still takes itself apart, because a price that
             cannot tell a good car from a bad one drives the good cars out.</p>
-            <p class="ix-do"><b>You do</b>Set how far quality varies and how much of it a buyer can see, then
+            <p class="ix-do" data-i="ec-021"><b>You do</b>Set how far quality varies and how much of it a buyer can see, then
             run the market round by round and watch the average quality and the price fall together. Switch on a
             warranty or a certificate and watch it come back, with a cost attached.</p>
             <span class="ix-foot">Read and run it</span>
@@ -997,14 +998,14 @@ footer a:hover{color:var(--fg)}
 
           <a class="ix-card" href="cooperation/index.html">
             <div class="ix-head">
-              <h3>The evolution of cooperation</h3>
-              <span class="ix-num">Three</span>
+              <h3 data-i="ec-008">The evolution of cooperation</h3>
+              <span class="ix-num" data-i="ec-n3">Three</span>
             </div>
-            <p class="ix-sub">The repeated prisoner's dilemma, after Axelrod</p>
-            <p class="ix-what">Cooperation is not naivety. It is what survives when the shadow of the future is
+            <p class="ix-sub" data-i="ec-022">The repeated prisoner's dilemma, after Axelrod</p>
+            <p class="ix-what" data-i="ec-023">Cooperation is not naivety. It is what survives when the shadow of the future is
             long enough to make betrayal expensive. Shorten the future and the same strategies, unchanged, sort
             themselves into the opposite order.</p>
-            <p class="ix-do"><b>You do</b>Choose the strategies, compose one of your own from four rules, set
+            <p class="ix-do" data-i="ec-024"><b>You do</b>Choose the strategies, compose one of your own from four rules, set
             the payoff matrix and the chance the game continues, then run a round robin tournament and an
             evolutionary run where the successful reproduce.</p>
             <span class="ix-foot">Read and run it</span>
@@ -1012,14 +1013,14 @@ footer a:hover{color:var(--fg)}
 
           <a class="ix-card" href="discounting/index.html">
             <div class="ix-head">
-              <h3>Why the future is cheap</h3>
-              <span class="ix-num">Four</span>
+              <h3 data-i="ec-009">Why the future is cheap</h3>
+              <span class="ix-num" data-i="ec-n4">Four</span>
             </div>
-            <p class="ix-sub">Discounting, and the ethics inside it</p>
-            <p class="ix-what">The same climate damage is a catastrophe at one discount rate and a rounding
+            <p class="ix-sub" data-i="ec-025">Discounting, and the ethics inside it</p>
+            <p class="ix-what" data-i="ec-026">The same climate damage is a catastrophe at one discount rate and a rounding
             error at another. The choice between them is not technical and no experiment settles it. Stern and
             Nordhaus are set out side by side, sourced, with no verdict.</p>
-            <p class="ix-do"><b>You do</b>Build the rate yourself out of the three Ramsey parameters, price a
+            <p class="ix-do" data-i="ec-027"><b>You do</b>Build the rate yourself out of the three Ramsey parameters, price a
             damage stream at four different rates at once, and then watch the same arithmetic decide how much of
             a company valuation is the part nobody forecast.</p>
             <span class="ix-foot">Read and run it</span>
@@ -1029,44 +1030,44 @@ footer a:hover{color:var(--fg)}
       </section>
 
       <section class="k-sect" aria-labelledby="g-rules">
-        <h2 id="g-rules"><span class="k-num">03</span>The rules these were built under</h2>
+        <h2 id="g-rules" data-i="ec-004"><span class="k-num">03</span>The rules these were built under</h2>
 
         <ul class="ix-rules">
-          <li><b>Run, not watch</b>Every model is live. There is no animation of a result somebody else
+          <li data-i="ec-033"><b>Run, not watch</b>Every model is live. There is no animation of a result somebody else
           produced, no video and no picture of a chart. What is on the page is computed while you look at it,
           from the settings you chose.</li>
-          <li><b>Written here</b>Every model is plain JavaScript with inline SVG, written for these essays.
+          <li data-i="ec-034"><b>Written here</b>Every model is plain JavaScript with inline SVG, written for these essays.
           No chart library, no framework, no build step for the reader, no network call after the fonts have
           loaded. Each page is a single file that keeps working offline.</li>
-          <li><b>Sourced or cut</b>Every claim about the real world carries a citation with a link and the date
+          <li data-i="ec-035"><b>Sourced or cut</b>Every claim about the real world carries a citation with a link and the date
           the source was read. Attributions to named economists were verified against the source before they
           were written. Anything that could not be verified is not on the page.</li>
-          <li><b>Limits stated</b>Every essay closes with what its model assumes and what it therefore cannot
+          <li data-i="ec-036"><b>Limits stated</b>Every essay closes with what its model assumes and what it therefore cannot
           tell you, in the same size type as the rest. A model that does not say where it stops is being used to
           hide something.</li>
-          <li><b>Reachable</b>Every interaction has a keyboard route, every model has a written summary of its
+          <li data-i="ec-037"><b>Reachable</b>Every interaction has a keyboard route, every model has a written summary of its
           current state for anyone not looking at the picture, and every figure is usable on a phone.</li>
-          <li><b>Shareable</b>The state of every model lives in the address bar, so a link reproduces exactly
+          <li data-i="ec-038"><b>Shareable</b>The state of every model lives in the address bar, so a link reproduces exactly
           the configuration the sender was looking at, down to the seed of the random draw.</li>
         </ul>
       </section>
 
       <section class="k-sect" aria-labelledby="g-built">
-        <h2 id="g-built"><span class="k-num">04</span>How it is built, and how to suggest an essay</h2>
+        <h2 id="g-built" data-i="ec-005"><span class="k-num">04</span>How it is built, and how to suggest an essay</h2>
 
         <div class="k-panel">
-          <h3>One file each</h3>
-          <p>Each essay is one HTML file with its styles and its model inlined. There is no backend, no
+          <h3 data-i="ec-010">One file each</h3>
+          <p data-i="ec-028">Each essay is one HTML file with its styles and its model inlined. There is no backend, no
           database, no account and no analytics of any kind. Nothing you do on these pages is recorded, because
           there is nowhere for it to be recorded. The shared design system and the small library behind the
           models live in the same public repository as the rest of the instruments, and the build step is a
           twenty line shell script that splices them in.</p>
-          <p>If there is a model you think belongs here, the repository is the place to say so. An essay is
+          <p data-i="ec-029">If there is a model you think belongs here, the repository is the place to say so. An essay is
           worth building when the argument is genuinely contested or genuinely counterintuitive, when there is a
           model small enough to run in a browser and honest enough to be worth running, and when the sources
           exist to check it against. Open an issue with the argument and the source you would want it checked
           against.</p>
-          <p class="k-source k-source-bare">
+          <p class="k-source k-source-bare" data-i="ec-030">
             <a href="https://github.com/Keremozdemirra/keremozdemirra.github.io" rel="noreferrer noopener">Source and issues on GitHub</a>
             <span class="k-checked">served as static files by GitHub Pages</span>
           </p>
@@ -1078,11 +1079,11 @@ footer a:hover{color:var(--fg)}
 
   <aside class="k-endnote">
     <div class="k-wrap">
-      <p><strong>These are instruments for thinking, not advice and not evidence.</strong> Every model here is a
+      <p data-i="ec-031"><strong>These are instruments for thinking, not advice and not evidence.</strong> Every model here is a
       simplification chosen so that one mechanism becomes visible, and every one of them says in its closing
       section what it left out. No number produced on these pages describes any real market, and none of them
       belongs in a real decision without an estimate somebody is willing to defend.</p>
-      <p class="k-fine">
+      <p class="k-fine" data-i="ec-032">
         Built by <a href="../../index.html">Kerem Ozdemir</a>, TUM, Munich.
         Part of <a href="../../tools.html">the tools</a> at keremozdemir.de.
         Runs entirely in your browser. No tracking, no cookies, no network call after the fonts have loaded.
@@ -1092,6 +1093,7 @@ footer a:hover{color:var(--fg)}
 
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="../../sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 
@@ -1144,19 +1146,25 @@ var Kit = (function () {
 
   /* ---------- numbers ---------- */
 
-  var LOCALE = "en-GB";
+  /* The page is read in three languages, so a number has to be written in
+     three. Turkish and German put the comma where English puts the point, and
+     "3,035 billion" read as Turkish says three, not three thousand. Read at
+     call time rather than cached, because the language changes under us. */
+  var LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
+  function locale() { return LOCALES[window.__lang] || "en-GB"; }
+  function na() { return window.__t ? window.__t("kit-na", "not available") : "not available"; }
 
   function num(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     var d = dp === undefined ? 2 : dp;
-    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+    return Number(v).toLocaleString(locale(), { minimumFractionDigits: d, maximumFractionDigits: d });
   }
   function money(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return "EUR " + num(v, dp === undefined ? 2 : dp);
   }
   function pct(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return num(v * 100, dp === undefined ? 1 : dp) + " %";
   }
   function toNum(raw) {
@@ -1646,6 +1654,10 @@ var Ex = (function () {
   };
 })();
 
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"ec-001": "İktisat bir makineler kümesi. İşte dördü, çalışır hâlde", "ec-002": "<span class=\"k-num\">01</span>Bu neden var", "ec-003": "<span class=\"k-num\">02</span>Denemeler", "ec-004": "<span class=\"k-num\">03</span>Bunlar hangi kurallarla yapıldı", "ec-005": "<span class=\"k-num\">04</span>Nasıl kurulu, ve nasıl deneme önerilir", "ec-006": "Vergiyi gerçekte kim öder", "ec-007": "Limon piyasası", "ec-008": "İşbirliğinin evrimi", "ec-009": "Gelecek neden ucuz", "ec-010": "Her biri tek dosya", "ec-011": "Dört deneme, ve bunlarda bir modeli okumuyorsun, çalıştırıyorsun. Bir eğriyi sürükle, bir oran belirle, bir turnuva düzenle; metindeki sav az önce yaptığına göre değişsin. Her ampirik iddia kaynağını taşıyor. Her şey tarayıcında çalışıyor ve hiçbir yere bir şey gönderilmiyor.", "ec-012": "İktisat bir sonuçlar kümesi olarak öğretiliyor. Vergiler esnek olmayan tarafa biner. Asimetrik bilgi piyasaları yıkar. İşbirliği istikrarlı olabilir. İskonto oranı teknik bir parametredir. Bunların her biri, sana söylenebilecek, katılabileceğin, tekrarlayabileceğin ve bir kez bile kontrol etmeyeceğin bir cümle.", "ec-013": "Ama hiçbiri gerçekte bir sonuç değil. Her biri, girdilerini değiştirebildiğin bir makinenin çıktısı; ve hepsinde asıl ilginç olan, makinenin varsayılan ayarlarında ne dediği değil, hangi ayarların ona başka bir şey söylettiği. Vergi esnek olmayan tarafa biner, ta ki ne kadar esnek diye sorup bütün cevabın bir oranda durduğunu görene kadar. İşbirliği istikrarlıdır, ta ki geleceği kısaltıp havuzdaki her işbirlikçi kuralın tükenişini izleyene kadar.", "ec-014": "Bunların hiçbirine bir cümleden ulaşamazsın. Düğmeyi kendin çevirip sayının hangi yöne gittiğini görerek ulaşırsın; buradaki her denemenin ortasında bir modelin resmi değil, çalışan bir modelin durmasının sebebi bu. Savı metin taşıyor. Model, savın güvene dayalı kalmasını engelleyen şey.", "ec-015": "Mesele modellerin doğru olması değil. Çoğu, her denemenin kapanış bölümünde dürüstçe adını koymaya çalıştığı biçimlerde yanlış. Mesele şu: oynadığın bir model, hakkında sana yalan söylenemeyecek bir modeldir. Esneklikler oynadığında vergiyi kimin sırtladığını bir kez izledikten sonra, o vergi hakkında kimse sana kontrol edemeyeceğin bir hikâye anlatamaz.", "ec-016": "Vergi yansıması ve esneklik", "ec-017": "Bir meclis, parayı devlete kimin vereceğine karar verebilir. Kimin daha yoksul kalacağına karar veremez. Kanun bir ödeyici adlandırır, piyasa başkasını seçer; ve bu seçimi tamamen her iki tarafın masadan ne kolaylıkla kalkabildiği belirler.", "ec-018": "<b>Sen ne yapıyorsun</b>Arz ve talep eğrilerini sürükleyip eğimlerini değiştir, birim başına vergiyi belirle, ve kanunun hangi tarafa ödeteceğini değiştir. Yükün nasıl bölündüğünü, ve refah kaybının onu doğuran vergiden daha hızlı büyüdüğünü izle.", "ec-019": "Ters seçim, Akerlof 1970 izleğinde", "ec-020": "İkinci el araba piyasası: satıcı arabanın ne olduğunu biliyor, alıcı bilmiyor. Kimse yalan söylemiyor, kimse hile yapmıyor, ve piyasa yine de kendini dağıtıyor; çünkü iyi arabayı kötüsünden ayıramayan bir fiyat, iyileri piyasadan kovuyor.", "ec-021": "<b>Sen ne yapıyorsun</b>Kalitenin ne kadar değiştiğini ve alıcının bunun ne kadarını görebildiğini ayarla, sonra piyasayı tur tur çalıştır ve ortalama kaliteyle fiyatın birlikte düşüşünü izle. Garantiyi ya da sertifikayı aç, piyasanın bir maliyet karşılığında geri gelişini izle.", "ec-022": "Yinelenen mahkûm ikilemi, Axelrod izleğinde", "ec-023": "İşbirliği saflık değil. Geleceğin gölgesi ihaneti pahalı kılacak kadar uzun olduğunda ayakta kalan şey. Geleceği kısalt, aynı stratejiler hiç değişmeden kendilerini tam ters sıraya dizsin.", "ec-024": "<b>Sen ne yapıyorsun</b>Stratejileri seç, dört kuraldan kendine ait birini kur, kazanç matrisini ve oyunun sürme ihtimalini belirle, sonra bir lig usulü turnuva ve başarılıların çoğaldığı bir evrimsel koşu çalıştır.", "ec-025": "İskonto, ve içindeki etik", "ec-026": "Aynı iklim zararı bir iskonto oranında felaket, bir başkasında yuvarlama hatası. Aralarındaki seçim teknik değil ve hiçbir deney onu çözmüyor. Stern ve Nordhaus yan yana, kaynaklarıyla, hüküm verilmeden konuluyor.", "ec-027": "<b>Sen ne yapıyorsun</b>Oranı üç Ramsey parametresinden kendin kur, bir zarar akışını aynı anda dört farklı oranla fiyatla, sonra aynı aritmetiğin bir şirket değerlemesinin ne kadarının kimsenin öngörmediği kısım olduğuna nasıl karar verdiğini izle.", "ec-028": "Her deneme, stilleri ve modeli içine gömülmüş tek bir HTML dosyası. Arka uç yok, veritabanı yok, hesap yok, hiçbir türden analitik yok. Bu sayfalarda yaptığın hiçbir şey kaydedilmiyor, çünkü kaydedilecek bir yer yok. Ortak tasarım sistemi ve modellerin arkasındaki küçük kütüphane, diğer aletlerle aynı açık depoda duruyor, ve derleme adımı onları yerine geçiren yirmi satırlık bir kabuk script'i.", "ec-029": "Buraya ait olduğunu düşündüğün bir model varsa, bunu söyleyeceğin yer depo. Bir deneme, savı gerçekten tartışmalı ya da gerçekten sezgiye aykırıysa, tarayıcıda çalışacak kadar küçük ve çalıştırmaya değecek kadar dürüst bir model varsa, ve karşısında kontrol edilecek kaynaklar mevcutsa yapmaya değer. Savı ve karşısında kontrol edilmesini istediğin kaynağı yazarak bir issue aç.", "ec-030": "<a href=\"https://github.com/Keremozdemirra/keremozdemirra.github.io\" rel=\"noreferrer noopener\">Kaynak ve issue'lar GitHub'da</a> <span class=\"k-checked\">GitHub Pages tarafından statik dosya olarak sunuluyor</span>", "ec-031": "<strong>Bunlar düşünmek için aletler, tavsiye değil, kanıt da değil.</strong> Buradaki her model, tek bir mekanizma görünür olsun diye seçilmiş bir basitleştirme, ve her biri kapanış bölümünde neyi dışarıda bıraktığını söylüyor. Bu sayfalarda üretilen hiçbir sayı gerçek bir piyasayı tarif etmiyor, ve hiçbiri, birinin savunmaya razı olduğu bir tahmin olmadan gerçek bir kararda yer almaz.", "ec-032": "Yapan <a href=\"../../index.html\">Kerem Ozdemir</a>, TUM, Münih. keremozdemir.de adresindeki <a href=\"../../tools.html\">aletlerin</a> parçası. Tamamen tarayıcında çalışır. Takip yok, çerez yok, yazı tipleri yüklendikten sonra ağ isteği yok.", "ec-033": "<b>Çalıştır, izleme</b>Her model canlı. Başkasının ürettiği bir sonucun animasyonu yok, video yok, grafiğin resmi yok. Sayfada duran şey, sen bakarken, senin seçtiğin ayarlardan hesaplanıyor.", "ec-034": "<b>Burada yazıldı</b>Her model, bu denemeler için yazılmış düz JavaScript ve gömülü SVG. Grafik kütüphanesi yok, çerçeve yok, okuyucu için derleme adımı yok, yazı tipleri yüklendikten sonra ağ isteği yok. Her sayfa çevrimdışı çalışmayı sürdüren tek bir dosya.", "ec-035": "<b>Kaynaklı ya da yok</b>Gerçek dünyaya dair her iddia, bağlantısı ve kaynağın okunduğu tarihle birlikte bir atıf taşıyor. Adı geçen iktisatçılara yapılan atıflar yazılmadan önce kaynağıyla doğrulandı. Doğrulanamayan hiçbir şey sayfada değil.", "ec-036": "<b>Sınırlar yazılı</b>Her deneme, modelinin ne varsaydığı ve dolayısıyla sana ne söyleyemeyeceğiyle kapanıyor, üstelik metnin geri kalanıyla aynı punto ile. Nerede durduğunu söylemeyen bir model, bir şeyi gizlemek için kullanılıyordur.", "ec-037": "<b>Erişilebilir</b>Her etkileşimin bir klavye yolu var, her modelin resme bakmayanlar için mevcut durumunu anlatan yazılı bir özeti var, ve her şekil telefonda kullanılabiliyor.", "ec-038": "<b>Paylaşılabilir</b>Her modelin durumu adres çubuğunda duruyor, yani bir bağlantı, gönderenin baktığı yapılandırmayı rastgele çekilişin tohumuna kadar birebir yeniden üretiyor.", "ec-skip": "Denemelere geç", "ec-n1": "Bir", "ec-n2": "İki", "ec-n3": "Üç", "ec-n4": "Dört", "ec-open": "Oku ve çalıştır", "ec-back": "Kaldığın yere dön", "pg-title": "Explorable Economics"}, "de": {"ec-001": "Ökonomik ist eine Ansammlung von Maschinen. Hier sind vier davon, in Betrieb", "ec-002": "<span class=\"k-num\">01</span>Warum es das gibt", "ec-003": "<span class=\"k-num\">02</span>Die Essays", "ec-004": "<span class=\"k-num\">03</span>Die Regeln, unter denen sie entstanden", "ec-005": "<span class=\"k-num\">04</span>Wie es gebaut ist, und wie man einen Essay vorschlägt", "ec-006": "Wer eine Steuer wirklich zahlt", "ec-007": "Der Markt für Zitronen", "ec-008": "Die Evolution der Kooperation", "ec-009": "Warum die Zukunft billig ist", "ec-010": "Je eine Datei", "ec-011": "Vier Essays, in denen Sie nicht über ein Modell lesen, sondern es laufen lassen. Ziehen Sie eine Kurve, setzen Sie einen Satz, halten Sie ein Turnier ab, und das Argument im Text ändert sich mit dem, was Sie gerade getan haben. Jede empirische Behauptung trägt ihre Quelle. Alles läuft in Ihrem Browser und nichts wird irgendwohin gesendet.", "ec-012": "Ökonomik wird als eine Menge von Schlussfolgerungen gelehrt. Steuern treffen die unelastische Seite. Asymmetrische Information zerstört Märkte. Kooperation kann stabil sein. Der Diskontsatz ist ein technischer Parameter. Jeder dieser Sätze lässt sich Ihnen sagen, Sie können zustimmen, ihn wiederholen und ihn kein einziges Mal prüfen.", "ec-013": "Aber keiner davon ist wirklich eine Schlussfolgerung. Jeder ist die Ausgabe einer Maschine mit Eingaben, die Sie ändern können, und das Interessante an jeder ist nicht, was die Maschine in ihrer Grundeinstellung sagt, sondern welche Einstellungen sie etwas anderes sagen lassen. Eine Steuer trifft die unelastische Seite, bis Sie fragen, wie unelastisch, und feststellen, dass die ganze Antwort in einem Verhältnis steckt. Kooperation ist stabil, bis Sie die Zukunft verkürzen und zusehen, wie jede kooperative Regel im Feld ausstirbt.", "ec-014": "An all das kommen Sie über einen Satz nicht heran. Sie kommen daran, indem Sie selbst am Regler drehen und sehen, in welche Richtung die Zahl geht. Deshalb steht in der Mitte jedes Essays hier ein laufendes Modell statt eines Bildes davon. Der Text trägt das Argument. Das Modell ist das, was verhindert, dass Sie das Argument glauben müssen.", "ec-015": "Es geht nicht darum, dass Modelle richtig sind. Die meisten sind falsch, auf Weisen, die jedes Essay in seinem Schlussabschnitt ehrlich zu benennen versucht. Es geht darum, dass ein Modell, mit dem Sie gespielt haben, ein Modell ist, über das man Sie nicht belügen kann. Wenn Sie einmal gesehen haben, wer eine Steuer trägt, während sich die Elastizitäten verschieben, kann Ihnen niemand mehr eine Geschichte über diese Steuer erzählen, die Sie nicht prüfen können.", "ec-016": "Steuerinzidenz und Elastizität", "ec-017": "Ein Parlament kann entscheiden, wer das Geld an den Staat abführt. Es kann nicht entscheiden, wer am Ende ärmer ist. Das Gesetz benennt einen Zahler, der Markt wählt einen anderen, und die Wahl trifft allein, wie leicht jede Seite den Markt verlassen kann.", "ec-018": "<b>Sie tun</b>Ziehen Sie Angebots- und Nachfragekurve, um ihre Steigungen zu ändern, setzen Sie eine Stücksteuer, und schalten Sie um, welcher Seite das Gesetz die Zahlung aufträgt. Sehen Sie zu, wie sich die Last teilt und wie der Wohlfahrtsverlust schneller wächst als die Steuer, die ihn verursacht.", "ec-019": "Adverse Selektion, nach Akerlof 1970", "ec-020": "Ein Gebrauchtwagenmarkt, auf dem der Verkäufer weiß, was das Auto ist, und der Käufer nicht. Niemand lügt und niemand betrügt, und der Markt zerlegt sich trotzdem selbst, weil ein Preis, der ein gutes Auto nicht von einem schlechten unterscheiden kann, die guten hinausdrängt.", "ec-021": "<b>Sie tun</b>Stellen Sie ein, wie stark die Qualität streut und wie viel davon ein Käufer sehen kann, lassen Sie den Markt dann Runde für Runde laufen und sehen Sie zu, wie Durchschnittsqualität und Preis gemeinsam fallen. Schalten Sie eine Garantie oder ein Zertifikat ein und sehen Sie, wie er zurückkommt, mit Kosten daran.", "ec-022": "Das wiederholte Gefangenendilemma, nach Axelrod", "ec-023": "Kooperation ist keine Naivität. Sie ist das, was überlebt, wenn der Schatten der Zukunft lang genug ist, um Verrat teuer zu machen. Verkürzen Sie die Zukunft, und dieselben Strategien ordnen sich unverändert in die umgekehrte Reihenfolge.", "ec-024": "<b>Sie tun</b>Wählen Sie die Strategien, setzen Sie aus vier Regeln eine eigene zusammen, legen Sie die Auszahlungsmatrix und die Fortsetzungswahrscheinlichkeit fest, und lassen Sie dann ein Rundenturnier und einen evolutionären Lauf folgen, in dem sich die Erfolgreichen vermehren.", "ec-025": "Diskontierung, und die Ethik darin", "ec-026": "Derselbe Klimaschaden ist bei einem Diskontsatz eine Katastrophe und bei einem anderen ein Rundungsfehler. Die Wahl zwischen ihnen ist nicht technisch, und kein Experiment entscheidet sie. Stern und Nordhaus stehen nebeneinander, belegt, ohne Urteil.", "ec-027": "<b>Sie tun</b>Bauen Sie den Satz selbst aus den drei Ramsey-Parametern, bepreisen Sie einen Schadensstrom mit vier Sätzen zugleich, und sehen Sie dann zu, wie dieselbe Arithmetik entscheidet, wie viel einer Unternehmensbewertung der Teil ist, den niemand prognostiziert hat.", "ec-028": "Jedes Essay ist eine HTML-Datei mit eingebetteten Stilen und eingebettetem Modell. Es gibt kein Backend, keine Datenbank, kein Konto und keinerlei Analyse. Nichts, was Sie auf diesen Seiten tun, wird aufgezeichnet, weil es keinen Ort gibt, an dem es aufgezeichnet werden könnte. Das gemeinsame Designsystem und die kleine Bibliothek hinter den Modellen liegen im selben öffentlichen Repository wie die übrigen Instrumente, und der Build ist ein Shell-Skript von zwanzig Zeilen, das sie einfügt.", "ec-029": "Wenn es ein Modell gibt, das Ihrer Meinung nach hierhergehört, ist das Repository der Ort, das zu sagen. Ein Essay lohnt sich, wenn das Argument wirklich umstritten oder wirklich kontraintuitiv ist, wenn es ein Modell gibt, das klein genug für den Browser und ehrlich genug zum Laufen ist, und wenn es Quellen gibt, an denen man es prüfen kann. Öffnen Sie ein Issue mit dem Argument und der Quelle, an der Sie es geprüft sehen wollen.", "ec-030": "<a href=\"https://github.com/Keremozdemirra/keremozdemirra.github.io\" rel=\"noreferrer noopener\">Quellcode und Issues auf GitHub</a> <span class=\"k-checked\">von GitHub Pages als statische Dateien ausgeliefert</span>", "ec-031": "<strong>Das sind Instrumente zum Denken, keine Beratung und kein Beleg.</strong> Jedes Modell hier ist eine Vereinfachung, gewählt, damit ein Mechanismus sichtbar wird, und jedes sagt in seinem Schlussabschnitt, was es weggelassen hat. Keine auf diesen Seiten erzeugte Zahl beschreibt einen realen Markt, und keine gehört ohne eine Schätzung, die jemand zu verteidigen bereit ist, in eine echte Entscheidung.", "ec-032": "Gebaut von <a href=\"../../index.html\">Kerem Ozdemir</a>, TUM, München. Teil <a href=\"../../tools.html\">der Werkzeuge</a> auf keremozdemir.de. Läuft vollständig in Ihrem Browser. Kein Tracking, keine Cookies, kein Netzwerkaufruf, nachdem die Schriften geladen sind.", "ec-033": "<b>Laufen lassen, nicht zusehen</b>Jedes Modell ist live. Es gibt keine Animation eines Ergebnisses, das jemand anderes erzeugt hat, kein Video und kein Bild eines Diagramms. Was auf der Seite steht, wird berechnet, während Sie hinsehen, aus den Einstellungen, die Sie gewählt haben.", "ec-034": "<b>Hier geschrieben</b>Jedes Modell ist reines JavaScript mit eingebettetem SVG, für diese Essays geschrieben. Keine Diagrammbibliothek, kein Framework, kein Build-Schritt für den Leser, kein Netzwerkaufruf, nachdem die Schriften geladen sind. Jede Seite ist eine einzige Datei, die offline weiter funktioniert.", "ec-035": "<b>Belegt oder gestrichen</b>Jede Aussage über die reale Welt trägt eine Quellenangabe mit Link und dem Datum, an dem die Quelle gelesen wurde. Zuschreibungen an namentlich genannte Ökonomen wurden vor dem Schreiben an der Quelle geprüft. Was sich nicht prüfen ließ, steht nicht auf der Seite.", "ec-036": "<b>Grenzen genannt</b>Jedes Essay schließt damit, was sein Modell annimmt und was es Ihnen deshalb nicht sagen kann, im selben Schriftgrad wie der übrige Text. Ein Modell, das nicht sagt, wo es aufhört, wird benutzt, um etwas zu verbergen.", "ec-037": "<b>Erreichbar</b>Jede Interaktion hat einen Tastaturweg, jedes Modell hat eine geschriebene Zusammenfassung seines aktuellen Zustands für alle, die das Bild nicht sehen, und jede Abbildung ist auf dem Telefon benutzbar.", "ec-038": "<b>Teilbar</b>Der Zustand jedes Modells steht in der Adresszeile, ein Link reproduziert also genau die Konfiguration, die der Absender vor sich hatte, bis hin zum Startwert der Zufallsziehung.", "ec-skip": "Zu den Essays springen", "ec-n1": "Eins", "ec-n2": "Zwei", "ec-n3": "Drei", "ec-n4": "Vier", "ec-open": "Lesen und laufen lassen", "ec-back": "Zurück dazu", "pg-title": "Explorable Economics"}};
+function T(k, en) { return window.__t ? window.__t(k, en) : en; }
+
 /* ============================================================
    Explorable Economics, index
 
@@ -1672,51 +1684,115 @@ var Ex = (function () {
 
   var last = null;
   try { last = sessionStorage.getItem(KEY); } catch (e) { last = null; }
-  if (!last) return;
 
-  cards.forEach(function (a) {
-    if (a.getAttribute("href") !== last) return;
-    var foot = Kit.qs(".ix-foot", a);
-    if (foot) foot.textContent = "Back to it";
-  });
+  /* This label has two states and three languages, so the script owns it
+     outright rather than sharing the node with the chrome's data-i sweep. */
+  function paintFeet() {
+    cards.forEach(function (a) {
+      var foot = Kit.qs(".ix-foot", a);
+      if (!foot) return;
+      foot.textContent = (last && a.getAttribute("href") === last)
+        ? T("ec-back", "Back to it")
+        : T("ec-open", "Read and run it");
+    });
+  }
+  paintFeet();
+  document.addEventListener("langchange", paintFeet);
 })();
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Explorable Economics · dört deneme</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Explorable Economics · vier Essays</i>"}};
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Explorable Economics · dört deneme</i>"}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Explorable Economics · vier Essays</i>"}};
 
 (function(){
   "use strict";
   var KEY = "lang", lang = "en";
-  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
-  var D = window.CHROME_I18N || {};
-  var base = {}, baseA = {};
-  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
-  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  function known(l){
+    return l === "en"
+        || (window.CHROME_I18N && window.CHROME_I18N[l])
+        || (window.PAGE_I18N && window.PAGE_I18N[l]);
+  }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
   function apply(l){
-    if(!D[l]) l = "en";
-    var d = D[l] || {};
-    document.querySelectorAll(SEL).forEach(function(el){
-      var k = el.getAttribute("data-i");
-      if(!(k in base)) base[k] = el.innerHTML;
-      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
-    });
-    document.querySelectorAll(SELA).forEach(function(el){
-      var k = el.getAttribute("data-ia");
-      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
-      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
-    });
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
     });
     try { localStorage.setItem(KEY, l); } catch (e) {}
     window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
 })();
 

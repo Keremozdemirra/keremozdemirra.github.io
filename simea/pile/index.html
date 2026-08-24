@@ -899,7 +899,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 footer.site-foot{background:var(--paper)}
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -907,8 +907,9 @@ footer.site-foot{background:var(--paper)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -927,7 +928,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -937,7 +938,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -947,12 +948,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -983,14 +984,14 @@ footer a:hover{color:var(--fg)}
 </head>
 <body>
 
-<a class="k-skip" href="#sim">Skip to the simulation</a>
+<a class="k-skip" href="#sim" data-i="pl-skip">Skip to the simulation</a>
 
 <div class="k-shell">
 
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" aria-current="page" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../game.html" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../tools/economics/" data-i="nav-e">Economics</a><a href="../../game.html" data-i="nav-g">Game Theory</a><a href="../../simea/" aria-current="page" data-i="nav-s">Simulations</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -1006,8 +1007,8 @@ footer a:hover{color:var(--fg)}
 
       <div class="k-lede k-crown">
         <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Simulation five of five</i></span>
-        <h1>The pile</h1>
-        <p class="k-standfirst">Grains dropped one at a time onto a table. Nothing tunes it, nothing
+        <h1 data-i="pl-001">The pile</h1>
+        <p class="k-standfirst" data-i="pl-009">Grains dropped one at a time onto a table. Nothing tunes it, nothing
         balances it, and nobody is holding it at any particular state. It walks to the edge of its own
         stability and stays there, and once it is there the next grain may do nothing at all or may bring
         down a quarter of the pile, and no amount of watching will tell you which.</p>
@@ -1015,36 +1016,36 @@ footer a:hover{color:var(--fg)}
 
       <div class="ex-body">
 
-        <p class="ex-lead">Bak, Tang and Wiesenfeld published this in 1987 with a claim attached that is
+        <p class="ex-lead" data-i="pl-010">Bak, Tang and Wiesenfeld published this in 1987 with a claim attached that is
         still doing work: that a system with many parts and a slow drive will move by itself to a critical
         point, without anybody setting a parameter to a special value, and that once there its behaviour
         has no characteristic size.</p>
 
-        <p>The model is almost nothing. A grid of cells, each holding a small number of grains. Drop a
+        <p data-i="pl-011">The model is almost nothing. A grid of cells, each holding a small number of grains. Drop a
         grain on a cell. If a cell ever holds four or more, it topples: it gives one grain to each of its
         four neighbours and keeps the rest. Toppling can push a neighbour over its own limit, so a single
         grain can start a chain that runs across the table. Grains that fall off the edge are gone.</p>
 
-        <p>That is the whole of it. There is no parameter to tune, and that is the point.</p>
+        <p data-i="pl-012">That is the whole of it. There is no parameter to tune, and that is the point.</p>
 
-        <h2 id="s1"><span class="k-num">01</span>The table and the record</h2>
+        <h2 id="s1" data-i="pl-002"><span class="k-num">01</span>The table and the record</h2>
 
-        <p>On the left is the pile, shaded by how many grains each cell holds, with the cells that toppled
+        <p data-i="pl-013">On the left is the pile, shaded by how many grains each cell holds, with the cells that toppled
         in the last avalanche marked. On the right is the record: every avalanche so far, sorted by size,
         drawn on a plot where both axes are logarithmic. A distribution with a characteristic size would
         show a hump. A power law shows a straight line, and the straighter it gets the more grains you
         drop.</p>
 
         <figure class="ex-model" id="m1">
-          <figcaption>Figure one <span class="ex-model-sub">drop grains and watch the record fill in</span></figcaption>
+          <figcaption data-i="pl-033">Figure one <span class="ex-model-sub">drop grains and watch the record fill in</span></figcaption>
           <div class="ex-ctrls" id="pl-ctrls"></div>
           <div class="pl-two">
             <div>
-              <p class="sm-canvas-lab">The pile</p>
+              <p class="sm-canvas-lab" data-i="pl-014">The pile</p>
               <div id="pl-grid"></div>
             </div>
             <div>
-              <p class="sm-canvas-lab">Avalanche sizes, both axes logarithmic</p>
+              <p class="sm-canvas-lab" data-i="pl-015">Avalanche sizes, both axes logarithmic</p>
               <div id="pl-plot"></div>
             </div>
           </div>
@@ -1056,87 +1057,87 @@ footer a:hover{color:var(--fg)}
 
         <div class="ex-says" id="pl-says"></div>
 
-        <h2 id="s2"><span class="k-num">02</span>What the straight line means</h2>
+        <h2 id="s2" data-i="pl-003"><span class="k-num">02</span>What the straight line means</h2>
 
-        <p>A straight line on a plot where both axes are logarithmic says that the number of avalanches of
+        <p data-i="pl-016">A straight line on a plot where both axes are logarithmic says that the number of avalanches of
         a given size falls as some fixed power of that size. Halving the frequency requires multiplying the
         size by a constant factor, whatever size you started from. That is what it means for a distribution
         to have no characteristic scale: there is no typical avalanche, and asking for the average size of
         the next one is asking a question the distribution does not answer usefully.</p>
 
-        <p class="ex-formula">number of avalanches of size s  ∝  s to the power of minus τ
-        <small>The exponent printed under the plot is fitted by least squares to the logarithmically binned
+        <p class="ex-formula" data-i="pl-017">number of avalanches of size s  ∝  s to the power of minus τ
+        <small data-i="pl-034">The exponent printed under the plot is fitted by least squares to the logarithmically binned
         counts, over the bins that have enough avalanches in them to be worth fitting. It is a crude
         estimate on a small table and it should be read as an indication that the line is straight rather
         than as a measurement of τ.</small></p>
 
-        <p>Notice how the plot fills in. The small avalanches arrive immediately and in enormous numbers.
+        <p data-i="pl-018">Notice how the plot fills in. The small avalanches arrive immediately and in enormous numbers.
         The large ones arrive rarely, and the largest one you have seen keeps being overtaken. That is not
         the record settling down towards a true maximum. There is no true maximum here except the size of
         the table, and on a larger table the largest event would simply be larger.</p>
 
-        <h2 id="s3"><span class="k-num">03</span>Nothing is being tuned</h2>
+        <h2 id="s3" data-i="pl-004"><span class="k-num">03</span>Nothing is being tuned</h2>
 
-        <p>Watch the average number of grains per cell in the readout. It climbs while the pile is filling,
+        <p data-i="pl-019">Watch the average number of grains per cell in the readout. It climbs while the pile is filling,
         then stops climbing and stays put. From that point on, whatever you do to the pile, it returns to
         roughly the same average height. Grains going in are balanced by grains falling off the edges, and
         the balance is maintained by the avalanches themselves.</p>
 
-        <p>This is what makes the word organised do work in the phrase. The pile is not held at criticality
+        <p data-i="pl-020">This is what makes the word organised do work in the phrase. The pile is not held at criticality
         by anybody. Add grains faster and it is still there. Start it from an empty table and it walks
         there. Start it from an overloaded table and it collapses back to it. The critical state is where
         the dynamics take it, which is why the effect turns up in systems nobody is administering.</p>
 
-        <h2 id="s4"><span class="k-num">04</span>Why this belongs to SIMEA</h2>
+        <h2 id="s4" data-i="pl-005"><span class="k-num">04</span>Why this belongs to SIMEA</h2>
 
-        <p>Two reasons, and the second is the one I care about.</p>
+        <p data-i="pl-021">Two reasons, and the second is the one I care about.</p>
 
-        <p>The first is the forecasting point. In a state like this the size of the next event is genuinely
+        <p data-i="pl-022">The first is the forecasting point. In a state like this the size of the next event is genuinely
         unforecastable, and not because anybody is ignorant. The distribution is known exactly here, since
         I wrote it, and knowing it does not help: it tells you the odds over a run and says nothing at all
         about the next grain. There is a habit of treating unpredictability as a shortfall of data or of
         model quality, on the assumption that a better instrument would resolve it. Some unpredictability
-        is a property of the system and survives any instrument, and a research programme that wants to
+        is a property of the system and survives any instrument, and a research project that wants to
         talk about what can and cannot be forecast has to be able to tell the two apart.</p>
 
-        <p>The second is about responsibility. When a large avalanche happens, the grain that started it is
+        <p data-i="pl-023">The second is about responsibility. When a large avalanche happens, the grain that started it is
         indistinguishable from the thousands of grains that started nothing. It was not a special grain. It
         did not fall harder. Looking for what was different about it will find nothing, because nothing
         was, and the difference lies entirely in the state the pile had already reached. Every institution
         that reviews a disaster by looking for the last action before it is doing this, and the pile is the
         cleanest demonstration I know that the last action can be innocent and the outcome still enormous.</p>
 
-        <h2 id="s5"><span class="k-num">05</span>Where the model stops</h2>
+        <h2 id="s5" data-i="pl-006"><span class="k-num">05</span>Where the model stops</h2>
 
         <div class="k-warn ex-limits">
-          <h3>Assumptions and limits</h3>
+          <h3 data-i="pl-008">Assumptions and limits</h3>
           <ul class="k-ask">
-            <li><b>It is not sand</b>Real granular piles were tested against this model and behave less
+            <li data-i="pl-026"><b>It is not sand</b>Real granular piles were tested against this model and behave less
             cleanly than it does, for reasons to do with inertia and friction that the model has no way of
             representing. The name is a picture and not a claim about sand.</li>
-            <li><b>The table is small</b>Every power law here is cut off by the size of the grid, which is
+            <li data-i="pl-027"><b>The table is small</b>Every power law here is cut off by the size of the grid, which is
             why the right hand end of the plot bends down. The exponent fitted from a few thousand
             avalanches on a table this size is a rough indication and nothing more.</li>
-            <li><b>The transient is included</b>Every avalanche is recorded, including those from the early
+            <li data-i="pl-028"><b>The transient is included</b>Every avalanche is recorded, including those from the early
             period when the pile was still filling up and had not reached its critical state. Press reset
             and drop a few thousand grains before reading the plot seriously.</li>
-            <li><b>The drive is separated from the response</b>Each avalanche is run to completion before
+            <li data-i="pl-029"><b>The drive is separated from the response</b>Each avalanche is run to completion before
             the next grain is dropped. That separation of timescales is an assumption of the model, and a
             system driven faster than it can relax would behave differently.</li>
-            <li><b>Power laws are easy to see and hard to establish</b>A straight stretch on a log log plot
+            <li data-i="pl-030"><b>Power laws are easy to see and hard to establish</b>A straight stretch on a log log plot
             is weak evidence on its own, and the statistical literature on distinguishing a power law from
             other heavy tailed distributions is not kind to eyeball fits. This page shows a mechanism that
             produces one, not a method for detecting one.</li>
-            <li><b>An analogy is not a finding</b>The two paragraphs above about forecasting and about
+            <li data-i="pl-031"><b>An analogy is not a finding</b>The two paragraphs above about forecasting and about
             responsibility are arguments by analogy. This model does not establish anything about markets,
             institutions or disasters, and no number from this page belongs in a claim about them.</li>
           </ul>
         </div>
 
-        <h2 id="s6"><span class="k-num">06</span>Source</h2>
+        <h2 id="s6" data-i="pl-007"><span class="k-num">06</span>Source</h2>
 
         <ul class="ex-cites">
-          <li>
+          <li data-i="pl-032">
             The paper that introduced the model and the idea of self organised criticality: dynamical
             systems with spatial degrees of freedom naturally evolve into a self organised critical state,
             which the authors connect to flicker noise and to the origin of fractal structures.
@@ -1150,15 +1151,15 @@ footer a:hover{color:var(--fg)}
 
         <nav class="ex-next" aria-label="More simulations">
           <a href="../recommender/index.html">
-            <span class="ex-next-k">The flagship</span>
-            <span class="ex-next-t">The recommender</span>
-            <span class="ex-next-d">A population, a feed that decides what each of them sees, and the three
+            <span class="ex-next-k" data-i="xn-k-flag">The flagship</span>
+            <span class="ex-next-t" data-i="xn-t-rec">The recommender</span>
+            <span class="ex-next-d" data-i="xn-d-rec">A population, a feed that decides what each of them sees, and the three
             SIMEA constructs measured live against a counterfactual run.</span>
           </a>
           <a href="../index.html">
-            <span class="ex-next-k">Back</span>
-            <span class="ex-next-t">All five simulations</span>
-            <span class="ex-next-d">Why a research programme about systems and agents needs models you can
+            <span class="ex-next-k" data-i="xn-k-back">Back</span>
+            <span class="ex-next-t" data-i="xn-t-all5">All five simulations</span>
+            <span class="ex-next-d" data-i="xn-d-all5">Why a research project about systems and agents needs models you can
             run.</span>
           </a>
         </nav>
@@ -1169,10 +1170,10 @@ footer a:hover{color:var(--fg)}
 
   <aside class="k-endnote">
     <div class="k-wrap">
-      <p><strong>This is a teaching model, not a measurement.</strong> Every number on this page is one you
+      <p data-i="pl-024"><strong>This is a teaching model, not a measurement.</strong> Every number on this page is one you
       set or one this model produced from what you set. Nothing here describes sand, markets or any real
       system.</p>
-      <p class="k-fine">
+      <p class="k-fine" data-i="pl-025">
         Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no
         network call after the fonts have loaded. Part of
         <a href="../index.html">the SIMEA simulations</a>, built by
@@ -1183,6 +1184,7 @@ footer a:hover{color:var(--fg)}
 
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="../../sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 
@@ -1235,19 +1237,25 @@ var Kit = (function () {
 
   /* ---------- numbers ---------- */
 
-  var LOCALE = "en-GB";
+  /* The page is read in three languages, so a number has to be written in
+     three. Turkish and German put the comma where English puts the point, and
+     "3,035 billion" read as Turkish says three, not three thousand. Read at
+     call time rather than cached, because the language changes under us. */
+  var LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
+  function locale() { return LOCALES[window.__lang] || "en-GB"; }
+  function na() { return window.__t ? window.__t("kit-na", "not available") : "not available"; }
 
   function num(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     var d = dp === undefined ? 2 : dp;
-    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+    return Number(v).toLocaleString(locale(), { minimumFractionDigits: d, maximumFractionDigits: d });
   }
   function money(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return "EUR " + num(v, dp === undefined ? 2 : dp);
   }
   function pct(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return num(v * 100, dp === undefined ? 1 : dp) + " %";
   }
   function toNum(raw) {
@@ -1963,21 +1971,29 @@ var Sim = (function () {
      button becomes an advance button that computes a burst of steps and
      paints once at the end, and the step button is always there, so the
      model stays fully usable without a single frame of movement. */
+  function tt(k, en, v) {
+    var out = window.__t ? window.__t(k, en) : en;
+    if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+    return out;
+  }
+
   function transport(host, spec) {
     var s = spec || {};
     var burst = s.burst || 25;
+    function runWord() { return tt(s.runKey || "sim-run", s.runLabel || "Run"); }
     var spf = s.stepsPerFrame || 1;
     var quiet = still();
 
     var bar = Kit.el("div", { class: "sm-bar" });
     var runBtn = Kit.el("button", {
       type: "button", class: "k-btn sm-btn-run",
-      text: quiet ? ("Advance " + burst + " steps") : (s.runLabel || "Run")
+      text: quiet ? tt("sim-advance", "Advance {n} steps", { n: burst }) : runWord()
     });
-    var stepBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Step" });
-    var resetBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Reset" });
+    var stepBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: tt("sim-step", "Step") });
+    var resetBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: tt("sim-reset", "Reset") });
     var shareBtn = s.onShare
-      ? Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: "Copy link to this run" })
+      ? Kit.el("button", { type: "button", class: "k-btn k-btn-quiet",
+                           text: tt("sim-share", "Copy link to this run") })
       : null;
     var clock = Kit.el("span", { class: "sm-clock", text: "" });
 
@@ -1989,15 +2005,20 @@ var Sim = (function () {
     host.appendChild(bar);
 
     if (quiet) {
-      host.appendChild(Kit.el("p", { class: "sm-still", text:
-        "Your system asks for reduced motion, so this model never animates. "
-        + "Advance moves it " + burst + " steps and draws the result once. Step moves it one." }));
+      host.appendChild(Kit.el("p", { class: "sm-still", text: tt("sim-still",
+        "Your system asks for reduced motion, so this model never animates. Advance moves it {n} steps "
+        + "and draws the result once. Step moves it one.", { n: burst }) }));
     }
 
-    host.appendChild(Kit.el("p", { class: "sm-keys", html:
-      "Keyboard: <kbd>Space</kbd> " + (quiet ? "advances" : "runs and pauses")
-      + ", <kbd>S</kbd> steps once, <kbd>R</kbd> resets. "
-      + "Every control below is a standard slider, radio group or button." }));
+    var keysNote = Kit.el("p", { class: "sm-keys" });
+    function paintKeys() {
+      keysNote.innerHTML = tt("sim-keys",
+        "Keyboard: <kbd>Space</kbd> {space}, <kbd>S</kbd> steps once, <kbd>R</kbd> resets. Every control "
+        + "below is a standard slider, radio group or button.",
+        { space: quiet ? tt("sim-keys-adv", "advances") : tt("sim-keys-run", "runs and pauses") });
+    }
+    paintKeys();
+    host.appendChild(keysNote);
 
     var api = {
       el: bar, running: false, runBtn: runBtn,
@@ -2018,14 +2039,14 @@ var Sim = (function () {
     api.start = function () {
       if (quiet || api.running) return;
       api.running = true;
-      runBtn.textContent = "Pause";
+      runBtn.textContent = tt("sim-pause", "Pause");
       runBtn.setAttribute("data-on", "1");
       raf = window.requestAnimationFrame(frame);
     };
     api.stop = function () {
       if (!api.running) return;
       api.running = false;
-      runBtn.textContent = s.runLabel || "Run";
+      runBtn.textContent = runWord();
       runBtn.removeAttribute("data-on");
       if (raf) window.cancelAnimationFrame(raf);
       raf = null;
@@ -2071,15 +2092,35 @@ var Sim = (function () {
       if (document.hidden) api.stop();
     });
 
+    document.addEventListener("langchange", function () {
+      runBtn.textContent = api.running
+        ? tt("sim-pause", "Pause")
+        : (quiet ? tt("sim-advance", "Advance {n} steps", { n: burst }) : runWord());
+      stepBtn.textContent = tt("sim-step", "Step");
+      resetBtn.textContent = tt("sim-reset", "Reset");
+      if (shareBtn) shareBtn.textContent = tt("sim-share", "Copy link to this run");
+      var still = host.querySelector(".sm-still");
+      if (still) still.textContent = tt("sim-still",
+        "Your system asks for reduced motion, so this model never animates. Advance moves it {n} steps "
+        + "and draws the result once. Step moves it one.", { n: burst });
+      paintKeys();
+    });
+
     api.quiet = quiet;
     return api;
   }
 
   /* ---------- numbers ---------- */
 
+  /* Fixed decimals, but written in the language being read: Turkish and
+     German put the comma where English puts the point, and every number in
+     every simulation comes through here. */
+  var FIX_LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
   function fix(v, dp) {
-    if (!isFinite(v)) return "not defined";
-    return Number(v).toFixed(dp === undefined ? 2 : dp);
+    if (!isFinite(v)) return window.__t ? window.__t("sim-undef", "not defined") : "not defined";
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(FIX_LOCALES[window.__lang] || "en-GB",
+      { minimumFractionDigits: d, maximumFractionDigits: d });
   }
 
   /* Shannon entropy of a histogram of counts, in bits, normalised by the
@@ -2135,6 +2176,43 @@ var Sim = (function () {
     transport: transport, fix: fix, entropy: entropy, tvd: tvd, emd: emd
   };
 })();
+
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"pl-001": "Yığın", "pl-002": "<span class=\"k-num\">01</span>Masa ve kayıt", "pl-003": "<span class=\"k-num\">02</span>Düz çizgi ne demek", "pl-004": "<span class=\"k-num\">03</span>Hiçbir şey ayarlanmıyor", "pl-005": "<span class=\"k-num\">04</span>Bu neden SIMEA'ya ait", "pl-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "pl-007": "<span class=\"k-num\">06</span>Kaynak", "pl-008": "Varsayımlar ve sınırlar", "pl-009": "Bir masaya teker teker bırakılan taneler. Hiçbir şey onu ayarlamıyor, hiçbir şey dengelemiyor, ve kimse onu belirli bir durumda tutmuyor. Kendi kararlılığının eşiğine kadar yürüyor ve orada kalıyor; ve oraya vardıktan sonra bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor, ve ne kadar izlersen izle hangisi olacağını söyleyemiyorsun.", "pl-010": "Bak, Tang ve Wiesenfeld bunu 1987'de, hâlâ iş gören bir iddiayla birlikte yayımladı: çok parçalı ve yavaş sürülen bir sistem, kimse bir parametreyi özel bir değere ayarlamadan kendiliğinden kritik bir noktaya gider, ve oraya vardığında davranışının karakteristik bir büyüklüğü kalmaz.", "pl-011": "Model neredeyse hiçbir şey. Bir hücre ızgarası, her hücrede az sayıda tane. Bir hücreye bir tane bırak. Bir hücre dört ya da daha fazlasını tutarsa deviriyor: dört komşusunun her birine birer tane veriyor ve kalanı tutuyor. Devirme bir komşuyu kendi sınırının üstüne itebiliyor, yani tek bir tane masayı boydan boya geçen bir zincir başlatabiliyor. Kenardan düşen taneler gidiyor.", "pl-012": "Hepsi bu. Ayarlanacak bir parametre yok, ve asıl mesele de bu.", "pl-013": "Solda yığın var, her hücrenin kaç tane tuttuğuna göre gölgelenmiş, son çığda devrilen hücreler işaretli. Sağda kayıt var: şimdiye kadarki her çığ, büyüklüğüne göre sıralanmış, iki ekseni de logaritmik olan bir grafiğe çizilmiş. Karakteristik büyüklüğü olan bir dağılım bir tümsek gösterirdi. Bir kuvvet yasası düz bir çizgi gösteriyor, ve ne kadar çok tane bırakırsan o kadar düzeliyor.", "pl-014": "Yığın", "pl-015": "Çığ büyüklükleri, iki eksen de logaritmik", "pl-016": "İki ekseni de logaritmik olan bir grafikteki düz çizgi şunu söylüyor: belli bir büyüklükteki çığların sayısı, o büyüklüğün sabit bir kuvveti kadar düşüyor. Sıklığı yarıya indirmek için büyüklüğü sabit bir katsayıyla çarpmak gerekiyor, hangi büyüklükten başlarsan başla. Bir dağılımın karakteristik ölçeği olmaması bu demek: tipik bir çığ yok, ve bir sonrakinin ortalama büyüklüğünü sormak, dağılımın işe yarar biçimde cevaplamadığı bir soru sormak.", "pl-017": "s büyüklüğündeki çığların sayısı ∝ s üzeri eksi τ <small data-i=\"pl-034\">Grafiğin altında basılan üs, logaritmik olarak kutulanmış sayımlara en küçük kareler yöntemiyle uyduruluyor; yalnızca uydurmaya değecek kadar çığ içeren kutular üzerinden. Küçük bir masada kaba bir tahmin, ve τ'nun ölçümü olarak değil çizginin düz olduğunun göstergesi olarak okunmalı.</small>", "pl-018": "Grafiğin nasıl dolduğuna dikkat et. Küçük çığlar hemen ve muazzam sayıda geliyor. Büyükler seyrek geliyor, ve gördüğün en büyük olan sürekli aşılıyor. Bu, kaydın gerçek bir azami değere doğru yatışması değil. Burada masanın boyutundan başka gerçek bir azami yok, ve daha büyük bir masada en büyük olay basitçe daha büyük olurdu.", "pl-019": "Okumada hücre başına ortalama tane sayısını izle. Yığın dolarken tırmanıyor, sonra tırmanmayı bırakıp yerinde duruyor. O noktadan sonra yığına ne yaparsan yap, kabaca aynı ortalama yüksekliğe dönüyor. Giren taneler kenarlardan düşenlerle dengeleniyor, ve dengeyi çığların kendisi koruyor.", "pl-020": "Bu ifadedeki örgütlü sözcüğüne işlevini kazandıran şey bu. Yığını kritiklikte tutan kimse yok. Taneleri daha hızlı ekle, yine orada. Boş bir masadan başlat, oraya yürüyor. Aşırı yüklü bir masadan başlat, ona geri çöküyor. Kritik durum, dinamiğin onu götürdüğü yer; etkinin kimsenin yönetmediği sistemlerde ortaya çıkmasının sebebi de bu.", "pl-021": "İki sebep, ve önemsediğim ikincisi.", "pl-022": "Birincisi öngörü meselesi. Böyle bir durumda bir sonraki olayın büyüklüğü gerçekten öngörülemez, ve bunun sebebi kimsenin cahil olması değil. Dağılım burada tam olarak biliniyor, çünkü onu ben yazdım; ve bilmek yardım etmiyor: bir koşu boyunca ihtimalleri söylüyor, bir sonraki tane hakkında hiçbir şey söylemiyor. Öngörülemezliği, daha iyi bir aletin çözeceği varsayımıyla, veri ya da model kalitesi eksikliği sayma alışkanlığı var. Bazı öngörülemezlik sistemin bir özelliğidir ve her aletten sağ çıkar; neyin öngörülebilip neyin öngörülemeyeceğinden söz etmek isteyen bir araştırma projesinın ikisini ayırt edebilmesi gerekir.", "pl-023": "İkincisi sorumlulukla ilgili. Büyük bir çığ olduğunda, onu başlatan tane hiçbir şey başlatmayan binlerce taneden ayırt edilemez. Özel bir tane değildi. Daha sert düşmedi. Onun neyinin farklı olduğunu aramak hiçbir şey bulmayacak, çünkü hiçbir şeyi farklı değildi; fark tamamen yığının çoktan ulaştığı durumda yatıyor. Bir felaketi ondan önceki son eylemi arayarak inceleyen her kurum bunu yapıyor, ve yığın, son eylemin masum olup sonucun yine de muazzam olabileceğinin bildiğim en temiz gösterimi.", "pl-024": "<strong>Bu bir öğretim modeli, ölçüm değil.</strong> Bu sayfadaki her sayı ya senin ayarladığın ya da bu modelin senin ayarladığından ürettiği bir sayı. Burada ne kum ne piyasa ne de gerçek bir sistem tarif ediliyor.", "pl-025": "Tamamen tarayıcında çalışır. Burada yaptığın hiçbir şey sayfadan çıkmaz. Sunucu yok, analitik yok, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Ozdemir</a>.", "pl-026": "<b>Bu kum değil</b>Gerçek granüler yığınlar bu modele karşı sınandı ve ondan daha az temiz davranıyorlar; sebebi, modelin temsil edecek hiçbir yolunun olmadığı atalet ve sürtünme. İsim bir resim, kum hakkında bir iddia değil.", "pl-027": "<b>Masa küçük</b>Buradaki her kuvvet yasası ızgaranın boyutuyla kesiliyor; grafiğin sağ ucunun aşağı kıvrılmasının sebebi bu. Bu boyutta bir masada birkaç bin çığdan uydurulan üs kaba bir gösterge, fazlası değil.", "pl-028": "<b>Geçiş dönemi dahil</b>Her çığ kaydediliyor; yığının hâlâ dolmakta olduğu ve kritik durumuna henüz ulaşmadığı erken dönemdekiler dahil. Grafiği ciddiye alarak okumadan önce sıfırla ve birkaç bin tane bırak.", "pl-029": "<b>Sürücü tepkiden ayrılmış</b>Her çığ, bir sonraki tane bırakılmadan önce sonuna kadar çalışıyor. Zaman ölçeklerinin bu ayrımı modelin bir varsayımı, ve gevşeyebileceğinden daha hızlı sürülen bir sistem farklı davranırdı.", "pl-030": "<b>Kuvvet yasalarını görmek kolay, kanıtlamak zordur</b>Log log grafikte düz bir bölüm tek başına zayıf bir kanıttır, ve bir kuvvet yasasını diğer ağır kuyruklu dağılımlardan ayırmaya dair istatistik literatürü göz kararı uydurmalara nazik değildir. Bu sayfa, bir kuvvet yasası üreten bir mekanizmayı gösteriyor; onu saptamanın bir yöntemini değil.", "pl-031": "<b>Benzetme bulgu değildir</b>Yukarıdaki iki paragraf, öngörü ve sorumluluk üzerine, benzetmeye dayalı savlar. Bu model piyasalar, kurumlar ya da felaketler hakkında hiçbir şey ortaya koymuyor, ve bu sayfadan çıkan hiçbir sayının onlara dair bir iddiada yeri yok.", "pl-033": "Şekil bir <span class=\"ex-model-sub\">tane bırak ve kaydın dolmasını izle</span>", "pl-skip": "Simülasyona geç", "pl-run": "Tane bırak", "pl-plot-empty": "Çığ büyüklükleri dağılımı hâlâ boş.", "pl-plot-empty2": "Çığ büyüklükleri dağılımı hâlâ boş: şimdiye kadar yalnızca {n} çığ kaydedildi.", "pl-plot-none": "henüz yeterli çığ yok", "pl-ax-size": "çığın büyüklüğü", "pl-ax-often": "ne sıklıkta", "pl-slope": "eğim {s}, yani τ yaklaşık {t}", "pl-plot": "Çığ büyüklüklerinin, iki ekseni de logaritmik bir grafikteki dağılımı; {d} taneden gelen {n} çığ üzerinden. Noktalar eğimi {s} olan düz bir çizgiye yakın düşüyor, ki bu yaklaşık {t} üslü bir kuvvet yasası. Şimdiye kadarki en büyük çığ {big} hücre devirdi.", "pl-sum": "{n} x {n} bir masa, hücre başına ortalama {mh} tane tutuyor; {d} tane {where} bırakıldıktan ve {av} çığdan sonra. Son tane {last} devirdi, ve şimdiye kadarki en büyük çığ {big} devirdi.", "pl-where-centre": "ortaya", "pl-where-random": "rastgele", "pl-cells": "{n} hücre", "pl-s0": "Masa boş. Tane bırak ve ortalama yüksekliğin tırmanmasını, sonra tırmanmayı bırakmasını, ve sağdaki kaydın düzelmeye başlamasını izle.", "pl-s1": "{d} sonra yığın {mh} tutuyor{tail}", "pl-s1-filling": " ve hâlâ doluyor. Kenarlardan henüz tanelerin geldiği hıza yakın bir şey düşmüyor, yani sağdaki kayıt kritik dağılım değil.", "pl-s1-critical": ", ve orada kalıyor. Buradan sonra gelen taneler kenarlardan gidenlerle dengeleniyor, ve dengeyi onu ayarlayan bir şey değil, çığların kendisi koruyor.", "pl-s2": "Son tane {last} devirdi{none} Şimdiye kadarki en büyüğü {big} devirdi{share} Onu başlatan tane diğer her taneyle aynıydı.", "pl-s2-none": ": indi ve hiçbir şey olmadı.", "pl-s2-some": ".", "pl-s2-over": ", ki bu masadaki hücre sayısından fazla devirme, çünkü bir hücre tek bir çığda kendi sınırını birden fazla kez aşabiliyor.", "pl-s2-share": ", ki bu masadaki hücrelerin yüzde {p} kadarı.", "pl-grains": "{n} tane", "pl-per-cell": "hücre başına {n}", "pl-sl-n": "Masa boyu", "pl-sl-n-h": "Daha büyük bir masa kritik durumuna daha geç ulaşıyor ve daha büyük çığlar tutuyor.", "pl-fmt-n": "{v} x {v}", "pl-sg-w": "Tanenin düştüğü yer", "pl-sg-w-h": "Yalnızca ortaya bırakmak klasik deseni daha yavaş kuruyor.", "pl-opt-random": "herhangi bir yere", "pl-opt-centre": "ortaya", "pl-sl-r": "Çalışırken kare başına tane", "pl-sl-r-h": "Sürücünün ne hızla çalıştığı. Fiziği değil, yalnızca bekleyişi değiştiriyor.", "pl-rd-drops": "Bırakılan tane", "pl-rd-av": "Çığ", "pl-rd-last": "Son çığ", "pl-rd-big": "Şimdiye kadarki en büyük", "pl-rd-mh": "Hücre başına tane", "pl-rd-tau": "Uydurulan üs", "pl-sub-nothing": "{n} tane hiçbir şey yapmadı", "pl-sub-toppled": "hücre devrildi", "pl-sub-big": "hücre devrildi, bazıları birden fazla kez", "pl-sub-mh": "ortalama yükseklik", "pl-notyet": "henüz yok", "pl-sub-bins": "{n} kutudan", "pl-sub-keep": "bırakmaya devam et", "pl-key-empty": "boş", "pl-key-two": "iki tane", "pl-key-three": "üç tane", "pl-key-topple": "az önce devrildi", "pl-share": "Bağlantı kopyalandı. Bu kadar tane bırakılmış hâliyle açılıyor.", "pl-032": "Modeli ve kendiliğinden örgütlenen kritiklik fikrini tanıtan makale: uzamsal serbestlik dereceleri olan dinamik sistemler doğal olarak kendiliğinden örgütlenen kritik bir duruma evriliyor; yazarlar bunu titreşim gürültüsüne ve fraktal yapıların kökenine bağlıyor. <span class=\"ex-cite-w\">Per Bak, Chao Tang and Kurt Wiesenfeld, <span class=\"ex-cite-t\">Self-organized\n            criticality: An explanation of the 1/f noise</span>, Physical Review Letters 59(4), 27 July\n            1987, page 381.\n            <a href=\"https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381\" target=\"_blank\" rel=\"noreferrer noopener\">journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "pg-title": "Yığın"}, "de": {"pl-001": "Der Haufen", "pl-002": "<span class=\"k-num\">01</span>Der Tisch und das Protokoll", "pl-003": "<span class=\"k-num\">02</span>Was die Gerade bedeutet", "pl-004": "<span class=\"k-num\">03</span>Es wird nichts eingestellt", "pl-005": "<span class=\"k-num\">04</span>Warum das zu SIMEA gehört", "pl-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "pl-007": "<span class=\"k-num\">06</span>Quelle", "pl-008": "Annahmen und Grenzen", "pl-009": "Körner, eines nach dem anderen auf einen Tisch fallen gelassen. Nichts stellt ihn ein, nichts balanciert ihn aus, und niemand hält ihn in einem bestimmten Zustand. Er wandert von selbst an die Kante seiner eigenen Stabilität und bleibt dort, und ist er einmal dort, kann das nächste Korn gar nichts bewirken oder ein Viertel des Haufens zum Einsturz bringen, und kein noch so langes Zusehen sagt Ihnen, welches von beidem.", "pl-010": "Bak, Tang und Wiesenfeld veröffentlichten das 1987 mit einer Behauptung, die noch immer arbeitet: dass ein System mit vielen Teilen und einem langsamen Antrieb von selbst an einen kritischen Punkt wandert, ohne dass jemand einen Parameter auf einen besonderen Wert setzt, und dass sein Verhalten dort keine charakteristische Größe mehr hat.", "pl-011": "Das Modell ist fast nichts. Ein Gitter aus Zellen, jede mit einer kleinen Zahl von Körnern. Lassen Sie ein Korn auf eine Zelle fallen. Hält eine Zelle je vier oder mehr, kippt sie: Sie gibt jedem ihrer vier Nachbarn ein Korn und behält den Rest. Das Kippen kann einen Nachbarn über sein eigenes Limit schieben, ein einzelnes Korn kann also eine Kette auslösen, die über den Tisch läuft. Körner, die über die Kante fallen, sind weg.", "pl-012": "Das ist alles. Es gibt keinen Parameter einzustellen, und genau darum geht es.", "pl-013": "Links ist der Haufen, schattiert danach, wie viele Körner jede Zelle hält, mit den Zellen markiert, die in der letzten Lawine gekippt sind. Rechts ist das Protokoll: jede Lawine bisher, nach Größe sortiert, auf einem Diagramm mit zwei logarithmischen Achsen. Eine Verteilung mit einer charakteristischen Größe zeigte einen Buckel. Ein Potenzgesetz zeigt eine Gerade, und je mehr Körner Sie fallen lassen, desto gerader wird sie.", "pl-014": "Der Haufen", "pl-015": "Lawinengrößen, beide Achsen logarithmisch", "pl-016": "Eine Gerade auf einem Diagramm mit zwei logarithmischen Achsen sagt, dass die Zahl der Lawinen einer gegebenen Größe wie eine feste Potenz dieser Größe fällt. Die Häufigkeit zu halbieren verlangt, die Größe mit einem konstanten Faktor zu multiplizieren, von welcher Größe Sie auch ausgehen. Das heißt es, wenn eine Verteilung keine charakteristische Skala hat: Es gibt keine typische Lawine, und nach der durchschnittlichen Größe der nächsten zu fragen heißt, eine Frage zu stellen, die die Verteilung nicht nützlich beantwortet.", "pl-017": "Zahl der Lawinen der Größe s ∝ s hoch minus τ <small data-i=\"pl-034\">Der unter dem Diagramm gedruckte Exponent wird durch kleinste Quadrate an die logarithmisch gebinnten Zählungen angepasst, über die Bins, die genug Lawinen enthalten, um eine Anpassung zu lohnen. Es ist eine grobe Schätzung auf einem kleinen Tisch und sollte als Hinweis darauf gelesen werden, dass die Linie gerade ist, und nicht als Messung von τ.</small>", "pl-018": "Achten Sie darauf, wie sich das Diagramm füllt. Die kleinen Lawinen kommen sofort und in gewaltiger Zahl. Die großen kommen selten, und die größte, die Sie gesehen haben, wird immer wieder überholt. Das ist nicht das Protokoll, das sich auf ein wahres Maximum zubewegt. Ein wahres Maximum gibt es hier nicht außer der Größe des Tisches, und auf einem größeren Tisch wäre das größte Ereignis schlicht größer.", "pl-019": "Beobachten Sie in der Ablesung die mittlere Zahl der Körner je Zelle. Sie klettert, während sich der Haufen füllt, hört dann auf zu klettern und bleibt stehen. Von da an kehrt der Haufen, was immer Sie mit ihm tun, zu ungefähr derselben mittleren Höhe zurück. Hineingehende Körner werden durch Körner ausgeglichen, die über die Kanten fallen, und das Gleichgewicht halten die Lawinen selbst.", "pl-020": "Das ist es, was das Wort selbstorganisiert in der Wendung arbeiten lässt. Der Haufen wird von niemandem an der Kritikalität gehalten. Fügen Sie Körner schneller hinzu, und sie ist immer noch da. Starten Sie von einem leeren Tisch, und er wandert dorthin. Starten Sie von einem überladenen Tisch, und er fällt darauf zurück. Der kritische Zustand ist der, wohin die Dynamik ihn trägt, weshalb der Effekt in Systemen auftaucht, die niemand verwaltet.", "pl-021": "Zwei Gründe, und der zweite ist der, der mir wichtig ist.", "pl-022": "Der erste ist der Prognosepunkt. In einem solchen Zustand ist die Größe des nächsten Ereignisses wirklich unprognostizierbar, und nicht, weil jemand unwissend wäre. Die Verteilung ist hier exakt bekannt, denn ich habe sie geschrieben, und sie zu kennen hilft nicht: Sie nennt die Chancen über einen Lauf und sagt über das nächste Korn überhaupt nichts. Es gibt die Gewohnheit, Unvorhersehbarkeit für einen Mangel an Daten oder Modellgüte zu halten, in der Annahme, ein besseres Instrument würde sie auflösen. Manche Unvorhersehbarkeit ist eine Eigenschaft des Systems und übersteht jedes Instrument, und ein Forschungsprojekt, das darüber sprechen will, was sich prognostizieren lässt und was nicht, muss beides auseinanderhalten können.", "pl-023": "Der zweite handelt von Verantwortung. Wenn eine große Lawine geschieht, ist das Korn, das sie auslöste, nicht von den Tausenden Körnern zu unterscheiden, die nichts auslösten. Es war kein besonderes Korn. Es fiel nicht härter. Zu suchen, was an ihm anders war, findet nichts, denn nichts war anders, und der Unterschied liegt ganz im Zustand, den der Haufen bereits erreicht hatte. Jede Institution, die eine Katastrophe untersucht, indem sie nach der letzten Handlung davor sucht, tut genau das, und der Haufen ist die sauberste mir bekannte Demonstration, dass die letzte Handlung unschuldig und das Ergebnis dennoch gewaltig sein kann.", "pl-024": "<strong>Das ist ein Lehrmodell, keine Messung.</strong> Jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die dieses Modell daraus erzeugt hat. Nichts hier beschreibt Sand, Märkte oder irgendein reales System.", "pl-025": "Läuft vollständig in Ihrem Browser. Nichts, was Sie hier tun, verlässt die Seite. Kein Server, keine Analyse, kein Netzwerkaufruf, nachdem die Schriften geladen sind. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Ozdemir</a>.", "pl-026": "<b>Es ist kein Sand</b>Reale granulare Haufen wurden gegen dieses Modell geprüft und verhalten sich weniger sauber als es, aus Gründen mit Trägheit und Reibung zu tun, die das Modell nicht darstellen kann. Der Name ist ein Bild und keine Behauptung über Sand.", "pl-027": "<b>Der Tisch ist klein</b>Jedes Potenzgesetz hier wird von der Größe des Gitters abgeschnitten, weshalb sich das rechte Ende des Diagramms nach unten biegt. Der aus einigen tausend Lawinen auf einem Tisch dieser Größe angepasste Exponent ist ein grober Hinweis und nicht mehr.", "pl-028": "<b>Die Einschwingphase ist enthalten</b>Jede Lawine wird protokolliert, auch die aus der frühen Zeit, als sich der Haufen noch füllte und seinen kritischen Zustand nicht erreicht hatte. Drücken Sie Zurücksetzen und lassen Sie einige tausend Körner fallen, bevor Sie das Diagramm ernst nehmen.", "pl-029": "<b>Der Antrieb ist von der Antwort getrennt</b>Jede Lawine läuft zu Ende, bevor das nächste Korn fällt. Diese Trennung der Zeitskalen ist eine Annahme des Modells, und ein System, das schneller angetrieben wird, als es relaxieren kann, verhielte sich anders.", "pl-030": "<b>Potenzgesetze sind leicht zu sehen und schwer zu belegen</b>Ein gerades Stück auf einem Log-Log-Diagramm ist für sich genommen ein schwacher Beleg, und die statistische Literatur zur Unterscheidung eines Potenzgesetzes von anderen schwerschwänzigen Verteilungen ist mit Augenmaßanpassungen nicht nachsichtig. Diese Seite zeigt einen Mechanismus, der eines erzeugt, und keine Methode, eines nachzuweisen.", "pl-031": "<b>Eine Analogie ist kein Befund</b>Die zwei Absätze oben über Prognose und über Verantwortung sind Argumente per Analogie. Dieses Modell belegt nichts über Märkte, Institutionen oder Katastrophen, und keine Zahl von dieser Seite gehört in eine Behauptung über sie.", "pl-033": "Abbildung eins <span class=\"ex-model-sub\">Körner fallen lassen und zusehen, wie sich das Protokoll füllt</span>", "pl-skip": "Zur Simulation springen", "pl-run": "Körner fallen lassen", "pl-plot-empty": "Die Verteilung der Lawinengrößen ist noch leer.", "pl-plot-empty2": "Die Verteilung der Lawinengrößen ist noch leer: Bisher wurden nur {n} Lawinen protokolliert.", "pl-plot-none": "noch nicht genug Lawinen", "pl-ax-size": "Größe der Lawine", "pl-ax-often": "wie oft", "pl-slope": "Steigung {s}, τ ist also etwa {t}", "pl-plot": "Die Verteilung der Lawinengrößen auf einem Diagramm mit zwei logarithmischen Achsen, über {n} Lawinen aus {d} Körnern. Die Punkte liegen nahe an einer Geraden der Steigung {s}, was ein Potenzgesetz mit einem Exponenten von etwa {t} ist. Die größte Lawine bisher hat {big} Zellen gekippt.", "pl-sum": "Ein Tisch von {n} mal {n} hält im Mittel {mh} Körner je Zelle, nach {d} Körnern, die {where} gefallen sind, und {av} Lawinen. Das letzte Korn hat {last} gekippt, und die größte Lawine bisher hat {big} gekippt.", "pl-where-centre": "auf die Mitte", "pl-where-random": "zufällig", "pl-cells": "{n} Zellen", "pl-s0": "Der Tisch ist leer. Lassen Sie Körner fallen und sehen Sie zu, wie die mittlere Höhe klettert, dann aufhört zu klettern, und wie sich das Protokoll rechts zu begradigen beginnt.", "pl-s1": "Nach {d} hält der Haufen {mh}{tail}", "pl-s1-filling": " und füllt sich noch. Über die Kanten fällt noch nichts annähernd so schnell, wie Körner ankommen, das Protokoll rechts ist also nicht die kritische Verteilung.", "pl-s1-critical": ", und dort bleibt er. Von hier an werden ankommende Körner durch Körner ausgeglichen, die über die Kanten gehen, und das Gleichgewicht halten die Lawinen selbst und nicht irgendetwas, das es einstellt.", "pl-s2": "Das letzte Korn hat {last} gekippt{none} Die größte bisher hat {big} gekippt{share} Das Korn, das sie auslöste, war wie jedes andere Korn.", "pl-s2-none": ": Es landete und es geschah überhaupt nichts.", "pl-s2-some": ".", "pl-s2-over": ", was mehr Kippvorgänge sind, als es Zellen auf dem Tisch gibt, denn eine Zelle kann in einer einzigen Lawine mehr als einmal über ihr Limit gehen.", "pl-s2-share": ", was {p} Prozent der Zellen auf dem Tisch sind.", "pl-grains": "{n} Körnern", "pl-per-cell": "{n} je Zelle", "pl-sl-n": "Tischgröße", "pl-sl-n-h": "Ein größerer Tisch braucht länger bis zu seinem kritischen Zustand und hält größere Lawinen.", "pl-fmt-n": "{v} mal {v}", "pl-sg-w": "Wo das Korn landet", "pl-sg-w-h": "Nur auf die Mitte fallen zu lassen baut das klassische Muster langsamer auf.", "pl-opt-random": "irgendwo", "pl-opt-centre": "die Mitte", "pl-sl-r": "Körner je Bild im Lauf", "pl-sl-r-h": "Wie schnell der Antrieb läuft. Es ändert nicht die Physik, nur das Warten.", "pl-rd-drops": "Gefallene Körner", "pl-rd-av": "Lawinen", "pl-rd-last": "Letzte Lawine", "pl-rd-big": "Größte bisher", "pl-rd-mh": "Körner je Zelle", "pl-rd-tau": "Angepasster Exponent", "pl-sub-nothing": "{n} Körner bewirkten nichts", "pl-sub-toppled": "Zellen gekippt", "pl-sub-big": "Zellen gekippt, manche mehr als einmal", "pl-sub-mh": "mittlere Höhe", "pl-notyet": "noch nicht", "pl-sub-bins": "aus {n} Bins", "pl-sub-keep": "weiter fallen lassen", "pl-key-empty": "leer", "pl-key-two": "zwei Körner", "pl-key-three": "drei Körner", "pl-key-topple": "gerade gekippt", "pl-share": "Link kopiert. Er öffnet mit so vielen gefallenen Körnern.", "pl-032": "Die Arbeit, die das Modell und die Idee der selbstorganisierten Kritikalität einführte: Dynamische Systeme mit räumlichen Freiheitsgraden entwickeln sich von selbst in einen selbstorganisierten kritischen Zustand, den die Autoren mit Flimmerrauschen und mit dem Ursprung fraktaler Strukturen verbinden. <span class=\"ex-cite-w\">Per Bak, Chao Tang and Kurt Wiesenfeld, <span class=\"ex-cite-t\">Self-organized\n            criticality: An explanation of the 1/f noise</span>, Physical Review Letters 59(4), 27 July\n            1987, page 381.\n            <a href=\"https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381\" target=\"_blank\" rel=\"noreferrer noopener\">journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381</a>\n            Geprüft: 2026 08 22.</span>\n          ", "pg-title": "Der Haufen"}};
+function T(k, en, v) {
+  var out = window.__t ? window.__t(k, en) : en;
+  if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+  return out;
+}
+
+var SWEEP = {
+  "Table size": "pl-sl-n",
+  "A larger table takes longer to reach its critical state and holds larger avalanches.": "pl-sl-n-h",
+  "Where the grain lands": "pl-sg-w",
+  "Dropping only on the centre builds the classic pattern more slowly.": "pl-sg-w-h",
+  "anywhere": "pl-opt-random", "the centre": "pl-opt-centre",
+  "Grains per frame while running": "pl-sl-r",
+  "How fast the drive runs. It does not change the physics, only the waiting.": "pl-sl-r-h",
+  "Grains dropped": "pl-rd-drops", "Avalanches": "pl-rd-av", "Last avalanche": "pl-rd-last",
+  "Largest so far": "pl-rd-big", "Grains per cell": "pl-rd-mh", "Fitted exponent": "pl-rd-tau",
+  "empty": "pl-key-empty", "two grains": "pl-key-two", "three grains": "pl-key-three",
+  "toppled just now": "pl-key-topple"
+};
+function sweepI18n() {
+  document.querySelectorAll(".ex-ctrl label > span:first-child, .ex-ctrl legend > span, "
+    + ".ex-seg-row label, .ex-read-k, .k-hint, #pl-key span").forEach(function (n) {
+    var en = n.getAttribute("data-en");
+    if (en === null) {
+      en = (n.childNodes.length && n.lastChild.nodeType === 3 ? n.lastChild.textContent : n.textContent).trim();
+      n.setAttribute("data-en", en);
+    }
+    var k = SWEEP[en];
+    if (!k) return;
+    var tgt = n.lastChild && n.lastChild.nodeType === 3 ? n.lastChild : n;
+    tgt.textContent = T(k, en);
+  });
+}
+function cellsT(n) { return T("pl-cells", "{n} cell" + (n === 1 ? "" : "s"), { n: n }); }
 
 /* ============================================================
    Simulation five: the pile
@@ -2308,11 +2386,13 @@ var Sim = (function () {
 
     var f = fit();
     if (!f) {
-      Sim.text(cPlot, "not enough avalanches yet", padL + iw / 2, padT + ih / 2,
+      Sim.text(cPlot, T("pl-plot-none", "not enough avalanches yet"), padL + iw / 2, padT + ih / 2,
         { align: "center", fill: p.faint });
-      Sim.text(cPlot, "size of avalanche", padL + iw / 2, cPlot.h - 21, { align: "center", small: true });
-      cPlot.label("The distribution of avalanche sizes is still empty: only " + avalanches
-        + " avalanches have been recorded so far.");
+      Sim.text(cPlot, T("pl-ax-size", "size of avalanche"), padL + iw / 2, cPlot.h - 21,
+        { align: "center", small: true });
+      cPlot.label(T("pl-plot-empty2",
+        "The distribution of avalanche sizes is still empty: only {n} avalanches have been recorded so "
+        + "far.", { n: avalanches }));
       return;
     }
 
@@ -2358,10 +2438,12 @@ var Sim = (function () {
       ctx.fill();
     }
 
-    Sim.text(cPlot, "size of avalanche", padL + iw / 2, cPlot.h - 21, { align: "center", small: true });
-    Sim.text(cPlot, "slope " + Sim.fix(f.slope, 2) + ", so τ is about " + Sim.fix(-f.slope, 2),
+    Sim.text(cPlot, T("pl-ax-size", "size of avalanche"), padL + iw / 2, cPlot.h - 21,
+      { align: "center", small: true });
+    Sim.text(cPlot, T("pl-slope", "slope {s}, so \u03c4 is about {t}",
+      { s: Sim.fix(f.slope, 2), t: Sim.fix(-f.slope, 2) }),
       padL + iw / 2, cPlot.h - 7, { align: "center", small: true, fill: p.dim });
-    var yl = "how often";
+    var yl = T("pl-ax-often", "how often");
     Sim.text(cPlot, yl, padL + 4, padT + 11, { small: true, fill: p.faint });
     cPlot.label(plotWords(f));
   }
@@ -2370,62 +2452,65 @@ var Sim = (function () {
 
   function plotWords(f) {
     if (!f) f = fit();
-    if (!f) return "The distribution of avalanche sizes is still empty.";
-    return "The distribution of avalanche sizes on a plot with both axes logarithmic, over "
-      + f.total + " avalanches from " + drops + " grains. The points fall close to a straight line of "
-      + "slope " + Sim.fix(f.slope, 2) + ", which is a power law with an exponent of about "
-      + Sim.fix(-f.slope, 2) + ". The largest avalanche so far toppled " + biggest + " cells.";
+    if (!f) return T("pl-plot-empty", "The distribution of avalanche sizes is still empty.");
+    return T("pl-plot",
+      "The distribution of avalanche sizes on a plot with both axes logarithmic, over {n} avalanches from "
+      + "{d} grains. The points fall close to a straight line of slope {s}, which is a power law with an "
+      + "exponent of about {t}. The largest avalanche so far toppled {big} cells.",
+      { n: f.total, d: drops, s: Sim.fix(f.slope, 2), t: Sim.fix(-f.slope, 2), big: biggest });
   }
 
   function summary() {
-    var mh = meanHeight();
-    return "A " + N + " by " + N + " table holding " + Sim.fix(mh, 2)
-      + " grains per cell on average, after " + drops + " grains dropped "
-      + (S.where === "centre" ? "on the centre" : "at random") + " and " + avalanches
-      + " avalanches. The last grain toppled " + lastSize + " cell"
-      + (lastSize === 1 ? "" : "s") + " and the largest avalanche so far toppled " + biggest + ".";
+    return T("pl-sum",
+      "A {n} by {n} table holding {mh} grains per cell on average, after {d} grains dropped {where} and "
+      + "{av} avalanches. The last grain toppled {last} and the largest avalanche so far toppled {big}.",
+      { n: N, mh: Sim.fix(meanHeight(), 2), d: drops,
+        where: S.where === "centre" ? T("pl-where-centre", "on the centre")
+                                    : T("pl-where-random", "at random"),
+        av: avalanches, last: cellsT(lastSize), big: cellsT(biggest) });
   }
 
   function says() {
     var host = Q("#pl-says");
     Kit.clear(host);
     var e = Kit.el;
-    function n(t, flag) { return e("span", { class: "ex-n" + (flag ? " ex-n-flag" : ""), text: t }); }
+    function nh(t, flag) { return '<span class="ex-n' + (flag ? " ex-n-flag" : "") + '">' + t + "</span>"; }
 
     var p1 = e("p");
     if (drops === 0) {
-      p1.appendChild(document.createTextNode("The table is empty. Drop grains and watch the average "
-        + "height climb, then stop climbing, and the record on the right start to straighten."));
+      p1.innerHTML = T("pl-s0",
+        "The table is empty. Drop grains and watch the average height climb, then stop climbing, and the "
+        + "record on the right start to straighten.");
       host.appendChild(p1);
       return;
     }
 
     var mh = meanHeight();
-    p1.appendChild(document.createTextNode("After "));
-    p1.appendChild(n(drops + " grains"));
-    p1.appendChild(document.createTextNode(" the pile is holding "));
-    p1.appendChild(n(Sim.fix(mh, 2) + " per cell"));
-    p1.appendChild(document.createTextNode(mh < 2.0
-      ? " and is still filling up. Nothing is falling off the edges yet at anything like the rate grains "
-        + "are arriving, so the record on the right is not the critical distribution."
-      : ", which is where it stays. From here on, grains arriving are balanced by grains leaving over the "
-        + "edges, and the balance is maintained by the avalanches themselves rather than by anything "
-        + "tuning it."));
+    p1.innerHTML = T("pl-s1", "After {d} the pile is holding {mh}{tail}",
+      { d: nh(T("pl-grains", "{n} grains", { n: drops })),
+        mh: nh(T("pl-per-cell", "{n} per cell", { n: Sim.fix(mh, 2) })),
+        tail: mh < 2.0
+          ? T("pl-s1-filling", " and is still filling up. Nothing is falling off the edges yet at "
+              + "anything like the rate grains are arriving, so the record on the right is not the "
+              + "critical distribution.")
+          : T("pl-s1-critical", ", which is where it stays. From here on, grains arriving are balanced by "
+              + "grains leaving over the edges, and the balance is maintained by the avalanches "
+              + "themselves rather than by anything tuning it.") });
     host.appendChild(p1);
 
     var p2 = e("p");
-    p2.appendChild(document.createTextNode("The last grain toppled "));
-    p2.appendChild(n(String(lastSize), lastSize > 200));
-    p2.appendChild(document.createTextNode(lastSize === 0
-      ? " cells: it landed and nothing happened at all."
-      : (lastSize === 1 ? " cell." : " cells.")));
-    p2.appendChild(document.createTextNode(" The largest so far toppled "));
-    p2.appendChild(n(String(biggest), true));
-    p2.appendChild(document.createTextNode(biggest > N * N
-      ? ", which is more topplings than there are cells on the table, because a cell can go over its "
-        + "limit more than once in a single avalanche. "
-      : ", which is " + Sim.fix(100 * biggest / (N * N), 1) + " per cent of the cells on the table. "));
-    p2.appendChild(document.createTextNode("The grain that started it was the same as every other grain."));
+    p2.innerHTML = T("pl-s2",
+      "The last grain toppled {last}{none} The largest so far toppled {big}{share} The grain that started "
+      + "it was the same as every other grain.",
+      { last: nh(cellsT(lastSize), lastSize > 200),
+        none: lastSize === 0 ? T("pl-s2-none", ": it landed and nothing happened at all.")
+                             : T("pl-s2-some", "."),
+        big: nh(cellsT(biggest), true),
+        share: biggest > N * N
+          ? T("pl-s2-over", ", which is more topplings than there are cells on the table, because a cell "
+              + "can go over its limit more than once in a single avalanche.")
+          : T("pl-s2-share", ", which is {p} per cent of the cells on the table.",
+              { p: Sim.fix(100 * biggest / (N * N), 1) }) });
     host.appendChild(p2);
   }
 
@@ -2439,7 +2524,7 @@ var Sim = (function () {
     cN = Ex.slider(rack, {
       label: "Table size",
       min: 21, max: 81, step: 2, value: S.n,
-      format: function (v) { return v + " by " + v; },
+      format: function (v) { return T("pl-fmt-n", "{v} by {v}", { v: v }); },
       hint: "A larger table takes longer to reach its critical state and holds larger avalanches.",
       onInput: function (v) { S.n = v; restart(); }
     });
@@ -2470,8 +2555,10 @@ var Sim = (function () {
 
     var p = Sim.palette();
     var key = Q("#pl-key");
-    [[p.field, "empty"], [Sim.mix(p.field, p.accent, 0.58), "two grains"],
-     [Sim.mix(p.field, p.accent, 0.92), "three grains"], [p.flag, "toppled just now"]].forEach(function (k) {
+    [[p.field, T("pl-key-empty", "empty")],
+     [Sim.mix(p.field, p.accent, 0.58), T("pl-key-two", "two grains")],
+     [Sim.mix(p.field, p.accent, 0.92), T("pl-key-three", "three grains")],
+     [p.flag, T("pl-key-topple", "toppled just now")]].forEach(function (k) {
       var mark = Kit.el("i");
       mark.style.background = k[0];
       mark.style.border = "1px solid " + p.ruleFirm;
@@ -2510,19 +2597,24 @@ var Sim = (function () {
 
   /* ---------- render ---------- */
 
+  function clock() { return T("pl-grains", "{n} grains", { n: drops }); }
+
   function paint() {
     drawGrid();
     drawPlot();
     var f = fit();
-    setRead("drops", String(drops), S.where === "centre" ? "on the centre" : "at random");
-    setRead("av", String(avalanches), (drops - avalanches) + " grains did nothing");
-    setRead("last", String(lastSize), "cells toppled");
-    setRead("big", String(biggest), "cells toppled, some more than once");
-    setRead("mh", Sim.fix(meanHeight(), 2), "average height");
-    setRead("tau", f ? Sim.fix(-f.slope, 2) : "not yet", f ? "from " + f.n + " bins" : "keep dropping");
+    setRead("drops", String(drops), S.where === "centre"
+      ? T("pl-where-centre", "on the centre") : T("pl-where-random", "at random"));
+    setRead("av", String(avalanches),
+      T("pl-sub-nothing", "{n} grains did nothing", { n: drops - avalanches }));
+    setRead("last", String(lastSize), T("pl-sub-toppled", "cells toppled"));
+    setRead("big", String(biggest), T("pl-sub-big", "cells toppled, some more than once"));
+    setRead("mh", Sim.fix(meanHeight(), 2), T("pl-sub-mh", "average height"));
+    setRead("tau", f ? Sim.fix(-f.slope, 2) : T("pl-notyet", "not yet"),
+      f ? T("pl-sub-bins", "from {n} bins", { n: f.n }) : T("pl-sub-keep", "keep dropping"));
     Q("#pl-sum").textContent = summary();
     says();
-    if (tr) tr.setClock(drops + " grains");
+    if (tr) tr.setClock(clock());
   }
 
   function init() {
@@ -2536,23 +2628,25 @@ var Sim = (function () {
     tr = Sim.transport(Q("#pl-bar"), {
       scope: Q("#m1"),
       burst: 400,
-      runLabel: "Drop grains",
+      runKey: "pl-run", runLabel: "Drop grains",
       onStep: function () { drop(); },
       onDraw: function () {
         drawGrid();
         if (drops % 40 === 0) drawPlot();
-        if (tr) tr.setClock(drops + " grains");
+        if (tr) tr.setClock(clock());
         if (drops >= MAXDROPS) { tr.stop(); paint(); }
       },
       onSettle: function () { paint(); Kit.state.write(hashOut()); },
       onReset: function () { S.seed = (S.seed % 999999) + 1; reset(); paint(); Kit.state.write(hashOut()); },
-      onShare: function () { Kit.share(hashOut(), "Link copied. It reopens with this many grains dropped."); }
+      onShare: function () { Kit.share(hashOut(), T("pl-share", "Link copied. It reopens with this many grains dropped.")); }
     });
     tr.setRate(S.rate);
 
     paint();
     Kit.state.write(hashOut());
 
+    sweepI18n();
+    document.addEventListener("langchange", function () { sweepI18n(); sync(); paint(); });
     Ex.onResize(function () { cGrid.resize(); cPlot.resize(); paint(); });
     window.addEventListener("hashchange", function () {
       if (hashIn()) { sync(); paint(); }
@@ -2579,40 +2673,97 @@ var Sim = (function () {
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Beş simülasyondan beşincisi</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Simulation fünf von fünf</i>"}};
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Beş simülasyondan beşincisi</i>"}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Simulation fünf von fünf</i>"}};
 
 (function(){
   "use strict";
   var KEY = "lang", lang = "en";
-  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
-  var D = window.CHROME_I18N || {};
-  var base = {}, baseA = {};
-  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
-  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  function known(l){
+    return l === "en"
+        || (window.CHROME_I18N && window.CHROME_I18N[l])
+        || (window.PAGE_I18N && window.PAGE_I18N[l]);
+  }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
   function apply(l){
-    if(!D[l]) l = "en";
-    var d = D[l] || {};
-    document.querySelectorAll(SEL).forEach(function(el){
-      var k = el.getAttribute("data-i");
-      if(!(k in base)) base[k] = el.innerHTML;
-      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
-    });
-    document.querySelectorAll(SELA).forEach(function(el){
-      var k = el.getAttribute("data-ia");
-      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
-      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
-    });
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
     });
     try { localStorage.setItem(KEY, l); } catch (e) {}
     window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
 })();
 

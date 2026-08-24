@@ -16,6 +16,7 @@
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <link rel="alternate" type="application/rss+xml" title="Notes" href="feed.xml">
 <meta name="twitter:card" content="summary_large_image">
+
 <!-- Analytics: cookieless. Create a site at dash.cloudflare.com > Web Analytics,
      paste the token below and remove the comment markers.
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "YOUR_TOKEN"}'></script>
@@ -50,18 +51,21 @@
 body::after{content:"";position:fixed;inset:0;background:#17110a;pointer-events:none;z-index:95;
   animation:surface .55s ease .05s forwards}
 @keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.crown,main>section{animation:riseIn .6s cubic-bezier(.23,1,.32,1) both}
-main>section:nth-of-type(1){animation-delay:.12s}
-main>section:nth-of-type(2){animation-delay:.2s}
-main>section:nth-of-type(3){animation-delay:.28s}
-@media (prefers-reduced-motion:reduce){body::after{display:none}.crown,main>section{animation:none}}
+.crown{animation:riseIn .7s cubic-bezier(.16,1,.3,1) both;animation-delay:.1s}
+@media (prefers-reduced-motion:reduce){body::after{display:none}.crown{animation:none}}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--fg);font-family:var(--sans);line-height:1.6}
 ::selection{background:#e3c893;color:#221e17}
+html{caret-color:var(--accent);scrollbar-color:#c9c0aa var(--paper);scrollbar-width:thin}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--paper)}
+::-webkit-scrollbar-thumb{background:#cdc4ae;border:3px solid var(--paper);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:#b3a88e}
+a{text-underline-offset:.18em;text-decoration-thickness:from-font}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 a{color:inherit}
 a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -69,8 +73,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -89,7 +94,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -99,7 +104,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -109,12 +114,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -136,37 +141,121 @@ footer a:hover{color:var(--fg)}
 h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.4rem,6vw,4.2rem);line-height:1.05;letter-spacing:.005em}
 .crown p.lede{margin-top:1.2rem;max-width:58ch;font-family:var(--text);font-size:1.15rem;color:var(--dim)}
 
-h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:.005em;margin:0 0 1.2rem}
+/* A page whose heading is a nav label rather than an argument sets that label
+   as a folio mark and lets the statement below be the opening voice. Setting
+   the word "Profile" in 67px display type was giving the page's largest
+   gesture to its least interesting word. */
+.crown h1.folio{font-family:var(--sans);font-weight:500;font-size:.82rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);line-height:1}
+.crown:has(h1.folio){padding-bottom:clamp(1.2rem,3vh,1.8rem)}
+
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.6rem,3.2vw,2.3rem);letter-spacing:-.005em;margin:0 0 1.6rem}
 section{padding:clamp(2.2rem,6vh,4rem) 0}
 section + section{border-top:1px solid var(--line)}
+
+/* ---------- headings in the margin ----------
+   A reading column is about 62ch wide. On a laptop that leaves a third of the
+   page doing nothing, and the page starts to look like a blog post pasted into
+   a wide window. The section heading moves into that margin and stays with its
+   section while you read it, so the width carries the table of contents. */
+@media (min-width:1010px){
+  main > section:has(> h2){
+    display:grid;
+    grid-template-columns:minmax(0,13rem) minmax(0,1fr);
+    column-gap:clamp(1.8rem,4vw,3.4rem)}
+  main > section:has(> h2) > h2{
+    grid-column:1;grid-row:1 / span 200;align-self:start;
+    position:sticky;top:5.4rem;
+    margin:0;font-size:1.3rem;line-height:1.25;letter-spacing:0;text-wrap:balance}
+  main > section:has(> h2) > *:not(h2){grid-column:2}
+}
+/* a section that already closes itself with a rule does not need the next
+   section to draw a second one 30px below it */
+section:has(> .note-item:last-of-type) + section{border-top:0}
+
+/* ---------- the spread ----------
+   A narrow rail for dates, labels and marginalia, and a reading column beside
+   it. The rail is what fills the width honestly on a laptop, and it is the
+   same idea the essays use when they put a counter argument in the margin.
+   Below 900 it folds: the rail becomes a line above its entry. */
+.spread{display:grid;grid-template-columns:minmax(0,11.5rem) minmax(0,66ch);
+  gap:clamp(1.4rem,4vw,3.4rem);align-items:start}
+.spread > .rail{font-family:var(--mono);font-size:.76rem;letter-spacing:.04em;
+  line-height:1.5;color:var(--dim);padding-top:.42rem;font-variant-numeric:tabular-nums}
+.spread > .rail b{display:block;font-weight:500;color:var(--accent);font-variant-numeric:tabular-nums}
+.spread > .rail span{display:block;margin-top:.35rem}
+@media (max-width:900px){
+  .spread{grid-template-columns:1fr;gap:1.1rem}
+  .spread > .rail{padding:.1rem 0 .1rem .9rem;border-left:1px solid var(--line)}
+  .spread > .rail span{margin-top:.28rem}
+  .spread--intro > .rail{margin-bottom:.3rem}
+  .tl .row .rail{display:flex;gap:.9rem;border-left:0;padding-left:0}
+  .tl .row .rail span{margin-top:0}
+}
+
+/* The step the pages were missing: between a 4rem heading and 1.1rem body
+   there was nothing, so every page read as a title and then a paragraph. */
+/* The step between a display heading and body text. Kept plain: it states
+   where he is and what he is doing, and does not try to be memorable. */
+.opening{font-family:var(--text);font-weight:400;
+  font-size:clamp(1.14rem,1.5vw,1.32rem);line-height:1.5;color:var(--fg);
+  max-width:46ch;text-wrap:pretty}
+.opening + .after{margin-top:1.8rem;font-family:var(--text);font-size:1.08rem;
+  line-height:1.62;color:#4c463b;max-width:62ch}
+.opening + .after p + p{margin-top:.9em}
+
+/* The artifact a claim leaves behind, in the type the instruments use for
+   measurement. Not decoration: if a line has no artifact it gets none. */
+.ev{margin-top:.7rem;font-family:var(--mono);font-size:.75rem;letter-spacing:.03em;
+  color:var(--accent);display:flex;flex-wrap:wrap;gap:.35rem .9rem;
+  font-variant-numeric:tabular-nums}
+.ev i{font-style:normal;color:var(--dim)}
 
 /* ---------- profile pieces ---------- */
 .story{max-width:62ch;font-family:var(--text);font-size:1.13rem;line-height:1.65}
 .story p+p{margin-top:1em}
-.tl{margin-top:.6rem}
-.tl .row{display:grid;grid-template-columns:74px 1fr;gap:1.2rem;padding:1.1rem 0;border-top:1px solid var(--line)}
-.tl .yr{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var(--accent);padding-top:.1rem}
-.tl h3{font-family:var(--sans);font-weight:500;font-size:1rem}
-.tl .role{display:block;font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--dim);margin:.1rem 0 .4rem}
-.tl p{font-family:var(--text);font-size:1rem;color:#4c463b;max-width:64ch}
+.tl{margin-top:.4rem;border-top:1px solid var(--line)}
+.tl .row{padding:1.5rem 0;border-bottom:1px solid var(--line)}
+.tl .row:last-child{border-bottom:0}
+.tl h3{font-family:var(--serif);font-weight:400;font-size:1.32rem;letter-spacing:-.005em;line-height:1.15}
+.tl .role{display:block;font-family:var(--sans);font-size:.82rem;font-weight:500;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--dim);margin:.42rem 0 .6rem}
+.tl p{font-family:var(--text);font-size:1.04rem;line-height:1.6;color:#4c463b;max-width:62ch}
 .badge{display:inline-block;font-size:.72rem;color:var(--accent);
   border:1px solid var(--line);border-radius:2px;padding:.15em .55em;margin-top:.5rem}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(1.2rem,4vw,3rem)}
 dl .item{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
 dl .item .v{color:var(--dim);text-align:right;font-size:.8rem;padding-top:.1rem;flex-shrink:0}
+/* a ledger row names who issued the thing before it names the thing */
+dl.led .item{align-items:baseline}
+dl.led .item .k{display:block}
+dl.led .iss{display:block;font-family:var(--mono);font-weight:400;font-size:.68rem;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:.18rem}
+dl.led .item .v{font-family:var(--mono);font-variant-numeric:tabular-nums;align-self:end}
 h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg);margin:0 0 .5rem}
-.cv-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.6rem;padding:.65rem 1.2rem;
-  border:1px solid var(--fg);border-radius:2px;text-decoration:none;font-size:.86rem;font-weight:500;letter-spacing:.02em;
-  transition:background .18s var(--ease),color .18s var(--ease),transform .18s var(--ease)}
+.cv-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:2rem;padding:.78rem 1.4rem;
+  background:var(--fg);color:var(--paper);border:1px solid var(--fg);border-radius:2px;text-decoration:none;
+  font-size:.86rem;font-weight:500;letter-spacing:.02em;
+  box-shadow:0 1px 2px rgba(34,30,23,.14),0 6px 18px -8px rgba(34,30,23,.3);
+  transition:background .18s var(--ease),color .18s var(--ease),transform .18s var(--ease),box-shadow .18s var(--ease)}
+.cv-btn:hover{background:#100d08;box-shadow:0 2px 4px rgba(34,30,23,.18),0 12px 26px -10px rgba(34,30,23,.36);transform:translateY(-1px)}
 .cv-btn:active{transform:scale(.98)}
-.cv-btn:hover{background:var(--fg);color:var(--paper)}
 
 /* ---------- projects pieces ---------- */
-.feature{border:1px solid var(--line);background:var(--raised);padding:clamp(1.4rem,4vw,2.4rem);
-  display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start}
-.feature h3{font-family:var(--serif);font-weight:400;font-size:1.6rem}
+/* an entry in a catalogue, not a card: the rule carries the separation the
+   box used to, and the row keeps the paper it sits on */
+.feature{border-top:1px solid var(--line);padding:1.25rem 0 1.5rem;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.9rem 2rem;align-items:baseline}
+.feature h3{font-family:var(--serif);font-weight:400;font-size:clamp(1.42rem,2.4vw,1.75rem);
+  letter-spacing:-.008em;margin:0}
 .feature p{max-width:58ch;font-family:var(--text);font-size:1.02rem;color:#4c463b;margin-top:.5rem}
-.feature .go{font-size:.84rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:nowrap;
+.col-lead{font-family:var(--text);font-size:1.08rem;line-height:1.62;color:#4c463b;max-width:58ch}
+.go-block{display:inline-block;margin-top:1.3rem;font-family:var(--sans);font-size:.84rem;font-weight:500;
+  letter-spacing:.03em;color:var(--accent);text-decoration:none;
+  border-bottom:1px solid var(--line);padding-bottom:.15em;transition:border-color .18s var(--ease)}
+.go-block:hover{border-bottom-color:var(--accent)}
+.feature .go{justify-self:start;font-size:.84rem;font-weight:500;color:var(--accent);
+  text-decoration:none;white-space:nowrap;
   border-bottom:1px solid var(--line);transition:border-color .18s var(--ease)}
 .feature .go:hover{border-bottom-color:var(--accent)}
 .repo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;background:var(--line);
@@ -178,10 +267,17 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 .repo p{font-family:var(--text);font-size:.92rem;color:#4c463b;margin-top:.35rem;line-height:1.45}
 
 /* ---------- contact ---------- */
-.mail-line{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-top:1rem}
-.mail-line a.addr{font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,4vw,2.6rem);text-decoration:none;
-  border-bottom:1px solid var(--line)}
-.mail-line a.addr:hover{border-bottom-color:var(--accent)}
+/* The address is the page. It gets the size, and the rule under it thickens
+   on hover rather than changing colour, so the target reads as one object. */
+.mail-line{display:flex;flex-wrap:wrap;align-items:baseline;gap:1rem;margin-top:.2rem}
+.mail-line a.addr{font-family:var(--serif);font-weight:300;font-size:clamp(1.5rem,4.2vw,2.75rem);
+  letter-spacing:-.015em;text-decoration:none;padding-bottom:.1em;
+  border-bottom:1px solid var(--line);
+  /* the rule thickens on hover through a shadow, so nothing reflows */
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+.mail-line a.addr:hover{border-bottom-color:var(--accent);box-shadow:0 1px 0 0 var(--accent)}
+.c-help{margin-top:1.8rem;font-family:var(--text);font-size:1.05rem;line-height:1.6;
+  color:#4c463b;max-width:56ch}
 .copy{font-size:.78rem;font-weight:500;letter-spacing:.02em;color:var(--dim);
   background:none;border:1px solid var(--line);border-radius:2px;padding:.5em .9em;cursor:pointer;
   transition:color .15s var(--ease),border-color .15s var(--ease)}
@@ -258,8 +354,9 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
   input[type="range"]{height:44px;margin:0;padding:0}
   .demo-src a{display:inline-flex;align-items:center;min-height:44px}
 }
-.rise{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .7s cubic-bezier(.22,1,.36,1)}
-.rise.in{opacity:1;transform:none}
+.rise{opacity:0;transform:translateY(18px);filter:blur(3px);
+  transition:opacity .75s ease,transform .9s cubic-bezier(.16,1,.3,1),filter .75s ease}
+.rise.in{opacity:1;transform:none;filter:none}
 @media (prefers-reduced-motion:reduce){.rise{opacity:1;transform:none;transition:none}}
 #cvsheet{display:none}
 @media print{
@@ -499,7 +596,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
 <header class="bar">
   <div class="wrap">
     <a class="home" href="index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" aria-current="page" data-i="nav-j">Projects</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a><a href="tools.html" data-i="nav-t">Tools</a><a href="game.html" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" aria-current="page" data-i="nav-j">Projects</a><a href="tools.html" data-i="nav-t">Tools</a><a href="tools/economics/" data-i="nav-e">Economics</a><a href="game.html" data-i="nav-g">Game Theory</a><a href="simea/" data-i="nav-s">Simulations</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -518,12 +615,16 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
 
 <section aria-labelledby="col-h">
   <h2 id="col-h">CoLaunch</h2>
-  <div class="feature">
-    <div>
-      <h3>colaunch.app</h3>
-      <p data-i="col-p">Co-founding a platform for people who build things together. In build with a small team; third place at the Boğaziçi Enterprize competition. More here as it ships. no promises ahead of the product.</p>
+  <div class="spread">
+    <div class="rail">
+      <b data-i="col-r1">In build</b>
+      <span data-i="col-r2">Small team</span>
+      <span data-i="col-r3">Bo&#287;azi&#231;i Enterprize, third</span>
     </div>
-    <a class="go" href="https://colaunch.app" rel="noopener noreferrer">colaunch.app →</a>
+    <div>
+      <p class="col-lead" data-i="col-p">Co-founding a platform for people who build things together. It is in build with a small team, and there is nothing to demonstrate here yet. When there is, it goes on this page.</p>
+      <a class="go go-block" href="https://colaunch.app" rel="noopener noreferrer">colaunch.app &#8594;</a>
+    </div>
   </div>
 </section>
 
@@ -551,7 +652,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
         </div>
         <div class="rig-in" id="dcf-body" role="status" aria-live="polite"></div>
       </div>
-      <p class="demo-src"><a href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/analyst-toolkit</a><span data-i="tst-72">72 tests</span><a href="case-dcf-lab.html" data-i="case-link">Read the case study</a></p>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/analyst-toolkit</a><span data-i="tst-72"><a href="https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml" rel="noopener noreferrer">dcf-lab, 72 tests</a></span><a href="case-dcf-lab.html" data-i="case-link">Read the case study</a></p>
     </article><article class="demo" id="demo-macc">
       <div class="demo-head">
         <span class="demo-n" data-i="t2">Tool two</span>
@@ -579,7 +680,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
           <div class="macc-read" id="mc-read" role="status" aria-live="polite"></div>
         </div>
       </div>
-      <p class="demo-src"><a href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/esg-toolkit</a><span data-i="tst-46">46 tests</span><a href="case-marginal-abatement.html" data-i="case-link">Read the case study</a></p>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/esg-toolkit</a><span data-i="tst-46"><a href="https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml" rel="noopener noreferrer">marginal-abatement, 46 tests</a></span><a href="case-marginal-abatement.html" data-i="case-link">Read the case study</a></p>
     </article><article class="demo" id="demo-bridge">
       <div class="demo-head">
         <span class="demo-n" data-i="t3">Tool three</span>
@@ -595,7 +696,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
           <div class="check" id="cb-check"></div>
         </div>
       </div>
-      <p class="demo-src"><a href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/esg-toolkit</a><span data-i="tst-37">37 tests</span><a href="case-carbon-bridge.html" data-i="case-link">Read the case study</a></p>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/esg-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/esg-toolkit</a><span data-i="tst-37"><a href="https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml" rel="noopener noreferrer">carbon-bridge, 37 tests</a></span><a href="case-carbon-bridge.html" data-i="case-link">Read the case study</a></p>
     </article><article class="demo" id="demo-unitguard">
       <div class="demo-head">
         <span class="demo-n" data-i="t4">Tool four</span>
@@ -623,7 +724,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
         </div>
         <div class="rig-in verdict" id="ug-out" role="status" aria-live="polite"></div>
       </div>
-      <p class="demo-src"><a href="https://github.com/Keremozdemirra/unitguard" rel="noopener noreferrer">github.com/Keremozdemirra/unitguard</a><span data-i="tst-127">127 tests</span><a href="case-unitguard.html" data-i="case-link">Read the case study</a></p>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/unitguard" rel="noopener noreferrer">github.com/Keremozdemirra/unitguard</a><span data-i="tst-127"><a href="https://github.com/Keremozdemirra/unitguard/actions/workflows/tests.yml" rel="noopener noreferrer">dimensions and quantity, 127 tests</a></span><a href="case-unitguard.html" data-i="case-link">Read the case study</a></p>
     </article><article class="demo" id="demo-sizer">
       <div class="demo-head">
         <span class="demo-n" data-i="t5">Tool five</span>
@@ -660,7 +761,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
           </table>
         </div>
       </div>
-      <p class="demo-src"><a href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/analyst-toolkit</a><span data-i="tst-49">49 tests</span><a href="case-market-sizer.html" data-i="case-link">Read the case study</a></p>
+      <p class="demo-src"><a href="https://github.com/Keremozdemirra/analyst-toolkit" rel="noopener noreferrer">github.com/Keremozdemirra/analyst-toolkit</a><span data-i="tst-49"><a href="https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml" rel="noopener noreferrer">market-sizer, 49 tests</a></span><a href="case-market-sizer.html" data-i="case-link">Read the case study</a></p>
     </article>
 </section>
 
@@ -680,26 +781,36 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
 </main>
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 <script>
-window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "case-link": "Vaka incelemesini oku", "tst-72": "72 test", "tst-46": "46 test", "tst-37": "37 test", "tst-127": "127 test", "tst-49": "49 test", "t1": "Araç bir", "t2": "Araç iki", "t3": "Araç üç", "t4": "Araç dört", "t5": "Araç beş", "q1": "Bu değerlemenin ne kadarı öngörülen beş yıl, ne kadarı onların ardına eklenen sonsuz devam?", "q1b": "Her sürgü bir iddiadır: büyüme hikâyedir, iskonto oranı şüphedir, terminal değer ise değerlemelerin saklandığı yerdir.", "q2": "Verili bir karbon fiyatında bu on önlemden hangileri yapmaya değer ve bu küme ne kadara mal olur?", "q3": "Emisyonlar iki yıl arasında değişti. Bunun ne kadarı üretim, ne kadarı ürün karması, ne kadarı enerji yoğunluğu ve ne kadarı emisyon faktörü?", "q4": "Bu dönüşümün bir cevabı var mı, yoksa tam olarak ne eksik?", "q5": "İki boyutlandırma birbirini tutmuyor. Hangi varsayım değişmeli ve ne olmalı?", "lb-w": "Sermaye maliyeti", "lb-g": "Terminal büyüme", "lb-cp": "Karbon fiyatı", "ro-n": "Açılan önlemler", "ro-t": "Kümülatif azaltım", "ro-c": "Net yıllık maliyet", "mc-hint": "Çubuk genişliği yıllık azaltımdır. Çubuk yüksekliği ton başına seviyelendirilmiş maliyettir. Aritmetiği için bir çubuk seçin.", "ug-qty": "Miktar", "ug-from": "Kaynak", "ug-to": "Hedef", "ug-go": "Dönüştür", "ms-td-h": "Yukarıdan aşağı", "ms-td-s": "Katsayılarla daraltılan bir evren.", "ms-bu-h": "Aşağıdan yukarı", "ms-bu-s": "Her biri sürücülerin çarpımı olan segmentler.", "ms-td-t": "Yukarıdan aşağı toplam", "ms-bu-t": "Aşağıdan yukarı toplam", "ms-gap": "Fark", "ms-cap": "İki boyutlandırmanın uyuşması için her varsayımın ne olması gerekirdi", "ms-c1": "Varsayım", "ms-c2": "Şimdi", "ms-c3": "Gerekli", "ms-c4": "Kat", "ug-dim-energy": "enerji", "ug-dim-mass": "kütle", "ug-dim-ghg": "sera gazı kütlesi", "ug-noans": "{a} birimini {b} birimine çevirmenin burada bir cevabı yok.", "ug-h-gwp": "Küresel ısınma potansiyeli verilmedi", "ug-w-gwp": "Bir ton CH4 ancak bir küresel ısınma potansiyeli üzerinden tCO2e olur ve bir GWP yalnızca belirtilmiş bir IPCC değerlendirme raporu ve zaman ufku içinde vardır. 100 yıl için AR4 metanı 25, AR5 28, AR6 ise biyojenik için 27.0 ve fosil metan için 29.8 sayar. Raporu ve ufku söyleyin, bu tek bir çarpmaya döner.", "ug-n-gwp": "unitguard birini seçmektense reddeder.", "ug-h-mix": "Gaz karışımı verilmedi", "ug-w-mix": "tCO2e bir hesap birimidir, bir madde değil. Bir gaz demetinin ne kadar ısınmaya yol açtığı kabul edilen değeri kaydeder, tek bir gazdan ne kadar bulunduğunu değil. Bu rakamı üreten karışım olmadan geri verilecek bir {g} kütlesi yoktur.", "ug-n-mix": "İşleyen yön CO2'den CO2e'ye olandır; orada potansiyel tanımı gereği 1'dir.", "ug-n-4412": "Tam olarak 44/12, molar kütlelerin oranı.", "ug-n-1244": "Tam olarak 12/44, molar kütlelerin oranı.", "ug-n-co2e": "CO2'nin potansiyeli, metriğin tanımı gereği 1'dir.", "ug-n-cco2e": "Karbondan CO2'ye 44/12 ile, sonra CO2'den CO2e'ye 1 potansiyeliyle.", "ug-h-none": "Tanımlı değil", "ug-w-none": "unitguard bu iki tür arasında tanımlı bir yol tutmuyor.", "ug-h-sp": "Gaz türü verilmedi", "ug-w-sp": "{a} çıplak bir kütledir. {b} tek bir gazı sayar. Türü adlandırmak ikisi arasındaki tüm farktır ve onu tahmin eden bir dönüştürücü sayıyı uyduruyor olurdu.", "ug-n-sp": "Girdi tarafında türü belirtin, dönüşüm geçer.", "ug-h-drop": "Tür bilgisi düşerdi", "ug-w-drop": "unitguard gaz türünü birimin bir parçası olarak taşır. {a} birimini çıplak {b} birimine çevirmek onu düşürür ve rakam bir emisyon rakamı olmaktan çıkar. Türü hedef birimde tutun.", "ug-h-dim": "Farklı boyutlar", "ug-w-dim": "{a} {da} ölçer, {b} ise {db} ölçer. Hiçbiri kendi başına diğerine dönüşmez. Bir enerji yoğunluğu ya da bir emisyon faktörü dönüştürürdü, ikisi de verilmedi.", "ug-n-scale": "Ölçek katsayıları tam rasyonel sayılardır, bu yüzden gidiş dönüş kayıpsızdır.", "ug-h-nan": "Sayı değil", "ug-l-nan": "“{q}” bir büyüklük değil.", "ug-w-nan": "Düz bir ondalık yazın. Büyüklükler tam rasyonel olarak okunur, yani 0.1 en yakın ikili kayan sayı değil, tam olarak onda birdir.", "ug-h-ok": "Dönüştürüldü", "ug-l-ok": "{a} {ua}, {b} {ub} eder.", "ug-n-tilde": "Baştaki tilde, ondalıkta bitmeyen bir rasyoneli işaretler. Saklanan değer tamdır, yazılan değil.", "ug-refused": "Reddedildi.", "word-to": "birimine", "ug-loaded": "{x} yüklendi.", "cb-err": "Toplam üretim her iki dönemde de sıfırın üzerinde olmalı.", "cb-s1": "Kaplamalı sac", "cb-s2": "Ekstrüzyon", "cb-s3": "Döküm", "cb-r1": "Üretim, adet", "cb-r2": "Adet başına MWh", "cb-r3": "MWh başına tCO2e", "cb-e1": "Üretim", "cb-e2": "Karma", "cb-e3": "Enerji yoğunluğu", "cb-e4": "Emisyon faktörü", "cb-em": "{y} emisyonları", "cb-scale": "Ölçek {lo} ile {hi} tCO2e arasında ve sıfırdan başlamıyor, böylece dört etki kendilerinin altı katı toplamların yanında okunabiliyor.", "cb-check": "Kontrol", "cb-ident": "faaliyet + karma + yoğunluk + faktör = toplam", "cb-sum": "dört etkinin toplamı", "cb-minus": "2026 eksi 2023", "cb-res": "artık", "cb-lmdi": "LMDI-I artık bırakmaz, dolayısıyla tek fark kayan nokta gürültüsüdür. Yukarıdaki herhangi bir alanı değiştirin, iki satır eşit kalır.", "mc-m1": "LED aydınlatma yenileme", "mc-m2": "Basınçlı hava kaçağı onarımı", "mc-m3": "Değişken hızlı sürücüler", "mc-m4": "Kazan ayarı", "mc-m5": "Isı geri kazanımı", "mc-m6": "Çatı üstü güneş paneli", "mc-m7": "Proses elektrifikasyonu", "mc-m8": "Motor yenileme", "mc-m9": "Yalıtım iyileştirmesi", "mc-m10": "Yeşil elektrik sözleşmesi", "mc-aria": "{n}, ton başına {c} euro, yılda {a} ton", "mc-pertonne": "EUR, ton başına", "mc-often": "on üzerinden", "mc-tpy": "yılda ton, {t} içinden", "mc-saving": "seviyelendirilmiş maliyette net tasarruf", "mc-cost": "seviyelendirilmiş maliyette net maliyet", "mc-yes": "Ton başına {p} EUR'da bu önlem yapmaya değer.", "mc-no": "Ton başına {p} EUR'da bu önlem yapmaya değmez. {c} seviyesinde geçer.", "mc-worth": "Ton başına {p} EUR'da yapmaya değer", "mc-none": "Ton başına {p} EUR'da hiçbiri geçmiyor", "mc-cheapest": "En ucuz üçü gösteriliyor. Eğri ton başına {c} EUR'dan başlıyor.", "mc-all": "Bu eğrideki her önlem ton başına {c} EUR'da geçiyor. Bunun üstünde sürgü bir şey değiştirmiyor.", "ms-d1": "250 çalışanın üzerindeki AB şirketleri", "ms-d2": "CSRD kapsamındaki pay", "ms-d3": "Dışarıdan yazılım alan pay", "ms-d4": "Yıllık lisans, EUR", "ms-d5": "Şirketler", "ms-d6": "Bağlanma oranı", "ms-g1": "Büyük halka açık", "ms-g2": "Büyük özel", "ms-g3": "Orta ölçek", "ms-w-share": "gereken pay %{p}, %100'ü aşıyor", "ms-w-neg": "gereken değer negatif", "ms-illus": "EUR, örnek", "ms-share-of": "yukarıdan aşağı toplamın %{p} kadarı", "ms-td-zero": "yukarıdan aşağı toplam sıfır", "ms-infeasible": "olanaksız", "ms-grp-td": "Yukarıdan aşağı, her katsayı aynı katı paylaşır {m}", "ms-undef": "tanımsız", "ms-w-zero": "yukarıdan aşağı toplam sıfır, dolayısıyla hiçbir katsayı onu ölçekleyemez", "ms-w-pin": "sıfıra sabitlenmiş bir katsayı, farkı kapatmak için ölçeklenemez", "ms-n-zero": "Bu segmentin değeri sıfır, dolayısıyla sürücülerinden hiçbirini ölçeklemek toplamı kımıldatamaz.", "ms-n-over": "Diğer segmentler tek başına {r} EUR ediyor, bu da {t} EUR'luk yukarıdan aşağı toplamın zaten üstünde. Bu segmentte hiçbir sürücü değeri farkı kapatmıyor.", "ms-grp-bu": "Aşağıdan yukarı, {s}", "dcf-h-ref": "Reddedildi. Bildirilecek bir sayı yok", "dcf-l-ref": "%{g} terminal büyüme, %{w} sermaye maliyetinin altında değil.", "dcf-w-ref": "İskonto oranına eşit ya da onun üzerinde büyüyen bir sonsuz devamın değeri sınırsızdır, dolayısıyla yazılacak bir işletme değeri yoktur. Büyüme oranını sermaye maliyetinin hemen altına kırpmak reddetmekten kötüdür, çünkü yerine cevabı kırpma sıkıldıkça kaçan başka bir model koyar. Ya büyüme oranı ya da sermaye maliyeti yanlıştır.", "dcf-n-ref": "Öngörü yılları normal biçimde iskonto edilmeye devam eder. Cevabı olmayan yalnızca terminal değerdir.", "dcf-share": "kadarı işletme değerinin terminal değeridir. Öngörülen beş yıl kalan %{r} kısmı oluşturur.", "dcf-k1": "Öngörünün bugünkü değeri", "dcf-k2": "Terminalin bugünkü değeri", "dcf-k3": "İşletme değeri", "dcf-c1": "Yıl", "dcf-c2": "Serbest nakit akışı", "dcf-c3": "İskonto katsayısı", "dcf-c4": "Bugünkü değer", "dcf-term": "Terminal", "dcf-tv": "Terminal değer", "dcf-unit": "Nakit akışları baştan sona aynı birimdedir ve birim, paya etki etmez.", "x-copylink": "bağlantıyı kopyala", "x-copied": "kopyalandı", "x-today": "bugün güncellendi", "x-yday": "dün güncellendi", "x-days": "{d} gün önce güncellendi", "j-h1": "Projeler", "j-lede": "Kurulmakta olan bir şirket, bu sayfada canlı çalışan beş araç ve arkalarındaki repolar.", "col-p": "Birlikte bir şeyler inşa edenler için bir platform kuruyoruz. Küçük bir ekiple yapım halinde; Boğaziçi Enterprize yarışmasında üçüncülük. Ürün ilerledikçe burada. üründen önce vaat yok.", "inst-h": "Beş araç, canlı", "inst-p": "Python repolarımdan JavaScript'e taşındı ve tamamen bu sayfanın içinde çalışıyor. Girdiler örnektir; aritmetik repolardakiyle birebir aynı, testler Python tarafında.", "repo-h": "Repolar", "repo-p": "Hepsi açık, hepsi kaynaklı. Yukarıdaki araçlar ilk beşten geliyor; kalanlar çalışma yöntemini yeniden kullanılabilir skill'ler olarak paketliyor.", "rp1": "Karbon ayrıştırma, hedef patikaları, azaltım maliyeti, CBAM gömülü emisyonları.", "rp2": "İki yönden pazar boyutlandırma, terminal değeri parçalanmış DCF.", "rp3": "Enerji ve emisyon aritmetiği için birim ve boyut güvenliği. Tahmin etmeyi reddeder.", "rp4": "Açık iklim verisi üzerinde tek arayüz; her değer kaynak, sürüm ve tarih taşır.", "rt5": "Araştırma", "rp5": "Pazar öngörülebilirliği üzerine iki makale ve onları test eden modeller.", "rt6": "Skill paketleri", "rp6": "Çalışma yöntemini Claude skill'i olarak paketleyen on iki repo. finans, sürdürülebilirlik, araştırma, yazı, risk ve ortak konvansiyonları."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "case-link": "Die Fallstudie lesen", "tst-72": "72 Tests", "tst-46": "46 Tests", "tst-37": "37 Tests", "tst-127": "127 Tests", "tst-49": "49 Tests", "t1": "Instrument eins", "t2": "Instrument zwei", "t3": "Instrument drei", "t4": "Instrument vier", "t5": "Instrument fünf", "q1": "Wie viel dieser Bewertung sind die fünf prognostizierten Jahre, und wie viel ist die Ewigkeit, die dahinter geschraubt wurde?", "q1b": "Jeder Regler ist ein Argument: das Wachstum ist die Geschichte, der Diskontsatz ist der Zweifel, und im Terminal Value verstecken sich die Bewertungen.", "q2": "Welche dieser zehn Maßnahmen lohnen sich bei einem gegebenen CO2-Preis, und was kostet das Bündel?", "q3": "Die Emissionen haben sich zwischen zwei Jahren verschoben. Wie viel davon war Menge, wie viel Produktmix, wie viel Energieintensität und wie viel Emissionsfaktor?", "q4": "Hat diese Umrechnung eine Antwort, und wenn nicht, was genau fehlt?", "q5": "Die beiden Marktgrößen widersprechen sich. Welche Annahme müsste sich ändern, und worauf?", "lb-w": "Kapitalkosten", "lb-g": "Terminales Wachstum", "lb-cp": "CO2-Preis", "ro-n": "Freigeschaltete Maßnahmen", "ro-t": "Kumulierte Vermeidung", "ro-c": "Netto-Jahreskosten", "mc-hint": "Die Balkenbreite ist die jährliche Vermeidung. Die Balkenhöhe sind die nivellierten Kosten je Tonne. Wählen Sie einen Balken für seine Rechnung.", "ug-qty": "Menge", "ug-from": "Von", "ug-to": "Nach", "ug-go": "Umrechnen", "ms-td-h": "Top down", "ms-td-s": "Ein Universum, durch Faktoren verengt.", "ms-bu-h": "Bottom up", "ms-bu-s": "Segmente, jedes ein Produkt aus Treibern.", "ms-td-t": "Top-down-Summe", "ms-bu-t": "Bottom-up-Summe", "ms-gap": "Lücke", "ms-cap": "Was jede Annahme sein müsste, damit die beiden Marktgrößen übereinstimmen", "ms-c1": "Annahme", "ms-c2": "Jetzt", "ms-c3": "Erforderlich", "ms-c4": "Faktor", "ug-dim-energy": "Energie", "ug-dim-mass": "Masse", "ug-dim-ghg": "Treibhausgasmasse", "ug-noans": "{a} nach {b} hat hier keine Antwort.", "ug-h-gwp": "Kein Treibhauspotenzial angegeben", "ug-w-gwp": "Eine Tonne CH4 wird nur über ein Treibhauspotenzial zu tCO2e, und ein GWP existiert nur innerhalb eines genannten IPCC-Sachstandsberichts und Zeithorizonts. Über 100 Jahre setzt AR4 Methan auf 25, AR5 auf 28 und AR6 auf 27.0 für biogenes und 29.8 für fossiles Methan. Nennen Sie Bericht und Horizont, dann ist das eine einzige Multiplikation.", "ug-n-gwp": "unitguard verweigert, statt eines auszuwählen.", "ug-h-mix": "Keine Gaszusammensetzung angegeben", "ug-w-mix": "tCO2e ist eine Recheneinheit, kein Stoff. Sie hält fest, wie viel Erwärmung einem Bündel von Gasen zugerechnet wird, nicht wie viel von einem einzelnen Gas vorhanden ist. Ohne die Zusammensetzung hinter der Zahl gibt es keine Masse {g}, die zurückgegeben werden könnte.", "ug-n-mix": "Die Richtung, die funktioniert, ist CO2 nach CO2e, wo das Potenzial per Definition 1 ist.", "ug-n-4412": "Genau 44/12, das Verhältnis der Molmassen.", "ug-n-1244": "Genau 12/44, das Verhältnis der Molmassen.", "ug-n-co2e": "Das Potenzial von CO2 ist per Definition der Metrik 1.", "ug-n-cco2e": "Kohlenstoff nach CO2 mit 44/12, dann CO2 nach CO2e mit einem Potenzial von 1.", "ug-h-none": "Nicht definiert", "ug-w-none": "unitguard kennt keinen definierten Weg zwischen diesen beiden Spezies.", "ug-h-sp": "Keine Gasspezies angegeben", "ug-w-sp": "{a} ist eine blanke Masse. {b} zählt ein bestimmtes Gas. Die Spezies zu benennen ist der ganze Unterschied, und ein Rechner, der sie erriete, würde die Zahl erfinden.", "ug-n-sp": "Nennen Sie die Spezies auf der Eingabeseite, dann geht die Umrechnung durch.", "ug-h-drop": "Die Spezies ginge verloren", "ug-w-drop": "unitguard führt die Gasspezies als Teil der Einheit. {a} in ein blankes {b} umzurechnen wirft sie weg, und die Zahl ist keine Emissionszahl mehr. Behalten Sie die Spezies in der Zieleinheit.", "ug-h-dim": "Verschiedene Dimensionen", "ug-w-dim": "{a} misst {da} und {b} misst {db}. Nichts wandelt das eine von allein in das andere um. Eine Energiedichte oder ein Emissionsfaktor täten es, und keines davon wurde geliefert.", "ug-n-scale": "Die Skalenfaktoren sind exakte Brüche, deshalb geht der Hin- und Rückweg verlustfrei.", "ug-h-nan": "Keine Zahl", "ug-l-nan": "“{q}” ist keine Größe.", "ug-w-nan": "Geben Sie eine einfache Dezimalzahl ein. Größen werden als exakte Brüche gelesen, 0.1 bedeutet also ein Zehntel und nicht die nächstgelegene binäre Gleitkommazahl.", "ug-h-ok": "Umgerechnet", "ug-l-ok": "{a} {ua} sind {b} {ub}.", "ug-n-tilde": "Die vorangestellte Tilde markiert einen Bruch, der dezimal nicht abbricht. Der gespeicherte Wert ist exakt, der gedruckte nicht.", "ug-refused": "Verweigert.", "word-to": "nach", "ug-loaded": "{x} geladen.", "cb-err": "Die Gesamtmenge muss in beiden Perioden über null liegen.", "cb-s1": "Beschichtetes Blech", "cb-s2": "Strangpressprofile", "cb-s3": "Gussteile", "cb-r1": "Menge, Stück", "cb-r2": "MWh je Stück", "cb-r3": "tCO2e je MWh", "cb-e1": "Menge", "cb-e2": "Mix", "cb-e3": "Energieintensität", "cb-e4": "Emissionsfaktor", "cb-em": "Emissionen {y}", "cb-scale": "Die Skala reicht von {lo} bis {hi} tCO2e und beginnt nicht bei null, damit die vier Effekte neben Summen lesbar bleiben, die sechsmal so groß sind.", "cb-check": "Die Probe", "cb-ident": "Aktivität + Mix + Intensität + Faktor = Summe", "cb-sum": "Summe der vier Effekte", "cb-minus": "2026 minus 2023", "cb-res": "Rest", "cb-lmdi": "LMDI-I lässt keinen Rest, der einzige Unterschied ist also Gleitkommarauschen. Ändern Sie oben ein beliebiges Feld, die beiden Zeilen bleiben gleich.", "mc-m1": "LED-Umrüstung", "mc-m2": "Druckluftleckagen abdichten", "mc-m3": "Drehzahlgeregelte Antriebe", "mc-m4": "Kesseleinstellung", "mc-m5": "Wärmerückgewinnung", "mc-m6": "Aufdach-Photovoltaik", "mc-m7": "Prozesselektrifizierung", "mc-m8": "Motorentausch", "mc-m9": "Dämmung verbessern", "mc-m10": "Ökostromvertrag", "mc-aria": "{n}, {c} Euro je Tonne, {a} Tonnen im Jahr", "mc-pertonne": "EUR je Tonne", "mc-often": "von zehn", "mc-tpy": "Tonnen im Jahr, von {t}", "mc-saving": "eine Nettoersparnis zu nivellierten Kosten", "mc-cost": "Nettokosten zu nivellierten Kosten", "mc-yes": "Bei {p} EUR je Tonne lohnt sich diese Maßnahme.", "mc-no": "Bei {p} EUR je Tonne lohnt sich diese Maßnahme nicht. Sie greift ab {c}.", "mc-worth": "Lohnt sich bei {p} EUR je Tonne", "mc-none": "Bei {p} EUR je Tonne greift keine", "mc-cheapest": "Die drei günstigsten sind gezeigt. Die Kurve beginnt bei {c} EUR je Tonne.", "mc-all": "Jede Maßnahme dieser Kurve greift bei {c} EUR je Tonne. Darüber ändert der Regler nichts mehr.", "ms-d1": "EU-Unternehmen über 250 Beschäftigte", "ms-d2": "Anteil im CSRD-Anwendungsbereich", "ms-d3": "Anteil, der externe Software kauft", "ms-d4": "Jahreslizenz, EUR", "ms-d5": "Unternehmen", "ms-d6": "Abschlussquote", "ms-g1": "Große börsennotierte", "ms-g2": "Große private", "ms-g3": "Mittelstand", "ms-w-share": "erforderlicher Anteil von {p}% übersteigt 100%", "ms-w-neg": "erforderlicher Wert ist negativ", "ms-illus": "EUR, illustrativ", "ms-share-of": "{p}% der Top-down-Summe", "ms-td-zero": "Top-down-Summe ist null", "ms-infeasible": "unmöglich", "ms-grp-td": "Top down, jeder Faktor teilt denselben Multiplikator {m}", "ms-undef": "undefiniert", "ms-w-zero": "die Top-down-Summe ist null, kein Faktor kann sie skalieren", "ms-w-pin": "ein auf null festgesetzter Faktor lässt sich nicht skalieren, um eine Lücke zu schließen", "ms-n-zero": "Dieses Segment ist null wert, das Skalieren seiner Treiber bewegt die Summe also nicht.", "ms-n-over": "Die übrigen Segmente kommen allein auf {r} EUR und liegen damit bereits über der Top-down-Summe von {t} EUR. Kein Treiberwert in diesem Segment schließt die Lücke.", "ms-grp-bu": "Bottom up, {s}", "dcf-h-ref": "Verweigert. Keine Zahl zu berichten", "dcf-l-ref": "Terminales Wachstum von {g}% liegt nicht unter den Kapitalkosten von {w}%.", "dcf-w-ref": "Eine Ewigkeit, die mit ihrem Diskontsatz oder darüber wächst, hat unbegrenzten Wert, es gibt also keinen Unternehmenswert auszugeben. Die Wachstumsrate knapp unter die Kapitalkosten zu kappen ist schlimmer als eine Verweigerung, denn dabei tritt ein anderes Modell an die Stelle, dessen Antwort davonläuft, je enger gekappt wird. Entweder die Wachstumsrate oder die Kapitalkosten sind falsch.", "dcf-n-ref": "Die Prognosejahre werden weiterhin normal diskontiert. Nur der Terminal Value hat keine Antwort.", "dcf-share": "des Unternehmenswerts ist der Terminal Value. Die fünf Prognosejahre machen die übrigen {r}% aus.", "dcf-k1": "Barwert der Prognose", "dcf-k2": "Barwert des Terminal Value", "dcf-k3": "Unternehmenswert", "dcf-c1": "Jahr", "dcf-c2": "Freier Cashflow", "dcf-c3": "Diskontfaktor", "dcf-c4": "Barwert", "dcf-term": "Terminal", "dcf-tv": "Terminal Value", "dcf-unit": "Die Cashflows stehen durchgehend in derselben Einheit, und die Einheit spielt für den Anteil keine Rolle.", "x-copylink": "Link kopieren", "x-copied": "kopiert", "x-today": "heute aktualisiert", "x-yday": "gestern aktualisiert", "x-days": "vor {d} Tagen aktualisiert", "j-h1": "Projekte", "j-lede": "Ein Unternehmen im Aufbau, fünf Instrumente, die direkt auf dieser Seite laufen, und die Repositories dahinter.", "col-p": "Wir bauen eine Plattform für Menschen, die gemeinsam Dinge entwickeln. Im Aufbau mit kleinem Team; dritter Platz beim Boğaziçi-Enterprize-Wettbewerb. Mehr hier, sobald es liefert. keine Versprechen vor dem Produkt.", "inst-h": "Fünf Instrumente, live", "inst-p": "Aus meinen Python-Repositories in JavaScript übertragen; alles läuft direkt auf dieser Seite. Die Eingaben sind illustrativ; die Arithmetik ist dieselbe, die Tests trägt die Python-Seite.", "repo-h": "Repositories", "repo-p": "Alles öffentlich, alles mit Quelle. Die Instrumente oben stammen aus den ersten fünf; der Rest verpackt Arbeitsmethode als wiederverwendbare Skills.", "rp1": "Emissionszerlegung, Zielpfade, Vermeidungskosten, eingebettete CBAM-Emissionen.", "rp2": "Marktgrößen aus zwei Richtungen, DCF mit zerlegtem Terminal Value.", "rp3": "Einheiten- und Dimensionssicherheit für Energie- und Emissionsrechnung. Rät nicht.", "rp4": "Eine Schnittstelle über öffentliche Klimadaten; jeder Wert trägt Quelle, Version, Datum.", "rt5": "Forschung", "rp5": "Zwei Arbeiten zur Vorhersagbarkeit von Märkten, mit den Modellen, die sie testen.", "rt6": "Skill-Pakete", "rp6": "Zwölf Repositories, die Arbeitsmethode als Claude-Skills verpacken. Finanzen, Nachhaltigkeit, Recherche, Schreiben, Risiko und ihre gemeinsamen Konventionen."}};
+window.I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "col-r1": "Yapım aşamasında", "col-r2": "Küçük ekip", "col-r3": "Boğaziçi Enterprize, üçüncülük", "case-link": "Vaka incelemesini oku", "tst-72": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>dcf-lab, 72 test</a>", "tst-46": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>marginal-abatement, 46 test</a>", "tst-37": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>carbon-bridge, 37 test</a>", "tst-127": "<a href='https://github.com/Keremozdemirra/unitguard/actions/workflows/tests.yml' rel='noopener noreferrer'>dimensions ve quantity, 127 test</a>", "tst-49": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>market-sizer, 49 test</a>", "t1": "Araç bir", "t2": "Araç iki", "t3": "Araç üç", "t4": "Araç dört", "t5": "Araç beş", "q1": "Bu değerlemenin ne kadarı öngörülen beş yıl, ne kadarı onların ardına eklenen sonsuz devam?", "q1b": "Her sürgü bir iddiadır: büyüme hikâyedir, iskonto oranı şüphedir, terminal değer ise değerlemelerin saklandığı yerdir.", "q2": "Verili bir karbon fiyatında bu on önlemden hangileri yapmaya değer ve bu küme ne kadara mal olur?", "q3": "Emisyonlar iki yıl arasında değişti. Bunun ne kadarı üretim, ne kadarı ürün karması, ne kadarı enerji yoğunluğu ve ne kadarı emisyon faktörü?", "q4": "Bu dönüşümün bir cevabı var mı, yoksa tam olarak ne eksik?", "q5": "İki boyutlandırma birbirini tutmuyor. Hangi varsayım değişmeli ve ne olmalı?", "lb-w": "Sermaye maliyeti", "lb-g": "Terminal büyüme", "lb-cp": "Karbon fiyatı", "ro-n": "Açılan önlemler", "ro-t": "Kümülatif azaltım", "ro-c": "Net yıllık maliyet", "mc-hint": "Çubuk genişliği yıllık azaltımdır. Çubuk yüksekliği ton başına seviyelendirilmiş maliyettir. Aritmetiği için bir çubuk seçin.", "ug-qty": "Miktar", "ug-from": "Kaynak", "ug-to": "Hedef", "ug-go": "Dönüştür", "ms-td-h": "Yukarıdan aşağı", "ms-td-s": "Katsayılarla daraltılan bir evren.", "ms-bu-h": "Aşağıdan yukarı", "ms-bu-s": "Her biri sürücülerin çarpımı olan segmentler.", "ms-td-t": "Yukarıdan aşağı toplam", "ms-bu-t": "Aşağıdan yukarı toplam", "ms-gap": "Fark", "ms-cap": "İki boyutlandırmanın uyuşması için her varsayımın ne olması gerekirdi", "ms-c1": "Varsayım", "ms-c2": "Şimdi", "ms-c3": "Gerekli", "ms-c4": "Kat", "ug-dim-energy": "enerji", "ug-dim-mass": "kütle", "ug-dim-ghg": "sera gazı kütlesi", "ug-noans": "{a} birimini {b} birimine çevirmenin burada bir cevabı yok.", "ug-h-gwp": "Küresel ısınma potansiyeli verilmedi", "ug-w-gwp": "Bir ton CH4 ancak bir küresel ısınma potansiyeli üzerinden tCO2e olur ve bir GWP yalnızca belirtilmiş bir IPCC değerlendirme raporu ve zaman ufku içinde vardır. 100 yıl için AR4 metanı 25, AR5 28, AR6 ise biyojenik için 27.0 ve fosil metan için 29.8 sayar. Raporu ve ufku söyleyin, bu tek bir çarpmaya döner.", "ug-n-gwp": "unitguard birini seçmektense reddeder.", "ug-h-mix": "Gaz karışımı verilmedi", "ug-w-mix": "tCO2e bir hesap birimidir, bir madde değil. Bir gaz demetinin ne kadar ısınmaya yol açtığı kabul edilen değeri kaydeder, tek bir gazdan ne kadar bulunduğunu değil. Bu rakamı üreten karışım olmadan geri verilecek bir {g} kütlesi yoktur.", "ug-n-mix": "İşleyen yön CO2'den CO2e'ye olandır; orada potansiyel tanımı gereği 1'dir.", "ug-n-4412": "Tam olarak 44/12, molar kütlelerin oranı.", "ug-n-1244": "Tam olarak 12/44, molar kütlelerin oranı.", "ug-n-co2e": "CO2'nin potansiyeli, metriğin tanımı gereği 1'dir.", "ug-n-cco2e": "Karbondan CO2'ye 44/12 ile, sonra CO2'den CO2e'ye 1 potansiyeliyle.", "ug-h-none": "Tanımlı değil", "ug-w-none": "unitguard bu iki tür arasında tanımlı bir yol tutmuyor.", "ug-h-sp": "Gaz türü verilmedi", "ug-w-sp": "{a} çıplak bir kütledir. {b} tek bir gazı sayar. Türü adlandırmak ikisi arasındaki tüm farktır ve onu tahmin eden bir dönüştürücü sayıyı uyduruyor olurdu.", "ug-n-sp": "Girdi tarafında türü belirtin, dönüşüm geçer.", "ug-h-drop": "Tür bilgisi düşerdi", "ug-w-drop": "unitguard gaz türünü birimin bir parçası olarak taşır. {a} birimini çıplak {b} birimine çevirmek onu düşürür ve rakam bir emisyon rakamı olmaktan çıkar. Türü hedef birimde tutun.", "ug-h-dim": "Farklı boyutlar", "ug-w-dim": "{a} {da} ölçer, {b} ise {db} ölçer. Hiçbiri kendi başına diğerine dönüşmez. Bir enerji yoğunluğu ya da bir emisyon faktörü dönüştürürdü, ikisi de verilmedi.", "ug-n-scale": "Ölçek katsayıları tam rasyonel sayılardır, bu yüzden gidiş dönüş kayıpsızdır.", "ug-h-nan": "Sayı değil", "ug-l-nan": "“{q}” bir büyüklük değil.", "ug-w-nan": "Düz bir ondalık yazın. Büyüklükler tam rasyonel olarak okunur, yani 0.1 en yakın ikili kayan sayı değil, tam olarak onda birdir.", "ug-h-ok": "Dönüştürüldü", "ug-l-ok": "{a} {ua}, {b} {ub} eder.", "ug-n-tilde": "Baştaki tilde, ondalıkta bitmeyen bir rasyoneli işaretler. Saklanan değer tamdır, yazılan değil.", "ug-refused": "Reddedildi.", "word-to": "birimine", "ug-loaded": "{x} yüklendi.", "cb-err": "Toplam üretim her iki dönemde de sıfırın üzerinde olmalı.", "cb-s1": "Kaplamalı sac", "cb-s2": "Ekstrüzyon", "cb-s3": "Döküm", "cb-r1": "Üretim, adet", "cb-r2": "Adet başına MWh", "cb-r3": "MWh başına tCO2e", "cb-e1": "Üretim", "cb-e2": "Karma", "cb-e3": "Enerji yoğunluğu", "cb-e4": "Emisyon faktörü", "cb-em": "{y} emisyonları", "cb-scale": "Ölçek {lo} ile {hi} tCO2e arasında ve sıfırdan başlamıyor, böylece dört etki kendilerinin altı katı toplamların yanında okunabiliyor.", "cb-check": "Kontrol", "cb-ident": "faaliyet + karma + yoğunluk + faktör = toplam", "cb-sum": "dört etkinin toplamı", "cb-minus": "2026 eksi 2023", "cb-res": "artık", "cb-lmdi": "LMDI-I artık bırakmaz, dolayısıyla tek fark kayan nokta gürültüsüdür. Yukarıdaki herhangi bir alanı değiştirin, iki satır eşit kalır.", "mc-m1": "LED aydınlatma yenileme", "mc-m2": "Basınçlı hava kaçağı onarımı", "mc-m3": "Değişken hızlı sürücüler", "mc-m4": "Kazan ayarı", "mc-m5": "Isı geri kazanımı", "mc-m6": "Çatı üstü güneş paneli", "mc-m7": "Proses elektrifikasyonu", "mc-m8": "Motor yenileme", "mc-m9": "Yalıtım iyileştirmesi", "mc-m10": "Yeşil elektrik sözleşmesi", "mc-aria": "{n}, ton başına {c} euro, yılda {a} ton", "mc-pertonne": "EUR, ton başına", "mc-often": "on üzerinden", "mc-tpy": "yılda ton, {t} içinden", "mc-saving": "seviyelendirilmiş maliyette net tasarruf", "mc-cost": "seviyelendirilmiş maliyette net maliyet", "mc-yes": "Ton başına {p} EUR'da bu önlem yapmaya değer.", "mc-no": "Ton başına {p} EUR'da bu önlem yapmaya değmez. {c} seviyesinde geçer.", "mc-worth": "Ton başına {p} EUR'da yapmaya değer", "mc-none": "Ton başına {p} EUR'da hiçbiri geçmiyor", "mc-cheapest": "En ucuz üçü gösteriliyor. Eğri ton başına {c} EUR'dan başlıyor.", "mc-all": "Bu eğrideki her önlem ton başına {c} EUR'da geçiyor. Bunun üstünde sürgü bir şey değiştirmiyor.", "ms-d1": "250 çalışanın üzerindeki AB şirketleri", "ms-d2": "CSRD kapsamındaki pay", "ms-d3": "Dışarıdan yazılım alan pay", "ms-d4": "Yıllık lisans, EUR", "ms-d5": "Şirketler", "ms-d6": "Bağlanma oranı", "ms-g1": "Büyük halka açık", "ms-g2": "Büyük özel", "ms-g3": "Orta ölçek", "ms-w-share": "gereken pay %{p}, %100'ü aşıyor", "ms-w-neg": "gereken değer negatif", "ms-illus": "EUR, örnek", "ms-share-of": "yukarıdan aşağı toplamın %{p} kadarı", "ms-td-zero": "yukarıdan aşağı toplam sıfır", "ms-infeasible": "olanaksız", "ms-grp-td": "Yukarıdan aşağı, her katsayı aynı katı paylaşır {m}", "ms-undef": "tanımsız", "ms-w-zero": "yukarıdan aşağı toplam sıfır, dolayısıyla hiçbir katsayı onu ölçekleyemez", "ms-w-pin": "sıfıra sabitlenmiş bir katsayı, farkı kapatmak için ölçeklenemez", "ms-n-zero": "Bu segmentin değeri sıfır, dolayısıyla sürücülerinden hiçbirini ölçeklemek toplamı kımıldatamaz.", "ms-n-over": "Diğer segmentler tek başına {r} EUR ediyor, bu da {t} EUR'luk yukarıdan aşağı toplamın zaten üstünde. Bu segmentte hiçbir sürücü değeri farkı kapatmıyor.", "ms-grp-bu": "Aşağıdan yukarı, {s}", "dcf-h-ref": "Reddedildi. Bildirilecek bir sayı yok", "dcf-l-ref": "%{g} terminal büyüme, %{w} sermaye maliyetinin altında değil.", "dcf-w-ref": "İskonto oranına eşit ya da onun üzerinde büyüyen bir sonsuz devamın değeri sınırsızdır, dolayısıyla yazılacak bir işletme değeri yoktur. Büyüme oranını sermaye maliyetinin hemen altına kırpmak reddetmekten kötüdür, çünkü yerine cevabı kırpma sıkıldıkça kaçan başka bir model koyar. Ya büyüme oranı ya da sermaye maliyeti yanlıştır.", "dcf-n-ref": "Öngörü yılları normal biçimde iskonto edilmeye devam eder. Cevabı olmayan yalnızca terminal değerdir.", "dcf-share": "kadarı işletme değerinin terminal değeridir. Öngörülen beş yıl kalan %{r} kısmı oluşturur.", "dcf-k1": "Öngörünün bugünkü değeri", "dcf-k2": "Terminalin bugünkü değeri", "dcf-k3": "İşletme değeri", "dcf-c1": "Yıl", "dcf-c2": "Serbest nakit akışı", "dcf-c3": "İskonto katsayısı", "dcf-c4": "Bugünkü değer", "dcf-term": "Terminal", "dcf-tv": "Terminal değer", "dcf-unit": "Nakit akışları baştan sona aynı birimdedir ve birim, paya etki etmez.", "x-copylink": "bağlantıyı kopyala", "x-copied": "kopyalandı", "x-today": "bugün güncellendi", "x-yday": "dün güncellendi", "x-days": "{d} gün önce güncellendi", "j-h1": "Projeler", "j-lede": "Kurulmakta olan bir şirket, bu sayfada canlı çalışan beş araç ve arkalarındaki repolar.", "col-p": "İnsanların birlikte bir şey inşa etmesi için bir platformun kurucu ortağıyım. Küçük bir ekiple yapım aşamasında, ve burada gösterilecek bir şey henüz yok. Olduğunda bu sayfaya girecek.", "inst-h": "Beş araç, canlı", "inst-p": "Python repolarımdan JavaScript'e taşındı ve tamamen bu sayfanın içinde çalışıyor. Girdiler örnektir; aritmetik repolardakiyle birebir aynı, testler Python tarafında.", "repo-h": "Repolar", "repo-p": "Hepsi açık, hepsi kaynaklı. Yukarıdaki araçlar ilk beşten geliyor; kalanlar çalışma yöntemini yeniden kullanılabilir skill'ler olarak paketliyor.", "rp1": "Karbon ayrıştırma, hedef patikaları, azaltım maliyeti, CBAM gömülü emisyonları.", "rp2": "İki yönden pazar boyutlandırma, terminal değeri parçalanmış DCF.", "rp3": "Enerji ve emisyon aritmetiği için birim ve boyut güvenliği. Tahmin etmeyi reddeder.", "rp4": "Açık iklim verisi üzerinde tek arayüz; her değer kaynak, sürüm ve tarih taşır.", "rt5": "Araştırma", "rp5": "Pazar öngörülebilirliği üzerine iki makale ve onları test eden modeller.", "rt6": "Skill paketleri", "rp6": "Çalışma yöntemini Claude skill'i olarak paketleyen on iki repo. finans, sürdürülebilirlik, araştırma, yazı, risk ve ortak konvansiyonları."}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "col-r1": "Im Aufbau", "col-r2": "Kleines Team", "col-r3": "Boğaziçi Enterprize, dritter Platz", "case-link": "Die Fallstudie lesen", "tst-72": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>dcf-lab, 72 Tests</a>", "tst-46": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>marginal-abatement, 46 Tests</a>", "tst-37": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>carbon-bridge, 37 Tests</a>", "tst-127": "<a href='https://github.com/Keremozdemirra/unitguard/actions/workflows/tests.yml' rel='noopener noreferrer'>dimensions und quantity, 127 Tests</a>", "tst-49": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>market-sizer, 49 Tests</a>", "t1": "Instrument eins", "t2": "Instrument zwei", "t3": "Instrument drei", "t4": "Instrument vier", "t5": "Instrument fünf", "q1": "Wie viel dieser Bewertung sind die fünf prognostizierten Jahre, und wie viel ist die Ewigkeit, die dahinter geschraubt wurde?", "q1b": "Jeder Regler ist ein Argument: das Wachstum ist die Geschichte, der Diskontsatz ist der Zweifel, und im Terminal Value verstecken sich die Bewertungen.", "q2": "Welche dieser zehn Maßnahmen lohnen sich bei einem gegebenen CO2-Preis, und was kostet das Bündel?", "q3": "Die Emissionen haben sich zwischen zwei Jahren verschoben. Wie viel davon war Menge, wie viel Produktmix, wie viel Energieintensität und wie viel Emissionsfaktor?", "q4": "Hat diese Umrechnung eine Antwort, und wenn nicht, was genau fehlt?", "q5": "Die beiden Marktgrößen widersprechen sich. Welche Annahme müsste sich ändern, und worauf?", "lb-w": "Kapitalkosten", "lb-g": "Terminales Wachstum", "lb-cp": "CO2-Preis", "ro-n": "Freigeschaltete Maßnahmen", "ro-t": "Kumulierte Vermeidung", "ro-c": "Netto-Jahreskosten", "mc-hint": "Die Balkenbreite ist die jährliche Vermeidung. Die Balkenhöhe sind die nivellierten Kosten je Tonne. Wählen Sie einen Balken für seine Rechnung.", "ug-qty": "Menge", "ug-from": "Von", "ug-to": "Nach", "ug-go": "Umrechnen", "ms-td-h": "Top down", "ms-td-s": "Ein Universum, durch Faktoren verengt.", "ms-bu-h": "Bottom up", "ms-bu-s": "Segmente, jedes ein Produkt aus Treibern.", "ms-td-t": "Top-down-Summe", "ms-bu-t": "Bottom-up-Summe", "ms-gap": "Lücke", "ms-cap": "Was jede Annahme sein müsste, damit die beiden Marktgrößen übereinstimmen", "ms-c1": "Annahme", "ms-c2": "Jetzt", "ms-c3": "Erforderlich", "ms-c4": "Faktor", "ug-dim-energy": "Energie", "ug-dim-mass": "Masse", "ug-dim-ghg": "Treibhausgasmasse", "ug-noans": "{a} nach {b} hat hier keine Antwort.", "ug-h-gwp": "Kein Treibhauspotenzial angegeben", "ug-w-gwp": "Eine Tonne CH4 wird nur über ein Treibhauspotenzial zu tCO2e, und ein GWP existiert nur innerhalb eines genannten IPCC-Sachstandsberichts und Zeithorizonts. Über 100 Jahre setzt AR4 Methan auf 25, AR5 auf 28 und AR6 auf 27.0 für biogenes und 29.8 für fossiles Methan. Nennen Sie Bericht und Horizont, dann ist das eine einzige Multiplikation.", "ug-n-gwp": "unitguard verweigert, statt eines auszuwählen.", "ug-h-mix": "Keine Gaszusammensetzung angegeben", "ug-w-mix": "tCO2e ist eine Recheneinheit, kein Stoff. Sie hält fest, wie viel Erwärmung einem Bündel von Gasen zugerechnet wird, nicht wie viel von einem einzelnen Gas vorhanden ist. Ohne die Zusammensetzung hinter der Zahl gibt es keine Masse {g}, die zurückgegeben werden könnte.", "ug-n-mix": "Die Richtung, die funktioniert, ist CO2 nach CO2e, wo das Potenzial per Definition 1 ist.", "ug-n-4412": "Genau 44/12, das Verhältnis der Molmassen.", "ug-n-1244": "Genau 12/44, das Verhältnis der Molmassen.", "ug-n-co2e": "Das Potenzial von CO2 ist per Definition der Metrik 1.", "ug-n-cco2e": "Kohlenstoff nach CO2 mit 44/12, dann CO2 nach CO2e mit einem Potenzial von 1.", "ug-h-none": "Nicht definiert", "ug-w-none": "unitguard kennt keinen definierten Weg zwischen diesen beiden Spezies.", "ug-h-sp": "Keine Gasspezies angegeben", "ug-w-sp": "{a} ist eine blanke Masse. {b} zählt ein bestimmtes Gas. Die Spezies zu benennen ist der ganze Unterschied, und ein Rechner, der sie erriete, würde die Zahl erfinden.", "ug-n-sp": "Nennen Sie die Spezies auf der Eingabeseite, dann geht die Umrechnung durch.", "ug-h-drop": "Die Spezies ginge verloren", "ug-w-drop": "unitguard führt die Gasspezies als Teil der Einheit. {a} in ein blankes {b} umzurechnen wirft sie weg, und die Zahl ist keine Emissionszahl mehr. Behalten Sie die Spezies in der Zieleinheit.", "ug-h-dim": "Verschiedene Dimensionen", "ug-w-dim": "{a} misst {da} und {b} misst {db}. Nichts wandelt das eine von allein in das andere um. Eine Energiedichte oder ein Emissionsfaktor täten es, und keines davon wurde geliefert.", "ug-n-scale": "Die Skalenfaktoren sind exakte Brüche, deshalb geht der Hin- und Rückweg verlustfrei.", "ug-h-nan": "Keine Zahl", "ug-l-nan": "“{q}” ist keine Größe.", "ug-w-nan": "Geben Sie eine einfache Dezimalzahl ein. Größen werden als exakte Brüche gelesen, 0.1 bedeutet also ein Zehntel und nicht die nächstgelegene binäre Gleitkommazahl.", "ug-h-ok": "Umgerechnet", "ug-l-ok": "{a} {ua} sind {b} {ub}.", "ug-n-tilde": "Die vorangestellte Tilde markiert einen Bruch, der dezimal nicht abbricht. Der gespeicherte Wert ist exakt, der gedruckte nicht.", "ug-refused": "Verweigert.", "word-to": "nach", "ug-loaded": "{x} geladen.", "cb-err": "Die Gesamtmenge muss in beiden Perioden über null liegen.", "cb-s1": "Beschichtetes Blech", "cb-s2": "Strangpressprofile", "cb-s3": "Gussteile", "cb-r1": "Menge, Stück", "cb-r2": "MWh je Stück", "cb-r3": "tCO2e je MWh", "cb-e1": "Menge", "cb-e2": "Mix", "cb-e3": "Energieintensität", "cb-e4": "Emissionsfaktor", "cb-em": "Emissionen {y}", "cb-scale": "Die Skala reicht von {lo} bis {hi} tCO2e und beginnt nicht bei null, damit die vier Effekte neben Summen lesbar bleiben, die sechsmal so groß sind.", "cb-check": "Die Probe", "cb-ident": "Aktivität + Mix + Intensität + Faktor = Summe", "cb-sum": "Summe der vier Effekte", "cb-minus": "2026 minus 2023", "cb-res": "Rest", "cb-lmdi": "LMDI-I lässt keinen Rest, der einzige Unterschied ist also Gleitkommarauschen. Ändern Sie oben ein beliebiges Feld, die beiden Zeilen bleiben gleich.", "mc-m1": "LED-Umrüstung", "mc-m2": "Druckluftleckagen abdichten", "mc-m3": "Drehzahlgeregelte Antriebe", "mc-m4": "Kesseleinstellung", "mc-m5": "Wärmerückgewinnung", "mc-m6": "Aufdach-Photovoltaik", "mc-m7": "Prozesselektrifizierung", "mc-m8": "Motorentausch", "mc-m9": "Dämmung verbessern", "mc-m10": "Ökostromvertrag", "mc-aria": "{n}, {c} Euro je Tonne, {a} Tonnen im Jahr", "mc-pertonne": "EUR je Tonne", "mc-often": "von zehn", "mc-tpy": "Tonnen im Jahr, von {t}", "mc-saving": "eine Nettoersparnis zu nivellierten Kosten", "mc-cost": "Nettokosten zu nivellierten Kosten", "mc-yes": "Bei {p} EUR je Tonne lohnt sich diese Maßnahme.", "mc-no": "Bei {p} EUR je Tonne lohnt sich diese Maßnahme nicht. Sie greift ab {c}.", "mc-worth": "Lohnt sich bei {p} EUR je Tonne", "mc-none": "Bei {p} EUR je Tonne greift keine", "mc-cheapest": "Die drei günstigsten sind gezeigt. Die Kurve beginnt bei {c} EUR je Tonne.", "mc-all": "Jede Maßnahme dieser Kurve greift bei {c} EUR je Tonne. Darüber ändert der Regler nichts mehr.", "ms-d1": "EU-Unternehmen über 250 Beschäftigte", "ms-d2": "Anteil im CSRD-Anwendungsbereich", "ms-d3": "Anteil, der externe Software kauft", "ms-d4": "Jahreslizenz, EUR", "ms-d5": "Unternehmen", "ms-d6": "Abschlussquote", "ms-g1": "Große börsennotierte", "ms-g2": "Große private", "ms-g3": "Mittelstand", "ms-w-share": "erforderlicher Anteil von {p}% übersteigt 100%", "ms-w-neg": "erforderlicher Wert ist negativ", "ms-illus": "EUR, illustrativ", "ms-share-of": "{p}% der Top-down-Summe", "ms-td-zero": "Top-down-Summe ist null", "ms-infeasible": "unmöglich", "ms-grp-td": "Top down, jeder Faktor teilt denselben Multiplikator {m}", "ms-undef": "undefiniert", "ms-w-zero": "die Top-down-Summe ist null, kein Faktor kann sie skalieren", "ms-w-pin": "ein auf null festgesetzter Faktor lässt sich nicht skalieren, um eine Lücke zu schließen", "ms-n-zero": "Dieses Segment ist null wert, das Skalieren seiner Treiber bewegt die Summe also nicht.", "ms-n-over": "Die übrigen Segmente kommen allein auf {r} EUR und liegen damit bereits über der Top-down-Summe von {t} EUR. Kein Treiberwert in diesem Segment schließt die Lücke.", "ms-grp-bu": "Bottom up, {s}", "dcf-h-ref": "Verweigert. Keine Zahl zu berichten", "dcf-l-ref": "Terminales Wachstum von {g}% liegt nicht unter den Kapitalkosten von {w}%.", "dcf-w-ref": "Eine Ewigkeit, die mit ihrem Diskontsatz oder darüber wächst, hat unbegrenzten Wert, es gibt also keinen Unternehmenswert auszugeben. Die Wachstumsrate knapp unter die Kapitalkosten zu kappen ist schlimmer als eine Verweigerung, denn dabei tritt ein anderes Modell an die Stelle, dessen Antwort davonläuft, je enger gekappt wird. Entweder die Wachstumsrate oder die Kapitalkosten sind falsch.", "dcf-n-ref": "Die Prognosejahre werden weiterhin normal diskontiert. Nur der Terminal Value hat keine Antwort.", "dcf-share": "des Unternehmenswerts ist der Terminal Value. Die fünf Prognosejahre machen die übrigen {r}% aus.", "dcf-k1": "Barwert der Prognose", "dcf-k2": "Barwert des Terminal Value", "dcf-k3": "Unternehmenswert", "dcf-c1": "Jahr", "dcf-c2": "Freier Cashflow", "dcf-c3": "Diskontfaktor", "dcf-c4": "Barwert", "dcf-term": "Terminal", "dcf-tv": "Terminal Value", "dcf-unit": "Die Cashflows stehen durchgehend in derselben Einheit, und die Einheit spielt für den Anteil keine Rolle.", "x-copylink": "Link kopieren", "x-copied": "kopiert", "x-today": "heute aktualisiert", "x-yday": "gestern aktualisiert", "x-days": "vor {d} Tagen aktualisiert", "j-h1": "Projekte", "j-lede": "Ein Unternehmen im Aufbau, fünf Instrumente, die direkt auf dieser Seite laufen, und die Repositories dahinter.", "col-p": "Ich baue als Mitgründer eine Plattform für Menschen, die gemeinsam etwas bauen. Sie ist mit einem kleinen Team im Aufbau, und es gibt hier noch nichts vorzuführen. Wenn es so weit ist, steht es auf dieser Seite.", "inst-h": "Fünf Instrumente, live", "inst-p": "Aus meinen Python-Repositories in JavaScript übertragen; alles läuft direkt auf dieser Seite. Die Eingaben sind illustrativ; die Arithmetik ist dieselbe, die Tests trägt die Python-Seite.", "repo-h": "Repositories", "repo-p": "Alles öffentlich, alles mit Quelle. Die Instrumente oben stammen aus den ersten fünf; der Rest verpackt Arbeitsmethode als wiederverwendbare Skills.", "rp1": "Emissionszerlegung, Zielpfade, Vermeidungskosten, eingebettete CBAM-Emissionen.", "rp2": "Marktgrößen aus zwei Richtungen, DCF mit zerlegtem Terminal Value.", "rp3": "Einheiten- und Dimensionssicherheit für Energie- und Emissionsrechnung. Rät nicht.", "rp4": "Eine Schnittstelle über öffentliche Klimadaten; jeder Wert trägt Quelle, Version, Datum.", "rt5": "Forschung", "rp5": "Zwei Arbeiten zur Vorhersagbarkeit von Märkten, mit den Modellen, die sie testen.", "rt6": "Skill-Pakete", "rp6": "Zwölf Repositories, die Arbeitsmethode als Claude-Skills verpacken. Finanzen, Nachhaltigkeit, Recherche, Schreiben, Risiko und ihre gemeinsamen Konventionen."}};
 
 (function(){
   "use strict";
   /* arrival: the page rises section by section */
   try {
-    var rises = [].slice.call(document.querySelectorAll(".crown, main > section, footer .wrap"));
-    rises.forEach(function (el) { el.classList.add("rise"); });
-    rises.forEach(function (el, i) {
-      setTimeout(function () { el.classList.add("in"); }, 160 + i * 90);
-    });
+    var opening = document.querySelector(".crown");
+    if (opening) {
+      opening.classList.add("rise");
+      setTimeout(function () { opening.classList.add("in"); }, 120);
+    }
   } catch (e) {}
   /* language: the same dictionaries drive every inner page */
+  /* First visit only. A German recruiter should not have to find the switch
+     before the page speaks to them; once they choose, the choice is theirs. */
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
   var lang = "en";
-  try { lang = localStorage.getItem("lang") || "en"; } catch(e){}
+  try { lang = localStorage.getItem("lang") || preferred(); } catch(e){ lang = preferred(); }
   window.__lang = lang;
-  var base = {}, baseA = {};
+  var base = {}, baseA = {}, titleBase = null;
   /* one lookup the whole page shares: text nodes, attributes and anything a
      script writes after the fact all ask the same dictionary */
   window.__t = function(k, fallback){
@@ -727,8 +838,27 @@ window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar",
     attr("data-it", "title");
     attr("data-ip", "placeholder");
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. Where the title opens with the page's own
+       heading, that part follows the language too. */
+    if (titleBase === null) titleBase = document.title;
+    var h1 = document.querySelector("h1[data-i]");
+    if (h1) {
+      var h1en = base[h1.getAttribute("data-i")];
+      if (h1en) {
+        var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+        if (plain && titleBase.indexOf(plain) === 0) {
+          document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true":"false");
+    });
+    /* a German reader gets the German document, not the English one with a
+       German label on the button */
+    document.querySelectorAll("a[data-cv]").forEach(function(a){
+      var f = a.getAttribute("data-cv-" + l) || a.getAttribute("data-cv");
+      a.setAttribute("href", f); a.setAttribute("download", f);
     });
     try { localStorage.setItem("lang", l); } catch(e){}
     try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch(e){}

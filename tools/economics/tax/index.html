@@ -767,7 +767,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 footer.site-foot{background:var(--paper)}
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -775,8 +775,9 @@ footer.site-foot{background:var(--paper)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -795,7 +796,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -805,7 +806,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -815,12 +816,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -858,7 +859,7 @@ footer a:hover{color:var(--fg)}
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../../index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../../profile.html" data-i="nav-p">Profile</a><a href="../../../projects.html" data-i="nav-j">Projects</a><a href="../../../notes.html" data-i="nav-n">Notes</a><a href="../../../contact.html" data-i="nav-c">Contact</a><a href="../../../tools.html" aria-current="page" data-i="nav-t">Tools</a><a href="../../../game.html" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../profile.html" data-i="nav-p">Profile</a><a href="../../../projects.html" data-i="nav-j">Projects</a><a href="../../../tools.html" data-i="nav-t">Tools</a><a href="../../../tools/economics/" aria-current="page" data-i="nav-e">Economics</a><a href="../../../game.html" data-i="nav-g">Game Theory</a><a href="../../../simea/" data-i="nav-s">Simulations</a><a href="../../../notes.html" data-i="nav-n">Notes</a><a href="../../../contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -874,162 +875,162 @@ footer a:hover{color:var(--fg)}
 
       <div class="k-lede k-crown">
         <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Essay one of four</i></span>
-        <h1>Who actually pays a tax</h1>
-        <p class="k-standfirst">A parliament can decide who hands the money to the state. It cannot decide who
+        <h1 data-i="tx-001">Who actually pays a tax</h1>
+        <p class="k-standfirst" data-i="tx-009">A parliament can decide who hands the money to the state. It cannot decide who
         ends up poorer. The first is a line in a statute. The second is settled by how easily each side of the
         market can walk away, and you can watch it being settled below.</p>
       </div>
 
       <div class="ex-body">
 
-        <p class="ex-lead">Every tax law names a payer. The shop remits the value added tax. The employer
+        <p class="ex-lead" data-i="tx-010">Every tax law names a payer. The shop remits the value added tax. The employer
         remits half of the social contribution. The importer remits the customs duty. Read the statute and you
         would think the question of who bears the cost has been answered in the text.</p>
 
-        <p>It has not. The statute fixes the <span class="ex-em">statutory incidence</span>, which is the name on
+        <p data-i="tx-011">It has not. The statute fixes the <span class="ex-em">statutory incidence</span>, which is the name on
         the transfer. What we usually want to know is the <span class="ex-em">economic incidence</span>, which is
         whose consumption falls. These are different quantities, and the market decides the second one without
         consulting the first.</p>
 
-        <p>The argument is short enough to state in a sentence, and that is exactly why it is worth running
+        <p data-i="tx-012">The argument is short enough to state in a sentence, and that is exactly why it is worth running
         rather than reading. Below is a market. You set how sensitive each side is to price by dragging its
         curve, you set a tax, and you choose which side of the market the law tells to pay. Two of those three
         controls change the answer. One of them does nothing at all.</p>
 
-        <h2 id="s1"><span class="k-num">01</span>The market, and a tax placed on it</h2>
+        <h2 id="s1" data-i="tx-002"><span class="k-num">01</span>The market, and a tax placed on it</h2>
 
-        <p>Quantity runs along the bottom, price up the side. The downward line is demand: how much buyers want
+        <p data-i="tx-013">Quantity runs along the bottom, price up the side. The downward line is demand: how much buyers want
         at each price. The upward line is supply: how much sellers will bring at each price. Where they cross,
         the market clears. Drag either line to make it flatter or steeper. A flat line means that side responds
         strongly to price and can walk away. A steep line means it cannot.</p>
 
         <figure class="ex-model" id="m1">
-          <figcaption>Figure one <span class="ex-model-sub">drag either curve, or use the sliders</span></figcaption>
+          <figcaption data-i="tx-039">Figure one <span class="ex-model-sub">drag either curve, or use the sliders</span></figcaption>
           <div class="tx-presets" id="tx-presets"></div>
           <div class="ex-ctrls" id="tx-ctrls"></div>
           <div class="ex-plot" id="tx-plot"></div>
           <p class="ex-key" id="tx-key"></p>
           <div class="tx-splitwrap">
-            <p class="tx-splitlab"><span>Buyer bears <b id="tx-lab-b">0</b></span><span><b id="tx-lab-s">0</b> borne by seller</span></p>
+            <p class="tx-splitlab" data-i="tx-014"><span>Buyer bears <b id="tx-lab-b">0</b></span><span><b id="tx-lab-s">0</b> borne by seller</span></p>
             <div class="ex-split" aria-hidden="true"><i class="a" id="tx-bar-b" style="width:50%"></i><i class="b" id="tx-bar-s" style="width:50%"></i></div>
           </div>
           <div id="tx-read"></div>
           <p class="ex-sum" id="tx-sum" role="status" aria-live="polite"></p>
           <div class="k-btnbar" style="margin-top:1rem">
-            <button type="button" class="k-btn k-btn-quiet" id="tx-share">Copy link to this configuration</button>
-            <button type="button" class="k-btn k-btn-quiet" id="tx-reset">Reset</button>
+            <button type="button" class="k-btn k-btn-quiet" id="tx-share" data-i="tx-041">Copy link to this configuration</button>
+            <button type="button" class="k-btn k-btn-quiet" id="tx-reset" data-i="tx-042">Reset</button>
           </div>
         </figure>
 
         <div class="ex-says" id="tx-says"></div>
 
-        <h2 id="s2"><span class="k-num">02</span>Change who writes the cheque</h2>
+        <h2 id="s2" data-i="tx-003"><span class="k-num">02</span>Change who writes the cheque</h2>
 
-        <p>The last control in the rack is the one to distrust. It moves the tax from the seller to the buyer,
+        <p data-i="tx-015">The last control in the rack is the one to distrust. It moves the tax from the seller to the buyer,
         which in a real system would mean rewriting the law, retraining a finance department and reprinting the
         forms. On the picture, one line moves instead of the other. The supply curve shifts up by the tax, or the
         demand curve shifts down by it.</p>
 
-        <p>Watch the six figures in the readout while you switch. The price the buyer pays does not move. The
+        <p data-i="tx-016">Watch the six figures in the readout while you switch. The price the buyer pays does not move. The
         price the seller keeps does not move. The quantity does not move. The revenue does not move. The share
         each side bears does not move. The tax opens a gap of a fixed size between what the buyer pays and what
         the seller receives, and a gap does not care which end of it you nail down first.</p>
 
-        <p>This is the result that surprises people, and it is worth being precise about what it claims. It does
+        <p data-i="tx-017">This is the result that surprises people, and it is worth being precise about what it claims. It does
         not say that the law is irrelevant to anything. It says that in this model, holding everything else
         equal, the legal side of the transfer does not enter the arithmetic that determines the two prices.
         Section five is where I set out the evidence that this clean claim is not the whole story in the world.</p>
 
-        <h2 id="s3"><span class="k-num">03</span>The rule, in one line</h2>
+        <h2 id="s3" data-i="tx-004"><span class="k-num">03</span>The rule, in one line</h2>
 
-        <p>If the statute does not decide the split, something has to. It is elasticity: the percentage change in
+        <p data-i="tx-018">If the statute does not decide the split, something has to. It is elasticity: the percentage change in
         quantity that follows a one per cent change in price. A buyer who can substitute easily has elastic
         demand and can refuse to pay more. A seller who cannot cut production has inelastic supply and cannot
         refuse to accept less. Whoever is less able to leave is the one who stays and pays.</p>
 
-        <p>Written out, with the elasticity of supply as <span class="ex-em">e of s</span> and the magnitude of
+        <p data-i="tx-019">Written out, with the elasticity of supply as <span class="ex-em">e of s</span> and the magnitude of
         the elasticity of demand as <span class="ex-em">e of d</span>, the buyer's share of a small tax is
         this and nothing else.</p>
 
-        <p class="ex-formula">buyer's share of the tax = e of s / (e of s + e of d)
-        <small>The whole of section two is contained in the fact that the side named by the statute does not
+        <p class="ex-formula" data-i="tx-020">buyer's share of the tax = e of s / (e of s + e of d)
+        <small data-i="tx-043" data-verbatim>The whole of section two is contained in the fact that the side named by the statute does not
         appear anywhere in that expression.</small></p>
 
         <figure class="ex-model" id="m2">
-          <figcaption>Figure two <span class="ex-model-sub">the same answer with the market taken away</span></figcaption>
+          <figcaption data-i="tx-040">Figure two <span class="ex-model-sub">the same answer with the market taken away</span></figcaption>
           <div class="ex-plot" id="tx-plot2"></div>
           <p class="ex-sum" id="tx-sum2" role="status" aria-live="polite"></p>
         </figure>
 
-        <p>The curve above is that expression and nothing else. The marker is where the sliders currently put
+        <p data-i="tx-021">The curve above is that expression and nothing else. The marker is where the sliders currently put
         you. Move them and the marker slides along a fixed line, because the market picture and this curve are
         two drawings of one equation. When supply and demand are equally elastic the marker sits at half. When
         one side is ten times as elastic as the other, the split is roughly ten to one against the side that
         cannot move.</p>
 
-        <h2 id="s4"><span class="k-num">04</span>The triangle nobody collects</h2>
+        <h2 id="s4" data-i="tx-005"><span class="k-num">04</span>The triangle nobody collects</h2>
 
-        <p>Raise the tax and a shaded wedge opens between the curves to the right of the new quantity. Those are
+        <p data-i="tx-022">Raise the tax and a shaded wedge opens between the curves to the right of the new quantity. Those are
         trades that would have happened and now do not. The buyer valued the unit above what the seller would
         have accepted, so there was a gain to be had, and the tax made the two of them unable to reach each
         other. Nobody receives that value. It is not revenue. It is simply gone.</p>
 
-        <p>The shape matters. Double the tax and the revenue rectangle roughly doubles, while the triangle
+        <p data-i="tx-023">The shape matters. Double the tax and the revenue rectangle roughly doubles, while the triangle
         roughly quadruples, because both of its sides grow with the tax. Set the tax to five and note the loss.
         Set it to ten and note it again. That is the arithmetic behind the standard advice to raise a small
         amount from many bases rather than a large amount from one, and it is also why the loss is small enough
         to ignore at low rates and impossible to ignore at high ones.</p>
 
-        <p>Notice too that the triangle grows with elasticity. Make both curves steep and a large tax destroys
+        <p data-i="tx-024">Notice too that the triangle grows with elasticity. Make both curves steep and a large tax destroys
         almost no trades, because nobody was going to change their behaviour anyway. That is the same property
         that made the inelastic side bear the burden, seen from the other direction: a tax on something nobody
         can avoid raises money efficiently and falls on people who have no way out. The efficiency and the
         distribution are the same fact reported twice.</p>
 
-        <h2 id="s5"><span class="k-num">05</span>Where the model stops</h2>
+        <h2 id="s5" data-i="tx-006"><span class="k-num">05</span>Where the model stops</h2>
 
-        <p>The picture above is a partial equilibrium model of one market with straight lines in it. That is a
+        <p data-i="tx-025">The picture above is a partial equilibrium model of one market with straight lines in it. That is a
         strong set of assumptions, and every one of them is doing work. Here is what the model is not entitled
         to tell you.</p>
 
         <div class="k-warn ex-limits">
-          <h3>Assumptions and limits</h3>
+          <h3 data-i="tx-008">Assumptions and limits</h3>
           <ul class="k-ask">
-            <li><b>One market</b>One market is drawn and everything else in the economy is held still. In truth
+            <li data-i="tx-029"><b>One market</b>One market is drawn and everything else in the economy is held still. In truth
             a tax on fuel moves the market for cars, for freight and for labour. Those effects can be larger than
             the one shown here, and they are entirely outside the frame.</li>
-            <li><b>No income effect</b>The demand curve is treated as a schedule of willingness to pay. It does
+            <li data-i="tx-030"><b>No income effect</b>The demand curve is treated as a schedule of willingness to pay. It does
             not account for the fact that a tax makes buyers poorer overall, which shifts what they want to buy
             of everything. The model measures a substitution and calls it the whole response.</li>
-            <li><b>Static</b>There is a before and an after and nothing in between. Real adjustment takes time,
+            <li data-i="tx-031"><b>Static</b>There is a before and an after and nothing in between. Real adjustment takes time,
             and elasticity is almost always larger over years than over months, so a tax that lands on producers
             in the first quarter can land on consumers by the third year. A single pair of elasticities cannot
             express that.</li>
-            <li><b>Straight lines</b>Linear curves make elasticity vary along the curve, so the elasticity you
+            <li data-i="tx-032"><b>Straight lines</b>Linear curves make elasticity vary along the curve, so the elasticity you
             set is the elasticity at the point where the market clears without the tax and nowhere else. The
             share formula in section three is exact for a small tax and an approximation for a large one.</li>
-            <li><b>Competition assumed</b>Both sides are price takers. A monopolist, or a market with a handful
+            <li data-i="tx-033"><b>Competition assumed</b>Both sides are price takers. A monopolist, or a market with a handful
             of sellers watching each other, can pass on more than the tax or less than the tax, and this model
             has no way of representing that.</li>
-            <li><b>The statutory side really can matter</b>The clean result in section two is a property of the
+            <li data-i="tx-034"><b>The statutory side really can matter</b>The clean result in section two is a property of the
             model, not a law of nature. Saez, Matsaganis and Tsakloglou studied a Greek reform that raised both
             employer and employee contributions for workers hired after a cutoff date, and found that employers
             compensated those workers for the higher employer contribution but not for the higher employee
             contribution. The nominal split changed the outcome. Benzarti collects further cases where it does.
             Both are cited below.</li>
-            <li><b>Numbers are illustrative</b>The prices, quantities and elasticities on this page are made up
+            <li data-i="tx-035"><b>Numbers are illustrative</b>The prices, quantities and elasticities on this page are made up
             so that the mechanism is visible. Nothing here is an estimate of any real market, and no figure from
             this page belongs in an argument about a real tax.</li>
           </ul>
         </div>
 
-        <h2 id="s6"><span class="k-num">06</span>Sources</h2>
+        <h2 id="s6" data-i="tx-007"><span class="k-num">06</span>Sources</h2>
 
-        <p>The model is standard partial equilibrium price theory and is not attributable to anyone in
+        <p data-i="tx-026">The model is standard partial equilibrium price theory and is not attributable to anyone in
         particular. The empirical claims made above are these three, and only these three.</p>
 
         <ul class="ex-cites">
-          <li>
+          <li data-i="tx-036">
             Employers in a Greek natural experiment compensated new workers for higher employer contributions
             but not for higher employee contributions, so the statutory split affected the economic outcome.
             <span class="ex-cite-w">Emmanuel Saez, Manos Matsaganis and Panos Tsakloglou,
@@ -1040,7 +1041,7 @@ footer a:hover{color:var(--fg)}
             <a href="https://eml.berkeley.edu/~saez/saez-matsaganis-tsakloglou09greecetax.pdf" target="_blank" rel="noreferrer noopener">eml.berkeley.edu</a>.
             Checked 2026 08 21.</span>
           </li>
-          <li>
+          <li data-i="tx-037">
             Value added tax pass through is asymmetric: increases are passed to consumers several times more
             fully than cuts are, and the gap persists for years. The same survey collects evidence that who
             remits a tax can affect its economic incidence.
@@ -1049,7 +1050,7 @@ footer a:hover{color:var(--fg)}
             <a href="https://www.nber.org/system/files/working_papers/w32819/w32819.pdf" target="_blank" rel="noreferrer noopener">nber.org/system/files/working_papers/w32819/w32819.pdf</a>
             Checked 2026 08 21.</span>
           </li>
-          <li>
+          <li data-i="tx-038">
             The Congressional Budget Office estimates that about 58 per cent of the additional burden of a
             broad increase in the payroll tax rate falls on employees in the short run, with the rest borne by
             capital and other factors.
@@ -1062,15 +1063,15 @@ footer a:hover{color:var(--fg)}
 
         <nav class="ex-next" aria-label="More essays">
           <a href="../lemons/index.html">
-            <span class="ex-next-k">Next essay</span>
-            <span class="ex-next-t">The market for lemons</span>
-            <span class="ex-next-d">What happens to a market when one side knows something the other does not.
+            <span class="ex-next-k" data-i="xn-k-next-e">Next essay</span>
+            <span class="ex-next-t" data-i="xn-t-lemons">The market for lemons</span>
+            <span class="ex-next-d" data-i="xn-d-lemons2">What happens to a market when one side knows something the other does not.
             Run it and watch the good cars leave.</span>
           </a>
           <a href="../index.html">
-            <span class="ex-next-k">Back</span>
-            <span class="ex-next-t">All four essays</span>
-            <span class="ex-next-d">Explorable Economics: models you run rather than conclusions you are
+            <span class="ex-next-k" data-i="xn-k-back">Back</span>
+            <span class="ex-next-t" data-i="xn-t-all4">All four essays</span>
+            <span class="ex-next-d" data-i="xn-d-all4">Explorable Economics: models you run rather than conclusions you are
             handed.</span>
           </a>
         </nav>
@@ -1081,11 +1082,11 @@ footer a:hover{color:var(--fg)}
 
   <aside class="k-endnote">
     <div class="k-wrap">
-      <p><strong>This is a teaching model, not a measurement.</strong> Every number on this page is one you set
+      <p data-i="tx-027"><strong>This is a teaching model, not a measurement.</strong> Every number on this page is one you set
       or one the model derived from what you set. Nothing here describes a real market, and no figure from this
       page should be carried into an argument about a real tax without an estimate of the real elasticities and
       an author willing to defend it.</p>
-      <p class="k-fine">
+      <p class="k-fine" data-i="tx-028">
         Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no network
         call after the fonts have loaded. Part of
         <a href="../index.html">Explorable Economics</a>, built by
@@ -1096,6 +1097,7 @@ footer a:hover{color:var(--fg)}
 
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="../../../sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 
@@ -1148,19 +1150,25 @@ var Kit = (function () {
 
   /* ---------- numbers ---------- */
 
-  var LOCALE = "en-GB";
+  /* The page is read in three languages, so a number has to be written in
+     three. Turkish and German put the comma where English puts the point, and
+     "3,035 billion" read as Turkish says three, not three thousand. Read at
+     call time rather than cached, because the language changes under us. */
+  var LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
+  function locale() { return LOCALES[window.__lang] || "en-GB"; }
+  function na() { return window.__t ? window.__t("kit-na", "not available") : "not available"; }
 
   function num(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     var d = dp === undefined ? 2 : dp;
-    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+    return Number(v).toLocaleString(locale(), { minimumFractionDigits: d, maximumFractionDigits: d });
   }
   function money(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return "EUR " + num(v, dp === undefined ? 2 : dp);
   }
   function pct(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return num(v * 100, dp === undefined ? 1 : dp) + " %";
   }
   function toNum(raw) {
@@ -1650,6 +1658,37 @@ var Ex = (function () {
   };
 })();
 
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"tx-001": "Bir vergiyi gerçekte kim öder", "tx-002": "<span class=\"k-num\">01</span>Piyasa ve üzerine konan vergi", "tx-003": "<span class=\"k-num\">02</span>Çeki kimin yazdığını değiştir", "tx-004": "<span class=\"k-num\">03</span>Kural, tek satırda", "tx-005": "<span class=\"k-num\">04</span>Kimsenin toplamadığı üçgen", "tx-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "tx-007": "<span class=\"k-num\">06</span>Kaynaklar", "tx-008": "Varsayımlar ve sınırlar", "tx-009": "Bir meclis, parayı devlete kimin uzatacağına karar verebilir. Kimin yoksullaşacağına karar veremez. İlki bir yasa maddesidir. İkincisine, piyasanın iki tarafının masadan ne kadar kolay kalkabildiği karar verir ve bunun kararlaştırılmasını aşağıda izleyebilirsin.", "tx-010": "Her vergi yasası bir ödeyen adı verir. KDV'yi dükkân yatırır. Sosyal kesintinin yarısını işveren yatırır. Gümrük vergisini ithalatçı yatırır. Yasayı okusan, yükü kimin taşıdığı sorusunun metinde cevaplandığını sanırsın.", "tx-011": "Cevaplanmamıştır. Yasa <span class=\"ex-em\">kanuni yükümlülüğü</span> sabitler; bu, havalenin üstündeki isimdir. Genelde bilmek istediğimizse <span class=\"ex-em\">iktisadi yüktür</span>; yani kimin tüketiminin düştüğü. Bunlar farklı niceliklerdir ve piyasa, ikincisine birincisine danışmadan karar verir.", "tx-012": "Sav, tek cümlede söylenecek kadar kısa; tam da bu yüzden okumak yerine çalıştırmaya değer. Aşağıda bir piyasa var. Her tarafın fiyata ne kadar duyarlı olduğunu eğrisini sürükleyerek ayarlıyorsun, bir vergi koyuyorsun ve yasanın piyasanın hangi tarafına ödemeyi emrettiğini seçiyorsun. Bu üç düğmeden ikisi cevabı değiştiriyor. Biri hiçbir şey yapmıyor.", "tx-013": "Miktar alt kenarda, fiyat yan kenarda. Aşağı inen çizgi talep: alıcıların her fiyatta ne kadar istediği. Yukarı çıkan çizgi arz: satıcıların her fiyatta ne kadar getireceği. Kesiştikleri yerde piyasa temizlenir. İki çizgiden birini sürükleyip yatıklaştır ya da dikleştir. Yatık çizgi, o tarafın fiyata güçlü tepki verdiği ve masadan kalkabildiği anlamına gelir. Dik çizgi, kalkamadığı.", "tx-014": "<span>Alıcının payı <b id=\"tx-lab-b\">0</b></span><span><b id=\"tx-lab-s\">0</b> satıcının payı</span>", "tx-015": "Sıradaki düğmeler arasında güvenilmeyecek olan sonuncusu. Vergiyi satıcıdan alıcıya taşıyor; gerçek bir sistemde bu, yasayı yeniden yazmak, bir mali işler bölümünü yeniden eğitmek ve formları yeniden bastırmak demek olurdu. Resimde ise bir çizgi yerine öbürü oynuyor. Arz eğrisi vergi kadar yukarı kayıyor ya da talep eğrisi o kadar aşağı.", "tx-016": "Anahtarı çevirirken okumadaki altı rakamı izle. Alıcının ödediği fiyat kımıldamıyor. Satıcının elinde kalan fiyat kımıldamıyor. Miktar kımıldamıyor. Gelir kımıldamıyor. Her tarafın taşıdığı pay kımıldamıyor. Vergi, alıcının ödediğiyle satıcının aldığı arasında sabit boyda bir boşluk açıyor ve bir boşluk, önce hangi ucunu çivilediğine aldırmıyor.", "tx-017": "İnsanları şaşırtan sonuç bu; neyi iddia ettiği konusunda titiz olmaya değer. Yasanın hiçbir şey için önemsiz olduğunu söylemiyor. Bu modelde, diğer her şey sabitken, havalenin hukuki tarafının iki fiyatı belirleyen aritmetiğe girmediğini söylüyor. Bu temiz iddianın dünyadaki hikâyenin tamamı olmadığına dair kanıtları beşinci bölümde sıralıyorum.", "tx-018": "Bölüşüme yasa karar vermiyorsa bir şey vermek zorunda. O şey esneklik: fiyattaki yüzde birlik değişimi izleyen miktardaki yüzde değişim. Kolayca ikame edebilen bir alıcının talebi esnektir ve daha fazlasını ödemeyi reddedebilir. Üretimi kısamayan bir satıcının arzı katıdır ve daha azına razı olmayı reddedemez. Ayrılmaya daha az gücü yeten, kalan ve ödeyen olur.", "tx-019": "Yazıya dökülürse, arz esnekliği <span class=\"ex-em\">e arz</span> ve talep esnekliğinin büyüklüğü <span class=\"ex-em\">e talep</span> olmak üzere, küçük bir vergide alıcının payı şudur ve başka bir şey değildir.", "tx-020": "alıcının vergi payı = e arz / (e arz + e talep)\n        <small>İkinci bölümün tamamı, yasanın adını verdiği tarafın bu ifadenin hiçbir yerinde geçmediği olgusunun içindedir.</small>", "tx-021": "Yukarıdaki eğri o ifadenin kendisi, başka bir şey değil. İmleç, sürgülerin seni şu an koyduğu yer. Onları oynat, imleç sabit bir çizgi boyunca kayar; çünkü piyasa resmi ile bu eğri, tek denklemin iki çizimi. Arz ve talep eşit esnekken imleç yarıda durur. Bir taraf diğerinin on katı esnek olduğunda bölüşüm, kımıldayamayan tarafın aleyhine kabaca ona birdir.", "tx-022": "Vergiyi yükselt; yeni miktarın sağında, eğrilerin arasında gölgeli bir kama açılır. Onlar, olacakken artık olmayan alışverişler. Alıcı, birimi satıcının kabul edeceğinin üstünde değerliyordu; yani ortada edinilecek bir kazanç vardı ve vergi ikisini birbirine ulaşamaz yaptı. O değeri kimse almıyor. Gelir değil. Düpedüz yok.", "tx-023": "Biçim önemli. Vergiyi ikiye katla; gelir dikdörtgeni kabaca ikiye katlanırken üçgen kabaca dörde katlanır, çünkü iki kenarı da vergiyle büyür. Vergiyi beşe kur, kaybı not et. Ona kur, yeniden not et. Az sayıda tabandan çok yerine çok tabandan az toplama yönündeki bildik öğüdün arkasındaki aritmetik bu; kaybın düşük oranlarda görmezden gelinebilecek, yüksek oranlarda gelinemeyecek olmasının sebebi de.", "tx-024": "Üçgenin esneklikle de büyüdüğüne dikkat et. İki eğriyi de dikleştir; büyük bir vergi neredeyse hiç alışveriş yok etmez, çünkü zaten kimse davranışını değiştirmeyecekti. Bu, katı tarafa yükü taşıtan özelliğin öbür yönden görünüşü: kimsenin kaçamadığı bir şeye konan vergi parayı verimli toplar ve çıkışı olmayan insanların üstüne düşer. Verimlilik ile bölüşüm, iki kez rapor edilen aynı olgudur.", "tx-025": "Yukarıdaki resim, içinde düz çizgiler olan tek piyasalık bir kısmi denge modeli. Bu güçlü bir varsayım kümesi ve her biri iş görüyor. Modelin sana söylemeye hakkı olmayanlar şunlar.", "tx-026": "Model, standart kısmi denge fiyat teorisidir ve özel olarak kimseye atfedilmez. Yukarıda yapılan görgül iddialar şu üçüdür, yalnızca bu üçü.", "tx-027": "<strong>Bu bir öğretim modeli, bir ölçüm değil.</strong> Bu sayfadaki her sayı ya senin kurduğun ya da modelin kurduklarından türettiği bir sayı. Burada hiçbir şey gerçek bir piyasayı tarif etmiyor ve bu sayfadan hiçbir rakam, gerçek esnekliklerin bir tahmini ve onu savunmaya hazır bir yazar olmadan gerçek bir vergi tartışmasına taşınmamalı.", "tx-028": "Tümüyle kendi tarayıcında çalışır. Burada yaptığın hiçbir şey sayfadan çıkmaz. Sunucu yok, analiz yok, yazı tipleri geldikten sonra ağ çağrısı yok. <a href=\"../index.html\">Explorable Economics</a>'in parçası; <a href=\"../../../index.html\">Kerem Ozdemir</a> yaptı.", "tx-029": "<b>Tek piyasa</b>Tek piyasa çiziliyor ve ekonomideki diğer her şey sabit tutuluyor. Oysa yakıta konan bir vergi araba, nakliye ve emek piyasalarını oynatır. O etkiler buradakinden büyük olabilir ve tamamen çerçevenin dışındadır.", "tx-030": "<b>Gelir etkisi yok</b>Talep eğrisi bir ödeme istekliliği çizelgesi gibi ele alınıyor. Verginin alıcıları toplamda yoksullaştırdığını, bunun da her şeyden ne almak istediklerini kaydırdığını hesaba katmıyor. Model bir ikameyi ölçüyor ve ona tepkinin tamamı diyor.", "tx-031": "<b>Durağan</b>Bir öncesi ve bir sonrası var, arada hiçbir şey yok. Gerçek uyum zaman alır ve esneklik yıllar ölçeğinde aylardakinden neredeyse her zaman büyüktür; ilk çeyrekte üreticilere düşen bir vergi üçüncü yıla gelindiğinde tüketicilere düşebilir. Tek bir esneklik çifti bunu ifade edemez.", "tx-032": "<b>Düz çizgiler</b>Doğrusal eğrilerde esneklik eğri boyunca değişir; yani kurduğun esneklik, piyasanın vergisiz temizlendiği noktadaki esnekliktir, başka hiçbir yerdeki değil. Üçüncü bölümdeki pay formülü küçük vergi için kesin, büyüğü için bir yaklaşıklıktır.", "tx-033": "<b>Rekabet varsayıldı</b>İki taraf da fiyat alıcısı. Bir tekelci ya da birbirini kollayan bir avuç satıcılı piyasa, vergiden fazlasını da azını da yansıtabilir ve bu modelin bunu temsil etmenin bir yolu yok.", "tx-034": "<b>Kanuni taraf gerçekten önemli olabilir</b>İkinci bölümdeki temiz sonuç modelin bir özelliği, bir doğa yasası değil. Saez, Matsaganis ve Tsakloglou, belli bir tarihten sonra işe alınanlar için hem işveren hem işçi kesintilerini yükselten bir Yunan reformunu inceledi ve işverenlerin o işçilere yüksek işveren kesintisini telafi ettiğini ama yüksek işçi kesintisini etmediğini buldu. Nominal bölüşüm sonucu değiştirdi. Benzarti, değiştirdiği başka vakaları da derliyor. İkisi de aşağıda anılıyor.", "tx-035": "<b>Sayılar temsili</b>Bu sayfadaki fiyatlar, miktarlar ve esneklikler mekanizma görünsün diye uyduruldu. Burada hiçbir şey herhangi bir gerçek piyasanın tahmini değildir ve bu sayfadan hiçbir rakam gerçek bir vergi tartışmasına ait değildir.", "tx-039": "Birinci şekil <span class=\"ex-model-sub\">iki eğriden birini sürükle ya da sürgüleri kullan</span>", "tx-040": "İkinci şekil <span class=\"ex-model-sub\">piyasa resmi kaldırılınca aynı cevap</span>", "tx-041": "Bu yapılandırmanın bağlantısını kopyala", "tx-042": "Sıfırla", "tx-036": "Yunanistan'daki bir doğal deneyde işverenler, yeni işçilere yüksek işveren kesintilerini telafi etti ama yüksek işçi kesintilerini etmedi; yani kanuni bölüşüm iktisadi sonucu etkiledi.\n            <span class=\"ex-cite-w\">Emmanuel Saez, Manos Matsaganis and Panos Tsakloglou,\n            <span class=\"ex-cite-t\">Earnings Determination and Taxes: Evidence From a Cohort-Based Payroll Tax\n            Reform in Greece</span>, Quarterly Journal of Economics 127(1), 2012, pages 493 to 533.\n            <a href=\"https://academic.oup.com/qje/article-abstract/127/1/493/1832830\" target=\"_blank\" rel=\"noreferrer noopener\">academic.oup.com/qje/article-abstract/127/1/493/1832830</a>\n            Çalışma sürümü şuradan okundu:\n            <a href=\"https://eml.berkeley.edu/~saez/saez-matsaganis-tsakloglou09greecetax.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">eml.berkeley.edu</a>.\n            Kontrol tarihi: 2026 08 21.</span>", "tx-037": "KDV yansıması bakışımsızdır: artışlar tüketicilere, indirimlerden kat kat daha tam yansıtılır ve fark yıllarca sürer. Aynı derleme, vergiyi kimin yatırdığının iktisadi yükünü etkileyebildiğine dair kanıtları da toplar.\n            <span class=\"ex-cite-w\">Youssef Benzarti, <span class=\"ex-cite-t\">Tax Incidence Anomalies</span>,\n            NBER Working Paper 32819, August 2024.\n            <a href=\"https://www.nber.org/system/files/working_papers/w32819/w32819.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">nber.org/system/files/working_papers/w32819/w32819.pdf</a>\n            Kontrol tarihi: 2026 08 21.</span>", "tx-038": "Congressional Budget Office, sosyal güvenlik primi oranındaki geniş bir artışın ek yükünün kısa vadede yaklaşık yüzde 58'inin çalışanlara düştüğünü, kalanını sermaye ve diğer faktörlerin taşıdığını tahmin ediyor.\n            <span class=\"ex-cite-w\">Dorian Carloni, <span class=\"ex-cite-t\">Revisiting the Extent to Which\n            Payroll Taxes Are Passed Through to Employees</span>, CBO Working Paper 2021 06, June 2021.\n            <a href=\"https://www.cbo.gov/publication/57089\" target=\"_blank\" rel=\"noreferrer noopener\">cbo.gov/publication/57089</a>\n            Kontrol tarihi: 2026 08 21.</span>", "tx-l-buyerpays": "alıcı öder", "tx-l-sellerkeeps": "satıcıda kalır", "tx-l-clears": "piyasa burada temizlenir", "tx-l-qaxis": "miktar, bin birim", "tx-l-paxis": "fiyat, birim başına EUR", "tx-l-pctbuyer": " alıcıya yüzde", "tx-l-less": "arz 25 kat\ndaha az esnek", "tx-l-equal": "eşit\nesneklik", "tx-l-more": "arz 25 kat\ndaha esnek", "tx-w-barely": "fiyata neredeyse tepkisiz", "tx-w-weak": "fiyata zayıf tepki veriyor", "tx-w-one": "fiyata aşağı yukarı bire bir tepki veriyor", "tx-w-strong": "fiyata güçlü tepki veriyor", "tx-w-very": "fiyata çok güçlü tepki veriyor", "tx-r-pb": "Alıcının ödediği", "tx-r-ps": "Satıcıda kalan", "tx-r-q": "İşlem gören miktar", "tx-r-sh": "Alıcının vergi payı", "tx-r-rev": "Devletin geliri", "tx-r-dwl": "Refah kaybı", "tx-c-ed": "Talebin esnekliği", "tx-c-es": "Arzın esnekliği", "tx-c-t": "Vergi, birim başına EUR", "tx-c-who": "Yasaya göre parayı ödeyen", "tx-c-seller": "satıcı", "tx-c-buyer": "alıcı", "tx-k-demand": "talep", "tx-k-supply": "arz", "tx-k-rev": "toplanan gelir", "tx-k-dwl": "yok edilen alışverişler", "tx-sum1-a": "Tek piyasada arz ve talep. Talep esnekliği {ed}, arz esnekliği {es}, birim başına {t} EUR vergi; yatıran taraf: {who}.", "tx-sum1-zero": "Vergi yokken piyasa 50 fiyat ve 50 miktarda temizleniyor.", "tx-sum1-choke": "Vergi, herhangi bir alıcının ödeyeceği ile herhangi bir satıcının kabul edeceği arasındaki bütün aralıktan büyük; yani hiçbir şey işlem görmüyor, devlet hiçbir şey toplamıyor ve bu piyasadan doğan kazancın tamamı yok oluyor.", "tx-sum1-main": "Alıcı {pb} ödüyor, satıcıda {ps} kalıyor; verginin alıcıya düşen kısmı yüzde {sb}, satıcıya düşeni yüzde {ss}. Miktar 50'den {q} düzeyine iniyor. Gelir {rev} bin EUR, refah kaybı {dwl} bin EUR.", "tx-sum2": "Alıcının vergi payı, iki esnekliğin oranına karşı; solda arz talebin yirmi beşte biri kadar esnek, sağda yirmi beş katı. Eğri, ikisi eşitken yarımdan geçiyor. İmleç {ratio} oranında ve yüzde {sb} alıcı payında duruyor.", "tx-sy-zero": "Henüz vergi yok. Talep {ed}, arz {es}. Piyasa 50 fiyat ve 50 miktarda temizleniyor. Bir boşluk açmak için vergi sürgüsünü oynat.", "tx-sy-choke": "{t} vergisi, herhangi bir alıcının ödeyeceği en yüksek fiyatla herhangi bir satıcının kabul edeceği en düşük fiyat arasındaki bütün mesafeden fazla; bu eğimlerde o mesafe {c}. Hiçbir şey işlem görmüyor. Devlet hiçbir şey toplamıyor. Bu, dördüncü bölümdeki üçgenin piyasayı yuttuğu uç durum.", "tx-sy-lead": "Talep {ed}, arz {es}. ", "tx-sy-even": "İki taraf da masadan aşağı yukarı eşit kolaylıkla kalkabiliyor; vergiyi neredeyse eşit bölüşüyorlar: ", "tx-sy-uneq": "Arz, talepten {x} {dir} esnek; yani ağır ucu {heavy} taşıyor: ", "tx-sy-more": "kat daha", "tx-sy-less": "kat daha az", "tx-sy-buyer": "alıcı", "tx-sy-seller": "satıcı", "tx-sy-split": "{t} EUR'nun alıcıya düşen kısmı {sb}, satıcıya düşeni {ss}.", "tx-sy-pct": "yüzde {x}", "tx-sy-law": "Yasa şu an parayı {who} tarafının vermesini söylüyor. Anahtarı {other} tarafına çevir; kesikli çizgi öbür eğriye atlar. Ağır ucu taşıyan yine {heavy} olur ve payı yüzde {hs} kalır; miktar yine {q}, gelir yine {rev} bin EUR.", "pg-title": "Vergiyi gerçekte kim öder"}, "de": {"tx-001": "Wer eine Steuer wirklich zahlt", "tx-002": "<span class=\"k-num\">01</span>Der Markt, und eine Steuer darauf", "tx-003": "<span class=\"k-num\">02</span>Ändern Sie, wer den Scheck schreibt", "tx-004": "<span class=\"k-num\">03</span>Die Regel, in einer Zeile", "tx-005": "<span class=\"k-num\">04</span>Das Dreieck, das niemand einsammelt", "tx-006": "<span class=\"k-num\">05</span>Wo das Modell endet", "tx-007": "<span class=\"k-num\">06</span>Quellen", "tx-008": "Annahmen und Grenzen", "tx-009": "Ein Parlament kann entscheiden, wer dem Staat das Geld reicht. Es kann nicht entscheiden, wer ärmer wird. Das Erste ist eine Zeile im Gesetz. Das Zweite entscheidet sich daran, wie leicht jede Marktseite gehen kann, und Sie können unten zusehen, wie es sich entscheidet.", "tx-010": "Jedes Steuergesetz nennt einen Zahler. Der Laden führt die Mehrwertsteuer ab. Der Arbeitgeber führt die Hälfte des Sozialbeitrags ab. Der Importeur führt den Zoll ab. Wer das Gesetz liest, könnte meinen, die Frage, wer die Last trägt, sei im Text beantwortet.", "tx-011": "Ist sie nicht. Das Gesetz legt die <span class=\"ex-em\">gesetzliche Inzidenz</span> fest, den Namen auf der Überweisung. Was wir meistens wissen wollen, ist die <span class=\"ex-em\">ökonomische Inzidenz</span>: wessen Konsum sinkt. Das sind verschiedene Größen, und über die zweite entscheidet der Markt, ohne die erste zu fragen.", "tx-012": "Das Argument ist kurz genug für einen Satz, und genau darum lohnt es sich, es laufen zu lassen statt zu lesen. Unten steht ein Markt. Sie stellen ein, wie empfindlich jede Seite auf den Preis reagiert, indem Sie ihre Kurve ziehen, Sie setzen eine Steuer, und Sie wählen, welcher Marktseite das Gesetz das Zahlen aufträgt. Zwei dieser drei Regler ändern die Antwort. Einer tut gar nichts.", "tx-013": "Die Menge läuft unten entlang, der Preis an der Seite hinauf. Die fallende Linie ist die Nachfrage: wie viel Käufer zu jedem Preis wollen. Die steigende ist das Angebot: wie viel Verkäufer zu jedem Preis bringen. Wo sie sich kreuzen, räumt der Markt. Ziehen Sie eine der Linien flacher oder steiler. Eine flache Linie heißt, diese Seite reagiert stark auf den Preis und kann gehen. Eine steile heißt, sie kann es nicht.", "tx-014": "<span>Käufer trägt <b id=\"tx-lab-b\">0</b></span><span><b id=\"tx-lab-s\">0</b> trägt der Verkäufer</span>", "tx-015": "Der letzte Regler in der Reihe ist der, dem Sie misstrauen sollten. Er verschiebt die Steuer vom Verkäufer zum Käufer, was in einem echten System hieße, das Gesetz neu zu schreiben, eine Finanzabteilung umzuschulen und die Formulare neu zu drucken. Im Bild bewegt sich statt der einen Linie die andere. Die Angebotskurve rückt um die Steuer nach oben, oder die Nachfragekurve um sie nach unten.", "tx-016": "Beobachten Sie die sechs Zahlen der Anzeige, während Sie umschalten. Der Preis, den der Käufer zahlt, bewegt sich nicht. Der Preis, den der Verkäufer behält, bewegt sich nicht. Die Menge nicht. Die Einnahmen nicht. Der Anteil jeder Seite nicht. Die Steuer öffnet eine Lücke fester Größe zwischen dem, was der Käufer zahlt, und dem, was der Verkäufer erhält, und einer Lücke ist gleich, welches Ende man zuerst festnagelt.", "tx-017": "Das ist das Ergebnis, das die Leute überrascht, und es lohnt sich, genau zu sagen, was es behauptet. Es sagt nicht, das Gesetz sei für nichts von Belang. Es sagt, dass in diesem Modell, alles andere gleich, die rechtliche Seite der Überweisung nicht in die Arithmetik eingeht, die die zwei Preise bestimmt. In Abschnitt fünf lege ich die Belege dafür vor, dass diese saubere Behauptung in der Welt nicht die ganze Geschichte ist.", "tx-018": "Wenn nicht das Gesetz über die Aufteilung entscheidet, muss es etwas anderes tun. Es ist die Elastizität: die prozentuale Mengenänderung auf ein Prozent Preisänderung. Ein Käufer, der leicht ausweichen kann, hat elastische Nachfrage und kann sich weigern, mehr zu zahlen. Ein Verkäufer, der die Produktion nicht drosseln kann, hat unelastisches Angebot und kann sich nicht weigern, weniger zu nehmen. Wer schlechter gehen kann, bleibt und zahlt.", "tx-019": "Ausgeschrieben, mit der Angebotselastizität als <span class=\"ex-em\">e A</span> und dem Betrag der Nachfrageelastizität als <span class=\"ex-em\">e N</span>, ist der Käuferanteil einer kleinen Steuer dies und nichts anderes.", "tx-020": "Käuferanteil der Steuer = e A / (e A + e N)\n        <small>Der ganze Abschnitt zwei steckt in der Tatsache, dass die vom Gesetz benannte Seite nirgendwo in diesem Ausdruck vorkommt.</small>", "tx-021": "Die Kurve oben ist dieser Ausdruck und nichts sonst. Die Markierung ist, wo die Regler Sie gerade hinsetzen. Bewegen Sie sie, gleitet die Markierung eine feste Linie entlang, denn das Marktbild und diese Kurve sind zwei Zeichnungen einer Gleichung. Sind Angebot und Nachfrage gleich elastisch, sitzt die Markierung bei der Hälfte. Ist eine Seite zehnmal so elastisch wie die andere, steht die Aufteilung ungefähr zehn zu eins gegen die Seite, die nicht ausweichen kann.", "tx-022": "Erhöhen Sie die Steuer, öffnet sich rechts der neuen Menge ein schattierter Keil zwischen den Kurven. Das sind Geschäfte, die stattgefunden hätten und es jetzt nicht tun. Der Käufer schätzte die Einheit über dem, was der Verkäufer akzeptiert hätte; es gab also einen Gewinn zu holen, und die Steuer machte die beiden füreinander unerreichbar. Diesen Wert erhält niemand. Er ist keine Einnahme. Er ist einfach fort.", "tx-023": "Die Form zählt. Verdoppeln Sie die Steuer, verdoppelt sich das Einnahmenrechteck ungefähr, während sich das Dreieck ungefähr vervierfacht, weil beide seiner Seiten mit der Steuer wachsen. Stellen Sie die Steuer auf fünf und notieren Sie den Verlust. Stellen Sie sie auf zehn und notieren Sie ihn wieder. Das ist die Arithmetik hinter dem üblichen Rat, wenig aus vielen Quellen zu holen statt viel aus einer, und auch der Grund, warum der Verlust bei niedrigen Sätzen zu übersehen ist und bei hohen nicht.", "tx-024": "Beachten Sie auch, dass das Dreieck mit der Elastizität wächst. Machen Sie beide Kurven steil, und eine große Steuer zerstört fast keine Geschäfte, weil ohnehin niemand sein Verhalten geändert hätte. Das ist dieselbe Eigenschaft, die die unelastische Seite die Last tragen ließ, von der anderen Seite gesehen: Eine Steuer auf etwas, dem niemand ausweichen kann, sammelt effizient Geld und fällt auf Menschen ohne Ausweg. Effizienz und Verteilung sind derselbe Sachverhalt, zweimal berichtet.", "tx-025": "Das Bild oben ist ein partielles Gleichgewichtsmodell eines Marktes mit geraden Linien darin. Das ist ein starkes Annahmenpaket, und jede Annahme leistet Arbeit. Hier ist, was das Modell Ihnen nicht sagen darf.", "tx-026": "Das Modell ist gewöhnliche partielle Gleichgewichtspreistheorie und niemandem im Besonderen zuzuschreiben. Die empirischen Behauptungen oben sind diese drei, und nur diese drei.", "tx-027": "<strong>Dies ist ein Lehrmodell, keine Messung.</strong> Jede Zahl auf dieser Seite haben Sie gesetzt, oder das Modell hat sie aus Ihren Eingaben abgeleitet. Nichts hier beschreibt einen echten Markt, und keine Zahl von dieser Seite gehört in ein Argument über eine echte Steuer ohne eine Schätzung der echten Elastizitäten und einen Autor, der sie verteidigt.", "tx-028": "Läuft vollständig in Ihrem Browser. Nichts, was Sie hier tun, verlässt die Seite. Kein Server, keine Analyse, kein Netzaufruf nach dem Laden der Schriften. Teil von <a href=\"../index.html\">Explorable Economics</a>, gebaut von <a href=\"../../../index.html\">Kerem Ozdemir</a>.", "tx-029": "<b>Ein Markt</b>Ein Markt wird gezeichnet, alles andere in der Wirtschaft steht still. In Wahrheit bewegt eine Steuer auf Treibstoff die Märkte für Autos, Fracht und Arbeit. Diese Wirkungen können größer sein als die hier gezeigte und liegen ganz außerhalb des Rahmens.", "tx-030": "<b>Kein Einkommenseffekt</b>Die Nachfragekurve wird als Zahlungsbereitschaft gelesen. Sie berücksichtigt nicht, dass eine Steuer die Käufer insgesamt ärmer macht, was verschiebt, was sie von allem kaufen wollen. Das Modell misst eine Substitution und nennt sie die ganze Reaktion.", "tx-031": "<b>Statisch</b>Es gibt ein Vorher und ein Nachher und nichts dazwischen. Echte Anpassung braucht Zeit, und Elastizität ist über Jahre fast immer größer als über Monate; eine Steuer, die im ersten Quartal auf den Produzenten fällt, kann im dritten Jahr auf den Konsumenten liegen. Ein einziges Elastizitätspaar kann das nicht ausdrücken.", "tx-032": "<b>Gerade Linien</b>Bei linearen Kurven ändert sich die Elastizität entlang der Kurve; die von Ihnen gesetzte Elastizität gilt also im Punkt, in dem der Markt ohne Steuer räumt, und nirgendwo sonst. Die Anteilsformel in Abschnitt drei ist für eine kleine Steuer exakt und für eine große eine Näherung.", "tx-033": "<b>Wettbewerb unterstellt</b>Beide Seiten sind Preisnehmer. Ein Monopolist, oder ein Markt mit einer Handvoll einander beobachtender Verkäufer, kann mehr als die Steuer weitergeben oder weniger, und dieses Modell kann das nicht darstellen.", "tx-034": "<b>Die gesetzliche Seite kann wirklich zählen</b>Das saubere Ergebnis in Abschnitt zwei ist eine Eigenschaft des Modells, kein Naturgesetz. Saez, Matsaganis und Tsakloglou untersuchten eine griechische Reform, die für nach einem Stichtag Eingestellte Arbeitgeber- und Arbeitnehmerbeiträge erhöhte, und fanden, dass Arbeitgeber diesen Beschäftigten den höheren Arbeitgeberbeitrag ausglichen, den höheren Arbeitnehmerbeitrag aber nicht. Die nominale Aufteilung änderte das Ergebnis. Benzarti sammelt weitere Fälle, in denen sie es tut. Beide sind unten zitiert.", "tx-035": "<b>Zahlen sind illustrativ</b>Die Preise, Mengen und Elastizitäten auf dieser Seite sind erfunden, damit der Mechanismus sichtbar wird. Nichts hier ist eine Schätzung irgendeines echten Marktes, und keine Zahl von dieser Seite gehört in ein Argument über eine echte Steuer.", "tx-039": "Abbildung eins <span class=\"ex-model-sub\">ziehen Sie eine der Kurven oder nutzen Sie die Regler</span>", "tx-040": "Abbildung zwei <span class=\"ex-model-sub\">dieselbe Antwort ohne das Marktbild</span>", "tx-041": "Link zu dieser Einstellung kopieren", "tx-042": "Zurücksetzen", "tx-036": "In einem griechischen natürlichen Experiment glichen Arbeitgeber neuen Beschäftigten die höheren Arbeitgeberbeiträge aus, die höheren Arbeitnehmerbeiträge aber nicht; die gesetzliche Aufteilung beeinflusste also das ökonomische Ergebnis.\n            <span class=\"ex-cite-w\">Emmanuel Saez, Manos Matsaganis and Panos Tsakloglou,\n            <span class=\"ex-cite-t\">Earnings Determination and Taxes: Evidence From a Cohort-Based Payroll Tax\n            Reform in Greece</span>, Quarterly Journal of Economics 127(1), 2012, pages 493 to 533.\n            <a href=\"https://academic.oup.com/qje/article-abstract/127/1/493/1832830\" target=\"_blank\" rel=\"noreferrer noopener\">academic.oup.com/qje/article-abstract/127/1/493/1832830</a>\n            Arbeitsfassung gelesen bei\n            <a href=\"https://eml.berkeley.edu/~saez/saez-matsaganis-tsakloglou09greecetax.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">eml.berkeley.edu</a>.\n            Geprüft: 2026 08 21.</span>", "tx-037": "Die Überwälzung der Mehrwertsteuer ist asymmetrisch: Erhöhungen werden um ein Mehrfaches vollständiger an Konsumenten weitergegeben als Senkungen, und die Lücke hält Jahre an. Dieselbe Übersicht sammelt Belege, dass es die ökonomische Inzidenz beeinflussen kann, wer eine Steuer abführt.\n            <span class=\"ex-cite-w\">Youssef Benzarti, <span class=\"ex-cite-t\">Tax Incidence Anomalies</span>,\n            NBER Working Paper 32819, August 2024.\n            <a href=\"https://www.nber.org/system/files/working_papers/w32819/w32819.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">nber.org/system/files/working_papers/w32819/w32819.pdf</a>\n            Geprüft: 2026 08 21.</span>", "tx-038": "Das Congressional Budget Office schätzt, dass kurzfristig etwa 58 Prozent der zusätzlichen Last einer breiten Erhöhung des Lohnsummensteuersatzes auf die Beschäftigten fällt, der Rest auf Kapital und andere Faktoren.\n            <span class=\"ex-cite-w\">Dorian Carloni, <span class=\"ex-cite-t\">Revisiting the Extent to Which\n            Payroll Taxes Are Passed Through to Employees</span>, CBO Working Paper 2021 06, June 2021.\n            <a href=\"https://www.cbo.gov/publication/57089\" target=\"_blank\" rel=\"noreferrer noopener\">cbo.gov/publication/57089</a>\n            Geprüft: 2026 08 21.</span>", "tx-l-buyerpays": "Käufer zahlt", "tx-l-sellerkeeps": "Verkäufer behält", "tx-l-clears": "hier räumt der Markt", "tx-l-qaxis": "Menge, Tausend Einheiten", "tx-l-paxis": "Preis, EUR je Einheit", "tx-l-pctbuyer": " Prozent auf den Käufer", "tx-l-less": "Angebot 25-mal\nweniger elastisch", "tx-l-equal": "gleich\nelastisch", "tx-l-more": "Angebot 25-mal\nelastischer", "tx-w-barely": "reagiert kaum auf den Preis", "tx-w-weak": "reagiert schwach auf den Preis", "tx-w-one": "reagiert etwa eins zu eins auf den Preis", "tx-w-strong": "reagiert stark auf den Preis", "tx-w-very": "reagiert sehr stark auf den Preis", "tx-r-pb": "Käufer zahlt", "tx-r-ps": "Verkäufer behält", "tx-r-q": "Gehandelte Menge", "tx-r-sh": "Käuferanteil der Steuer", "tx-r-rev": "Einnahmen des Staates", "tx-r-dwl": "Wohlfahrtsverlust", "tx-c-ed": "Elastizität der Nachfrage", "tx-c-es": "Elastizität des Angebots", "tx-c-t": "Steuer, EUR je Einheit", "tx-c-who": "Laut Gesetz zahlt", "tx-c-seller": "Verkäufer", "tx-c-buyer": "Käufer", "tx-k-demand": "Nachfrage", "tx-k-supply": "Angebot", "tx-k-rev": "eingenommene Steuer", "tx-k-dwl": "zerstörte Geschäfte", "tx-sum1-a": "Angebot und Nachfrage in einem Markt. Nachfrageelastizität {ed}, Angebotselastizität {es}, Steuer {t} EUR je Einheit, abgeführt vom {who}.", "tx-sum1-zero": "Ohne Steuer räumt der Markt bei einem Preis von 50 und einer Menge von 50.", "tx-sum1-choke": "Die Steuer ist größer als die ganze Lücke zwischen dem, was irgendein Käufer zahlen und irgendein Verkäufer akzeptieren würde; also wird nichts gehandelt, der Staat nimmt nichts ein, und der gesamte Gewinn aus diesem Markt ist verloren.", "tx-sum1-main": "Der Käufer zahlt {pb}, der Verkäufer behält {ps}; der Käufer trägt also {sb} Prozent der Steuer und der Verkäufer {ss} Prozent. Die Menge fällt von 50 auf {q}. Die Einnahmen sind {rev} Tausend EUR, der Wohlfahrtsverlust {dwl} Tausend EUR.", "tx-sum2": "Der Käuferanteil der Steuer gegen das Verhältnis der zwei Elastizitäten, von 25-mal weniger elastischem Angebot links bis 25-mal elastischerem rechts. Die Kurve steigt durch die Hälfte, wo beide gleich sind. Die Markierung sitzt bei einem Verhältnis von {ratio} und einem Käuferanteil von {sb} Prozent.", "tx-sy-zero": "Noch keine Steuer. Die Nachfrage {ed}, das Angebot {es}. Der Markt räumt bei Preis 50 und Menge 50. Bewegen Sie den Steuerregler, um eine Lücke zu öffnen.", "tx-sy-choke": "Eine Steuer von {t} ist mehr als der ganze Abstand zwischen dem höchsten Preis, den irgendein Käufer zahlt, und dem niedrigsten, den irgendein Verkäufer akzeptiert; bei diesen Steigungen sind das {c}. Nichts wird gehandelt. Der Staat nimmt nichts ein. Das ist der Extremfall des Dreiecks aus Abschnitt vier, in dem das Dreieck den Markt gefressen hat.", "tx-sy-lead": "Die Nachfrage {ed}, das Angebot {es}. ", "tx-sy-even": "Beide Seiten können etwa gleich leicht gehen, also teilen sie die Steuer fast gleichmäßig: ", "tx-sy-uneq": "Das Angebot ist {x} {dir} elastisch als die Nachfrage, also trägt der {heavy} das schwerere Ende: ", "tx-sy-more": "mal so", "tx-sy-less": "mal weniger", "tx-sy-buyer": "Käufer", "tx-sy-seller": "Verkäufer", "tx-sy-split": "{sb} der {t} EUR fallen auf den Käufer und {ss} auf den Verkäufer.", "tx-sy-pct": "{x} Prozent", "tx-sy-law": "Das Gesetz sagt derzeit dem {who}, das Geld zu übergeben. Schalten Sie auf den {other} um, und die gestrichelte Linie springt zur anderen Kurve. Der {heavy} trägt weiterhin {hs} Prozent davon, die Menge ist weiterhin {q}, die Einnahmen sind weiterhin {rev} Tausend EUR.", "pg-title": "Wer eine Steuer wirklich zahlt"}};
+function T(k, en, v) {
+  var out = window.__t ? window.__t(k, en) : en;
+  if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+  return out;
+}
+/* control and legend labels are built once; sweep retranslates them in place */
+var SWEEP = {
+  "Elasticity of demand": "tx-c-ed", "Elasticity of supply": "tx-c-es",
+  "Tax, EUR per unit": "tx-c-t", "The law says the money is paid by": "tx-c-who",
+  "seller": "tx-c-seller", "buyer": "tx-c-buyer",
+  "Buyer pays": "tx-r-pb", "Seller keeps": "tx-r-ps", "Quantity traded": "tx-r-q",
+  "Buyer's share of tax": "tx-r-sh", "Revenue to the state": "tx-r-rev", "Deadweight loss": "tx-r-dwl",
+  "demand": "tx-k-demand", "supply": "tx-k-supply",
+  "revenue collected": "tx-k-rev", "trades destroyed": "tx-k-dwl"
+};
+function sweepI18n() {
+  document.querySelectorAll(".ex-ctrl label > span:first-child, .ex-seg legend span, .ex-seg-row label, .ex-read-k, .ex-key span").forEach(function (n) {
+    var en = n.getAttribute("data-en");
+    if (en === null) {
+      en = (n.childNodes.length && n.lastChild.nodeType === 3 ? n.lastChild.textContent : n.textContent).trim();
+      n.setAttribute("data-en", en);
+    }
+    var k = SWEEP[en];
+    if (!k) return;
+    var tgt = n.lastChild && n.lastChild.nodeType === 3 ? n.lastChild : n;
+    tgt.textContent = (tgt === n.lastChild && n.childNodes.length > 1 ? "" : "") + T(k, en);
+  });
+}
+
 /* ============================================================
    Essay one: who actually pays a tax
 
@@ -1829,7 +1868,7 @@ var Ex = (function () {
 
     /* price lines and the wedge */
     if (r.t > 0) {
-      [[r.pb, "var(--accent)", "buyer pays"], [r.ps, "var(--good)", "seller keeps"]].forEach(function (pr) {
+      [[r.pb, "var(--accent)", T("tx-l-buyerpays", "buyer pays")], [r.ps, "var(--good)", T("tx-l-sellerkeeps", "seller keeps")]].forEach(function (pr) {
         svg.appendChild(Ex.s("line", { x1: padL, y1: Y(pr[0]), x2: X(Math.max(r.q, 2)), y2: Y(pr[0]),
           stroke: pr[1], "stroke-width": 1, "stroke-dasharray": "3 3", opacity: 0.9 }));
       });
@@ -1847,7 +1886,7 @@ var Ex = (function () {
     /* the equilibrium without a tax */
     svg.appendChild(Ex.s("circle", { cx: X(EQ), cy: Y(EQ), r: 3, fill: "var(--dim)" }));
     if (r.t === 0) {
-      svg.appendChild(Ex.label(X(EQ) + 8, Y(EQ) - 6, "market clears here",
+      svg.appendChild(Ex.label(X(EQ) + 8, Y(EQ) - 6, T("tx-l-clears", "market clears here"),
         { anchor: "start", fill: "var(--dim)", size: fs }));
     }
 
@@ -1863,9 +1902,9 @@ var Ex = (function () {
       svg.appendChild(Ex.label(padL - 7, Y(v) + 3.5, String(v),
         { anchor: "end", fill: "var(--faint)", size: fs }));
     });
-    svg.appendChild(Ex.label(padL + iw / 2, H - 5, "quantity, thousand units",
+    svg.appendChild(Ex.label(padL + iw / 2, H - 5, T("tx-l-qaxis", "quantity, thousand units"),
       { fill: "var(--faint)", size: fs }));
-    var yl = Ex.label(0, 0, "price, EUR per unit", { fill: "var(--faint)", size: fs });
+    var yl = Ex.label(0, 0, T("tx-l-paxis", "price, EUR per unit"), { fill: "var(--faint)", size: fs });
     yl.setAttribute("transform", "translate(" + (fs + 2) + "," + (padT + ih / 2) + ") rotate(-90)");
     svg.appendChild(yl);
 
@@ -1986,7 +2025,7 @@ var Ex = (function () {
 
     var lx = X(uNow) + 9, anc = "start";
     if (X(uNow) > padL + iw * 0.6) { lx = X(uNow) - 9; anc = "end"; }
-    svg.appendChild(Ex.label(lx, Y(fNow) - 9, Kit.num(fNow * 100, 0) + " per cent on the buyer",
+    svg.appendChild(Ex.label(lx, Y(fNow) - 9, Kit.num(fNow * 100, 0) + T("tx-l-pctbuyer", " per cent on the buyer"),
       { anchor: anc, fill: "var(--accent)", size: fs, weight: 500 }));
 
     [[0, "0"], [0.5, "half"], [1, "all"]].forEach(function (t) {
@@ -1994,8 +2033,8 @@ var Ex = (function () {
         { anchor: "end", fill: "var(--faint)", size: fs }));
     });
 
-    [[EL_MIN / EL_MAX, "supply 25 times\nless elastic"], [1, "equally\nelastic"],
-     [EL_MAX / EL_MIN, "supply 25 times\nmore elastic"]].forEach(function (t) {
+    [[EL_MIN / EL_MAX, T("tx-l-less", "supply 25 times\nless elastic")], [1, T("tx-l-equal", "equally\nelastic")],
+     [EL_MAX / EL_MIN, T("tx-l-more", "supply 25 times\nmore elastic")]].forEach(function (t) {
       var x = X(Math.log(t[0]));
       var anchor = t[0] === 1 ? "middle" : (t[0] < 1 ? "start" : "end");
       t[1].split("\n").forEach(function (lineText, k) {
@@ -2010,95 +2049,77 @@ var Ex = (function () {
   /* ---------- prose that has to agree with the picture ---------- */
 
   function elWord(e) {
-    if (e < 0.4) return "barely responds to price";
-    if (e < 0.85) return "responds weakly to price";
-    if (e <= 1.2) return "responds about one for one with price";
-    if (e < 2.5) return "responds strongly to price";
-    return "responds very strongly to price";
+    if (e < 0.4) return T("tx-w-barely", "barely responds to price");
+    if (e < 0.85) return T("tx-w-weak", "responds weakly to price");
+    if (e <= 1.2) return T("tx-w-one", "responds about one for one with price");
+    if (e < 2.5) return T("tx-w-strong", "responds strongly to price");
+    return T("tx-w-very", "responds very strongly to price");
   }
 
   function summary1(r) {
     var parts = [];
-    parts.push("Supply and demand in a single market. Elasticity of demand " + Kit.num(S.ed, 2)
-      + ", elasticity of supply " + Kit.num(S.es, 2) + ", tax " + Kit.num(S.t, 0)
-      + " EUR per unit remitted by the " + S.who + ".");
+    parts.push(T("tx-sum1-a", "Supply and demand in a single market. Elasticity of demand {ed}, elasticity of supply {es}, tax {t} EUR per unit remitted by the {who}.",
+      {ed: Kit.num(S.ed, 2), es: Kit.num(S.es, 2), t: Kit.num(S.t, 0), who: T(S.who === "seller" ? "tx-c-seller" : "tx-c-buyer", S.who)}));
     if (S.t === 0) {
-      parts.push("With no tax the market clears at a price of 50 and a quantity of 50.");
+      parts.push(T("tx-sum1-zero", "With no tax the market clears at a price of 50 and a quantity of 50."));
     } else if (r.choked) {
-      parts.push("The tax is larger than the whole gap between what any buyer will pay and what any seller "
-        + "will accept, so nothing trades, the state collects nothing, and the entire gain from this market "
-        + "is lost.");
+      parts.push(T("tx-sum1-choke", "The tax is larger than the whole gap between what any buyer will pay and what any seller will accept, so nothing trades, the state collects nothing, and the entire gain from this market is lost."));
     } else {
-      parts.push("The buyer pays " + Kit.num(r.pb, 2) + " and the seller keeps " + Kit.num(r.ps, 2)
-        + ", so the buyer bears " + Kit.num(r.shareBuyer * 100, 0) + " per cent of the tax and the seller "
-        + Kit.num((1 - r.shareBuyer) * 100, 0) + " per cent. Quantity falls from 50 to "
-        + Kit.num(r.q, 1) + ". Revenue is " + Kit.num(r.revenue, 0)
-        + " thousand EUR and the deadweight loss is " + Kit.num(r.dwl, 0) + " thousand EUR.");
+      parts.push(T("tx-sum1-main", "The buyer pays {pb} and the seller keeps {ps}, so the buyer bears {sb} per cent of the tax and the seller {ss} per cent. Quantity falls from 50 to {q}. Revenue is {rev} thousand EUR and the deadweight loss is {dwl} thousand EUR.",
+        {pb: Kit.num(r.pb, 2), ps: Kit.num(r.ps, 2), sb: Kit.num(r.shareBuyer * 100, 0), ss: Kit.num((1 - r.shareBuyer) * 100, 0), q: Kit.num(r.q, 1), rev: Kit.num(r.revenue, 0), dwl: Kit.num(r.dwl, 0)}));
     }
     return parts.join(" ");
   }
 
   function summary2(r) {
-    return "The buyer's share of the tax against the ratio of the two elasticities, from supply twenty five "
-      + "times less elastic than demand on the left to twenty five times more elastic on the right. The curve "
-      + "rises through one half where the two are equal. The marker sits at a ratio of "
-      + Kit.num(S.es / S.ed, 2) + " and a buyer share of " + Kit.num(r.shareBuyer * 100, 0) + " per cent.";
+    return T("tx-sum2", "The buyer's share of the tax against the ratio of the two elasticities, from supply twenty five times less elastic than demand on the left to twenty five times more elastic on the right. The curve rises through one half where the two are equal. The marker sits at a ratio of {ratio} and a buyer share of {sb} per cent.",
+      {ratio: Kit.num(S.es / S.ed, 2), sb: Kit.num(r.shareBuyer * 100, 0)});
   }
 
   function says(r) {
     var host = Q("#tx-says");
     Kit.clear(host);
     var p1 = E("p");
-
-    function n(txt, flag) { return E("span", { class: "ex-n" + (flag ? " ex-n-flag" : ""), text: txt }); }
+    function nh(txt, flag) { return '<span class="ex-n' + (flag ? " ex-n-flag" : "") + '">' + txt + "</span>"; }
+    function pctW(x) { return T("tx-sy-pct", "{x} per cent", {x: x}); }
+    var buyerW = T("tx-sy-buyer", "buyer"), sellerW = T("tx-sy-seller", "seller");
 
     if (S.t === 0) {
-      p1.appendChild(document.createTextNode("There is no tax yet. Demand "));
-      p1.appendChild(document.createTextNode(elWord(S.ed) + " and supply " + elWord(S.es)
-        + ". The market clears at a price of 50 and a quantity of 50. Move the tax slider to open a gap."));
+      p1.innerHTML = T("tx-sy-zero", "There is no tax yet. Demand {ed} and supply {es}. The market clears at a price of 50 and a quantity of 50. Move the tax slider to open a gap.",
+        {ed: elWord(S.ed), es: elWord(S.es)});
       host.appendChild(p1);
       return;
     }
 
     if (r.choked) {
-      p1.appendChild(document.createTextNode("A tax of "));
-      p1.appendChild(n(Kit.num(S.t, 0) + " EUR", true));
-      p1.appendChild(document.createTextNode(" is more than the whole distance between the highest price any "
-        + "buyer will pay and the lowest any seller will accept, which at these slopes is "));
-      p1.appendChild(n(Kit.num(r.choke, 1) + " EUR", true));
-      p1.appendChild(document.createTextNode(". Nothing trades. The state collects nothing. This is the "
-        + "extreme case of the triangle in section four, where the triangle has eaten the market."));
+      p1.innerHTML = T("tx-sy-choke", "A tax of {t} is more than the whole distance between the highest price any buyer will pay and the lowest any seller will accept, which at these slopes is {c}. Nothing trades. The state collects nothing. This is the extreme case of the triangle in section four, where the triangle has eaten the market.",
+        {t: nh(Kit.num(S.t, 0) + " EUR", true), c: nh(Kit.num(r.choke, 1) + " EUR", true)});
       host.appendChild(p1);
       return;
     }
 
     var ratio = S.es / S.ed;
-    var heavier = r.shareBuyer >= 0.5 ? "buyer" : "seller";
+    var heavierIsBuyer = r.shareBuyer >= 0.5;
+    var heavierW = heavierIsBuyer ? buyerW : sellerW;
     var heavyShare = Math.max(r.shareBuyer, 1 - r.shareBuyer);
 
-    p1.appendChild(document.createTextNode("Demand " + elWord(S.ed) + " and supply " + elWord(S.es) + ". "));
+    var html = T("tx-sy-lead", "Demand {ed} and supply {es}. ", {ed: elWord(S.ed), es: elWord(S.es)});
     if (Math.abs(ratio - 1) < 0.06) {
-      p1.appendChild(document.createTextNode("The two sides are about equally able to walk away, so they "
-        + "split the tax almost evenly: "));
+      html += T("tx-sy-even", "The two sides are about equally able to walk away, so they split the tax almost evenly: ");
     } else {
-      p1.appendChild(document.createTextNode("Supply is "));
-      p1.appendChild(n(Kit.num(ratio > 1 ? ratio : 1 / ratio, 1) + " times"));
-      p1.appendChild(document.createTextNode((ratio > 1 ? " more" : " less") + " elastic than demand, so the "
-        + heavier + " carries the heavier end of it: "));
+      html += T("tx-sy-uneq", "Supply is {x} {dir} elastic than demand, so the {heavy} carries the heavier end of it: ",
+        {x: nh(Kit.num(ratio > 1 ? ratio : 1 / ratio, 1)), dir: ratio > 1 ? T("tx-sy-more", "times more") : T("tx-sy-less", "times less"), heavy: heavierW});
     }
-    p1.appendChild(n(Kit.num(r.shareBuyer * 100, 0) + " per cent"));
-    p1.appendChild(document.createTextNode(" of the " + Kit.num(S.t, 0) + " EUR falls on the buyer and "));
-    p1.appendChild(n(Kit.num((1 - r.shareBuyer) * 100, 0) + " per cent"));
-    p1.appendChild(document.createTextNode(" on the seller."));
+    html += T("tx-sy-split", "{sb} of the {t} EUR falls on the buyer and {ss} on the seller.",
+      {sb: nh(pctW(Kit.num(r.shareBuyer * 100, 0))), ss: nh(pctW(Kit.num((1 - r.shareBuyer) * 100, 0))), t: Kit.num(S.t, 0)});
+    p1.innerHTML = html;
     host.appendChild(p1);
 
     var p2 = E("p");
-    p2.appendChild(document.createTextNode("The law currently tells the "));
-    p2.appendChild(E("span", { class: "ex-em", text: S.who }));
-    p2.appendChild(document.createTextNode(" to hand the money over. Switch it to the "
-      + (S.who === "seller" ? "buyer" : "seller") + " and the dashed line jumps to the other curve. The "
-      + heavier + " still bears " + Kit.num(heavyShare * 100, 0) + " per cent of it, the quantity is still "
-      + Kit.num(r.q, 1) + ", and the revenue is still " + Kit.num(r.revenue, 0) + " thousand EUR."));
+    p2.innerHTML = T("tx-sy-law", "The law currently tells the {who} to hand the money over. Switch it to the {other} and the dashed line jumps to the other curve. The {heavy} still bears {hs} per cent of it, the quantity is still {q}, and the revenue is still {rev} thousand EUR.",
+      {who: '<span class="ex-em">' + (S.who === "seller" ? sellerW : buyerW) + "</span>",
+       other: S.who === "seller" ? buyerW : sellerW,
+       heavy: heavierW, hs: Kit.num(heavyShare * 100, 0), q: Kit.num(r.q, 1), rev: Kit.num(r.revenue, 0)});
     host.appendChild(p2);
   }
 
@@ -2115,7 +2136,7 @@ var Ex = (function () {
     var rack = Q("#tx-ctrls");
 
     cEd = Ex.slider(rack, {
-      label: "Elasticity of demand",
+      label: T("tx-c-ed", "Elasticity of demand"),
       min: 0, max: 100, step: 0.5, value: elToSlider(S.ed),
       format: function (v) { return Kit.num(sliderToEl(v), 2); },
       hint: "How far quantity demanded moves for a one per cent change in price.",
@@ -2123,7 +2144,7 @@ var Ex = (function () {
     });
 
     cEs = Ex.slider(rack, {
-      label: "Elasticity of supply",
+      label: T("tx-c-es", "Elasticity of supply"),
       min: 0, max: 100, step: 0.5, value: elToSlider(S.es),
       format: function (v) { return Kit.num(sliderToEl(v), 2); },
       hint: "The same for the sellers. A low figure means they cannot cut back.",
@@ -2131,7 +2152,7 @@ var Ex = (function () {
     });
 
     cT = Ex.slider(rack, {
-      label: "Tax, EUR per unit",
+      label: T("tx-c-t", "Tax, EUR per unit"),
       min: 0, max: T_MAX, step: 1, value: S.t,
       format: function (v) { return Kit.num(v, 0); },
       hint: "A flat amount charged on every unit traded.",
@@ -2139,28 +2160,28 @@ var Ex = (function () {
     });
 
     cWho = Ex.seg(rack, {
-      label: "The law says the money is paid by",
+      label: T("tx-c-who", "The law says the money is paid by"),
       name: "tx-who",
       value: S.who,
-      options: [{ value: "seller", label: "seller" }, { value: "buyer", label: "buyer" }],
+      options: [{ value: "seller", label: T("tx-c-seller", "seller") }, { value: "buyer", label: T("tx-c-buyer", "buyer") }],
       hint: "This is the control that does nothing to the outcome.",
       onChange: function (v) { S.who = v; render(); }
     });
 
     setRead = Ex.readout(Q("#tx-read"), [
-      { id: "pb", label: "Buyer pays", tone: "hot" },
-      { id: "ps", label: "Seller keeps" },
-      { id: "q", label: "Quantity traded" },
-      { id: "sh", label: "Buyer's share of tax" },
-      { id: "rev", label: "Revenue to the state" },
-      { id: "dwl", label: "Deadweight loss", tone: "flag" }
+      { id: "pb", label: T("tx-r-pb", "Buyer pays"), tone: "hot" },
+      { id: "ps", label: T("tx-r-ps", "Seller keeps") },
+      { id: "q", label: T("tx-r-q", "Quantity traded") },
+      { id: "sh", label: T("tx-r-sh", "Buyer's share of tax") },
+      { id: "rev", label: T("tx-r-rev", "Revenue to the state") },
+      { id: "dwl", label: T("tx-r-dwl", "Deadweight loss"), tone: "flag" }
     ]);
 
     var keys = [
-      ["var(--accent)", "demand"],
-      ["var(--good)", "supply"],
-      ["var(--accent)", "revenue collected", "block"],
-      ["var(--flag)", "trades destroyed", "block"]
+      ["var(--accent)", T("tx-k-demand", "demand")],
+      ["var(--good)", T("tx-k-supply", "supply")],
+      ["var(--accent)", T("tx-k-rev", "revenue collected"), "block"],
+      ["var(--flag)", T("tx-k-dwl", "trades destroyed"), "block"]
     ];
     var key = Q("#tx-key");
     keys.forEach(function (k) {
@@ -2254,6 +2275,8 @@ var Ex = (function () {
     buildControls();
     syncControls();
     render();
+    sweepI18n();
+    document.addEventListener("langchange", function () { sweepI18n(); syncControls(); render(); });
     wireDrag();
     Ex.onResize(render);
     window.addEventListener("hashchange", function () {
@@ -2267,40 +2290,97 @@ var Ex = (function () {
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Dört denemeden birincisi</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Essay eins von vier</i>"}};
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Dört denemeden birincisi</i>"}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Essay eins von vier</i>"}};
 
 (function(){
   "use strict";
   var KEY = "lang", lang = "en";
-  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
-  var D = window.CHROME_I18N || {};
-  var base = {}, baseA = {};
-  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
-  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  function known(l){
+    return l === "en"
+        || (window.CHROME_I18N && window.CHROME_I18N[l])
+        || (window.PAGE_I18N && window.PAGE_I18N[l]);
+  }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
   function apply(l){
-    if(!D[l]) l = "en";
-    var d = D[l] || {};
-    document.querySelectorAll(SEL).forEach(function(el){
-      var k = el.getAttribute("data-i");
-      if(!(k in base)) base[k] = el.innerHTML;
-      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
-    });
-    document.querySelectorAll(SELA).forEach(function(el){
-      var k = el.getAttribute("data-ia");
-      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
-      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
-    });
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
     });
     try { localStorage.setItem(KEY, l); } catch (e) {}
     window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
 })();
 

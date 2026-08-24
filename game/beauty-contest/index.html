@@ -225,7 +225,7 @@ footer.site-foot{background:var(--paper)}
 .bar{position:relative;z-index:3}
 footer.site-foot{position:relative;z-index:3}
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -233,8 +233,9 @@ footer.site-foot{position:relative;z-index:3}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -253,7 +254,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -263,7 +264,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -273,12 +274,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -309,12 +310,12 @@ footer a:hover{color:var(--fg)}
 </head>
 <body>
 
-<a class="skip" href="#panel">Skip to the choices</a>
+<a class="skip" href="#panel" data-i="bc-skip">Skip to the choices</a>
 
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../game.html" aria-current="page" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../tools/economics/" data-i="nav-e">Economics</a><a href="../../game.html" aria-current="page" data-i="nav-g">Game Theory</a><a href="../../simea/" data-i="nav-s">Simulations</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -333,7 +334,7 @@ footer a:hover{color:var(--fg)}
     <p class="ch" id="chLabel">The Beauty Contest</p>
     <p class="meta" id="whenLabel">the village square, market day</p>
     <span class="spacer"></span>
-    <button type="button" class="quiet" id="menuBtn" hidden>Start over</button>
+    <button type="button" class="quiet" id="menuBtn" hidden data-i="bc-restart">Start over</button>
   </div>
 
   <main id="panel" tabindex="-1"></main>
@@ -342,6 +343,7 @@ footer a:hover{color:var(--fg)}
 
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="../../sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 
@@ -1402,6 +1404,16 @@ return api;
 "use strict";
 
 var el = KW.el, clamp = KW.clamp, lerp = KW.lerp;
+
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"bc-skip": "Seçimlere atla", "bc-restart": "Baştan başla", "bc-name": "Güzellik Yarışması", "bc-when-square": "köy meydanı, pazarın kurulduğu gün", "bc-when-day": "pazar {a} / {b}", "bc-when-arg": "savın kendisi, açıkça", "bc-you": "Sen", "bc-t-p1": "Köyden on iki kişi ve sen. Herkes taş tahtasına sıfırla yüz arasında bir sayı yazıyor ve tahtalar aynı anda çevriliyor. Tahtalar toplanıyor, ortalama alınıyor ve o ortalamanın üçte ikisi kazanan sayı oluyor. Ona en yakın sayıyı yazan keseyi alıyor.", "bc-t-p2": "Altı kez pazar kurulacak. Her birinden sonra bütün tahtaları görüyorsun; yani köyün geçen sefer tam olarak ne yaptığını biliyorsun.", "bc-b-resume": "{n}. pazardan devam et", "bc-b-take": "Bir tahta al", "bc-s-title": "Güzellik Yarışması. Sıfırla yüz arasında bir sayı yaz. Ortalamanın üçte ikisi kazanır.", "bc-g-kick": "{n}. pazar", "bc-g-h": "Tahtaya ne yazıyorsun", "bc-g-p0": "Henüz kimse bir şey yazmadı ve meydandaki hiç kimse bu oyunu daha önce oynamadı. Köyün ne yapacağı hakkında senin fikrin, onların senin hakkındaki fikri kadar.", "bc-g-prev": "Geçen sefer ortalama {a}, kazanan sayı {t} idi. {w} Meydandaki herkes senin gördüğünü gördü.", "bc-g-prev-you": "Keseyi sen aldın.", "bc-g-prev-other": "Keseyi {g} yazarak {n} aldı.", "bc-g-cap": "senin tahtan", "bc-g-aria": "Sıfırla yüz arasındaki sayın", "bc-b-turn": "Tahtayı çevir", "bc-b-lower": "Azalt", "bc-b-higher": "Artır", "bc-g-purses": "Alınan keseler ", "bc-s-guess": "{n}. pazar. Sayını ok tuşlarıyla seç ve tahtayı çevir.", "bc-rv-kick": "Tahtalar çevriliyor", "bc-rv-h-you": "Kese senin", "bc-rv-h-other": "Keseyi {w} alıyor", "bc-rv-p": "On üç tahtanın ortalaması {a} çıktı. Bunun üçte ikisi {t}. Sen {m} yazdın; kazanan sayıya uzaklığın {d} idi. {r}", "bc-rv-none": "Kimse daha yakın değildi.", "bc-rv-wrote": "{w} {g} yazdı.", "bc-rv-track": "Şimdiye kadarki kazanan sayılar: ", "bc-b-endview": "Meydanın yaptığı şey", "bc-b-nextday": "Sonraki pazar", "bc-s-rv": "Ortalama {a}, kazanan sayı {t}. {w}", "bc-s-rv-you": "Keseyi sen aldın.", "bc-s-rv-other": "Keseyi {n} aldı.", "bc-e-kick": "Sonu", "bc-e-h": "Sayılar yokuş aşağı yürüdü ve varamadı", "bc-e-p0": "Kazanan sayı ilk pazarda {f} iken son pazarda {l} oldu. Köy, köyün ne yaptığını her öğrendiğinde düştü ve sıfıra hiç ulaşmadı.", "bc-e-p1": "Muhakemenin sonuna kadar ayakta kalan tek sayı sıfır. Herkes sıfır yazarsa ortalamanın üçte ikisi sıfırdır, herkes kazanan sayıyı yazmıştır ve hiç kimse tek başına başka bir şey yazarak daha iyisini yapamaz. Denge budur ve senin meydanında kimsenin yazmadığı tek cevap da o.", "bc-e-p2": "Sebep insanların aptal olması değil. Sıfır yazmak ancak herkes muhakemeyi yaparsa, sonuna kadar yaparsa ve senin onların yapacağına inandığına inanırsa doğrudur. O meydandaki iki kişi bunu hiç yapmıyordu; bunu bildiğin anda sıfıra yakın bir sayı zekice değil kötü bir bahistir. Doğru muhakeme derinliği, içinde gerçekten bulunduğun odanın bir adım ötesidir ve bu matematik hakkında değil oda hakkında bir olgudur.", "bc-e-sub1": "Nereden geliyor", "bc-e-keynes": "Keynes durumu 1936'da, profesyonel yatırımcıların gerçekte ne yaptığını yazarken tarif etti:", "bc-e-q1": "“Profesyonel yatırım, yarışmacıların yüz fotoğraf arasından en güzel altı yüzü seçtiği ve ödülün, seçimi yarışmacıların bir bütün olarak ortalama tercihine en çok yaklaşana verildiği gazete yarışmalarına benzetilebilir; öyle ki her yarışmacı kendisinin en güzel bulduğu yüzleri değil, diğer yarışmacıların beğenisini yakalamaya en olası saydığı yüzleri seçmek zorundadır ve hepsi soruna aynı noktadan bakmaktadır.”", "bc-e-q2": "“Zekâmızı, ortalama görüşün ortalama görüşten ne beklediğini öngörmeye adadığımız üçüncü dereceye ulaşmış bulunuyoruz. Ve sanırım dördüncü, beşinci ve daha yüksek dereceleri uygulayanlar da var.”", "bc-e-sub2": "Gerçek insanlarla ne oluyor", "bc-e-p3": "Rosemarie Nagel tam olarak bu oyunu laboratuvarda oynattı ve sonuçları 1995'te yayımladı. Hedefin ortalamanın üçte ikisi olduğu oturumlarda ilk turda seçilen sayıların ortalaması 36,73'tü: sıfırdaki dengenin yanına bile yaklaşmayan, muhakemenin bir iki turunun vereceği değere yakın bir sayı. Sonuçlar duyurularak tekrar tekrar oynandığında seçimler tur tur düştü ama sıfıra varmadı.", "bc-e-p4": "Asıl işe yarayan o ilk sayı. Oda, diğerlerinin de öyle olduğunu bilen kusursuz rasyonel oyuncularla dolu olsaydı sayı sıfır olurdu. 36,73 çıktı; bu da kabaca muhakemeyi bir ya da iki kez yapıp duran birinin cevabı.", "bc-e-sub3": "Bunun göstermediği", "bc-e-l1": "On iki komşun, yazarın seçtiği, elle yazılmış bir muhakeme derinlikleri karışımı. Ölçülmüş bir nüfus değiller ve karışım yayımlanmış herhangi bir çalışmadan alınmadı.", "bc-e-l2": "İkisi muhakemeyi hiç yapmıyor. Ortalarda bir yerden başlıyor, sonra geçen sefer kazanana doğru kayıyorlar. Kazanan sayıyı sıfırdan uzak tutan işin çoğunu bu tek varsayım yapıyor; farklı bir varsayım farklı bir taban verirdi.", "bc-e-l3": "Gerçek oyuncular geçen seferin üçte ikisini alarak güncellemez. Daha dağınık bir şey yaparlar ve yayımlanmış çalışmalar bunu birbiriyle yarışan birkaç biçimde modeller.", "bc-e-l4": "On üç kişiyle altı tur bir deney değildir. Bu sayfada ölçülen hiçbir şey, sen dahil, kimse hakkında kanıt değildir.", "bc-e-l5": "36,73 sayısı, belirli bir denek havuzu ve tasarımı olan tek bir makaleden tek bir rakam. Başka çalışmalar başka ilk tur ortalamaları bulur ve binlerce katılımcılı gazete sürümleri daha düşük çıkar.", "bc-e-src": "Kaynaklar", "bc-src1": "Gazete yarışması.", "bc-src2": "Deney.", "bc-src3": "Denge.", "bc-src-tail": "Okundu: 2026 08 21.", "bc-fam": "Ailenin geri kalanı, öngörülebilir olmanın kaybetmenin tek yolu olduğu biri de dahil: ", "bc-fam-a": "bütün oyunlar burada", "bc-b-again": "Yeniden bir tahta al", "bc-s-end": "Son. Kazanan sayı sıfıra doğru düşer ve ona hiç ulaşmaz.", "bc-k-return": "enter", "bc-k-start": "başla", "bc-k-go": "devam", "bc-k-again": "tekrar", "bc-k-enter": "enter", "pg-title": "Güzellik Yarışması"}, "de": {"bc-skip": "Zu den Entscheidungen springen", "bc-restart": "Von vorn beginnen", "bc-name": "Der Schönheitswettbewerb", "bc-when-square": "der Dorfplatz, Markttag", "bc-when-day": "Markttag {a} von {b}", "bc-when-arg": "das Argument, schlicht gesagt", "bc-you": "Sie", "bc-t-p1": "Zwölf Leute aus dem Dorf und Sie. Alle schreiben eine Zahl von null bis hundert auf eine Tafel und drehen sie im selben Moment um. Die Tafeln werden zusammengezählt, der Durchschnitt genommen, und zwei Drittel dieses Durchschnitts sind die Gewinnzahl. Wer die Zahl geschrieben hat, die ihr am nächsten kommt, nimmt den Beutel.", "bc-t-p2": "Sechs Markttage. Nach jedem sehen Sie jede Tafel, Sie wissen also genau, was das Dorf beim letzten Mal getan hat.", "bc-b-resume": "Weiter ab Markttag {n}", "bc-b-take": "Nehmen Sie eine Tafel", "bc-s-title": "Der Schönheitswettbewerb. Schreiben Sie eine Zahl von null bis hundert. Zwei Drittel des Durchschnitts gewinnen.", "bc-g-kick": "Markttag {n}", "bc-g-h": "Was schreiben Sie darauf", "bc-g-p0": "Noch hat niemand etwas geschrieben, und niemand auf dem Platz hat das hier je gespielt. Sie wissen über das Dorf so viel, wie das Dorf über Sie weiß.", "bc-g-prev": "Beim letzten Mal war der Durchschnitt {a} und die Gewinnzahl {t}. {w} Alle auf dem Platz sahen dasselbe wie Sie.", "bc-g-prev-you": "Den Beutel nahmen Sie.", "bc-g-prev-other": "{n} nahm den Beutel mit {g}.", "bc-g-cap": "Ihre Tafel", "bc-g-aria": "Ihre Zahl von null bis hundert", "bc-b-turn": "Die Tafel umdrehen", "bc-b-lower": "Niedriger", "bc-b-higher": "Höher", "bc-g-purses": "Genommene Beutel ", "bc-s-guess": "Markttag {n}. Wählen Sie Ihre Zahl mit den Pfeiltasten und drehen Sie die Tafel um.", "bc-rv-kick": "Die Tafeln drehen sich um", "bc-rv-h-you": "Der Beutel ist Ihrer", "bc-rv-h-other": "{w} nimmt den Beutel", "bc-rv-p": "Der Durchschnitt der dreizehn Tafeln war {a}. Zwei Drittel davon sind {t}. Sie schrieben {m}, das war {d} entfernt. {r}", "bc-rv-none": "Niemand war näher dran.", "bc-rv-wrote": "{w} schrieb {g}.", "bc-rv-track": "Die Gewinnzahl bisher: ", "bc-b-endview": "Was der Platz getan hat", "bc-b-nextday": "Der nächste Markttag", "bc-s-rv": "Durchschnitt {a}, Gewinnzahl {t}. {w}", "bc-s-rv-you": "Den Beutel nahmen Sie.", "bc-s-rv-other": "{n} nahm den Beutel.", "bc-e-kick": "Das Ende", "bc-e-h": "Die Zahlen gingen bergab und kamen nie an", "bc-e-p0": "Die Gewinnzahl ging von {f} am ersten Markttag auf {l} am letzten. Sie fiel jedes Mal, wenn das Dorf erfuhr, was das Dorf getan hatte, und sie erreichte nie null.", "bc-e-p1": "Null ist die einzige Zahl, die die Überlegung bis ganz nach unten übersteht. Schreiben alle null, sind zwei Drittel des Durchschnitts null, alle haben die Gewinnzahl geschrieben, und kein Einzelner kann sich verbessern, indem er etwas anderes schreibt. Das ist das Gleichgewicht, und es ist die eine Antwort, die auf Ihrem Platz nie jemand geschrieben hat.", "bc-e-p2": "Der Grund ist nicht, dass Menschen dumm wären. Null zu schreiben ist nur richtig, wenn alle anderen die Überlegung auch anstellen, sie zu Ende führen und glauben, dass Sie glauben, dass sie es tun. Zwei Menschen auf diesem Platz taten das überhaupt nicht, und sobald man das weiß, ist eine Zahl nahe null keine kluge Wette, sondern eine schlechte. Die richtige Tiefe der Überlegung liegt einen Schritt hinter dem Raum, in dem man tatsächlich sitzt, und das ist eine Tatsache über den Raum, nicht über die Mathematik.", "bc-e-sub1": "Woher es kommt", "bc-e-keynes": "Keynes beschrieb die Lage 1936, als er darüber schrieb, was professionelle Anleger tatsächlich tun:", "bc-e-q1": "“Professionelle Kapitalanlage lässt sich mit jenen Zeitungswettbewerben vergleichen, bei denen die Teilnehmer aus hundert Fotografien die sechs hübschesten Gesichter auszuwählen haben und der Preis dem zufällt, dessen Wahl der durchschnittlichen Vorliebe aller Teilnehmer am nächsten kommt; sodass jeder nicht die Gesichter zu wählen hat, die er selbst am hübschesten findet, sondern jene, von denen er glaubt, dass sie am ehesten den Geschmack der anderen treffen, die alle das Problem vom selben Standpunkt aus betrachten.”", "bc-e-q2": "“Wir sind bei der dritten Stufe angelangt, auf der wir unsere Intelligenz darauf verwenden, vorwegzunehmen, was die durchschnittliche Meinung als durchschnittliche Meinung erwartet. Und es gibt, glaube ich, einige, die die vierte, fünfte und höhere Stufen üben.”", "bc-e-sub2": "Was mit echten Menschen geschieht", "bc-e-p3": "Rosemarie Nagel ließ genau dieses Spiel im Labor spielen und veröffentlichte die Ergebnisse 1995. In den Sitzungen, in denen das Ziel zwei Drittel des Durchschnitts war, lag der Mittelwert der in der ersten Periode gewählten Zahlen bei 36,73: nirgendwo in der Nähe des Gleichgewichts bei null und nahe an dem, was ein oder zwei Runden der Überlegung ergeben würden. Wiederholt gespielt, mit bekannt gegebenen Ergebnissen, fielen die Zahlen Periode um Periode, ohne bei null anzukommen.", "bc-e-p4": "Die nützliche Zahl ist die erste. Wäre der Raum voller vollkommen rationaler Spieler, die wüssten, dass es die anderen auch sind, wäre sie null gewesen. Sie war 36,73, ungefähr die Antwort von jemandem, der die Überlegung ein oder zwei Mal anstellt und dann aufhört.", "bc-e-sub3": "Was das nicht zeigt", "bc-e-l1": "Ihre zwölf Nachbarn sind eine von Hand geschriebene Mischung von Überlegungstiefen, gewählt vom Autor. Sie sind keine gemessene Population, und die Mischung stammt aus keiner veröffentlichten Studie.", "bc-e-l2": "Zwei von ihnen stellen die Überlegung nie an. Sie beginnen irgendwo in der Mitte und driften dann zu dem, was zuletzt gewann. Diese eine Annahme leistet die meiste Arbeit dabei, die Gewinnzahl von null fernzuhalten, und eine andere ergäbe einen anderen Boden.", "bc-e-l3": "Echte Spieler aktualisieren nicht, indem sie zwei Drittel des letzten Mals nehmen. Sie tun etwas Unordentlicheres, und die veröffentlichte Literatur modelliert es auf mehrere konkurrierende Arten.", "bc-e-l4": "Sechs Runden mit dreizehn Leuten sind kein Experiment. Nichts, was auf dieser Seite gemessen wird, ist ein Beleg über irgendjemanden, Sie eingeschlossen.", "bc-e-l5": "Die Zahl 36,73 ist eine Angabe aus einer Arbeit mit einem bestimmten Teilnehmerkreis und Design. Andere Studien finden andere Erstrundenmittel, und Zeitungsversionen des Spiels mit Tausenden von Einsendungen fallen niedriger aus.", "bc-e-src": "Quellen", "bc-src1": "Der Zeitungswettbewerb.", "bc-src2": "Das Experiment.", "bc-src3": "Gleichgewicht.", "bc-src-tail": "Gelesen: 2026 08 21.", "bc-fam": "Der Rest der Familie, darunter eines, in dem Vorhersagbarkeit die einzige Art ist zu verlieren: ", "bc-fam-a": "alle Spiele sind hier", "bc-b-again": "Noch einmal eine Tafel nehmen", "bc-s-end": "Das Ende. Die Gewinnzahl fällt gegen null und erreicht es nie.", "bc-k-return": "Enter", "bc-k-start": "Start", "bc-k-go": "weiter", "bc-k-again": "erneut", "bc-k-enter": "Enter", "pg-title": "Der Schönheitswettbewerb"}};
+function T(k, en, v) {
+  var s = window.__t ? window.__t(k, en) : en;
+  if (v) for (var n in v) s = s.split("{" + n + "}").join(String(v[n]));
+  return s;
+}
+function disp(name) { return name === "You" ? T("bc-you", "You") : name; }
+
 var ui = KW.ui, ctx = null;
 var store = KW.store("kw.beauty.v1");
 
@@ -1575,16 +1587,16 @@ VIEWS.title = function () {
   scene.show = false; scene.guesses = null;
   KW.season(1, true); KW.daylight(0.18, true);
   KW.$("menuBtn").hidden = true;
-  ui.top("The Beauty Contest", "the village square, market day");
-  ui.head("The Beauty Contest");
-  ui.para("Twelve people from the village and you. Everyone chalks a number from zero to one hundred on a slate and turns it over at the same moment. The slates are added up, the average is taken, and two thirds of that average is the winning number. Whoever wrote the number nearest to it takes the purse.");
-  ui.para("Six market days. After each one you see every slate, so you know exactly what the village did the last time.");
+  ui.top(T("bc-name", "The Beauty Contest"), T("bc-when-square", "the village square, market day"));
+  ui.head(T("bc-name", "The Beauty Contest"));
+  ui.para(T("bc-t-p1", "Twelve people from the village and you. Everyone chalks a number from zero to one hundred on a slate and turns it over at the same moment. The slates are added up, the average is taken, and two thirds of that average is the winning number. Whoever wrote the number nearest to it takes the purse."));
+  ui.para(T("bc-t-p2", "Six market days. After each one you see every slate, so you know exactly what the village did the last time."));
   var r = ui.actions();
   var s = store.load();
   if (s && s.round > 0) {
-    ui.btn(r, "Go on from market day " + (s.round + 1), "return", function () { resume(s); }, "big");
+    ui.btn(r, T("bc-b-resume", "Go on from market day {n}", {n: s.round + 1}), T("bc-k-return", "return"), function () { resume(s); }, "big");
   }
-  ui.btn(r, "Take a slate", "start", function () {
+  ui.btn(r, T("bc-b-take", "Take a slate"), T("bc-k-start", "start"), function () {
     ui.acted = true;
     G.round = 0; G.wins = 0; G.purse = 0; G.lastAvg = null; G.lastTarget = null;
     G.rounds = []; prevG = [];
@@ -1592,7 +1604,7 @@ VIEWS.title = function () {
     KW.$("menuBtn").hidden = false;
     view("guess");
   }, "big");
-  ui.say("The Beauty Contest. Write a number from zero to one hundred. Two thirds of the average wins.");
+  ui.say(T("bc-s-title", "The Beauty Contest. Write a number from zero to one hundred. Two thirds of the average wins."));
 };
 
 function resume(s) {
@@ -1613,32 +1625,33 @@ VIEWS.guess = function () {
   scene.show = false;
   KW.season(G.round % 4, G.round === 0);
   KW.daylight(0.15 + (G.round / ROUNDS) * 0.55);
-  ui.top("The Beauty Contest", "market day " + (G.round + 1) + " of " + ROUNDS);
-  ui.kick("Market day " + (G.round + 1));
-  ui.head("What do you chalk on it");
+  ui.top(T("bc-name", "The Beauty Contest"), T("bc-when-day", "market day {a} of {b}", {a: G.round + 1, b: ROUNDS}));
+  ui.kick(T("bc-g-kick", "Market day {n}", {n: G.round + 1}));
+  ui.head(T("bc-g-h", "What do you chalk on it"));
 
   if (G.round === 0) {
-    ui.para("Nobody has written anything yet, and nobody in the square has ever played this before. You have as much idea what the village will do as they have about you.");
+    ui.para(T("bc-g-p0", "Nobody has written anything yet, and nobody in the square has ever played this before. You have as much idea what the village will do as they have about you."));
   } else {
     var prev = G.rounds[G.rounds.length - 1];
-    ui.para("Last time the average was " + fmt(prev.avg) + " and the winning number was " + fmt(prev.target) +
-            ". " + (prev.winnerName === "You" ? "You took the purse." : prev.winnerName + " took the purse with " + prev.winnerGuess + ".") +
-            " Everyone in the square saw the same thing you did.");
+    ui.para(T("bc-g-prev", "Last time the average was {a} and the winning number was {t}. {w} Everyone in the square saw the same thing you did.",
+            {a: fmt(prev.avg), t: fmt(prev.target),
+             w: prev.winnerName === "You" ? T("bc-g-prev-you", "You took the purse.")
+                                          : T("bc-g-prev-other", "{n} took the purse with {g}.", {n: prev.winnerName, g: prev.winnerGuess})}));
   }
 
   var row = el("div", "guessrow");
   var num = el("div", "bignum", String(G.guess));
-  var cap = el("span", "cap", "your slate");
+  var cap = el("span", "cap", T("bc-g-cap", "your slate"));
   row.appendChild(num); row.appendChild(cap);
   ui.panel.appendChild(row);
 
   var box = el("div", "slider");
-  var lab = el("label", "vh", "Your number from zero to one hundred");
+  var lab = el("label", "vh", T("bc-g-aria", "Your number from zero to one hundred"));
   lab.setAttribute("for", "g");
   var inp = el("input");
   inp.type = "range"; inp.id = "g"; inp.min = 0; inp.max = 100; inp.step = 1;
   inp.value = String(G.guess);
-  inp.setAttribute("aria-label", "Your number from zero to one hundred");
+  inp.setAttribute("aria-label", T("bc-g-aria", "Your number from zero to one hundred"));
   inp.addEventListener("input", function () { setGuess(parseInt(inp.value, 10) || 0); });
   inp.addEventListener("keydown", function (e) {
     if (e.key === "Enter") { e.preventDefault(); ui.acted = true; play(G.guess); }
@@ -1648,20 +1661,20 @@ VIEWS.guess = function () {
   widgets = { inp: inp, num: num };
 
   var r = ui.actions();
-  ui.btn(r, "Turn the slate over", "press enter", function () { play(G.guess); }, "big");
+  ui.btn(r, T("bc-b-turn", "Turn the slate over"), T("bc-k-enter", "press enter"), function () { play(G.guess); }, "big");
   var r2 = ui.actions();
-  ui.btn(r2, "Lower", null, function () { setGuess(G.guess - 1); }, "quiet");
-  ui.btn(r2, "Higher", null, function () { setGuess(G.guess + 1); }, "quiet");
+  ui.btn(r2, T("bc-b-lower", "Lower"), null, function () { setGuess(G.guess - 1); }, "quiet");
+  ui.btn(r2, T("bc-b-higher", "Higher"), null, function () { setGuess(G.guess + 1); }, "quiet");
 
   var d = el("div", "tally");
   var a = el("span");
-  a.appendChild(document.createTextNode("Purses taken "));
+  a.appendChild(document.createTextNode(T("bc-g-purses", "Purses taken ")));
   a.appendChild(el("b", null, String(G.wins)));
   d.appendChild(a);
   ui.panel.appendChild(d);
 
   setTimeout(function () { if (ui.acted && G.view === "guess") inp.focus({ preventScroll: true }); }, 0);
-  ui.say("Market day " + (G.round + 1) + ". Choose your number with the arrow keys and turn the slate over.");
+  ui.say(T("bc-s-guess", "Market day {n}. Choose your number with the arrow keys and turn the slate over.", {n: G.round + 1}));
 };
 
 function setGuess(v) {
@@ -1714,25 +1727,25 @@ function play(mine) {
 
 VIEWS.reveal = function () {
   var r = G.last;
-  ui.top("The Beauty Contest", "market day " + r.round + " of " + ROUNDS);
-  ui.kick("The slates turn over");
-  ui.head(r.youWon ? "The purse is yours" : r.winnerName + " takes the purse");
-  ui.para("The average of the thirteen slates was " + fmt(r.avg) + ". Two thirds of that is " + fmt(r.target) +
-          ". You wrote " + r.mine + ", which was " + fmt(Math.abs(r.mine - r.target)) + " away. " +
-          (r.youWon ? "Nobody was nearer." : r.winnerName + " wrote " + r.winnerGuess + "."));
+  ui.top(T("bc-name", "The Beauty Contest"), T("bc-when-day", "market day {a} of {b}", {a: r.round, b: ROUNDS}));
+  ui.kick(T("bc-rv-kick", "The slates turn over"));
+  ui.head(r.youWon ? T("bc-rv-h-you", "The purse is yours") : T("bc-rv-h-other", "{w} takes the purse", {w: r.winnerName}));
+  ui.para(T("bc-rv-p", "The average of the thirteen slates was {a}. Two thirds of that is {t}. You wrote {m}, which was {d} away. {r}",
+          {a: fmt(r.avg), t: fmt(r.target), m: r.mine, d: fmt(Math.abs(r.mine - r.target)),
+           r: r.youWon ? T("bc-rv-none", "Nobody was nearer.") : T("bc-rv-wrote", "{w} wrote {g}.", {w: r.winnerName, g: r.winnerGuess})}));
 
   var list = el("div", "slate-list");
   for (var i = 0; i < r.all.length; i++) {
     var me = i === r.all.length - 1;
     var cls = i === r.winner ? "win" : me ? "you" : null;
-    var name = me ? "You" : VILLAGERS[i].name;
+    var name = me ? T("bc-you", "You") : VILLAGERS[i].name;
     list.appendChild(el("span", cls, name + " " + r.all[i]));
   }
   ui.panel.appendChild(list);
 
   if (G.rounds.length > 1) {
     var tr = el("div", "tracks");
-    tr.appendChild(document.createTextNode("The winning number so far: "));
+    tr.appendChild(document.createTextNode(T("bc-rv-track", "The winning number so far: ")));
     for (var j = 0; j < G.rounds.length; j++) {
       if (j) tr.appendChild(document.createTextNode(", "));
       tr.appendChild(el("b", null, fmt(G.rounds[j].target)));
@@ -1742,12 +1755,13 @@ VIEWS.reveal = function () {
 
   var row = ui.actions();
   if (G.round >= ROUNDS) {
-    ui.btn(row, "What the square was doing", "go on", function () { view("ending"); }, "big");
+    ui.btn(row, T("bc-b-endview", "What the square was doing"), T("bc-k-go", "go on"), function () { view("ending"); }, "big");
   } else {
-    ui.btn(row, "The next market day", "go on", function () { view("guess"); }, "big");
+    ui.btn(row, T("bc-b-nextday", "The next market day"), T("bc-k-go", "go on"), function () { view("guess"); }, "big");
   }
-  ui.say("Average " + fmt(r.avg) + ", winning number " + fmt(r.target) + ". " +
-         (r.youWon ? "You took the purse." : r.winnerName + " took the purse."));
+  ui.say(T("bc-s-rv", "Average {a}, winning number {t}. {w}",
+         {a: fmt(r.avg), t: fmt(r.target),
+          w: r.youWon ? T("bc-s-rv-you", "You took the purse.") : T("bc-s-rv-other", "{n} took the purse.", {n: r.winnerName})}));
 };
 
 /* ============================================================
@@ -1758,72 +1772,72 @@ VIEWS.ending = function () {
   scene.show = false;
   KW.season(2, true); KW.daylight(0.62);
   var first = G.rounds[0], last = G.rounds[G.rounds.length - 1];
-  ui.top("The Beauty Contest", "the argument, plainly");
-  ui.kick("The end of it");
-  ui.head("The numbers walked downhill and did not arrive");
+  ui.top(T("bc-name", "The Beauty Contest"), T("bc-when-arg", "the argument, plainly"));
+  ui.kick(T("bc-e-kick", "The end of it"));
+  ui.head(T("bc-e-h", "The numbers walked downhill and did not arrive"));
 
   if (first && last) {
-    ui.para("The winning number went from " + fmt(first.target) + " on the first market day to " +
-            fmt(last.target) + " on the last. It fell every time the village learned what the village had done, and it never reached zero.");
+    ui.para(T("bc-e-p0", "The winning number went from {f} on the first market day to {l} on the last. It fell every time the village learned what the village had done, and it never reached zero.",
+            {f: fmt(first.target), l: fmt(last.target)}));
   }
-  ui.para("Zero is the only number that survives the reasoning all the way down. If everybody writes zero, two thirds of the average is zero and everybody has written the winning number, and no single person can do better by writing anything else. That is the equilibrium, and it is the one answer nobody in your square ever wrote.");
-  ui.para("The reason is not that people are stupid. Writing zero is only correct if everybody else does the reasoning too, and does it to the end, and believes that you believe that they will. Two people in that square were not doing this at all, and once you know that, a number near zero is a bad bet rather than a clever one. The right depth of reasoning is one step past the room you are actually in, and that is a fact about the room and not about the mathematics.");
+  ui.para(T("bc-e-p1", "Zero is the only number that survives the reasoning all the way down. If everybody writes zero, two thirds of the average is zero and everybody has written the winning number, and no single person can do better by writing anything else. That is the equilibrium, and it is the one answer nobody in your square ever wrote."));
+  ui.para(T("bc-e-p2", "The reason is not that people are stupid. Writing zero is only correct if everybody else does the reasoning too, and does it to the end, and believes that you believe that they will. Two people in that square were not doing this at all, and once you know that, a number near zero is a bad bet rather than a clever one. The right depth of reasoning is one step past the room you are actually in, and that is a fact about the room and not about the mathematics."));
 
-  ui.sub("Where it comes from");
-  ui.para("Keynes described the situation in 1936, writing about what professional investors are actually doing:");
+  ui.sub(T("bc-e-sub1", "Where it comes from"));
+  ui.para(T("bc-e-keynes", "Keynes described the situation in 1936, writing about what professional investors are actually doing:"));
   var q = el("p", "say");
-  q.appendChild(document.createTextNode("“Professional investment may be likened to those newspaper competitions in which the competitors have to pick out the six prettiest faces from a hundred photographs, the prize being awarded to the competitor whose choice most nearly corresponds to the average preferences of the competitors as a whole; so that each competitor has to pick, not those faces which he himself finds prettiest, but those which he thinks likeliest to catch the fancy of the other competitors, all of whom are looking at the problem from the same point of view.”"));
+  q.appendChild(document.createTextNode(T("bc-e-q1", "“Professional investment may be likened to those newspaper competitions in which the competitors have to pick out the six prettiest faces from a hundred photographs, the prize being awarded to the competitor whose choice most nearly corresponds to the average preferences of the competitors as a whole; so that each competitor has to pick, not those faces which he himself finds prettiest, but those which he thinks likeliest to catch the fancy of the other competitors, all of whom are looking at the problem from the same point of view.”")));
   ui.panel.appendChild(q);
   var q2 = el("p", "say");
-  q2.appendChild(document.createTextNode("“We have reached the third degree where we devote our intelligences to anticipating what average opinion expects the average opinion to be. And there are some, I believe, who practise the fourth, fifth and higher degrees.”"));
+  q2.appendChild(document.createTextNode(T("bc-e-q2", "“We have reached the third degree where we devote our intelligences to anticipating what average opinion expects the average opinion to be. And there are some, I believe, who practise the fourth, fifth and higher degrees.”")));
   ui.panel.appendChild(q2);
 
-  ui.sub("What happens with real people");
-  ui.para("Rosemarie Nagel ran this exact game in a laboratory and published the results in 1995. In the sessions where the target was two thirds of the average, the mean number chosen in the first period was 36.73, nowhere near the equilibrium of zero and close to what one or two rounds of the reasoning would give. Played repeatedly with the results announced, the choices fell period after period without arriving at zero.");
-  ui.para("That first number is the useful one. If the room were full of perfectly rational players who knew the others were too, it would have been zero. It was 36.73, which is roughly the answer of somebody doing the reasoning once or twice and stopping.");
+  ui.sub(T("bc-e-sub2", "What happens with real people"));
+  ui.para(T("bc-e-p3", "Rosemarie Nagel ran this exact game in a laboratory and published the results in 1995. In the sessions where the target was two thirds of the average, the mean number chosen in the first period was 36.73, nowhere near the equilibrium of zero and close to what one or two rounds of the reasoning would give. Played repeatedly with the results announced, the choices fell period after period without arriving at zero."));
+  ui.para(T("bc-e-p4", "That first number is the useful one. If the room were full of perfectly rational players who knew the others were too, it would have been zero. It was 36.73, which is roughly the answer of somebody doing the reasoning once or twice and stopping."));
 
-  ui.sub("What this does not show");
+  ui.sub(T("bc-e-sub3", "What this does not show"));
   ui.list([
-    "Your twelve neighbours are a hand written mixture of reasoning depths, chosen by the author. They are not a measured population and the mixture was not taken from any published study.",
-    "Two of them never do the reasoning at all. They start somewhere in the middle and then drift toward whatever won last time. That single assumption does most of the work in keeping the winning number off zero, and a different one would give a different floor.",
-    "Real players do not update by taking two thirds of last time. They do something messier, and the published work models it in several competing ways.",
-    "Six rounds with thirteen people is not an experiment. Nothing measured on this page is evidence about anybody, including you.",
-    "The number 36.73 is one figure from one paper with a particular subject pool and design. Other studies find other first round averages, and newspaper versions of the game with thousands of entrants come out lower."
+    T("bc-e-l1", "Your twelve neighbours are a hand written mixture of reasoning depths, chosen by the author. They are not a measured population and the mixture was not taken from any published study."),
+    T("bc-e-l2", "Two of them never do the reasoning at all. They start somewhere in the middle and then drift toward whatever won last time. That single assumption does most of the work in keeping the winning number off zero, and a different one would give a different floor."),
+    T("bc-e-l3", "Real players do not update by taking two thirds of last time. They do something messier, and the published work models it in several competing ways."),
+    T("bc-e-l4", "Six rounds with thirteen people is not an experiment. Nothing measured on this page is evidence about anybody, including you."),
+    T("bc-e-l5", "The number 36.73 is one figure from one paper with a particular subject pool and design. Other studies find other first round averages, and newspaper versions of the game with thousands of entrants come out lower.")
   ]);
 
-  ui.sub("Sources");
+  ui.sub(T("bc-e-src", "Sources"));
   ui.sources([
-    { what: "The newspaper competition.",
+    { what: T("bc-src1", "The newspaper competition."),
       cite: "John Maynard Keynes, The General Theory of Employment, Interest and Money, 1936, chapter 12, The State of Long Term Expectation.",
       url: "https://www.marxists.org/reference/subject/economics/keynes/general-theory/ch12.htm",
-      tail: "Read 2026 08 21." },
-    { what: "The experiment.",
+      tail: T("bc-src-tail", "Read 2026 08 21.") },
+    { what: T("bc-src2", "The experiment."),
       cite: "Rosemarie Nagel, Unraveling in Guessing Games: An Experimental Study, American Economic Review 85(5), 1995, pages 1313 to 1326.",
       url: "https://extranet.parisschoolofeconomics.eu/docs/guesnerie-roger/nagel95.pdf",
-      tail: "Read 2026 08 21." },
-    { what: "Equilibrium.",
+      tail: T("bc-src-tail", "Read 2026 08 21.") },
+    { what: T("bc-src3", "Equilibrium."),
       cite: "John F. Nash, Equilibrium Points in n Person Games, Proceedings of the National Academy of Sciences 36(1), 1950, pages 48 and 49.",
       url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC1063129/",
-      tail: "Read 2026 08 21." }
+      tail: T("bc-src-tail", "Read 2026 08 21.") }
   ]);
 
   var p = el("p");
-  p.appendChild(document.createTextNode("The rest of the family, including one where being predictable is the only way to lose: "));
-  var a = el("a", null, "all of the games are here");
+  p.appendChild(document.createTextNode(T("bc-fam", "The rest of the family, including one where being predictable is the only way to lose: ")));
+  var a = el("a", null, T("bc-fam-a", "all of the games are here"));
   a.href = "../../game.html";
   p.appendChild(a);
   p.appendChild(document.createTextNode("."));
   ui.panel.appendChild(p);
 
   var r = ui.actions();
-  ui.btn(r, "Take a slate again", "again", function () {
+  ui.btn(r, T("bc-b-again", "Take a slate again"), T("bc-k-again", "again"), function () {
     store.wipe();
     G.round = 0; G.wins = 0; G.purse = 0; G.lastAvg = null; G.lastTarget = null;
     G.rounds = []; prevG = [];
     rnd = KW.mulberry(4242);
     view("guess");
   }, "big");
-  ui.say("The ending. The winning number falls toward zero and never reaches it.");
+  ui.say(T("bc-s-end", "The ending. The winning number falls toward zero and never reaches it."));
 };
 
 /* ============================================================
@@ -1859,6 +1873,10 @@ window.__G = {
   }
 };
 
+document.addEventListener("langchange", function () {
+  if (ctx) view(G.view);
+});
+
 KW.start({
   draw: drawWorld,
   lift: 46,      /* a band of flat stones below the square, for the chalk */
@@ -1869,40 +1887,97 @@ KW.start({
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache"}};
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}"}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %"}};
 
 (function(){
   "use strict";
   var KEY = "lang", lang = "en";
-  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
-  var D = window.CHROME_I18N || {};
-  var base = {}, baseA = {};
-  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
-  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  function known(l){
+    return l === "en"
+        || (window.CHROME_I18N && window.CHROME_I18N[l])
+        || (window.PAGE_I18N && window.PAGE_I18N[l]);
+  }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
   function apply(l){
-    if(!D[l]) l = "en";
-    var d = D[l] || {};
-    document.querySelectorAll(SEL).forEach(function(el){
-      var k = el.getAttribute("data-i");
-      if(!(k in base)) base[k] = el.innerHTML;
-      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
-    });
-    document.querySelectorAll(SELA).forEach(function(el){
-      var k = el.getAttribute("data-ia");
-      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
-      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
-    });
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
     });
     try { localStorage.setItem(KEY, l); } catch (e) {}
     window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
 })();
 

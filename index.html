@@ -93,11 +93,14 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
 #portal{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   width:min(1020px,94vw);
-  display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.7rem,1.4vw,1.25rem);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(.6rem,1.1vw,1rem);
   opacity:0;pointer-events:none;transition:opacity .8s ease;
 }
-@media (max-width:860px){#portal{grid-template-columns:repeat(2,1fr);width:min(660px,92vw)}}
-@media (max-width:560px){#portal{grid-template-columns:1fr;top:52%}}
+@media (max-width:1000px){#portal{grid-template-columns:repeat(2,1fr);width:min(660px,93vw)}}
+@media (max-width:520px){#portal{gap:.4rem;top:50%;width:96vw}
+  .door{padding:.6rem .7rem .55rem}
+  .door h2{font-size:1.02rem}
+  .door p{margin-top:.28rem;min-height:0;font-size:.78rem;line-height:1.35}}
 /* the nav box itself lets the cursor through: only the cards catch it, so
    the soil between and beside them still belongs to the museum */
 #portal.live{opacity:1;pointer-events:none}
@@ -123,6 +126,8 @@ body{background:#16192a;color:var(--ink);font-family:var(--sans)}
 #portal.live .door:nth-child(4){transition-delay:.30s}
 #portal.live .door:nth-child(5){transition-delay:.40s}
 #portal.live .door:nth-child(6){transition-delay:.50s}
+#portal.live .door:nth-child(7){transition-delay:.58s}
+#portal.live .door:nth-child(8){transition-delay:.66s}
 .door:hover{border-color:rgba(224,170,96,.55);background:rgba(30,22,13,.6);box-shadow:0 0 60px rgba(224,160,80,.12), inset 0 0 30px rgba(0,0,0,.3)}
 
 .door h2{
@@ -163,15 +168,16 @@ footer a:hover{color:#fff}
 }
 @media (max-width:700px){
   #portal{align-content:center}
-  /* six cards stacked have to be short, or the column swallows the screen
-     and buries the museum behind it */
-  .door{width:78vw;padding:.75rem .95rem .7rem}
+  .door .peek{display:none}
+  /* eight cards two abreast have to be short, or the block swallows the
+     screen and buries the museum behind it */
+  .door{padding:.7rem .8rem .65rem}
   .door h2{font-size:1.16rem}
   .door p{margin-top:.32rem;min-height:0;font-size:.85rem;line-height:1.4}
   #theName{top:34%}
 }
-/* a small phone held upright: six cards will not stand in that screen at
-   the size above, so the stack comes down to its shortest reading */
+/* a small phone held upright: eight cards will not stand in that screen at
+   the size above, so the block comes down to its shortest reading */
 @media (max-width:560px) and (max-height:720px){
   #portal{gap:.45rem}
   .door{padding:.55rem .8rem .5rem}
@@ -185,9 +191,9 @@ footer a:hover{color:#fff}
   #sig{width:min(430px,52vw)}
   #hint{top:29%;font-size:.82rem}
   #hint::after{height:15px;margin-top:4px}
-  /* two rows of doors do not fit under a strip of sky: put the six in one */
-  #portal{grid-template-columns:repeat(6,1fr);top:52%;width:min(1020px,96vw);
-    gap:clamp(.4rem,1vw,.9rem)}
+  /* under a strip of sky the cards go flat: four across, two deep */
+  #portal{grid-template-columns:repeat(4,1fr);top:52%;width:min(1020px,96vw);
+    gap:clamp(.3rem,.8vw,.7rem)}
   .door{min-height:0;width:auto;padding:.8rem .5rem .75rem}
   .door h2{font-size:clamp(.95rem,1.9vw,1.28rem)}
   .door p{margin-top:.35rem;min-height:0;font-size:.8rem;line-height:1.4}
@@ -318,7 +324,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       </a>
       <a class="door" href="projects.html">
         <h2 data-i="d2">Projects</h2>
-        <p data-i="d2p">Working instruments, repositories, and CoLaunch.</p>
+        <p data-i="d2p">Repositories, case studies, and CoLaunch.</p>
         <span class="peek" aria-hidden="true"><span class="pg"><span class="ln a"></span><span class="blk"></span><span class="ln c"></span><span class="blk"></span></span></span>
       </a>
       <a class="door" href="notes.html">
@@ -333,13 +339,23 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       </a>
       <a class="door" href="tools.html">
         <h2 data-i="d5">Tools</h2>
-        <p data-i="d5p">Free instruments and four essays.</p>
+        <p data-i="d5p">Three instruments that do the arithmetic.</p>
         <span class="peek" aria-hidden="true"><span class="pg"><span class="ln a"></span><span class="blk"></span><span class="ln b"></span><span class="ln d"></span></span></span>
+      </a>
+      <a class="door" href="tools/economics/">
+        <h2 data-i="d7">Economics</h2>
+        <p data-i="d7p">Four essays with a working model inside each.</p>
+        <span class="peek" aria-hidden="true"><span class="pg"><span class="ln a"></span><span class="ln c"></span><span class="blk"></span><span class="ln b"></span></span></span>
       </a>
       <a class="door" href="game.html">
         <h2 data-i="d6">Game Theory</h2>
         <p data-i="d6p">Six small games, played rather than read.</p>
         <span class="peek" aria-hidden="true"><span class="pg"><span class="ln a"></span><span class="blk"></span><span class="blk"></span><span class="ln d"></span></span></span>
+      </a>
+      <a class="door" href="simea/">
+        <h2 data-i="d8">Simulations</h2>
+        <p data-i="d8p">Five models from my research, running live.</p>
+        <span class="peek" aria-hidden="true"><span class="pg"><span class="blk"></span><span class="ln b"></span><span class="blk"></span><span class="ln c"></span></span></span>
       </a>
     </nav>
 
@@ -6095,15 +6111,19 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   "use strict";
   var D = {
     tr: {"d1":"Profil","d1p":"Kim olduğum, nerede okuduğum, ne yaptığım.",
-         "d2":"Projeler","d2p":"Çalışan araçlar, repolar ve CoLaunch.",
-         "d3":"İletişim","d3p":"E-posta, LinkedIn, GitHub.","d4":"Notlar","d4p":"Yazmaya değer şeyler.","d5":"Araçlar","d5p":"Ücretsiz aletler ve dört deneme.",
+         "d2":"Projeler","d2p":"Repolar, vaka çalışmaları ve CoLaunch.",
+         "d3":"İletişim","d3p":"E-posta, LinkedIn, GitHub.","d4":"Notlar","d4p":"Yazmaya değer şeyler.","d5":"Araçlar","d5p":"Aritmetiği üstlenen üç alet.",
+         "d7":"İktisat","d7p":"Her birinin ortasında çalışan bir model olan dört deneme.",
+         "d8":"Simülasyonlar","d8p":"Araştırmamdan beş model, tarayıcıda çalışıyor.",
          "d6":"Oyun Teorisi","d6p":"Altı küçük oyun, okunmak yerine oynanan.","hint":"Kaydır",
          "a-site":"Site","a-lang":"Dil","a-season":"Mevsimi değiştir","t-season":"Mevsim",
          "a-vol":"Ses düzeyi","a-snd":"Sesi aç veya kapat","t-snd":"Ses",
          "s0":"İlkbahar","s1":"Yaz","s2":"Sonbahar","s3":"Kış"},
     de: {"d1":"Profil","d1p":"Wer ich bin, wo ich studiere, was ich gemacht habe.",
-         "d2":"Projekte","d2p":"Laufende Instrumente, Repositories und CoLaunch.",
-         "d3":"Kontakt","d3p":"E-Mail, LinkedIn, GitHub.","d4":"Notizen","d4p":"Dinge, die es wert sind.","d5":"Werkzeuge","d5p":"Freie Instrumente und vier Essays.",
+         "d2":"Projekte","d2p":"Repositories, Fallstudien und CoLaunch.",
+         "d3":"Kontakt","d3p":"E-Mail, LinkedIn, GitHub.","d4":"Notizen","d4p":"Dinge, die es wert sind.","d5":"Werkzeuge","d5p":"Drei Instrumente, die die Rechnung übernehmen.",
+         "d7":"Ökonomik","d7p":"Vier Essays, in deren Mitte jeweils ein laufendes Modell steht.",
+         "d8":"Simulationen","d8p":"Fünf Modelle aus meiner Forschung, live im Browser.",
          "d6":"Spieltheorie","d6p":"Sechs kleine Spiele, gespielt statt gelesen.","hint":"Scrollen",
          "a-site":"Website","a-lang":"Sprache","a-season":"Jahreszeit wechseln","t-season":"Jahreszeit",
          "a-vol":"Lautstärke","a-snd":"Ton an oder aus","t-snd":"Ton",

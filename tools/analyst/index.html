@@ -512,7 +512,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 footer.site-foot{background:var(--paper)}
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -520,8 +520,9 @@ footer.site-foot{background:var(--paper)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -540,7 +541,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -550,7 +551,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -560,12 +561,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -596,14 +597,14 @@ footer a:hover{color:var(--fg)}
 </head>
 <body>
 
-<a class="k-skip" href="#work">Skip to the instruments</a>
+<a class="k-skip" href="#work" data-i="an-skip">Skip to the instruments</a>
 
 <div class="k-shell">
 
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" aria-current="page" data-i="nav-t">Tools</a><a href="../../game.html" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../tools.html" aria-current="page" data-i="nav-t">Tools</a><a href="../../tools/economics/" data-i="nav-e">Economics</a><a href="../../game.html" data-i="nav-g">Game Theory</a><a href="../../simea/" data-i="nav-s">Simulations</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -619,8 +620,8 @@ footer a:hover{color:var(--fg)}
 
       <div class="k-lede k-crown">
         <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Instrument · finance and analysis</i></span>
-        <h1>Four instruments, and what each of them refuses to do</h1>
-        <p class="k-standfirst">A valuation that prints how much of itself is the perpetuity behind the forecast.
+        <h1 data-i="an-001">Four instruments, and what each of them refuses to do</h1>
+        <p class="k-standfirst" data-i="an-012">A valuation that prints how much of itself is the perpetuity behind the forecast.
         Two market sizings with the gap between them left on the page. A runway that says which month the money
         runs out and what one more hire costs in weeks. A unit converter that names the missing input rather than
         guessing it. Every figure is arithmetic on numbers you type. Each instrument saves its state in the address
@@ -629,39 +630,39 @@ footer a:hover{color:var(--fg)}
 
       <!-- ============ 01 valuation ============ -->
       <section class="k-sect" aria-labelledby="h-v">
-        <h2 id="h-v"><span class="k-num">01</span>Valuation</h2>
-        <p class="ad-lead">For seeing how much of an enterprise value is the years you forecast and how much is the
+        <h2 id="h-v" data-i="an-002"><span class="k-num">01</span>Valuation</h2>
+        <p class="ad-lead" data-i="an-013">For seeing how much of an enterprise value is the years you forecast and how much is the
         perpetuity attached behind the last of them. Enter your own cash flows, cost of capital and terminal growth.</p>
-        <p class="ad-case">Method behind it:
+        <p class="ad-case" data-i="an-014">Method behind it:
           <a href="../../case-dcf-lab.html" rel="noreferrer noopener" target="_blank">the dcf lab case study</a>
         </p>
 
         <div class="k-row" style="max-width:34rem">
           <div class="k-field">
-            <label for="v-w">Cost of capital, per cent</label>
+            <label for="v-w" data-i="an-032">Cost of capital, per cent</label>
             <input type="number" id="v-w" step="0.01" inputmode="decimal">
-            <span class="k-hint">The rate that discounts every year and the perpetuity.</span>
+            <span class="k-hint" data-i="an-h-wacc">The rate that discounts every year and the perpetuity.</span>
           </div>
           <div class="k-field">
-            <label for="v-g">Terminal growth, per cent</label>
+            <label for="v-g" data-i="an-033">Terminal growth, per cent</label>
             <input type="number" id="v-g" step="0.01" inputmode="decimal">
-            <span class="k-hint">Growth of the perpetuity after the last forecast year.</span>
+            <span class="k-hint" data-i="an-h-tg">Growth of the perpetuity after the last forecast year.</span>
           </div>
         </div>
 
         <fieldset class="ad-fs" style="margin-top:1.1rem">
-          <legend class="ad-sub">Forecast free cash flows</legend>
+          <legend class="ad-sub" data-i="an-070">Forecast free cash flows</legend>
           <div class="ad-rows" id="v-rows"></div>
         </fieldset>
 
         <div class="k-btnbar" style="margin-top:1rem">
-          <button type="button" class="k-btn" id="b-v-add">Add year</button>
-          <button type="button" class="k-btn k-btn-quiet" id="b-v-example">Load an example</button>
-          <button type="button" class="k-btn k-btn-quiet" id="b-v-clear">Clear</button>
+          <button type="button" class="k-btn" id="b-v-add" data-i="an-045">Add year</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-v-example" data-i="an-046">Load an example</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-v-clear" data-i="an-047">Clear</button>
         </div>
-        <p class="k-hint" style="margin-top:0.6rem">Any example loaded here is an example. The figures in it are
+        <p class="k-hint" style="margin-top:0.6rem" data-i="an-015">Any example loaded here is an example. The figures in it are
         invented to show the arithmetic working and they value nothing.</p>
-        <p class="k-note" style="margin-top:0.9rem">Cash flows are in one unit of your choosing, the same unit
+        <p class="k-note" style="margin-top:0.9rem" data-i="an-016">Cash flows are in one unit of your choosing, the same unit
         throughout. The share of the enterprise value carried by the terminal value does not depend on which unit
         that is. There is no net debt, no share count and no per share figure here, because those would turn a
         decomposition into a price.</p>
@@ -669,224 +670,224 @@ footer a:hover{color:var(--fg)}
         <div id="v-out" aria-live="polite" style="margin-top:var(--gap)"></div>
 
         <div class="k-btnbar" style="margin-top:var(--gap)">
-          <button type="button" class="k-btn k-btn-key" id="b-v-csv">Download CSV</button>
-          <button type="button" class="k-btn" id="b-v-copy">Copy table</button>
-          <button type="button" class="k-btn" id="b-v-link">Copy link to these inputs</button>
+          <button type="button" class="k-btn k-btn-key" id="b-v-csv" data-i="an-048">Download CSV</button>
+          <button type="button" class="k-btn" id="b-v-copy" data-i="an-049">Copy table</button>
+          <button type="button" class="k-btn" id="b-v-link" data-i="an-050">Copy link to these inputs</button>
         </div>
       </section>
 
       <!-- ============ 02 market size ============ -->
       <section class="k-sect" aria-labelledby="h-m">
-        <h2 id="h-m"><span class="k-num">02</span>Market size</h2>
-        <p class="ad-lead">For sizing a market twice, top down and bottom up, and reading the disagreement instead
+        <h2 id="h-m" data-i="an-003"><span class="k-num">02</span>Market size</h2>
+        <p class="ad-lead" data-i="an-017">For sizing a market twice, top down and bottom up, and reading the disagreement instead
         of averaging it away. Every assumption is answered with the value it would have to take for the two sizings
         to agree.</p>
-        <p class="ad-case">Method behind it:
+        <p class="ad-case" data-i="an-018">Method behind it:
           <a href="../../case-market-sizer.html" rel="noreferrer noopener" target="_blank">the market sizer case study</a>
         </p>
 
         <div class="k-row" style="max-width:22rem">
           <div class="k-field">
-            <label for="m-unit">Money label</label>
+            <label for="m-unit" data-i="an-034">Money label</label>
             <input type="text" id="m-unit" maxlength="12" placeholder="EUR">
-            <span class="k-hint">A label only. It changes no arithmetic.</span>
+            <span class="k-hint" data-i="an-h-label">A label only. It changes no arithmetic.</span>
           </div>
         </div>
 
         <div class="ad-two" style="margin-top:1.1rem">
           <fieldset class="ad-fs">
-            <legend class="ad-sub">Top down: a universe narrowed by factors</legend>
+            <legend class="ad-sub" data-i="an-071">Top down: a universe narrowed by factors</legend>
             <div class="ad-rows" id="m-td"></div>
             <div class="k-btnbar" style="margin-top:0.8rem">
-              <button type="button" class="k-btn k-btn-quiet" id="b-m-addf">Add factor</button>
+              <button type="button" class="k-btn k-btn-quiet" id="b-m-addf" data-i="an-051">Add factor</button>
             </div>
           </fieldset>
           <fieldset class="ad-fs">
-            <legend class="ad-sub">Bottom up: segments, each a product of drivers</legend>
+            <legend class="ad-sub" data-i="an-072">Bottom up: segments, each a product of drivers</legend>
             <div class="ad-rows" id="m-bu"></div>
             <div class="k-btnbar" style="margin-top:0.8rem">
-              <button type="button" class="k-btn k-btn-quiet" id="b-m-addseg">Add segment</button>
+              <button type="button" class="k-btn k-btn-quiet" id="b-m-addseg" data-i="an-052">Add segment</button>
             </div>
           </fieldset>
         </div>
 
         <div class="k-btnbar" style="margin-top:1rem">
-          <button type="button" class="k-btn k-btn-quiet" id="b-m-example">Load an example</button>
-          <button type="button" class="k-btn k-btn-quiet" id="b-m-clear">Clear</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-m-example" data-i="an-053">Load an example</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-m-clear" data-i="an-054">Clear</button>
         </div>
-        <p class="k-hint" style="margin-top:0.6rem">Any example loaded here is an example. The figures in it are
+        <p class="k-hint" style="margin-top:0.6rem" data-i="an-019">Any example loaded here is an example. The figures in it are
         invented to show the arithmetic working and they size nothing.</p>
 
         <div id="m-out" aria-live="polite" style="margin-top:var(--gap)"></div>
 
         <div class="k-btnbar" style="margin-top:var(--gap)">
-          <button type="button" class="k-btn k-btn-key" id="b-m-csv">Download CSV</button>
-          <button type="button" class="k-btn" id="b-m-copy">Copy table</button>
-          <button type="button" class="k-btn" id="b-m-link">Copy link to these inputs</button>
+          <button type="button" class="k-btn k-btn-key" id="b-m-csv" data-i="an-055">Download CSV</button>
+          <button type="button" class="k-btn" id="b-m-copy" data-i="an-056">Copy table</button>
+          <button type="button" class="k-btn" id="b-m-link" data-i="an-057">Copy link to these inputs</button>
         </div>
       </section>
 
       <!-- ============ 03 runway ============ -->
       <section class="k-sect" aria-labelledby="h-r">
-        <h2 id="h-r"><span class="k-num">03</span>Runway</h2>
-        <p class="ad-lead">For the month the money runs out, the balance month by month up to a horizon you set,
+        <h2 id="h-r" data-i="an-004"><span class="k-num">03</span>Runway</h2>
+        <p class="ad-lead" data-i="an-020">For the month the money runs out, the balance month by month up to a horizon you set,
         and the question that follows: how many weeks of runway each planned hire costs.</p>
-        <p class="ad-case">No case study for this one. It is arithmetic on your own figures, and the method is
+        <p class="ad-case" data-i="an-021">No case study for this one. It is arithmetic on your own figures, and the method is
         printed under the chart.</p>
 
         <div class="k-row">
           <div class="k-field">
-            <label for="r-cash">Cash in the bank</label>
+            <label for="r-cash" data-i="an-035">Cash in the bank</label>
             <input type="number" id="r-cash" step="any" inputmode="decimal">
-            <span class="k-hint">The balance at the start of month one.</span>
+            <span class="k-hint" data-i="an-h-cash">The balance at the start of month one.</span>
           </div>
           <div class="k-field">
-            <label for="r-fixed">Fixed monthly costs</label>
+            <label for="r-fixed" data-i="an-036">Fixed monthly costs</label>
             <input type="number" id="r-fixed" step="any" inputmode="decimal">
-            <span class="k-hint">Everything that does not scale with headcount.</span>
+            <span class="k-hint" data-i="an-h-fixed">Everything that does not scale with headcount.</span>
           </div>
           <div class="k-field">
-            <label for="r-perhead">Monthly cost per head</label>
+            <label for="r-perhead" data-i="an-037">Monthly cost per head</label>
             <input type="number" id="r-perhead" step="any" inputmode="decimal">
-            <span class="k-hint">Fully loaded, per person, per month.</span>
+            <span class="k-hint" data-i="an-h-head">Fully loaded, per person, per month.</span>
           </div>
           <div class="k-field">
-            <label for="r-heads">Heads today</label>
+            <label for="r-heads" data-i="an-038">Heads today</label>
             <input type="number" id="r-heads" step="1" min="0" inputmode="numeric">
-            <span class="k-hint">People on the payroll before any planned hire.</span>
+            <span class="k-hint" data-i="an-h-heads">People on the payroll before any planned hire.</span>
           </div>
         </div>
 
         <div class="k-row" style="margin-top:0.9rem">
           <div class="k-field">
-            <label for="r-m0">First month of the plan</label>
+            <label for="r-m0" data-i="an-039">First month of the plan</label>
             <select id="r-m0"></select>
           </div>
           <div class="k-field">
-            <label for="r-y0">Year</label>
+            <label for="r-y0" data-i="an-040">Year</label>
             <input type="number" id="r-y0" step="1" inputmode="numeric">
           </div>
           <div class="k-field">
-            <label for="r-h">Horizon, months</label>
+            <label for="r-h" data-i="an-041">Horizon, months</label>
             <input type="number" id="r-h" step="1" min="1" max="240" inputmode="numeric">
-            <span class="k-hint">The tool computes nothing past this point and says so.</span>
+            <span class="k-hint" data-i="an-h-horizon">The tool computes nothing past this point and says so.</span>
           </div>
         </div>
 
         <div class="ad-two" style="margin-top:1.2rem">
           <fieldset class="ad-fs">
-            <legend class="ad-sub">Planned hires</legend>
+            <legend class="ad-sub" data-i="an-073">Planned hires</legend>
             <div class="ad-rows" id="r-hires"></div>
             <div class="k-btnbar" style="margin-top:0.8rem">
-              <button type="button" class="k-btn k-btn-quiet" id="b-r-addhire">Add hire</button>
+              <button type="button" class="k-btn k-btn-quiet" id="b-r-addhire" data-i="an-058">Add hire</button>
             </div>
           </fieldset>
           <fieldset class="ad-fs">
-            <legend class="ad-sub">Expected income</legend>
+            <legend class="ad-sub" data-i="an-074">Expected income</legend>
             <div class="ad-rows" id="r-inc"></div>
             <div class="k-btnbar" style="margin-top:0.8rem">
-              <button type="button" class="k-btn k-btn-quiet" id="b-r-addinc">Add income</button>
+              <button type="button" class="k-btn k-btn-quiet" id="b-r-addinc" data-i="an-059">Add income</button>
             </div>
           </fieldset>
         </div>
 
         <div class="k-btnbar" style="margin-top:1rem">
-          <button type="button" class="k-btn k-btn-quiet" id="b-r-example">Load an example</button>
-          <button type="button" class="k-btn k-btn-quiet" id="b-r-clear">Clear</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-r-example" data-i="an-060">Load an example</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-r-clear" data-i="an-061">Clear</button>
         </div>
-        <p class="k-hint" style="margin-top:0.6rem">Any example loaded here is an example. The figures in it are
+        <p class="k-hint" style="margin-top:0.6rem" data-i="an-022">Any example loaded here is an example. The figures in it are
         invented to show the arithmetic working and they plan nothing.</p>
 
         <div id="r-out" aria-live="polite" style="margin-top:var(--gap)"></div>
 
         <div class="k-btnbar" style="margin-top:var(--gap)">
-          <button type="button" class="k-btn k-btn-key" id="b-r-csv">Download CSV</button>
-          <button type="button" class="k-btn" id="b-r-copy">Copy table</button>
-          <button type="button" class="k-btn" id="b-r-link">Copy link to these inputs</button>
+          <button type="button" class="k-btn k-btn-key" id="b-r-csv" data-i="an-062">Download CSV</button>
+          <button type="button" class="k-btn" id="b-r-copy" data-i="an-063">Copy table</button>
+          <button type="button" class="k-btn" id="b-r-link" data-i="an-064">Copy link to these inputs</button>
         </div>
       </section>
 
       <!-- ============ 04 unit safety ============ -->
       <section class="k-sect" aria-labelledby="h-u">
-        <h2 id="h-u"><span class="k-num">04</span>Unit safety</h2>
-        <p class="ad-lead">For converting energy, mass and greenhouse gas units, and for being told exactly what is
+        <h2 id="h-u" data-i="an-005"><span class="k-num">04</span>Unit safety</h2>
+        <p class="ad-lead" data-i="an-023">For converting energy, mass and greenhouse gas units, and for being told exactly what is
         missing when a conversion has no answer. Quantities are read as exact rationals, not as floating point.</p>
-        <p class="ad-case">Method behind it:
+        <p class="ad-case" data-i="an-024">Method behind it:
           <a href="../../case-unitguard.html" rel="noreferrer noopener" target="_blank">the unitguard case study</a>
         </p>
 
         <div class="k-row" style="max-width:44rem">
           <div class="k-field">
-            <label for="u-q">Quantity</label>
+            <label for="u-q" data-i="an-042">Quantity</label>
             <input type="text" id="u-q" inputmode="decimal" autocomplete="off" spellcheck="false">
-            <span class="k-hint">A plain decimal. 0.1 means one tenth exactly.</span>
+            <span class="k-hint" data-i="an-h-qty">A plain decimal. 0.1 means one tenth exactly.</span>
           </div>
           <div class="k-field">
-            <label for="u-from">From</label>
+            <label for="u-from" data-i="an-043">From</label>
             <select id="u-from"></select>
           </div>
           <div class="k-field">
-            <label for="u-to">To</label>
+            <label for="u-to" data-i="an-044">To</label>
             <select id="u-to"></select>
           </div>
         </div>
 
         <div class="k-btnbar" style="margin-top:1rem">
-          <button type="button" class="k-btn k-btn-key" id="b-u-go">Convert</button>
-          <button type="button" class="k-btn k-btn-quiet" id="b-u-clear">Clear</button>
+          <button type="button" class="k-btn k-btn-key" id="b-u-go" data-i="an-065">Convert</button>
+          <button type="button" class="k-btn k-btn-quiet" id="b-u-clear" data-i="an-066">Clear</button>
         </div>
 
-        <p class="k-lab" style="margin:1.1rem 0 0.5rem">Four conversions worth trying</p>
+        <p class="k-lab" style="margin:1.1rem 0 0.5rem" data-i="an-025">Four conversions worth trying</p>
         <div class="ad-chips" id="u-chips"></div>
 
         <div id="u-out" aria-live="polite" style="margin-top:var(--gap)"></div>
 
         <div class="k-panel" style="margin-top:var(--gap)">
-          <h3>Conversions you ran in this session</h3>
+          <h3 data-i="an-007">Conversions you ran in this session</h3>
           <div class="k-scroll"><table class="k-table" id="u-log"></table></div>
-          <p class="k-note" style="margin-top:0.8rem">The list is not carried in the link. A shared link restores the
+          <p class="k-note" style="margin-top:0.8rem" data-i="an-026">The list is not carried in the link. A shared link restores the
           quantity and the two units, and the instrument recomputes the same verdict from them.</p>
         </div>
 
         <div class="k-btnbar" style="margin-top:var(--gap)">
-          <button type="button" class="k-btn k-btn-key" id="b-u-csv">Download CSV</button>
-          <button type="button" class="k-btn" id="b-u-copy">Copy table</button>
-          <button type="button" class="k-btn" id="b-u-link">Copy link to these inputs</button>
+          <button type="button" class="k-btn k-btn-key" id="b-u-csv" data-i="an-067">Download CSV</button>
+          <button type="button" class="k-btn" id="b-u-copy" data-i="an-068">Copy table</button>
+          <button type="button" class="k-btn" id="b-u-link" data-i="an-069">Copy link to these inputs</button>
         </div>
       </section>
 
       <!-- ============ 05 method ============ -->
       <section class="k-sect" aria-labelledby="h-meth">
-        <h2 id="h-meth"><span class="k-num">05</span>Method and constants</h2>
+        <h2 id="h-meth" data-i="an-006"><span class="k-num">05</span>Method and constants</h2>
 
-        <p class="k-note">Three of the four instruments contain no constants at all. They are arithmetic on the
+        <p class="k-note" data-i="an-027">Three of the four instruments contain no constants at all. They are arithmetic on the
         numbers you type, so there is nothing in them to source. The only fixed values on this page are the global
         warming potentials named inside the unit converter, and it names them in order to refuse to choose between
         them. They are listed below with the assessment report and the time horizon each one belongs to.</p>
 
         <div class="k-panel" style="margin-top:1rem">
-          <h3>The global warming potentials the converter names and does not use</h3>
+          <h3 data-i="an-008">The global warming potentials the converter names and does not use</h3>
           <div class="k-scroll"><table class="k-table" id="out-gwp"></table></div>
-          <p class="k-source">
+          <p class="k-source" data-i="an-028" data-verbatim>
             <span>Carried over unchanged from unitguard, which names all four and picks none</span>
             <a href="../../case-unitguard.html" target="_blank" rel="noreferrer noopener">the unitguard case study on keremozdemir.de</a>
           </p>
         </div>
 
         <div class="k-panel">
-          <h3>Exact ratios used in the converter</h3>
+          <h3 data-i="an-009">Exact ratios used in the converter</h3>
           <div class="k-scroll"><table class="k-table" id="out-ratio"></table></div>
-          <p class="k-note" style="margin-top:0.8rem">These are ratios of molar masses and a definition, not
+          <p class="k-note" style="margin-top:0.8rem" data-i="an-029">These are ratios of molar masses and a definition, not
           measurements, so they carry no report and no horizon.</p>
         </div>
 
         <div class="k-panel">
-          <h3>The arithmetic, written out</h3>
+          <h3 data-i="an-010">The arithmetic, written out</h3>
           <ul class="k-ask" id="out-formulas"></ul>
         </div>
 
         <div class="k-warn" style="margin-top:var(--gap)">
-          <h3>What this page does not know</h3>
+          <h3 data-i="an-011">What this page does not know</h3>
           <ul class="k-ask" id="out-unknowns"></ul>
         </div>
       </section>
@@ -896,11 +897,11 @@ footer a:hover{color:var(--fg)}
 
   <aside class="k-endnote">
     <div class="k-wrap">
-      <p><strong>Every number on this page is arithmetic on figures you supplied.</strong>
+      <p data-i="an-030"><strong>Every number on this page is arithmetic on figures you supplied.</strong>
       None of it is a valuation, a market size, a forecast or advice. There are no benchmarks, no industry averages
       and no default assumptions anywhere in it. Where an example is loaded it is labelled as an example and exists
       only to show the arithmetic working.</p>
-      <p class="k-fine">
+      <p class="k-fine" data-i="an-031">
         Runs entirely in your browser. Nothing you type leaves this page. No server, no database, no analytics,
         no network calls after the fonts have loaded, so it works offline once the page is cached.
         Built by <a href="../../index.html">Kerem Ozdemir</a>, TUM and Istanbul University.
@@ -910,6 +911,7 @@ footer a:hover{color:var(--fg)}
 
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="../../sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 
@@ -962,19 +964,25 @@ var Kit = (function () {
 
   /* ---------- numbers ---------- */
 
-  var LOCALE = "en-GB";
+  /* The page is read in three languages, so a number has to be written in
+     three. Turkish and German put the comma where English puts the point, and
+     "3,035 billion" read as Turkish says three, not three thousand. Read at
+     call time rather than cached, because the language changes under us. */
+  var LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
+  function locale() { return LOCALES[window.__lang] || "en-GB"; }
+  function na() { return window.__t ? window.__t("kit-na", "not available") : "not available"; }
 
   function num(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     var d = dp === undefined ? 2 : dp;
-    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+    return Number(v).toLocaleString(locale(), { minimumFractionDigits: d, maximumFractionDigits: d });
   }
   function money(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return "EUR " + num(v, dp === undefined ? 2 : dp);
   }
   function pct(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return num(v * 100, dp === undefined ? 1 : dp) + " %";
   }
   function toNum(raw) {
@@ -1150,12 +1158,23 @@ var Kit = (function () {
 (function () {
   "use strict";
 
+  /* ---- the desk's own three languages ---- */
+  window.PAGE_I18N = {"tr": {"an-skip": "Araçlara geç", "an-001": "Dört alet, ve her birinin yapmayı reddettiği şey", "an-002": "<span class=\"k-num\">01</span>Değerleme", "an-003": "<span class=\"k-num\">02</span>Pazar büyüklüğü", "an-004": "<span class=\"k-num\">03</span>Nakit ömrü", "an-005": "<span class=\"k-num\">04</span>Birim güvenliği", "an-006": "<span class=\"k-num\">05</span>Yöntem ve sabitler", "an-007": "Bu oturumda çalıştırdığın dönüşümler", "an-008": "Dönüştürücünün adını koyduğu ve kullanmadığı küresel ısınma potansiyelleri", "an-009": "Dönüştürücüde kullanılan kesin oranlar", "an-010": "Aritmetik, açık açık yazılmış", "an-011": "Bu sayfanın bilmediği şeyler", "an-012": "Kendisinin ne kadarının, öngördüğün yılların arkasına iliştirilmiş sonsuz akış olduğunu basan bir değerleme. Aradaki farkı sayfada bırakan iki pazar büyüklüğü hesabı. Paranın hangi ay biteceğini ve bir işe alımın kaç hafta nakit ömrüne mal olduğunu söyleyen bir nakit ömrü aracı. Eksik girdiyi tahmin etmek yerine adını koyan bir birim dönüştürücü. Her rakam, senin yazdığın sayılar üzerinde aritmetik. Her alet durumunu adres çubuğunda saklıyor, yani bir sonuç bir bağlantı; ve her biri tablosunu dışa aktarıyor.", "an-013": "Bir firma değerinin ne kadarının öngördüğün yıllar, ne kadarının sonuncusunun arkasına iliştirilmiş sonsuz akış olduğunu görmek için. Kendi nakit akışlarını, sermaye maliyetini ve nihai büyümeni gir.", "an-014": "Ardındaki yöntem: <a href=\"../../case-dcf-lab.html\" rel=\"noreferrer noopener\" target=\"_blank\">dcf lab vaka incelemesi</a>", "an-015": "Buraya yüklenen her örnek bir örnektir. İçindeki rakamlar aritmetiğin çalıştığını göstermek için uydurulmuştur ve hiçbir şeyi değerlemez.", "an-016": "Nakit akışları senin seçtiğin tek bir birimde, baştan sona aynı birimde. Firma değerinin nihai değer tarafından taşınan payı, o birimin ne olduğuna bağlı değil. Burada net borç, hisse sayısı ve hisse başına rakam yok, çünkü bunlar bir ayrıştırmayı bir fiyata çevirirdi.", "an-017": "Bir pazarı iki kez, yukarıdan aşağı ve aşağıdan yukarı ölçmek, ve anlaşmazlığı ortalayıp yok etmek yerine okumak için. Her varsayım, iki hesabın uyuşması için alması gereken değerle cevaplanıyor.", "an-018": "Ardındaki yöntem: <a href=\"../../case-market-sizer.html\" rel=\"noreferrer noopener\" target=\"_blank\">market sizer vaka incelemesi</a>", "an-019": "Buraya yüklenen her örnek bir örnektir. İçindeki rakamlar aritmetiğin çalıştığını göstermek için uydurulmuştur ve hiçbir şeyi ölçmez.", "an-020": "Paranın bittiği ay için, belirlediğin bir ufka kadar ay ay bakiye için, ve ardından gelen soru için: planlanan her işe alım kaç hafta nakit ömrüne mal oluyor.", "an-021": "Bunun için vaka incelemesi yok. Kendi rakamların üzerinde aritmetik, ve yöntem grafiğin altında basılı.", "an-022": "Buraya yüklenen her örnek bir örnektir. İçindeki rakamlar aritmetiğin çalıştığını göstermek için uydurulmuştur ve hiçbir şeyi planlamaz.", "an-023": "Enerji, kütle ve sera gazı birimlerini dönüştürmek için, ve bir dönüşümün cevabı olmadığında tam olarak neyin eksik olduğunun söylenmesi için. Miktarlar kayan noktalı sayı olarak değil, kesin rasyonel sayı olarak okunuyor.", "an-024": "Ardındaki yöntem: <a href=\"../../case-unitguard.html\" rel=\"noreferrer noopener\" target=\"_blank\">unitguard vaka incelemesi</a>", "an-025": "Denemeye değer dört dönüşüm", "an-026": "Liste bağlantıda taşınmıyor. Paylaşılan bir bağlantı miktarı ve iki birimi geri getiriyor, ve alet aynı hükmü onlardan yeniden hesaplıyor.", "an-027": "Dört aletin üçünde hiç sabit yok. Onlar senin yazdığın sayılar üzerinde aritmetik, dolayısıyla içlerinde kaynak gösterilecek bir şey yok. Bu sayfadaki tek sabit değer, birim dönüştürücünün içinde adı konan küresel ısınma potansiyelleri; ve dönüştürücü onların adını, aralarında seçim yapmayı reddetmek için koyuyor. Aşağıda, her birinin ait olduğu değerlendirme raporu ve zaman ufkuyla listeleniyorlar.", "an-029": "Bunlar molar kütlelerin oranları ve bir tanım, ölçüm değil; dolayısıyla ne rapor ne de ufuk taşıyorlar.", "an-030": "<strong>Bu sayfadaki her sayı, senin verdiğin rakamlar üzerinde aritmetiktir.</strong> Hiçbiri değerleme, pazar büyüklüğü, öngörü ya da tavsiye değildir. İçinde hiçbir yerde kıyas ölçütü, sektör ortalaması ya da varsayılan kabul yoktur. Bir örnek yüklendiğinde örnek olarak etiketlenir ve yalnızca aritmetiğin çalıştığını göstermek için vardır.", "an-031": "Tamamen tarayıcında çalışır. Yazdığın hiçbir şey bu sayfadan çıkmaz. Sunucu yok, veritabanı yok, analitik yok, yazı tipleri yüklendikten sonra ağ isteği yok; yani sayfa bir kez önbelleğe alındıktan sonra çevrimdışı çalışır. Yapan <a href=\"../../index.html\">Kerem Ozdemir</a>, TUM ve İstanbul Üniversitesi.", "an-032": "Sermaye maliyeti, yüzde", "an-033": "Nihai büyüme, yüzde", "an-034": "Para etiketi", "an-035": "Bankadaki nakit", "an-036": "Sabit aylık maliyetler", "an-037": "Kişi başına aylık maliyet", "an-038": "Bugünkü kişi sayısı", "an-039": "Planın ilk ayı", "an-040": "Yıl", "an-041": "Ufuk, ay", "an-042": "Miktar", "an-043": "Şuradan", "an-044": "Şuraya", "an-045": "Yıl ekle", "an-046": "Örnek yükle", "an-047": "Temizle", "an-048": "CSV indir", "an-049": "Tabloyu kopyala", "an-050": "Bu girdilerin bağlantısını kopyala", "an-051": "Faktör ekle", "an-052": "Segment ekle", "an-053": "Örnek yükle", "an-054": "Temizle", "an-055": "CSV indir", "an-056": "Tabloyu kopyala", "an-057": "Bu girdilerin bağlantısını kopyala", "an-058": "İşe alım ekle", "an-059": "Gelir ekle", "an-060": "Örnek yükle", "an-061": "Temizle", "an-062": "CSV indir", "an-063": "Tabloyu kopyala", "an-064": "Bu girdilerin bağlantısını kopyala", "an-065": "Dönüştür", "an-066": "Temizle", "an-067": "CSV indir", "an-068": "Tabloyu kopyala", "an-069": "Bu girdilerin bağlantısını kopyala", "an-070": "Öngörülen serbest nakit akışları", "an-071": "Yukarıdan aşağı: faktörlerle daraltılmış bir evren", "an-072": "Aşağıdan yukarı: her biri sürücülerin çarpımı olan segmentler", "an-073": "Planlanan işe alımlar", "an-074": "Beklenen gelir", "an-h-wacc": "Her yılı ve sonsuz akışı iskonto eden oran.", "an-h-tg": "Son öngörü yılından sonra sonsuz akışın büyümesi.", "an-h-label": "Yalnızca bir etiket. Hiçbir aritmetiği değiştirmez.", "an-h-cash": "Birinci ayın başındaki bakiye.", "an-h-fixed": "Kişi sayısıyla ölçeklenmeyen her şey.", "an-h-head": "Tam maliyetli, kişi başına, ay başına.", "an-h-heads": "Planlanan işe alımlardan önce bordrodaki kişiler.", "an-h-horizon": "Araç bu noktadan sonrasını hesaplamaz ve bunu söyler.", "an-h-qty": "Düz bir ondalık. 0.1 tam olarak onda bir demektir.", "an-empty-table": "Henüz gösterilecek bir şey yok.", "an-remove": "Kaldır", "an-remove-a": "{what} kaldır", "an-v-refused-h": "Reddedildi. Bildirilecek sayı yok", "an-v-neg-line": "Yüzde {w} sermaye maliyeti, iskonto edecek hiçbir şey bırakmıyor.", "an-v-neg-why": "İskonto faktörü, bir bölü bir artı oranın yıl kuvveti. Eksi yüzde yüzde ya da altında bu ifadenin anlamı yok, dolayısıyla hiçbir yıl için bugünkü değer basılamaz.", "an-v-g-line": "Yüzde {g} nihai büyüme, yüzde {w} sermaye maliyetinin altında değil.", "an-v-g-why": "İskonto oranına eşit ya da ondan yüksek büyüyen bir sonsuz akışın değeri sınırsızdır, dolayısıyla basılacak bir firma değeri yok. Büyüme oranını sermaye maliyetinin hemen altına kırpmak reddetmekten daha kötü, çünkü kırpma sıkılaştıkça cevabı kaçan başka bir modeli yerine koyuyor. Ya büyüme oranı ya sermaye maliyeti yanlış.", "an-v-g-note": "Öngörü yılları normal biçimde iskonto edilmeye devam ediyor. Cevabı olmayan yalnızca nihai değer.", "an-v-norows": "Henüz öngörü yılı yok. İlk yılı ekle, ya da aritmetiğin çalıştığını görmek için örneği yükle.", "an-v-cf-year": "Nakit akışı, {n}. yıl", "an-v-year-n": "{n}. yıl", "an-v-year-a": "{n}. yılı", "an-v-empty": "Hesaplanacak bir şey yok. Bir sermaye maliyeti, bir nihai büyüme oranı ve en az bir öngörü nakit akışı gir.", "an-v-needrates": "Nakit akışları girildi. Sermaye maliyetini ve nihai büyüme oranını gir, gerisi gelir.", "an-v-normal-h": "Öngörü yılları, normal biçimde iskonto edilmiş", "an-t-year": "Yıl", "an-t-fcf": "Serbest nakit akışı", "an-t-df": "İskonto faktörü", "an-t-pv": "Bugünkü değer", "an-t-cf": "Nakit akışı", "an-v-pvf": "Öngörü yıllarının bugünkü değeri", "an-v-share-h": "Firma değerinin nihai değer tarafından taşınan payı", "an-na": "mevcut değil", "an-v-zero": "Firma değeri sıfır, dolayısıyla ondan alınacak bir pay yok.", "an-v-other": "{n} öngörü yılı kalan {p} kısmı açıklıyor.", "an-v-bar-a": "Çubuk bölünmesi. Öngörünün bugünkü değeri {a}. Nihai değerin bugünkü değeri {b}.", "an-v-key-a": "Öngörünün bugünkü değeri {v}", "an-v-key-b": "Nihai değerin bugünkü değeri {v}", "an-v-terminal": "Nihai", "an-v-yby": "Yıl yıl", "an-v-pvt": "Nihai değerin bugünkü değeri", "an-v-ev": "Firma değeri", "an-v-tv-h": "Nihai değer, açık açık yazılmış", "an-v-st-last": "Son öngörü nakit akışı, {n}. yıl", "an-v-st-grown": "Yüzde {g} ile bir kez büyütüldü", "an-v-st-div": "Sermaye maliyeti eksi büyümeye bölündü, yüzde {w} eksi yüzde {g}", "an-v-st-disc": "{n} yıl geriye, {f} ile iskonto edildi", "an-v-st-share": "Firma değerinin nihai payı", "an-v-tv-note": "Nihai değer son öngörü yılının sonunda alınıyor ve aynı yılın iskonto faktörüyle geri getiriliyor. Nakit akışları baştan sona tek bir birimde ve birim, paya etki etmiyor.", "an-csv-desk": "Analyst Desk", "an-csv-v": "Değerleme", "an-csv-notentered": "girilmedi", "an-csv-v-nothing": "Hiçbir şey hesaplanmadı. Nakit akışları ya da oranlar eksik.", "an-csv-refused": "REDDEDİLDİ", "an-m-kind-count": "adet", "an-m-kind-share": "pay", "an-m-kind-value": "değer", "an-m-nan": "ima edilen değer bir sayı değil", "an-m-over": "ima edilen yüzde {p} pay, yüzde 100'ü aşıyor", "an-m-neg": "ima edilen değer negatif", "an-m-td-same": "Yukarıdan aşağı, her faktör aynı katsayıyı paylaşıyor", "an-m-td-mult": "Yukarıdan aşağı, her faktör {m} katsayısını paylaşıyor", "an-m-td-zero": "Yukarıdan aşağı toplam sıfır, dolayısıyla hiçbir faktör farkı kapatacak biçimde ölçeklenemez.", "an-m-td-zero-row": "yukarıdan aşağı toplam sıfır, hiçbir faktör onu ölçekleyemez", "an-m-pin-zero": "sıfıra sabitlenmiş bir faktör, bir farkı kapatmak için ölçeklenemez", "an-m-bu-title": "Aşağıdan yukarı, {name}", "an-m-unnamed": "adsız segment", "an-m-nodrivers": "Bu segmentin sürücüsü yok, dolayısıyla içinde çözülecek bir şey yok.", "an-m-segzero": "Bu segment sıfır değerinde, dolayısıyla sürücülerinden herhangi birini ölçeklemek toplamı kımıldatamaz.", "an-m-infeasible-note": "Diğer segmentler tek başına {rest} ediyor, ki bu zaten {td} olan yukarıdan aşağı toplamın üstünde. Bu segmentteki hiçbir sürücü değeri farkı kapatmıyor.", "an-m-infeasible": "olanaksız", "an-m-name": "{p} adı", "an-m-value": "Değer", "an-m-kind": "Tür", "an-m-factor": "Faktör", "an-m-driver": "Sürücü", "an-m-factor-nom": "Faktör", "an-m-driver-nom": "Sürücü", "an-m-factor-n": "Faktör {n}", "an-m-segment-n": "Segment {n}", "an-m-segment-a": "{n}. segmenti", "an-m-notd": "Henüz yukarıdan aşağı faktör yok. Yukarıdan aşağı bir hesap, onu daraltan faktörlerle çarpılmış bir evrendir.", "an-m-nobu": "Henüz segment yok. Aşağıdan yukarı bir hesap, her biri kendi sürücülerinin çarpımı olan segmentlerin toplamıdır.", "an-m-segname": "Segment adı", "an-m-adddriver": "Sürücü ekle", "an-m-adddriver-a": "{n}. segmente sürücü ekle", "an-m-empty": "Uzlaştırılacak bir şey yok. Bir yukarıdan aşağı zinciri ve en az bir aşağıdan yukarı segment gir, ya da örneği yükle.", "an-m-half": "Bir hesap var, öbürü yok. Tek bir hesap kanıt değildir, ve bulgu farkın kendisidir; bu yüzden bu alet iki taraf da var olana kadar hiçbir şey basmaz.", "an-m-td-h": "Yukarıdan aşağı", "an-m-bu-h": "Aşağıdan yukarı", "an-m-gap-h": "Fark, aşağıdan yukarı eksi yukarıdan aşağı", "an-m-gap-zero": "Yukarıdan aşağı toplam sıfır, dolayısıyla fark onun payı olarak ifade edilemez.", "an-m-gap-pct": "Yukarıdan aşağı toplamın yüzde {p} kadarı.", "an-m-inv-h": "İki hesabın uyuşması için her varsayımın ne olması gerekirdi", "an-m-inv-note": "Burada üçüncü bir sayı yok. Ortalama yok, orta nokta yok, hangi hesaba inanılacağına dair tavsiye yok. Her yukarıdan aşağı faktör aynı katsayıyı paylaşıyor, çünkü yukarıdan aşağı tek bir çarpımdır ve düzeltmeyi hangi faktörün emdiği fark etmez. Aşağıdan yukarı bir sürücünün katsayısı her segmentte farklıdır, çünkü diğer segmentler oldukları yerde tutulur.", "an-m-t-assum": "Varsayım", "an-m-t-now": "Şimdi", "an-m-t-would": "Olması gerekirdi", "an-m-t-mult": "Katsayı", "an-m-notdef": "tanımsız", "an-m-imp": "olanaksız: {why}", "an-csv-m": "Pazar büyüklüğü", "an-m-moneylabel": "Para etiketi", "an-csv-m-nothing": "Hiçbir şey uzlaştırılmadı. Hem bir yukarıdan aşağı zinciri hem de en az bir aşağıdan yukarı segment gerekiyor.", "an-m-csv-td": "Yukarıdan aşağı toplam", "an-m-csv-bu": "Aşağıdan yukarı toplam", "an-m-csv-gap": "Fark, aşağıdan yukarı eksi yukarıdan aşağı", "an-m-csv-gappct": "Yukarıdan aşağı toplamın payı olarak fark, yüzde", "an-m-csv-n1": "Yukarıdan aşağı, daraltan faktörlerle çarpılmış bir evrendir. Aşağıdan yukarı, her biri sürücülerinin çarpımı olan segmentlerin toplamıdır.", "an-m-csv-n2": "Bir yukarıdan aşağı faktörünün ima edilen değeri, değerinin iki toplamın oranıyla çarpımıdır.", "an-m-csv-n3": "Bir aşağıdan yukarı sürücüsünün ima edilen değeri, değerinin, yukarıdan aşağı toplam eksi diğer segmentler bölü bu segment ile çarpımıdır.", "an-m-csv-n4": "Olanaksız işaretli satırlar ima edilen değer taşımaz. Onların yerine hiçbir sayı konmamıştır.", "an-m-csv-n5": "Bu dosya iki hesap ve aralarındaki farkı içerir. Bir pazar büyüklüğü içermez.", "an-m-nogroup": "Bu grupta varsayım yok.", "an-m-unnamed-a": "adsız", "an-m-none": "yok", "an-mon-1": "Ocak", "an-mon-2": "Şubat", "an-mon-3": "Mart", "an-mon-4": "Nisan", "an-mon-5": "Mayıs", "an-mon-6": "Haziran", "an-mon-7": "Temmuz", "an-mon-8": "Ağustos", "an-mon-9": "Eylül", "an-mon-10": "Ekim", "an-mon-11": "Kasım", "an-mon-12": "Aralık", "an-r-nohires": "Planlanan işe alım yok. Kaç hafta nakit ömrüne mal olduğunu görmek için bir tane ekle.", "an-r-hire-n": "İşe alım {n}", "an-r-hire-a": "{n}. işe alımı", "an-r-role": "Rol", "an-r-startmonth": "Başladığı ay", "an-r-startmonth-h": "1, planın ilk ayı", "an-r-monthlycost": "Aylık maliyet", "an-r-noinc": "Beklenen gelir yok. Boş bırak, bakiye nakit eksi yakım olur.", "an-r-inc-n": "Gelir {n}", "an-r-inc-a": "{n}. geliri", "an-r-source": "Kaynak", "an-r-frommonth": "Şu aydan", "an-r-tomonth": "Şu aya", "an-r-tomonth-h": "boş bırakılırsa ufka kadar sürer", "an-r-monthlyamount": "Aylık tutar", "an-r-empty": "Hesaplanacak bir şey yok. Bankadaki nakdi ve her ay ondan çıkanı gir, ya da örneği yükle.", "an-r-nohorizon-h": "Ufuk yok", "an-r-nohorizon-p": "Bu alet ay ay bir ufka kadar hesaplar ve ondan bir ay bile ötesini hesaplamaz. Ufku en az bir aya ayarla.", "an-r-beyond-h": "Ufkun ötesinde. Ay adı verilmedi", "an-r-beyond-p1": "{m} ayının, yani {n}. ayın sonunda bakiye hâlâ {bal}. Bu rakamlarla para, senin belirlediğin ufkun içinde bitmiyor.", "an-r-beyond-p2": "Bu araç aritmetiği o ufkun ötesine taşımıyor, ve hesaplamadığı bir ayın adını vermeyecek. Ardındaki varsayımlardan daha ileriye taşınmış bir yakım planı, tarih giymiş bir tahmindir. Daha ileriye bakmak istiyorsan ufku yükselt, ve orada bastığını bir öngörü olarak değil, kendi varsayımların üzerinde aritmetik olarak oku.", "an-r-out-h": "Para şu tarihte bitiyor", "an-r-already": "zaten", "an-r-openneg": "açılış bakiyesi sıfırın altında", "an-r-monthof": "planın {n}. ayı", "an-r-runway-p": "Nakit ömrü {m} ay, yani {w} hafta. Bakiye ilk kez {when} sırasında sıfırın altına iniyor.", "an-r-month-one": "birinci ay", "an-r-m1-h": "Birinci ay", "an-r-cash-start": "Başlangıçta bankadaki nakit", "an-r-fixed": "Sabit aylık maliyetler", "an-r-people": "Kişiler, {n} kişi × {c}", "an-r-hires-started": "Birinci ayda başlamış işe alımlar", "an-r-inc-m1": "Birinci aydaki gelir", "an-r-net-m1": "Birinci aydaki net hareket", "an-r-balto": "{n}. ayın sonuna kadar bakiye", "an-r-chart-h": "Her ayın sonundaki kapanış bakiyesi, birinci aydan {n}. aya", "an-r-chart-note": ". Çizgi ufukta duruyor, çünkü aritmetik orada duruyor.", "an-r-notmeasurable": "{n} ay içinde ölçülemiyor", "an-r-survives": "bakiye, bu işe alımla da onsuz da ufku aşıyor", "an-r-morethan": "ufuktan fazla", "an-r-without": "bu işe alım olmadan para {n}. ayı da geçiyor", "an-r-cost-h": "Planlanan her işe alımın nakit ömrüne maliyeti", "an-r-t-costs": "Maliyet olduğu ömür", "an-r-nohires-price": "Henüz planlanan işe alım yok, dolayısıyla fiyatlanacak bir şey yok.", "an-r-cost-note": "Her satır, o işe alım olmadan nakit ömrü eksi onunla nakit ömrü; diğer her rakam sabit tutularak. Bir ay 52 bölü 12 hafta alınıyor, ki bu {w} hafta. Paranın her iki durumda da ufku aştığı yerde fark ölçülemiyor, ve araç hesaplamadığı bir sayıyı basmak yerine bunu söylüyor.", "an-r-mbm": "Ay ay", "an-r-t-month": "Ay", "an-r-t-heads": "Kişi", "an-r-t-burn": "Yakım", "an-r-t-inc": "Gelir", "an-r-t-net": "Net", "an-r-t-close": "Kapanış bakiyesi", "an-r-method": "Bir aydaki yakım, sabit maliyetler artı kişi başına maliyet çarpı o ay bordrodaki kişi sayısıdır; başlangıç ayı gelmiş her planlanan işe alım sayılarak. Kapanış bakiyesi, önceki kapanış bakiyesi artı gelir eksi yakımdır. Hiçbir şey düzleştirilmiyor ve hiçbir şey yıllıklandırılmıyor.", "an-r-chart-a": "Birinci aydan {n}. aya kapanış bakiyesi. Açılış bakiyesi {open}. Ufuktaki bakiye {end}.{tail}", "an-r-chart-a-ok": " Bakiye ufka kadar sıfırın üstünde kalıyor.", "an-r-chart-a-neg": " Bakiye {n}. ayda sıfırın altına iniyor.", "an-r-alreadyneg": "zaten sıfırın altında", "an-r-xaxis": "planın başından itibaren ay", "an-csv-r": "Nakit ömrü", "an-r-csv-runwaym": "Nakit ömrü, ay", "an-r-csv-runwayw": "Nakit ömrü, hafta", "an-r-csv-beyond": "{n} aylık ufkun ötesinde", "an-r-csv-zero": "Paranın bittiği ay", "an-r-csv-notinside": "ufkun içinde değil", "an-r-csv-openneg": "açılış bakiyesi zaten sıfırın altında", "an-r-csv-costw": "Maliyet olduğu ömür, hafta", "an-r-csv-costm": "Maliyet olduğu ömür, ay", "an-r-csv-n1": "Yakım, sabit maliyetler artı kişi başına maliyet çarpı kişi sayısıdır; planlanan işe alımlar başlangıç aylarından itibaren sayılır.", "an-r-csv-n2": "Kapanış bakiyesi, önceki kapanış bakiyesi artı gelir eksi yakımdır.", "an-r-csv-n3": "Nakit ömrü kesirlidir: hayatta kalınan tam aylar artı bakiyenin karşıladığı geçiş ayının payı.", "an-r-csv-n4": "Bir ay 52 bölü 12 hafta alınır.", "an-r-csv-n5": "Bu dosyada {n}. ayın ötesinde hiçbir şey hesaplanmamıştır, ki bu okurun belirlediği ufuktur.", "an-r-t-hire": "İşe alım", "an-r-t-starts": "Başlıyor", "an-r-t-inmonths": "Ay olarak", "an-r-monthn": "{n}. ay", "an-r-weeks": "{n} hafta", "an-r-months": "{n} ay", "an-u-dim-energy": "enerji", "an-u-dim-mass": "kütle", "an-u-dim-ghg": "sera gazı kütlesi", "an-u-noanswer": "{from} biriminden {to} birimine burada cevap yok.", "an-u-gwp-h": "Küresel ısınma potansiyeli verilmedi", "an-u-gwp-why": "Bir ton CH4, ancak bir küresel ısınma potansiyeli üzerinden tCO2e olur; ve bir GWP yalnızca belirtilmiş bir IPCC değerlendirme raporu ve zaman ufku içinde vardır. 100 yıl üzerinden AR4 metanı 25, AR5 28, AR6 ise biyojenik için 27,0 ve fosil için 29,8 koyuyor. Raporun ve ufkun adını koy, bu tek bir çarpma olsun.", "an-u-gwp-missing": "bir IPCC değerlendirme raporu ve bir zaman ufku", "an-u-gwp-note": "unitguard birini seçmek yerine reddediyor.", "an-u-mix-h": "Gaz karışımı verilmedi", "an-u-mix-why": "tCO2e bir hesap birimi, bir madde değil. Bir gaz demetinin ne kadar ısınmaya yol açtığı sayılan miktarı kaydeder, herhangi tek bir gazdan ne kadar bulunduğunu değil. O rakamı üreten karışım olmadan geri dönecek bir {to} kütlesi yok.", "an-u-mix-missing": "CO2e rakamının arkasındaki gaz karışımı", "an-u-mix-note": "İşleyen yön CO2'den CO2e'ye; orada potansiyel tanım gereği 1.", "an-u-note-4412": "Tam olarak 44/12, molar kütlelerin oranı.", "an-u-note-1244": "Tam olarak 12/44, molar kütlelerin oranı.", "an-u-note-co2e": "CO2'nin potansiyeli, ölçütün tanımı gereği 1.", "an-u-note-cco2e": "Karbondan CO2'ye 44/12 ile, sonra CO2'den CO2e'ye 1 potansiyeliyle.", "an-u-notdef-h": "Tanımlı değil", "an-u-notdef-missing": "bu iki tür arasında tanımlı bir yol", "an-u-notdef-why": "unitguard'ın bu iki tür arasında tanımlı bir yolu yok.", "an-u-species-h": "Gaz türü verilmedi", "an-u-species-missing": "girdi tarafındaki gaz türü", "an-u-species-why": "{from} çıplak bir kütle. {to} ise tek bir belirli gazı sayıyor. Türün adını koymak ikisi arasındaki farkın ta kendisi, ve onu tahmin eden bir dönüştürücü sayıyı uyduruyor olurdu.", "an-u-species-note": "Girdi tarafında türü belirt, dönüşüm gerçekleşsin.", "an-u-drop-h": "Tür atılmış olurdu", "an-u-drop-missing": "gaz türünü koruyan bir hedef birim", "an-u-drop-why": "unitguard gaz türünü birimin parçası olarak taşıyor. {from} birimini çıplak bir {to} birimine çevirmek onu düşürüyor, ve rakam bir emisyon rakamı olmaktan çıkıyor. Türü hedef birimde tut.", "an-u-dim-h": "Farklı boyutlar", "an-u-dim-missing": "bir enerji yoğunluğu ya da bir emisyon faktörü", "an-u-dim-why": "{from} {dimA} ölçüyor, {to} ise {dimB} ölçüyor. Hiçbir şey kendi başına birini öbürüne çevirmiyor. Bir enerji yoğunluğu ya da bir emisyon faktörü çevirirdi, ve ikisi de verilmedi.", "an-u-scale-note": "Ölçek faktörleri kesin rasyonel sayılar, dolayısıyla bu gidiş dönüş kayıpsız.", "an-u-nan-h": "Sayı değil", "an-u-nan-line": "“{raw}” bir büyüklük değil.", "an-u-nan-why": "Düz bir ondalık yaz. Büyüklükler kesin rasyonel sayı olarak okunuyor, yani 0.1, ona en yakın ikili çift duyarlıklı sayı değil, tam olarak onda bir demek.", "an-u-nan-missing": "düz bir ondalık miktar", "an-u-typeq": "Bir miktar yaz. Alet her tuş vuruşunda cevap veriyor, ve cevap bazen bir reddediş oluyor.", "an-u-converted": "Dönüştürüldü", "an-u-isline": "{q} {from} eşittir {v} {to}.", "an-u-tilde": "Baştaki tilde, ondalıkta sonlanmayan bir rasyonel sayıyı işaretliyor. Saklanan değer kesin, basılan değer değil.", "an-u-refused": "Reddedildi. {h}", "an-u-missing": "Eksik", "an-u-nothing": "Henüz bir şey yok. Dönüştür'e bas, ya da yukarıdaki dört dönüşümden birini seç.", "an-u-t-qty": "Miktar", "an-u-t-from": "Şuradan", "an-u-t-to": "Şuraya", "an-u-t-result": "Sonuç", "an-u-t-status": "Durum", "an-u-t-missing": "Eksik olan", "an-csv-u": "Birim güvenliği", "an-u-csv-current": "Geçerli miktar", "an-u-note-1": "Miktarlar, kayan noktalı sayı olarak değil, büyük tam sayılar üzerinde kesin rasyonel sayı olarak okunur.", "an-u-note-2": "Bir sera gazı birimi türünü taşır. tC'den tCO2'ye 44/12, tCO2'den tC'ye 12/44, tCO2'den tCO2e'ye tanım gereği 1.", "an-u-note-3": "Metandan CO2e'ye reddedilir: bir IPCC değerlendirme raporu ve bir zaman ufku ister, ve tek bir cevabı yoktur.", "an-u-note-4": "CO2e'den tek bir gaza dönüş reddedilir: CO2e bir hesap birimidir ve arkasındaki karışım geri kazanılamaz.", "an-u-note-5": "Çıplak bir kütleden gaz birimine dönüşüm reddedilir, gaz biriminden çıplak kütleye dönüşüm de reddedilir.", "an-u-note-6": "Boyutlar arası dönüşümler reddedilir.", "an-u-ratio-1": "molar kütlelerin oranı", "an-u-ratio-2": "CO2'nin potansiyeli, ölçütün tanımı gereği 1", "an-u-ratio-3": "44/12 sonra 1", "an-u-ratio-4": "karbondan CO2'ye, sonra CO2'den CO2e'ye 1 potansiyeliyle", "an-u-ratio-5": "watt saatin tanımı", "an-u-refused-w": "reddedildi", "an-u-converted-w": "dönüştürüldü", "an-u-refused-s": "reddedildi: {h}", "an-t-gas": "Gaz", "an-t-potential": "Potansiyel", "an-t-report": "Değerlendirme raporu", "an-t-horizon": "Zaman ufku", "an-t-applies": "Neye uygulanır", "an-u-methane-all": "metanın tamamı", "an-u-methane": "Metan", "an-u-biogenic": "biyojenik metan", "an-u-fossil": "fosil metan", "an-u-horizon-100": "100 yıl", "an-t-conversion": "Dönüşüm", "an-t-factor": "Faktör", "an-t-whyexact": "Neden kesin", "an-f-v": "Değerleme", "an-f-m": "Pazar büyüklüğü", "an-f-r": "Nakit ömrü", "an-f-u": "Birim güvenliği", "an-f-v-t": "t yılının bugünkü değeri, nakit akışının bir artı sermaye maliyetinin t. kuvvetine bölümüdür. Nihai değer, son öngörü nakit akışının bir kez büyütülüp sermaye maliyeti eksi büyümeye bölünmesi, sonra son yılın faktörüyle iskonto edilmesidir. Pay, nihai bugünkü değerin iki parçanın toplamına oranıdır.", "an-f-m-t": "Yukarıdan aşağı, faktörleriyle çarpılmış bir evrendir. Aşağıdan yukarı, her biri sürücülerinin çarpımı olan segmentlerin toplamıdır. Bir yukarıdan aşağı faktörünün ima edilen değeri, değerinin iki toplamın oranıyla çarpımıdır. Bir aşağıdan yukarı sürücüsünün ima edilen değeri, değerinin, yukarıdan aşağı toplam eksi diğer segmentler bölü bu segment ile çarpımıdır.", "an-f-r-t": "Bir aydaki yakım, sabit maliyetler artı kişi başına maliyet çarpı bordrodaki kişi sayısıdır; planlanan işe alımlar başlangıç aylarından itibaren sayılır. Kapanış bakiyesi, önceki kapanış bakiyesi artı gelir eksi yakımdır. Nakit ömrü, hayatta kalınan tam aylar artı bakiyenin karşıladığı geçiş ayının payıdır. Bir ay 52 bölü 12 haftadır.", "an-f-u-t": "Bir birim, bir boyut ve o boyutun SI tutarlı birimine kesin bir ölçektir. Bir sera gazı birimi üçüncü bir şey taşır: saydığı tür. Bir dönüşüme, boyutlar uyuştuğunda izin verilir; gazlarda ise yalnızca iki tür arasında bir yol tanımlıysa. Geri kalan her şey reddedilir, ve reddediş, onu mümkün kılacak girdinin adını koyar.", "an-k-yours": "Senin sayıların", "an-k-yours-t": "bu sayfada hiçbir şey, yazdığın rakamların doğru olup olmadığını kontrol etmiyor. Yalnızca onlarla yapılan aritmetiğin doğru olduğunu kontrol ediyor.", "an-k-bench": "Kıyas ölçütleri", "an-k-bench-t": "burada hiç yok. Sektör ortalaması yok, tipik yakım yok, olağan sermaye maliyeti yok, standart bağlanma oranı yok. Bir varsayılan değer olgu diye okunurdu ve olgu olmazdı.", "an-k-ef": "Emisyon faktörleri", "an-k-ef-t": "yok. Birim dönüştürücü ölçek faktörleri ve molar kütle oranları taşıyor, başka bir şey taşımıyor. Bir emisyon faktörü gerekeceği yerde bunu söylüyor ve duruyor.", "an-k-gwp": "Küresel ısınma potansiyelleri", "an-k-gwp-t": "yukarıda adı konan dördü, dönüştürücünün aralarında seçim yapmayı reddedebilmesi için aktarılıyor. Hiçbiri bu sayfadaki hiçbir sayıya uygulanmıyor.", "an-k-beyond": "Ufkun ötesi", "an-k-beyond-t": "nakit ömrü aleti senin belirlediğin aya kadar hesaplıyor, daha ileriye değil. Paranın ufku aştığı yerde hiçbir ayın adını vermiyor.", "an-k-prices": "Fiyatlar ve para birimi", "an-k-prices-t": "değerleme hisse başına rakam ve para birimi basmıyor, ve pazar büyüklüğü aracının para etiketi bir etiket, bir birim dönüşümü değil.", "an-ex-v": "Örnek yüklendi. Bunlar örnek rakamlar, hiçbir şeyin değerlemesi değil.", "an-ex-m": "Örnek yüklendi. İçindeki her rakam gösterim amaçlı ve hiçbir şeyi ölçmüyor.", "an-ex-r": "Örnek yüklendi. Bunlar örnek rakamlar, hiçbir şirket için bir plan değil.", "an-csv-done": "CSV indirildi.", "an-restored": "Girdiler bağlantıdan geri yüklendi.", "an-m-t-group": "Grup", "an-m-t-status": "Durum", "an-m-solvable": "çözülebilir", "an-v-csv-n1": "Nakit akışları okurun seçtiği tek bir birimdedir, baştan sona aynı birimde.", "an-v-csv-n2": "t yılının bugünkü değeri, nakit akışının bir artı sermaye maliyetinin t. kuvvetine bölümüdür.", "an-v-csv-n3": "Nihai değer, son öngörü nakit akışının bir kez büyütülüp sermaye maliyeti eksi büyümeye bölünmesidir.", "an-v-csv-n4": "Bu, okurun girdiği rakamlar üzerinde aritmetiktir. Bir değerleme değildir.", "pg-title": "Analist Masası"}, "de": {"an-skip": "Zu den Instrumenten springen", "an-001": "Vier Instrumente, und was jedes von ihnen zu tun verweigert", "an-002": "<span class=\"k-num\">01</span>Bewertung", "an-003": "<span class=\"k-num\">02</span>Marktgröße", "an-004": "<span class=\"k-num\">03</span>Reichweite der Mittel", "an-005": "<span class=\"k-num\">04</span>Einheitensicherheit", "an-006": "<span class=\"k-num\">05</span>Methode und Konstanten", "an-007": "Umrechnungen, die Sie in dieser Sitzung ausgeführt haben", "an-008": "Die Treibhauspotenziale, die der Umrechner benennt und nicht verwendet", "an-009": "Im Umrechner verwendete exakte Verhältnisse", "an-010": "Die Arithmetik, ausgeschrieben", "an-011": "Was diese Seite nicht weiß", "an-012": "Eine Bewertung, die ausdruckt, wie viel von ihr die ewige Rente hinter der Prognose ist. Zwei Marktgrößenrechnungen, deren Abstand auf der Seite stehen bleibt. Eine Mittelreichweite, die sagt, in welchem Monat das Geld ausgeht und was eine weitere Einstellung in Wochen kostet. Ein Einheitenumrechner, der die fehlende Eingabe benennt, statt sie zu raten. Jede Zahl ist Arithmetik auf Zahlen, die Sie eingeben. Jedes Instrument speichert seinen Zustand in der Adresszeile, ein Ergebnis ist also ein Link, und jedes exportiert seine Tabelle.", "an-013": "Um zu sehen, wie viel eines Unternehmenswerts die Jahre sind, die Sie prognostizieren, und wie viel die ewige Rente ist, die hinter dem letzten davon hängt. Tragen Sie Ihre eigenen Zahlungsströme, Kapitalkosten und Ihr ewiges Wachstum ein.", "an-014": "Methode dahinter: <a href=\"../../case-dcf-lab.html\" rel=\"noreferrer noopener\" target=\"_blank\">die DCF-Lab-Fallstudie</a>", "an-015": "Jedes hier geladene Beispiel ist ein Beispiel. Die Zahlen darin sind erfunden, um die Arithmetik vorzuführen, und bewerten nichts.", "an-016": "Die Zahlungsströme stehen in einer Einheit Ihrer Wahl, durchgehend derselben. Der Anteil des Unternehmenswerts, den der Terminal Value trägt, hängt nicht davon ab, welche das ist. Es gibt hier keine Nettoverschuldung, keine Aktienzahl und keine Zahl je Aktie, denn das würde aus einer Zerlegung einen Preis machen.", "an-017": "Um einen Markt zweimal zu messen, von oben nach unten und von unten nach oben, und die Abweichung zu lesen, statt sie wegzumitteln. Jede Annahme wird mit dem Wert beantwortet, den sie annehmen müsste, damit die beiden Rechnungen übereinstimmen.", "an-018": "Methode dahinter: <a href=\"../../case-market-sizer.html\" rel=\"noreferrer noopener\" target=\"_blank\">die Market-Sizer-Fallstudie</a>", "an-019": "Jedes hier geladene Beispiel ist ein Beispiel. Die Zahlen darin sind erfunden, um die Arithmetik vorzuführen, und messen nichts.", "an-020": "Für den Monat, in dem das Geld ausgeht, den Kontostand Monat für Monat bis zu einem Horizont, den Sie setzen, und die Frage danach: wie viele Wochen Reichweite jede geplante Einstellung kostet.", "an-021": "Für dieses hier gibt es keine Fallstudie. Es ist Arithmetik auf Ihren eigenen Zahlen, und die Methode steht unter dem Diagramm.", "an-022": "Jedes hier geladene Beispiel ist ein Beispiel. Die Zahlen darin sind erfunden, um die Arithmetik vorzuführen, und planen nichts.", "an-023": "Um Energie-, Massen- und Treibhausgaseinheiten umzurechnen, und um genau gesagt zu bekommen, was fehlt, wenn eine Umrechnung keine Antwort hat. Mengen werden als exakte rationale Zahlen gelesen, nicht als Gleitkommazahlen.", "an-024": "Methode dahinter: <a href=\"../../case-unitguard.html\" rel=\"noreferrer noopener\" target=\"_blank\">die Unitguard-Fallstudie</a>", "an-025": "Vier Umrechnungen, die einen Versuch wert sind", "an-026": "Die Liste wird im Link nicht mitgeführt. Ein geteilter Link stellt die Menge und die zwei Einheiten wieder her, und das Instrument berechnet daraus dasselbe Urteil neu.", "an-027": "Drei der vier Instrumente enthalten überhaupt keine Konstanten. Sie sind Arithmetik auf den Zahlen, die Sie eingeben, es gibt darin also nichts zu belegen. Die einzigen festen Werte auf dieser Seite sind die Treibhauspotenziale, die im Einheitenumrechner benannt werden, und er benennt sie, um sich zu weigern, zwischen ihnen zu wählen. Sie stehen unten, mit dem Sachstandsbericht und dem Zeithorizont, zu dem jedes gehört.", "an-029": "Das sind Verhältnisse von Molmassen und eine Definition, keine Messungen, sie tragen also weder Bericht noch Horizont.", "an-030": "<strong>Jede Zahl auf dieser Seite ist Arithmetik auf Zahlen, die Sie geliefert haben.</strong> Nichts davon ist eine Bewertung, eine Marktgröße, eine Prognose oder eine Beratung. Es gibt darin nirgends Benchmarks, Branchendurchschnitte oder Standardannahmen. Wo ein Beispiel geladen ist, ist es als Beispiel gekennzeichnet und existiert nur, um die Arithmetik vorzuführen.", "an-031": "Läuft vollständig in Ihrem Browser. Nichts, was Sie eingeben, verlässt diese Seite. Kein Server, keine Datenbank, keine Analyse, keine Netzwerkaufrufe, nachdem die Schriften geladen sind, es funktioniert also offline, sobald die Seite im Cache liegt. Gebaut von <a href=\"../../index.html\">Kerem Ozdemir</a>, TUM und Universität Istanbul.", "an-032": "Kapitalkosten, Prozent", "an-033": "Ewiges Wachstum, Prozent", "an-034": "Geldbezeichnung", "an-035": "Geld auf der Bank", "an-036": "Feste Monatskosten", "an-037": "Monatskosten je Kopf", "an-038": "Köpfe heute", "an-039": "Erster Monat des Plans", "an-040": "Jahr", "an-041": "Horizont, Monate", "an-042": "Menge", "an-043": "Von", "an-044": "Nach", "an-045": "Jahr hinzufügen", "an-046": "Beispiel laden", "an-047": "Löschen", "an-048": "CSV herunterladen", "an-049": "Tabelle kopieren", "an-050": "Link zu diesen Eingaben kopieren", "an-051": "Faktor hinzufügen", "an-052": "Segment hinzufügen", "an-053": "Beispiel laden", "an-054": "Löschen", "an-055": "CSV herunterladen", "an-056": "Tabelle kopieren", "an-057": "Link zu diesen Eingaben kopieren", "an-058": "Einstellung hinzufügen", "an-059": "Einnahme hinzufügen", "an-060": "Beispiel laden", "an-061": "Löschen", "an-062": "CSV herunterladen", "an-063": "Tabelle kopieren", "an-064": "Link zu diesen Eingaben kopieren", "an-065": "Umrechnen", "an-066": "Löschen", "an-067": "CSV herunterladen", "an-068": "Tabelle kopieren", "an-069": "Link zu diesen Eingaben kopieren", "an-070": "Prognostizierte freie Zahlungsströme", "an-071": "Von oben nach unten: ein Universum, verengt durch Faktoren", "an-072": "Von unten nach oben: Segmente, jedes ein Produkt von Treibern", "an-073": "Geplante Einstellungen", "an-074": "Erwartete Einnahmen", "an-h-wacc": "Der Satz, der jedes Jahr und die ewige Rente abzinst.", "an-h-tg": "Wachstum der ewigen Rente nach dem letzten Prognosejahr.", "an-h-label": "Nur eine Bezeichnung. Sie ändert keine Arithmetik.", "an-h-cash": "Der Kontostand zu Beginn von Monat eins.", "an-h-fixed": "Alles, was nicht mit der Kopfzahl skaliert.", "an-h-head": "Voll belastet, je Person, je Monat.", "an-h-heads": "Personen auf der Gehaltsliste vor jeder geplanten Einstellung.", "an-h-horizon": "Das Werkzeug rechnet über diesen Punkt hinaus nichts und sagt das.", "an-h-qty": "Eine einfache Dezimalzahl. 0.1 bedeutet genau ein Zehntel.", "an-empty-table": "Noch nichts anzuzeigen.", "an-remove": "Entfernen", "an-remove-a": "{what} entfernen", "an-v-refused-h": "Verweigert. Keine Zahl zu berichten", "an-v-neg-line": "Kapitalkosten von {w} Prozent lassen nichts übrig, womit sich abzinsen ließe.", "an-v-neg-why": "Der Abzinsungsfaktor ist eins durch eins plus dem Satz, hoch das Jahr. Bei minus einhundert Prozent oder darunter hat dieser Ausdruck keine Bedeutung, es lässt sich also für kein Jahr ein Barwert ausgeben.", "an-v-g-line": "Ein ewiges Wachstum von {g} Prozent liegt nicht unter den Kapitalkosten von {w} Prozent.", "an-v-g-why": "Eine ewige Rente, die mit ihrem Abzinsungssatz oder darüber wächst, hat unbegrenzten Wert, es gibt also keinen Unternehmenswert auszugeben. Die Wachstumsrate knapp unter die Kapitalkosten zu kappen ist schlechter als eine Verweigerung, denn es setzt ein anderes Modell ein, dessen Antwort davonläuft, je enger gekappt wird. Entweder die Wachstumsrate oder die Kapitalkosten sind falsch.", "an-v-g-note": "Die Prognosejahre werden weiterhin normal abgezinst. Nur der Terminal Value hat keine Antwort.", "an-v-norows": "Noch keine Prognosejahre. Fügen Sie das erste Jahr hinzu, oder laden Sie das Beispiel, um die Arithmetik vorzuführen.", "an-v-cf-year": "Zahlungsstrom, Jahr {n}", "an-v-year-n": "Jahr {n}", "an-v-year-a": "Jahr {n}", "an-v-empty": "Nichts zu rechnen. Tragen Sie Kapitalkosten, eine ewige Wachstumsrate und mindestens einen prognostizierten Zahlungsstrom ein.", "an-v-needrates": "Die Zahlungsströme stehen. Tragen Sie die Kapitalkosten und die ewige Wachstumsrate ein, der Rest folgt.", "an-v-normal-h": "Die Prognosejahre, normal abgezinst", "an-t-year": "Jahr", "an-t-fcf": "Freier Zahlungsstrom", "an-t-df": "Abzinsungsfaktor", "an-t-pv": "Barwert", "an-t-cf": "Zahlungsstrom", "an-v-pvf": "Barwert der Prognosejahre", "an-v-share-h": "Anteil des Unternehmenswerts, den der Terminal Value trägt", "an-na": "nicht verfügbar", "an-v-zero": "Der Unternehmenswert ist null, es gibt also keinen Anteil daran zu nehmen.", "an-v-other": "Die {n} Prognosejahre machen die übrigen {p} aus.", "an-v-bar-a": "Balkenaufteilung. Barwert der Prognose {a}. Barwert des Terminal Value {b}.", "an-v-key-a": "Barwert der Prognose {v}", "an-v-key-b": "Barwert des Terminal Value {v}", "an-v-terminal": "Terminal", "an-v-yby": "Jahr für Jahr", "an-v-pvt": "Barwert des Terminal Value", "an-v-ev": "Unternehmenswert", "an-v-tv-h": "Der Terminal Value, ausgeschrieben", "an-v-st-last": "Letzter prognostizierter Zahlungsstrom, Jahr {n}", "an-v-st-grown": "Einmal mit {g} Prozent gewachsen", "an-v-st-div": "Geteilt durch Kapitalkosten weniger Wachstum, {w} weniger {g} Prozent", "an-v-st-disc": "{n} Jahre zurück abgezinst mit {f}", "an-v-st-share": "Terminaler Anteil am Unternehmenswert", "an-v-tv-note": "Der Terminal Value wird am Ende des letzten Prognosejahres genommen und mit dem Abzinsungsfaktor desselben Jahres zurückgeholt. Die Zahlungsströme stehen durchgehend in einer Einheit, und die Einheit ändert den Anteil nicht.", "an-csv-desk": "Analyst Desk", "an-csv-v": "Bewertung", "an-csv-notentered": "nicht eingetragen", "an-csv-v-nothing": "Nichts berechnet. Zahlungsströme oder Sätze fehlen.", "an-csv-refused": "VERWEIGERT", "an-m-kind-count": "Anzahl", "an-m-kind-share": "Anteil", "an-m-kind-value": "Wert", "an-m-nan": "der implizierte Wert ist keine Zahl", "an-m-over": "ein implizierter Anteil von {p} Prozent übersteigt 100 Prozent", "an-m-neg": "der implizierte Wert ist negativ", "an-m-td-same": "Von oben nach unten, jeder Faktor teilt denselben Multiplikator", "an-m-td-mult": "Von oben nach unten, jeder Faktor teilt den Multiplikator {m}", "an-m-td-zero": "Die Summe von oben nach unten ist null, kein Faktor lässt sich also so skalieren, dass er die Lücke schließt.", "an-m-td-zero-row": "die Summe von oben nach unten ist null, kein Faktor kann sie skalieren", "an-m-pin-zero": "ein auf null festgesetzter Faktor lässt sich nicht skalieren, um eine Lücke zu schließen", "an-m-bu-title": "Von unten nach oben, {name}", "an-m-unnamed": "unbenanntes Segment", "an-m-nodrivers": "Dieses Segment hat keine Treiber, es gibt darin also nichts aufzulösen.", "an-m-segzero": "Dieses Segment ist null wert, das Skalieren eines seiner Treiber kann die Summe also nicht bewegen.", "an-m-infeasible-note": "Die übrigen Segmente allein kommen auf {rest} und liegen damit bereits über der Summe von oben nach unten von {td}. Kein Wert eines Treibers in diesem Segment schließt die Lücke.", "an-m-infeasible": "unmöglich", "an-m-name": "Name des {p}", "an-m-value": "Wert", "an-m-kind": "Art", "an-m-factor": "Faktors", "an-m-driver": "Treibers", "an-m-factor-nom": "Faktor", "an-m-driver-nom": "Treiber", "an-m-factor-n": "Faktor {n}", "an-m-segment-n": "Segment {n}", "an-m-segment-a": "Segment {n}", "an-m-notd": "Noch keine Faktoren von oben nach unten. Eine Rechnung von oben nach unten ist ein Universum, multipliziert mit den Faktoren, die es verengen.", "an-m-nobu": "Noch keine Segmente. Eine Rechnung von unten nach oben ist eine Summe von Segmenten, jedes ein Produkt seiner eigenen Treiber.", "an-m-segname": "Segmentname", "an-m-adddriver": "Treiber hinzufügen", "an-m-adddriver-a": "Treiber zu Segment {n} hinzufügen", "an-m-empty": "Nichts abzugleichen. Tragen Sie eine Kette von oben nach unten und mindestens ein Segment von unten nach oben ein, oder laden Sie das Beispiel.", "an-m-half": "Eine Rechnung liegt vor, die andere nicht. Eine einzelne Rechnung ist kein Beleg, und der Befund ist die Lücke, deshalb gibt dieses Instrument nichts aus, solange nicht beide Seiten existieren.", "an-m-td-h": "Von oben nach unten", "an-m-bu-h": "Von unten nach oben", "an-m-gap-h": "Lücke, von unten nach oben weniger von oben nach unten", "an-m-gap-zero": "Die Summe von oben nach unten ist null, die Lücke lässt sich also nicht als Anteil daran ausdrücken.", "an-m-gap-pct": "{p} Prozent der Summe von oben nach unten.", "an-m-inv-h": "Was jede Annahme werden müsste, damit die beiden Rechnungen übereinstimmen", "an-m-inv-note": "Hier steht keine dritte Zahl. Kein Durchschnitt, kein Mittelwert, keine Empfehlung, welcher Rechnung zu glauben ist. Jeder Faktor von oben nach unten teilt denselben Multiplikator, denn von oben nach unten ist ein Produkt, und es spielt keine Rolle, welcher Faktor die Korrektur aufnimmt. Der Multiplikator eines Treibers von unten nach oben ist in jedem Segment ein anderer, weil die übrigen Segmente festgehalten werden.", "an-m-t-assum": "Annahme", "an-m-t-now": "Jetzt", "an-m-t-would": "Müsste sein", "an-m-t-mult": "Multiplikator", "an-m-notdef": "nicht definiert", "an-m-imp": "unmöglich: {why}", "an-csv-m": "Marktgröße", "an-m-moneylabel": "Geldbezeichnung", "an-csv-m-nothing": "Nichts abgeglichen. Es braucht sowohl eine Kette von oben nach unten als auch mindestens ein Segment von unten nach oben.", "an-m-csv-td": "Summe von oben nach unten", "an-m-csv-bu": "Summe von unten nach oben", "an-m-csv-gap": "Lücke, von unten nach oben weniger von oben nach unten", "an-m-csv-gappct": "Lücke als Anteil der Summe von oben nach unten, Prozent", "an-m-csv-n1": "Von oben nach unten ist ein Universum, multipliziert mit verengenden Faktoren. Von unten nach oben ist eine Summe von Segmenten, jedes ein Produkt seiner Treiber.", "an-m-csv-n2": "Der implizierte Wert eines Faktors von oben nach unten ist sein Wert mal dem Verhältnis der beiden Summen.", "an-m-csv-n3": "Der implizierte Wert eines Treibers von unten nach oben ist sein Wert mal der Summe von oben nach unten weniger der übrigen Segmente, geteilt durch dieses Segment.", "an-m-csv-n4": "Als unmöglich markierte Zeilen tragen keinen implizierten Wert. Für sie wurde keine Zahl eingesetzt.", "an-m-csv-n5": "Diese Datei enthält zwei Rechnungen und ihre Differenz. Sie enthält keine Marktgröße.", "an-m-nogroup": "Keine Annahmen in dieser Gruppe.", "an-m-unnamed-a": "unbenannt", "an-m-none": "keiner", "an-mon-1": "Januar", "an-mon-2": "Februar", "an-mon-3": "März", "an-mon-4": "April", "an-mon-5": "Mai", "an-mon-6": "Juni", "an-mon-7": "Juli", "an-mon-8": "August", "an-mon-9": "September", "an-mon-10": "Oktober", "an-mon-11": "November", "an-mon-12": "Dezember", "an-r-nohires": "Keine geplanten Einstellungen. Fügen Sie eine hinzu, um zu sehen, was sie in Wochen Reichweite kostet.", "an-r-hire-n": "Einstellung {n}", "an-r-hire-a": "Einstellung {n}", "an-r-role": "Rolle", "an-r-startmonth": "Beginnt im Monat", "an-r-startmonth-h": "1 ist der erste Monat des Plans", "an-r-monthlycost": "Monatskosten", "an-r-noinc": "Keine erwarteten Einnahmen. Lassen Sie es leer, dann ist der Kontostand Geld weniger Verbrauch.", "an-r-inc-n": "Einnahme {n}", "an-r-inc-a": "Einnahme {n}", "an-r-source": "Quelle", "an-r-frommonth": "Ab Monat", "an-r-tomonth": "Bis Monat", "an-r-tomonth-h": "leer läuft bis zum Horizont", "an-r-monthlyamount": "Monatlicher Betrag", "an-r-empty": "Nichts zu rechnen. Tragen Sie das Geld auf der Bank ein und was es monatlich verlässt, oder laden Sie das Beispiel.", "an-r-nohorizon-h": "Kein Horizont", "an-r-nohorizon-p": "Dieses Instrument rechnet Monat für Monat bis zu einem Horizont und keinen Monat darüber hinaus. Setzen Sie den Horizont auf mindestens einen Monat.", "an-r-beyond-h": "Jenseits des Horizonts. Kein Monat genannt", "an-r-beyond-p1": "Der Kontostand beträgt am Ende von Monat {n}, {m}, noch immer {bal}. Nach diesen Zahlen geht das Geld innerhalb des von Ihnen gesetzten Horizonts nicht aus.", "an-r-beyond-p2": "Dieses Werkzeug führt die Arithmetik nicht über diesen Horizont hinaus und nennt keinen Monat, den es nicht gerechnet hat. Ein Verbrauchsplan, der weiter getragen wird als die Annahmen dahinter, ist eine Vermutung mit einem Datum darauf. Erhöhen Sie den Horizont, wenn Sie weiter schauen wollen, und lesen Sie, was dort steht, als Arithmetik auf Ihren Annahmen und nicht als Prognose.", "an-r-out-h": "Das Geld geht aus im", "an-r-already": "bereits", "an-r-openneg": "der Anfangsbestand liegt unter null", "an-r-monthof": "Monat {n} des Plans", "an-r-runway-p": "Die Reichweite beträgt {m} Monate, also {w} Wochen. Der Kontostand fällt erstmals während {when} unter null.", "an-r-month-one": "Monat eins", "an-r-m1-h": "Monat eins", "an-r-cash-start": "Geld auf der Bank zu Beginn", "an-r-fixed": "Feste Monatskosten", "an-r-people": "Personen, {n} Köpfe zu {c}", "an-r-hires-started": "In Monat eins bereits begonnene Einstellungen", "an-r-inc-m1": "Einnahmen in Monat eins", "an-r-net-m1": "Nettobewegung in Monat eins", "an-r-balto": "Kontostand bis Ende Monat {n}", "an-r-chart-h": "Schlussbestand am Ende jedes Monats, von Monat eins bis Monat {n}", "an-r-chart-note": ". Die Linie endet am Horizont, weil die Arithmetik dort endet.", "an-r-notmeasurable": "innerhalb von {n} Monaten nicht messbar", "an-r-survives": "der Kontostand übersteht den Horizont mit und ohne diese Einstellung", "an-r-morethan": "mehr als der Horizont", "an-r-without": "ohne diese Einstellung reicht das Geld über Monat {n} hinaus", "an-r-cost-h": "Was jede geplante Einstellung an Reichweite kostet", "an-r-t-costs": "Kostet an Reichweite", "an-r-nohires-price": "Noch keine geplanten Einstellungen, es gibt also nichts zu bepreisen.", "an-r-cost-note": "Jede Zeile ist die Reichweite ohne diese Einstellung weniger der Reichweite mit ihr, bei sonst unveränderten Zahlen. Ein Monat wird als 52 durch 12 Wochen genommen, also {w} Wochen. Wo das Geld in beiden Fällen über den Horizont hinaus reicht, ist die Differenz nicht messbar, und das Werkzeug sagt das, statt eine Zahl auszugeben, die es nicht gerechnet hat.", "an-r-mbm": "Monat für Monat", "an-r-t-month": "Monat", "an-r-t-heads": "Köpfe", "an-r-t-burn": "Verbrauch", "an-r-t-inc": "Einnahmen", "an-r-t-net": "Netto", "an-r-t-close": "Schlussbestand", "an-r-method": "Der Verbrauch in einem Monat sind die festen Kosten plus die Kosten je Kopf mal den Köpfen auf der Gehaltsliste in diesem Monat, wobei jede geplante Einstellung ab ihrem Startmonat mitzählt. Der Schlussbestand ist der vorherige Schlussbestand plus Einnahmen weniger Verbrauch. Nichts wird geglättet und nichts annualisiert.", "an-r-chart-a": "Schlussbestand von Monat eins bis Monat {n}. Anfangsbestand {open}. Bestand am Horizont {end}.{tail}", "an-r-chart-a-ok": " Der Bestand bleibt bis zum Horizont über null.", "an-r-chart-a-neg": " Der Bestand fällt in Monat {n} unter null.", "an-r-alreadyneg": "bereits unter null", "an-r-xaxis": "Monate ab Beginn des Plans", "an-csv-r": "Reichweite der Mittel", "an-r-csv-runwaym": "Reichweite, Monate", "an-r-csv-runwayw": "Reichweite, Wochen", "an-r-csv-beyond": "jenseits des Horizonts von {n}", "an-r-csv-zero": "Monat, in dem das Geld ausgeht", "an-r-csv-notinside": "nicht innerhalb des Horizonts", "an-r-csv-openneg": "der Anfangsbestand liegt bereits unter null", "an-r-csv-costw": "Kostet an Reichweite, Wochen", "an-r-csv-costm": "Kostet an Reichweite, Monate", "an-r-csv-n1": "Der Verbrauch sind die festen Kosten plus die Kosten je Kopf mal den Köpfen, wobei geplante Einstellungen ab ihrem Startmonat mitzählen.", "an-r-csv-n2": "Der Schlussbestand ist der vorherige Schlussbestand plus Einnahmen weniger Verbrauch.", "an-r-csv-n3": "Die Reichweite ist gebrochen: die ganzen überstandenen Monate plus der Anteil des Übergangsmonats, den der Bestand deckt.", "an-r-csv-n4": "Ein Monat wird als 52 durch 12 Wochen genommen.", "an-r-csv-n5": "In dieser Datei ist nichts über Monat {n} hinaus berechnet, den vom Leser gesetzten Horizont.", "an-r-t-hire": "Einstellung", "an-r-t-starts": "Beginnt", "an-r-t-inmonths": "In Monaten", "an-r-monthn": "Monat {n}", "an-r-weeks": "{n} Wochen", "an-r-months": "{n} Monate", "an-u-dim-energy": "Energie", "an-u-dim-mass": "Masse", "an-u-dim-ghg": "Treibhausgasmasse", "an-u-noanswer": "{from} nach {to} hat hier keine Antwort.", "an-u-gwp-h": "Kein Treibhauspotenzial angegeben", "an-u-gwp-why": "Eine Tonne CH4 wird nur über ein Treibhauspotenzial zu tCO2e, und ein GWP existiert nur innerhalb eines genannten IPCC-Sachstandsberichts und Zeithorizonts. Über 100 Jahre setzt AR4 Methan auf 25, AR5 auf 28 und AR6 auf 27,0 für biogenes und 29,8 für fossiles Methan. Nennen Sie Bericht und Horizont, und das ist eine Multiplikation.", "an-u-gwp-missing": "ein IPCC-Sachstandsbericht und ein Zeithorizont", "an-u-gwp-note": "unitguard verweigert, statt eines auszuwählen.", "an-u-mix-h": "Kein Gasgemisch angegeben", "an-u-mix-why": "tCO2e ist eine Recheneinheit, kein Stoff. Es hält fest, wie viel Erwärmung einem Bündel von Gasen zugerechnet wird, nicht wie viel von einem einzelnen Gas vorhanden ist. Ohne das Gemisch, das die Zahl erzeugt hat, gibt es keine Masse {to} zurückzugeben.", "an-u-mix-missing": "das Gasgemisch hinter der CO2e-Zahl", "an-u-mix-note": "Die Richtung, die funktioniert, ist CO2 nach CO2e, wo das Potenzial per Definition 1 ist.", "an-u-note-4412": "Genau 44/12, das Verhältnis der Molmassen.", "an-u-note-1244": "Genau 12/44, das Verhältnis der Molmassen.", "an-u-note-co2e": "Das Potenzial von CO2 ist per Definition der Metrik 1.", "an-u-note-cco2e": "Kohlenstoff nach CO2 mit 44/12, dann CO2 nach CO2e mit einem Potenzial von 1.", "an-u-notdef-h": "Nicht definiert", "an-u-notdef-missing": "ein definierter Weg zwischen diesen beiden Spezies", "an-u-notdef-why": "unitguard hat keinen definierten Weg zwischen diesen beiden Spezies.", "an-u-species-h": "Keine Gasspezies angegeben", "an-u-species-missing": "die Gasspezies auf der Eingabeseite", "an-u-species-why": "{from} ist eine blanke Masse. {to} zählt ein bestimmtes Gas. Die Spezies zu benennen ist der ganze Unterschied zwischen beiden, und ein Umrechner, der sie raten würde, würde die Zahl erfinden.", "an-u-species-note": "Nennen Sie die Spezies auf der Eingabeseite, und die Umrechnung geht durch.", "an-u-drop-h": "Die Spezies ginge verloren", "an-u-drop-missing": "eine Zieleinheit, die die Gasspezies behält", "an-u-drop-why": "unitguard führt die Gasspezies als Teil der Einheit mit. {from} in ein blankes {to} umzurechnen lässt sie fallen, und die Zahl hört auf, eine Emissionszahl zu sein. Behalten Sie die Spezies in der Zieleinheit.", "an-u-dim-h": "Verschiedene Dimensionen", "an-u-dim-missing": "eine Energiedichte oder ein Emissionsfaktor", "an-u-dim-why": "{from} misst {dimA} und {to} misst {dimB}. Nichts wandelt das eine von allein in das andere um. Eine Energiedichte oder ein Emissionsfaktor täten es, und beides wurde nicht geliefert.", "an-u-scale-note": "Skalenfaktoren sind exakte rationale Zahlen, das geht also verlustfrei hin und zurück.", "an-u-nan-h": "Keine Zahl", "an-u-nan-line": "„{raw}“ ist keine Größe.", "an-u-nan-why": "Tippen Sie eine einfache Dezimalzahl. Größen werden als exakte rationale Zahlen gelesen, 0.1 bedeutet also genau ein Zehntel und nicht die nächstgelegene binäre Gleitkommazahl.", "an-u-nan-missing": "eine einfache dezimale Menge", "an-u-typeq": "Tippen Sie eine Menge. Das Instrument antwortet bei jedem Tastendruck, und die Antwort ist manchmal eine Verweigerung.", "an-u-converted": "Umgerechnet", "an-u-isline": "{q} {from} sind {v} {to}.", "an-u-tilde": "Die vorangestellte Tilde markiert eine rationale Zahl, die dezimal nicht abbricht. Der gespeicherte Wert ist exakt, der gedruckte nicht.", "an-u-refused": "Verweigert. {h}", "an-u-missing": "Fehlt", "an-u-nothing": "Noch nichts. Drücken Sie Umrechnen, oder wählen Sie eine der vier Umrechnungen oben.", "an-u-t-qty": "Menge", "an-u-t-from": "Von", "an-u-t-to": "Nach", "an-u-t-result": "Ergebnis", "an-u-t-status": "Status", "an-u-t-missing": "Was fehlt", "an-csv-u": "Einheitensicherheit", "an-u-csv-current": "Aktuelle Menge", "an-u-note-1": "Mengen werden als exakte rationale Zahlen über großen Ganzzahlen gelesen, nicht als Gleitkommazahlen.", "an-u-note-2": "Eine Treibhausgaseinheit führt ihre Spezies mit. tC nach tCO2 ist 44/12, tCO2 nach tC ist 12/44, tCO2 nach tCO2e ist per Definition 1.", "an-u-note-3": "Methan nach CO2e wird verweigert: Es braucht einen IPCC-Sachstandsbericht und einen Zeithorizont, und es gibt keine einzelne Antwort.", "an-u-note-4": "CO2e zurück in ein einzelnes Gas wird verweigert: CO2e ist eine Recheneinheit, und das Gemisch dahinter ist nicht rekonstruierbar.", "an-u-note-5": "Eine blanke Masse in eine Gaseinheit wird verweigert, und eine Gaseinheit in eine blanke Masse wird verweigert.", "an-u-note-6": "Umrechnungen über Dimensionen hinweg werden verweigert.", "an-u-ratio-1": "das Verhältnis der Molmassen", "an-u-ratio-2": "das Potenzial von CO2 ist per Definition der Metrik 1", "an-u-ratio-3": "44/12, dann 1", "an-u-ratio-4": "Kohlenstoff nach CO2, dann CO2 nach CO2e mit einem Potenzial von 1", "an-u-ratio-5": "die Definition der Wattstunde", "an-u-refused-w": "verweigert", "an-u-converted-w": "umgerechnet", "an-u-refused-s": "verweigert: {h}", "an-t-gas": "Gas", "an-t-potential": "Potenzial", "an-t-report": "Sachstandsbericht", "an-t-horizon": "Zeithorizont", "an-t-applies": "Gilt für", "an-u-methane-all": "Methan insgesamt", "an-u-methane": "Methan", "an-u-biogenic": "biogenes Methan", "an-u-fossil": "fossiles Methan", "an-u-horizon-100": "100 Jahre", "an-t-conversion": "Umrechnung", "an-t-factor": "Faktor", "an-t-whyexact": "Warum es exakt ist", "an-f-v": "Bewertung", "an-f-m": "Marktgröße", "an-f-r": "Reichweite der Mittel", "an-f-u": "Einheitensicherheit", "an-f-v-t": "Der Barwert von Jahr t ist der Zahlungsstrom geteilt durch eins plus den Kapitalkosten, hoch t. Der Terminal Value ist der letzte prognostizierte Zahlungsstrom, einmal gewachsen, geteilt durch die Kapitalkosten weniger Wachstum, dann mit dem Faktor des letzten Jahres abgezinst. Der Anteil ist der terminale Barwert geteilt durch die Summe beider Teile.", "an-f-m-t": "Von oben nach unten ist ein Universum, multipliziert mit seinen Faktoren. Von unten nach oben ist eine Summe von Segmenten, jedes ein Produkt seiner Treiber. Der implizierte Wert eines Faktors von oben nach unten ist sein Wert mal dem Verhältnis der beiden Summen. Der implizierte Wert eines Treibers von unten nach oben ist sein Wert mal der Summe von oben nach unten weniger der übrigen Segmente, geteilt durch dieses Segment.", "an-f-r-t": "Der Verbrauch in einem Monat sind die festen Kosten plus die Kosten je Kopf mal den Köpfen auf der Gehaltsliste, wobei geplante Einstellungen ab ihrem Startmonat mitzählen. Der Schlussbestand ist der vorherige Schlussbestand plus Einnahmen weniger Verbrauch. Die Reichweite sind die ganzen überstandenen Monate plus der Anteil des Übergangsmonats, den der Bestand deckt. Ein Monat sind 52 durch 12 Wochen.", "an-f-u-t": "Eine Einheit ist eine Dimension und ein exakter Maßstab zur kohärenten SI-Einheit dieser Dimension. Eine Treibhausgaseinheit trägt ein Drittes: die Spezies, die sie zählt. Eine Umrechnung ist erlaubt, wenn die Dimensionen übereinstimmen, und bei Gasen nur, wenn ein Weg zwischen den beiden Spezies definiert ist. Alles andere wird verweigert, und die Verweigerung benennt die Eingabe, die sie möglich machen würde.", "an-k-yours": "Ihre Zahlen", "an-k-yours-t": "nichts auf dieser Seite prüft, ob die Zahlen, die Sie eingetippt haben, richtig sind. Es prüft nur, dass die Arithmetik mit ihnen richtig ist.", "an-k-bench": "Benchmarks", "an-k-bench-t": "es gibt hier keine. Keine Branchendurchschnitte, kein typischer Verbrauch, keine üblichen Kapitalkosten, keine Standard-Anbindungsquote. Ein Standardwert würde als Tatsache gelesen und wäre keine.", "an-k-ef": "Emissionsfaktoren", "an-k-ef-t": "keine. Der Einheitenumrechner führt Skalenfaktoren und Molmassenverhältnisse mit und sonst nichts. Wo ein Emissionsfaktor nötig wäre, sagt er das und hört auf.", "an-k-gwp": "Treibhauspotenziale", "an-k-gwp-t": "die vier oben genannten werden zitiert, damit der Umrechner sich weigern kann, zwischen ihnen zu wählen. Keines davon wird auf eine Zahl dieser Seite angewendet.", "an-k-beyond": "Jenseits des Horizonts", "an-k-beyond-t": "das Reichweiteninstrument rechnet bis zu dem Monat, den Sie setzen, und nicht weiter. Wo das Geld den Horizont überdauert, nennt es keinen Monat.", "an-k-prices": "Preise und Währung", "an-k-prices-t": "die Bewertung gibt keine Zahl je Aktie und keine Währung aus, und die Geldbezeichnung des Market Sizers ist eine Bezeichnung und keine Einheitenumrechnung.", "an-ex-v": "Beispiel geladen. Das sind Beispielzahlen, keine Bewertung von irgendetwas.", "an-ex-m": "Beispiel geladen. Jede Zahl darin ist illustrativ und misst nichts.", "an-ex-r": "Beispiel geladen. Das sind Beispielzahlen, kein Plan für irgendein Unternehmen.", "an-csv-done": "CSV heruntergeladen.", "an-restored": "Eingaben aus dem Link wiederhergestellt.", "an-m-t-group": "Gruppe", "an-m-t-status": "Status", "an-m-solvable": "lösbar", "an-v-csv-n1": "Die Zahlungsströme stehen in einer Einheit nach Wahl des Lesers, durchgehend derselben.", "an-v-csv-n2": "Der Barwert von Jahr t ist der Zahlungsstrom geteilt durch eins plus den Kapitalkosten hoch t.", "an-v-csv-n3": "Der Terminal Value ist der letzte prognostizierte Zahlungsstrom, einmal gewachsen, geteilt durch die Kapitalkosten weniger Wachstum.", "an-v-csv-n4": "Das ist Arithmetik auf Zahlen, die der Leser eingetragen hat. Es ist keine Bewertung.", "pg-title": "Analyst Desk"}};
+  function T(k, en, v) {
+    var out = window.__t ? window.__t(k, en) : en;
+    if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+    return out;
+  }
+
   var E = Kit.el, Q = Kit.qs, C = Kit.clear;
   var seq = 0;
   function nid() { seq++; return "r" + seq; }
 
-  var MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
-                     "July", "August", "September", "October", "November", "December"];
+  var MONTH_EN = ["January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December"];
+  /* Month names follow the language being read, so a plan drawn in Turkish
+     does not name its months in English. */
+  function monthName(i) { return T("an-mon-" + (i + 1), MONTH_EN[i]); }
 
   /* weeks in a month, stated so the reader can check it: 52 weeks over 12 months */
   var WEEKS_PER_MONTH = 52 / 12;
@@ -1197,7 +1216,7 @@ var Kit = (function () {
     /* i is one based: month 1 is the first month of the plan */
     var off = S.r.m0 + (i - 1);
     var y = S.r.y0 + Math.floor(off / 12);
-    return MONTH_NAMES[((off % 12) + 12) % 12] + " " + y;
+    return monthName(((off % 12) + 12) % 12) + " " + y;
   }
 
   function numField(id, labelText, hint, value, onSet, opts) {
@@ -1239,8 +1258,8 @@ var Kit = (function () {
   }
 
   function removeBtn(label, fn) {
-    return E("button", { type: "button", class: "k-btn k-btn-quiet", text: "Remove",
-      "aria-label": "Remove " + label, onclick: fn });
+    return E("button", { type: "button", class: "k-btn k-btn-quiet", text: T("an-remove", "Remove"),
+      "aria-label": T("an-remove-a", "Remove {what}", { what: label }), onclick: fn });
   }
 
   function panel(title, kids, cls) {
@@ -1280,7 +1299,7 @@ var Kit = (function () {
     var tb = E("tbody");
     if (!rows.length) {
       tb.appendChild(E("tr", {}, [ E("td", { colspan: String(headers.length), class: "k-src-cell",
-        text: emptyText || "Nothing to show yet." }) ]));
+        text: emptyText || T("an-empty-table", "Nothing to show yet.") }) ]));
     }
     rows.forEach(function (r) {
       var tr = E("tr");
@@ -1317,10 +1336,12 @@ var Kit = (function () {
 
     if (1 + w <= 0) {
       r.state = "refused";
-      r.head = "Refused. No number to report";
-      r.line = "A cost of capital of " + n2(S.v.w, 2) + " per cent leaves nothing to discount with.";
-      r.why = "The discount factor is one over one plus the rate raised to the year. At minus one hundred per "
-            + "cent or below that expression has no meaning, so no present value can be printed for any year.";
+      r.head = T("an-v-refused-h", "Refused. No number to report");
+      r.line = T("an-v-neg-line", "A cost of capital of {w} per cent leaves nothing to discount with.",
+        { w: n2(S.v.w, 2) });
+      r.why = T("an-v-neg-why", "The discount factor is one over one plus the rate raised to the year. At minus "
+        + "one hundred per cent or below that expression has no meaning, so no present value can be printed for "
+        + "any year.");
       r.note = "";
       return r;
     }
@@ -1335,14 +1356,15 @@ var Kit = (function () {
 
     if (g >= w) {
       r.state = "refused";
-      r.head = "Refused. No number to report";
-      r.line = "Terminal growth of " + n2(S.v.g, 2) + " per cent is not below the cost of capital of "
-             + n2(S.v.w, 2) + " per cent.";
-      r.why = "A perpetuity growing at or above its discount rate has unbounded value, so there is no enterprise "
-            + "value to print. Clamping the growth rate to just under the cost of capital is worse than refusing, "
-            + "because it swaps in a different model whose answer runs away as the clamp tightens. Either the "
-            + "growth rate or the cost of capital is wrong.";
-      r.note = "The forecast years still discount normally. It is only the terminal value that has no answer.";
+      r.head = T("an-v-refused-h", "Refused. No number to report");
+      r.line = T("an-v-g-line", "Terminal growth of {g} per cent is not below the cost of capital of {w} per cent.",
+        { g: n2(S.v.g, 2), w: n2(S.v.w, 2) });
+      r.why = T("an-v-g-why", "A perpetuity growing at or above its discount rate has unbounded value, so there "
+        + "is no enterprise value to print. Clamping the growth rate to just under the cost of capital is worse "
+        + "than refusing, because it swaps in a different model whose answer runs away as the clamp tightens. "
+        + "Either the growth rate or the cost of capital is wrong.");
+      r.note = T("an-v-g-note", "The forecast years still discount normally. It is only the terminal value that "
+        + "has no answer.");
       return r;
     }
 
@@ -1361,21 +1383,21 @@ var Kit = (function () {
     var host = C(Q("#v-rows"));
     if (!S.v.f.length) {
       host.appendChild(E("p", { class: "ad-empty", text:
-        "No forecast years yet. Add the first year, or load the example to see the arithmetic working." }));
+        T("an-v-norows", "No forecast years yet. Add the first year, or load the example to see the arithmetic working.") }));
       return;
     }
     S.v.f.forEach(function (row, i) {
       host.appendChild(E("div", { class: "ad-item" }, [
         E("div", { class: "ad-item-top" }, [
-          E("span", { class: "ad-item-n", text: "Year " + (i + 1) }),
-          removeBtn("year " + (i + 1), function () {
+          E("span", { class: "ad-item-n", text: T("an-v-year-n", "Year {n}", { n: i + 1 }) }),
+          removeBtn(T("an-v-year-a", "year {n}", { n: i + 1 }), function () {
             S.v.f = S.v.f.filter(function (x) { return x.id !== row.id; });
             vBuild(); vRender(); write();
             var b = Q("#b-v-add"); if (b) b.focus();
           })
         ]),
         E("div", { class: "ad-grid" }, [
-          numField("v-f-" + row.id, "Cash flow, year " + (i + 1), null, row.val,
+          numField("v-f-" + row.id, T("an-v-cf-year", "Cash flow, year {n}", { n: i + 1 }), null, row.val,
             function (val) { row.val = val; vRender(); write(); })
         ])
       ]));
@@ -1389,12 +1411,12 @@ var Kit = (function () {
 
     if (r.state === "empty") {
       host.appendChild(E("p", { class: "ad-empty", text:
-        "Nothing to compute. Enter a cost of capital, a terminal growth rate and at least one forecast cash flow." }));
+        T("an-v-empty", "Nothing to compute. Enter a cost of capital, a terminal growth rate and at least one forecast cash flow.") }));
       return;
     }
     if (r.state === "needrates") {
       host.appendChild(E("p", { class: "ad-empty", text:
-        "The cash flows are in. Enter the cost of capital and the terminal growth rate and the rest follows." }));
+        T("an-v-needrates", "The cash flows are in. Enter the cost of capital and the terminal growth rate and the rest follows.") }));
       return;
     }
 
@@ -1407,13 +1429,14 @@ var Kit = (function () {
       ]);
       host.appendChild(w1);
       if (r.pv) {
-        host.appendChild(panel("The forecast years, discounted normally", [
+        host.appendChild(panel(T("an-v-normal-h", "The forecast years, discounted normally"), [
           tableOf(
-            [["Year", false], ["Free cash flow", true], ["Discount factor", true], ["Present value", true]],
+            [[T("an-t-year", "Year"), false], [T("an-t-fcf", "Free cash flow"), true],
+             [T("an-t-df", "Discount factor"), true], [T("an-t-pv", "Present value"), true]],
             r.flows.map(function (c, i) {
               return [String(i + 1), n2(c, 2), Kit.num(r.factors[i], 4), n2(r.pv[i], 2)];
             }), ""),
-          kv([["Present value of the forecast years", n2(r.pvForecast, 2), true]])
+          kv([[T("an-v-pvf", "Present value of the forecast years"), n2(r.pvForecast, 2), true]])
         ]));
       }
       return;
@@ -1421,27 +1444,29 @@ var Kit = (function () {
 
     /* headline */
     var head = panel(null, [
-      E("p", { class: "k-panel-h", text: "Share of the enterprise value carried by the terminal value" }),
+      E("p", { class: "k-panel-h", text: T("an-v-share-h", "Share of the enterprise value carried by the terminal value") }),
       E("div", { class: "k-stat" }, [
-        E("span", { class: "k-big", text: r.share === null ? "not available" : Kit.pct(r.share, 1) })
+        E("span", { class: "k-big", text: r.share === null ? T("an-na", "not available") : Kit.pct(r.share, 1) })
       ]),
       E("p", { style: "margin-top:0.6rem", text: r.share === null
-        ? "The enterprise value is zero, so there is no share to take of it."
-        : "The " + r.n + " forecast " + (r.n === 1 ? "year accounts" : "years account")
-          + " for the other " + Kit.pct(1 - r.share, 1) + "." })
+        ? T("an-v-zero", "The enterprise value is zero, so there is no share to take of it.")
+        : T("an-v-other", "The {n} forecast years account for the other {p}.",
+            { n: r.n, p: Kit.pct(1 - r.share, 1) }) })
     ]);
     if (r.share !== null && isFinite(r.share)) {
       var sh = Math.max(0, Math.min(1, r.share));
       var barWrap = E("div", { style: "margin-top:0.9rem" }, [
         E("div", { class: "ad-bar", role: "img",
-          "aria-label": "Bar split. Forecast present value " + Kit.pct(1 - sh, 1)
-            + ". Terminal present value " + Kit.pct(sh, 1) + "." }, [
+          "aria-label": T("an-v-bar-a", "Bar split. Forecast present value {a}. Terminal present value {b}.",
+            { a: Kit.pct(1 - sh, 1), b: Kit.pct(sh, 1) }) }, [
           E("i", { class: "a", style: "width:" + ((1 - sh) * 100) + "%" }),
           E("i", { class: "b", style: "width:" + (sh * 100) + "%" })
         ]),
         E("div", { class: "ad-key" }, [
-          E("span", {}, [E("i", { class: "a" }), E("span", { text: "Forecast present value " + n2(r.pvForecast, 2) })]),
-          E("span", {}, [E("i", { class: "b" }), E("span", { text: "Terminal present value " + n2(r.pvTerminal, 2) })])
+          E("span", {}, [E("i", { class: "a" }),
+            E("span", { text: T("an-v-key-a", "Forecast present value {v}", { v: n2(r.pvForecast, 2) }) })]),
+          E("span", {}, [E("i", { class: "b" }),
+            E("span", { text: T("an-v-key-b", "Terminal present value {v}", { v: n2(r.pvTerminal, 2) }) })])
         ])
       ]);
       head.appendChild(barWrap);
@@ -1452,31 +1477,34 @@ var Kit = (function () {
     var rows = r.flows.map(function (c, i) {
       return [String(i + 1), n2(c, 2), Kit.num(r.factors[i], 4), n2(r.pv[i], 2)];
     });
-    rows.push(["Terminal", n2(r.tv, 2), Kit.num(r.factors[r.n - 1], 4), n2(r.pvTerminal, 2)]);
+    rows.push([T("an-v-terminal", "Terminal"), n2(r.tv, 2), Kit.num(r.factors[r.n - 1], 4), n2(r.pvTerminal, 2)]);
 
-    host.appendChild(panel("Year by year", [
-      tableOf([["Year", false], ["Cash flow", true], ["Discount factor", true], ["Present value", true]], rows, ""),
+    host.appendChild(panel(T("an-v-yby", "Year by year"), [
+      tableOf([[T("an-t-year", "Year"), false], [T("an-t-cf", "Cash flow"), true],
+               [T("an-t-df", "Discount factor"), true], [T("an-t-pv", "Present value"), true]], rows, ""),
       kv([
-        ["Present value of the forecast years", n2(r.pvForecast, 2)],
-        ["Present value of the terminal value", n2(r.pvTerminal, 2)],
-        ["Enterprise value", n2(r.ev, 2), true]
+        [T("an-v-pvf", "Present value of the forecast years"), n2(r.pvForecast, 2)],
+        [T("an-v-pvt", "Present value of the terminal value"), n2(r.pvTerminal, 2)],
+        [T("an-v-ev", "Enterprise value"), n2(r.ev, 2), true]
       ])
     ]));
 
     /* the arithmetic */
-    host.appendChild(panel("The terminal value, written out", [
+    host.appendChild(panel(T("an-v-tv-h", "The terminal value, written out"), [
       stepList([
-        ["Last forecast cash flow, year " + r.n, n2(r.last, 2)],
-        ["Grown once at " + n2(S.v.g, 2) + " per cent", n2(r.last * (1 + r.g), 2)],
-        ["Divided by the cost of capital less growth, " + n2(S.v.w, 2) + " less " + n2(S.v.g, 2) + " per cent",
-          n2(r.tv, 2)],
-        ["Discounted back " + r.n + " " + (r.n === 1 ? "year" : "years") + " at "
-          + Kit.num(r.factors[r.n - 1], 4), n2(r.pvTerminal, 2)],
-        ["Terminal share of the enterprise value", r.share === null ? "not available" : Kit.pct(r.share, 1), true]
+        [T("an-v-st-last", "Last forecast cash flow, year {n}", { n: r.n }), n2(r.last, 2)],
+        [T("an-v-st-grown", "Grown once at {g} per cent", { g: n2(S.v.g, 2) }), n2(r.last * (1 + r.g), 2)],
+        [T("an-v-st-div", "Divided by the cost of capital less growth, {w} less {g} per cent",
+           { w: n2(S.v.w, 2), g: n2(S.v.g, 2) }), n2(r.tv, 2)],
+        [T("an-v-st-disc", "Discounted back {n} years at {f}",
+           { n: r.n, f: Kit.num(r.factors[r.n - 1], 4) }), n2(r.pvTerminal, 2)],
+        [T("an-v-st-share", "Terminal share of the enterprise value"),
+         r.share === null ? T("an-na", "not available") : Kit.pct(r.share, 1), true]
       ]),
       E("p", { class: "k-note", style: "margin-top:0.8rem", text:
-        "The terminal value is taken at the end of the last forecast year and brought back with that same year's "
-        + "discount factor. Cash flows are in one unit throughout and the unit does not matter to the share." })
+        T("an-v-tv-note", "The terminal value is taken at the end of the last forecast year and brought back with "
+          + "that same year's discount factor. Cash flows are in one unit throughout and the unit does not matter "
+          + "to the share.") })
     ], "k-panel k-panel-sunk"));
   }
 
@@ -1485,24 +1513,27 @@ var Kit = (function () {
   function vCsv() {
     var r = lastV || vCompute();
     var rows = [];
-    rows.push(["Analyst Desk", "Valuation"]);
-    rows.push(["Cost of capital, per cent", S.v.w === null ? "not entered" : n2(S.v.w, 2)]);
-    rows.push(["Terminal growth, per cent", S.v.g === null ? "not entered" : n2(S.v.g, 2)]);
+    rows.push([T("an-csv-desk", "Analyst Desk"), T("an-csv-v", "Valuation")]);
+    rows.push([T("an-032", "Cost of capital, per cent"),
+      S.v.w === null ? T("an-csv-notentered", "not entered") : n2(S.v.w, 2)]);
+    rows.push([T("an-033", "Terminal growth, per cent"),
+      S.v.g === null ? T("an-csv-notentered", "not entered") : n2(S.v.g, 2)]);
     rows.push([]);
     if (r.state === "empty" || r.state === "needrates") {
-      rows.push(["Nothing computed. Cash flows or rates are missing."]);
+      rows.push([T("an-csv-v-nothing", "Nothing computed. Cash flows or rates are missing.")]);
       return rows;
     }
-    rows.push(["Year", "Cash flow", "Discount factor", "Present value"]);
+    rows.push([T("an-t-year", "Year"), T("an-t-cf", "Cash flow"),
+      T("an-t-df", "Discount factor"), T("an-t-pv", "Present value")]);
     (r.flows || []).forEach(function (c, i) {
       rows.push([String(i + 1), n2(c, 4), Kit.num(r.factors[i], 6), n2(r.pv[i], 4)]);
     });
     if (r.state === "refused") {
       rows.push([]);
-      rows.push(["REFUSED", r.line]);
+      rows.push([T("an-csv-refused", "REFUSED"), r.line]);
       rows.push(["", r.why]);
       if (r.note) rows.push(["", r.note]);
-      if (r.pvForecast !== undefined) rows.push(["Present value of the forecast years", n2(r.pvForecast, 4)]);
+      if (r.pvForecast !== undefined) rows.push([T("an-v-pvf", "Present value of the forecast years"), n2(r.pvForecast, 4)]);
       return rows;
     }
     rows.push(["Terminal", n2(r.tv, 4), Kit.num(r.factors[r.n - 1], 6), n2(r.pvTerminal, 4)]);
@@ -1514,10 +1545,10 @@ var Kit = (function () {
       r.share === null ? "not available" : n2(r.share * 100, 2)]);
     rows.push([]);
     rows.push(["Notes"]);
-    rows.push(["", "Cash flows are in one unit of the reader's choosing, the same unit throughout."]);
-    rows.push(["", "Present value of year t is the cash flow divided by one plus the cost of capital to the power t."]);
-    rows.push(["", "Terminal value is the last forecast cash flow grown once, divided by the cost of capital less growth."]);
-    rows.push(["", "This is arithmetic on figures entered by the reader. It is not a valuation."]);
+    rows.push(["", T("an-v-csv-n1", "Cash flows are in one unit of the reader's choosing, the same unit throughout.")]);
+    rows.push(["", T("an-v-csv-n2", "Present value of year t is the cash flow divided by one plus the cost of capital to the power t.")]);
+    rows.push(["", T("an-v-csv-n3", "Terminal value is the last forecast cash flow grown once, divided by the cost of capital less growth.")]);
+    rows.push(["", T("an-v-csv-n4", "This is arithmetic on figures entered by the reader. It is not a valuation.")]);
     return rows;
   }
 
@@ -1528,7 +1559,11 @@ var Kit = (function () {
      each assumption is answered by inversion.
      ========================================================= */
 
-  var KINDS = [["count", "count"], ["share", "share"], ["value", "value"]];
+  function KINDS() {
+    return [["count", T("an-m-kind-count", "count")],
+            ["share", T("an-m-kind-share", "share")],
+            ["value", T("an-m-kind-value", "value")]];
+  }
 
   function mkAssum(name, val, kind) { return { id: nid(), name: name, val: val, kind: kind || "count" }; }
   function mkSeg(name, drivers) { return { id: nid(), name: name, d: drivers || [] }; }
@@ -1552,11 +1587,12 @@ var Kit = (function () {
   }
 
   function inversionVerdict(a, implied) {
-    if (!isFinite(implied)) return { ok: false, why: "implied value is not a number" };
+    if (!isFinite(implied)) return { ok: false, why: T("an-m-nan", "implied value is not a number") };
     if (a.kind === "share" && implied > 1) {
-      return { ok: false, why: "implied share of " + Kit.num(implied * 100, 1) + " per cent exceeds 100 per cent" };
+      return { ok: false, why: T("an-m-over", "implied share of {p} per cent exceeds 100 per cent",
+        { p: Kit.num(implied * 100, 1) }) };
     }
-    if (implied < 0) return { ok: false, why: "implied value is negative" };
+    if (implied < 0) return { ok: false, why: T("an-m-neg", "implied value is negative") };
     return { ok: true };
   }
 
@@ -1572,16 +1608,18 @@ var Kit = (function () {
     r.state = "ok";
     r.ratio = td > 0 ? bu / td : null;
 
-    var gTd = { title: "Top down, every factor shares the same multiple", note: null, rows: [] };
+    var gTd = { title: T("an-m-td-same", "Top down, every factor shares the same multiple"), note: null, rows: [] };
     if (td > 0) {
-      gTd.title = "Top down, every factor shares the multiple " + Kit.num(bu / td, 4);
+      gTd.title = T("an-m-td-mult", "Top down, every factor shares the multiple {m}", { m: Kit.num(bu / td, 4) });
     } else {
-      gTd.note = "The top down total is zero, so no factor can be scaled to close the gap.";
+      gTd.note = T("an-m-td-zero", "The top down total is zero, so no factor can be scaled to close the gap.");
     }
     S.m.td.forEach(function (a) {
       var v = a.val === null ? 0 : a.val;
-      if (td === 0) { gTd.rows.push({ a: a, val: v, no: "the top down total is zero, so no factor can scale it" }); return; }
-      if (v === 0) { gTd.rows.push({ a: a, val: v, no: "a factor pinned at zero cannot be scaled to close a gap" }); return; }
+      if (td === 0) { gTd.rows.push({ a: a, val: v,
+        no: T("an-m-td-zero-row", "the top down total is zero, so no factor can scale it") }); return; }
+      if (v === 0) { gTd.rows.push({ a: a, val: v,
+        no: T("an-m-pin-zero", "a factor pinned at zero cannot be scaled to close a gap") }); return; }
       var implied = v * (bu / td);
       var ver = inversionVerdict(a, implied);
       gTd.rows.push({ a: a, val: v, implied: ver.ok ? implied : null, no: ver.ok ? null : ver.why });
@@ -1592,19 +1630,21 @@ var Kit = (function () {
       var sv = segValue(seg);
       var rest = S.m.bu.reduce(function (s, o) { return s + (o === seg ? 0 : segValue(o)); }, 0);
       var required = td - rest;
-      var g = { title: "Bottom up, " + (seg.name || "unnamed segment"), note: null, rows: [] };
+      var g = { title: T("an-m-bu-title", "Bottom up, {name}",
+        { name: seg.name || T("an-m-unnamed", "unnamed segment") }), note: null, rows: [] };
       if (!seg.d.length) {
-        g.note = "This segment has no drivers, so there is nothing to solve for in it.";
+        g.note = T("an-m-nodrivers", "This segment has no drivers, so there is nothing to solve for in it.");
       } else if (sv === 0) {
-        g.note = "This segment is worth zero, so scaling any of its drivers cannot move the total.";
+        g.note = T("an-m-segzero", "This segment is worth zero, so scaling any of its drivers cannot move the total.");
       } else if (required < 0) {
-        g.note = "The other segments alone come to " + short(rest) + unitLabel()
-               + ", already above the top down total of " + short(td) + unitLabel()
-               + ". No value of any driver in this segment closes the gap.";
+        g.note = T("an-m-infeasible-note",
+          "The other segments alone come to {rest}, already above the top down total of {td}. No value of any "
+          + "driver in this segment closes the gap.",
+          { rest: short(rest) + unitLabel(), td: short(td) + unitLabel() });
       }
       seg.d.forEach(function (d) {
         var v = d.val === null ? 0 : d.val;
-        if (sv === 0 || required < 0) { g.rows.push({ a: d, val: v, no: "infeasible" }); return; }
+        if (sv === 0 || required < 0) { g.rows.push({ a: d, val: v, no: T("an-m-infeasible", "infeasible"), bare: true }); return; }
         var implied = v * (required / sv);
         var ver = inversionVerdict(d, implied);
         g.rows.push({ a: d, val: v, implied: ver.ok ? implied : null, no: ver.ok ? null : ver.why });
@@ -1614,13 +1654,16 @@ var Kit = (function () {
     return r;
   }
 
-  function assumRow(a, onChange, onRemove, labelPrefix) {
+  function assumRow(a, onChange, onRemove, kind) {
+    var gen = kind === "factor" ? T("an-m-factor", "Factor") : T("an-m-driver", "Driver");
+    var nom = kind === "factor" ? T("an-m-factor-nom", "Factor") : T("an-m-driver-nom", "Driver");
     return E("div", { class: "ad-grid ad-grid-wide" }, [
-      textField("m-n-" + a.id, labelPrefix + " name", null, a.name, function (v) { a.name = v; onChange(); }),
-      numField("m-v-" + a.id, "Value", null, a.val, function (v) { a.val = v; onChange(); }),
-      selField("m-k-" + a.id, "Kind", null, KINDS, a.kind, function (v) { a.kind = v; onChange(); }),
+      textField("m-n-" + a.id, T("an-m-name", "{p} name", { p: gen }), null, a.name,
+        function (v) { a.name = v; onChange(); }),
+      numField("m-v-" + a.id, T("an-m-value", "Value"), null, a.val, function (v) { a.val = v; onChange(); }),
+      selField("m-k-" + a.id, T("an-m-kind", "Kind"), null, KINDS(), a.kind, function (v) { a.kind = v; onChange(); }),
       E("div", { class: "k-field" }, [
-        removeBtn(labelPrefix + " " + (a.name || ""), onRemove)
+        removeBtn(nom + " " + (a.name || ""), onRemove)
       ])
     ]);
   }
@@ -1629,48 +1672,48 @@ var Kit = (function () {
     var tdHost = C(Q("#m-td"));
     if (!S.m.td.length) {
       tdHost.appendChild(E("p", { class: "ad-empty", text:
-        "No top down factors yet. A top down sizing is a universe multiplied by the factors that narrow it." }));
+        T("an-m-notd", "No top down factors yet. A top down sizing is a universe multiplied by the factors that narrow it.") }));
     }
     S.m.td.forEach(function (a, i) {
       tdHost.appendChild(E("div", { class: "ad-item" }, [
-        E("div", { class: "ad-item-top" }, [ E("span", { class: "ad-item-n", text: "Factor " + (i + 1) }) ]),
+        E("div", { class: "ad-item-top" }, [ E("span", { class: "ad-item-n", text: T("an-m-factor-n", "Factor {n}", { n: i + 1 }) }) ]),
         assumRow(a, function () { mRender(); write(); }, function () {
           S.m.td = S.m.td.filter(function (x) { return x.id !== a.id; });
           mBuild(); mRender(); write();
           var b = Q("#b-m-addf"); if (b) b.focus();
-        }, "Factor")
+        }, "factor")
       ]));
     });
 
     var buHost = C(Q("#m-bu"));
     if (!S.m.bu.length) {
       buHost.appendChild(E("p", { class: "ad-empty", text:
-        "No segments yet. A bottom up sizing is a sum of segments, each one a product of its own drivers." }));
+        T("an-m-nobu", "No segments yet. A bottom up sizing is a sum of segments, each one a product of its own drivers.") }));
     }
     S.m.bu.forEach(function (seg, si) {
       var box = E("div", { class: "ad-item" });
       box.appendChild(E("div", { class: "ad-item-top" }, [
-        E("span", { class: "ad-item-n", text: "Segment " + (si + 1) }),
-        removeBtn("segment " + (si + 1), function () {
+        E("span", { class: "ad-item-n", text: T("an-m-segment-n", "Segment {n}", { n: si + 1 }) }),
+        removeBtn(T("an-m-segment-a", "segment {n}", { n: si + 1 }), function () {
           S.m.bu = S.m.bu.filter(function (x) { return x.id !== seg.id; });
           mBuild(); mRender(); write();
           var b = Q("#b-m-addseg"); if (b) b.focus();
         })
       ]));
       box.appendChild(E("div", { class: "ad-grid" }, [
-        textField("m-sn-" + seg.id, "Segment name", null, seg.name, function (v) { seg.name = v; mRender(); write(); })
+        textField("m-sn-" + seg.id, T("an-m-segname", "Segment name"), null, seg.name, function (v) { seg.name = v; mRender(); write(); })
       ]));
       seg.d.forEach(function (d) {
         box.appendChild(E("div", { style: "margin-top:0.55rem" }, [
           assumRow(d, function () { mRender(); write(); }, function () {
             seg.d = seg.d.filter(function (x) { return x.id !== d.id; });
             mBuild(); mRender(); write();
-          }, "Driver")
+          }, "driver")
         ]));
       });
       box.appendChild(E("div", { class: "k-btnbar", style: "margin-top:0.7rem" }, [
-        E("button", { type: "button", class: "k-btn k-btn-quiet", text: "Add driver",
-          "aria-label": "Add driver to segment " + (si + 1),
+        E("button", { type: "button", class: "k-btn k-btn-quiet", text: T("an-m-adddriver", "Add driver"),
+          "aria-label": T("an-m-adddriver-a", "Add driver to segment {n}", { n: si + 1 }),
           onclick: function () {
             seg.d.push(mkAssum("", null, "count"));
             mBuild(); mRender(); write();
@@ -1691,62 +1734,62 @@ var Kit = (function () {
 
     if (r.state === "empty") {
       host.appendChild(E("p", { class: "ad-empty", text:
-        "Nothing to reconcile. Enter a top down chain and at least one bottom up segment, or load the example." }));
+        T("an-m-empty", "Nothing to reconcile. Enter a top down chain and at least one bottom up segment, or load the example.") }));
       return;
     }
     if (r.state === "half") {
       host.appendChild(E("p", { class: "ad-empty", text:
-        "One sizing is present and the other is not. A single sizing is not evidence, and the gap is the finding, "
-        + "so this instrument prints nothing until both sides exist." }));
+        T("an-m-half", "One sizing is present and the other is not. A single sizing is not evidence, and the gap "
+          + "is the finding, so this instrument prints nothing until both sides exist.") }));
       return;
     }
 
     var pct = r.td > 0 ? (r.bu / r.td - 1) : null;
     var grid = E("div", { class: "k-grid" }, [
       panel(null, [
-        E("p", { class: "k-panel-h", text: "Top down" }),
+        E("p", { class: "k-panel-h", text: T("an-m-td-h", "Top down") }),
         E("div", { class: "k-stat" }, [
           E("span", { class: "k-big", text: short(r.td) }),
           E("span", { class: "k-unit", text: S.m.unit || "" })
         ])
       ]),
       panel(null, [
-        E("p", { class: "k-panel-h", text: "Bottom up" }),
+        E("p", { class: "k-panel-h", text: T("an-m-bu-h", "Bottom up") }),
         E("div", { class: "k-stat" }, [
           E("span", { class: "k-big", text: short(r.bu) }),
           E("span", { class: "k-unit", text: S.m.unit || "" })
         ])
       ]),
       panel(null, [
-        E("p", { class: "k-panel-h", text: "Gap, bottom up less top down" }),
+        E("p", { class: "k-panel-h", text: T("an-m-gap-h", "Gap, bottom up less top down") }),
         E("div", { class: "k-stat" }, [
           E("span", { class: "k-big ad-flagnum", text: (r.gap >= 0 ? "+" : "") + short(r.gap) }),
           E("span", { class: "k-unit", text: S.m.unit || "" })
         ]),
         E("p", { class: "k-note", style: "margin-top:0.5rem", text: pct === null
-          ? "The top down total is zero, so the gap cannot be expressed as a share of it."
-          : Kit.num(pct * 100, 1) + " per cent of the top down total." })
+          ? T("an-m-gap-zero", "The top down total is zero, so the gap cannot be expressed as a share of it.")
+          : T("an-m-gap-pct", "{p} per cent of the top down total.", { p: Kit.num(pct * 100, 1) }) })
       ])
     ]);
     host.appendChild(grid);
 
-    host.appendChild(panel("What each assumption would have to become for the two sizings to agree", [
+    host.appendChild(panel(T("an-m-inv-h", "What each assumption would have to become for the two sizings to agree"), [
       mInvTable(r),
       E("p", { class: "k-note", style: "margin-top:0.9rem", text:
-        "There is no third number here. No average, no midpoint, no recommendation about which sizing to believe. "
-        + "Every top down factor shares the same multiple, because top down is one product and it does not matter "
-        + "which factor absorbs the correction. A bottom up driver's multiple differs in every segment, because "
-        + "the other segments are held where they are." })
+        T("an-m-inv-note", "There is no third number here. No average, no midpoint, no recommendation about which "
+          + "sizing to believe. Every top down factor shares the same multiple, because top down is one product "
+          + "and it does not matter which factor absorbs the correction. A bottom up driver's multiple differs in "
+          + "every segment, because the other segments are held where they are.") })
     ]));
   }
 
   function mInvTable(r) {
     var t = E("table", { class: "k-table" });
     t.appendChild(E("thead", {}, [ E("tr", {}, [
-      E("th", { scope: "col", text: "Assumption" }),
-      E("th", { scope: "col", class: "k-n", text: "Now" }),
-      E("th", { scope: "col", class: "k-n", text: "Would have to be" }),
-      E("th", { scope: "col", class: "k-n", text: "Multiple" })
+      E("th", { scope: "col", text: T("an-m-t-assum", "Assumption") }),
+      E("th", { scope: "col", class: "k-n", text: T("an-m-t-now", "Now") }),
+      E("th", { scope: "col", class: "k-n", text: T("an-m-t-would", "Would have to be") }),
+      E("th", { scope: "col", class: "k-n", text: T("an-m-t-mult", "Multiple") })
     ]) ]));
     var tb = E("tbody");
     r.groups.forEach(function (g) {
@@ -1759,17 +1802,17 @@ var Kit = (function () {
         tb.appendChild(tr2);
       }
       if (!g.rows.length) {
-        tb.appendChild(E("tr", {}, [ E("td", { colspan: "4", class: "k-src-cell", text: "No assumptions in this group." }) ]));
+        tb.appendChild(E("tr", {}, [ E("td", { colspan: "4", class: "k-src-cell", text: T("an-m-nogroup", "No assumptions in this group.") }) ]));
       }
       g.rows.forEach(function (row) {
         var tr3 = E("tr");
-        tr3.appendChild(E("td", { text: row.a.name || "unnamed" }));
+        tr3.appendChild(E("td", { text: row.a.name || T("an-m-unnamed-a", "unnamed") }));
         tr3.appendChild(E("td", { class: "k-n", text: fmtAssum(row.a, row.val) }));
         if (row.no) {
-          tr3.appendChild(E("td", { class: "k-n ad-no", text: "impossible" }));
-          tr3.appendChild(E("td", { class: "k-n ad-no", text: "none" }));
+          tr3.appendChild(E("td", { class: "k-n ad-no", text: T("an-m-infeasible", "impossible") }));
+          tr3.appendChild(E("td", { class: "k-n ad-no", text: T("an-m-none", "none") }));
           tb.appendChild(tr3);
-          if (row.no !== "infeasible") {
+          if (!row.bare) {
             var tr4 = E("tr");
             tr4.appendChild(E("td", { text: "" }));
             tr4.appendChild(E("td", { colspan: "3", class: "k-src-cell ad-no", text: row.no }));
@@ -1777,7 +1820,7 @@ var Kit = (function () {
           }
         } else {
           tr3.appendChild(E("td", { class: "k-n", text: fmtAssum(row.a, row.implied) }));
-          tr3.appendChild(E("td", { class: "k-n", text: row.val === 0 ? "not defined"
+          tr3.appendChild(E("td", { class: "k-n", text: row.val === 0 ? T("an-m-notdef", "not defined")
             : Kit.num(row.implied / row.val, 4) }));
           tb.appendChild(tr3);
         }
@@ -1790,41 +1833,43 @@ var Kit = (function () {
   function mCsv() {
     var r = lastM || mCompute();
     var rows = [];
-    rows.push(["Analyst Desk", "Market size"]);
-    rows.push(["Money label", S.m.unit || "none given"]);
+    rows.push([T("an-csv-desk", "Analyst Desk"), T("an-csv-m", "Market size")]);
+    rows.push([T("an-m-moneylabel", "Money label"), S.m.unit || T("an-m-none", "none given")]);
     rows.push([]);
     if (r.state !== "ok") {
-      rows.push(["Nothing reconciled. Both a top down chain and at least one bottom up segment are needed."]);
+      rows.push([T("an-csv-m-nothing", "Nothing reconciled. Both a top down chain and at least one bottom up segment are needed.")]);
       return rows;
     }
-    rows.push(["Top down total", n2(r.td, 2)]);
-    rows.push(["Bottom up total", n2(r.bu, 2)]);
-    rows.push(["Gap, bottom up less top down", n2(r.gap, 2)]);
-    rows.push(["Gap as a share of the top down total, per cent",
-      r.td > 0 ? n2((r.bu / r.td - 1) * 100, 2) : "not defined"]);
+    rows.push([T("an-m-csv-td", "Top down total"), n2(r.td, 2)]);
+    rows.push([T("an-m-csv-bu", "Bottom up total"), n2(r.bu, 2)]);
+    rows.push([T("an-m-csv-gap", "Gap, bottom up less top down"), n2(r.gap, 2)]);
+    rows.push([T("an-m-csv-gappct", "Gap as a share of the top down total, per cent"),
+      r.td > 0 ? n2((r.bu / r.td - 1) * 100, 2) : T("an-m-notdef", "not defined")]);
     rows.push([]);
-    rows.push(["Group", "Assumption", "Kind", "Now", "Would have to be", "Multiple", "Status"]);
+    rows.push([T("an-m-t-group", "Group"), T("an-m-t-assum", "Assumption"), T("an-m-kind", "Kind"),
+      T("an-m-t-now", "Now"), T("an-m-t-would", "Would have to be"), T("an-m-t-mult", "Multiple"),
+      T("an-m-t-status", "Status")]);
     r.groups.forEach(function (g) {
       if (g.note) rows.push([g.title, "", "", "", "", "", g.note]);
       g.rows.forEach(function (row) {
         rows.push([
           g.title,
-          row.a.name || "unnamed",
+          row.a.name || T("an-m-unnamed-a", "unnamed"),
           row.a.kind,
           n2(row.val, 4),
           row.no ? "" : n2(row.implied, 4),
-          row.no ? "" : (row.val === 0 ? "not defined" : n2(row.implied / row.val, 4)),
-          row.no ? ("impossible: " + row.no) : "solvable"
+          row.no ? "" : (row.val === 0 ? T("an-m-notdef", "not defined") : n2(row.implied / row.val, 4)),
+          row.no ? T("an-m-imp", "impossible: {why}", { why: row.no }) : T("an-m-solvable", "solvable")
         ]);
       });
     });
     rows.push([]);
     rows.push(["Notes"]);
-    rows.push(["", "Top down is a universe multiplied by narrowing factors. Bottom up is a sum of segments, each a product of drivers."]);
-    rows.push(["", "A top down factor's implied value is its value times the ratio of the two totals."]);
-    rows.push(["", "A bottom up driver's implied value is its value times the top down total less the other segments, over this segment."]);
-    rows.push(["", "Rows marked impossible carry no implied value. No number has been substituted for them."]);
-    rows.push(["", "This file contains two sizings and their difference. It contains no market size."]);
+    rows.push(["", T("an-m-csv-n1", "Top down is a universe multiplied by narrowing factors. Bottom up is a sum of segments, each a product of drivers.")]);
+    rows.push(["", T("an-m-csv-n2", "A top down factor's implied value is its value times the ratio of the two totals.")]);
+    rows.push(["", T("an-m-csv-n3", "A bottom up driver's implied value is its value times the top down total less the other segments, over this segment.")]);
+    rows.push(["", T("an-m-csv-n4", "Rows marked impossible carry no implied value. No number has been substituted for them.")]);
+    rows.push(["", T("an-m-csv-n5", "This file contains two sizings and their difference. It contains no market size.")]);
     return rows;
   }
 
@@ -1927,23 +1972,24 @@ var Kit = (function () {
     var hHost = C(Q("#r-hires"));
     if (!S.r.hires.length) {
       hHost.appendChild(E("p", { class: "ad-empty", text:
-        "No planned hires. Add one to see what it costs in weeks of runway." }));
+        T("an-r-nohires", "No planned hires. Add one to see what it costs in weeks of runway.") }));
     }
     S.r.hires.forEach(function (h, i) {
       hHost.appendChild(E("div", { class: "ad-item" }, [
         E("div", { class: "ad-item-top" }, [
-          E("span", { class: "ad-item-n", text: "Hire " + (i + 1) }),
-          removeBtn("hire " + (i + 1), function () {
+          E("span", { class: "ad-item-n", text: T("an-r-hire-n", "Hire {n}", { n: i + 1 }) }),
+          removeBtn(T("an-r-hire-a", "hire {n}", { n: i + 1 }), function () {
             S.r.hires = S.r.hires.filter(function (x) { return x.id !== h.id; });
             rBuild(); rRender(); write();
             var b = Q("#b-r-addhire"); if (b) b.focus();
           })
         ]),
         E("div", { class: "ad-grid ad-grid-wide" }, [
-          textField("r-hn-" + h.id, "Role", null, h.name, function (v) { h.name = v; rRender(); write(); }),
-          numField("r-hs-" + h.id, "Starts in month", "1 is the first month of the plan", h.start,
+          textField("r-hn-" + h.id, T("an-r-role", "Role"), null, h.name, function (v) { h.name = v; rRender(); write(); }),
+          numField("r-hs-" + h.id, T("an-r-startmonth", "Starts in month"),
+            T("an-r-startmonth-h", "1 is the first month of the plan"), h.start,
             function (v) { h.start = v; rRender(); write(); }, { step: "1", min: "1", inputmode: "numeric" }),
-          numField("r-hc-" + h.id, "Monthly cost", null, h.cost,
+          numField("r-hc-" + h.id, T("an-r-monthlycost", "Monthly cost"), null, h.cost,
             function (v) { h.cost = v; rRender(); write(); })
         ])
       ]));
@@ -1952,25 +1998,25 @@ var Kit = (function () {
     var iHost = C(Q("#r-inc"));
     if (!S.r.inc.length) {
       iHost.appendChild(E("p", { class: "ad-empty", text:
-        "No expected income. Leave it empty and the balance is cash less burn." }));
+        T("an-r-noinc", "No expected income. Leave it empty and the balance is cash less burn.") }));
     }
     S.r.inc.forEach(function (r, i) {
       iHost.appendChild(E("div", { class: "ad-item" }, [
         E("div", { class: "ad-item-top" }, [
-          E("span", { class: "ad-item-n", text: "Income " + (i + 1) }),
-          removeBtn("income " + (i + 1), function () {
+          E("span", { class: "ad-item-n", text: T("an-r-inc-n", "Income {n}", { n: i + 1 }) }),
+          removeBtn(T("an-r-inc-a", "income {n}", { n: i + 1 }), function () {
             S.r.inc = S.r.inc.filter(function (x) { return x.id !== r.id; });
             rBuild(); rRender(); write();
             var b = Q("#b-r-addinc"); if (b) b.focus();
           })
         ]),
         E("div", { class: "ad-grid ad-grid-wide" }, [
-          textField("r-in-" + r.id, "Source", null, r.name, function (v) { r.name = v; rRender(); write(); }),
-          numField("r-is-" + r.id, "From month", null, r.start,
+          textField("r-in-" + r.id, T("an-r-source", "Source"), null, r.name, function (v) { r.name = v; rRender(); write(); }),
+          numField("r-is-" + r.id, T("an-r-frommonth", "From month"), null, r.start,
             function (v) { r.start = v; rRender(); write(); }, { step: "1", min: "1", inputmode: "numeric" }),
-          numField("r-ie-" + r.id, "To month", "empty runs to the horizon", r.end,
+          numField("r-ie-" + r.id, T("an-r-tomonth", "To month"), T("an-r-tomonth-h", "empty runs to the horizon"), r.end,
             function (v) { r.end = v; rRender(); write(); }, { step: "1", min: "1", inputmode: "numeric" }),
-          numField("r-ia-" + r.id, "Monthly amount", null, r.amt,
+          numField("r-ia-" + r.id, T("an-r-monthlyamount", "Monthly amount"), null, r.amt,
             function (v) { r.amt = v; rRender(); write(); })
         ])
       ]));
@@ -1986,14 +2032,14 @@ var Kit = (function () {
 
     if (r.state === "empty") {
       host.appendChild(E("p", { class: "ad-empty", text:
-        "Nothing to compute. Enter the cash in the bank and what leaves it every month, or load the example." }));
+        T("an-r-empty", "Nothing to compute. Enter the cash in the bank and what leaves it every month, or load the example.") }));
       return;
     }
     if (r.state === "nohorizon") {
       host.appendChild(E("div", { class: "k-warn" }, [
-        E("h3", { text: "No horizon" }),
-        E("p", { text: "This instrument computes month by month up to a horizon and not one month past it. "
-          + "Set the horizon to at least one month." })
+        E("h3", { text: T("an-r-nohorizon-h", "No horizon") }),
+        E("p", { text: T("an-r-nohorizon-p", "This instrument computes month by month up to a horizon and not "
+          + "one month past it. Set the horizon to at least one month.") })
       ]));
       return;
     }
@@ -2001,84 +2047,91 @@ var Kit = (function () {
     /* headline */
     if (r.runway === null) {
       host.appendChild(E("div", { class: "k-warn" }, [
-        E("h3", { text: "Beyond the horizon. No month named" }),
-        E("p", { text: "The balance is still " + short(r.endBal) + " at the end of month " + r.H + ", "
-          + monthLabel(r.H) + ". On these figures the money does not run out inside the horizon you set." }),
-        E("p", { text: "This tool does not extend the arithmetic past that horizon, and it will not name a month "
-          + "it has not computed. A burn plan carried further than the assumptions behind it is a guess wearing a "
-          + "date. Raise the horizon if you want to look further, and read what it prints there as arithmetic on "
-          + "your assumptions rather than as a forecast." })
+        E("h3", { text: T("an-r-beyond-h", "Beyond the horizon. No month named") }),
+        E("p", { text: T("an-r-beyond-p1",
+          "The balance is still {bal} at the end of month {n}, {m}. On these figures the money does not run out "
+          + "inside the horizon you set.",
+          { bal: short(r.endBal), n: r.H, m: monthLabel(r.H) }) }),
+        E("p", { text: T("an-r-beyond-p2", "This tool does not extend the arithmetic past that horizon, and it "
+          + "will not name a month it has not computed. A burn plan carried further than the assumptions behind "
+          + "it is a guess wearing a date. Raise the horizon if you want to look further, and read what it prints "
+          + "there as arithmetic on your assumptions rather than as a forecast.") })
       ]));
     } else {
-      var lbl = r.zeroMonth === 0 ? "already" : monthLabel(r.zeroMonth);
+      var lbl = r.zeroMonth === 0 ? T("an-r-already", "already") : monthLabel(r.zeroMonth);
       host.appendChild(panel(null, [
-        E("p", { class: "k-panel-h", text: "The money runs out in" }),
+        E("p", { class: "k-panel-h", text: T("an-r-out-h", "The money runs out in") }),
         E("div", { class: "k-stat" }, [
           E("span", { class: "k-big", text: lbl }),
-          E("span", { class: "k-unit", text: r.zeroMonth === 0 ? "the opening balance is below zero"
-            : "month " + r.zeroMonth + " of the plan" })
+          E("span", { class: "k-unit", text: r.zeroMonth === 0
+            ? T("an-r-openneg", "the opening balance is below zero")
+            : T("an-r-monthof", "month {n} of the plan", { n: r.zeroMonth }) })
         ]),
-        E("p", { style: "margin-top:0.6rem", text: "Runway is " + Kit.num(r.runway, 1) + " months, which is "
-          + Kit.num(r.runway * WEEKS_PER_MONTH, 1) + " weeks. The balance first goes below zero during "
-          + (r.zeroMonth === 0 ? "month one" : monthLabel(r.zeroMonth)) + "." })
+        E("p", { style: "margin-top:0.6rem", text: T("an-r-runway-p",
+          "Runway is {m} months, which is {w} weeks. The balance first goes below zero during {when}.",
+          { m: Kit.num(r.runway, 1), w: Kit.num(r.runway * WEEKS_PER_MONTH, 1),
+            when: r.zeroMonth === 0 ? T("an-r-month-one", "month one") : monthLabel(r.zeroMonth) }) })
       ]));
     }
 
     /* summary */
     var m1 = r.month1;
-    host.appendChild(panel("Month one", [
+    host.appendChild(panel(T("an-r-m1-h", "Month one"), [
       kv([
-        ["Cash in the bank at the start", n2(r.startCash, 2)],
-        ["Fixed monthly costs", n2(S.r.fixed === null ? 0 : S.r.fixed, 2)],
-        ["People, " + (S.r.heads === null ? 0 : S.r.heads) + " heads at "
-          + n2(S.r.perHead === null ? 0 : S.r.perHead, 2) + " each",
+        [T("an-r-cash-start", "Cash in the bank at the start"), n2(r.startCash, 2)],
+        [T("an-r-fixed", "Fixed monthly costs"), n2(S.r.fixed === null ? 0 : S.r.fixed, 2)],
+        [T("an-r-people", "People, {n} heads at {c} each",
+           { n: S.r.heads === null ? 0 : S.r.heads, c: n2(S.r.perHead === null ? 0 : S.r.perHead, 2) }),
           n2((S.r.heads === null ? 0 : S.r.heads) * (S.r.perHead === null ? 0 : S.r.perHead), 2)],
-        m1 && m1.burn !== undefined ? ["Hires already started in month one",
+        m1 && m1.burn !== undefined ? [T("an-r-hires-started", "Hires already started in month one"),
           n2(m1.burn - (S.r.fixed === null ? 0 : S.r.fixed)
             - (S.r.heads === null ? 0 : S.r.heads) * (S.r.perHead === null ? 0 : S.r.perHead), 2)] : null,
-        m1 ? ["Income in month one", n2(m1.inc, 2)] : null,
-        m1 ? ["Net movement in month one", n2(m1.net, 2), true] : null
+        m1 ? [T("an-r-inc-m1", "Income in month one"), n2(m1.inc, 2)] : null,
+        m1 ? [T("an-r-net-m1", "Net movement in month one"), n2(m1.net, 2), true] : null
       ])
     ]));
 
     /* chart */
-    var chartBox = panel("Balance to the end of month " + r.H, []);
+    var chartBox = panel(T("an-r-balto", "Balance to the end of month {n}", { n: r.H }), []);
     var chartHost = E("div", { class: "ad-chart", id: "r-chart" });
     chartBox.appendChild(chartHost);
     chartBox.appendChild(E("p", { class: "k-note", style: "margin-top:0.7rem", text:
-      "Closing balance at the end of each month, from month one to month " + r.H + ". The line stops at the "
-      + "horizon because the arithmetic stops there." }));
+      T("an-r-chart-h", "Closing balance at the end of each month, from month one to month {n}", { n: r.H })
+      + T("an-r-chart-note", ". The line stops at the horizon because the arithmetic stops there.") }));
     host.appendChild(chartBox);
     drawRunway(chartHost, r);
 
     /* weeks per hire */
     var hireRows = r.hireCost.map(function (o, i) {
-      var name = o.h.name || ("Hire " + (i + 1));
+      var name = o.h.name || T("an-r-hire-n", "Hire {n}", { n: i + 1 });
       var start = o.h.start === null ? 1 : o.h.start;
       var cost = o.h.cost === null ? 0 : o.h.cost;
+      var startLbl = T("an-r-monthn", "month {n}", { n: start });
       if (o.state === "ok") {
-        return [name, "month " + start, n2(cost, 2), Kit.num(o.weeks, 1) + " weeks",
-          Kit.num(o.months, 2) + " months"];
+        return [name, startLbl, n2(cost, 2),
+          T("an-r-weeks", "{n} weeks", { n: Kit.num(o.weeks, 1) }),
+          T("an-r-months", "{n} months", { n: Kit.num(o.months, 2) })];
       }
       if (o.state === "both beyond" || o.state === "without beyond") {
-        return [name, "month " + start, n2(cost, 2),
-          bad("not measurable inside " + r.H + " months"),
-          bad("the balance survives the horizon with and without this hire")];
+        return [name, startLbl, n2(cost, 2),
+          bad(T("an-r-notmeasurable", "not measurable inside {n} months", { n: r.H })),
+          bad(T("an-r-survives", "the balance survives the horizon with and without this hire"))];
       }
-      return [name, "month " + start, n2(cost, 2),
-        bad("more than the horizon"),
-        bad("without this hire the money lasts past month " + r.H)];
+      return [name, startLbl, n2(cost, 2),
+        bad(T("an-r-morethan", "more than the horizon")),
+        bad(T("an-r-without", "without this hire the money lasts past month {n}", { n: r.H }))];
     });
 
-    host.appendChild(panel("What each planned hire costs in runway", [
-      tableOf([["Hire", false], ["Starts", false], ["Monthly cost", true],
-               ["Runway it costs", true], ["In months", true]], hireRows,
-        "No planned hires yet, so there is nothing to price."),
+    host.appendChild(panel(T("an-r-cost-h", "What each planned hire costs in runway"), [
+      tableOf([[T("an-r-t-hire", "Hire"), false], [T("an-r-t-starts", "Starts"), false],
+               [T("an-r-monthlycost", "Monthly cost"), true],
+               [T("an-r-t-costs", "Runway it costs"), true], [T("an-r-t-inmonths", "In months"), true]], hireRows,
+        T("an-r-nohires-price", "No planned hires yet, so there is nothing to price.")),
       E("p", { class: "k-note", style: "margin-top:0.9rem", text:
-        "Each line is the runway without that hire less the runway with it, holding every other figure still. "
-        + "One month is taken as 52 over 12 weeks, which is " + Kit.num(WEEKS_PER_MONTH, 4) + " weeks. Where the "
-        + "money lasts past the horizon in either case the difference is not measurable, and the tool says so "
-        + "rather than printing a number it has not computed." })
+        T("an-r-cost-note", "Each line is the runway without that hire less the runway with it, holding every "
+          + "other figure still. One month is taken as 52 over 12 weeks, which is {w} weeks. Where the money "
+          + "lasts past the horizon in either case the difference is not measurable, and the tool says so rather "
+          + "than printing a number it has not computed.", { w: Kit.num(WEEKS_PER_MONTH, 4) }) })
     ]));
 
     /* table */
@@ -2086,13 +2139,15 @@ var Kit = (function () {
       return [String(mm.m), monthLabel(mm.m), n2(mm.inc, 2), n2(mm.burn, 2), n2(mm.net, 2),
         mm.bal < 0 ? bad(n2(mm.bal, 2)) : n2(mm.bal, 2)];
     });
-    host.appendChild(panel("Month by month", [
-      tableOf([["Month", false], ["Calendar", false], ["Income", true], ["Burn", true],
-               ["Net", true], ["Closing balance", true]], rows, ""),
+    host.appendChild(panel(T("an-r-mbm", "Month by month"), [
+      tableOf([[T("an-r-t-month", "Month"), false], [T("an-040", "Calendar"), false],
+               [T("an-r-t-inc", "Income"), true], [T("an-r-t-burn", "Burn"), true],
+               [T("an-r-t-net", "Net"), true], [T("an-r-t-close", "Closing balance"), true]], rows, ""),
       E("p", { class: "k-note", style: "margin-top:0.9rem", text:
-        "Burn in a month is the fixed costs plus the cost per head times the heads on the payroll that month, "
-        + "counting every planned hire whose start month has arrived. The closing balance is the previous closing "
-        + "balance plus income less burn. Nothing is smoothed and nothing is annualised." })
+        T("an-r-method", "Burn in a month is the fixed costs plus the cost per head times the heads on the "
+          + "payroll that month, counting every planned hire whose start month has arrived. The closing balance "
+          + "is the previous closing balance plus income less burn. Nothing is smoothed and nothing is "
+          + "annualised.") })
     ]));
   }
 
@@ -2125,10 +2180,12 @@ var Kit = (function () {
 
     var svg = s("svg", {
       width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img",
-      "aria-label": "Closing balance from month one to month " + N + ". Opening balance " + short(ser[0])
-        + ". Balance at the horizon " + short(ser[N]) + "."
-        + (r.runway === null ? " The balance stays above zero to the horizon."
-          : " The balance goes below zero in month " + r.zeroMonth + ".")
+      "aria-label": T("an-r-chart-a",
+        "Closing balance from month one to month {n}. Opening balance {open}. Balance at the horizon {end}.{tail}",
+        { n: N, open: short(ser[0]), end: short(ser[N]),
+          tail: r.runway === null
+            ? T("an-r-chart-a-ok", " The balance stays above zero to the horizon.")
+            : T("an-r-chart-a-neg", " The balance goes below zero in month {n}.", { n: r.zeroMonth }) })
     });
 
     /* axes */
@@ -2169,7 +2226,7 @@ var Kit = (function () {
       if (xc > padL + iw * 0.62) { lx = xc - 6; anchor = "end"; }
       svg.appendChild(s("text", { x: lx, y: padT + 11, "text-anchor": anchor, fill: "var(--flag)",
         "font-size": W < 480 ? 9 : 10, "font-family": "var(--mono)" },
-        r.zeroMonth === 0 ? "already below zero" : monthLabel(r.zeroMonth)));
+        r.zeroMonth === 0 ? T("an-r-alreadyneg", "already below zero") : monthLabel(r.zeroMonth)));
     }
 
     /* month ticks */
@@ -2184,7 +2241,7 @@ var Kit = (function () {
         "font-size": W < 480 ? 9 : 10, "font-family": "var(--mono)" }, m === 0 ? "start" : String(m)));
     });
     svg.appendChild(s("text", { x: padL + iw / 2, y: H - 3, "text-anchor": "middle", fill: "var(--faint)",
-      "font-size": W < 480 ? 9 : 10, "font-family": "var(--mono)" }, "months from the start of the plan"));
+      "font-size": W < 480 ? 9 : 10, "font-family": "var(--mono)" }, T("an-r-xaxis", "months from the start of the plan")));
 
     host.appendChild(svg);
   }
@@ -2192,45 +2249,55 @@ var Kit = (function () {
   function rCsv() {
     var r = lastR || rCompute();
     var rows = [];
-    rows.push(["Analyst Desk", "Runway"]);
-    rows.push(["Cash in the bank", S.r.cash === null ? "not entered" : n2(S.r.cash, 2)]);
-    rows.push(["Fixed monthly costs", S.r.fixed === null ? "not entered" : n2(S.r.fixed, 2)]);
-    rows.push(["Monthly cost per head", S.r.perHead === null ? "not entered" : n2(S.r.perHead, 2)]);
-    rows.push(["Heads today", S.r.heads === null ? "not entered" : String(S.r.heads)]);
-    rows.push(["First month of the plan", MONTH_NAMES[S.r.m0] + " " + S.r.y0]);
-    rows.push(["Horizon, months", String(S.r.h)]);
+    var NE = T("an-csv-notentered", "not entered");
+    rows.push([T("an-csv-desk", "Analyst Desk"), T("an-csv-r", "Runway")]);
+    rows.push([T("an-035", "Cash in the bank"), S.r.cash === null ? NE : n2(S.r.cash, 2)]);
+    rows.push([T("an-036", "Fixed monthly costs"), S.r.fixed === null ? NE : n2(S.r.fixed, 2)]);
+    rows.push([T("an-037", "Monthly cost per head"), S.r.perHead === null ? NE : n2(S.r.perHead, 2)]);
+    rows.push([T("an-038", "Heads today"), S.r.heads === null ? NE : String(S.r.heads)]);
+    rows.push([T("an-039", "First month of the plan"), monthName(S.r.m0) + " " + S.r.y0]);
+    rows.push([T("an-041", "Horizon, months"), String(S.r.h)]);
     rows.push([]);
-    if (r.state !== "ok") { rows.push(["Nothing computed."]); return rows; }
-    rows.push(["Runway, months", r.runway === null ? "beyond the horizon of " + r.H + " months" : n2(r.runway, 2)]);
-    rows.push(["Runway, weeks", r.runway === null ? "beyond the horizon of " + r.H + " months"
+    if (r.state !== "ok") { rows.push([T("an-csv-v-nothing", "Nothing computed.")]); return rows; }
+    var BEY = T("an-r-csv-beyond", "beyond the horizon of {n}",
+      { n: T("an-r-months", "{n} months", { n: r.H }) });
+    rows.push([T("an-r-csv-runwaym", "Runway, months"), r.runway === null ? BEY : n2(r.runway, 2)]);
+    rows.push([T("an-r-csv-runwayw", "Runway, weeks"), r.runway === null ? BEY
       : n2(r.runway * WEEKS_PER_MONTH, 1)]);
-    rows.push(["Month the money runs out", r.runway === null ? "not inside the horizon"
-      : (r.zeroMonth === 0 ? "the opening balance is already below zero" : monthLabel(r.zeroMonth))]);
+    rows.push([T("an-r-csv-zero", "Month the money runs out"),
+      r.runway === null ? T("an-r-csv-notinside", "not inside the horizon")
+      : (r.zeroMonth === 0 ? T("an-r-csv-openneg", "the opening balance is already below zero")
+                           : monthLabel(r.zeroMonth))]);
     rows.push([]);
-    rows.push(["Month", "Calendar", "Heads", "Income", "Burn", "Net", "Closing balance"]);
+    rows.push([T("an-r-t-month", "Month"), T("an-040", "Calendar"), T("an-r-t-heads", "Heads"),
+      T("an-r-t-inc", "Income"), T("an-r-t-burn", "Burn"), T("an-r-t-net", "Net"),
+      T("an-r-t-close", "Closing balance")]);
     r.series.months.forEach(function (mm) {
       rows.push([String(mm.m), monthLabel(mm.m), String(mm.heads), n2(mm.inc, 2), n2(mm.burn, 2),
         n2(mm.net, 2), n2(mm.bal, 2)]);
     });
     rows.push([]);
-    rows.push(["Hire", "Starts in month", "Monthly cost", "Runway it costs, weeks", "Runway it costs, months"]);
+    rows.push([T("an-r-t-hire", "Hire"), T("an-r-startmonth", "Starts in month"),
+      T("an-r-monthlycost", "Monthly cost"), T("an-r-csv-costw", "Runway it costs, weeks"),
+      T("an-r-csv-costm", "Runway it costs, months")]);
     r.hireCost.forEach(function (o, i) {
-      var name = o.h.name || ("Hire " + (i + 1));
+      var name = o.h.name || T("an-r-hire-n", "Hire {n}", { n: i + 1 });
       if (o.state === "ok") {
         rows.push([name, String(o.h.start === null ? 1 : o.h.start), n2(o.h.cost === null ? 0 : o.h.cost, 2),
           n2(o.weeks, 2), n2(o.months, 3)]);
       } else {
         rows.push([name, String(o.h.start === null ? 1 : o.h.start), n2(o.h.cost === null ? 0 : o.h.cost, 2),
-          "not measurable inside " + r.H + " months", "not measurable inside " + r.H + " months"]);
+          T("an-r-notmeasurable", "not measurable inside {n} months", { n: r.H }),
+          T("an-r-notmeasurable", "not measurable inside {n} months", { n: r.H })]);
       }
     });
     rows.push([]);
     rows.push(["Notes"]);
-    rows.push(["", "Burn is fixed costs plus cost per head times heads, counting planned hires from their start month."]);
-    rows.push(["", "Closing balance is the previous closing balance plus income less burn."]);
-    rows.push(["", "Runway is fractional: the whole months survived plus the share of the crossing month the balance covers."]);
-    rows.push(["", "One month is taken as 52 over 12 weeks."]);
-    rows.push(["", "Nothing in this file is computed past month " + S.r.h + ", the horizon set by the reader."]);
+    rows.push(["", T("an-r-csv-n1", "Burn is fixed costs plus cost per head times heads, counting planned hires from their start month.")]);
+    rows.push(["", T("an-r-csv-n2", "Closing balance is the previous closing balance plus income less burn.")]);
+    rows.push(["", T("an-r-csv-n3", "Runway is fractional: the whole months survived plus the share of the crossing month the balance covers.")]);
+    rows.push(["", T("an-r-csv-n4", "One month is taken as 52 over 12 weeks.")]);
+    rows.push(["", T("an-r-csv-n5", "Nothing in this file is computed past month {n}, the horizon set by the reader.", { n: S.r.h })]);
     return rows;
   }
 
@@ -2306,9 +2373,14 @@ var Kit = (function () {
   ];
   var UG_BY = {};
   UG_UNITS.forEach(function (u) { UG_BY[u.s] = u; });
-  function dimName(d) { return { energy: "energy", mass: "mass", ghg: "greenhouse gas mass" }[d]; }
+  function dimName(d) {
+    return { energy: T("an-u-dim-energy", "energy"), mass: T("an-u-dim-mass", "mass"),
+             ghg: T("an-u-dim-ghg", "greenhouse gas mass") }[d];
+  }
 
-  function noAnswer(fromS, toS) { return fromS + " to " + toS + " has no answer here."; }
+  function noAnswer(fromS, toS) {
+    return T("an-u-noanswer", "{from} to {to} has no answer here.", { from: fromS, to: toS });
+  }
 
   /* ---------------------------------------------------------
      The only fixed values on this page. They appear inside a
@@ -2327,32 +2399,32 @@ var Kit = (function () {
     if (from === to) return { ok: true, f: R(1n) };
     if (from === "CH4" || to === "CH4") {
       return { ok: false,
-        head: "No global warming potential was given",
+        head: T("an-u-gwp-h", "No global warming potential was given"),
         line: noAnswer(fromS, toS),
-        why: "A tonne of CH4 becomes tCO2e only through a global warming potential, and a GWP only exists inside "
-           + "a stated IPCC assessment report and time horizon. Over 100 years AR4 puts methane at 25, AR5 at 28, "
-           + "and AR6 at 27.0 for biogenic and 29.8 for fossil methane. Name the report and the horizon and this "
-           + "is one multiplication.",
-        missing: "an IPCC assessment report and a time horizon",
-        note: "unitguard refuses rather than pick one." };
+        why: T("an-u-gwp-why", "A tonne of CH4 becomes tCO2e only through a global warming potential, and a GWP "
+          + "only exists inside a stated IPCC assessment report and time horizon. Over 100 years AR4 puts methane "
+          + "at 25, AR5 at 28, and AR6 at 27.0 for biogenic and 29.8 for fossil methane. Name the report and the "
+          + "horizon and this is one multiplication."),
+        missing: T("an-u-gwp-missing", "an IPCC assessment report and a time horizon"),
+        note: T("an-u-gwp-note", "unitguard refuses rather than pick one.") };
     }
     if (from === "CO2e") {
       return { ok: false,
-        head: "No gas mix was given",
+        head: T("an-u-mix-h", "No gas mix was given"),
         line: noAnswer(fromS, toS),
-        why: "tCO2e is a unit of account, not a substance. It records how much warming a bundle of gases is held "
-           + "to cause, not how much of any single gas is present. Without the mix that produced the figure there "
-           + "is no mass of " + to + " to return.",
-        missing: "the gas mix behind the CO2e figure",
-        note: "The direction that does work is CO2 to CO2e, where the potential is 1 by definition." };
+        why: T("an-u-mix-why", "tCO2e is a unit of account, not a substance. It records how much warming a bundle "
+          + "of gases is held to cause, not how much of any single gas is present. Without the mix that produced "
+          + "the figure there is no mass of {to} to return.", { to: to }),
+        missing: T("an-u-mix-missing", "the gas mix behind the CO2e figure"),
+        note: T("an-u-mix-note", "The direction that does work is CO2 to CO2e, where the potential is 1 by definition.") };
     }
-    if (from === "C" && to === "CO2") return { ok: true, f: R(44n, 12n), note: "Exactly 44/12, the ratio of the molar masses." };
-    if (from === "CO2" && to === "C") return { ok: true, f: R(12n, 44n), note: "Exactly 12/44, the ratio of the molar masses." };
-    if (from === "CO2" && to === "CO2e") return { ok: true, f: R(1n), note: "The potential of CO2 is 1 by definition of the metric." };
-    if (from === "C" && to === "CO2e") return { ok: true, f: R(44n, 12n), note: "Carbon to CO2 at 44/12, then CO2 to CO2e at a potential of 1." };
-    return { ok: false, head: "Not defined", line: noAnswer(fromS, toS),
-      missing: "a defined route between these two species",
-      why: "unitguard has no defined route between these two species.", note: "" };
+    if (from === "C" && to === "CO2") return { ok: true, f: R(44n, 12n), note: T("an-u-note-4412", "Exactly 44/12, the ratio of the molar masses.") };
+    if (from === "CO2" && to === "C") return { ok: true, f: R(12n, 44n), note: T("an-u-note-1244", "Exactly 12/44, the ratio of the molar masses.") };
+    if (from === "CO2" && to === "CO2e") return { ok: true, f: R(1n), note: T("an-u-note-co2e", "The potential of CO2 is 1 by definition of the metric.") };
+    if (from === "C" && to === "CO2e") return { ok: true, f: R(44n, 12n), note: T("an-u-note-cco2e", "Carbon to CO2 at 44/12, then CO2 to CO2e at a potential of 1.") };
+    return { ok: false, head: T("an-u-notdef-h", "Not defined"), line: noAnswer(fromS, toS),
+      missing: T("an-u-notdef-missing", "a defined route between these two species"),
+      why: T("an-u-notdef-why", "unitguard has no defined route between these two species."), note: "" };
   }
 
   function ugConvert(qty, fromS, toS) {
@@ -2360,29 +2432,31 @@ var Kit = (function () {
     if (a.dim !== b.dim) {
       if (a.dim === "mass" && b.dim === "ghg") {
         return { ok: false,
-          head: "No gas species was given",
+          head: T("an-u-species-h", "No gas species was given"),
           line: noAnswer(fromS, toS),
-          missing: "the gas species on the input side",
-          why: fromS + " is a bare mass. " + toS + " counts one specific gas. Naming the species is the whole "
-             + "difference between the two, and a converter that guessed it would be inventing the number.",
-          note: "State the species on the input side and the conversion goes through." };
+          missing: T("an-u-species-missing", "the gas species on the input side"),
+          why: T("an-u-species-why", "{from} is a bare mass. {to} counts one specific gas. Naming the species is "
+            + "the whole difference between the two, and a converter that guessed it would be inventing the "
+            + "number.", { from: fromS, to: toS }),
+          note: T("an-u-species-note", "State the species on the input side and the conversion goes through.") };
       }
       if (a.dim === "ghg" && b.dim === "mass") {
         return { ok: false,
-          head: "The species would be discarded",
+          head: T("an-u-drop-h", "The species would be discarded"),
           line: noAnswer(fromS, toS),
-          missing: "a target unit that keeps the gas species",
-          why: "unitguard carries the gas species as part of the unit. Converting " + fromS + " to a bare " + toS
-             + " drops it, and the figure stops being an emissions figure. Keep the species in the target unit.",
+          missing: T("an-u-drop-missing", "a target unit that keeps the gas species"),
+          why: T("an-u-drop-why", "unitguard carries the gas species as part of the unit. Converting {from} to a "
+            + "bare {to} drops it, and the figure stops being an emissions figure. Keep the species in the target "
+            + "unit.", { from: fromS, to: toS }),
           note: "" };
       }
       return { ok: false,
-        head: "Different dimensions",
+        head: T("an-u-dim-h", "Different dimensions"),
         line: noAnswer(fromS, toS),
-        missing: "an energy density or an emission factor",
-        why: fromS + " measures " + dimName(a.dim) + " and " + toS + " measures " + dimName(b.dim)
-           + ". Nothing converts one into the other on its own. An energy density or an emission factor would, "
-           + "and neither was supplied.",
+        missing: T("an-u-dim-missing", "an energy density or an emission factor"),
+        why: T("an-u-dim-why", "{from} measures {dimA} and {to} measures {dimB}. Nothing converts one into the "
+          + "other on its own. An energy density or an emission factor would, and neither was supplied.",
+          { from: fromS, to: toS, dimA: dimName(a.dim), dimB: dimName(b.dim) }),
         note: "" };
     }
     if (a.dim === "ghg") {
@@ -2391,7 +2465,7 @@ var Kit = (function () {
       return { ok: true, value: rmul(qty, g.f), note: g.note || "" };
     }
     return { ok: true, value: rmul(qty, rdiv(a.sc, b.sc)),
-      note: "Scale factors are exact rationals, so this round trips without loss." };
+      note: T("an-u-scale-note", "Scale factors are exact rationals, so this round trips without loss.") };
   }
 
   var UG_EX = [
@@ -2410,11 +2484,11 @@ var Kit = (function () {
     var q = parseR(raw);
     if (q === null) {
       out.state = "nan";
-      out.head = "Not a number";
-      out.line = "“" + String(raw).trim() + "” is not a magnitude.";
-      out.why = "Type a plain decimal. Magnitudes are read as exact rationals, so 0.1 means one tenth rather than "
-              + "the binary double nearest to it.";
-      out.missing = "a plain decimal quantity";
+      out.head = T("an-u-nan-h", "Not a number");
+      out.line = T("an-u-nan-line", "\u201c{raw}\u201d is not a magnitude.", { raw: String(raw).trim() });
+      out.why = T("an-u-nan-why", "Type a plain decimal. Magnitudes are read as exact rationals, so 0.1 means one "
+        + "tenth rather than the binary double nearest to it.");
+      out.missing = T("an-u-nan-missing", "a plain decimal quantity");
       return out;
     }
     var res = ugConvert(q, S.u.from, S.u.to);
@@ -2439,30 +2513,31 @@ var Kit = (function () {
 
     if (o.state === "empty") {
       host.appendChild(E("p", { class: "ad-empty", text:
-        "Type a quantity. The instrument answers on every keystroke, and the answer is sometimes a refusal." }));
+        T("an-u-typeq", "Type a quantity. The instrument answers on every keystroke, and the answer is sometimes a refusal.") }));
       uLogRender();
       return;
     }
     if (o.state === "ok") {
       host.appendChild(E("div", { class: "k-ok" }, [
-        E("h3", { text: "Converted" }),
+        E("h3", { text: T("an-u-converted", "Converted") }),
         E("div", { class: "k-stat" }, [
           E("span", { class: "k-big", text: o.value }),
           E("span", { class: "k-unit", text: o.to })
         ]),
-        E("p", { style: "margin-top:0.6rem", text: o.qFmt + " " + o.from + " is " + o.value + " " + o.to + "." }),
+        E("p", { style: "margin-top:0.6rem", text: T("an-u-isline", "{q} {from} is {v} {to}.",
+          { q: o.qFmt, from: o.from, v: o.value, to: o.to }) }),
         o.note ? E("p", { class: "k-note", text: o.note }) : null,
-        o.tilde ? E("p", { class: "k-note", text:
+        o.tilde ? E("p", { class: "k-note", text: T("an-u-tilde",
           "The leading tilde marks a rational that does not terminate in decimal. The stored value is exact; the "
-          + "printed one is not." }) : null
+          + "printed one is not.") }) : null
       ]));
     } else {
       host.appendChild(E("div", { class: "k-warn" }, [
-        E("h3", { text: "Refused. " + o.head }),
+        E("h3", { text: T("an-u-refused", "Refused. {h}", { h: o.head }) }),
         E("p", { text: o.line }),
         E("p", { text: o.why }),
         E("ul", { class: "k-ask" }, [
-          E("li", {}, [ E("b", { text: "Missing" }), E("span", { text: o.missing }) ])
+          E("li", {}, [ E("b", { text: T("an-u-missing", "Missing") }), E("span", { text: o.missing }) ])
         ]),
         o.note ? E("p", { class: "k-note", text: o.note }) : null
       ]));
@@ -2474,9 +2549,10 @@ var Kit = (function () {
     var o = lastU || uEvaluate();
     if (o.state === "empty") return;
     uLog.unshift({
-      q: String(o.q).trim(), from: o.from, to: o.to,
-      result: o.state === "ok" ? o.value + " " + o.to : "refused",
-      status: o.state === "ok" ? "converted" : ("refused: " + o.head),
+      q: String(o.q).trim(), from: o.from, to: o.to, ok: o.state === "ok",
+      result: o.state === "ok" ? o.value + " " + o.to : T("an-u-refused-w", "refused"),
+      status: o.state === "ok" ? T("an-u-converted-w", "converted")
+                               : T("an-u-refused-s", "refused: {h}", { h: o.head }),
       missing: o.state === "ok" ? "" : o.missing
     });
     if (uLog.length > 40) uLog.length = 40;
@@ -2486,25 +2562,25 @@ var Kit = (function () {
   function uLogRender() {
     var t = C(Q("#u-log"));
     t.appendChild(E("thead", {}, [ E("tr", {}, [
-      E("th", { scope: "col", text: "Quantity" }),
-      E("th", { scope: "col", text: "From" }),
-      E("th", { scope: "col", text: "To" }),
-      E("th", { scope: "col", text: "Result" }),
-      E("th", { scope: "col", text: "Status" }),
-      E("th", { scope: "col", text: "What is missing" })
+      E("th", { scope: "col", text: T("an-u-t-qty", "Quantity") }),
+      E("th", { scope: "col", text: T("an-u-t-from", "From") }),
+      E("th", { scope: "col", text: T("an-u-t-to", "To") }),
+      E("th", { scope: "col", text: T("an-u-t-result", "Result") }),
+      E("th", { scope: "col", text: T("an-u-t-status", "Status") }),
+      E("th", { scope: "col", text: T("an-u-t-missing", "What is missing") })
     ]) ]));
     var tb = E("tbody");
     if (!uLog.length) {
       tb.appendChild(E("tr", {}, [ E("td", { colspan: "6", class: "k-src-cell",
-        text: "Nothing yet. Press Convert, or pick one of the four conversions above." }) ]));
+        text: T("an-u-nothing", "Nothing yet. Press Convert, or pick one of the four conversions above.") }) ]));
     }
     uLog.forEach(function (r) {
       tb.appendChild(E("tr", {}, [
         E("td", { class: "ad-mono", text: r.q }),
         E("td", { text: r.from }),
         E("td", { text: r.to }),
-        E("td", { class: r.result === "refused" ? "ad-no" : null, text: r.result }),
-        E("td", { class: r.status.indexOf("refused") === 0 ? "ad-no" : null, text: r.status }),
+        E("td", { class: r.ok ? null : "ad-no", text: r.result }),
+        E("td", { class: r.ok ? null : "ad-no", text: r.status }),
         E("td", { class: "k-src-cell", text: r.missing })
       ]));
     });
@@ -2513,30 +2589,32 @@ var Kit = (function () {
 
   function uCsv() {
     var rows = [];
-    rows.push(["Analyst Desk", "Unit safety"]);
-    rows.push(["Current quantity", S.u.q]);
-    rows.push(["From", S.u.from]);
-    rows.push(["To", S.u.to]);
+    rows.push([T("an-csv-desk", "Analyst Desk"), T("an-csv-u", "Unit safety")]);
+    rows.push([T("an-u-csv-current", "Current quantity"), S.u.q]);
+    rows.push([T("an-u-t-from", "From"), S.u.from]);
+    rows.push([T("an-u-t-to", "To"), S.u.to]);
     rows.push([]);
-    rows.push(["Quantity", "From", "To", "Result", "Status", "What is missing"]);
+    rows.push([T("an-u-t-qty", "Quantity"), T("an-u-t-from", "From"), T("an-u-t-to", "To"),
+      T("an-u-t-result", "Result"), T("an-u-t-status", "Status"), T("an-u-t-missing", "What is missing")]);
     if (!uLog.length) {
       var o = lastU || uEvaluate();
       if (o.state !== "empty") {
         rows.push([String(o.q).trim(), o.from, o.to,
-          o.state === "ok" ? o.value + " " + o.to : "refused",
-          o.state === "ok" ? "converted" : ("refused: " + o.head),
+          o.state === "ok" ? o.value + " " + o.to : T("an-u-refused-w", "refused"),
+          o.state === "ok" ? T("an-u-converted-w", "converted")
+                           : T("an-u-refused-s", "refused: {h}", { h: o.head }),
           o.state === "ok" ? "" : o.missing]);
       }
     }
     uLog.forEach(function (r) { rows.push([r.q, r.from, r.to, r.result, r.status, r.missing]); });
     rows.push([]);
     rows.push(["Notes"]);
-    rows.push(["", "Quantities are read as exact rationals over big integers, not as floating point."]);
-    rows.push(["", "A greenhouse gas unit carries its species. tC to tCO2 is 44/12, tCO2 to tC is 12/44, tCO2 to tCO2e is 1 by definition."]);
-    rows.push(["", "Methane to CO2e is refused: it needs an IPCC assessment report and a time horizon, and there is no single answer."]);
-    rows.push(["", "CO2e back into a single gas is refused: CO2e is a unit of account and the mix behind it is not recoverable."]);
-    rows.push(["", "A bare mass into a gas unit is refused, and a gas unit into a bare mass is refused."]);
-    rows.push(["", "Conversions across dimensions are refused."]);
+    rows.push(["", T("an-u-note-1", "Quantities are read as exact rationals over big integers, not as floating point.")]);
+    rows.push(["", T("an-u-note-2", "A greenhouse gas unit carries its species. tC to tCO2 is 44/12, tCO2 to tC is 12/44, tCO2 to tCO2e is 1 by definition.")]);
+    rows.push(["", T("an-u-note-3", "Methane to CO2e is refused: it needs an IPCC assessment report and a time horizon, and there is no single answer.")]);
+    rows.push(["", T("an-u-note-4", "CO2e back into a single gas is refused: CO2e is a unit of account and the mix behind it is not recoverable.")]);
+    rows.push(["", T("an-u-note-5", "A bare mass into a gas unit is refused, and a gas unit into a bare mass is refused.")]);
+    rows.push(["", T("an-u-note-6", "Conversions across dimensions are refused.")]);
     return rows;
   }
 
@@ -2547,37 +2625,40 @@ var Kit = (function () {
   function renderMethod() {
     var t1 = C(Q("#out-gwp"));
     t1.appendChild(E("thead", {}, [ E("tr", {}, [
-      E("th", { scope: "col", text: "Gas" }),
-      E("th", { scope: "col", class: "k-n", text: "Potential" }),
-      E("th", { scope: "col", text: "Assessment report" }),
-      E("th", { scope: "col", text: "Time horizon" }),
-      E("th", { scope: "col", text: "Applies to" })
+      E("th", { scope: "col", text: T("an-t-gas", "Gas") }),
+      E("th", { scope: "col", class: "k-n", text: T("an-t-potential", "Potential") }),
+      E("th", { scope: "col", text: T("an-t-report", "Assessment report") }),
+      E("th", { scope: "col", text: T("an-t-horizon", "Time horizon") }),
+      E("th", { scope: "col", text: T("an-t-applies", "Applies to") })
     ]) ]));
     var b1 = E("tbody");
     GWP_NAMED.forEach(function (g) {
       b1.appendChild(E("tr", {}, [
-        E("td", { text: g.gas }),
+        E("td", { text: T("an-u-methane", g.gas) }),
         E("td", { class: "k-n", text: g.value }),
         E("td", { text: g.report }),
-        E("td", { text: g.horizon }),
-        E("td", { text: g.note || "methane as a whole" })
+        E("td", { text: T("an-u-horizon-100", g.horizon) }),
+        E("td", { text: g.note === "biogenic methane" ? T("an-u-biogenic", g.note)
+                      : (g.note === "fossil methane" ? T("an-u-fossil", g.note)
+                                                     : T("an-u-methane-all", "methane as a whole")) })
       ]));
     });
     t1.appendChild(b1);
 
     var t2 = C(Q("#out-ratio"));
     t2.appendChild(E("thead", {}, [ E("tr", {}, [
-      E("th", { scope: "col", text: "Conversion" }),
-      E("th", { scope: "col", class: "k-n", text: "Factor" }),
-      E("th", { scope: "col", text: "Why it is exact" })
+      E("th", { scope: "col", text: T("an-t-conversion", "Conversion") }),
+      E("th", { scope: "col", class: "k-n", text: T("an-t-factor", "Factor") }),
+      E("th", { scope: "col", text: T("an-t-whyexact", "Why it is exact") })
     ]) ]));
     var b2 = E("tbody");
     [
-      ["tC to tCO2", "44/12", "the ratio of the molar masses"],
-      ["tCO2 to tC", "12/44", "the ratio of the molar masses"],
-      ["tCO2 to tCO2e", "1", "the potential of CO2 is 1 by definition of the metric"],
-      ["tC to tCO2e", "44/12 then 1", "carbon to CO2, then CO2 to CO2e at a potential of 1"],
-      ["kWh to J", "3 600 000", "the definition of the watt hour"]
+      ["tC to tCO2", "44/12", T("an-u-ratio-1", "the ratio of the molar masses")],
+      ["tCO2 to tC", "12/44", T("an-u-ratio-1", "the ratio of the molar masses")],
+      ["tCO2 to tCO2e", "1", T("an-u-ratio-2", "the potential of CO2 is 1 by definition of the metric")],
+      ["tC to tCO2e", T("an-u-ratio-3", "44/12 then 1"),
+        T("an-u-ratio-4", "carbon to CO2, then CO2 to CO2e at a potential of 1")],
+      ["kWh to J", "3 600 000", T("an-u-ratio-5", "the definition of the watt hour")]
     ].forEach(function (r) {
       b2.appendChild(E("tr", {}, [
         E("td", { text: r[0] }), E("td", { class: "k-n", text: r[1] }), E("td", { class: "k-src-cell", text: r[2] })
@@ -2587,39 +2668,50 @@ var Kit = (function () {
 
     var f = C(Q("#out-formulas"));
     [
-      ["Valuation", "present value of year t is the cash flow divided by one plus the cost of capital, raised to t. "
-        + "The terminal value is the last forecast cash flow grown once, divided by the cost of capital less growth, "
-        + "then discounted with the last year's factor. The share is the terminal present value over the sum of both parts."],
-      ["Market size", "top down is a universe multiplied by its factors. Bottom up is a sum of segments, each a "
-        + "product of its drivers. A top down factor's implied value is its value times the ratio of the two totals. "
-        + "A bottom up driver's implied value is its value times the top down total less the other segments, over "
-        + "this segment."],
-      ["Runway", "burn in a month is the fixed costs plus the cost per head times the heads on the payroll, counting "
-        + "planned hires from their start month. The closing balance is the previous closing balance plus income less "
-        + "burn. Runway is the whole months survived plus the share of the crossing month the balance covers. One "
-        + "month is 52 over 12 weeks."],
-      ["Unit safety", "a unit is a dimension and an exact scale to the SI coherent unit of that dimension. A "
-        + "greenhouse gas unit carries a third thing, the species it counts. A conversion is allowed when the "
-        + "dimensions match, and for gases only when a route between the two species is defined. Everything else is "
-        + "refused, and the refusal names the input that would make it possible."]
+      [T("an-f-v", "Valuation"), T("an-f-v-t",
+        "present value of year t is the cash flow divided by one plus the cost of capital, raised to t. The "
+        + "terminal value is the last forecast cash flow grown once, divided by the cost of capital less growth, "
+        + "then discounted with the last year's factor. The share is the terminal present value over the sum of "
+        + "both parts.")],
+      [T("an-f-m", "Market size"), T("an-f-m-t",
+        "top down is a universe multiplied by its factors. Bottom up is a sum of segments, each a product of its "
+        + "drivers. A top down factor's implied value is its value times the ratio of the two totals. A bottom up "
+        + "driver's implied value is its value times the top down total less the other segments, over this "
+        + "segment.")],
+      [T("an-f-r", "Runway"), T("an-f-r-t",
+        "burn in a month is the fixed costs plus the cost per head times the heads on the payroll, counting "
+        + "planned hires from their start month. The closing balance is the previous closing balance plus income "
+        + "less burn. Runway is the whole months survived plus the share of the crossing month the balance "
+        + "covers. One month is 52 over 12 weeks.")],
+      [T("an-f-u", "Unit safety"), T("an-f-u-t",
+        "a unit is a dimension and an exact scale to the SI coherent unit of that dimension. A greenhouse gas "
+        + "unit carries a third thing, the species it counts. A conversion is allowed when the dimensions match, "
+        + "and for gases only when a route between the two species is defined. Everything else is refused, and "
+        + "the refusal names the input that would make it possible.")]
     ].forEach(function (r) {
       f.appendChild(E("li", {}, [ E("b", { text: r[0] }), E("span", { text: r[1] }) ]));
     });
 
     var u = C(Q("#out-unknowns"));
     [
-      ["Your numbers", "nothing on this page checks whether the figures you typed are right. It checks only that "
-        + "the arithmetic done with them is."],
-      ["Benchmarks", "there are none here. No industry averages, no typical burn, no usual cost of capital, no "
-        + "standard attach rate. A default would be read as a fact and it would not be one."],
-      ["Emission factors", "none. The unit converter carries scale factors and molar mass ratios and nothing else. "
-        + "Where an emission factor would be needed it says so and stops."],
-      ["Global warming potentials", "the four named above are quoted so that the converter can refuse to choose "
-        + "between them. None of them is applied to any number on this page."],
-      ["Beyond the horizon", "the runway instrument computes to the month you set and no further. Where the money "
-        + "outlasts the horizon it names no month."],
-      ["Prices and currency", "the valuation prints no per share figure and no currency, and the market sizer's "
-        + "money label is a label and not a unit conversion."]
+      [T("an-k-yours", "Your numbers"), T("an-k-yours-t",
+        "nothing on this page checks whether the figures you typed are right. It checks only that the arithmetic "
+        + "done with them is.")],
+      [T("an-k-bench", "Benchmarks"), T("an-k-bench-t",
+        "there are none here. No industry averages, no typical burn, no usual cost of capital, no standard attach "
+        + "rate. A default would be read as a fact and it would not be one.")],
+      [T("an-k-ef", "Emission factors"), T("an-k-ef-t",
+        "none. The unit converter carries scale factors and molar mass ratios and nothing else. Where an emission "
+        + "factor would be needed it says so and stops.")],
+      [T("an-k-gwp", "Global warming potentials"), T("an-k-gwp-t",
+        "the four named above are quoted so that the converter can refuse to choose between them. None of them is "
+        + "applied to any number on this page.")],
+      [T("an-k-beyond", "Beyond the horizon"), T("an-k-beyond-t",
+        "the runway instrument computes to the month you set and no further. Where the money outlasts the horizon "
+        + "it names no month.")],
+      [T("an-k-prices", "Prices and currency"), T("an-k-prices-t",
+        "the valuation prints no per share figure and no currency, and the market sizer's money label is a label "
+        + "and not a unit conversion.")]
     ].forEach(function (r) {
       u.appendChild(E("li", {}, [ E("b", { text: r[0] }), E("span", { text: r[1] }) ]));
     });
@@ -2708,7 +2800,7 @@ var Kit = (function () {
     Q("#v-w").value = String(S.v.w);
     Q("#v-g").value = String(S.v.g);
     vBuild(); vRender(); write();
-    Kit.toast("Example loaded. These are example figures, not a valuation of anything.");
+    Kit.toast(T("an-ex-v", "Example loaded. These are example figures, not a valuation of anything."));
   }
 
   function mExample() {
@@ -2738,7 +2830,7 @@ var Kit = (function () {
     ];
     Q("#m-unit").value = S.m.unit;
     mBuild(); mRender(); write();
-    Kit.toast("Example loaded. Every figure in it is illustrative and sizes nothing.");
+    Kit.toast(T("an-ex-m", "Example loaded. Every figure in it is illustrative and sizes nothing."));
   }
 
   function rExample() {
@@ -2751,7 +2843,7 @@ var Kit = (function () {
     S.r.inc = [ mkInc("Signed contracts", 3, null, 9000) ];
     rSyncInputs();
     rBuild(); rRender(); write();
-    Kit.toast("Example loaded. These are example figures, not a plan for any company.");
+    Kit.toast(T("an-ex-r", "Example loaded. These are example figures, not a plan for any company."));
   }
 
   function uExample(e) {
@@ -2786,7 +2878,7 @@ var Kit = (function () {
 
     /* month select */
     var msel = Q("#r-m0");
-    MONTH_NAMES.forEach(function (m, i) { msel.appendChild(E("option", { value: String(i), text: m })); });
+    MONTH_EN.forEach(function (m, i) { msel.appendChild(E("option", { value: String(i), text: monthName(i) })); });
 
     /* unit selects */
     var fromEl = Q("#u-from"), toEl = Q("#u-to");
@@ -2812,7 +2904,7 @@ var Kit = (function () {
       Q("#b-v-add").focus();
     });
     Q("#b-v-csv").addEventListener("click", function () {
-      Kit.csvDownload(vCsv(), "analyst-desk-valuation.csv"); Kit.toast("CSV downloaded.");
+      Kit.csvDownload(vCsv(), "analyst-desk-valuation.csv"); Kit.toast(T("an-csv-done", "CSV downloaded."));
     });
     Q("#b-v-copy").addEventListener("click", function () { Kit.csvCopy(vCsv()); });
     Q("#b-v-link").addEventListener("click", function () { Kit.share(toHashState()); });
@@ -2841,7 +2933,7 @@ var Kit = (function () {
       Q("#b-m-addf").focus();
     });
     Q("#b-m-csv").addEventListener("click", function () {
-      Kit.csvDownload(mCsv(), "analyst-desk-market-size.csv"); Kit.toast("CSV downloaded.");
+      Kit.csvDownload(mCsv(), "analyst-desk-market-size.csv"); Kit.toast(T("an-csv-done", "CSV downloaded."));
     });
     Q("#b-m-copy").addEventListener("click", function () { Kit.csvCopy(mCsv()); });
     Q("#b-m-link").addEventListener("click", function () { Kit.share(toHashState()); });
@@ -2879,7 +2971,7 @@ var Kit = (function () {
       Q("#r-cash").focus();
     });
     Q("#b-r-csv").addEventListener("click", function () {
-      Kit.csvDownload(rCsv(), "analyst-desk-runway.csv"); Kit.toast("CSV downloaded.");
+      Kit.csvDownload(rCsv(), "analyst-desk-runway.csv"); Kit.toast(T("an-csv-done", "CSV downloaded."));
     });
     Q("#b-r-copy").addEventListener("click", function () { Kit.csvCopy(rCsv()); });
     Q("#b-r-link").addEventListener("click", function () { Kit.share(toHashState()); });
@@ -2906,7 +2998,7 @@ var Kit = (function () {
         onclick: function () { uExample(e); } }));
     });
     Q("#b-u-csv").addEventListener("click", function () {
-      Kit.csvDownload(uCsv(), "analyst-desk-unit-safety.csv"); Kit.toast("CSV downloaded.");
+      Kit.csvDownload(uCsv(), "analyst-desk-unit-safety.csv"); Kit.toast(T("an-csv-done", "CSV downloaded."));
     });
     Q("#b-u-copy").addEventListener("click", function () { Kit.csvCopy(uCsv()); });
     Q("#b-u-link").addEventListener("click", function () { Kit.share(toHashState()); });
@@ -2919,7 +3011,17 @@ var Kit = (function () {
     uRender();
     renderMethod();
 
-    if (restored) Kit.toast("Inputs restored from the link.");
+    if (restored) Kit.toast(T("an-restored", "Inputs restored from the link."));
+
+    /* Every panel is drawn from S, so a language change is a redraw and never
+       a reset: the reader keeps every figure they typed. */
+    document.addEventListener("langchange", function () {
+      vBuild(); vRender();
+      mBuild(); mRender();
+      rBuild(); rRender();
+      uRender();
+      renderMethod();
+    });
 
     var rt = null;
     window.addEventListener("resize", function () {
@@ -2936,40 +3038,97 @@ var Kit = (function () {
 })();
 </script>
 <script>
-window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Araç · finans ve analiz</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Instrument · Finanzen und Analyse</i>"}};
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Araç · finans ve analiz</i>"}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Instrument · Finanzen und Analyse</i>"}};
 
 (function(){
   "use strict";
   var KEY = "lang", lang = "en";
-  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
-  var D = window.CHROME_I18N || {};
-  var base = {}, baseA = {};
-  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
-  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  function known(l){
+    return l === "en"
+        || (window.CHROME_I18N && window.CHROME_I18N[l])
+        || (window.PAGE_I18N && window.PAGE_I18N[l]);
+  }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
   function apply(l){
-    if(!D[l]) l = "en";
-    var d = D[l] || {};
-    document.querySelectorAll(SEL).forEach(function(el){
-      var k = el.getAttribute("data-i");
-      if(!(k in base)) base[k] = el.innerHTML;
-      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
-    });
-    document.querySelectorAll(SELA).forEach(function(el){
-      var k = el.getAttribute("data-ia");
-      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
-      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
-    });
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
     });
     try { localStorage.setItem(KEY, l); } catch (e) {}
     window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
 })();
 

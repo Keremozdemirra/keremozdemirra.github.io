@@ -807,7 +807,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 footer.site-foot{background:var(--paper)}
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -815,8 +815,9 @@ footer.site-foot{background:var(--paper)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -835,7 +836,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -845,7 +846,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -855,12 +856,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -898,7 +899,7 @@ footer a:hover{color:var(--fg)}
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../../index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../../profile.html" data-i="nav-p">Profile</a><a href="../../../projects.html" data-i="nav-j">Projects</a><a href="../../../notes.html" data-i="nav-n">Notes</a><a href="../../../contact.html" data-i="nav-c">Contact</a><a href="../../../tools.html" aria-current="page" data-i="nav-t">Tools</a><a href="../../../game.html" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../profile.html" data-i="nav-p">Profile</a><a href="../../../projects.html" data-i="nav-j">Projects</a><a href="../../../tools.html" data-i="nav-t">Tools</a><a href="../../../tools/economics/" aria-current="page" data-i="nav-e">Economics</a><a href="../../../game.html" data-i="nav-g">Game Theory</a><a href="../../../simea/" data-i="nav-s">Simulations</a><a href="../../../notes.html" data-i="nav-n">Notes</a><a href="../../../contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -914,26 +915,26 @@ footer a:hover{color:var(--fg)}
 
       <div class="k-lede k-crown">
         <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Essay three of four</i></span>
-        <h1>The evolution of cooperation</h1>
-        <p class="k-standfirst">Two people can each do better by betraying the other, and both do worse if both
+        <h1 data-i="co-001">The evolution of cooperation</h1>
+        <p class="k-standfirst" data-i="co-011">Two people can each do better by betraying the other, and both do worse if both
         do. Play that once and betrayal is the answer. Play it again and again, with no known last round, and
         the answer changes. Set the payoffs, choose the players, and run it.</p>
       </div>
 
       <div class="ex-body">
 
-        <p class="ex-lead">The prisoner's dilemma is the smallest situation in which doing the sensible thing
+        <p class="ex-lead" data-i="co-012">The prisoner's dilemma is the smallest situation in which doing the sensible thing
         makes everybody worse off. Two players choose at the same time to cooperate or to defect. Whatever the
         other does, each is better off defecting. So both defect, and both end up with less than if both had
         cooperated. There is no cleverness that gets you out of it, because the trap is in the payoffs.</p>
 
-        <p>Play it once and there is nothing more to say. Play it repeatedly against the same opponent, with
+        <p data-i="co-013">Play it once and there is nothing more to say. Play it repeatedly against the same opponent, with
         neither of you knowing which round is the last, and something enters that was not there before: what you
         do now changes what they do later. That is the whole subject of this essay, and it is worth building the
         machine before making any claims about it.</p>
 
         <div class="ex-aside">
-          <p>There is a playable version of this same argument, if you would rather find it out than read it.
+          <p data-i="co-014">There is a playable version of this same argument, if you would rather find it out than read it.
           <a href="../../../game/long-game/index.html">The Long Game</a> puts you on one side of a fence in a small
           village and brings a neighbour to it every season. You decide whether the harvest goes over or stays, and so
           do they. It runs the same payoffs, the same strategies and the same evolutionary tournament as this
@@ -942,29 +943,29 @@ footer a:hover{color:var(--fg)}
           on this site, each one a different situation written down in as few numbers as it takes.</p>
         </div>
 
-        <h2 id="s1"><span class="k-num">01</span>The payoffs</h2>
+        <h2 id="s1" data-i="co-002"><span class="k-num">01</span>The payoffs</h2>
 
-        <p>Four numbers define the game. You get the reward when you both cooperate, the temptation when you
+        <p data-i="co-015">Four numbers define the game. You get the reward when you both cooperate, the temptation when you
         defect against a cooperator, the punishment when you both defect, and the sucker's payoff when you
         cooperate against a defector. The dilemma exists only when two conditions hold at once: the temptation
         beats the reward beats the punishment beats the sucker, and the reward is worth more than alternating
         between exploiting and being exploited. Break either and it stops being a dilemma.</p>
 
         <figure class="ex-model" id="m0">
-          <figcaption>Figure one <span class="ex-model-sub">the game itself, editable</span></figcaption>
+          <figcaption data-i="co-043">Figure one <span class="ex-model-sub">the game itself, editable</span></figcaption>
           <div class="co-mgrid">
             <div>
               <table class="co-matrix">
-                <caption class="k-vh">Payoffs to you and to them for each pair of moves</caption>
-                <thead><tr><th></th><th scope="col">they cooperate</th><th scope="col">they defect</th></tr></thead>
+                <caption class="k-vh" data-i="co-048">Payoffs to you and to them for each pair of moves</caption>
+                <thead><tr><th></th><th scope="col" data-i="co-049">they cooperate</th><th scope="col" data-i="co-050">they defect</th></tr></thead>
                 <tbody>
                   <tr>
-                    <th scope="row">you cooperate</th>
+                    <th scope="row" data-i="co-051">you cooperate</th>
                     <td class="co-cell"><b id="co-cc-a">3</b> to you<br><span id="co-cc-b">3</span> to them</td>
                     <td class="co-cell"><b id="co-cd-a">0</b> to you<br><span id="co-cd-b">5</span> to them</td>
                   </tr>
                   <tr>
-                    <th scope="row">you defect</th>
+                    <th scope="row" data-i="co-052">you defect</th>
                     <td class="co-cell"><b id="co-dc-a">5</b> to you<br><span id="co-dc-b">0</span> to them</td>
                     <td class="co-cell"><b id="co-dd-a">1</b> to you<br><span id="co-dd-b">1</span> to them</td>
                   </tr>
@@ -982,26 +983,26 @@ footer a:hover{color:var(--fg)}
 
         <div id="co-warn"></div>
 
-        <h2 id="s2"><span class="k-num">02</span>The players</h2>
+        <h2 id="s2" data-i="co-003"><span class="k-num">02</span>The players</h2>
 
-        <p>Each strategy is a rule for choosing the next move from what has happened so far. None of them can
+        <p data-i="co-016">Each strategy is a rule for choosing the next move from what has happened so far. None of them can
         see the opponent's code and none of them knows how long the match will last. Tick the ones you want in
         the tournament. The last entry is yours: four dropdowns that compose a rule out of what happened in the
         previous round or two. Setting them to cooperate, cooperate, defect, defect gives tit for tat.</p>
 
         <figure class="ex-model" id="m1">
-          <figcaption>Figure two <span class="ex-model-sub">choose the pool, compose your own rule</span></figcaption>
+          <figcaption data-i="co-044">Figure two <span class="ex-model-sub">choose the pool, compose your own rule</span></figcaption>
           <div class="co-pool" id="co-pool"></div>
           <div style="margin-top:1.3rem">
-            <p class="k-lab" style="margin:0 0 0.5rem">Your rule</p>
+            <p class="k-lab" style="margin:0 0 0.5rem" data-i="co-017">Your rule</p>
             <div class="co-rules" id="co-rules"></div>
           </div>
           <p class="ex-sum" id="co-sumrule" role="status" aria-live="polite"></p>
         </figure>
 
-        <h2 id="s3"><span class="k-num">03</span>The tournament</h2>
+        <h2 id="s3" data-i="co-004"><span class="k-num">03</span>The tournament</h2>
 
-        <p>Every strategy plays every strategy, including a copy of itself, five times over. Each match runs
+        <p data-i="co-018">Every strategy plays every strategy, including a copy of itself, five times over. Each match runs
         until the coin says stop, which it does with probability one minus the continuation chance after every
         round. The five lengths are drawn once and then used for every pairing, so that no strategy is helped by
         having been handed a longer game than its rival. Scores are reported as the average payoff per round, so
@@ -1010,7 +1011,7 @@ footer a:hover{color:var(--fg)}
         tournament is ever told which round is the last.</p>
 
         <figure class="ex-model" id="m2">
-          <figcaption>Figure three <span class="ex-model-sub">round robin, average payoff per round</span></figcaption>
+          <figcaption data-i="co-045">Figure three <span class="ex-model-sub">round robin, average payoff per round</span></figcaption>
           <div class="co-runbar" id="co-runbar"></div>
           <div class="ex-plot" id="co-plot1"></div>
           <div id="co-read"></div>
@@ -1019,7 +1020,7 @@ footer a:hover{color:var(--fg)}
 
         <div class="ex-says" id="co-says"></div>
 
-        <p>The head to head table is where the argument actually lives. Green marks a cell where the row
+        <p data-i="co-019">The head to head table is where the argument actually lives. Green marks a cell where the row
         strategy scored more than the column strategy did against it, red marks the reverse. Read along the row
         for tit for tat with the noise control at zero and you will find no green in it at all: against a
         defector it loses by exactly one round of being taken in, and against anything cooperative it draws. It
@@ -1027,27 +1028,27 @@ footer a:hover{color:var(--fg)}
         which is the qualification section six returns to.</p>
 
         <figure class="ex-model" id="m3">
-          <figcaption>Figure four <span class="ex-model-sub">every pair, row scores against column</span></figcaption>
+          <figcaption data-i="co-046">Figure four <span class="ex-model-sub">every pair, row scores against column</span></figcaption>
           <div class="k-scroll"><table class="k-table" id="co-h2h"></table></div>
         </figure>
 
-        <h2 id="s4"><span class="k-num">04</span>The shadow of the future</h2>
+        <h2 id="s4" data-i="co-005"><span class="k-num">04</span>The shadow of the future</h2>
 
-        <p>The continuation chance is the control that matters most, and it is the one the rest of this essay
+        <p data-i="co-020">The continuation chance is the control that matters most, and it is the one the rest of this essay
         turns on. If the game continues with a chance of nine in ten, a match lasts ten rounds on average, so a
         defection today costs you nine rounds of retaliation. If it continues with a chance of one in two, it
         lasts two rounds, and there is almost no future to punish you in.</p>
 
-        <p class="ex-formula">expected length of a match = 1 / (1 minus the continuation chance)
-        <small>At a continuation chance of 0.99 that is a hundred rounds. At 0.50 it is two.</small></p>
+        <p class="ex-formula" data-i="co-021">expected length of a match = 1 / (1 minus the continuation chance)
+        <small data-i="co-053" data-verbatim>At a continuation chance of 0.99 that is a hundred rounds. At 0.50 it is two.</small></p>
 
-        <p>Pull the continuation chance down and run the tournament again. Somewhere on the way down, always
+        <p data-i="co-022">Pull the continuation chance down and run the tournament again. Somewhere on the way down, always
         defect stops being punished for its behaviour and starts being rewarded for it, and the ranking inverts.
         Nothing about the strategies changed. What changed is how much of the future there was to lose. That is
         the actual claim of this essay: cooperation is not a moral quality that some rules have and others lack,
         it is a behaviour that pays when the shadow of the future is long enough, and does not when it is not.</p>
 
-        <p>The other control in that rack is worth a minute of your time as well. It flips a small fraction of
+        <p data-i="co-023">The other control in that rack is worth a minute of your time as well. It flips a small fraction of
         moves in transmission, so that a player who meant to cooperate is seen to defect. Turn it up to eight
         per cent and run the tournament again. Strict retaliation now punishes accidents: two copies of tit for
         tat fall into a run of mutual recrimination that neither of them chose and neither of them can end, and
@@ -1056,20 +1057,20 @@ footer a:hover{color:var(--fg)}
         end up holding the ground that tit for tat held when the channel was clean. Forgiveness is not softness
         in a noisy world. It is error correction.</p>
 
-        <h2 id="s5"><span class="k-num">05</span>What survives</h2>
+        <h2 id="s5" data-i="co-006"><span class="k-num">05</span>What survives</h2>
 
-        <p>A tournament ranks strategies once. It does not say what happens to a population in which the
+        <p data-i="co-024">A tournament ranks strategies once. It does not say what happens to a population in which the
         successful ones become more common, which changes who everybody is playing against, which changes who is
         successful. That second question is the interesting one, and it is answered by running the population
         forward.</p>
 
-        <p>Every strategy starts with an equal share. In each generation, each one is scored against the mix
+        <p data-i="co-025">Every strategy starts with an equal share. In each generation, each one is scored against the mix
         currently present, and its share in the next generation moves in proportion to how it did. A strategy
         that does well against what is common becomes common, and then everybody has to do well against it.
         This is the rule Axelrod used for what he called the ecological tournament.</p>
 
         <figure class="ex-model" id="m4">
-          <figcaption>Figure five <span class="ex-model-sub">share of the population, generation by generation</span></figcaption>
+          <figcaption data-i="co-047">Figure five <span class="ex-model-sub">share of the population, generation by generation</span></figcaption>
           <div class="ex-plot" id="co-plot2"></div>
           <p class="co-legend" id="co-leg2"></p>
           <p class="ex-sum" id="co-sum2" role="status" aria-live="polite"></p>
@@ -1077,31 +1078,31 @@ footer a:hover{color:var(--fg)}
 
         <div class="ex-says" id="co-says2"></div>
 
-        <p>Watch what happens to the exploiters. Always defect does well early, while there are cooperators to
+        <p data-i="co-026">Watch what happens to the exploiters. Always defect does well early, while there are cooperators to
         take advantage of, and then eats its own food supply: once the naive are gone it is left playing against
         other defectors and scoring the punishment payoff for ever. A strategy that is retaliatory but not
         vindictive does badly against nobody and ends up surrounded by copies of itself, all cooperating.</p>
 
-        <h2 id="s6"><span class="k-num">06</span>Axelrod, accurately</h2>
+        <h2 id="s6" data-i="co-007"><span class="k-num">06</span>Axelrod, accurately</h2>
 
-        <p>Robert Axelrod ran two computer tournaments in 1980. The first had fourteen entries plus a program
+        <p data-i="co-027">Robert Axelrod ran two computer tournaments in 1980. The first had fourteen entries plus a program
         that moved at random, making fifteen, and each pair played two hundred rounds against every other.
         The payoffs were five for the temptation, three for the reward, one for the punishment and nothing for
         the sucker, which is what the controls on this page open with. The winner was the shortest program
         submitted: tit for tat, four lines of it, entered by the psychologist Anatol Rapoport.</p>
 
-        <p>The second tournament was run after the results of the first were published, so every entrant knew
+        <p data-i="co-028">The second tournament was run after the results of the first were published, so every entrant knew
         what had won and had the chance to build something that would beat it. Sixty two people entered, sixty
         three programs with random included, and this time the length of each match was decided by a coin rather
         than fixed, with a chance of 0.00346 of ending after any given round, so that nobody could reason
         backwards from a known ending. Rapoport submitted tit for tat again. It won again.</p>
 
-        <p>Axelrod then ran what he called an ecological tournament: a thousand generations in which the number
+        <p data-i="co-029">Axelrod then ran what he called an ecological tournament: a thousand generations in which the number
         of copies of each program in the next generation was set in proportion to the payoff it had won in the
         last. Tit for tat rose. That is the run you can reproduce in figure five, at a smaller scale and with a
         pool of your choosing.</p>
 
-        <p>The honest qualification, which matters: a tournament result is a statement about a pool, not about
+        <p data-i="co-030">The honest qualification, which matters: a tournament result is a statement about a pool, not about
         the world. Rapoport, Seale and Colman re examined the tournaments in 2015 and argued that the victory
         of tit for tat depended heavily on the presence of particular weak programs which fed it points without
         taking any from it, so that changing the pool changes the winner. You can produce that effect on this
@@ -1110,37 +1111,37 @@ footer a:hover{color:var(--fg)}
         against a pool containing a mixture of the naive and the hostile, a rule that is nice, retaliatory,
         forgiving and predictable does well.</p>
 
-        <h2 id="s7"><span class="k-num">07</span>Where the model stops</h2>
+        <h2 id="s7" data-i="co-008"><span class="k-num">07</span>Where the model stops</h2>
 
         <div class="k-warn ex-limits">
-          <h3>Assumptions and limits</h3>
+          <h3 data-i="co-010">Assumptions and limits</h3>
           <ul class="k-ask">
-            <li><b>The pool decides</b>Everything on this page is conditional on which strategies you ticked.
+            <li data-i="co-033"><b>The pool decides</b>Everything on this page is conditional on which strategies you ticked.
             There is no such thing as the best strategy in the abstract, only the best against a particular
             mixture. Any ranking you produce here is a fact about your pool.</li>
-            <li><b>Small samples</b>Each pair plays five matches, and match length is random, so the ranking
+            <li data-i="co-034"><b>Small samples</b>Each pair plays five matches, and match length is random, so the ranking
             moves a little between draws. Use the redraw button a few times before believing any close result.
             The seed is stored in the link so that a shared configuration reproduces exactly.</li>
-            <li><b>No population structure</b>In the evolutionary run everybody meets everybody with equal
+            <li data-i="co-035"><b>No population structure</b>In the evolutionary run everybody meets everybody with equal
             probability. Real populations have neighbours, clusters and reputations, and cooperation is very
             much easier to sustain when a cooperator is more likely to meet another cooperator than chance
             would suggest.</li>
-            <li><b>Two players, two moves</b>The dilemma here is between two parties who each have exactly two
+            <li data-i="co-036"><b>Two players, two moves</b>The dilemma here is between two parties who each have exactly two
             options. Most of the situations people reach for this model to explain, from climate agreements to
             price wars, have many parties, continuous choices and outside enforcement.</li>
-            <li><b>Nothing here is a claim about people</b>These are programs playing an abstract game for
+            <li data-i="co-037"><b>Nothing here is a claim about people</b>These are programs playing an abstract game for
             points. Human beings in laboratory prisoner's dilemmas behave in ways these rules do not capture,
             and no result on this page is evidence about what any person will do.</li>
-            <li><b>Replicator dynamics, not biology</b>The population update is proportional fitness, following
+            <li data-i="co-038"><b>Replicator dynamics, not biology</b>The population update is proportional fitness, following
             the rule Axelrod used. It has no mutation, no drift and no finite population effects, all of which
             change outcomes in real evolutionary models.</li>
           </ul>
         </div>
 
-        <h2 id="s8"><span class="k-num">08</span>Sources</h2>
+        <h2 id="s8" data-i="co-009"><span class="k-num">08</span>Sources</h2>
 
         <ul class="ex-cites">
-          <li>
+          <li data-i="co-039">
             The first tournament: fourteen submitted programs plus a random one, two hundred rounds per pairing,
             payoffs of five, three, one and zero for temptation, reward, punishment and sucker. Tit for tat,
             submitted by Anatol Rapoport, finished first. The tournament was run five times to smooth out the
@@ -1153,7 +1154,7 @@ footer a:hover{color:var(--fg)}
             <a href="https://faculty.sites.iastate.edu/tesfatsi/archive/econ308/tesfatsion/axeltmts.pdf" target="_blank" rel="noreferrer noopener">faculty.sites.iastate.edu</a>.
             Checked 2026 08 21.</span>
           </li>
-          <li>
+          <li data-i="co-040">
             The second tournament: sixty two entries, sixty three programs including random, entrants knowing
             the results of the first. Match length was probabilistic rather than fixed, with a chance of
             0.00346 of ending after any given round. Tit for tat, entered again by Rapoport, won again.
@@ -1163,7 +1164,7 @@ footer a:hover{color:var(--fg)}
             <a href="https://egtheory.wordpress.com/2015/03/02/ipd/" target="_blank" rel="noreferrer noopener">egtheory.wordpress.com/2015/03/02/ipd</a>.
             Checked 2026 08 21.</span>
           </li>
-          <li>
+          <li data-i="co-041">
             The ecological tournament: one thousand generations, in which the number of copies of a strategy at
             the start of a generation was set equal to the total payoff that strategy won in the previous one.
             Tit for tat rose.
@@ -1172,7 +1173,7 @@ footer a:hover{color:var(--fg)}
             <a href="https://faculty.sites.iastate.edu/tesfatsi/archive/econ308/tesfatsion/axeltmts.pdf" target="_blank" rel="noreferrer noopener">faculty.sites.iastate.edu/tesfatsi/archive/econ308/tesfatsion/axeltmts.pdf</a>
             Checked 2026 08 21.</span>
           </li>
-          <li>
+          <li data-i="co-042">
             The qualification: the authors argue that the success of tit for tat in Axelrod's tournaments owed
             much to the presence of a small number of weak programs, so that conclusions drawn from the
             tournaments are conditional on the pool of entrants rather than general.
@@ -1185,21 +1186,21 @@ footer a:hover{color:var(--fg)}
 
         <nav class="ex-next" aria-label="More essays">
           <a href="../../../game/long-game/index.html">
-            <span class="ex-next-k">The playable version</span>
-            <span class="ex-next-t">The Long Game</span>
-            <span class="ex-next-d">The same dilemma, the same strategies and the same evolutionary run, put in
+            <span class="ex-next-k" data-i="xn-k-play">The playable version</span>
+            <span class="ex-next-t" data-i="xn-t-long">The Long Game</span>
+            <span class="ex-next-d" data-i="xn-d-long">The same dilemma, the same strategies and the same evolutionary run, put in
             your hands as a game about a village and a fence instead of a page about a model.</span>
           </a>
           <a href="../discounting/index.html">
-            <span class="ex-next-k">Next essay</span>
-            <span class="ex-next-t">Why the future is cheap</span>
-            <span class="ex-next-d">One slider decides whether a catastrophe in the next century is worth acting
+            <span class="ex-next-k" data-i="xn-k-next-e">Next essay</span>
+            <span class="ex-next-t" data-i="xn-t-disc">Why the future is cheap</span>
+            <span class="ex-next-d" data-i="xn-d-disc">One slider decides whether a catastrophe in the next century is worth acting
             on. Choosing it is an ethical act, not a technical one.</span>
           </a>
           <a href="../lemons/index.html">
-            <span class="ex-next-k">Previous essay</span>
-            <span class="ex-next-t">The market for lemons</span>
-            <span class="ex-next-d">Set the spread of quality and watch a used car market take itself apart, one
+            <span class="ex-next-k" data-i="xn-k-prev-e">Previous essay</span>
+            <span class="ex-next-t" data-i="xn-t-lemons">The market for lemons</span>
+            <span class="ex-next-d" data-i="xn-d-lemons">Set the spread of quality and watch a used car market take itself apart, one
             round at a time.</span>
           </a>
         </nav>
@@ -1210,10 +1211,10 @@ footer a:hover{color:var(--fg)}
 
   <aside class="k-endnote">
     <div class="k-wrap">
-      <p><strong>This is a simulation, not evidence about people.</strong> Every figure on this page comes from
+      <p data-i="co-031"><strong>This is a simulation, not evidence about people.</strong> Every figure on this page comes from
       programs playing an abstract game for points under the settings you chose. Results depend on the pool of
       strategies, and a ranking produced here is a statement about that pool and nothing wider.</p>
-      <p class="k-fine">
+      <p class="k-fine" data-i="co-032">
         Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no network
         call after the fonts have loaded. Part of
         <a href="../index.html">Explorable Economics</a>, built by
@@ -1224,6 +1225,7 @@ footer a:hover{color:var(--fg)}
 
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="../../../sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 
@@ -1276,19 +1278,25 @@ var Kit = (function () {
 
   /* ---------- numbers ---------- */
 
-  var LOCALE = "en-GB";
+  /* The page is read in three languages, so a number has to be written in
+     three. Turkish and German put the comma where English puts the point, and
+     "3,035 billion" read as Turkish says three, not three thousand. Read at
+     call time rather than cached, because the language changes under us. */
+  var LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
+  function locale() { return LOCALES[window.__lang] || "en-GB"; }
+  function na() { return window.__t ? window.__t("kit-na", "not available") : "not available"; }
 
   function num(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     var d = dp === undefined ? 2 : dp;
-    return Number(v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d });
+    return Number(v).toLocaleString(locale(), { minimumFractionDigits: d, maximumFractionDigits: d });
   }
   function money(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return "EUR " + num(v, dp === undefined ? 2 : dp);
   }
   function pct(v, dp) {
-    if (v === null || v === undefined || !isFinite(v)) return "not available";
+    if (v === null || v === undefined || !isFinite(v)) return na();
     return num(v * 100, dp === undefined ? 1 : dp) + " %";
   }
   function toNum(raw) {
@@ -1778,6 +1786,56 @@ var Ex = (function () {
   };
 })();
 
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"co-001": "İşbirliğinin evrimi", "co-002": "<span class=\"k-num\">01</span>Kazançlar", "co-003": "<span class=\"k-num\">02</span>Oyuncular", "co-004": "<span class=\"k-num\">03</span>Turnuva", "co-005": "<span class=\"k-num\">04</span>Geleceğin gölgesi", "co-006": "<span class=\"k-num\">05</span>Hayatta kalan", "co-007": "<span class=\"k-num\">06</span>Axelrod, doğru anlatımıyla", "co-008": "<span class=\"k-num\">07</span>Modelin durduğu yer", "co-009": "<span class=\"k-num\">08</span>Kaynaklar", "co-010": "Varsayımlar ve sınırlar", "co-011": "İki insanın her biri diğerine ihanet ederek daha iyi edebilir ve ikisi de ederse ikisi de daha kötü eder. Bunu bir kez oyna; cevap ihanettir. Bilinen bir son el olmadan tekrar tekrar oyna; cevap değişir. Kazançları kur, oyuncuları seç ve çalıştır.", "co-012": "Mahkûm ikilemi, akıllıca olanı yapmanın herkesi daha kötü duruma düşürdüğü en küçük durumdur. İki oyuncu aynı anda işbirliği yapmayı ya da bozmayı seçer. Diğeri ne yaparsa yapsın, her biri bozarak daha iyi durumdadır. Böylece ikisi de bozar ve ikisi de, ikisi de işbirliği yapsaydı alacaklarından azıyla kalır. Seni bundan çıkaracak bir zekâ yoktur, çünkü tuzak kazançların içindedir.", "co-013": "Bir kez oyna; söylenecek başka şey yok. Aynı rakibe karşı, ikiniz de hangi elin son olduğunu bilmeden tekrar tekrar oyna; daha önce olmayan bir şey girer devreye: şimdi yaptığın, onun sonra yapacağını değiştirir. Bu denemenin bütün konusu bu ve hakkında iddia öne sürmeden önce makineyi kurmaya değer.", "co-014": "Aynı savın oynanabilir bir hâli var; okumaktansa keşfetmeyi yeğliyorsan: <a href=\"../../../game/long-game/index.html\">Uzun Oyun</a> seni küçük bir köyde bir çitin bir yanına koyuyor ve her mevsim çite bir komşu getiriyor. Hasat karşıya mı geçecek yoksa kalacak mı, sen karar veriyorsun; o da öyle. Bu sayfadakiyle aynı kazançları, aynı stratejileri ve aynı evrimsel turnuvayı, sen hissedene kadar hiçbirinin adını koymadan çalıştırıyor. Bu sayfa biçimsel sürüm: sayılar açıkta ve her kaynak tarihli. Bu sitedeki <a href=\"../../../game.html\">altı oyundan</a> biri; her biri, gerektiği kadar az sayıyla yazıya dökülmüş farklı bir durum.", "co-015": "Oyunu dört sayı tanımlar. İkiniz de işbirliği yapınca ödülü, işbirlikçiye karşı bozunca ayartmayı, ikiniz de bozunca cezayı, bozana karşı işbirliği yapınca enayi payını alırsın. İkilem ancak iki koşul birden tutarsa vardır: ayartma ödülü, ödül cezayı, ceza enayi payını geçer; ve ödül, sömürmekle sömürülmek arasında gidip gelmekten daha değerlidir. Birini boz, ikilem olmaktan çıkar.", "co-016": "Her strateji, şimdiye kadar olandan bir sonraki hamleyi seçen bir kuraldır. Hiçbiri rakibin kodunu göremez ve hiçbiri maçın ne kadar süreceğini bilmez. Turnuvada istediklerini işaretle. Son giriş senin: önceki bir iki elde olandan bir kural derleyen dört açılır liste. Onları işbirliği, işbirliği, boz, boz olarak kurmak kısasa kısası verir.", "co-017": "Senin kuralın", "co-018": "Her strateji, kendi kopyası dahil her stratejiyle beşer kez oynar. Her maç yazı tura dur diyene kadar sürer; para her elden sonra bir eksi devam olasılığıyla dur der. Beş uzunluk bir kez çekilir ve sonra her eşleşme için kullanılır; böylece hiçbir strateji rakibinden uzun bir oyun verilmiş olmakla kayırılmaz. Skorlar el başına ortalama kazanç olarak verilir ki uzun maçla kısası karşılaştırılabilsin. Hiçbir şey sabit el sayısına karşı skorlanmaz; çünkü bilinen bir son el herkesin oradan geriye doğru çözülmesine izin verirdi ve turnuvadaki hiçbir oyuncuya hangi elin son olduğu söylenmez.", "co-019": "Karşı karşıya tablosu, savın gerçekte yaşadığı yer. Yeşil, satır stratejisinin sütun stratejisinden ona karşı daha çok puan aldığı hücreyi, kırmızı tersini işaretler. Gürültü sıfırdayken kısasa kısasın satırını oku; içinde tek bir yeşil bulamazsın: bozana karşı tam olarak bir el kanmayla kaybeder, işbirlikçi her şeye karşı berabere kalır. Kimseyi yenemez. Bunun birinci gelmeye yetip yetmediği tamamen havuzda başka kimin olduğuna bağlıdır; altıncı bölümün döndüğü şerh de budur.", "co-020": "En çok işe yarayan düğme devam olasılığı ve denemenin geri kalanının üzerinde döndüğü de o. Oyun onda dokuz olasılıkla sürüyorsa bir maç ortalama on el sürer; bugünkü bir bozma sana dokuz el misilleme maliyeti getirir. İkide bir olasılıkla sürüyorsa iki el sürer ve seni içinde cezalandıracak gelecek neredeyse yoktur.", "co-021": "bir maçın beklenen uzunluğu = 1 / (1 eksi devam olasılığı)\n        <small>0,99 devam olasılığında bu yüz eldir. 0,50'de ikidir.</small>", "co-022": "Devam olasılığını aşağı çek ve turnuvayı yeniden çalıştır. İnişin bir yerinde hep bozar, davranışı için cezalandırılmayı bırakır ve ödüllendirilmeye başlar; sıralama tersine döner. Stratejilerde değişen bir şey yok. Değişen, kaybedilecek ne kadar gelecek olduğu. Bu denemenin asıl iddiası da bu: işbirliği bazı kuralların sahip olup bazılarının olmadığı ahlaki bir nitelik değil; geleceğin gölgesi yeterince uzunken kazandıran, değilken kazandırmayan bir davranıştır.", "co-023": "O sıradaki öbür düğme de bir dakikana değer. İletimde hamlelerin küçük bir kesrini ters çevirir; işbirliği yapmak isteyen, bozmuş görünür. Yüzde sekize çıkar ve turnuvayı yeniden çalıştır. Katı misilleme artık kazaları cezalandırır: iki kısasa kısas kopyası, ikisinin de seçmediği ve ikisinin de bitiremediği bir karşılıklı suçlama koşusuna düşer; kinci, hiç kastedilmemiş bir bozmayı sonsuza kadar mahkûm eder. Özellikle nüfus koşusuna ne yaptığına bak: ilk bozmaya inanmadan önce ikincisini bekleyen kural, kanal temizken kısasa kısasın tuttuğu zemini tutar olur. Gürültülü bir dünyada bağışlama yumuşaklık değildir. Hata düzeltmedir.", "co-024": "Bir turnuva stratejileri bir kez sıralar. Başarılı olanların yaygınlaştığı bir nüfusta ne olacağını söylemez; yaygınlaşma herkesin kime karşı oynadığını, o da kimin başarılı olduğunu değiştirir. İlginç olan o ikinci soru ve cevabı nüfusu ileri doğru çalıştırmakta.", "co-025": "Her strateji eşit payla başlar. Her kuşakta her biri o an mevcut karışıma karşı skorlanır ve bir sonraki kuşaktaki payı, ne kadar iyi gittiğiyle orantılı oynar. Yaygın olana karşı iyi giden yaygınlaşır ve sonra herkes ona karşı iyi gitmek zorunda kalır. Axelrod'un ekolojik turnuva dediği şeyin kuralı buydu.", "co-026": "Sömürücülere ne olduğunu izle. Hep bozar, faydalanacak işbirlikçiler varken erken dönemde iyi gider; sonra kendi yem stoğunu yer: saflar gidince öbür bozanlarla baş başa kalır ve sonsuza kadar ceza payını toplar. Misillemeci ama kinci olmayan bir strateji kimseye karşı kötü gitmez ve sonunda hepsi işbirliği yapan kendi kopyalarıyla çevrili kalır.", "co-027": "Robert Axelrod 1980'de iki bilgisayar turnuvası düzenledi. İlkinde on dört katılımcı artı rastgele oynayan bir program vardı, on beş etti; her çift diğer herkese karşı iki yüz el oynadı. Kazançlar ayartma için beş, ödül için üç, ceza için bir ve enayi için hiçti; bu sayfadaki düğmelerin açılış değerleri de bunlar. Kazanan, gönderilen en kısa programdı: dört satırlık kısasa kısas, psikolog Anatol Rapoport'un girişi.", "co-028": "İkinci turnuva, ilkinin sonuçları yayımlandıktan sonra koşuldu; yani her katılımcı neyin kazandığını biliyordu ve onu yenecek bir şey kurma şansı vardı. Altmış iki kişi katıldı, rastgele dahil altmış üç program; bu kez her maçın uzunluğuna sabit sayı yerine yazı tura karar verdi: her elden sonra 0,00346 olasılıkla bitiyordu ki kimse bilinen bir sondan geriye doğru akıl yürütemesin. Rapoport yine kısasa kısası gönderdi. Yine kazandı.", "co-029": "Axelrod sonra ekolojik turnuva dediği şeyi koştu: bin kuşak; her programın bir sonraki kuşaktaki kopya sayısı, bir öncekinde kazandığı kazançla orantılı kuruldu. Kısasa kısas yükseldi. Beşinci şekilde daha küçük ölçekte ve kendi seçtiğin havuzla yeniden üretebileceğin koşu o.", "co-030": "Önemli olan dürüst şerh: bir turnuva sonucu dünya hakkında değil bir havuz hakkında bir ifadedir. Rapoport, Seale ve Colman 2015'te turnuvaları yeniden inceledi ve kısasa kısasın zaferinin, ona puan verip ondan puan almayan belirli zayıf programların varlığına ağır biçimde bağlı olduğunu, havuzu değiştirmenin kazananı değiştirdiğini savundu. Bu etkiyi bu sayfada on saniyede üretebilirsin: hep paylaşırı havuzdan çıkar. Bu sonucu çöpe atma sebebi değil. Onu olduğu gibi ifade etme sebebi: bu kazançlarda, yeterince uzun bir gelecekle ve safla düşmanın karışımını içeren bir havuza karşı; iyi huylu, misillemeci, bağışlayıcı ve öngörülebilir bir kural iyi gider.", "co-031": "<strong>Bu bir simülasyon, insanlar hakkında kanıt değil.</strong> Bu sayfadaki her rakam, seçtiğin ayarlar altında puan için soyut bir oyun oynayan programlardan geliyor. Sonuçlar strateji havuzuna bağlıdır ve burada üretilen bir sıralama o havuz hakkında bir ifadedir, daha genişi değil.", "co-032": "Tümüyle kendi tarayıcında çalışır. Burada yaptığın hiçbir şey sayfadan çıkmaz. Sunucu yok, analiz yok, yazı tipleri geldikten sonra ağ çağrısı yok. <a href=\"../index.html\">Explorable Economics</a>'in parçası; <a href=\"../../../index.html\">Kerem Ozdemir</a> yaptı.", "co-033": "<b>Havuz karar verir</b>Bu sayfadaki her şey hangi stratejileri işaretlediğine bağlıdır. Soyut olarak en iyi strateji diye bir şey yoktur; yalnızca belirli bir karışıma karşı en iyisi vardır. Burada ürettiğin her sıralama senin havuzun hakkında bir olgudur.", "co-034": "<b>Küçük örneklemler</b>Her çift beş maç oynar ve maç uzunluğu rastgeledir; sıralama çekilişler arasında biraz oynar. Yakın bir sonuca inanmadan önce yeniden çek düğmesini birkaç kez kullan. Tohum bağlantıda saklanır; paylaşılan bir yapılandırma birebir yeniden üretilir.", "co-035": "<b>Nüfus yapısı yok</b>Evrimsel koşuda herkes herkesle eşit olasılıkla karşılaşır. Gerçek nüfusların komşuları, kümeleri ve itibarları vardır; bir işbirlikçinin başka bir işbirlikçiyle şansın önerdiğinden daha olası karşılaştığı yerde işbirliğini sürdürmek çok daha kolaydır.", "co-036": "<b>İki oyuncu, iki hamle</b>Buradaki ikilem, her birinin tam iki seçeneği olan iki taraf arasında. İnsanların bu modele sarıldığı durumların çoğunda, iklim anlaşmalarından fiyat savaşlarına, çok taraf, sürekli seçimler ve dış zorlama vardır.", "co-037": "<b>Burada hiçbir şey insanlar hakkında bir iddia değil</b>Bunlar puan için soyut bir oyun oynayan programlar. Laboratuvar mahkûm ikilemlerindeki insanlar bu kuralların yakalamadığı biçimlerde davranır ve bu sayfadaki hiçbir sonuç herhangi bir insanın ne yapacağına dair kanıt değildir.", "co-038": "<b>Replikatör dinamiği, biyoloji değil</b>Nüfus güncellemesi orantılı uygunluk; Axelrod'un kullandığı kural. Mutasyon yok, sürüklenme yok, sonlu nüfus etkileri yok; gerçek evrim modellerinde bunların hepsi sonucu değiştirir.", "co-043": "Birinci şekil <span class=\"ex-model-sub\">oyunun kendisi, düzenlenebilir</span>", "co-044": "İkinci şekil <span class=\"ex-model-sub\">havuzu seç, kendi kuralını derle</span>", "co-045": "Üçüncü şekil <span class=\"ex-model-sub\">tam lig, el başına ortalama kazanç</span>", "co-046": "Dördüncü şekil <span class=\"ex-model-sub\">her çift; satır, sütuna karşı skor</span>", "co-047": "Beşinci şekil <span class=\"ex-model-sub\">nüfus payı, kuşak kuşak</span>", "co-048": "Her hamle çifti için sana ve ona düşen kazançlar", "co-049": "o işbirliği yaparsa", "co-050": "o bozarsa", "co-051": "sen işbirliği yaparsan", "co-052": "sen bozarsan", "co-039": "İlk turnuva: on dört gönderilmiş program artı bir rastgele, eşleşme başına iki yüz el; ayartma, ödül, ceza ve enayi için beş, üç, bir ve sıfır kazanç. Anatol Rapoport'un gönderdiği kısasa kısas birinci bitirdi. Rastgele öğeyi yumuşatmak için turnuva beş kez koşuldu.\n            <span class=\"ex-cite-w\">Anatol Rapoport, Darryl A. Seale and Andrew M. Colman,\n            <span class=\"ex-cite-t\">Is Tit for Tat the Answer? On the Conclusions Drawn from Axelrod's\n            Tournaments</span>, PLOS ONE 10(7), 2015.\n            <a href=\"https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134128\" target=\"_blank\" rel=\"noreferrer noopener\">journals.plos.org/plosone/article?id=10.1371/journal.pone.0134128</a>\n            Leigh Tesfatsion'ın Axelrod turnuvaları ders notlarıyla doğrulandı:\n            <a href=\"https://faculty.sites.iastate.edu/tesfatsi/archive/econ308/tesfatsion/axeltmts.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">faculty.sites.iastate.edu</a>.\n            Kontrol tarihi: 2026 08 21.</span>", "co-040": "İkinci turnuva: altmış iki katılım, rastgele dahil altmış üç program; katılımcılar ilkinin sonuçlarını biliyordu. Maç uzunluğu sabit değil olasılıklıydı: her elden sonra 0,00346 bitme olasılığı. Rapoport'un yine girdiği kısasa kısas yine kazandı.\n            <span class=\"ex-cite-w\">Rapoport, Seale and Colman, yukarıdaki gibi; katılımcı sayısı ve olasılıklı maç uzunluğu için. 0,00346 bitiş olasılığı ve Rapoport'un girişi, Theory, Evolution and Games Group'un turnuva özetinde veriliyor:\n            <a href=\"https://egtheory.wordpress.com/2015/03/02/ipd/\" target=\"_blank\" rel=\"noreferrer noopener\">egtheory.wordpress.com/2015/03/02/ipd</a>.\n            Kontrol tarihi: 2026 08 21.</span>", "co-041": "Ekolojik turnuva: bin kuşak; bir stratejinin kuşak başındaki kopya sayısı, bir önceki kuşakta kazandığı toplam kazanca eşitlendi. Kısasa kısas yükseldi.\n            <span class=\"ex-cite-w\">Leigh Tesfatsion, <span class=\"ex-cite-t\">Notes on Axelrod's Iterated\n            Prisoner's Dilemma Tournaments</span>, Iowa State University.\n            <a href=\"https://faculty.sites.iastate.edu/tesfatsi/archive/econ308/tesfatsion/axeltmts.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">faculty.sites.iastate.edu/tesfatsi/archive/econ308/tesfatsion/axeltmts.pdf</a>\n            Kontrol tarihi: 2026 08 21.</span>", "co-042": "Şerh: yazarlar, kısasa kısasın Axelrod turnuvalarındaki başarısının az sayıda zayıf programın varlığına çok şey borçlu olduğunu, dolayısıyla turnuvalardan çıkarılan sonuçların genel değil katılımcı havuzuna bağlı olduğunu savunuyor.\n            <span class=\"ex-cite-w\">Rapoport, Seale and Colman, <span class=\"ex-cite-t\">Is Tit for Tat the\n            Answer? On the Conclusions Drawn from Axelrod's Tournaments</span>, PLOS ONE 10(7), 2015.\n            <a href=\"https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134128\" target=\"_blank\" rel=\"noreferrer noopener\">journals.plos.org/plosone/article?id=10.1371/journal.pone.0134128</a>\n            Kontrol tarihi: 2026 08 21.</span>", "co-st-tft-n": "Kısasa kısas", "co-st-tft-d": "önce işbirliği yap, sonra son yaptıklarını kopyala", "co-st-alld-n": "Hep bozar", "co-st-alld-d": "ne olursa olsun asla işbirliği yapma", "co-st-allc-n": "Hep paylaşır", "co-st-allc-d": "ne olursa olsun asla bozma", "co-st-grudge-n": "Kinci", "co-st-grudge-d": "bir kez bozana kadar işbirliği yap, sonra sonsuza kadar boz", "co-st-tf2t-n": "İki kısasa bir kısas", "co-st-tf2t-d": "ancak üst üste iki kez bozduktan sonra boz", "co-st-pavlov-n": "İşe yaradıysa kal", "co-st-pavlov-d": "el iyi geçtiyse son hamleni tekrarla, geçmediyse değiştir", "co-st-rand-n": "Rastgele", "co-st-rand-d": "yazı turayla işbirliği yap ya da boz", "co-st-mine-n": "Senin kuralın", "co-st-mine-d": "aşağıdaki dört açılır listeden derlenir", "co-c-T": "Ayartma", "co-c-R": "Ödül", "co-c-P": "Ceza", "co-c-Sk": "Enayi payı", "co-c-w": "Oyunun sürme olasılığı", "co-c-w-h": "Her elden sonra atılan yazı tura. Kaybedilecek ne kadar gelecek olduğuna o karar veriyor.", "co-c-w-f": ", yaklaşık {n} el", "co-c-noise": "Hamlenin yanlış okunma olasılığı", "co-c-noise-h": "İletimde ters çevrilen hamle. Katı misilleme bununla kötü baş eder.", "co-r-open": "Açılış", "co-r-c": "O işbirliği yaptıktan sonra", "co-r-d": "Bir bozmadan sonra", "co-r-dd": "Üst üste ikisinden sonra", "co-r-coop": "işbirliği yap", "co-r-def": "boz", "co-b-draw": "Yeniden çek", "co-b-axelrod": "Axelrod'un kazançları", "co-b-copy": "Bağlantıyı kopyala", "co-rd-win": "Birinci", "co-rd-sc": "Skoru", "co-rd-len": "Ortalama maç uzunluğu", "co-rd-tot": "Oynanan eller", "co-rd-sc-t": "el başına kazanç", "co-rd-len-t": "el, gerçek çekiliş", "co-rd-tot-t": "{m} maçta", "co-rd-none": "yok", "co-l-rank": "el başına ortalama kazanç, en iyisi üstte", "co-l-gen": "kuşak", "co-pay-note": "İkilem {T} > {R} > {P} > {Sk} ve iki {R} > {T} + {Sk} ister. Şu an bu {ok}", "co-pay-ok": "sağlanıyor.", "co-pay-no": "sağlanmıyor.", "co-warn-h": "Bu kazançlar bir mahkûm ikilemi değil", "co-warn-1": "Ayartma > ödül > ceza > enayi sırası tutmuyor; bozmak artık her durumda bireysel olarak daha iyi hamle değil ve bu artık bir mahkûm ikilemi değil.", "co-warn-2": "Ödülün iki katı, ayartma artı enayiden büyük değil; bir çift, işbirliği yapmaktansa sırayla birbirini sömürerek daha iyi eder ve karşılıklı işbirliği uğrunda çabalanacak sonuç olmaktan çıkar.", "co-warn-p": "Aşağıdaki turnuva yine çalışır ve bastığı sayılar tarif ettiğin oyun için doğrudur. Yalnızca artık mahkûm ikilemi hakkında değiller.", "co-s0": "Kazançlar: ayartma {T}, ödül {R}, ceza {P}, enayi {Sk}. Oyun her elden sonra {w} olasılıkla sürüyor; bu da bir maçı ortalama {len} el yapıyor. Bir hamle {n} yüzde olasılıkla gürültüye takılıp ters çevriliyor.", "co-s1-none": "Havuzda hiç strateji yok; raporlanacak turnuva da yok.", "co-s1": "{k} strateji üzerinden tam lig; toplam {m} maç ve {r} el. El başına ortalama kazanca göre sıralama: {list}.", "co-s2-none": "Havuzda hiç strateji yok; raporlanacak nüfus da yok.", "co-s2": "{g} kuşak sonra nüfus payları, herkes eşit payla başlamışken: {list}.", "co-sy-none": "Yukarıda en az bir strateji işaretle; turnuva çalışacak.", "co-sy-1": "{w} devam olasılığıyla, yani maç başına yaklaşık {len}, {top} el başına {ts} ile birinci geliyor ve {bot} {bs} ile sonuncu.", "co-sy-alld": "Hep bozar {pos}. ", "co-sy-alld-short": "Bu devam olasılığında misillemenin bir şeye mal olmasına yetecek gelecek kalmıyor; önündekini almak düpedüz daha iyi kural. Devam olasılığını yükselt, öyle olmaktan çıkar.", "co-sy-alld-noise": "Buradaki gelecek uzun; yani başarısız olan geleceğin gölgesi değil. Gürültü. Hamlelerin yüzde {n} kadarı iletimde ters çevrilince misillemeciler maçlarını, ikisinin de kastetmediği şeyler için birbirini cezalandırarak geçiriyor; hiç işbirliği yapmaya niyeti olmayan bir kuralınsa kafası karışacak bir şeyi yok. Gürültüyü sıfıra geri al ve yeniden düşüşünü izle.", "co-sy-alld-pool": "Bu havuzda birinci; bu da havuz hakkında bir olgu. Burada onu, bozmayı pahalı kılacak kadar uzun cezalandırmaya istekli yeterince rakip yok.", "co-sy-alld-else": "Ayartma kazancını sunacak kadar saf olan herkesten alıyor; sonra her maçın kalanını, onunla işbirliğini kesmiş rakiplerden ceza kazancı toplayarak geçiriyor. Devam olasılığını gelecek kısalana kadar indir ve tırmanışını izle.", "co-sy-tft1": "Kısasa kısas kimseyi yenmeden birinci. Aşağıdaki tabloda satırına bak: gürültü yokken her rakam ya karşısındakine eşit ya da yaklaşık bir el kanma kadar düşük. Kötü kaybetmeyerek kazanıyor; bu da kural kadar turnuva biçimi hakkında bir iddia.", "co-sy-tft2": "Kısasa kısas bu havuzda {pos}; bunu düzeltmek yerine üstünde durmaya değer. Yine kimseyi yenmiyor ve bu belirli rakip kümesine karşı bu, birinci gelmeye yetmiyor. Havuzu değiştir, sıralama onunla değişir. Soyut olarak en iyi strateji yok; yalnızca verili bir karışıma karşı en iyisi var.", "co-sy2-1": "{g} kuşak sonra nüfusun {x} kadarı {win}. ", "co-sy2-gone1": "{list} yüzde birin altında ve fiilen yok. ", "co-sy2-peak": "{name} {g}. kuşakta {x} düzeyine çıkıyor ve sonra düşüyor; kurbanların tükenmesi böyle görünür.", "co-of": "{a} / {b}", "co-pct": "yüzde {x}", "co-rounds": "{n} el", "pg-title": "İşbirliğinin evrimi"}, "de": {"co-001": "Die Evolution der Kooperation", "co-002": "<span class=\"k-num\">01</span>Die Auszahlungen", "co-003": "<span class=\"k-num\">02</span>Die Spieler", "co-004": "<span class=\"k-num\">03</span>Das Turnier", "co-005": "<span class=\"k-num\">04</span>Der Schatten der Zukunft", "co-006": "<span class=\"k-num\">05</span>Was überlebt", "co-007": "<span class=\"k-num\">06</span>Axelrod, genau genommen", "co-008": "<span class=\"k-num\">07</span>Wo das Modell endet", "co-009": "<span class=\"k-num\">08</span>Quellen", "co-010": "Annahmen und Grenzen", "co-011": "Zwei Menschen können sich einzeln durch Verrat besserstellen, und beide stehen schlechter da, wenn es beide tun. Spielen Sie das einmal, ist Verrat die Antwort. Spielen Sie es wieder und wieder, ohne bekannte letzte Runde, und die Antwort ändert sich. Setzen Sie die Auszahlungen, wählen Sie die Spieler, und lassen Sie es laufen.", "co-012": "Das Gefangenendilemma ist die kleinste Lage, in der das Vernünftige alle schlechter stellt. Zwei Spieler wählen gleichzeitig, zu kooperieren oder abzuweichen. Was auch immer der andere tut, jeder steht mit Abweichen besser da. Also weichen beide ab, und beide enden mit weniger, als wenn beide kooperiert hätten. Keine Klugheit holt Sie da heraus, denn die Falle steckt in den Auszahlungen.", "co-013": "Einmal gespielt, ist nichts mehr zu sagen. Wiederholt gegen denselben Gegner gespielt, ohne dass einer von Ihnen die letzte Runde kennt, tritt etwas hinzu, das vorher nicht da war: Was Sie jetzt tun, ändert, was er später tut. Das ist das ganze Thema dieses Essays, und es lohnt sich, die Maschine zu bauen, bevor man Behauptungen über sie aufstellt.", "co-014": "Es gibt eine spielbare Fassung desselben Arguments, falls Sie es lieber herausfinden als lesen: <a href=\"../../../game/long-game/index.html\">Das lange Spiel</a> stellt Sie in einem kleinen Dorf auf eine Seite eines Zauns und bringt jede Saison einen Nachbarn daran. Sie entscheiden, ob die Ernte hinübergeht oder bleibt, und er auch. Es fährt dieselben Auszahlungen, dieselben Strategien und dasselbe evolutionäre Turnier wie diese Seite, ohne eines davon zu benennen, bevor Sie es gefühlt haben. Diese Seite ist die formale Fassung, mit offengelegten Zahlen und jeder Quelle datiert. Sie ist eines von <a href=\"../../../game.html\">sechs Spielen</a> auf dieser Website, jedes eine andere Lage, in so wenigen Zahlen aufgeschrieben, wie es braucht.", "co-015": "Vier Zahlen definieren das Spiel. Sie bekommen die Belohnung, wenn beide kooperieren, die Versuchung, wenn Sie gegen einen Kooperierenden abweichen, die Strafe, wenn beide abweichen, und den Trottellohn, wenn Sie gegen einen Abweichler kooperieren. Das Dilemma existiert nur, wenn zwei Bedingungen zugleich gelten: Versuchung über Belohnung über Strafe über Trottellohn, und die Belohnung ist mehr wert als der Wechsel zwischen Ausbeuten und Ausgebeutetwerden. Brechen Sie eine, und es ist kein Dilemma mehr.", "co-016": "Jede Strategie ist eine Regel, die aus dem bisher Geschehenen den nächsten Zug wählt. Keine kann den Code des Gegners sehen, und keine weiß, wie lange das Match dauert. Haken Sie an, welche ins Turnier sollen. Der letzte Eintrag ist Ihrer: vier Auswahllisten, die aus dem, was in den letzten ein, zwei Runden geschah, eine Regel zusammensetzen. Kooperieren, kooperieren, abweichen, abweichen ergibt Wie du mir, so ich dir.", "co-017": "Ihre Regel", "co-018": "Jede Strategie spielt gegen jede, die eigene Kopie eingeschlossen, fünfmal. Jedes Match läuft, bis die Münze Halt sagt, was sie nach jeder Runde mit eins minus Fortsetzungschance tut. Die fünf Längen werden einmal gezogen und dann für jede Paarung verwendet, damit keine Strategie davon profitiert, ein längeres Spiel bekommen zu haben als ihre Rivalin. Punkte werden als Durchschnitt je Runde berichtet, damit ein langes und ein kurzes Match vergleichbar sind. Nichts wird gegen eine feste Rundenzahl gewertet, denn eine bekannte letzte Runde ließe alle rückwärts aufribbeln, und keinem Spieler im Turnier wird je gesagt, welche Runde die letzte ist.", "co-019": "Die Kopf-an-Kopf-Tabelle ist, wo das Argument wirklich wohnt. Grün markiert eine Zelle, in der die Zeilenstrategie gegen die Spaltenstrategie mehr holte als umgekehrt, Rot das Gegenteil. Lesen Sie die Zeile von Wie du mir, so ich dir bei Rauschen null: Sie finden kein einziges Grün darin. Gegen einen Abweichler verliert es um genau eine Runde des Hereingelegtwerdens, gegen alles Kooperative spielt es unentschieden. Es kann niemanden schlagen. Ob das reicht, um Erster zu werden, hängt ganz davon ab, wer sonst im Pool ist; das ist der Vorbehalt, zu dem Abschnitt sechs zurückkehrt.", "co-020": "Die Fortsetzungschance ist der Regler, auf den es am meisten ankommt, und der, um den sich der Rest dieses Essays dreht. Geht das Spiel mit neun von zehn weiter, dauert ein Match im Schnitt zehn Runden; ein Abweichen heute kostet Sie neun Runden Vergeltung. Geht es mit eins zu zwei weiter, dauert es zwei Runden, und es gibt fast keine Zukunft, in der man Sie bestrafen könnte.", "co-021": "erwartete Länge eines Matchs = 1 / (1 minus Fortsetzungschance)\n        <small>Bei einer Fortsetzungschance von 0,99 sind das hundert Runden. Bei 0,50 zwei.</small>", "co-022": "Ziehen Sie die Fortsetzungschance herunter und lassen Sie das Turnier neu laufen. Irgendwo auf dem Weg hinab hört Immer abweichen auf, für sein Verhalten bestraft zu werden, und beginnt, dafür belohnt zu werden; die Rangfolge kippt. An den Strategien hat sich nichts geändert. Geändert hat sich, wie viel Zukunft zu verlieren war. Das ist die eigentliche Behauptung dieses Essays: Kooperation ist keine moralische Eigenschaft, die manche Regeln haben und andere nicht; sie ist ein Verhalten, das sich auszahlt, wenn der Schatten der Zukunft lang genug ist, und nicht, wenn nicht.", "co-023": "Der andere Regler in der Reihe ist ebenfalls eine Minute wert. Er kippt einen kleinen Teil der Züge in der Übertragung, sodass jemand, der kooperieren wollte, als Abweichler gesehen wird. Drehen Sie ihn auf acht Prozent und lassen Sie das Turnier neu laufen. Strenge Vergeltung bestraft jetzt Unfälle: Zwei Kopien von Wie du mir, so ich dir geraten in einen Lauf gegenseitiger Vorwürfe, den keine gewählt hat und keine beenden kann, und ein Nachtragender verdammt für immer ein Abweichen, das nie beabsichtigt war. Sehen Sie besonders auf den Populationslauf: Die Regel, die vor dem Glauben an das erste Abweichen ein zweites abwartet, hält am Ende den Boden, den Wie du mir, so ich dir hielt, als der Kanal sauber war. Vergebung ist in einer verrauschten Welt keine Weichheit. Sie ist Fehlerkorrektur.", "co-024": "Ein Turnier ordnet Strategien einmal. Es sagt nicht, was mit einer Population geschieht, in der die erfolgreichen häufiger werden, was ändert, gegen wen alle spielen, was ändert, wer erfolgreich ist. Diese zweite Frage ist die interessante, und sie wird beantwortet, indem man die Population vorwärtslaufen lässt.", "co-025": "Jede Strategie beginnt mit gleichem Anteil. In jeder Generation wird jede gegen die gerade vorhandene Mischung gewertet, und ihr Anteil in der nächsten bewegt sich proportional dazu, wie sie abschnitt. Eine Strategie, die gegen das Häufige gut abschneidet, wird häufig, und dann müssen alle gegen sie gut abschneiden. Das ist die Regel, die Axelrod für sein sogenanntes ökologisches Turnier verwendete.", "co-026": "Sehen Sie den Ausbeutern zu. Immer abweichen läuft früh gut, solange es Kooperierende auszunutzen gibt, und frisst dann den eigenen Futtervorrat: Sind die Naiven fort, bleibt es unter anderen Abweichlern und sammelt für immer die Strafauszahlung. Eine Strategie, die vergilt, aber nicht nachträgt, schneidet gegen niemanden schlecht ab und endet umgeben von Kopien ihrer selbst, alle kooperierend.", "co-027": "Robert Axelrod veranstaltete 1980 zwei Computerturniere. Das erste hatte vierzehn Einsendungen plus ein zufällig ziehendes Programm, also fünfzehn, und jedes Paar spielte zweihundert Runden gegen jedes andere. Die Auszahlungen waren fünf für die Versuchung, drei für die Belohnung, eins für die Strafe und nichts für den Trottel; damit öffnen auch die Regler dieser Seite. Sieger wurde das kürzeste eingereichte Programm: Wie du mir, so ich dir, vier Zeilen, eingereicht vom Psychologen Anatol Rapoport.", "co-028": "Das zweite Turnier lief, nachdem die Ergebnisse des ersten veröffentlicht waren; jeder Teilnehmer wusste also, was gewonnen hatte, und konnte etwas bauen, das es schlagen sollte. Zweiundsechzig Menschen nahmen teil, dreiundsechzig Programme mit Zufall, und diesmal entschied über die Länge jedes Matchs eine Münze statt einer festen Zahl, mit einer Chance von 0,00346, nach jeder Runde zu enden, damit niemand von einem bekannten Ende rückwärts schließen konnte. Rapoport reichte wieder Wie du mir, so ich dir ein. Es gewann wieder.", "co-029": "Dann ließ Axelrod laufen, was er ein ökologisches Turnier nannte: tausend Generationen, in denen die Kopienzahl jedes Programms in der nächsten Generation proportional zur Auszahlung der letzten gesetzt wurde. Wie du mir, so ich dir stieg. Das ist der Lauf, den Sie in Abbildung fünf nachbilden können, kleiner und mit einem Pool Ihrer Wahl.", "co-030": "Der ehrliche Vorbehalt, auf den es ankommt: Ein Turnierergebnis ist eine Aussage über einen Pool, nicht über die Welt. Rapoport, Seale und Colman untersuchten die Turniere 2015 neu und argumentierten, der Sieg von Wie du mir, so ich dir habe schwer an der Anwesenheit bestimmter schwacher Programme gehangen, die ihm Punkte zuspielten, ohne welche zu nehmen; den Pool zu ändern ändert den Sieger. Diesen Effekt erzeugen Sie auf dieser Seite in etwa zehn Sekunden, indem Sie Immer kooperieren aus dem Pool nehmen. Das ist kein Grund, das Ergebnis wegzuwerfen. Es ist ein Grund, es als das auszusprechen, was es ist: In diesen Auszahlungen, mit genug Zukunft und gegen einen Pool aus Naiven und Feindseligen schneidet eine Regel gut ab, die nett, vergeltend, vergebend und berechenbar ist.", "co-031": "<strong>Dies ist eine Simulation, kein Beleg über Menschen.</strong> Jede Zahl auf dieser Seite stammt von Programmen, die unter Ihren Einstellungen ein abstraktes Spiel um Punkte spielen. Ergebnisse hängen vom Strategiepool ab, und eine hier erzeugte Rangfolge ist eine Aussage über diesen Pool und nichts Weiteres.", "co-032": "Läuft vollständig in Ihrem Browser. Nichts, was Sie hier tun, verlässt die Seite. Kein Server, keine Analyse, kein Netzaufruf nach dem Laden der Schriften. Teil von <a href=\"../index.html\">Explorable Economics</a>, gebaut von <a href=\"../../../index.html\">Kerem Ozdemir</a>.", "co-033": "<b>Der Pool entscheidet</b>Alles auf dieser Seite hängt daran, welche Strategien Sie angehakt haben. Es gibt keine beste Strategie im Abstrakten, nur die beste gegen eine bestimmte Mischung. Jede Rangfolge, die Sie hier erzeugen, ist eine Tatsache über Ihren Pool.", "co-034": "<b>Kleine Stichproben</b>Jedes Paar spielt fünf Matches, und die Länge ist zufällig; die Rangfolge bewegt sich zwischen Ziehungen etwas. Nutzen Sie den Neu-ziehen-Knopf ein paarmal, bevor Sie einem knappen Ergebnis glauben. Der Startwert steckt im Link, sodass eine geteilte Einstellung exakt reproduziert.", "co-035": "<b>Keine Populationsstruktur</b>Im evolutionären Lauf trifft jeder jeden mit gleicher Wahrscheinlichkeit. Echte Populationen haben Nachbarn, Cluster und Rufe, und Kooperation ist weit leichter zu halten, wo ein Kooperierender wahrscheinlicher als der Zufall auf einen anderen Kooperierenden trifft.", "co-036": "<b>Zwei Spieler, zwei Züge</b>Das Dilemma hier steht zwischen zwei Parteien mit je genau zwei Optionen. Die meisten Lagen, für die man dieses Modell heranzieht, von Klimaabkommen bis Preiskriegen, haben viele Parteien, stetige Entscheidungen und äußere Durchsetzung.", "co-037": "<b>Nichts hier ist eine Behauptung über Menschen</b>Das sind Programme, die ein abstraktes Spiel um Punkte spielen. Menschen in Labor-Gefangenendilemmata verhalten sich auf Arten, die diese Regeln nicht erfassen, und kein Ergebnis dieser Seite ist ein Beleg dafür, was irgendein Mensch tun wird.", "co-038": "<b>Replikatordynamik, nicht Biologie</b>Das Populationsupdate ist proportionale Fitness, nach Axelrods Regel. Es gibt keine Mutation, keine Drift und keine Effekte endlicher Populationen, die in echten Evolutionsmodellen alle die Ergebnisse ändern.", "co-043": "Abbildung eins <span class=\"ex-model-sub\">das Spiel selbst, editierbar</span>", "co-044": "Abbildung zwei <span class=\"ex-model-sub\">Pool wählen, eigene Regel zusammensetzen</span>", "co-045": "Abbildung drei <span class=\"ex-model-sub\">volles Turnier, Durchschnitt je Runde</span>", "co-046": "Abbildung vier <span class=\"ex-model-sub\">jedes Paar, Zeile gegen Spalte</span>", "co-047": "Abbildung fünf <span class=\"ex-model-sub\">Anteil der Population, Generation für Generation</span>", "co-048": "Auszahlungen für Sie und für ihn, je Paar von Zügen", "co-049": "er kooperiert", "co-050": "er weicht ab", "co-051": "Sie kooperieren", "co-052": "Sie weichen ab", "co-039": "Das erste Turnier: vierzehn eingereichte Programme plus ein zufälliges, zweihundert Runden je Paarung, Auszahlungen fünf, drei, eins und null für Versuchung, Belohnung, Strafe und Trottel. Wie du mir, so ich dir, eingereicht von Anatol Rapoport, wurde Erster. Das Turnier lief fünfmal, um das Zufallselement zu glätten.\n            <span class=\"ex-cite-w\">Anatol Rapoport, Darryl A. Seale and Andrew M. Colman,\n            <span class=\"ex-cite-t\">Is Tit for Tat the Answer? On the Conclusions Drawn from Axelrod's\n            Tournaments</span>, PLOS ONE 10(7), 2015.\n            <a href=\"https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134128\" target=\"_blank\" rel=\"noreferrer noopener\">journals.plos.org/plosone/article?id=10.1371/journal.pone.0134128</a>\n            Bestätigt durch Leigh Tesfatsions Kursnotizen zu den Axelrod-Turnieren,\n            <a href=\"https://faculty.sites.iastate.edu/tesfatsi/archive/econ308/tesfatsion/axeltmts.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">faculty.sites.iastate.edu</a>.\n            Geprüft: 2026 08 21.</span>", "co-040": "Das zweite Turnier: zweiundsechzig Einsendungen, dreiundsechzig Programme mit Zufall, die Teilnehmer kannten die Ergebnisse des ersten. Die Matchlänge war probabilistisch statt fest, mit 0,00346 Endchance nach jeder Runde. Wie du mir, so ich dir, wieder von Rapoport eingereicht, gewann wieder.\n            <span class=\"ex-cite-w\">Rapoport, Seale and Colman, wie oben, für Teilnehmerzahl und probabilistische Matchlänge. Die Endwahrscheinlichkeit von 0,00346 und Rapoports Einreichung stehen in der Turnierzusammenfassung der Theory, Evolution and Games Group,\n            <a href=\"https://egtheory.wordpress.com/2015/03/02/ipd/\" target=\"_blank\" rel=\"noreferrer noopener\">egtheory.wordpress.com/2015/03/02/ipd</a>.\n            Geprüft: 2026 08 21.</span>", "co-041": "Das ökologische Turnier: tausend Generationen, in denen die Kopienzahl einer Strategie zu Generationsbeginn gleich der Gesamtauszahlung gesetzt wurde, die sie in der vorigen gewann. Wie du mir, so ich dir stieg.\n            <span class=\"ex-cite-w\">Leigh Tesfatsion, <span class=\"ex-cite-t\">Notes on Axelrod's Iterated\n            Prisoner's Dilemma Tournaments</span>, Iowa State University.\n            <a href=\"https://faculty.sites.iastate.edu/tesfatsi/archive/econ308/tesfatsion/axeltmts.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">faculty.sites.iastate.edu/tesfatsi/archive/econ308/tesfatsion/axeltmts.pdf</a>\n            Geprüft: 2026 08 21.</span>", "co-042": "Der Vorbehalt: Die Autoren argumentieren, der Erfolg von Wie du mir, so ich dir in Axelrods Turnieren habe viel der Anwesenheit weniger schwacher Programme verdankt, sodass Schlüsse aus den Turnieren an den Teilnehmerpool gebunden sind statt allgemein.\n            <span class=\"ex-cite-w\">Rapoport, Seale and Colman, <span class=\"ex-cite-t\">Is Tit for Tat the\n            Answer? On the Conclusions Drawn from Axelrod's Tournaments</span>, PLOS ONE 10(7), 2015.\n            <a href=\"https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134128\" target=\"_blank\" rel=\"noreferrer noopener\">journals.plos.org/plosone/article?id=10.1371/journal.pone.0134128</a>\n            Geprüft: 2026 08 21.</span>", "co-st-tft-n": "Wie du mir, so ich dir", "co-st-tft-d": "erst kooperieren, dann kopieren, was er zuletzt tat", "co-st-alld-n": "Immer abweichen", "co-st-alld-d": "nie kooperieren, was auch geschieht", "co-st-allc-n": "Immer kooperieren", "co-st-allc-d": "nie abweichen, was auch geschieht", "co-st-grudge-n": "Nachtragend", "co-st-grudge-d": "kooperieren, bis er einmal abweicht, dann für immer abweichen", "co-st-tf2t-n": "Erst beim zweiten Mal", "co-st-tf2t-d": "nur abweichen, nachdem er zweimal in Folge abgewichen ist", "co-st-pavlov-n": "Gewinnt bleibt, verliert wechselt", "co-st-pavlov-d": "lief die Runde gut, letzten Zug wiederholen, sonst wechseln", "co-st-rand-n": "Zufall", "co-st-rand-d": "per Münzwurf kooperieren oder abweichen", "co-st-mine-n": "Ihre Regel", "co-st-mine-d": "aus den vier Auswahllisten unten zusammengesetzt", "co-c-T": "Versuchung", "co-c-R": "Belohnung", "co-c-P": "Strafe", "co-c-Sk": "Trottellohn", "co-c-w": "Chance, dass das Spiel weitergeht", "co-c-w-h": "Die Münze nach jeder Runde. Sie entscheidet, wie viel Zukunft zu verlieren ist.", "co-c-w-f": ", etwa {n} Runden", "co-c-noise": "Chance, dass ein Zug falsch gelesen wird", "co-c-noise-h": "Ein in der Übertragung gekippter Zug. Strenge Vergeltung kommt damit schlecht zurecht.", "co-r-open": "Eröffnen mit", "co-r-c": "Nachdem er kooperiert", "co-r-d": "Nach einem Abweichen", "co-r-dd": "Nach zweien in Folge", "co-r-coop": "kooperieren", "co-r-def": "abweichen", "co-b-draw": "Neu ziehen", "co-b-axelrod": "Axelrods Auszahlungen", "co-b-copy": "Link kopieren", "co-rd-win": "Erster Platz", "co-rd-sc": "Sein Ergebnis", "co-rd-len": "Mittlere Matchlänge", "co-rd-tot": "Gespielte Runden", "co-rd-sc-t": "Auszahlung je Runde", "co-rd-len-t": "Runden, tatsächliche Ziehung", "co-rd-tot-t": "über {m} Matches", "co-rd-none": "keiner", "co-l-rank": "Durchschnitt je Runde, der beste oben", "co-l-gen": "Generation", "co-pay-note": "Das Dilemma braucht {T} > {R} > {P} > {Sk} und zweimal {R} > {T} + {Sk}. Derzeit ist das {ok}", "co-pay-ok": "erfüllt.", "co-pay-no": "nicht erfüllt.", "co-warn-h": "Diese Auszahlungen sind kein Gefangenendilemma", "co-warn-1": "Die Ordnung Versuchung über Belohnung über Strafe über Trottellohn gilt nicht; Abweichen ist nicht mehr in jedem Fall der individuell bessere Zug, und das ist kein Gefangenendilemma mehr.", "co-warn-2": "Zweimal die Belohnung ist nicht größer als Versuchung plus Trottellohn; ein Paar fährt besser damit, einander abwechselnd auszubeuten, als zu kooperieren, und beiderseitige Kooperation ist nicht mehr das erstrebenswerte Ergebnis.", "co-warn-p": "Das Turnier unten läuft trotzdem, und die Zahlen, die es druckt, sind korrekt für das Spiel, das Sie beschrieben haben. Sie handeln nur nicht mehr vom Gefangenendilemma.", "co-s0": "Die Auszahlungen sind {T} für die Versuchung, {R} für die Belohnung, {P} für die Strafe und {Sk} für den Trottel. Das Spiel geht nach jeder Runde mit einer Chance von {w} weiter, was ein Match im Schnitt {len} Runden lang macht. Ein Zug wird mit {n} Prozent vom Rauschen gekippt.", "co-s1-none": "Keine Strategie ist im Pool, also gibt es kein Turnier zu berichten.", "co-s1": "Volles Turnier über {k} Strategien, insgesamt {m} Matches und {r} Runden. Geordnet nach Durchschnitt je Runde: {list}.", "co-s2-none": "Keine Strategie ist im Pool, also gibt es keine Population zu berichten.", "co-s2": "Populationsanteile nach {g} Generationen, jede mit gleichem Anteil gestartet: {list}.", "co-sy-none": "Haken Sie oben mindestens eine Strategie an, und das Turnier läuft.", "co-sy-1": "Mit einer Fortsetzungschance von {w}, also etwa {len} je Match, kommt {top} mit {ts} je Runde auf den ersten Platz, und {bot} mit {bs} auf den letzten.", "co-sy-alld": "Immer abweichen ist {pos}. ", "co-sy-alld-short": "Bei dieser Fortsetzungschance bleibt nicht genug Zukunft, damit Vergeltung etwas kostet; zu nehmen, was vor einem liegt, ist schlicht die bessere Regel. Erhöhen Sie die Fortsetzungschance, und das hört auf.", "co-sy-alld-noise": "Die Zukunft hier ist lang; es ist also nicht der Schatten der Zukunft, der versagt. Es ist das Rauschen. Mit {n} Prozent gekippter Züge verbringen die Vergelter ihre Matches damit, einander für Dinge zu bestrafen, die keiner wollte, während eine Regel, die nie kooperieren wollte, nichts zu verwechseln hat. Nehmen Sie das Rauschen auf null zurück und sehen Sie es wieder fallen.", "co-sy-alld-pool": "Es ist Erster in diesem Pool, was eine Tatsache über den Pool ist. Es gibt hier nicht genug Gegner, die bereit sind, es lange genug zu bestrafen, um Abweichen teuer zu machen.", "co-sy-alld-else": "Es nimmt die Versuchungsauszahlung von jedem, der naiv genug ist, sie anzubieten, und verbringt dann den Rest jedes Matchs damit, die Strafauszahlung von Gegnern einzusammeln, die aufgehört haben, mit ihm zu kooperieren. Senken Sie die Fortsetzungschance, bis die Zukunft kurz ist, und sehen Sie es klettern.", "co-sy-tft1": "Wie du mir, so ich dir ist Erster, ohne jemanden zu schlagen. Sehen Sie seine Zeile in der Tabelle unten an: Ohne Rauschen ist jede Zahl entweder gleich der gegenüber oder um etwa eine Runde des Hereingelegtwerdens niedriger. Es gewinnt, indem es nie schlimm verliert, was eine Aussage über das Turnierformat ebenso ist wie über die Regel.", "co-sy-tft2": "Wie du mir, so ich dir ist {pos} in diesem Pool, und dabei lohnt es sich zu verweilen, statt es zu korrigieren. Es schlägt weiterhin niemanden, und gegen genau diese Gegner reicht das nicht für den ersten Platz. Ändern Sie den Pool, und die Rangfolge ändert sich mit. Es gibt keine im Abstrakten beste Strategie, nur eine beste gegen eine gegebene Mischung.", "co-sy2-1": "Nach {g} Generationen ist die Population zu {x} {win}. ", "co-sy2-gone1": "{list} liegt unter einem Prozent und ist praktisch fort. ", "co-sy2-peak": "{name} erreicht {x} in Generation {g} und fällt dann, was so aussieht, wie wenn die Opfer ausgehen.", "co-of": "{a} von {b}", "co-pct": "{x} Prozent", "co-rounds": "{n} Runden", "pg-title": "Die Evolution der Kooperation"}};
+function T(k, en, v) {
+  var out = window.__t ? window.__t(k, en) : en;
+  if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+  return out;
+}
+function stName(st) { return T("co-st-" + st.id + "-n", st.name); }
+function stDesc(st) { return T("co-st-" + st.id + "-d", st.desc); }
+var SWEEP = {
+  "Temptation": "co-c-T", "Reward": "co-c-R", "Punishment": "co-c-P", "Sucker": "co-c-Sk",
+  "Chance the game continues": "co-c-w", "Chance a move is misread": "co-c-noise",
+  "The coin tossed after every round. It decides how much future there is to lose.": "co-c-w-h",
+  "A move flipped in transmission. Strict retaliation copes with this badly.": "co-c-noise-h",
+  "Open with": "co-r-open", "After they cooperate": "co-r-c",
+  "After one defection": "co-r-d", "After two in a row": "co-r-dd",
+  "cooperate": "co-r-coop", "defect": "co-r-def",
+  "Draw again": "co-b-draw", "Axelrod's payoffs": "co-b-axelrod", "Copy link": "co-b-copy",
+  "First place": "co-rd-win", "Its score": "co-rd-sc",
+  "Average match length": "co-rd-len", "Rounds played": "co-rd-tot"
+};
+function sweepI18n() {
+  document.querySelectorAll(".ex-ctrl label > span:first-child, .ex-read-k, .k-hint, .co-runbar button, #co-runbar button, .ex-ctrl option").forEach(function (n) {
+    var en = n.getAttribute("data-en");
+    if (en === null) {
+      en = (n.childNodes.length && n.lastChild.nodeType === 3 ? n.lastChild.textContent : n.textContent).trim();
+      n.setAttribute("data-en", en);
+    }
+    var k = SWEEP[en];
+    if (!k) return;
+    var tgt = n.lastChild && n.lastChild.nodeType === 3 ? n.lastChild : n;
+    tgt.textContent = T(k, en);
+  });
+  /* the strategy checklist carries name + desc per entry */
+  document.querySelectorAll("#co-pool .co-name").forEach(function (n) {
+    var small = n.querySelector(".co-desc");
+    var nameNode = n.firstChild;
+    var en = n.getAttribute("data-en");
+    if (en === null) { en = nameNode.textContent; n.setAttribute("data-en", en); }
+    var SL = window.__CO_STRATS || [];
+    for (var i = 0; i < SL.length; i++) {
+      if (SL[i].name === en) {
+        nameNode.textContent = stName(SL[i]);
+        if (small) small.textContent = stDesc(SL[i]);
+        break;
+      }
+    }
+  });
+}
+
 /* ============================================================
    Essay three: the evolution of cooperation
 
@@ -1979,13 +2037,10 @@ var Ex = (function () {
   function checkGame() {
     var bad = [];
     if (!(S.T > S.R && S.R > S.P && S.P > S.Sk)) {
-      bad.push("The order temptation above reward above punishment above sucker does not hold, so defecting is "
-        + "not always the individually better move and this is no longer a prisoner's dilemma.");
+      bad.push(T("co-warn-1", "The order temptation above reward above punishment above sucker does not hold, so defecting is not always the individually better move and this is no longer a prisoner's dilemma."));
     }
     if (!(2 * S.R > S.T + S.Sk)) {
-      bad.push("Twice the reward is not greater than the temptation plus the sucker, so a pair does better by "
-        + "taking turns to exploit each other than by cooperating, and mutual cooperation is not the outcome "
-        + "worth reaching.");
+      bad.push(T("co-warn-2", "Twice the reward is not greater than the temptation plus the sucker, so a pair does better by taking turns to exploit each other than by cooperating, and mutual cooperation is not the outcome worth reaching."));
     }
     return bad;
   }
@@ -2013,7 +2068,7 @@ var Ex = (function () {
 
     RES.rank.forEach(function (r, k) {
       var y = padT + k * rowH;
-      svg.appendChild(Ex.label(padL, y + 11, (k + 1) + ".  " + r.s.name,
+      svg.appendChild(Ex.label(padL, y + 11, (k + 1) + ".  " + stName(r.s),
         { anchor: "start", fill: "var(--ink)", size: fs + 1, weight: 500 }));
       var bw = Math.max(1, (r.avg - lo) / span * iw);
       svg.appendChild(Ex.s("rect", { x: padL, y: y + 17, width: iw, height: narrow ? 11 : 12,
@@ -2025,7 +2080,7 @@ var Ex = (function () {
     });
 
     svg.appendChild(Ex.label(padL, H - 6,
-      "average payoff per round, best at the top", { anchor: "start", fill: "var(--faint)", size: fs }));
+      T("co-l-rank", "average payoff per round, best at the top"), { anchor: "start", fill: "var(--faint)", size: fs }));
 
     host1.appendChild(svg);
   }
@@ -2070,7 +2125,7 @@ var Ex = (function () {
       var share = RES.hist[GENS][i2];
       if (share > 0.09) {
         var mid = acc + share / 2;
-        svg.appendChild(Ex.label(padL + iw - 6, Y(mid) + 3.5, RES.pool[i2].name,
+        svg.appendChild(Ex.label(padL + iw - 6, Y(mid) + 3.5, stName(RES.pool[i2]),
           { anchor: "end", fill: "var(--paper)", size: fs, weight: 500 }));
       }
       acc += share;
@@ -2086,7 +2141,7 @@ var Ex = (function () {
     for (var t = 0; t <= GENS; t += narrow ? 20 : 10) {
       svg.appendChild(Ex.label(X(t), padT + ih + 14, String(t), { fill: "var(--faint)", size: fs }));
     }
-    svg.appendChild(Ex.label(padL + iw / 2, H - 3, "generation", { fill: "var(--faint)", size: fs }));
+    svg.appendChild(Ex.label(padL + iw / 2, H - 3, T("co-l-gen", "generation"), { fill: "var(--faint)", size: fs }));
 
     host2.appendChild(svg);
   }
@@ -2122,41 +2177,35 @@ var Ex = (function () {
   /* ---------- prose ---------- */
 
   function summary0() {
-    return "The payoffs are " + S.T + " for the temptation, " + S.R + " for the reward, " + S.P
-      + " for the punishment and " + S.Sk + " for the sucker. The game continues after each round with a "
-      + "chance of " + Kit.num(S.w, 2) + ", which makes a match " + Kit.num(1 / (1 - S.w), 1)
-      + " rounds long on average. A move is flipped by noise " + Kit.num(S.noise * 100, 0)
-      + " per cent of the time.";
+    return T("co-s0", "The payoffs are {T} for the temptation, {R} for the reward, {P} for the punishment and {Sk} for the sucker. The game continues after each round with a chance of {w}, which makes a match {len} rounds long on average. A move is flipped by noise {n} per cent of the time.",
+      {T: S.T, R: S.R, P: S.P, Sk: S.Sk, w: Kit.num(S.w, 2), len: Kit.num(1 / (1 - S.w), 1), n: Kit.num(S.noise * 100, 0)});
   }
 
   function summary1() {
-    if (!RES.k) return "No strategy is in the pool, so there is no tournament to report.";
-    var out = "Round robin over " + RES.k + " strategies, " + RES.matches + " matches and "
-      + RES.rounds + " rounds in total. Ranked by average payoff per round: ";
-    out += RES.rank.map(function (r, i) {
-      return (i + 1) + " " + r.s.name + " " + Kit.num(r.avg, 2);
-    }).join(", ") + ".";
-    return out;
+    if (!RES.k) return T("co-s1-none", "No strategy is in the pool, so there is no tournament to report.");
+    return T("co-s1", "Round robin over {k} strategies, {m} matches and {r} rounds in total. Ranked by average payoff per round: {list}.",
+      {k: RES.k, m: RES.matches, r: RES.rounds,
+       list: RES.rank.map(function (r, i) { return (i + 1) + " " + stName(r.s) + " " + Kit.num(r.avg, 2); }).join(", ")});
   }
 
   function summary2() {
-    if (!RES.k) return "No strategy is in the pool, so there is no population to report.";
+    if (!RES.k) return T("co-s2-none", "No strategy is in the pool, so there is no population to report.");
     var end = RES.hist[GENS];
     var parts = [];
     for (var i = 0; i < RES.k; i++) {
-      parts.push(RES.pool[i].name + " " + Kit.num(end[i] * 100, 1) + " per cent");
+      parts.push(stName(RES.pool[i]) + " " + T("co-pct", "{x} per cent", {x: Kit.num(end[i] * 100, 1)}));
     }
-    return "Population shares after " + GENS + " generations, starting from an equal share each: "
-      + parts.join(", ") + ".";
+    return T("co-s2", "Population shares after {g} generations, starting from an equal share each: {list}.",
+      {g: GENS, list: parts.join(", ")});
   }
 
   function says() {
     var host = Q("#co-says");
     Kit.clear(host);
-    function n(t, flag) { return E("span", { class: "ex-n" + (flag ? " ex-n-flag" : ""), text: t }); }
+    function nh(t, flag) { return '<span class="ex-n' + (flag ? " ex-n-flag" : "") + '">' + t + "</span>"; }
 
     if (!RES.k) {
-      host.appendChild(E("p", { text: "Tick at least one strategy above and the tournament will run." }));
+      host.appendChild(E("p", { text: T("co-sy-none", "Tick at least one strategy above and the tournament will run.") }));
       return;
     }
 
@@ -2168,61 +2217,37 @@ var Ex = (function () {
       if (r.s.id === "tft") tft = { r: r, pos: i + 1 };
     });
 
-    p.appendChild(document.createTextNode("With a continuation chance of "));
-    p.appendChild(n(Kit.num(S.w, 2)));
-    p.appendChild(document.createTextNode(", so about "));
-    p.appendChild(n(Kit.num(1 / (1 - S.w), 0) + " rounds"));
-    p.appendChild(document.createTextNode(" a match, "));
-    p.appendChild(E("span", { class: "ex-em", text: top.s.name }));
-    p.appendChild(document.createTextNode(" comes first on "));
-    p.appendChild(n(Kit.num(top.avg, 2)));
-    p.appendChild(document.createTextNode(" a round and " + bot.s.name + " comes last on "));
-    p.appendChild(n(Kit.num(bot.avg, 2)));
-    p.appendChild(document.createTextNode("."));
+    p.innerHTML = T("co-sy-1", "With a continuation chance of {w}, so about {len} a match, {top} comes first on {ts} a round and {bot} comes last on {bs}.",
+      {w: nh(Kit.num(S.w, 2)), len: nh(T("co-rounds", "{n} rounds", {n: Kit.num(1 / (1 - S.w), 0)})),
+       top: '<span class="ex-em">' + stName(top.s) + "</span>", ts: nh(Kit.num(top.avg, 2)),
+       bot: stName(bot.s), bs: nh(Kit.num(bot.avg, 2))});
     host.appendChild(p);
 
     if (alld) {
       var p2 = E("p");
-      p2.appendChild(document.createTextNode("Always defect is "));
-      p2.appendChild(n(Ex.ordinal(alld.pos) + " of " + RES.k, alld.pos > RES.k / 2));
-      p2.appendChild(document.createTextNode(". "));
+      var html = T("co-sy-alld", "Always defect is {pos}. ",
+        {pos: nh(T("co-of", "{a} of {b}", {a: Ex.ordinal(alld.pos), b: RES.k}), alld.pos > RES.k / 2)});
       if (alld.pos === 1 && S.w <= 0.8) {
-        p2.appendChild(document.createTextNode("At this continuation chance there is not enough future left "
-          + "for retaliation to cost anything, so taking what is in front of you is simply the better rule. "
-          + "Raise the continuation chance and it stops being so."));
+        html += T("co-sy-alld-short", "At this continuation chance there is not enough future left for retaliation to cost anything, so taking what is in front of you is simply the better rule. Raise the continuation chance and it stops being so.");
       } else if (alld.pos === 1 && S.noise > 0) {
-        p2.appendChild(document.createTextNode("The future here is long, so this is not the shadow of the "
-          + "future failing. It is the noise. With " + Kit.num(S.noise * 100, 0) + " per cent of moves flipped "
-          + "in transmission, the retaliators spend their matches punishing each other for things neither of "
-          + "them intended, while a rule that never intended to cooperate has nothing to be confused about. "
-          + "Take the noise back to zero and watch it fall again."));
+        html += T("co-sy-alld-noise", "The future here is long, so this is not the shadow of the future failing. It is the noise. With {n} per cent of moves flipped in transmission, the retaliators spend their matches punishing each other for things neither of them intended, while a rule that never intended to cooperate has nothing to be confused about. Take the noise back to zero and watch it fall again.",
+          {n: Kit.num(S.noise * 100, 0)});
       } else if (alld.pos === 1) {
-        p2.appendChild(document.createTextNode("It is first in this pool, which is a fact about the pool. "
-          + "There are not enough opponents here willing to punish it for long enough to make defecting "
-          + "expensive."));
+        html += T("co-sy-alld-pool", "It is first in this pool, which is a fact about the pool. There are not enough opponents here willing to punish it for long enough to make defecting expensive.");
       } else {
-        p2.appendChild(document.createTextNode("It takes the temptation payoff from anyone naive enough to "
-          + "offer it, and then spends the rest of every match collecting the punishment payoff from "
-          + "opponents who have stopped cooperating with it. Lower the continuation chance until the future "
-          + "is short and watch it climb."));
+        html += T("co-sy-alld-else", "It takes the temptation payoff from anyone naive enough to offer it, and then spends the rest of every match collecting the punishment payoff from opponents who have stopped cooperating with it. Lower the continuation chance until the future is short and watch it climb.");
       }
+      p2.innerHTML = html;
       host.appendChild(p2);
     }
 
     if (tft) {
       var p3 = E("p");
       if (tft.pos === 1) {
-        p3.appendChild(document.createTextNode("Tit for tat is first without beating anyone. Look along its "
-          + "row in the table below: with no noise every figure is either equal to the one facing it or lower "
-          + "by about one round of being taken in. It wins by never losing badly, which is a claim about the "
-          + "tournament format as much as about the rule."));
+        p3.innerHTML = T("co-sy-tft1", "Tit for tat is first without beating anyone. Look along its row in the table below: with no noise every figure is either equal to the one facing it or lower by about one round of being taken in. It wins by never losing badly, which is a claim about the tournament format as much as about the rule.");
       } else {
-        p3.appendChild(document.createTextNode("Tit for tat is "));
-        p3.appendChild(n(Ex.ordinal(tft.pos) + " of " + RES.k));
-        p3.appendChild(document.createTextNode(" in this pool, which is worth sitting with rather than "
-          + "correcting. It still beats nobody, and against this particular set of opponents that is not "
-          + "enough to come first. Change the pool and the ranking changes with it. There is no strategy that "
-          + "is best in the abstract, only one that is best against a given mixture."));
+        p3.innerHTML = T("co-sy-tft2", "Tit for tat is {pos} in this pool, which is worth sitting with rather than correcting. It still beats nobody, and against this particular set of opponents that is not enough to come first. Change the pool and the ranking changes with it. There is no strategy that is best in the abstract, only one that is best against a given mixture.",
+          {pos: nh(T("co-of", "{a} of {b}", {a: Ex.ordinal(tft.pos), b: RES.k}))});
       }
       host.appendChild(p3);
     }
@@ -2231,7 +2256,7 @@ var Ex = (function () {
   function says2() {
     var host = Q("#co-says2");
     Kit.clear(host);
-    function n(t, flag) { return E("span", { class: "ex-n" + (flag ? " ex-n-flag" : ""), text: t }); }
+    function nh(t, flag) { return '<span class="ex-n' + (flag ? " ex-n-flag" : "") + '">' + t + "</span>"; }
     if (!RES.k) return;
 
     var end = RES.hist[GENS];
@@ -2243,18 +2268,14 @@ var Ex = (function () {
     var win = order[0];
 
     var p = E("p");
-    p.appendChild(document.createTextNode("After " + GENS + " generations the population is "));
-    p.appendChild(n(Kit.num(win.x * 100, 0) + " per cent"));
-    p.appendChild(document.createTextNode(" "));
-    p.appendChild(E("span", { class: "ex-em", text: win.s.name }));
-    p.appendChild(document.createTextNode(". "));
+    var html = T("co-sy2-1", "After {g} generations the population is {x} {win}. ",
+      {g: GENS, x: nh(T("co-pct", "{x} per cent", {x: Kit.num(win.x * 100, 0)})),
+       win: '<span class="ex-em">' + stName(win.s) + "</span>"});
     if (gone.length) {
-      p.appendChild(document.createTextNode(
-        (gone.length === 1 ? gone[0].s.name + " is" : gone.map(function (g) { return g.s.name; }).join(", ") + " are")
-        + " down below one per cent and effectively gone. "));
+      html += T("co-sy2-gone1", "{list} is down below one per cent and effectively gone. ",
+        {list: gone.map(function (g2) { return stName(g2.s); }).join(", ")});
     }
 
-    /* did anything peak and then fall */
     var peaked = null;
     for (var j = 0; j < RES.k; j++) {
       var best = 0, bestG = 0;
@@ -2264,22 +2285,21 @@ var Ex = (function () {
       }
     }
     if (peaked) {
-      p.appendChild(document.createTextNode(peaked.s.name + " reaches "));
-      p.appendChild(n(Kit.num(peaked.best * 100, 0) + " per cent"));
-      p.appendChild(document.createTextNode(" at generation " + peaked.g
-        + " and then falls, which is what running out of victims looks like."));
+      html += T("co-sy2-peak", "{name} reaches {x} at generation {g} and then falls, which is what running out of victims looks like.",
+        {name: stName(peaked.s), x: nh(T("co-pct", "{x} per cent", {x: Kit.num(peaked.best * 100, 0)})), g: peaked.g});
     }
+    p.innerHTML = html;
     host.appendChild(p);
   }
 
-  /* ---------- controls ---------- */
+    /* ---------- controls ---------- */
 
   var setRead, cW, cNoise, payIn = {}, ruleSel = {}, poolIn = {};
 
   function buildControls() {
     /* payoffs */
     var payHost = Q("#co-pay");
-    [["T", "Temptation"], ["R", "Reward"], ["P", "Punishment"], ["Sk", "Sucker"]].forEach(function (f) {
+    [["T", T("co-c-T", "Temptation")], ["R", T("co-c-R", "Reward")], ["P", T("co-c-P", "Punishment")], ["Sk", T("co-c-Sk", "Sucker")]].forEach(function (f) {
       var id = Ex.nextId("pay");
       var wrap = E("div", { class: "ex-ctrl" });
       wrap.appendChild(E("label", { for: id }, [E("span", { text: f[1] })]));
@@ -2298,17 +2318,17 @@ var Ex = (function () {
     /* the game controls */
     var gh = Q("#co-game");
     cW = Ex.slider(gh, {
-      label: "Chance the game continues",
+      label: T("co-c-w", "Chance the game continues"),
       min: 0.5, max: 0.99, step: 0.01, value: S.w,
-      format: function (v) { return Kit.num(v, 2) + ", about " + Kit.num(1 / (1 - v), 0) + " rounds"; },
-      hint: "The coin tossed after every round. It decides how much future there is to lose.",
+      format: function (v) { return Kit.num(v, 2) + T("co-c-w-f", ", about {n} rounds", {n: Kit.num(1 / (1 - v), 0)}); },
+      hint: T("co-c-w-h", "The coin tossed after every round. It decides how much future there is to lose."),
       onInput: function (v) { S.w = v; recompute(); }
     });
     cNoise = Ex.slider(gh, {
-      label: "Chance a move is misread",
+      label: T("co-c-noise", "Chance a move is misread"),
       min: 0, max: 20, step: 1, value: S.noise * 100,
       format: function (v) { return Kit.num(v, 0) + " %"; },
-      hint: "A move flipped in transmission. Strict retaliation copes with this badly.",
+      hint: T("co-c-noise-h", "A move flipped in transmission. Strict retaliation copes with this badly."),
       onInput: function (v) { S.noise = v / 100; recompute(); }
     });
 
@@ -2322,8 +2342,8 @@ var Ex = (function () {
       sw.style.background = st.c;
       var lab = E("label", { for: id }, [inp, sw,
         E("span", { class: "co-name" }, [
-          document.createTextNode(st.name),
-          E("small", { class: "co-desc", text: st.desc })
+          document.createTextNode(stName(st)),
+          E("small", { class: "co-desc", text: stDesc(st) })
         ])
       ]);
       inp.addEventListener("change", function () {
@@ -2337,14 +2357,14 @@ var Ex = (function () {
 
     /* the composed rule */
     var rh = Q("#co-rules");
-    [["open", "Open with"], ["c", "After they cooperate"], ["d", "After one defection"],
-     ["dd", "After two in a row"]].forEach(function (f) {
+    [["open", T("co-r-open", "Open with")], ["c", T("co-r-c", "After they cooperate")], ["d", T("co-r-d", "After one defection")],
+     ["dd", T("co-r-dd", "After two in a row")]].forEach(function (f) {
       var id = Ex.nextId("rule");
       var wrap = E("div", { class: "ex-ctrl" });
       wrap.appendChild(E("label", { for: id }, [E("span", { text: f[1] })]));
       var sel = E("select", { id: id });
-      sel.appendChild(E("option", { value: "C", text: "cooperate" }));
-      sel.appendChild(E("option", { value: "D", text: "defect" }));
+      sel.appendChild(E("option", { value: "C", text: T("co-r-coop", "cooperate") }));
+      sel.appendChild(E("option", { value: "D", text: T("co-r-def", "defect") }));
       sel.value = S.rule[f[0]];
       sel.addEventListener("change", function () { S.rule[f[0]] = sel.value; recompute(); });
       wrap.appendChild(sel);
@@ -2354,23 +2374,23 @@ var Ex = (function () {
 
     /* run bar */
     var bar = Q("#co-runbar");
-    bar.appendChild(E("button", { type: "button", class: "k-btn k-btn-key", text: "Draw again",
+    bar.appendChild(E("button", { type: "button", class: "k-btn k-btn-key", text: T("co-b-draw", "Draw again"),
       onclick: function () { S.seed = (S.seed * 1664525 + 1013904223) >>> 0; recompute(); } }));
     bar.appendChild(E("button", { type: "button", class: "k-btn k-btn-quiet",
-      text: "Axelrod's payoffs",
+      text: T("co-b-axelrod", "Axelrod's payoffs"),
       onclick: function () {
         S.T = 5; S.R = 3; S.P = 1; S.Sk = 0;
         payIn.T.value = 5; payIn.R.value = 3; payIn.P.value = 1; payIn.Sk.value = 0;
         recompute();
       } }));
-    bar.appendChild(E("button", { type: "button", class: "k-btn k-btn-quiet", text: "Copy link",
+    bar.appendChild(E("button", { type: "button", class: "k-btn k-btn-quiet", text: T("co-b-copy", "Copy link"),
       onclick: function () { Kit.share(hashOut()); } }));
 
     setRead = Ex.readout(Q("#co-read"), [
-      { id: "win", label: "First place", tone: "hot" },
-      { id: "sc", label: "Its score" },
-      { id: "len", label: "Average match length" },
-      { id: "tot", label: "Rounds played" }
+      { id: "win", label: T("co-rd-win", "First place"), tone: "hot" },
+      { id: "sc", label: T("co-rd-sc", "Its score") },
+      { id: "len", label: T("co-rd-len", "Average match length") },
+      { id: "tot", label: T("co-rd-tot", "Rounds played") }
     ]);
   }
 
@@ -2393,18 +2413,16 @@ var Ex = (function () {
     Q("#co-cd-a").textContent = String(S.Sk); Q("#co-cd-b").textContent = String(S.T);
     Q("#co-dc-a").textContent = String(S.T); Q("#co-dc-b").textContent = String(S.Sk);
     Q("#co-dd-a").textContent = String(S.P); Q("#co-dd-b").textContent = String(S.P);
-    Q("#co-paynote").textContent = "The dilemma needs " + S.T + " above " + S.R + " above " + S.P
-      + " above " + S.Sk + ", and twice " + S.R + " above " + S.T + " plus " + S.Sk + ". Right now that is "
-      + (checkGame().length ? "not satisfied." : "satisfied.");
+    Q("#co-paynote").textContent = T("co-pay-note", "The dilemma needs {T} > {R} > {P} > {Sk}, and twice {R} > {T} plus {Sk}. Right now that is {ok}",
+      {T: S.T, R: S.R, P: S.P, Sk: S.Sk, ok: checkGame().length ? T("co-pay-no", "not satisfied.") : T("co-pay-ok", "satisfied.")});
 
     var warn = Q("#co-warn");
     Kit.clear(warn);
     var bad = checkGame();
     if (bad.length) {
-      var box = E("div", { class: "k-warn" }, [E("h3", { text: "These payoffs are not a prisoner's dilemma" })]);
+      var box = E("div", { class: "k-warn" }, [E("h3", { text: T("co-warn-h", "These payoffs are not a prisoner's dilemma") })]);
       bad.forEach(function (b) { box.appendChild(E("p", { text: b })); });
-      box.appendChild(E("p", { text: "The tournament below still runs, and the numbers it prints are correct "
-        + "for the game you have described. They are simply not about the prisoner's dilemma any more." }));
+      box.appendChild(E("p", { text: T("co-warn-p", "The tournament below still runs, and the numbers it prints are correct for the game you have described. They are simply not about the prisoner's dilemma any more.") }));
       warn.appendChild(box);
     }
   }
@@ -2457,13 +2475,13 @@ var Ex = (function () {
       draw1();
       draw2();
       drawTable();
-      setRead("win", RES.rank[0].s.name);
-      setRead("sc", Kit.num(RES.rank[0].avg, 2), "payoff per round");
-      setRead("len", Kit.num(RES.rounds / RES.matches, 1), "rounds, actual draw");
-      setRead("tot", Kit.num(RES.rounds, 0), "across " + RES.matches + " matches");
+      setRead("win", stName(RES.rank[0].s));
+      setRead("sc", Kit.num(RES.rank[0].avg, 2), T("co-rd-sc-t", "payoff per round"));
+      setRead("len", Kit.num(RES.rounds / RES.matches, 1), T("co-rd-len-t", "rounds, actual draw"));
+      setRead("tot", Kit.num(RES.rounds, 0), T("co-rd-tot-t", "across {m} matches", {m: RES.matches}));
     } else {
       Kit.clear(host1); Kit.clear(host2); Kit.clear(Q("#co-h2h"));
-      setRead("win", "none"); setRead("sc", "none"); setRead("len", "none"); setRead("tot", "0");
+      setRead("win", T("co-rd-none", "none")); setRead("sc", T("co-rd-none", "none")); setRead("len", T("co-rd-none", "none")); setRead("tot", "0");
     }
 
     Q("#co-sum1").textContent = summary1();
@@ -2489,10 +2507,13 @@ var Ex = (function () {
   function render() { paint(); }
 
   function init() {
+    window.__CO_STRATS = STRATS;
     hashIn();
     buildControls();
     syncControls();
     recompute();
+    sweepI18n();
+    document.addEventListener("langchange", function () { sweepI18n(); recompute(); paintMatrix(); });
     Ex.onResize(render);
     window.addEventListener("hashchange", function () {
       if (hashIn()) { syncControls(); recompute(); }
@@ -2505,40 +2526,97 @@ var Ex = (function () {
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Dört denemeden üçüncüsü</i>"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Essay drei von vier</i>"}};
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Dört denemeden üçüncüsü</i>"}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Essay drei von vier</i>"}};
 
 (function(){
   "use strict";
   var KEY = "lang", lang = "en";
-  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
-  var D = window.CHROME_I18N || {};
-  var base = {}, baseA = {};
-  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
-  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  function known(l){
+    return l === "en"
+        || (window.CHROME_I18N && window.CHROME_I18N[l])
+        || (window.PAGE_I18N && window.PAGE_I18N[l]);
+  }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
   function apply(l){
-    if(!D[l]) l = "en";
-    var d = D[l] || {};
-    document.querySelectorAll(SEL).forEach(function(el){
-      var k = el.getAttribute("data-i");
-      if(!(k in base)) base[k] = el.innerHTML;
-      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
-    });
-    document.querySelectorAll(SELA).forEach(function(el){
-      var k = el.getAttribute("data-ia");
-      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
-      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
-    });
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
     });
     try { localStorage.setItem(KEY, l); } catch (e) {}
     window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
 })();
 

@@ -255,7 +255,7 @@ footer.site-foot{background:var(--paper)}
 .bar{position:relative;z-index:3}
 footer.site-foot{position:relative;z-index:3}
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -263,8 +263,9 @@ footer.site-foot{position:relative;z-index:3}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -283,7 +284,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -293,7 +294,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -303,12 +304,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -339,12 +340,12 @@ footer a:hover{color:var(--fg)}
 </head>
 <body>
 
-<a class="skip" href="#panel">Skip to the choices</a>
+<a class="skip" href="#panel" data-i="lg-skip">Skip to the choices</a>
 
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../game.html" aria-current="page" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../profile.html" data-i="nav-p">Profile</a><a href="../../projects.html" data-i="nav-j">Projects</a><a href="../../tools.html" data-i="nav-t">Tools</a><a href="../../tools/economics/" data-i="nav-e">Economics</a><a href="../../game.html" aria-current="page" data-i="nav-g">Game Theory</a><a href="../../simea/" data-i="nav-s">Simulations</a><a href="../../notes.html" data-i="nav-n">Notes</a><a href="../../contact.html" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -363,8 +364,8 @@ footer a:hover{color:var(--fg)}
     <p class="ch" id="chLabel">The Long Game</p>
     <p class="meta" id="whenLabel">a village, before anything has happened</p>
     <span class="spacer"></span>
-    <button type="button" class="quiet" id="nbBtn" aria-expanded="false" aria-controls="notebook" hidden>Notebook</button>
-    <button type="button" class="quiet" id="menuBtn">Start over</button>
+    <button type="button" class="quiet" id="nbBtn" aria-expanded="false" aria-controls="notebook" hidden data-i="lg-nb-btn">Notebook</button>
+    <button type="button" class="quiet" id="menuBtn" data-i="lg-restart">Start over</button>
   </div>
 
   <div id="nbwrap">
@@ -377,6 +378,7 @@ footer a:hover{color:var(--fg)}
 
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="../../sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 
@@ -446,6 +448,20 @@ function dilemmaCheck(p) {
    opp  : the moves the other side was seen to make, oldest first
    own  : this side's own moves, oldest first
    pays : this side's own payoff after each of its own moves      */
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"lg-skip": "Seçimlere atla", "lg-restart": "Baştan başla", "lg-nb-btn": "Defter", "lg-name": "Uzun Oyun", "lg-when-title": "bir köy, bir çit ve her mevsim bir karar", "lg-when-arg": "savın kendisi, açıkça", "lg-when-begins": "{s}, yıl başlıyor", "lg-when-winter": "zorlu kış, {b} mevsimden {a}.", "lg-when-season": "{s}, {b} mevsimden {a}.", "lg-when-over-w": "zorlu kış, mevsim {a} / {b}", "lg-when-over-s": "{s} bitti, mevsim {a} / {b}", "lg-when-closes": "bölüm kapanıyor", "lg-when-quiz": "on iki mevsim bitti", "lg-when-mid": "ilk kış bitti", "lg-when-years": "{b} yıldan {a}. yıl", "lg-when-free": "kendi sayıların, kendi komşun", "lg-when-freeseason": "{s}, mevsim {n}", "lg-ch": "Bölüm {n}. {t}", "lg-ch1": "İlk komşu", "lg-ch2": "Köy", "lg-ch3": "Zorlu kış", "lg-ch4": "Hakkında söyledikleri", "lg-ch5": "Yıllar", "lg-sea-0": "İlkbahar", "lg-sea-1": "Yaz", "lg-sea-2": "Sonbahar", "lg-sea-3": "Kış", "lg-t-p1": "Hasat kaldırıldı. Bir haneye yetenden çok, iki hanenin istediğinden az. Her mevsimin sonunda bir komşu çite geliyor ve çuvalının çitin üzerinden mi aşacağına yoksa basamağında mı kalacağına sen karar veriyorsun. O da aynı anda senin hakkında aynı karara varıyor ve ikiniz de önce konuşmuyorsunuz.", "lg-t-p2": "Beş bölüm. Hiçbir şey, sen oynamadan önce açıklanmıyor.", "lg-b-resume": "{n}. bölümden devam et", "lg-b-begin": "İlk mevsimden başla", "lg-b-free": "Serbest oyun", "lg-t-note": "Her şey bu sayfanın içinde oluyor. Burada yaptığın hiçbir şey bir yere gönderilmiyor. İlerlemen bu tarayıcıda tutuluyor, başka hiçbir yerde değil.", "lg-s-title": "Uzun Oyun. Bir hasadı bir komşuyla mevsim mevsim paylaşmak üzerine bir oyun.", "lg-i1-kick": "Birinci bölüm", "lg-i1-b1": "Mira çitin öbür yanındaki şeridi işliyor. Önümüzdeki altı mevsimin her birinin sonunda gelecek.", "lg-i1-b2": "Her mevsim bir kez seçiyorsun. Hasadı paylaşırsan çuval çitin üzerinden aşıyor. Tutarsan basamağında kalıyor. O da aynı anda seçiyor ve onun ne seçtiğini ancak kendi seçimine bağlandıktan sonra öğreniyorsun.", "lg-i1-b3": "Kimse sana doğru cevabı söylemeyecek. Altı mevsimi oyna ve ne çıkardığına bak.", "lg-i2-kick": "İkinci bölüm", "lg-i2-b1": "Haber yayılıyor. Artık çite sırayla dört hane geliyor: Deniz, Bruno, Halil ve Ana. Her birinin bu işi bir yapma biçimi var ve hiçbiri ne olduğunu söylemeyecek.", "lg-i2-b2": "Her biriyle üçer kez, sırayla karşılaşacaksın. Deniz'e ne yaptığını Bruno bilmiyor ve her biri yalnızca ona ne yaptığına cevap veriyor.", "lg-i2-b3": "Köşede bir defter var. Her birinin ne yaptığını yazıyor. Kullan; çünkü bölümün sonunda kimin kim olduğu sana sorulacak.", "lg-i3-kick": "Üçüncü bölüm", "lg-i3-b1": "İki şerit arasındaki kış yolu bir dere yatağı boyunca gidiyor ve bu yıl yatak azgın. Öbür tarafa gönderilen çuval her zaman yerine varmıyor. Tahıl çıktığı ambarda kalıyor; yani yol, sana sormadan seni tutan biri yapıyor ve çitin karşısındaki hane yalnızca hiçbir şeyin gelmediğini görüyor.", "lg-i3-b2": "Çitin karşısında yine Halil var, bunun sekiz mevsimi boyunca. Geçen bölümdeki adamın aynısı ve tam olarak daha önce yaptığını yapacak.", "lg-i3-b3": "Kaybolan bir çuvalın bir mevsime, sonra da ondan sonraki mevsime ne yaptığını izle.", "lg-i4-kick": "Dördüncü bölüm", "lg-i4-b1": "Köyün kıyısındaki boş şeritleri üç hane aldı. Hiçbiri seninle tanışmadı. Hepsi seni duydu.", "lg-i4-b2": "Çitin yanındaki direkte bir fener var. Köyün senin hakkında inandığı şey o ve bir skor tabelası değil: alevi yükseltmek çok mevsim paylaşmak istiyor, düşürmekse tek bir tutulan çuval.", "lg-i4-b3": "Önce Tomas geliyor, sonra Leyla, sonra Emre. Her biri duyduklarıyla açılıyor, sonra gerçekte ne yaptığına cevap veriyor.", "lg-i5-kick": "Beşinci bölüm", "lg-i5-b1": "Çuvalı bırak. Bu bölüm oynanmıyor, izleniyor.", "lg-i5-b2": "Otuz hane, hasada dair beş yapma biçimi ve kırk yıl. Her yıl her hane, diğer her haneyle uzun bir mevsim dizisi boyunca iş görüyor ve kendini en iyi doyuran hanelerin, doyuramayanlardan daha çok çocuğu oluyor. Köy hiçbir şey seçmiyor. Yalnızca yiyor.", "lg-i5-b3": "Yamacın hangi şeridinin büyüdüğünü, hangisinin boşaldığını izle.", "lg-go-first": "İlk mevsim", "lg-go-winter": "İlk kış mevsimi", "lg-go-tomas": "Tomas'la tanış", "lg-go-year": "İlk yıl", "lg-a-kick-w": "Kış, {b} mevsimden {a}.", "lg-a-kick-s": "{s} {a} / {b}", "lg-a-h": "{n} çitte", "lg-a-gully": "Dere yatağı akıyor. Öbür tarafa gönderilen bir çuval her zaman yerine varmıyor ve tahıl başladığı yerde kalıyor. Çitin öte yanından bu, tıpatıp bir karar gibi görünüyor.", "lg-a-first4": "{n} seninle daha önce karşılaşmadı. {n} bu ilk mevsimde ne yapıyorsa köyün senin hakkında söylediklerinden yapıyor. Dere yatağı kışı buna sayılmıyor; çünkü o yıl her hanenin yolu aynıydı ve bunu herkes biliyor.", "lg-a-sack": "Çuvalın basamakta. {n} tarafında da bir tane var. Bir kez seç, sonra başını kaldır.", "lg-b-share": "Hasadı paylaş", "lg-b-keep": "Hasadı tut", "lg-cellar": "Kilerin", "lg-others": "Diğerleri", "lg-s-ask": "{s}, {b} mevsimden {a}. {n} çitte. Hasadı paylaş ya da hasadı tut. {y} sepetin var.", "lg-r-kick": "Mevsim kapanıyor", "lg-r-accident": "İkiniz de bir kazayı bir karardan ayıramazsınız. Eline yalnızca gelen geçer.", "lg-r-lantern": "Direkteki fener {w}.", "lg-rep-well": "harıl harıl yanıyor", "lg-rep-low": "kısık ama düzenli", "lg-rep-nearly": "sönmek üzere", "lg-rep-out": "sönmüş", "lg-b-winterend": "Kış bitiyor", "lg-b-chend": "Bölüm bitiyor", "lg-b-nextseason": "Sonraki mevsim", "lg-s-result": "{o} {r} Şu an {y} sepetin var.", "lg-bask1": "{n} sepet", "lg-baskN": "{n} sepet", "lg-o-tail": " Sana {yb}, ona {t}.", "lg-o-both": "Yol iki çuvalı da aldı.{tail}", "lg-o-you": "Yol, sana sormadan seni tutan biri yaptı.{tail}", "lg-o-them": "Karşıdan bir şey gelmedi ve buna kimse karar vermedi.{tail}", "lg-o-cc": "İki kiler de doluyor.{tail}", "lg-o-dc": "Mevsimden en iyi sen çıktın.{tail}", "lg-o-cd": "Mevsimden en kötü sen çıktın.{tail}", "lg-o-dd": "İki kiler de dolmuyor.{tail}", "lg-rw-youlost": "Çuvalın karşıya hiç varamadı. Hâlâ ambarında ve ambarın istediğinden daha dolu.", "lg-rw-yougave": "Çuvalını çitin üzerinden aşırdın.", "lg-rw-youkept": "Çuvalını kendi basamağında tuttun.", "lg-rw-themlost": "Öbür yönden bir çuval gelecekti ve hiç varmadı.", "lg-rw-themgave": "{n} aynı anda karşıya bir çuval uzattı.", "lg-rw-themkept": "{n} çuvalı karşı basamakta tuttu.", "lg-pt-cap": "Her seçim çifti için sana ve ona düşen sepetler", "lg-pt-theyshare": "o paylaşırsa", "lg-pt-theykeep": "o tutarsa", "lg-pt-youshare": "sen paylaşırsan", "lg-pt-youkeep": "sen tutarsan", "lg-pt-toyou": " sana", "lg-pt-tothem": "{n} ona", "lg-q-kick": "Cevaplardan önce", "lg-q-h": "Kim kimdir söyle", "lg-q-p1": "Her biriyle üç kez karşılaştın ve defter kaydı tuttu. Aşağıda hasada dair dört yapma biçimi var. Her ismin karşısına birini koy. Doğru bilmene bağlı hiçbir şey yok; cevaplar her hâlükârda birazdan geliyor.", "lg-q-choose": "seç", "lg-b-check": "Defteri onlarla karşılaştır", "lg-b-skipq": "Atla ve cevapları gör", "lg-s-quiz": "Kim kimdir söyle. Her komşu için bir açılır liste.", "lg-m-kick": "Dere yatağının yaptığı", "lg-m-h": "Kimsenin seçmediği bir kan davası", "lg-m-p1": "Halil tam olarak eline ulaşana cevap verir. Başka türlüsünü yapamaz; çünkü onun için hiç gelmemiş bir çuvalla hiç gönderilmemiş bir çuval aynı şeydir. Böylece kötü bir yol parçası tutulan bir mevsime dönüşür, tutulan mevsim bir cevaba, cevap da başka bir cevaba.", "lg-m-p2": "Sekiz mevsim; sana {y}, Halil'e {t} sepet. {lost}Halil sekizin {p} tanesinde tutmayı kendisi istedi ve bunların her biri, zaten olmuş bir şeye cevaptı.", "lg-m-lost1": "Yol, göndermek istediğin çuvallardan {n} tanesini alıkoydu. ", "lg-m-lost0": "Yol, göndermek istediğin hiçbir şeyi alıkoymadı. ", "lg-m-p3": "Ona aynı biçimde cevap verirsen daha da kötü. Çitin iki yanına, ikisi de tam olarak Halil'in yaptığını yapan iki hane koy ve onları aynı kayıplarla aynı yollardan bu aynı kışa gönder. Sadece paylaşarak alacakları {r8} yerine {a} ve {b} sepetle bitiriyorlar; sekiz mevsimin {f} tanesini iki kiler de kapalı geçiriyor, {alt} tanesinde de sırayla birbirlerini soyuyorlar, önce bir yönde sonra öbüründe. Kaza sönmüyor. Mevsimler sürdükçe aralarında gidip geliyor.", "lg-m-p4": "Tek bir boş mevsimi geçiveren iki hane aynı kıştan aralarında {fb} sepetle çıkıyor. İki ayna {mb} yapabildi. Sekiz paylaşılan mevsim {r16} ederdi.", "lg-m-p5": "Şimdi aynı kış yeniden. Aynı dere yatağı, aynı mevsimlerde aynı kayıplar. Halil yokken şeridi Ana alıyor ve Ana, Halil değil.", "lg-b-withana": "Aynı kış, Ana ile", "lg-s-mid": "İlk kış bitti. Sana {y}, Halil'e {t} sepet.", "lg-b-ch-n": "Bölüm {n}. {t}", "lg-b-endof": "Sonu", "lg-roll-known": "defterlerde bilinen adıyla {f}", "lg-roll-right": ". Doğru bildin.", "lg-roll-as": ". Sen {g} demiştin.", "lg-roll-un": "cevapsız", "lg-e1-kick": "Birinci bölüm kapanıyor", "lg-e1-h": "Üzerinde oynadığın masa", "lg-e1-p1": "Altı mevsim; kilerinde {y}, Mira'nınkinde {t} sepet. İşte o mevsimlerin her birinin arkasındaki dört sayı. Senden, bulamayacağın anlamda saklanmadılar. Yalnızca hiç yazılmadılar.", "lg-e1-p2": "Üst satırı alt satıra karşı oku. Mira ne yaparsa yapsın tutmak senin için daha iyi: o paylaşırken beş üçü geçer, o tutarken bir hiçi geçer. Senin sütununa bakınca aynısı onun için de doğru. Böylece ikisi de akıllıca olanı yapan iki insan, sol üst köşede üçer sepet öylece dururken, sağ alt köşede birer sepetle bitirir.", "lg-e1-p3": "Bu biçimin bir adı var. Mahkûm ikilemi; ve akıllıca olanı yapmanın herkesi daha kötü duruma düşürdüğü en küçük durum. Bir kez oynandığında tartışılacak bir şey yok. Tutmak düpedüz daha iyi.", "lg-e1-h2": "Mira ne yapıyordu", "lg-e1-p4": "İlk mevsimde paylaştı. Ondan sonra, bir önceki mevsimde sen ona ne yaptıysan sana tam olarak onu yaptı. Hepsi bu. Adı kısasa kısas ve bu konuyu ünlü yapan turnuvalara girmiş en kısa programdı.", "lg-e1-p5": "Kısasa kısasın neyi yapamadığını söylemekte yarar var. Çitin karşısındakini asla yenmez. Yenemez: yalnızca kendisine verileni geri verir; en iyi ihtimalle seninle berabere kalır, en kötü ihtimalle ikinci gelir. Yaptığı şey, paylaşmayı senin için yapmaya değer kılmaktır ve bunu yalnızca mevsimler gelmeye devam ettiği için yapabilir. Hangi mevsimin son olduğunu bilseydin onda tutardın. Bunu bilerek, ondan öncekinde de tutardın. O çözülme, son mevsimin asla ilan edilmemesinin bütün sebebidir.", "lg-e1-t1": "Altı mevsimin ", "lg-e1-t1b": " sepet", "lg-e1-t2": "Mira ", "lg-e1-t2b": " sepet", "lg-e1-t3": "Her mevsim ikiniz de paylaşsaydınız her birinize ", "lg-e1-t3b": " düşerdi", "lg-s-e1": "Birinci bölüm kapanıyor. Kazanç tablosu artık görünür. Mira kısasa kısas oynuyordu.", "lg-e2-kick": "İkinci bölüm kapanıyor", "lg-e2-h": "Hasada dair dört yapma biçimi", "lg-e2-p1": "On iki mevsim ve {y} sepet. Çitin karşısında kimler vardı, işte.", "lg-e2-placed": "Dördün {n} tanesini doğru yerleştirdin.", "lg-e2-p2": "Dördüne birden karşı doğru olan bir hamle yok. Sen ne yaparsan yap paylaşan Deniz'e karşı tutmak düpedüz daha iyidir ve sana hiçbir zaman faturası kesilmeyecek bir şeye mal olur. Sen ne yaparsan yap tutan Bruno'ya karşı paylaşmak düpedüz daha kötüdür ve onu düzeltecek sabır yoktur. Halil ve Ana'ya karşı yaptığın sana geri gelir; yani paylaşmak kazandırır, tutmaksa henüz varmadığın bir mevsimden borç alınmıştır.", "lg-e2-p3": "Bölümün amacı bu. En iyi oynama biçimi yok. Yalnızca gerçekten orada duran kişiye karşı en iyi oynama biçimi var ve onun kim olduğunu bilmenin tek yolu, onu izlemiş olmak. Defter, yöntemin ta kendisiydi.", "lg-e2-p4": "Öğrenmenin sana neye mal olduğunu da fark etmekte yarar var. Tutarak sınadığın her komşuya, kendin hakkında da bir şey öğrettin.", "lg-s-e2": "İkinci bölüm kapanıyor. Deniz hep paylaşır, Bruno hep tutar, Halil seni yansıtır, Ana bir tutulan mevsimi geçer.", "lg-e3-kick": "Üçüncü bölüm kapanıyor", "lg-e3-h": "Hata düzeltme olarak bağışlama", "lg-e3-p1": "Aynı sekiz mevsim, aynı dere yatağı, aynı yollarda kaybolan aynı çuvallar. Halil'le {a} sepette bitirdin. Ana'yla {b} sepette.", "lg-e3-p2": "Halil eline ulaşana cevap verir. Hiçbir şey ulaşmadığında, sonraki mevsim tutar. Karşısındaki hane de aynı biçimde cevap veriyorsa o tutulan mevsim de cevaplanır, cevap da cevaplanır ve tek bir kaza, bitmeyen bir kaza dizisine dönüşür; çünkü bitirmek, tutulan bir mevsime paylaşıp karşılığında hiçbir şey almamak demektir.", "lg-e3-p3": "Ana yalnızca bir örüntüye cevap verir. Bir boş mevsim bir mevsimdir, bir mesaj değil. Üst üste iki tanesi bir mesajdır. Böylece bir kaza ondan iz bırakmadan geçer ve ikiniz, hiçbiriniz barışmaya karar vermiş olmadan paylaşmaya geri dönersiniz.", "lg-e3-p4": "Bu, daha iyi kalpli olmanın daha iyi olduğu iddiası değil. Ana soyulabilir: sonsuza kadar her ikinci mevsimde tutan biri ondan sonsuza kadar alır ve o paylaşmaya devam eder. Bölümün gösterdiği daha dar ve daha kullanışlı. Gördüğün şey karşındakinin yaptığının tam kendisi değilken, tek bir gözleme cevap veren bir kural gürültüye niyetmiş gibi cevap verir. Kuralda biraz pay bırakmak yumuşaklık değildir. Bir kuralın, net göremediği bir dünyada hayatta kalma biçimidir.", "lg-s-e3": "Üçüncü bölüm kapanıyor. Halil'le {a} sepette bitirdin, Ana'yla {b} sepette.", "lg-e4-kick": "Dördüncü bölüm kapanıyor", "lg-e4-h": "Bir geçmiş bir stratejidir", "lg-e4-p1": "Seninle hiç tanışmamış üç insanla dokuz mevsim ve {y} sepet. Direkteki fener {f} bitirdi.", "lg-f-burning": "yanarak", "lg-f-low": "kısık", "lg-f-nearly": "sönmek üzere", "lg-f-out": "sönmüş", "lg-e4-p2": "Üçü de kafanın içini göremezdi. Görebildikleri, konuşmakta olan bir köydü. Tomas onunla açıldı, Leyla da, Emre de; ve ilk mevsimden sonra her biri yalnızca gerçekte yaptığına cevap verdi.", "lg-e4-p3": "Fener, bir itibarın hareket ettiği gibi hareket etsin diye kuruldu. Paylaşmak onu birazcık yükseltir ve dolması çok mevsim ister. Tek bir tutulan çuval bir anda beşte birini götürür. Bu bakışımsızlık ahlaki bir yargı değil, kanıt üzerine aritmetiktir: yüz cömert mevsim, ucuzken cömert olan biriyle tutarlıdır; oysa tek bir alınmış çuval yalnızca alan biriyle tutarlıdır.", "lg-e4-p4": "İşe yarayan kısım şu. İnsanların konuştuğu kadar küçük bir köyde geçmişin, oyununun bir kaydı değildir. Oyununun bir parçasıdır. Daha ikiniz de hiçbir şey yapmamışken, bir sonraki yabancının neyle açılacağına o karar verir.", "lg-e4-p5": "Ne kadar ileri götürdüğüne dikkat et. Bu bölümde köy senin hakkında her zaman doğruyu söyledi ve her zaman kendisiyle aynı fikirdeydi. Gerçek itibarlar eksiklidir, bayattır ve farklı insanlar için farklı değerdedir; bunların hiçbiri burada modellenmedi.", "lg-s-e4": "Dördüncü bölüm kapanıyor. {y} sepetle bitirdin ve fener {f}.", "lg-y-h0": "Otuz hane", "lg-y-hnone": "Ne olursa olsun tutan kimse kalmadı", "lg-y-hwell": "Tutanların işi çok iyi gidiyor", "lg-y-hrun": "Tutanların alacağı insan tükeniyor", "lg-y-hfeed": "Köy kendini doyuruyor", "lg-y-p0": "On beş hane ne olursa olsun paylaşıyor. Altısı ne olursa olsun tutuyor. Dördü yansıtıyor, üçü tutulan bir çuvalı asla unutmuyor ve ikisi tek bir tanesini geçiyor. Her hane her yıl, diğer her haneyle yaklaşık otuz mevsim iş görüyor.", "lg-y-p1": "Geçen yıl kendini daha iyi doyuran haneler bu yıl köyün daha büyük kısmını tutuyor. Kimse yapma biçimini değiştirmedi. Oranlar altlarında değişti.", "lg-b-oneyear": "Bir yıl", "lg-b-run": "Yılları akıt", "lg-b-hold": "Yılları durdur", "lg-b-what": "Ne oldu", "lg-b-skip40": "Kırkıncı yıla atla", "lg-cofn": "{c} / {n}", "lg-s-years": "Yıl {y}. Otuz haneden {list}.", "lg-e5-kick": "Beşinci bölüm kapanıyor", "lg-e5-h": "Hayatta kalan, bir sonraki mevsimi kazanan değildir", "lg-e5-p1": "Ne olursa olsun tutan haneler köyün beşte biri olarak başladı. {py}. yıla geldiklerinde her yüz haneden {pk} tanesiydiler; çünkü ne olursa olsun paylaşan insanlarla dolu bir köy, dünyada tutan biri olmak için en kolay yerdir.", "lg-e5-p2": "Ve onları bitiren tam olarak bu oldu. Aldıkları her yıl, alacak daha az hane kaldı. Koşulsuz paylaşanlar önce gitti; onlar gidince tutanlar çoğunlukla birbirleriyle ve karşılık veren hanelerle iş görür oldu ve tutanla iş gören bir tutan, mevsim başına bir sepet alır. {ly}. yıla gelindiğinde her yüzden {lk} taneydiler.", "lg-e5-p3": "Ne olursa olsun paylaşan haneler de izlemeye değer. Tutanlar yerken her yüzde {gm} taneye düşüyorlar; sonra tutanlar gidince hiçbir şey için cezalandırılmaz oluyor ve {g} seviyesinde tutunuyorlar. İyi durumdalar ama iyi oldukları için değil. İyi durumdalar çünkü artık onlardan alacak kimse yok; ve orada olmaları, bir tutanın geri döneceği çatlağın ta kendisi.", "lg-e5-p4": "Bu köyde hiçbir şey seçim yapmıyordu. Kimse öğrenmedi, kimse fikrini değiştirmedi, kimse hiçbir şey için cezalandırılmadı. Kendini iyi doyuran hanelerin daha çok çocuğu oldu ve tek başına bu, herkesin altındaki zemini oynattı.", "lg-e5-p5": "Götürülmeye değer şey iki soru arasındaki fark. Bu mevsimi hangi hamle kazanır bir soru ve onu her seferinde tutmak kazanır. Hasada dair hangi yapma biçimi kırk yıl sonra hâlâ burada, o başka bir soru ve cevabı başka.", "lg-e5-p6": "Sayıları dar oku. Bu sonuç bu köy hakkında bir olgu: bu beş yapma biçimi, bu başlangıç oranları, bu dört kazanç ve eşleşme başına yaklaşık otuz mevsim. Karışımı değiştir, sonucu değiştirirsin. Köye hiç yansıtan ve hiç kin tutan koyma, tutanlar hiç düşmez. Mevsimleri her eşleşme iki kez görüşecek kadar kısalt, tutanlar açık farkla kazanır. Burada işbirliği kazanır diye bir yasa yok. Yalnızca bir mekanizma var ve mekanizmaların koşulları olur.", "lg-en-h1": "Beş bölüm ne içindi", "lg-en-p1": "İki insanın her biri alarak daha iyi edebilir ve ikisi de aldığında ikisi de daha kötü eder. Tuzağın tamamı bu ve kimsenin karakterinde değil, sayıların içinde. Bir kez oynandığında almak düpedüz doğrudur ve hakkında söylenecek başka bir şey yoktur.", "lg-en-p2": "Cevabı değiştiren her şey aynı kaynaktan geliyor: mevsimler gelmeye devam ediyor ve hangisinin son olduğunu iki taraf da bilmiyor. Şimdi yaptığını, sonra başına gelen bir şey hâline getiren bu. İyi niyet değil, güven değil. İçinde gelecek olan aritmetik.", "lg-en-p3": "Bundan dört şey çıktı ve her biri bir bölümdü.", "lg-en-l1": "Aynıyla cevap vermek kadar kısa bir kural, paylaşmayı senin için değerli kılmaya yeter; ve çitin karşısındakini bir kez olsun yenmez. Yalnızca onun çıkarına olanı değiştirir.", "lg-en-l2": "En iyi oynama biçimi yok. Gerçekten orada duran haneye karşı en iyi oynama biçimi var; izlemenin yöntem, defterin araç olmasının sebebi bu.", "lg-en-l3": "Eline ulaşan her zaman gönderilen değilken, her tek gözleme cevap veren bir kural bir kazaya karar muamelesi yapar. Kuraldaki pay, hata düzeltmedir.", "lg-en-l4": "Konuşacak kadar küçük bir köyde geçmişin, bir yabancının neyle açılacağına karar verir. Daha hiçbir şey oynamadan oyununun parçasıdır.", "lg-en-h2": "Bunun göstermediği", "lg-en-m1": "İşbirliği her zaman kazanmaz. Neyin hayatta kaldığı, nüfustaki yapma biçimlerinin karışımına ve mevsimlerin sürme olasılığına bağlıdır. İçinde karşılık veren kimsenin olmadığı bir köy, almanın kazandığı ve kazanmaya devam ettiği bir köydür.", "lg-en-m2": "Bilinen bir son mevsim her şeyi çözer. Hanginizin son mevsim olduğunu ikiniz de biliyorsanız onda almak doğrudur, dolayısıyla ondan öncekinde de, ta ilk mevsime kadar.", "lg-en-m3": "Ünlü turnuva sonuçları, yarışmaya giren programlar hakkında olgulardır, yasa değil. En büyük yeniden çözümlemenin yazarları, kısasa kısasın bu kadar iyi gitmesinin kısmen, birlikte havuzlandığı zayıf girdilerden olduğunu savunuyor.", "lg-en-m4": "Buradaki her şey, sepetler için soyut bir oyun oynayan programlar. Gerçek ikilemlerdeki insanlar bu modelin içermediği şeyler yapar ve bu sayfadaki hiçbir şey herhangi bir insanın ne yapacağına dair kanıt değildir.", "lg-en-m5": "Dördüncü bölümdeki itibar bir hikâye aracı. Köy senin hakkında her zaman doğruyu söylüyor ve her zaman kendisiyle aynı fikirde; itibarlar böyle çalışmaz.", "lg-en-h3": "Aynı sav, yazıya dökülmüş", "lg-en-essay1": "Bunun kazançları düzenlenebilir, tam bir turnuva, evrimsel bir koşu ve adıyla tarihiyle her kaynağın verildiği daha uzun bir hâli var: ", "lg-en-essay-a": "İşbirliğinin evrimi", "lg-en-essay2": ", bu sitedeki Explorable Economics'in parçası. Hissetmek yerine aritmetiği denetlemek istiyorsan onu oku.", "lg-en-h4": "Diğer oyunlar", "lg-en-fam1": "Bu bir ailenin üyesi. Aynı çit, oyun teorisinin dört sayıyla yazabildiği durumlardan yalnızca biri: tehlikenin açgözlülük değil şüphe olduğu bir av var, kötü muamele görmektense hiçliği yeğleyen bir yabancı, kullanılmaktan ölen bir mera, herkesin herkes hakkında tahmin ettiği bir sayı ve kimsenin öngörülebilir olmayı göze alamadığı bir yazı tura. Hepsi burada: ", "lg-en-fam-a": "oyunlar", "lg-b-freeplay": "Serbest oyun", "lg-b-again1": "İlk mevsimden yeniden oyna", "lg-s-end": "Son. Sav açıkça söylendi; göstermedikleriyle ve yazılı denemenin bağlantısıyla birlikte.", "lg-fs-kick": "Serbest oyun", "lg-fs-h": "Köyü kendin kur", "lg-fs-p1": "Dört sayı, çuvalın yolda kaybolma olasılığı, mevsimlerin sürme olasılığı ve çitin karşısındaki kişi. Hiçbir şey saklı değil ve sayıların ikilem olmaktan çıktığında oyun sana söyleyecek.", "lg-fs-T": "sen tutarsın, o paylaşır", "lg-fs-R": "ikiniz de paylaşırsınız", "lg-fs-P": "ikiniz de tutarsınız", "lg-fs-S": "sen paylaşırsın, o tutar", "lg-fs-n": "kaybolan çuval, yüzde", "lg-fs-w": "mevsimlerin sürmesi, yüzde", "lg-fs-d": "çitin karşısında", "lg-fs-ok": "Bu dört sayı bir ikilem. Karşıdaki ne yaparsa yapsın tutmak paylaşmayı geçiyor ve ikinizin de paylaşması sırayla birbirinizi soymanızı geçiyor.", "lg-fs-no": "Bu artık bir mahkûm ikilemi değil. {m} Yine oynanabilir ve yine bir oyun, ama başka bir oyun.", "lg-fs-no1": "Karşı taraf ne yaparsa yapsın tutmak artık paylaşmayı geçmiyor, yani tuzağa düşürecek bir şey yok.", "lg-fs-no2": "İki paylaşılan mevsim artık sırayla birbirini soymaktan daha az ediyor; yani bir çift, paylaşmak yerine nöbetleşe alarak daha iyi eder.", "lg-b-tofence": "Çite git", "lg-b-backend": "Sona dön", "lg-s-fs": "Serbest oyun. Dört kazancı, çuvalın kaybolma olasılığını, mevsimlerin sürme olasılığını ve çitin karşısındakini ayarla.", "lg-fp-closed": "Mevsim {n} kapandı", "lg-fp-s1": "Birinci mevsim", "lg-fp-p1": "Komşu çitte. Sayıları kendin kurdun ve orada kimin durduğunu biliyorsun.", "lg-fp-over1": "Mevsimler durdu. Kimse ilan etmedi ve kimse buna göre plan yapmadı; bütün koşunun dürüstçe oynamaya değmesinin tek sebebi de buydu.", "lg-fp-over2": "{s} mevsimde {y} sepetle bitirdin, komşu {t} ile. Her mevsim ikinizin de paylaşması her birinize {r} verirdi.", "lg-b-setup": "Yeniden kur", "lg-b-change": "Sayıları değiştir", "lg-s-fpover": "Mevsimler {s} mevsimden sonra durdu. {y} sepetle bitirdin.", "lg-fp-note": "Çitin karşısında: {n}; defterlerde bilinen adıyla {f}. {t} Yolda kaybolan çuval: yüzde {no}. Mevsimler yüzde {w} olasılıkla sürüyor.", "lg-nb": "Komşu", "lg-thenb": "Komşu", "lg-s-fp": "{s}, mevsim {n}. Hasadı paylaş ya da hasadı tut. {y} sepetin var.", "lg-nb-empty": "Henüz bir şey yazılmadı.", "lg-nb-cap": "Her komşunun ne yaptığı, en eski mevsim önce", "lg-nb-h1": "Komşu", "lg-nb-h2": "Ne yaptı", "lg-nb-h3": "Paylaştı", "lg-nb-h4": "Senin sepetlerin", "lg-nb-shared": "paylaştı", "lg-nb-kept": "tuttu", "lg-nb-hint": "Dolu daire paylaştığı bir mevsim. Boş daire tuttuğu bir mevsim.", "lg-d-giver-n": "Hep paylaşır", "lg-d-taker-n": "Hep tutar", "lg-d-mirror-n": "Seni yansıtır", "lg-d-grudge-n": "Hiç unutmaz", "lg-d-forgiver-n": "Bir keresini geçer", "lg-d-pavlov-n": "İşe yaradıysa kalır", "lg-d-giver-t": "Ona ne yapılırsa yapılsın her mevsim paylaşır.", "lg-d-taker-t": "Onun için ne yapılırsa yapılsın her mevsim tutar.", "lg-d-mirror-t": "İlk mevsimde paylaşır, sonra geçen mevsim ne yaptıysan onu yapar.", "lg-d-grudge-t": "Sen bir kez tutana kadar paylaşır. Ondan sonra sonsuza kadar tutar.", "lg-d-forgiver-t": "Son iki mevsimin ikisinde de tutmadıysan paylaşır.", "lg-d-pavlov-t": "Önce paylaşır. Sonra son hamlesi onu iyi doyurduysa tekrarlar, doyurmadıysa değiştirir.", "lg-k-return": "enter", "lg-k-start": "başla", "lg-k-begin": "başla", "lg-k-go": "devam", "lg-k-again": "tekrar", "lg-k-s": "s tuşu", "lg-k-k": "k tuşu", "lg-k-answer": "cevapla", "lg-k-step": "adım", "lg-k-run": "akıt", "lg-k-own": "kendin kur", "lg-tally-bask": " sepet", "lg-en-kick": "Sonu", "pg-title": "Uzun Oyun"}, "de": {"lg-skip": "Zu den Entscheidungen springen", "lg-restart": "Von vorn beginnen", "lg-nb-btn": "Notizbuch", "lg-name": "Das lange Spiel", "lg-when-title": "ein Dorf, ein Zaun und jede Saison eine Entscheidung", "lg-when-arg": "das Argument, schlicht gesagt", "lg-when-begins": "{s}, das Jahr beginnt", "lg-when-winter": "der harte Winter, Saison {a} von {b}", "lg-when-season": "{s}, Saison {a} von {b}", "lg-when-over-w": "der harte Winter, Saison {a} von {b}", "lg-when-over-s": "{s} ist vorbei, Saison {a} von {b}", "lg-when-closes": "das Kapitel schließt", "lg-when-quiz": "zwölf Saisons vorbei", "lg-when-mid": "der erste Winter ist vorbei", "lg-when-years": "Jahr {a} von {b}", "lg-when-free": "Ihre Zahlen, Ihr Nachbar", "lg-when-freeseason": "{s}, Saison {n}", "lg-ch": "Kapitel {n}. {t}", "lg-ch1": "Der erste Nachbar", "lg-ch2": "Das Dorf", "lg-ch3": "Der harte Winter", "lg-ch4": "Was man über Sie sagt", "lg-ch5": "Die Jahre", "lg-sea-0": "Frühling", "lg-sea-1": "Sommer", "lg-sea-2": "Herbst", "lg-sea-3": "Winter", "lg-t-p1": "Die Ernte ist eingebracht. Sie ist mehr, als ein Haushalt braucht, und weniger, als zwei Haushalte wollen. Am Ende jeder Saison kommt ein Nachbar an den Zaun, und Sie entscheiden, ob Ihr Sack hinübergeht oder auf Ihrer Stufe bleibt. Er entscheidet im selben Moment dasselbe über Sie, und keiner von Ihnen spricht zuerst.", "lg-t-p2": "Fünf Kapitel. Nichts wird erklärt, bevor Sie es gespielt haben.", "lg-b-resume": "Weiter ab Kapitel {n}", "lg-b-begin": "Mit der ersten Saison beginnen", "lg-b-free": "Freies Spiel", "lg-t-note": "Alles geschieht auf dieser Seite. Nichts, was Sie hier tun, wird irgendwohin gesendet. Ihr Fortschritt liegt in diesem Browser und nirgendwo sonst.", "lg-s-title": "Das lange Spiel. Ein Spiel darüber, eine Ernte mit einem Nachbarn zu teilen, Saison für Saison.", "lg-i1-kick": "Kapitel eins", "lg-i1-b1": "Mira bewirtschaftet den Streifen auf der anderen Seite des Zauns. Sie wird am Ende jeder der nächsten sechs Saisons kommen.", "lg-i1-b2": "Jede Saison wählen Sie einmal. Teilen Sie die Ernte, geht der Sack über den Zaun. Behalten Sie sie, bleibt er auf Ihrer Stufe. Sie wählt im selben Moment, und was sie gewählt hat, erfahren Sie erst, wenn Sie sich festgelegt haben.", "lg-i1-b3": "Niemand sagt Ihnen die richtige Antwort. Spielen Sie die sechs Saisons und sehen Sie, was Sie daraus machen.", "lg-i2-kick": "Kapitel zwei", "lg-i2-b1": "Es spricht sich herum. Vier Haushalte kommen jetzt der Reihe nach an den Zaun: Deniz, Bruno, Halil und Ana. Jeder hat seine Art, das hier anzugehen, und keiner verrät sie.", "lg-i2-b2": "Sie treffen jeden dreimal, im Wechsel. Was Sie Deniz angetan haben, weiß Bruno nicht, und jeder antwortet nur auf das, was Sie ihm getan haben.", "lg-i2-b3": "In der Ecke liegt ein Notizbuch. Es schreibt auf, was jeder getan hat. Nutzen Sie es, denn am Ende des Kapitels werden Sie gefragt, wer wer ist.", "lg-i3-kick": "Kapitel drei", "lg-i3-b1": "Der Winterweg zwischen den beiden Streifen läuft an einer Rinne entlang, und dieses Jahr ist die Rinne schlimm. Ein Sack für die andere Seite kommt nicht immer an. Das Korn bleibt in der Scheune, aus der es kam; der Weg macht Sie also ungefragt zu einem, der behält, und der Haushalt jenseits des Zauns sieht nur, dass nichts kam.", "lg-i3-b2": "Halil ist wieder jenseits des Zauns, acht Saisons lang. Er ist derselbe Mann wie im letzten Kapitel und wird genau tun, was er zuvor tat.", "lg-i3-b3": "Sehen Sie, was ein verlorener Sack mit einer Saison macht, und dann mit der Saison danach.", "lg-i4-kick": "Kapitel vier", "lg-i4-b1": "Drei Haushalte haben die leeren Streifen am Rand des Dorfes übernommen. Keiner von ihnen ist Ihnen begegnet. Alle haben von Ihnen gehört.", "lg-i4-b2": "Am Pfosten neben dem Zaun hängt eine Laterne. Sie ist, was das Dorf über Sie glaubt, und sie ist keine Anzeigetafel: Es braucht viele Saisons des Teilens, um die Flamme zu heben, und einen behaltenen Sack, um sie fallen zu lassen.", "lg-i4-b3": "Tomas kommt zuerst, dann Leyla, dann Emre. Jeder eröffnet mit dem, was er gehört hat, und antwortet dann auf das, was Sie tatsächlich tun.", "lg-i5-kick": "Kapitel fünf", "lg-i5-b1": "Legen Sie den Sack ab. Dieses Kapitel wird nicht gespielt, es wird angesehen.", "lg-i5-b2": "Dreißig Haushalte, fünf Arten, mit der Ernte umzugehen, und vierzig Jahre. Jedes Jahr hat jeder Haushalt mit jedem anderen eine lange Folge von Saisons zu tun, und die Haushalte, die sich am besten ernährt haben, haben mehr Kinder als die anderen. Das Dorf wählt nichts. Es isst nur.", "lg-i5-b3": "Sehen Sie zu, welcher Streifen des Hangs wächst und welcher sich leert.", "lg-go-first": "Die erste Saison", "lg-go-winter": "Die erste Wintersaison", "lg-go-tomas": "Tomas begegnen", "lg-go-year": "Das erste Jahr", "lg-a-kick-w": "Winter, Saison {a} von {b}", "lg-a-kick-s": "{s} {a} von {b}", "lg-a-h": "{n} steht am Zaun", "lg-a-gully": "Die Rinne führt Wasser. Ein Sack für die andere Seite kommt nicht immer an, und das Korn bleibt, wo es begann. Von der anderen Seite des Zauns sieht das genau wie eine Entscheidung aus.", "lg-a-first4": "{n} ist Ihnen nie begegnet. Was {n} in dieser ersten Saison tut, kommt von dem, was das Dorf über Sie gesagt hat. Der Rinnenwinter zählt darin nicht, denn jeder Haushalt hatte in dem Jahr denselben Weg, und das weiß jeder.", "lg-a-sack": "Ihr Sack liegt auf der Stufe. {n} hat einen auf der anderen Seite. Wählen Sie einmal, und dann blicken Sie auf.", "lg-b-share": "Die Ernte teilen", "lg-b-keep": "Die Ernte behalten", "lg-cellar": "Ihr Keller", "lg-others": "Die anderen", "lg-s-ask": "{s}, Saison {a} von {b}. {n} steht am Zaun. Teilen Sie die Ernte oder behalten Sie sie. Sie haben {y} Körbe.", "lg-r-kick": "Die Saison schließt", "lg-r-accident": "Keiner von Ihnen kann einen Unfall von einer Entscheidung unterscheiden. Alles, was ankommt, ist, was ankommt.", "lg-r-lantern": "Die Laterne am Pfosten ist {w}.", "lg-rep-well": "hell am Brennen", "lg-rep-low": "niedrig, aber stetig", "lg-rep-nearly": "fast erloschen", "lg-rep-out": "erloschen", "lg-b-winterend": "Der Winter endet", "lg-b-chend": "Das Kapitel endet", "lg-b-nextseason": "Die nächste Saison", "lg-s-result": "{o} {r} Sie haben jetzt {y} Körbe.", "lg-bask1": "{n} Korb", "lg-baskN": "{n} Körbe", "lg-o-tail": " {yb} für Sie, {t} drüben.", "lg-o-both": "Der Weg nahm beide Säcke.{tail}", "lg-o-you": "Der Weg machte Sie ungefragt zu einem, der behält.{tail}", "lg-o-them": "Nichts kam herüber, und niemand hat das entschieden.{tail}", "lg-o-cc": "Beide Keller halten.{tail}", "lg-o-dc": "Sie kamen am besten aus der Saison.{tail}", "lg-o-cd": "Sie kamen am schlechtesten aus der Saison.{tail}", "lg-o-dd": "Kein Keller füllt sich.{tail}", "lg-rw-youlost": "Ihr Sack kam nie hinüber. Er liegt noch in Ihrer Scheune, und Ihre Scheune ist voller, als Sie wollten.", "lg-rw-yougave": "Sie hoben Ihren Sack über den Zaun.", "lg-rw-youkept": "Sie behielten Ihren Sack auf der eigenen Stufe.", "lg-rw-themlost": "Ein Sack sollte den anderen Weg kommen und kam nie an.", "lg-rw-themgave": "{n} reichte im selben Moment einen Sack herüber.", "lg-rw-themkept": "{n} behielt den Sack auf der anderen Stufe.", "lg-pt-cap": "Körbe für Sie und für die andere Seite, je Paar von Entscheidungen", "lg-pt-theyshare": "er teilt", "lg-pt-theykeep": "er behält", "lg-pt-youshare": "Sie teilen", "lg-pt-youkeep": "Sie behalten", "lg-pt-toyou": " für Sie", "lg-pt-tothem": "{n} drüben", "lg-q-kick": "Vor den Antworten", "lg-q-h": "Sagen Sie, wer wer ist", "lg-q-p1": "Sie haben jeden dreimal getroffen, und das Notizbuch hat mitgeschrieben. Unten stehen vier Arten, mit einer Ernte umzugehen. Setzen Sie eine gegen jeden Namen. Nichts hängt davon ab, richtig zu liegen, und die Antworten kommen ohnehin als Nächstes.", "lg-q-choose": "wählen", "lg-b-check": "Das Notizbuch gegen sie prüfen", "lg-b-skipq": "Überspringen und die Antworten sehen", "lg-s-quiz": "Sagen Sie, wer wer ist. Vier Auswahllisten, eine je Nachbar.", "lg-m-kick": "Was die Rinne tat", "lg-m-h": "Eine Fehde, die niemand gewählt hat", "lg-m-p1": "Halil antwortet genau auf das, was ankam. Etwas anderes kann er nicht, denn für ihn sind ein Sack, der nie kam, und ein Sack, der nie geschickt wurde, dasselbe. So wird ein schlechtes Stück Weg zu einer behaltenen Saison, die behaltene Saison zu einer Antwort und die Antwort zu einer weiteren Antwort.", "lg-m-p2": "Acht Saisons, {y} Körbe für Sie und {t} für Halil. {lost}Halil wollte in {p} der acht behalten, und jede davon war eine Antwort auf etwas, das schon geschehen war.", "lg-m-lost1": "Der Weg hielt {n} der Säcke zurück, die Sie schicken wollten. ", "lg-m-lost0": "Der Weg hielt nichts zurück, was Sie schicken wollten. ", "lg-m-p3": "Es wird schlimmer, wenn Sie ihm in gleicher Münze antworten. Setzen Sie zwei Haushalte einander gegenüber, die beide genau tun, was Halil tut, und schicken Sie sie mit denselben Verlusten auf denselben Wegen durch denselben Winter. Sie enden bei {a} und {b} Körben gegen die {r8}, die jeder durch bloßes Teilen gehabt hätte, und sie verbringen {f} der acht Saisons mit beiden Kellern zu und {alt} weitere damit, einander abwechselnd zu berauben, erst in die eine, dann in die andere Richtung. Der Unfall verblasst nicht. Er wird zwischen ihnen hin und her gereicht, solange die Saisons dauern.", "lg-m-p4": "Zwei Haushalte, die beide eine einzige leere Saison durchgehen lassen, kommen mit {fb} Körben zusammen durch denselben Winter. Die zwei Spiegel schafften {mb}. Acht geteilte Saisons wären {r16} gewesen.", "lg-m-p5": "Jetzt derselbe Winter noch einmal. Dieselbe Rinne, dieselben Verluste in denselben Saisons. Ana übernimmt den Streifen, während Halil fort ist, und Ana ist nicht Halil.", "lg-b-withana": "Derselbe Winter, mit Ana", "lg-s-mid": "Der erste Winter ist vorbei. {y} Körbe für Sie und {t} für Halil.", "lg-b-ch-n": "Kapitel {n}. {t}", "lg-b-endof": "Das Ende", "lg-roll-known": "in den Büchern bekannt als {f}", "lg-roll-right": ". Sie lagen richtig.", "lg-roll-as": ". Sie hatten {g}.", "lg-roll-un": "unbeantwortet", "lg-e1-kick": "Kapitel eins schließt", "lg-e1-h": "Der Tisch, an dem Sie gespielt haben", "lg-e1-p1": "Sechs Saisons, {y} Körbe in Ihrem Keller und {t} in Miras. Hier sind die vier Zahlen, die hinter jeder dieser Saisons standen. Sie waren nie in dem Sinn vor Ihnen verborgen, dass Sie sie nicht hätten herleiten können. Sie waren nur nie aufgeschrieben.", "lg-e1-p2": "Lesen Sie die obere Zeile gegen die untere. Was auch immer Mira tut, Sie stehen mit Behalten besser da: Fünf schlägt drei, wenn sie teilt, eins schlägt nichts, wenn sie behält. Dasselbe gilt für sie, mit Blick auf Ihre Spalte. So enden zwei Menschen, die beide das Vernünftige tun, in der rechten unteren Ecke mit je einem Korb, während in der linken oberen die ganze Zeit je drei lagen.", "lg-e1-p3": "Diese Form hat einen Namen. Es ist das Gefangenendilemma, die kleinste Lage, in der das Vernünftige alle schlechter stellt. Einmal gespielt, gibt es nichts zu diskutieren. Behalten ist schlicht besser.", "lg-e1-h2": "Was Mira getan hat", "lg-e1-p4": "Sie teilte in der ersten Saison. Danach tat sie Ihnen genau das, was Sie ihr in der Saison davor getan hatten. Das ist alles. Es heißt Wie du mir, so ich dir, und es war das kürzeste Programm in den Turnieren, die dieses Thema berühmt machten.", "lg-e1-p5": "Es lohnt sich zu sagen, was dieses Programm nicht kann. Es schlägt den Menschen jenseits des Zauns nie. Es kann nicht: Es gibt nur zurück, was ihm gegeben wurde; bestenfalls spielt es unentschieden, schlimmstenfalls wird es Zweiter. Was es tut, ist, das Teilen zu Ihrer besseren Wahl zu machen, und das gelingt ihm nur, weil die Saisons weiter kommen. Wüssten Sie, welche Saison die letzte ist, würden Sie in ihr behalten. Das wissend, auch in der davor. Dieses Aufribbeln ist der ganze Grund, warum die letzte Saison nie angekündigt wird.", "lg-e1-t1": "Ihre sechs Saisons ", "lg-e1-t1b": " Körbe", "lg-e1-t2": "Mira ", "lg-e1-t2b": " Körbe", "lg-e1-t3": "Hätten beide jede Saison geteilt, gäbe das ", "lg-e1-t3b": " für jeden", "lg-s-e1": "Kapitel eins schließt. Die Auszahlungstabelle ist jetzt sichtbar. Mira spielte Wie du mir, so ich dir.", "lg-e2-kick": "Kapitel zwei schließt", "lg-e2-h": "Vier Arten, mit einer Ernte umzugehen", "lg-e2-p1": "Zwölf Saisons und {y} Körbe. Hier ist, wer jenseits des Zauns stand.", "lg-e2-placed": "Sie haben {n} der vier richtig gesetzt.", "lg-e2-p2": "Es gibt keinen Zug, der gegen alle vier richtig ist. Gegen Deniz, die teilt, was auch immer Sie tun, ist Behalten schlicht besser und kostet Sie nichts, was Ihnen je in Rechnung gestellt wird. Gegen Bruno, der behält, was auch immer Sie tun, ist Teilen schlicht schlechter, und keine Geduld wird ihn richten. Gegen Halil und Ana kommt zurück, was Sie tun; Teilen zahlt sich also aus, und Behalten ist von einer Saison geborgt, die Sie noch nicht erreicht haben.", "lg-e2-p3": "Das ist der Punkt des Kapitels. Es gibt keine beste Art zu spielen. Es gibt nur die beste Art gegen den Menschen, der tatsächlich dort steht, und wer das ist, weiß nur, wer ihn beobachtet hat. Das Notizbuch war die ganze Methode.", "lg-e2-p4": "Es lohnt sich auch zu bemerken, was das Herausfinden Sie gekostet hat. Jedem Nachbarn, den Sie durch Behalten prüften, haben Sie zugleich etwas über sich beigebracht.", "lg-s-e2": "Kapitel zwei schließt. Deniz teilt immer, Bruno behält immer, Halil spiegelt Sie, Ana lässt eine behaltene Saison durchgehen.", "lg-e3-kick": "Kapitel drei schließt", "lg-e3-h": "Vergebung als Fehlerkorrektur", "lg-e3-p1": "Dieselben acht Saisons, dieselbe Rinne, dieselben Säcke auf denselben Wegen verloren. Mit Halil endeten Sie bei {a} Körben. Mit Ana bei {b}.", "lg-e3-p2": "Halil antwortet auf das, was ankam. Wenn nichts ankam, behält er die nächste Saison. Antwortet der Haushalt gegenüber ebenso, wird auch diese behaltene Saison beantwortet, und die Antwort wird beantwortet, und ein Unfall wird zu einer Reihe von Unfällen, die nicht endet, denn sie zu beenden hieße, der zu sein, der in eine behaltene Saison hinein teilt und nichts dafür bekommt.", "lg-e3-p3": "Ana antwortet nur auf ein Muster. Eine leere Saison ist eine Saison, keine Botschaft. Zwei hintereinander sind eine Botschaft. So geht ein Unfall durch sie hindurch, ohne eine Spur zu lassen, und Sie beide kehren zum Teilen zurück, ohne dass je einer von Ihnen beschlossen hätte, Frieden zu schließen.", "lg-e3-p4": "Das ist keine Behauptung, dass netter besser sei. Ana kann beraubt werden: Wer für immer jede zweite Saison behält, nimmt für immer von ihr, und sie teilt weiter hinein. Was das Kapitel zeigt, ist enger und nützlicher. Wenn das, was Sie sehen, nicht genau das ist, was der andere getan hat, beantwortet eine Regel, die auf jede einzelne Beobachtung antwortet, Rauschen, als wäre es Absicht. Etwas Spiel in der Regel ist keine Weichheit. Es ist, wie eine Regel eine Welt überlebt, die sie nicht klar sehen kann.", "lg-s-e3": "Kapitel drei schließt. Mit Halil endeten Sie bei {a} Körben, mit Ana bei {b}.", "lg-e4-kick": "Kapitel vier schließt", "lg-e4-h": "Eine Geschichte ist eine Strategie", "lg-e4-p1": "Neun Saisons mit drei Menschen, die Sie nie getroffen hatten, und {y} Körbe. Die Laterne am Pfosten endete {f}.", "lg-f-burning": "brennend", "lg-f-low": "niedrig", "lg-f-nearly": "fast erloschen", "lg-f-out": "erloschen", "lg-e4-p2": "Keiner der drei konnte in Ihren Kopf sehen. Was sie sehen konnten, war ein Dorf, das geredet hatte. Tomas eröffnete darauf, Leyla auch, Emre auch, und nach der ersten Saison antwortete jeder einfach auf das, was Sie tatsächlich taten.", "lg-e4-p3": "Die Laterne wurde gebaut, um sich zu bewegen, wie ein Ruf sich bewegt. Teilen hebt sie ein wenig, und es braucht viele Saisons, sie zu füllen. Ein behaltener Sack nimmt ein Fünftel auf einmal. Diese Asymmetrie ist kein moralisches Urteil, sie ist Arithmetik über Belege: Hundert großzügige Saisons sind vereinbar mit jemandem, der großzügig ist, wenn es billig ist, während ein genommener Sack nur mit jemandem vereinbar ist, der nimmt.", "lg-e4-p4": "Der nützliche Teil ist dieser. In einem Dorf, das klein genug ist zu reden, ist Ihre Vergangenheit keine Aufzeichnung Ihres Spiels. Sie ist Teil Ihres Spiels. Sie entscheidet, womit der nächste Fremde eröffnet, bevor einer von Ihnen irgendetwas getan hat.", "lg-e4-p5": "Tragen Sie es nicht zu weit. In diesem Kapitel sagte das Dorf immer die Wahrheit über Sie und war sich immer einig. Echte Rufe sind lückenhaft, veraltet und für verschiedene Menschen verschieden viel wert, und nichts davon ist hier modelliert.", "lg-s-e4": "Kapitel vier schließt. Sie endeten bei {y} Körben, und die Laterne ist {f}.", "lg-y-h0": "Dreißig Haushalte", "lg-y-hnone": "Es ist niemand mehr da, der behält, was auch geschieht", "lg-y-hwell": "Den Behaltern geht es sehr gut", "lg-y-hrun": "Den Behaltern gehen die Menschen aus, von denen sie nehmen", "lg-y-hfeed": "Das Dorf ernährt sich", "lg-y-p0": "Fünfzehn Haushalte teilen, was auch geschieht. Sechs behalten, was auch geschieht. Vier spiegeln, drei vergessen einen behaltenen Sack nie, und zwei lassen einen einzigen durchgehen. Jeder Haushalt hat mit jedem anderen etwa dreißig Saisons im Jahr zu tun.", "lg-y-p1": "Haushalte, die sich letztes Jahr besser ernährt haben, halten dieses Jahr mehr vom Dorf. Niemand hat seine Art geändert. Die Verhältnisse haben sich unter ihnen verschoben.", "lg-b-oneyear": "Ein Jahr", "lg-b-run": "Die Jahre laufen lassen", "lg-b-hold": "Die Jahre anhalten", "lg-b-what": "Was geschehen ist", "lg-b-skip40": "Zum vierzigsten Jahr springen", "lg-cofn": "{c} von {n}", "lg-s-years": "Jahr {y}. Von dreißig Haushalten: {list}.", "lg-e5-kick": "Kapitel fünf schließt", "lg-e5-h": "Was überlebt, ist nicht, was die nächste Saison gewinnt", "lg-e5-p1": "Die Haushalte, die behalten, was auch geschieht, begannen als ein Fünftel des Dorfes. Im Jahr {py} waren sie {pk} von hundert Haushalten, denn ein Dorf voller Menschen, die teilen, was auch geschieht, ist der leichteste Ort der Welt, um einer zu sein, der behält.", "lg-e5-p2": "Und genau das erledigte sie. Mit jedem Jahr, in dem sie nahmen, blieben weniger Haushalte, von denen zu nehmen war. Die bedingungslos Teilenden gingen zuerst, und als sie fort waren, hatten die Behalter es vor allem miteinander und mit Haushalten zu tun, die zurückantworten, und ein Behalter mit einem Behalter bekommt einen Korb je Saison. Im Jahr {ly} waren sie {lk} von hundert.", "lg-e5-p3": "Die Haushalte, die teilen, was auch geschieht, sind ebenfalls sehenswert. Sie fallen auf {gm} von hundert, während die Behalter essen, und dann, als die Behalter fort sind, werden sie für nichts mehr bestraft und halten sich bei {g}. Es geht ihnen nicht gut, weil sie gut sind. Es geht ihnen gut, weil niemand mehr da ist, der von ihnen nimmt, und ihr Dasein ist genau der Riss, durch den ein Behalter zurückkäme.", "lg-e5-p4": "Nichts in diesem Dorf wählte. Niemand lernte, niemand änderte seine Meinung, niemand wurde für irgendetwas bestraft. Haushalte, die sich gut ernährten, hatten mehr Kinder, und das allein verschob den Boden unter allen.", "lg-e5-p5": "Mitzunehmen ist der Unterschied zwischen zwei Fragen. Welcher Zug diese Saison gewinnt, ist eine Frage, und Behalten gewinnt sie jedes Mal. Welche Art, mit der Ernte umzugehen, in vierzig Jahren noch da ist, ist eine andere Frage, und sie hat eine andere Antwort.", "lg-e5-p6": "Lesen Sie die Zahlen eng. Dieses Ergebnis ist eine Tatsache über dieses Dorf: diese fünf Arten, diese Anfangsverhältnisse, diese vier Auszahlungen und etwa dreißig Saisons je Paarung. Ändern Sie die Mischung, ändern Sie das Ergebnis. Setzen Sie gar keine Spiegler und keine Nachtragenden ins Dorf, und die Behalter fallen nie. Verkürzen Sie die Saisons, sodass jede Paarung sich zweimal trifft, und die Behalter gewinnen glatt. Es gibt hier kein Gesetz, dass Kooperation gewinnt. Es gibt nur einen Mechanismus, und Mechanismen haben Bedingungen.", "lg-en-h1": "Wofür die fünf Kapitel da waren", "lg-en-p1": "Zwei Menschen können sich einzeln durchs Nehmen besserstellen, und beide stehen schlechter da, wenn beide nehmen. Das ist die ganze Falle, und sie steckt in den Zahlen, nicht in irgendjemandes Charakter. Einmal gespielt, ist Nehmen schlicht richtig, und mehr ist dazu nicht zu sagen.", "lg-en-p2": "Alles, was die Antwort ändert, kommt aus derselben Quelle: Die Saisons kommen weiter, und keine Seite weiß, welche die letzte ist. Das macht das, was Sie jetzt tun, zu etwas, das Ihnen später geschieht. Es ist kein Wohlwollen und kein Vertrauen. Es ist Arithmetik mit einer Zukunft darin.", "lg-en-p3": "Vier Dinge folgten daraus, und jedes war ein Kapitel.", "lg-en-l1": "Eine Regel, so kurz wie in gleicher Münze zu antworten, reicht, um Teilen lohnend zu machen, und sie schlägt den Menschen jenseits des Zauns kein einziges Mal. Sie ändert nur, was in seinem Interesse liegt.", "lg-en-l2": "Es gibt keine beste Art zu spielen. Es gibt eine beste Art gegen den Haushalt, der tatsächlich dort steht; darum ist Beobachten die Methode und war das Notizbuch das Werkzeug.", "lg-en-l3": "Wenn das, was ankommt, nicht immer das ist, was gesendet wurde, behandelt eine Regel, die jede einzelne Beobachtung beantwortet, einen Unfall wie eine Entscheidung. Spiel in der Regel ist Fehlerkorrektur.", "lg-en-l4": "In einem Dorf, das klein genug ist zu reden, entscheidet Ihre Geschichte, womit ein Fremder eröffnet. Sie ist Teil Ihres Spiels, bevor Sie gespielt haben.", "lg-en-h2": "Was das nicht zeigt", "lg-en-m1": "Kooperation gewinnt nicht immer. Was überlebt, hängt von der Mischung der Arten in der Population ab und davon, wie wahrscheinlich die Saisons weitergehen. Ein Dorf, in dem niemand zurückantwortet, ist ein Dorf, in dem Nehmen gewinnt und weiter gewinnt.", "lg-en-m2": "Eine bekannte letzte Saison ribbelt das Ganze auf. Wissen beide, welche Saison die letzte ist, ist Nehmen in ihr richtig, und darum auch in der davor, und so weiter zurück bis zur ersten.", "lg-en-m3": "Die berühmten Turnierergebnisse sind Tatsachen über die eingereichten Programme, keine Gesetze. Die Autoren der größten Neuauswertung argumentieren, dass Wie du mir, so ich dir teils deshalb so gut abschnitt, weil es mit schwachen Einreichungen gepoolt war.", "lg-en-m4": "Alles hier sind Programme, die ein abstraktes Spiel um Körbe spielen. Menschen in echten Dilemmata tun Dinge, die dieses Modell nicht enthält, und nichts auf dieser Seite ist ein Beleg dafür, was irgendein Mensch tun wird.", "lg-en-m5": "Der Ruf in Kapitel vier ist ein Erzählmittel. Das Dorf sagt immer die Wahrheit über Sie und ist sich immer einig; so funktionieren Rufe nicht.", "lg-en-h3": "Dasselbe Argument, ausgeschrieben", "lg-en-essay1": "Es gibt eine längere Fassung davon mit editierbaren Auszahlungen, einem vollen Turnier, einem evolutionären Lauf und jeder Quelle mit Namen und Datum: ", "lg-en-essay-a": "Die Evolution der Kooperation", "lg-en-essay2": ", Teil von Explorable Economics auf dieser Website. Lesen Sie die, wenn Sie die Arithmetik prüfen wollen, statt sie zu fühlen.", "lg-en-h4": "Die anderen Spiele", "lg-en-fam1": "Dies ist eines aus einer Familie. Derselbe Zaun ist nur eine der Lagen, die die Spieltheorie in vier Zahlen aufschreiben kann: Es gibt eine Jagd, in der die Gefahr nicht Gier ist, sondern Zweifel, eine Fremde, die lieber nichts hat, als schlecht behandelt zu werden, eine Weide, die am Gebrauch stirbt, eine Zahl, die alle über alle raten, und eine Münze, bei der niemand sich Vorhersagbarkeit leisten kann. Sie sind alle hier: ", "lg-en-fam-a": "die Spiele", "lg-b-freeplay": "Freies Spiel", "lg-b-again1": "Von der ersten Saison an noch einmal spielen", "lg-s-end": "Das Ende. Das Argument steht schlicht da, mit dem, was es nicht zeigt, und dem Link zum geschriebenen Essay.", "lg-fs-kick": "Freies Spiel", "lg-fs-h": "Stellen Sie das Dorf selbst ein", "lg-fs-p1": "Vier Zahlen, eine Chance, dass der Sack auf dem Weg verloren geht, eine Chance, dass die Saisons weitergehen, und der Mensch jenseits des Zauns. Nichts ist verborgen, und das Spiel sagt Ihnen, wenn Ihre Zahlen aufgehört haben, ein Dilemma zu sein.", "lg-fs-T": "Sie behalten, er teilt", "lg-fs-R": "beide teilen", "lg-fs-P": "beide behalten", "lg-fs-S": "Sie teilen, er behält", "lg-fs-n": "verlorene Säcke, je hundert", "lg-fs-w": "Saisons gehen weiter, je hundert", "lg-fs-d": "jenseits des Zauns", "lg-fs-ok": "Diese vier Zahlen sind ein Dilemma. Behalten schlägt Teilen, was auch immer der andere tut, und beide teilen schlägt einander abwechselnd zu berauben.", "lg-fs-no": "Das ist kein Gefangenendilemma mehr. {m} Es ist noch spielbar und noch ein Spiel, aber ein anderes.", "lg-fs-no1": "Behalten schlägt Teilen nicht mehr, was auch immer die andere Seite tut; es gibt also nichts, wovon man gefangen wäre.", "lg-fs-no2": "Zwei geteilte Saisons sind jetzt weniger wert, als einander abwechselnd zu berauben; ein Paar fährt also mit Abwechseln besser als mit Teilen.", "lg-b-tofence": "Zum Zaun gehen", "lg-b-backend": "Zurück zum Ende", "lg-s-fs": "Freies Spiel. Stellen Sie die vier Auszahlungen, die Verlustchance, die Fortsetzungschance und das Gegenüber ein.", "lg-fp-closed": "Saison {n} geschlossen", "lg-fp-s1": "Saison eins", "lg-fp-p1": "Der Nachbar steht am Zaun. Sie haben die Zahlen selbst eingestellt und wissen, wer dort steht.", "lg-fp-over1": "Die Saisons hörten auf. Niemand kündigte es an und niemand plante damit, und das war der einzige Grund, warum der ganze Lauf ehrlich zu spielen sich lohnte.", "lg-fp-over2": "Sie endeten bei {y} Körben über {s} Saisons, der Nachbar bei {t}. Hätten beide jede Saison geteilt, hätte jeder {r} bekommen.", "lg-b-setup": "Noch einmal einstellen", "lg-b-change": "Die Zahlen ändern", "lg-s-fpover": "Die Saisons hörten nach {s} auf. Sie endeten bei {y} Körben.", "lg-fp-note": "Jenseits des Zauns: {n}; in den Büchern bekannt als {f}. {t} Verlorene Säcke: {no} je hundert. Die Saisons gehen mit einer Chance von {w} je hundert weiter.", "lg-nb": "Nachbar", "lg-thenb": "Der Nachbar", "lg-s-fp": "{s}, Saison {n}. Teilen Sie die Ernte oder behalten Sie sie. Sie haben {y} Körbe.", "lg-nb-empty": "Noch nichts aufgeschrieben.", "lg-nb-cap": "Was jeder Nachbar getan hat, älteste Saison zuerst", "lg-nb-h1": "Nachbar", "lg-nb-h2": "Was er tat", "lg-nb-h3": "Geteilt", "lg-nb-h4": "Ihre Körbe", "lg-nb-shared": "geteilt", "lg-nb-kept": "behalten", "lg-nb-hint": "Ein voller Kreis ist eine Saison, in der geteilt wurde. Ein leerer Kreis eine, in der behalten wurde.", "lg-d-giver-n": "Teilt immer", "lg-d-taker-n": "Behält immer", "lg-d-mirror-n": "Spiegelt Sie", "lg-d-grudge-n": "Vergisst nie", "lg-d-forgiver-n": "Lässt eine durchgehen", "lg-d-pavlov-n": "Bleibt, wenn es klappt", "lg-d-giver-t": "Teilt jede Saison, was auch immer man ihr antut.", "lg-d-taker-t": "Behält jede Saison, was auch immer man für ihn tut.", "lg-d-mirror-t": "Teilt in der ersten Saison und tut dann, was Sie in der letzten getan haben.", "lg-d-grudge-t": "Teilt, bis Sie einmal behalten. Danach behält er für immer.", "lg-d-forgiver-t": "Teilt, außer Sie haben in beiden letzten Saisons behalten.", "lg-d-pavlov-t": "Teilt zuerst. Wiederholt dann ihren letzten Zug, wenn er sie gut ernährt hat, und wechselt, wenn nicht.", "lg-k-return": "Enter", "lg-k-start": "Start", "lg-k-begin": "Start", "lg-k-go": "weiter", "lg-k-again": "erneut", "lg-k-s": "Taste s", "lg-k-k": "Taste k", "lg-k-answer": "antworten", "lg-k-step": "Schritt", "lg-k-run": "laufen", "lg-k-own": "selbst einstellen", "lg-tally-bask": " Körbe", "lg-en-kick": "Das Ende", "pg-title": "Das lange Spiel"}};
+function T(k, en, v) {
+  var out = window.__t ? window.__t(k, en) : en;
+  if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+  return out;
+}
+function chTitle(n) { return T("lg-ch" + n, CHAPTERS[n - 1].title); }
+function chLine(n) { return T("lg-ch", "Chapter {n}. {t}", {n: n, t: chTitle(n)}); }
+function seasonName(i) { return T("lg-sea-" + i, SEASON_NAMES[i]); }
+function baskW(n) { return n === 1 ? T("lg-bask1", "{n} basket", {n: n}) : T("lg-baskN", "{n} baskets", {n: n}); }
+function dName(k) { return T("lg-d-" + k + "-n", DISPOSITIONS[k].name); }
+function dTell(k) { return T("lg-d-" + k + "-t", DISPOSITIONS[k].tell); }
+
 var DISPOSITIONS = {
   giver: {
     id: "giver", name: "Always shares", formal: "always cooperate",
@@ -1654,12 +1670,12 @@ function focusFirst() {
 function tallyLine(labelYou, labelThem) {
   var d = el("div", "tally");
   d.innerHTML = "";
-  var a = el("span"); a.appendChild(document.createTextNode((labelYou || "Your cellar") + " "));
+  var a = el("span"); a.appendChild(document.createTextNode((labelYou || T("lg-cellar", "Your cellar")) + " "));
   var ab = el("b", null, String(G.you)); a.appendChild(ab);
-  a.appendChild(document.createTextNode(" baskets"));
+  a.appendChild(document.createTextNode(T("lg-tally-bask", " baskets")));
   var b = el("span"); b.appendChild(document.createTextNode((labelThem || "Theirs") + " "));
   var bb = el("b", null, String(G.them)); b.appendChild(bb);
-  b.appendChild(document.createTextNode(" baskets"));
+  b.appendChild(document.createTextNode(T("lg-tally-bask", " baskets")));
   d.appendChild(a); d.appendChild(b);
   panel.appendChild(d);
   return d;
@@ -1673,14 +1689,14 @@ function renderNotebook() {
   while (nb.firstChild) nb.removeChild(nb.firstChild);
   var names = Object.keys(G.book);
   if (!names.length) {
-    nb.appendChild(el("p", "hint", "Nothing written down yet."));
+    nb.appendChild(el("p", "hint", T("lg-nb-empty", "Nothing written down yet.")));
     return;
   }
   var tbl = el("table");
-  var cap = el("caption", "vh", "What each neighbour has done, oldest season first");
+  var cap = el("caption", "vh", T("lg-nb-cap", "What each neighbour has done, oldest season first"));
   tbl.appendChild(cap);
   var thead = el("thead"), tr = el("tr");
-  ["Neighbour", "What they did", "Shared", "Your baskets"].forEach(function (h) {
+  [T("lg-nb-h1", "Neighbour"), T("lg-nb-h2", "What they did"), T("lg-nb-h3", "Shared"), T("lg-nb-h4", "Your baskets")].forEach(function (h) {
     tr.appendChild(el("th", null, h));
   });
   thead.appendChild(tr); tbl.appendChild(thead);
@@ -1690,17 +1706,17 @@ function renderNotebook() {
     row.appendChild(el("td", "nm", n));
     var g = el("td", "gl");
     g.textContent = b.them.map(function (m) { return GLYPH[m]; }).join(" ");
-    var hidden = el("span", "vh", " " + b.them.map(function (m) { return m === "C" ? "shared" : "kept"; }).join(", "));
+    var hidden = el("span", "vh", " " + b.them.map(function (m) { return m === "C" ? T("lg-nb-shared", "shared") : T("lg-nb-kept", "kept"); }).join(", "));
     g.appendChild(hidden);
     row.appendChild(g);
     var shared = b.them.filter(function (m) { return m === "C"; }).length;
-    row.appendChild(el("td", "ct", shared + " of " + b.them.length));
+    row.appendChild(el("td", "ct", T("lg-cofn", "{c} of {n}", {c: shared, n: b.them.length})));
     row.appendChild(el("td", "ct", String(b.youTot)));
     tb.appendChild(row);
   });
   tbl.appendChild(tb);
   nb.appendChild(tbl);
-  nb.appendChild(el("p", "hint", "A filled circle is a season they shared. An empty circle is a season they kept."));
+  nb.appendChild(el("p", "hint", T("lg-nb-hint", "A filled circle is a season they shared. An empty circle is a season they kept.")));
 }
 
 function showNotebook(on) {
@@ -1794,27 +1810,29 @@ function resolve(yourMove) {
 function resultWords(r, name) {
   var out = [];
   var yourGift = r.aIntent === "C", theirGift = r.bIntent === "C";
-  if (yourGift && r.aLost) out.push("Your sack never made it across. It is still in your barn, and your barn is fuller than you meant it to be.");
-  else if (yourGift) out.push("You put your sack over the fence.");
-  else out.push("You kept your sack on your own step.");
-  if (theirGift && r.bLost) out.push("A sack was meant to come the other way and never arrived.");
-  else if (theirGift) out.push(name + " handed a sack across at the same moment.");
-  else out.push(name + " kept the sack on the far step.");
+  if (yourGift && r.aLost) out.push(T("lg-rw-youlost", "Your sack never made it across. It is still in your barn, and your barn is fuller than you meant it to be."));
+  else if (yourGift) out.push(T("lg-rw-yougave", "You put your sack over the fence."));
+  else out.push(T("lg-rw-youkept", "You kept your sack on your own step."));
+  if (theirGift && r.bLost) out.push(T("lg-rw-themlost", "A sack was meant to come the other way and never arrived."));
+  else if (theirGift) out.push(T("lg-rw-themgave", "{n} handed a sack across at the same moment.", {n: name}));
+  else out.push(T("lg-rw-themkept", "{n} kept the sack on the far step.", {n: name}));
   return out.join(" ");
 }
 
 function outcomeLine(r) {
   var y = r.aPay, t = r.bPay;
-  var tail = " " + y + " basket" + (y === 1 ? "" : "s") + " to you, " + t + " to them.";
+  var tail = T("lg-o-tail", " " + y + " basket" + (y === 1 ? "" : "s") + " to you, " + t + " to them.",
+               {yb: baskW(y), t: t});
+  function o(k, en) { return T(k, en + "{tail}", {tail: tail}); }
   if (r.aLost || r.bLost) {
-    if (r.aLost && r.bLost) return "The road took both sacks." + tail;
-    if (r.aLost) return "The road made a keeper of you without asking." + tail;
-    return "Nothing came across, and nobody decided that." + tail;
+    if (r.aLost && r.bLost) return o("lg-o-both", "The road took both sacks.");
+    if (r.aLost) return o("lg-o-you", "The road made a keeper of you without asking.");
+    return o("lg-o-them", "Nothing came across, and nobody decided that.");
   }
-  if (r.a === "C" && r.b === "C") return "Both cellars hold." + tail;
-  if (r.a === "D" && r.b === "C") return "You did best out of the season." + tail;
-  if (r.a === "C" && r.b === "D") return "You did worst out of the season." + tail;
-  return "Neither cellar fills." + tail;
+  if (r.a === "C" && r.b === "C") return o("lg-o-cc", "Both cellars hold.");
+  if (r.a === "D" && r.b === "C") return o("lg-o-dc", "You did best out of the season.");
+  if (r.a === "C" && r.b === "D") return o("lg-o-cd", "You did worst out of the season.");
+  return o("lg-o-dd", "Neither cellar fills.");
 }
 
 /* ============================================================
@@ -1912,26 +1930,26 @@ VIEWS.title = function () {
   nbBtn.hidden = true; showNotebook(false);
   $("menuBtn").hidden = true;
   world.day = 0.16; world.dayT = 0.16; world.season = 1; world.prev = 1; world.mix = 1;
-  setTop("The Long Game", "a village, a fence, and a decision every season");
-  head("The Long Game");
-  para("The harvest is in. It is more than one household needs and less than two households want. At the end of every season a neighbour comes to the fence, and you decide whether your sack goes over it or stays on your step. They are deciding the same thing about you at the same moment, and neither of you speaks first.");
-  para("Five chapters. Nothing is explained before you have played it.");
+  setTop(T("lg-name", "The Long Game"), T("lg-when-title", "a village, a fence, and a decision every season"));
+  head(T("lg-name", "The Long Game"));
+  para(T("lg-t-p1", "The harvest is in. It is more than one household needs and less than two households want. At the end of every season a neighbour comes to the fence, and you decide whether your sack goes over it or stays on your step. They are deciding the same thing about you at the same moment, and neither of you speaks first."));
+  para(T("lg-t-p2", "Five chapters. Nothing is explained before you have played it."));
   var r = actions();
   var s = loadSave();
   if (s && (s.furthest > 1 || s.seasonInCh > 0)) {
-    btn(r, "Go on from chapter " + s.chapter, "return", function () { resume(s); }, "big");
+    btn(r, T("lg-b-resume", "Go on from chapter {n}", {n: s.chapter}), T("lg-k-return", "return"), function () { resume(s); }, "big");
   }
-  btn(r, "Begin at the first season", "start", function () {
+  btn(r, T("lg-b-begin", "Begin at the first season"), T("lg-k-start", "start"), function () {
     wipe(); G.rep = 0.5; G.book = {}; G.furthest = 1;
     startChapter(1); view("chapterIntro");
   }, "big");
   if (s && s.furthest > 1) {
     var r2 = actions();
-    btn(r2, "Free play", null, function () { view("freeSetup"); }, "quiet");
+    btn(r2, T("lg-b-free", "Free play"), null, function () { view("freeSetup"); }, "quiet");
   }
-  var note = para("Everything happens in this page. Nothing you do here is sent anywhere. Your progress is kept in this browser and nowhere else.");
+  var note = para(T("lg-t-note", "Everything happens in this page. Nothing you do here is sent anywhere. Your progress is kept in this browser and nowhere else."));
   note.style.fontSize = ".85rem";
-  say("The Long Game. A game about sharing a harvest with a neighbour, season by season.");
+  say(T("lg-s-title", "The Long Game. A game about sharing a harvest with a neighbour, season by season."));
 };
 
 var INTROS = {
@@ -2025,69 +2043,71 @@ function resume(s) {
 
 VIEWS.chapterIntro = function () {
   var c = CHAPTERS[G.chapter - 1], I = INTROS[G.chapter];
-  setTop("Chapter " + G.chapter + ". " + c.title, SEASON_NAMES[world.season] + ", the year begins");
-  kick(I.kick);
-  head(c.title);
-  I.body.forEach(function (b) { para(b); });
+  var GO_KEY = { 1: "lg-go-first", 2: "lg-go-first", 3: "lg-go-winter", 4: "lg-go-tomas", 5: "lg-go-year" };
+  var bodyT = I.body.map(function (b, bi) { return T("lg-i" + G.chapter + "-b" + (bi + 1), b); });
+  setTop(chLine(G.chapter), T("lg-when-begins", "{s}, the year begins", {s: seasonName(world.season)}));
+  kick(T("lg-i" + G.chapter + "-kick", I.kick));
+  head(chTitle(G.chapter));
+  bodyT.forEach(function (b) { para(b); });
   var r = actions();
-  btn(r, I.go, "begin", function () {
+  btn(r, T(GO_KEY[G.chapter], I.go), T("lg-k-begin", "begin"), function () {
     if (G.chapter === 5) { view("years"); return; }
     beginSeason();
   }, "big");
-  say("Chapter " + G.chapter + ", " + c.title + ". " + I.body.join(" "));
+  say(chLine(G.chapter) + " " + bodyT.join(" "));
 };
 
 VIEWS.ask = function () {
   var e = currentEnc();
   var c = CHAPTERS[G.chapter - 1];
   var when = G.chapter === 3
-    ? "the hard winter, season " + (G.seasonInCh + 1) + " of " + G.totalSeasons
-    : SEASON_NAMES[world.season] + ", season " + (G.seasonInCh + 1) + " of " + G.totalSeasons;
-  setTop("Chapter " + G.chapter + ". " + c.title, when);
-  kick(G.chapter === 3 ? "Winter, season " + (G.seasonInCh + 1) + " of " + G.totalSeasons
-                       : SEASON_NAMES[world.season] + " " + (G.seasonInCh + 1) + " of " + G.totalSeasons);
-  head(e.name + " is at the fence");
-  if (G.chapter === 3) para("The gully is running. A sack meant for the other side does not always get there, and the grain stays where it started. From the far side of the fence that looks exactly like a decision.");
+    ? T("lg-when-winter", "the hard winter, season {a} of {b}", {a: G.seasonInCh + 1, b: G.totalSeasons})
+    : T("lg-when-season", "{s}, season {a} of {b}", {s: seasonName(world.season), a: G.seasonInCh + 1, b: G.totalSeasons});
+  setTop(chLine(G.chapter), when);
+  kick(G.chapter === 3 ? T("lg-a-kick-w", "Winter, season {a} of {b}", {a: G.seasonInCh + 1, b: G.totalSeasons})
+                       : T("lg-a-kick-s", "{s} {a} of {b}", {s: seasonName(world.season), a: G.seasonInCh + 1, b: G.totalSeasons}));
+  head(T("lg-a-h", "{n} is at the fence", {n: e.name}));
+  if (G.chapter === 3) para(T("lg-a-gully", "The gully is running. A sack meant for the other side does not always get there, and the grain stays where it started. From the far side of the fence that looks exactly like a decision."));
   if (G.chapter === 4 && bookOf(e.name).them.length === 0) {
-    para(e.name + " has not met you before. Whatever " + e.name + " does in this first season comes from what the village has said about you. The gully winter is not counted in that, because every household had the same road and everybody knows it.");
+    para(T("lg-a-first4", "{n} has not met you before. Whatever {n} does in this first season comes from what the village has said about you. The gully winter is not counted in that, because every household had the same road and everybody knows it.", {n: e.name}));
   }
-  para("Your sack is on the step. " + e.name + " has one on the other side. Choose once, and then look up.");
+  para(T("lg-a-sack", "Your sack is on the step. {n} has one on the other side. Choose once, and then look up.", {n: e.name}));
   var r = actions();
-  btn(r, "Share the harvest", "press s", function () { resolve("C"); }, "big share");
-  btn(r, "Keep the harvest", "press k", function () { resolve("D"); }, "big keep");
-  tallyLine("Your cellar", G.chapter === 2 || G.chapter === 4 ? "The others" : e.name);
-  say(SEASON_NAMES[world.season] + ", season " + (G.seasonInCh + 1) + " of " + G.totalSeasons + ". " +
-      e.name + " is at the fence. Share the harvest or keep the harvest. You have " + G.you + " baskets.");
+  btn(r, T("lg-b-share", "Share the harvest"), T("lg-k-s", "press s"), function () { resolve("C"); }, "big share");
+  btn(r, T("lg-b-keep", "Keep the harvest"), T("lg-k-k", "press k"), function () { resolve("D"); }, "big keep");
+  tallyLine(T("lg-cellar", "Your cellar"), G.chapter === 2 || G.chapter === 4 ? T("lg-others", "The others") : e.name);
+  say(T("lg-s-ask", "{s}, season {a} of {b}. {n} is at the fence. Share the harvest or keep the harvest. You have {y} baskets.",
+      {s: seasonName(world.season), a: G.seasonInCh + 1, b: G.totalSeasons, n: e.name, y: G.you}));
 };
 
 VIEWS.result = function () {
   var L = G.last, r = L.r, name = L.name;
   var c = CHAPTERS[G.chapter - 1];
-  setTop("Chapter " + G.chapter + ". " + c.title,
-         (G.chapter === 3 ? "the hard winter" : SEASON_NAMES[world.prev] + " is over") +
-         ", season " + G.seasonInCh + " of " + G.totalSeasons);
-  kick("The season closes");
+  setTop(chLine(G.chapter),
+         G.chapter === 3 ? T("lg-when-over-w", "the hard winter, season {a} of {b}", {a: G.seasonInCh, b: G.totalSeasons})
+                         : T("lg-when-over-s", "{s} is over, season {a} of {b}", {s: seasonName(world.prev), a: G.seasonInCh, b: G.totalSeasons}));
+  kick(T("lg-r-kick", "The season closes"));
   head(outcomeLine(r));
   para(resultWords(r, name), "say");
   if (r.aLost || r.bLost) {
-    para("Neither of you can tell an accident from a decision. All that arrives is what arrives.");
+    para(T("lg-r-accident", "Neither of you can tell an accident from a decision. All that arrives is what arrives."));
   }
   if (G.chapter === 4) {
-    var repWord = G.rep > 0.72 ? "burning well" : G.rep > 0.42 ? "low but steady" : G.rep > 0.15 ? "nearly out" : "out";
-    para("The lantern on the post is " + repWord + ".");
+    var repWord = G.rep > 0.72 ? T("lg-rep-well", "burning well") : G.rep > 0.42 ? T("lg-rep-low", "low but steady") : G.rep > 0.15 ? T("lg-rep-nearly", "nearly out") : T("lg-rep-out", "out");
+    para(T("lg-r-lantern", "The lantern on the post is {w}.", {w: repWord}));
   }
-  tallyLine("Your cellar", G.chapter === 2 || G.chapter === 4 ? "The others" : name);
+  tallyLine(T("lg-cellar", "Your cellar"), G.chapter === 2 || G.chapter === 4 ? T("lg-others", "The others") : name);
   var row = actions();
   if (G.encI >= G.enc.length) {
-    btn(row, G.chapter === 3 && G.run3 === 1 ? "The winter ends" : "The chapter ends", "go on", function () {
+    btn(row, G.chapter === 3 && G.run3 === 1 ? T("lg-b-winterend", "The winter ends") : T("lg-b-chend", "The chapter ends"), T("lg-k-go", "go on"), function () {
       if (G.chapter === 2) { view("quiz"); return; }
       if (G.chapter === 3 && G.run3 === 1) { view("ch3mid"); return; }
       view("chapterEnd");
     }, "big");
   } else {
-    btn(row, "The next season", "go on", function () { beginSeason(); }, "big");
+    btn(row, T("lg-b-nextseason", "The next season"), T("lg-k-go", "go on"), function () { beginSeason(); }, "big");
   }
-  say(outcomeLine(r) + " " + resultWords(r, name) + " You now have " + G.you + " baskets.");
+  say(T("lg-s-result", "{o} {r} You now have {y} baskets.", {o: outcomeLine(r), r: resultWords(r, name), y: G.you}));
 };
 
 /* ---- the payoff table, shown only once it has been felt ---- */
@@ -2095,30 +2115,30 @@ VIEWS.result = function () {
 function payTable() {
   var w = el("div", "tblwrap");
   var t = el("table", "pay");
-  var cap = el("caption", "vh", "Baskets to you and to them for each pair of choices");
+  var cap = el("caption", "vh", T("lg-pt-cap", "Baskets to you and to them for each pair of choices"));
   t.appendChild(cap);
   var th = el("thead"), tr = el("tr");
   tr.appendChild(el("th", null, ""));
-  tr.appendChild(el("th", null, "they share"));
-  tr.appendChild(el("th", null, "they keep"));
+  tr.appendChild(el("th", null, T("lg-pt-theyshare", "they share")));
+  tr.appendChild(el("th", null, T("lg-pt-theykeep", "they keep")));
   th.appendChild(tr); t.appendChild(th);
   var tb = el("tbody");
   function cell(a, b) {
     var td = el("td");
     var bo = el("b", null, String(a));
     td.appendChild(bo);
-    td.appendChild(document.createTextNode(" to you"));
+    td.appendChild(document.createTextNode(T("lg-pt-toyou", " to you")));
     td.appendChild(el("br"));
-    td.appendChild(el("span", null, b + " to them"));
+    td.appendChild(el("span", null, T("lg-pt-tothem", "{n} to them", {n: b})));
     return td;
   }
   var r1 = el("tr");
-  r1.appendChild(el("th", null, "you share"));
+  r1.appendChild(el("th", null, T("lg-pt-youshare", "you share")));
   r1.appendChild(cell(G.pay.R, G.pay.R));
   r1.appendChild(cell(G.pay.S, G.pay.T));
   tb.appendChild(r1);
   var r2 = el("tr");
-  r2.appendChild(el("th", null, "you keep"));
+  r2.appendChild(el("th", null, T("lg-pt-youkeep", "you keep")));
   r2.appendChild(cell(G.pay.T, G.pay.S));
   r2.appendChild(cell(G.pay.P, G.pay.P));
   tb.appendChild(r2);
@@ -2133,10 +2153,10 @@ var QUIZ_KEYS = ["deniz", "bruno", "halil", "ana"];
 var QUIZ_OPTS = ["giver", "taker", "mirror", "forgiver"];
 
 VIEWS.quiz = function () {
-  setTop("Chapter 2. The village", "twelve seasons done");
-  kick("Before the answers");
-  head("Say who is who");
-  para("You have met each of them three times and the notebook has kept the record. Four ways of going about a harvest are listed below. Put one against each name. Nothing depends on getting it right, and the answers come next either way.");
+  setTop(chLine(2), T("lg-when-quiz", "twelve seasons done"));
+  kick(T("lg-q-kick", "Before the answers"));
+  head(T("lg-q-h", "Say who is who"));
+  para(T("lg-q-p1", "You have met each of them three times and the notebook has kept the record. Four ways of going about a harvest are listed below. Put one against each name. Nothing depends on getting it right, and the answers come next either way."));
   var form = el("div", "fields");
   QUIZ_KEYS.forEach(function (k) {
     var p = PEOPLE[k];
@@ -2145,11 +2165,11 @@ VIEWS.quiz = function () {
     lab.setAttribute("for", "q-" + k);
     var sel = el("select");
     sel.id = "q-" + k;
-    var blank = el("option", null, "choose");
+    var blank = el("option", null, T("lg-q-choose", "choose"));
     blank.value = "";
     sel.appendChild(blank);
     QUIZ_OPTS.forEach(function (o) {
-      var op = el("option", null, DISPOSITIONS[o].name);
+      var op = el("option", null, dName(o));
       op.value = o;
       sel.appendChild(op);
     });
@@ -2158,13 +2178,13 @@ VIEWS.quiz = function () {
   });
   panel.appendChild(form);
   var r = actions();
-  btn(r, "Check the notebook against them", "answer", function () {
+  btn(r, T("lg-b-check", "Check the notebook against them"), T("lg-k-answer", "answer"), function () {
     G.quiz = {};
     QUIZ_KEYS.forEach(function (k) { G.quiz[k] = ($("q-" + k) || {}).value || ""; });
     view("chapterEnd");
   }, "big");
-  btn(r, "Skip and see the answers", null, function () { G.quiz = null; view("chapterEnd"); }, "quiet");
-  say("Say who is who. Four dropdown lists, one for each neighbour.");
+  btn(r, T("lg-b-skipq", "Skip and see the answers"), null, function () { G.quiz = null; view("chapterEnd"); }, "quiet");
+  say(T("lg-s-quiz", "Say who is who. Four dropdown lists, one for each neighbour."));
 };
 
 /* ---- chapter three: between the two winters ---- */
@@ -2198,21 +2218,21 @@ VIEWS.ch3mid = function () {
   var lost = b.lostYours, punished = 0, i2;
   for (i2 = 0; i2 < b.meant.length; i2++) if (b.meant[i2] === "D") punished++;
   var mw = pairWinter("mirror"), fw = pairWinter("forgiver");
-  setTop("Chapter 3. The hard winter", "the first winter is over");
-  kick("What the gully did");
-  head("A feud nobody chose");
-  para("Halil answers exactly what arrived. He cannot do anything else, because to him a sack that never came and a sack that was never sent are the same thing. So a bad stretch of road becomes a kept season, and a kept season becomes an answer, and an answer becomes another answer.");
-  para("Eight seasons, " + G.you + " baskets for you and " + G.them + " for Halil. " +
-       (lost ? "The road held back " + lost + " of the sacks you meant to send. " : "The road held back nothing you meant to send. ") +
-       "Halil meant to keep in " + punished + " of the eight, and every one of those was an answer to something that had already happened.");
-  para("It is worse if you answer him in kind. Put two households across the fence from each other who both do exactly what Halil does, and send them through this same winter with the same losses on the same roads. They finish on " +
-       mw.a + " and " + mw.b + " baskets against the " + (G.pay.R * 8) + " each they would have had by simply sharing, and they spend " +
-       mw.feud + " of the eight seasons with both cellars shut and " + mw.alt + " more robbing each other in turn, first one way and then the other. The accident does not fade. It is passed back and forth between them for as long as the seasons last.");
-  para("Two households who both let a single empty season pass go through the same winter with " + fw.both +
-       " baskets between them. The two mirrors managed " + mw.both + ". Eight shared seasons would have been " + (G.pay.R * 16) + ".");
-  para("Now the same winter again. The same gully, the same losses on the same seasons. Ana takes the strip while Halil is away, and Ana is not Halil.");
+  setTop(chLine(3), T("lg-when-mid", "the first winter is over"));
+  kick(T("lg-m-kick", "What the gully did"));
+  head(T("lg-m-h", "A feud nobody chose"));
+  para(T("lg-m-p1", "Halil answers exactly what arrived. He cannot do anything else, because to him a sack that never came and a sack that was never sent are the same thing. So a bad stretch of road becomes a kept season, and a kept season becomes an answer, and an answer becomes another answer."));
+  para(T("lg-m-p2", "Eight seasons, {y} baskets for you and {t} for Halil. {lost}Halil meant to keep in {p} of the eight, and every one of those was an answer to something that had already happened.",
+       {y: G.you, t: G.them, p: punished,
+        lost: lost ? T("lg-m-lost1", "The road held back {n} of the sacks you meant to send. ", {n: lost})
+                   : T("lg-m-lost0", "The road held back nothing you meant to send. ")}));
+  para(T("lg-m-p3", "It is worse if you answer him in kind. Put two households across the fence from each other who both do exactly what Halil does, and send them through this same winter with the same losses on the same roads. They finish on {a} and {b} baskets against the {r8} each they would have had by simply sharing, and they spend {f} of the eight seasons with both cellars shut and {alt} more robbing each other in turn, first one way and then the other. The accident does not fade. It is passed back and forth between them for as long as the seasons last.",
+       {a: mw.a, b: mw.b, r8: G.pay.R * 8, f: mw.feud, alt: mw.alt}));
+  para(T("lg-m-p4", "Two households who both let a single empty season pass go through the same winter with {fb} baskets between them. The two mirrors managed {mb}. Eight shared seasons would have been {r16}.",
+       {fb: fw.both, mb: mw.both, r16: G.pay.R * 16}));
+  para(T("lg-m-p5", "Now the same winter again. The same gully, the same losses on the same seasons. Ana takes the strip while Halil is away, and Ana is not Halil."));
   var r = actions();
-  btn(r, "The same winter, with Ana", "again", function () {
+  btn(r, T("lg-b-withana", "The same winter, with Ana"), T("lg-k-again", "again"), function () {
     G.run3 = 2;
     G.seasonInCh = 0; G.encI = 0; G.you = 0; G.them = 0;
     G.noise = 0.2; G.forceLoss = 2;
@@ -2224,14 +2244,14 @@ VIEWS.ch3mid = function () {
     scene.them = null; scene.enter = 0;
     beginSeason();
   }, "big");
-  say("The first winter is over. " + G.you + " baskets for you and " + G.them + " for Halil.");
+  say(T("lg-s-mid", "The first winter is over. {y} baskets for you and {t} for Halil.", {y: G.you, t: G.them}));
 };
 
 /* ---- the endings of chapters ---- */
 
 VIEWS.chapterEnd = function () {
   var n = G.chapter;
-  setTop("Chapter " + n + ". " + CHAPTERS[n - 1].title, "the chapter closes");
+  setTop(chLine(n), T("lg-when-closes", "the chapter closes"));
   if (n === 1) endOne();
   else if (n === 2) endTwo();
   else if (n === 3) endThree();
@@ -2239,11 +2259,11 @@ VIEWS.chapterEnd = function () {
   else if (n === 5) endFive();
   var r = actions();
   if (n < 5) {
-    btn(r, "Chapter " + (n + 1) + ". " + CHAPTERS[n].title, "go on", function () {
+    btn(r, T("lg-b-ch-n", "Chapter {n}. {t}", {n: n + 1, t: chTitle(n + 1)}), T("lg-k-go", "go on"), function () {
       startChapter(n + 1); view("chapterIntro");
     }, "big");
   } else {
-    btn(r, "The end of it", "go on", function () { view("ending"); }, "big");
+    btn(r, T("lg-b-endof", "The end of it"), T("lg-k-go", "go on"), function () { view("ending"); }, "big");
   }
 };
 
@@ -2256,46 +2276,46 @@ function rollRow(name, dispId, guess) {
   var who = el("span", "who");
   who.appendChild(sw2);
   who.appendChild(document.createTextNode(" " + name));
-  var what = el("span", null, d.tell);
+  var what = el("span", null, dTell(dispId));
   what.style.fontSize = ".95rem";
   what.style.color = "var(--ink-soft)";
   line.appendChild(who); line.appendChild(what);
-  var was = el("span", "was", "known in the books as " + d.formal +
-    (guess === undefined ? "" : guess === dispId ? ". You had it right." : ". You had it as " + (guess ? DISPOSITIONS[guess].name.toLowerCase() : "unanswered") + "."));
+  var was = el("span", "was", T("lg-roll-known", "known in the books as {f}", {f: d.formal}) +
+    (guess === undefined ? "" : guess === dispId ? T("lg-roll-right", ". You had it right.") : T("lg-roll-as", ". You had it as {g}.", {g: guess ? dName(guess).toLowerCase() : T("lg-roll-un", "unanswered")})));
   line.appendChild(was);
   wrap.appendChild(line);
   return wrap;
 }
 
 function endOne() {
-  kick("Chapter one closes");
-  head("The table you were playing on");
-  para("Six seasons, " + G.you + " baskets in your cellar and " + G.them + " in Mira's. Here are the four numbers that were behind every one of those seasons. They were never hidden from you in the sense that you could have worked them out. They were only never written down.");
+  kick(T("lg-e1-kick", "Chapter one closes"));
+  head(T("lg-e1-h", "The table you were playing on"));
+  para(T("lg-e1-p1", "Six seasons, {y} baskets in your cellar and {t} in Mira's. Here are the four numbers that were behind every one of those seasons. They were never hidden from you in the sense that you could have worked them out. They were only never written down.", {y: G.you, t: G.them}));
   payTable();
-  para("Read the top row against the bottom row. Whatever Mira does, you are better off keeping: five beats three when she shares, one beats nothing when she keeps. The same is true for her, looking at your column. So two people who each do the sensible thing end in the bottom right corner with one basket each, when the top left corner had three each sitting there the whole time.");
-  para("That shape has a name. It is the prisoner's dilemma, and it is the smallest situation in which doing the sensible thing makes everybody worse off. Played once, there is nothing to argue about. Keeping is simply better.");
-  head("What Mira was doing");
+  para(T("lg-e1-p2", "Read the top row against the bottom row. Whatever Mira does, you are better off keeping: five beats three when she shares, one beats nothing when she keeps. The same is true for her, looking at your column. So two people who each do the sensible thing end in the bottom right corner with one basket each, when the top left corner had three each sitting there the whole time."));
+  para(T("lg-e1-p3", "That shape has a name. It is the prisoner's dilemma, and it is the smallest situation in which doing the sensible thing makes everybody worse off. Played once, there is nothing to argue about. Keeping is simply better."));
+  head(T("lg-e1-h2", "What Mira was doing"));
   var roll = el("div", "roll");
   roll.appendChild(rollRow("Mira", "mirror"));
   panel.appendChild(roll);
-  para("She shared in the first season. After that she did to you exactly what you had done to her the season before. That is all. It is called tit for tat, and it was the shortest program entered into the tournaments that made this subject famous.");
-  para("It is worth saying what tit for tat cannot do. It never beats the person across the fence. It cannot: it only ever gives back what it was given, so at best it draws with you and at worst it comes second. What it does is make sharing the better thing for you to do, and it does that only because the seasons keep coming. If you had known which season was the last, you would have kept in that one. Knowing that, you would have kept in the one before it. That unravelling is the whole reason the last season is never announced.");
+  para(T("lg-e1-p4", "She shared in the first season. After that she did to you exactly what you had done to her the season before. That is all. It is called tit for tat, and it was the shortest program entered into the tournaments that made this subject famous."));
+  para(T("lg-e1-p5", "It is worth saying what tit for tat cannot do. It never beats the person across the fence. It cannot: it only ever gives back what it was given, so at best it draws with you and at worst it comes second. What it does is make sharing the better thing for you to do, and it does that only because the seasons keep coming. If you had known which season was the last, you would have kept in that one. Knowing that, you would have kept in the one before it. That unravelling is the whole reason the last season is never announced."));
   var t = el("div", "tally");
-  var s1 = el("span"); s1.appendChild(document.createTextNode("Your six seasons "));
-  s1.appendChild(el("b", null, String(G.you))); s1.appendChild(document.createTextNode(" baskets"));
-  var s2 = el("span"); s2.appendChild(document.createTextNode("Mira "));
-  s2.appendChild(el("b", null, String(G.them))); s2.appendChild(document.createTextNode(" baskets"));
-  var s3 = el("span"); s3.appendChild(document.createTextNode("Both sharing every season would have given "));
-  s3.appendChild(el("b", null, String(G.pay.R * 6))); s3.appendChild(document.createTextNode(" each"));
+  var s1 = el("span"); s1.appendChild(document.createTextNode(T("lg-e1-t1", "Your six seasons ")));
+  s1.appendChild(el("b", null, String(G.you))); s1.appendChild(document.createTextNode(T("lg-e1-t1b", " baskets")));
+  var s2 = el("span"); s2.appendChild(document.createTextNode(T("lg-e1-t2", "Mira ")));
+  s2.appendChild(el("b", null, String(G.them))); s2.appendChild(document.createTextNode(T("lg-e1-t2b", " baskets")));
+  var s3 = el("span"); s3.appendChild(document.createTextNode(T("lg-e1-t3", "Both sharing every season would have given ")));
+  s3.appendChild(el("b", null, String(G.pay.R * 6))); s3.appendChild(document.createTextNode(T("lg-e1-t3b", " each")));
   t.appendChild(s1); t.appendChild(s2); t.appendChild(s3);
   panel.appendChild(t);
-  say("Chapter one closes. The payoff table is now shown. Mira was playing tit for tat.");
+  say(T("lg-s-e1", "Chapter one closes. The payoff table is now shown. Mira was playing tit for tat."));
 }
 
 function endTwo() {
-  kick("Chapter two closes");
-  head("Four ways of going about a harvest");
-  para("Twelve seasons and " + G.you + " baskets. Here is who was across the fence.");
+  kick(T("lg-e2-kick", "Chapter two closes"));
+  head(T("lg-e2-h", "Four ways of going about a harvest"));
+  para(T("lg-e2-p1", "Twelve seasons and {y} baskets. Here is who was across the fence.", {y: G.you}));
   var roll = el("div", "roll");
   QUIZ_KEYS.forEach(function (k) {
     var p = PEOPLE[k];
@@ -2304,38 +2324,38 @@ function endTwo() {
   panel.appendChild(roll);
   var right = 0;
   if (G.quiz) QUIZ_KEYS.forEach(function (k) { if (G.quiz[k] === PEOPLE[k].disp) right++; });
-  if (G.quiz) para("You placed " + right + " of the four.");
-  para("There is no move that is right against all four. Against Deniz, who shares whatever you do, keeping is simply better and costs you nothing you will ever be charged for. Against Bruno, who keeps whatever you do, sharing is simply worse and there is no patience that will fix him. Against Halil and Ana, what you do comes back to you, so sharing pays and keeping is borrowed from a season you have not reached yet.");
-  para("That is the point of the chapter. There is no best way to play. There is only the best way to play against the person actually standing there, and the only way to know who that is, is to have watched them. The notebook was the whole method.");
-  para("It is also worth noticing what it cost you to find out. Every neighbour you tested by keeping, you also taught something about yourself.");
-  say("Chapter two closes. Deniz always shares, Bruno always keeps, Halil mirrors you, Ana lets one kept season pass.");
+  if (G.quiz) para(T("lg-e2-placed", "You placed {n} of the four.", {n: right}));
+  para(T("lg-e2-p2", "There is no move that is right against all four. Against Deniz, who shares whatever you do, keeping is simply better and costs you nothing you will ever be charged for. Against Bruno, who keeps whatever you do, sharing is simply worse and there is no patience that will fix him. Against Halil and Ana, what you do comes back to you, so sharing pays and keeping is borrowed from a season you have not reached yet."));
+  para(T("lg-e2-p3", "That is the point of the chapter. There is no best way to play. There is only the best way to play against the person actually standing there, and the only way to know who that is, is to have watched them. The notebook was the whole method."));
+  para(T("lg-e2-p4", "It is also worth noticing what it cost you to find out. Every neighbour you tested by keeping, you also taught something about yourself."));
+  say(T("lg-s-e2", "Chapter two closes. Deniz always shares, Bruno always keeps, Halil mirrors you, Ana lets one kept season pass."));
 }
 
 function endThree() {
   var a = G.run3a || { you: 0, them: 0 };
-  kick("Chapter three closes");
-  head("Forgiveness as error correction");
-  para("The same eight seasons, the same gully, the same sacks lost on the same roads. With Halil you finished on " + a.you + " baskets. With Ana you finished on " + G.you + ".");
+  kick(T("lg-e3-kick", "Chapter three closes"));
+  head(T("lg-e3-h", "Forgiveness as error correction"));
+  para(T("lg-e3-p1", "The same eight seasons, the same gully, the same sacks lost on the same roads. With Halil you finished on {a} baskets. With Ana you finished on {b}.", {a: a.you, b: G.you}));
   var roll = el("div", "roll");
   roll.appendChild(rollRow("Halil", "mirror"));
   roll.appendChild(rollRow("Ana", "forgiver"));
   panel.appendChild(roll);
-  para("Halil answers what arrived. When nothing arrived, he keeps the next season. If the household across from him also answers in kind, that kept season is answered too, and the answer is answered, and one accident becomes a run of them that does not end, because ending it means being the one who shares into a kept season and takes nothing for it.");
-  para("Ana answers only a pattern. One empty season is a season, not a message. Two in a row is a message. So an accident passes through her without leaving a mark, and the two of you go back to sharing without either of you ever having decided to make peace.");
-  para("This is not a claim that being nicer is better. Ana can be robbed: someone who keeps every second season forever will take from her for ever and she will keep sharing into it. What the chapter shows is narrower and more useful. When what you see is not exactly what the other person did, a rule that answers a single observation answers noise as though it were intent. Some slack in the rule is not softness. It is how a rule survives a world it cannot see clearly.");
-  say("Chapter three closes. With Halil you finished on " + a.you + " baskets, with Ana on " + G.you + ".");
+  para(T("lg-e3-p2", "Halil answers what arrived. When nothing arrived, he keeps the next season. If the household across from him also answers in kind, that kept season is answered too, and the answer is answered, and one accident becomes a run of them that does not end, because ending it means being the one who shares into a kept season and takes nothing for it."));
+  para(T("lg-e3-p3", "Ana answers only a pattern. One empty season is a season, not a message. Two in a row is a message. So an accident passes through her without leaving a mark, and the two of you go back to sharing without either of you ever having decided to make peace."));
+  para(T("lg-e3-p4", "This is not a claim that being nicer is better. Ana can be robbed: someone who keeps every second season forever will take from her for ever and she will keep sharing into it. What the chapter shows is narrower and more useful. When what you see is not exactly what the other person did, a rule that answers a single observation answers noise as though it were intent. Some slack in the rule is not softness. It is how a rule survives a world it cannot see clearly."));
+  say(T("lg-s-e3", "Chapter three closes. With Halil you finished on {a} baskets, with Ana on {b}.", {a: a.you, b: G.you}));
 }
 
 function endFour() {
-  kick("Chapter four closes");
-  head("A history is a strategy");
-  var flame = G.rep > 0.72 ? "burning" : G.rep > 0.42 ? "low" : G.rep > 0.15 ? "nearly out" : "out";
-  para("Nine seasons with three people who had never met you, and " + G.you + " baskets. The lantern on the post finished " + flame + ".");
-  para("None of the three could see inside your head. What they could see was a village that had been talking. Tomas opened on that, and so did Leyla, and so did Emre, and after the first season each of them simply answered what you actually did.");
-  para("The lantern was built to move the way a reputation moves. Sharing raises it a little and it takes many seasons to fill. One kept sack takes a fifth of it at once. That asymmetry is not a moral judgement, it is arithmetic about evidence: a hundred generous seasons are consistent with someone who is generous when it is cheap, while one taken sack is only consistent with someone who takes.");
-  para("The useful part is this. In a village small enough that people talk, your past is not a record of your play. It is part of your play. It decides what the next stranger opens with, before either of you has done anything at all.");
-  para("Be careful how far you carry it. This chapter had the village always telling the truth about you and always agreeing with itself. Real reputations are partial, out of date, and worth different things to different people, and none of that is modelled here.");
-  say("Chapter four closes. You finished on " + G.you + " baskets and the lantern is " + flame + ".");
+  kick(T("lg-e4-kick", "Chapter four closes"));
+  head(T("lg-e4-h", "A history is a strategy"));
+  var flame = G.rep > 0.72 ? T("lg-f-burning", "burning") : G.rep > 0.42 ? T("lg-f-low", "low") : G.rep > 0.15 ? T("lg-f-nearly", "nearly out") : T("lg-f-out", "out");
+  para(T("lg-e4-p1", "Nine seasons with three people who had never met you, and {y} baskets. The lantern on the post finished {f}.", {y: G.you, f: flame}));
+  para(T("lg-e4-p2", "None of the three could see inside your head. What they could see was a village that had been talking. Tomas opened on that, and so did Leyla, and so did Emre, and after the first season each of them simply answered what you actually did."));
+  para(T("lg-e4-p3", "The lantern was built to move the way a reputation moves. Sharing raises it a little and it takes many seasons to fill. One kept sack takes a fifth of it at once. That asymmetry is not a moral judgement, it is arithmetic about evidence: a hundred generous seasons are consistent with someone who is generous when it is cheap, while one taken sack is only consistent with someone who takes."));
+  para(T("lg-e4-p4", "The useful part is this. In a village small enough that people talk, your past is not a record of your play. It is part of your play. It decides what the next stranger opens with, before either of you has done anything at all."));
+  para(T("lg-e4-p5", "Be careful how far you carry it. This chapter had the village always telling the truth about you and always agreeing with itself. Real reputations are partial, out of date, and worth different things to different people, and none of that is modelled here."));
+  say(T("lg-s-e4", "Chapter four closes. You finished on {y} baskets and the lantern is {f}.", {y: G.you, f: flame}));
 }
 
 /* ============================================================
@@ -2436,14 +2456,14 @@ function censusBlock() {
     var row = el("div", "r");
     var sw2 = el("span", "swatch"); sw2.style.background = d.color;
     row.appendChild(sw2);
-    row.appendChild(el("span", null, d.name));
+    row.appendChild(el("span", null, dName(k)));
     var bar = el("span", "bar");
     var fill = el("i");
     fill.style.width = (p[i] * 100).toFixed(1) + "%";
     fill.style.background = d.color;
     bar.appendChild(fill);
     row.appendChild(bar);
-    row.appendChild(el("span", "n", c[i] + " of " + EVO_N));
+    row.appendChild(el("span", "n", T("lg-cofn", "{c} of {n}", {c: c[i], n: EVO_N})));
     box.appendChild(row);
   });
   panel.appendChild(box);
@@ -2451,46 +2471,46 @@ function censusBlock() {
 }
 
 VIEWS.years = function () {
-  setTop("Chapter 5. The years", "year " + G.yearI + " of " + EVO_YEARS);
-  kick("Year " + G.yearI + " of " + EVO_YEARS);
+  setTop(chLine(5), T("lg-when-years", "year {a} of {b}", {a: G.yearI, b: EVO_YEARS}));
+  kick(T("lg-when-years", "year {a} of {b}", {a: G.yearI, b: EVO_YEARS}));
   var p = G.years[G.yearI];
   var takerShare = p[1];
   var peak = 0, peakYear = 0;
   for (var i = 0; i <= G.yearI; i++) { if (G.years[i][1] > peak) { peak = G.years[i][1]; peakYear = i; } }
-  var title = G.yearI === 0 ? "Thirty households"
-    : takerShare === 0 ? "There is nobody left who keeps whatever happens"
-    : takerShare > peak * 0.98 ? "The keepers are doing very well"
-    : takerShare < peak * 0.5 && peak > 0.25 ? "The keepers are running out of people to take from"
-    : "The village feeds itself";
+  var title = G.yearI === 0 ? T("lg-y-h0", "Thirty households")
+    : takerShare === 0 ? T("lg-y-hnone", "There is nobody left who keeps whatever happens")
+    : takerShare > peak * 0.98 ? T("lg-y-hwell", "The keepers are doing very well")
+    : takerShare < peak * 0.5 && peak > 0.25 ? T("lg-y-hrun", "The keepers are running out of people to take from")
+    : T("lg-y-hfeed", "The village feeds itself");
   head(title);
   var c = censusBlock();
   if (G.yearI === 0) {
-    para("Fifteen households share whatever happens. Six keep whatever happens. Four mirror, three never forget a kept sack, and two let a single one pass. Every household deals with every other household for about thirty seasons a year.");
+    para(T("lg-y-p0", "Fifteen households share whatever happens. Six keep whatever happens. Four mirror, three never forget a kept sack, and two let a single one pass. Every household deals with every other household for about thirty seasons a year."));
   } else {
-    para("Households that fed themselves better last year hold more of the village this year. Nobody changed how they go about it. The proportions changed underneath them.");
+    para(T("lg-y-p1", "Households that fed themselves better last year hold more of the village this year. Nobody changed how they go about it. The proportions changed underneath them."));
   }
   var r = actions();
   var runBtn;
-  btn(r, "One year", "step", function () {
+  btn(r, T("lg-b-oneyear", "One year"), T("lg-k-step", "step"), function () {
     if (G.yearI < G.years.length - 1) { applyYear(G.yearI + 1); view("years"); }
   }, null).disabled = G.yearI >= G.years.length - 1;
   if (G.yearI < G.years.length - 1) {
-    runBtn = btn(r, G.running ? "Hold the years" : "Run the years", "run", function () {
+    runBtn = btn(r, G.running ? T("lg-b-hold", "Hold the years") : T("lg-b-run", "Run the years"), T("lg-k-run", "run"), function () {
       G.running = !G.running;
       if (G.running) tickYears(); else stopTimer();
       view("years");
     }, null);
   }
   if (G.yearI >= G.years.length - 1) {
-    btn(r, "What happened", "go on", function () { G.running = false; stopTimer(); view("chapterEnd"); }, "big");
+    btn(r, T("lg-b-what", "What happened"), T("lg-k-go", "go on"), function () { G.running = false; stopTimer(); view("chapterEnd"); }, "big");
   } else {
-    btn(r, "Skip to the fortieth year", null, function () {
+    btn(r, T("lg-b-skip40", "Skip to the fortieth year"), null, function () {
       G.running = false; stopTimer(); applyYear(G.years.length - 1); view("years");
     }, "quiet");
   }
-  say("Year " + G.yearI + ". " + EVO_TYPES.map(function (k, i) {
-    return DISPOSITIONS[k].name.toLowerCase() + " " + c[i];
-  }).join(", ") + " of thirty households.");
+  say(T("lg-s-years", "Year {y}. {list} of thirty households.", {y: G.yearI, list: EVO_TYPES.map(function (k, i) {
+    return dName(k).toLowerCase() + " " + c[i];
+  }).join(", ")}));
 };
 
 var timer = null;
@@ -2514,17 +2534,17 @@ function endFive() {
     if (G.years[i][1] > peak) { peak = G.years[i][1]; peakYear = i; }
     if (G.years[i][0] < giverMin) giverMin = G.years[i][0];
   }
-  kick("Chapter five closes");
-  head("What survives is not what wins the next season");
-  para("The households that keep whatever happens started as a fifth of the village. By year " + peakYear +
-       " they were " + Math.round(peak * 100) + " of every hundred households, because a village full of people who share whatever happens is the easiest place in the world to be a keeper.");
-  para("And that is exactly what finished them. Every year they took, there were fewer households left to take from. The ones who share unconditionally went first, and once they were gone the keepers were dealing mostly with each other and with households that answer back, and a keeper dealing with a keeper gets one basket a season. By year " + (G.years.length - 1) + " they were " + Math.round(last[1] * 100) + " of every hundred.");
-  para("The households that share whatever happens are worth watching too. They fall to " + Math.round(giverMin * 100) +
-       " in every hundred while the keepers are eating, and then, once the keepers are gone, they stop being punished for anything and hold at " +
-       Math.round(last[0] * 100) + ". They are not doing well because they are good. They are doing well because there is no longer anybody to take from them, and their being there is exactly the crack a keeper would come back through.");
-  para("Nothing in this village was choosing. Nobody learned, nobody changed their mind, nobody was punished for anything. Households that fed themselves well had more children, and that alone moved the ground under everyone.");
-  para("The thing worth taking away is the difference between two questions. Which move wins this season is one question, and keeping wins it every time. Which way of going about the harvest is still here in forty years is a different question, and it has a different answer.");
-  para("Read the numbers narrowly. This result is a fact about this village: these five dispositions, these starting proportions, these four payoffs and about thirty seasons a pairing. Change the mixture and you change the outcome. Put no mirrors and no grudges in the village at all and the keepers never fall. Shorten the seasons so that each pairing meets twice and the keepers win outright. There is no law here that cooperation wins. There is only a mechanism, and mechanisms have conditions.");
+  kick(T("lg-e5-kick", "Chapter five closes"));
+  head(T("lg-e5-h", "What survives is not what wins the next season"));
+  para(T("lg-e5-p1", "The households that keep whatever happens started as a fifth of the village. By year {py} they were {pk} of every hundred households, because a village full of people who share whatever happens is the easiest place in the world to be a keeper.",
+       {py: peakYear, pk: Math.round(peak * 100)}));
+  para(T("lg-e5-p2", "And that is exactly what finished them. Every year they took, there were fewer households left to take from. The ones who share unconditionally went first, and once they were gone the keepers were dealing mostly with each other and with households that answer back, and a keeper dealing with a keeper gets one basket a season. By year {ly} they were {lk} of every hundred.",
+       {ly: G.years.length - 1, lk: Math.round(last[1] * 100)}));
+  para(T("lg-e5-p3", "The households that share whatever happens are worth watching too. They fall to {gm} in every hundred while the keepers are eating, and then, once the keepers are gone, they stop being punished for anything and hold at {g}. They are not doing well because they are good. They are doing well because there is no longer anybody to take from them, and their being there is exactly the crack a keeper would come back through.",
+       {gm: Math.round(giverMin * 100), g: Math.round(last[0] * 100)}));
+  para(T("lg-e5-p4", "Nothing in this village was choosing. Nobody learned, nobody changed their mind, nobody was punished for anything. Households that fed themselves well had more children, and that alone moved the ground under everyone."));
+  para(T("lg-e5-p5", "The thing worth taking away is the difference between two questions. Which move wins this season is one question, and keeping wins it every time. Which way of going about the harvest is still here in forty years is a different question, and it has a different answer."));
+  para(T("lg-e5-p6", "Read the numbers narrowly. This result is a fact about this village: these five dispositions, these starting proportions, these four payoffs and about thirty seasons a pairing. Change the mixture and you change the outcome. Put no mirrors and no grudges in the village at all and the keepers never fall. Shorten the seasons so that each pairing meets twice and the keepers win outright. There is no law here that cooperation wins. There is only a mechanism, and mechanisms have conditions."));
 }
 
 /* ============================================================
@@ -2538,57 +2558,57 @@ VIEWS.ending = function () {
   scene.mode = "fence"; scene.pop = null; scene.them = null; scene.exchange = null;
   scene.lantern = true;
   world.day = 0.55; world.season = 0; world.prev = 0; world.mix = 1;
-  setTop("The Long Game", "the argument, plainly");
-  kick("The end of it");
-  head("What the five chapters were for");
-  para("Two people can each do better by taking, and both do worse when both take. That is the whole trap, and it is in the numbers rather than in anybody's character. Played once, taking is simply correct and there is nothing more to say about it.");
-  para("Everything that changes the answer comes from the same source: the seasons keep coming, and neither side knows which one is the last. That is what makes what you do now a thing that happens to you later. It is not goodwill and it is not trust. It is arithmetic with a future in it.");
-  para("Four things followed from that, and each of them was a chapter.");
+  setTop(T("lg-name", "The Long Game"), T("lg-when-arg", "the argument, plainly"));
+  kick(T("lg-en-kick", "The end of it"));
+  head(T("lg-en-h1", "What the five chapters were for"));
+  para(T("lg-en-p1", "Two people can each do better by taking, and both do worse when both take. That is the whole trap, and it is in the numbers rather than in anybody's character. Played once, taking is simply correct and there is nothing more to say about it."));
+  para(T("lg-en-p2", "Everything that changes the answer comes from the same source: the seasons keep coming, and neither side knows which one is the last. That is what makes what you do now a thing that happens to you later. It is not goodwill and it is not trust. It is arithmetic with a future in it."));
+  para(T("lg-en-p3", "Four things followed from that, and each of them was a chapter."));
   var ul = el("ul");
   [
-    "A rule as short as answering in kind is enough to make sharing worth your while, and it never once beats the person across the fence. It only changes what is in their interest.",
-    "There is no best way to play. There is a best way to play against the household actually standing there, which is why watching them is the method and the notebook was the tool.",
-    "When what arrives is not always what was sent, a rule that answers every single observation will answer an accident as though it were a decision. Slack in the rule is error correction.",
-    "In a village small enough to talk, your history decides what a stranger opens with. It is part of your play before you have played anything."
+    T("lg-en-l1", "A rule as short as answering in kind is enough to make sharing worth your while, and it never once beats the person across the fence. It only changes what is in their interest."),
+    T("lg-en-l2", "There is no best way to play. There is a best way to play against the household actually standing there, which is why watching them is the method and the notebook was the tool."),
+    T("lg-en-l3", "When what arrives is not always what was sent, a rule that answers every single observation will answer an accident as though it were a decision. Slack in the rule is error correction."),
+    T("lg-en-l4", "In a village small enough to talk, your history decides what a stranger opens with. It is part of your play before you have played anything.")
   ].forEach(function (s) { ul.appendChild(el("li", null, s)); });
   panel.appendChild(ul);
 
-  head("What this does not show");
+  head(T("lg-en-h2", "What this does not show"));
   var ul2 = el("ul");
   [
-    "Cooperation does not always win. What survives depends on the mixture of dispositions in the population and on how likely the seasons are to continue. A village with nobody in it who answers back is a village where taking wins and keeps winning.",
-    "A known last season unravels the whole thing. If both of you know which season is the last, taking is right in that one, and therefore in the one before it, and so on back to the first.",
-    "The famous tournament results are facts about the programs that were entered, not laws. The authors of the largest reanalysis argue that tit for tat did as well as it did partly because of the weak entries it was pooled with.",
-    "Everything here is programs playing an abstract game for baskets. People in real dilemmas do things this model does not contain, and nothing on this page is evidence about what any person will do.",
-    "The reputation in chapter four is a story device. The village always tells the truth about you and always agrees with itself, which is not how reputations work."
+    T("lg-en-m1", "Cooperation does not always win. What survives depends on the mixture of dispositions in the population and on how likely the seasons are to continue. A village with nobody in it who answers back is a village where taking wins and keeps winning."),
+    T("lg-en-m2", "A known last season unravels the whole thing. If both of you know which season is the last, taking is right in that one, and therefore in the one before it, and so on back to the first."),
+    T("lg-en-m3", "The famous tournament results are facts about the programs that were entered, not laws. The authors of the largest reanalysis argue that tit for tat did as well as it did partly because of the weak entries it was pooled with."),
+    T("lg-en-m4", "Everything here is programs playing an abstract game for baskets. People in real dilemmas do things this model does not contain, and nothing on this page is evidence about what any person will do."),
+    T("lg-en-m5", "The reputation in chapter four is a story device. The village always tells the truth about you and always agrees with itself, which is not how reputations work.")
   ].forEach(function (s) { ul2.appendChild(el("li", null, s)); });
   panel.appendChild(ul2);
 
-  head("The same argument, written out");
+  head(T("lg-en-h3", "The same argument, written out"));
   var p = el("p");
-  p.appendChild(document.createTextNode("There is a longer version of this with the payoffs editable, a full round robin tournament, an evolutionary run and every source named and dated: "));
-  var a = el("a", null, "The evolution of cooperation");
+  p.appendChild(document.createTextNode(T("lg-en-essay1", "There is a longer version of this with the payoffs editable, a full round robin tournament, an evolutionary run and every source named and dated: ")));
+  var a = el("a", null, T("lg-en-essay-a", "The evolution of cooperation"));
   a.href = "../../tools/economics/cooperation/index.html";
   p.appendChild(a);
-  p.appendChild(document.createTextNode(", part of Explorable Economics on this site. Read that one if you want to check the arithmetic rather than feel it."));
+  p.appendChild(document.createTextNode(T("lg-en-essay2", ", part of Explorable Economics on this site. Read that one if you want to check the arithmetic rather than feel it.")));
   panel.appendChild(p);
 
-  head("The other games");
+  head(T("lg-en-h4", "The other games"));
   var p2 = el("p");
-  p2.appendChild(document.createTextNode("This is one of a family. The same fence is only one of the situations game theory can write down in four numbers: there is a hunt where the danger is not greed but doubt, a stranger who would rather have nothing than be treated badly, a pasture that dies of being used, a number everybody guesses about everybody else, and a coin nobody can afford to be predictable with. They are all here: "));
-  var a2 = el("a", null, "the games");
+  p2.appendChild(document.createTextNode(T("lg-en-fam1", "This is one of a family. The same fence is only one of the situations game theory can write down in four numbers: there is a hunt where the danger is not greed but doubt, a stranger who would rather have nothing than be treated badly, a pasture that dies of being used, a number everybody guesses about everybody else, and a coin nobody can afford to be predictable with. They are all here: ")));
+  var a2 = el("a", null, T("lg-en-fam-a", "the games"));
   a2.href = "../../game.html";
   p2.appendChild(a2);
   p2.appendChild(document.createTextNode("."));
   panel.appendChild(p2);
 
   var r = actions();
-  btn(r, "Free play", "set your own", function () { view("freeSetup"); }, "big");
-  btn(r, "Play it again from the first season", null, function () {
+  btn(r, T("lg-b-freeplay", "Free play"), T("lg-k-own", "set your own"), function () { view("freeSetup"); }, "big");
+  btn(r, T("lg-b-again1", "Play it again from the first season"), null, function () {
     wipe(); G.rep = 0.5; G.book = {}; G.furthest = 1;
     startChapter(1); view("chapterIntro");
   }, "quiet");
-  say("The ending. The argument is stated plainly, with what it does not show, and a link to the written essay.");
+  say(T("lg-s-end", "The ending. The argument is stated plainly, with what it does not show, and a link to the written essay."));
 };
 
 /* ============================================================
@@ -2600,10 +2620,10 @@ VIEWS.freeSetup = function () {
   $("menuBtn").hidden = false;
   scene.mode = "fence"; scene.pop = null; scene.them = null; scene.exchange = null;
   scene.lantern = false;
-  setTop("Free play", "your numbers, your neighbour");
-  kick("Free play");
-  head("Set the village yourself");
-  para("Four numbers, a chance the sack is lost on the road, a chance the seasons carry on, and the person across the fence. Nothing is hidden and the game will tell you when your numbers have stopped being a dilemma.");
+  setTop(T("lg-b-free", "Free play"), T("lg-when-free", "your numbers, your neighbour"));
+  kick(T("lg-fs-kick", "Free play"));
+  head(T("lg-fs-h", "Set the village yourself"));
+  para(T("lg-fs-p1", "Four numbers, a chance the sack is lost on the road, a chance the seasons carry on, and the person across the fence. Nothing is hidden and the game will tell you when your numbers have stopped being a dilemma."));
   var f = el("div", "fields");
   function field(id, label, val, min, max, step) {
     var w = el("div");
@@ -2614,17 +2634,17 @@ VIEWS.freeSetup = function () {
     return inp;
   }
   var cfg = G.freeCfg || { T: 5, R: 3, P: 1, S: 0, noise: 0, w: 90, disp: "mirror", seasons: 20 };
-  field("f-T", "you keep, they share", cfg.T, -20, 40);
-  field("f-R", "both share", cfg.R, -20, 40);
-  field("f-P", "both keep", cfg.P, -20, 40);
-  field("f-S", "you share they keep", cfg.S, -20, 40);
-  field("f-n", "sacks lost, per hundred", cfg.noise, 0, 60);
-  field("f-w", "seasons carry on, per hundred", cfg.w, 0, 100);
+  field("f-T", T("lg-fs-T", "you keep, they share"), cfg.T, -20, 40);
+  field("f-R", T("lg-fs-R", "both share"), cfg.R, -20, 40);
+  field("f-P", T("lg-fs-P", "both keep"), cfg.P, -20, 40);
+  field("f-S", T("lg-fs-S", "you share they keep"), cfg.S, -20, 40);
+  field("f-n", T("lg-fs-n", "sacks lost, per hundred"), cfg.noise, 0, 60);
+  field("f-w", T("lg-fs-w", "seasons carry on, per hundred"), cfg.w, 0, 100);
   var w2 = el("div");
-  var l2 = el("label", null, "across the fence"); l2.setAttribute("for", "f-d");
+  var l2 = el("label", null, T("lg-fs-d", "across the fence")); l2.setAttribute("for", "f-d");
   var sel = el("select"); sel.id = "f-d";
   DISP_ORDER.forEach(function (k) {
-    var o = el("option", null, DISPOSITIONS[k].name + ", " + DISPOSITIONS[k].formal);
+    var o = el("option", null, dName(k) + ", " + DISPOSITIONS[k].formal);
     o.value = k;
     if (k === cfg.disp) o.selected = true;
     sel.appendChild(o);
@@ -2640,13 +2660,13 @@ VIEWS.freeSetup = function () {
     var d = dilemmaCheck(p);
     if (d.ok) {
       warn.className = "warnline ok";
-      warn.textContent = "These four numbers are a dilemma. Keeping beats sharing whatever the other does, and both sharing beats taking turns to rob each other.";
+      warn.textContent = T("lg-fs-ok", "These four numbers are a dilemma. Keeping beats sharing whatever the other does, and both sharing beats taking turns to rob each other.");
     } else {
       warn.className = "warnline";
       var msgs = [];
-      if (!d.order) msgs.push("Keeping no longer beats sharing whatever the other side does, so there is nothing to be trapped by.");
-      if (!d.pair) msgs.push("Two shared seasons are now worth less than robbing each other in turn, so a pair does best by alternating rather than by sharing.");
-      warn.textContent = "This is no longer a prisoner's dilemma. " + msgs.join(" ") + " It is still playable, and it is still a game, but it is a different one.";
+      if (!d.order) msgs.push(T("lg-fs-no1", "Keeping no longer beats sharing whatever the other side does, so there is nothing to be trapped by."));
+      if (!d.pair) msgs.push(T("lg-fs-no2", "Two shared seasons are now worth less than robbing each other in turn, so a pair does best by alternating rather than by sharing."));
+      warn.textContent = T("lg-fs-no", "This is no longer a prisoner's dilemma. {m} It is still playable, and it is still a game, but it is a different one.", {m: msgs.join(" ")});
     }
   }
   ["f-T", "f-R", "f-P", "f-S"].forEach(function (id) {
@@ -2655,7 +2675,7 @@ VIEWS.freeSetup = function () {
   check();
 
   var r = actions();
-  btn(r, "Go to the fence", "start", function () {
+  btn(r, T("lg-b-tofence", "Go to the fence"), T("lg-k-start", "start"), function () {
     G.freeCfg = {
       T: +$("f-T").value, R: +$("f-R").value, P: +$("f-P").value, S: +$("f-S").value,
       noise: clamp(+$("f-n").value, 0, 60), w: clamp(+$("f-w").value, 0, 100),
@@ -2663,8 +2683,8 @@ VIEWS.freeSetup = function () {
     };
     startFree();
   }, "big");
-  btn(r, "Back to the ending", null, function () { view("ending"); }, "quiet");
-  say("Free play. Set the four payoffs, the chance a sack is lost, the chance the seasons carry on, and who is across the fence.");
+  btn(r, T("lg-b-backend", "Back to the ending"), null, function () { view("ending"); }, "quiet");
+  say(T("lg-s-fs", "Free play. Set the four payoffs, the chance a sack is lost, the chance the seasons carry on, and who is across the fence."));
 };
 
 function startFree() {
@@ -2699,7 +2719,7 @@ function freeResolve(yourMove) {
   LOG.push({ chapter: 0, season: G.seasonInCh - 1, who: "Neighbour", disp: entry.disp,
              youIntended: r.aIntent, themIntended: r.bIntent, you: r.a, them: r.b,
              youLost: r.aLost, themLost: r.bLost, youPay: r.aPay, themPay: r.bPay });
-  G.last = { r: r, name: "The neighbour" };
+  G.last = { r: r, name: T("lg-thenb", "The neighbour") };
   scene.exchange = { you: r.aIntent, them: r.bIntent, youLost: r.aLost, themLost: r.bLost, u: 0 };
   advanceWorld();
   var carriesOn = rnd() < (G.freeCfg.w / 100);
@@ -2711,35 +2731,35 @@ function freeResolve(yourMove) {
 VIEWS.freePlay = function () {
   var c = G.freeCfg;
   var d = DISPOSITIONS[c.disp];
-  setTop("Free play", SEASON_NAMES[world.season] + ", season " + (G.seasonInCh + 1));
+  setTop(T("lg-b-free", "Free play"), T("lg-when-freeseason", "{s}, season {n}", {s: seasonName(world.season), n: G.seasonInCh + 1}));
   if (G.last) {
-    kick("Season " + G.seasonInCh + " closed");
+    kick(T("lg-fp-closed", "Season {n} closed", {n: G.seasonInCh}));
     head(outcomeLine(G.last.r));
-    para(resultWords(G.last.r, "The neighbour"), "say");
+    para(resultWords(G.last.r, T("lg-thenb", "The neighbour")), "say");
   } else {
-    kick("Free play");
-    head("Season one");
-    para("The neighbour is at the fence. You have set the numbers yourself and you know who is standing there.");
+    kick(T("lg-fs-kick", "Free play"));
+    head(T("lg-fp-s1", "Season one"));
+    para(T("lg-fp-p1", "The neighbour is at the fence. You have set the numbers yourself and you know who is standing there."));
   }
   if (G.freeOver) {
-    para("The seasons stopped. Nobody announced it and nobody planned for it, which is the only reason the whole run was worth playing honestly.");
-    para("You finished on " + G.you + " baskets over " + G.seasonInCh + " seasons, and the neighbour on " + G.them + ". Both sharing every season would have given each of you " + (G.pay.R * G.seasonInCh) + ".");
+    para(T("lg-fp-over1", "The seasons stopped. Nobody announced it and nobody planned for it, which is the only reason the whole run was worth playing honestly."));
+    para(T("lg-fp-over2", "You finished on {y} baskets over {s} seasons, and the neighbour on {t}. Both sharing every season would have given each of you {r}.", {y: G.you, s: G.seasonInCh, t: G.them, r: G.pay.R * G.seasonInCh}));
     var rr = actions();
-    btn(rr, "Set it up again", "again", function () { G.last = null; G.freeOver = false; view("freeSetup"); }, "big");
-    btn(rr, "Back to the ending", null, function () { G.last = null; G.freeOver = false; view("ending"); }, "quiet");
-    say("The seasons stopped after " + G.seasonInCh + ". You finished on " + G.you + " baskets.");
+    btn(rr, T("lg-b-setup", "Set it up again"), T("lg-k-again", "again"), function () { G.last = null; G.freeOver = false; view("freeSetup"); }, "big");
+    btn(rr, T("lg-b-backend", "Back to the ending"), null, function () { G.last = null; G.freeOver = false; view("ending"); }, "quiet");
+    say(T("lg-s-fpover", "The seasons stopped after {s}. You finished on {y} baskets.", {s: G.seasonInCh, y: G.you}));
     return;
   }
   var r = actions();
-  btn(r, "Share the harvest", "press s", function () { freeResolve("C"); }, "big share");
-  btn(r, "Keep the harvest", "press k", function () { freeResolve("D"); }, "big keep");
-  tallyLine("Your cellar", "The neighbour");
-  var note = para("Across the fence: " + d.name.toLowerCase() + ", known in the books as " + d.formal + ". " + d.tell +
-    " Sacks lost on the road: " + c.noise + " in a hundred. The seasons carry on with a chance of " + c.w + " in a hundred.");
+  btn(r, T("lg-b-share", "Share the harvest"), T("lg-k-s", "press s"), function () { freeResolve("C"); }, "big share");
+  btn(r, T("lg-b-keep", "Keep the harvest"), T("lg-k-k", "press k"), function () { freeResolve("D"); }, "big keep");
+  tallyLine(T("lg-cellar", "Your cellar"), T("lg-thenb", "The neighbour"));
+  var note = para(T("lg-fp-note", "Across the fence: {n}, known in the books as {f}. {t} Sacks lost on the road: {no} in a hundred. The seasons carry on with a chance of {w} in a hundred.",
+    {n: dName(c.disp).toLowerCase(), f: d.formal, t: dTell(c.disp), no: c.noise, w: c.w}));
   note.style.fontSize = ".85rem";
   var r2 = actions();
-  btn(r2, "Change the numbers", null, function () { G.last = null; view("freeSetup"); }, "quiet");
-  say(SEASON_NAMES[world.season] + ", season " + (G.seasonInCh + 1) + ". Share the harvest or keep the harvest. You have " + G.you + " baskets.");
+  btn(r2, T("lg-b-change", "Change the numbers"), null, function () { G.last = null; view("freeSetup"); }, "quiet");
+  say(T("lg-s-fp", "{s}, season {n}. Share the harvest or keep the harvest. You have {y} baskets.", {s: seasonName(world.season), n: G.seasonInCh + 1, y: G.you}));
 };
 
 /* ============================================================
@@ -2797,6 +2817,11 @@ window.__LG = {
   reduced: reduced
 };
 
+document.addEventListener("langchange", function () {
+  view(G.view);
+  if (nb && !nb.hidden) renderNotebook();
+});
+
 resize();
 view("title");
 requestAnimationFrame(frame);
@@ -2805,40 +2830,97 @@ requestAnimationFrame(frame);
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil"}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache"}};
+window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}"}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %"}};
 
 (function(){
   "use strict";
   var KEY = "lang", lang = "en";
-  try { lang = localStorage.getItem(KEY) || "en"; } catch (e) {}
-  var D = window.CHROME_I18N || {};
-  var base = {}, baseA = {};
-  var SEL  = ".bar [data-i], .site-foot [data-i], .k-crown-no[data-i]";
-  var SELA = ".bar [data-ia], .site-foot [data-ia]";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  function known(l){
+    return l === "en"
+        || (window.CHROME_I18N && window.CHROME_I18N[l])
+        || (window.PAGE_I18N && window.PAGE_I18N[l]);
+  }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
   function apply(l){
-    if(!D[l]) l = "en";
-    var d = D[l] || {};
-    document.querySelectorAll(SEL).forEach(function(el){
-      var k = el.getAttribute("data-i");
-      if(!(k in base)) base[k] = el.innerHTML;
-      el.innerHTML = (l === "en" || d[k] === undefined) ? base[k] : d[k];
-    });
-    document.querySelectorAll(SELA).forEach(function(el){
-      var k = el.getAttribute("data-ia");
-      if(!(k in baseA)) baseA[k] = el.getAttribute("aria-label") || "";
-      el.setAttribute("aria-label", (l === "en" || d[k] === undefined) ? baseA[k] : d[k]);
-    });
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
     });
     try { localStorage.setItem(KEY, l); } catch (e) {}
     window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
 })();
 

@@ -16,6 +16,7 @@
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <link rel="alternate" type="application/rss+xml" title="Notes" href="feed.xml">
 <meta name="twitter:card" content="summary_large_image">
+
 <!-- Analytics: cookieless. Create a site at dash.cloudflare.com > Web Analytics,
      paste the token below and remove the comment markers.
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "YOUR_TOKEN"}'></script>
@@ -50,18 +51,21 @@
 body::after{content:"";position:fixed;inset:0;background:#17110a;pointer-events:none;z-index:95;
   animation:surface .55s ease .05s forwards}
 @keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.crown,main>section{animation:riseIn .6s cubic-bezier(.23,1,.32,1) both}
-main>section:nth-of-type(1){animation-delay:.12s}
-main>section:nth-of-type(2){animation-delay:.2s}
-main>section:nth-of-type(3){animation-delay:.28s}
-@media (prefers-reduced-motion:reduce){body::after{display:none}.crown,main>section{animation:none}}
+.crown{animation:riseIn .7s cubic-bezier(.16,1,.3,1) both;animation-delay:.1s}
+@media (prefers-reduced-motion:reduce){body::after{display:none}.crown{animation:none}}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--fg);font-family:var(--sans);line-height:1.6}
 ::selection{background:#e3c893;color:#221e17}
+html{caret-color:var(--accent);scrollbar-color:#c9c0aa var(--paper);scrollbar-width:thin}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--paper)}
+::-webkit-scrollbar-thumb{background:#cdc4ae;border:3px solid var(--paper);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:#b3a88e}
+a{text-underline-offset:.18em;text-decoration-thickness:from-font}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 a{color:inherit}
 a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
 
 /* ---------- top bar ---------- */
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
@@ -69,8 +73,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
-.bar nav{display:flex;gap:clamp(.9rem,2.5vw,1.8rem);align-items:center}
-.bar nav a{font-size:.86rem;letter-spacing:.02em;text-decoration:none;color:var(--dim);font-weight:500;
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
@@ -89,7 +94,7 @@ footer a{text-decoration:none;color:var(--dim);border-bottom:0}
 footer a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
-.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.85}
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
 
 /* ---------- the bar and the footer, narrowed ---------- */
@@ -99,7 +104,7 @@ footer a:hover{color:var(--fg)}
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
   .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    gap:clamp(.5rem,2.4vw,1rem);row-gap:.1rem}
+    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
   .bar nav a{font-size:.8rem;padding:.55rem 0}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
@@ -109,12 +114,12 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* six nav items on a narrow phone: the row is allowed to take a second
-   line rather than push the page sideways, and the words are set a little
-   tighter so that on most phones it does not have to */
+/* eight nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
 @media (max-width:430px){
-  .bar nav{gap:.34rem .55rem}
-  .bar nav a{font-size:.76rem;letter-spacing:.01em}
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
 }
 
 /* a finger, not a cursor: every control a thumb has to find is at least a
@@ -136,37 +141,121 @@ footer a:hover{color:var(--fg)}
 h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.4rem,6vw,4.2rem);line-height:1.05;letter-spacing:.005em}
 .crown p.lede{margin-top:1.2rem;max-width:58ch;font-family:var(--text);font-size:1.15rem;color:var(--dim)}
 
-h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:.005em;margin:0 0 1.2rem}
+/* A page whose heading is a nav label rather than an argument sets that label
+   as a folio mark and lets the statement below be the opening voice. Setting
+   the word "Profile" in 67px display type was giving the page's largest
+   gesture to its least interesting word. */
+.crown h1.folio{font-family:var(--sans);font-weight:500;font-size:.82rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);line-height:1}
+.crown:has(h1.folio){padding-bottom:clamp(1.2rem,3vh,1.8rem)}
+
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.6rem,3.2vw,2.3rem);letter-spacing:-.005em;margin:0 0 1.6rem}
 section{padding:clamp(2.2rem,6vh,4rem) 0}
 section + section{border-top:1px solid var(--line)}
+
+/* ---------- headings in the margin ----------
+   A reading column is about 62ch wide. On a laptop that leaves a third of the
+   page doing nothing, and the page starts to look like a blog post pasted into
+   a wide window. The section heading moves into that margin and stays with its
+   section while you read it, so the width carries the table of contents. */
+@media (min-width:1010px){
+  main > section:has(> h2){
+    display:grid;
+    grid-template-columns:minmax(0,13rem) minmax(0,1fr);
+    column-gap:clamp(1.8rem,4vw,3.4rem)}
+  main > section:has(> h2) > h2{
+    grid-column:1;grid-row:1 / span 200;align-self:start;
+    position:sticky;top:5.4rem;
+    margin:0;font-size:1.3rem;line-height:1.25;letter-spacing:0;text-wrap:balance}
+  main > section:has(> h2) > *:not(h2){grid-column:2}
+}
+/* a section that already closes itself with a rule does not need the next
+   section to draw a second one 30px below it */
+section:has(> .note-item:last-of-type) + section{border-top:0}
+
+/* ---------- the spread ----------
+   A narrow rail for dates, labels and marginalia, and a reading column beside
+   it. The rail is what fills the width honestly on a laptop, and it is the
+   same idea the essays use when they put a counter argument in the margin.
+   Below 900 it folds: the rail becomes a line above its entry. */
+.spread{display:grid;grid-template-columns:minmax(0,11.5rem) minmax(0,66ch);
+  gap:clamp(1.4rem,4vw,3.4rem);align-items:start}
+.spread > .rail{font-family:var(--mono);font-size:.76rem;letter-spacing:.04em;
+  line-height:1.5;color:var(--dim);padding-top:.42rem;font-variant-numeric:tabular-nums}
+.spread > .rail b{display:block;font-weight:500;color:var(--accent);font-variant-numeric:tabular-nums}
+.spread > .rail span{display:block;margin-top:.35rem}
+@media (max-width:900px){
+  .spread{grid-template-columns:1fr;gap:1.1rem}
+  .spread > .rail{padding:.1rem 0 .1rem .9rem;border-left:1px solid var(--line)}
+  .spread > .rail span{margin-top:.28rem}
+  .spread--intro > .rail{margin-bottom:.3rem}
+  .tl .row .rail{display:flex;gap:.9rem;border-left:0;padding-left:0}
+  .tl .row .rail span{margin-top:0}
+}
+
+/* The step the pages were missing: between a 4rem heading and 1.1rem body
+   there was nothing, so every page read as a title and then a paragraph. */
+/* The step between a display heading and body text. Kept plain: it states
+   where he is and what he is doing, and does not try to be memorable. */
+.opening{font-family:var(--text);font-weight:400;
+  font-size:clamp(1.14rem,1.5vw,1.32rem);line-height:1.5;color:var(--fg);
+  max-width:46ch;text-wrap:pretty}
+.opening + .after{margin-top:1.8rem;font-family:var(--text);font-size:1.08rem;
+  line-height:1.62;color:#4c463b;max-width:62ch}
+.opening + .after p + p{margin-top:.9em}
+
+/* The artifact a claim leaves behind, in the type the instruments use for
+   measurement. Not decoration: if a line has no artifact it gets none. */
+.ev{margin-top:.7rem;font-family:var(--mono);font-size:.75rem;letter-spacing:.03em;
+  color:var(--accent);display:flex;flex-wrap:wrap;gap:.35rem .9rem;
+  font-variant-numeric:tabular-nums}
+.ev i{font-style:normal;color:var(--dim)}
 
 /* ---------- profile pieces ---------- */
 .story{max-width:62ch;font-family:var(--text);font-size:1.13rem;line-height:1.65}
 .story p+p{margin-top:1em}
-.tl{margin-top:.6rem}
-.tl .row{display:grid;grid-template-columns:74px 1fr;gap:1.2rem;padding:1.1rem 0;border-top:1px solid var(--line)}
-.tl .yr{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var(--accent);padding-top:.1rem}
-.tl h3{font-family:var(--sans);font-weight:500;font-size:1rem}
-.tl .role{display:block;font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--dim);margin:.1rem 0 .4rem}
-.tl p{font-family:var(--text);font-size:1rem;color:#4c463b;max-width:64ch}
+.tl{margin-top:.4rem;border-top:1px solid var(--line)}
+.tl .row{padding:1.5rem 0;border-bottom:1px solid var(--line)}
+.tl .row:last-child{border-bottom:0}
+.tl h3{font-family:var(--serif);font-weight:400;font-size:1.32rem;letter-spacing:-.005em;line-height:1.15}
+.tl .role{display:block;font-family:var(--sans);font-size:.82rem;font-weight:500;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--dim);margin:.42rem 0 .6rem}
+.tl p{font-family:var(--text);font-size:1.04rem;line-height:1.6;color:#4c463b;max-width:62ch}
 .badge{display:inline-block;font-size:.72rem;color:var(--accent);
   border:1px solid var(--line);border-radius:2px;padding:.15em .55em;margin-top:.5rem}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(1.2rem,4vw,3rem)}
 dl .item{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
 dl .item .v{color:var(--dim);text-align:right;font-size:.8rem;padding-top:.1rem;flex-shrink:0}
+/* a ledger row names who issued the thing before it names the thing */
+dl.led .item{align-items:baseline}
+dl.led .item .k{display:block}
+dl.led .iss{display:block;font-family:var(--mono);font-weight:400;font-size:.68rem;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:.18rem}
+dl.led .item .v{font-family:var(--mono);font-variant-numeric:tabular-nums;align-self:end}
 h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg);margin:0 0 .5rem}
-.cv-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.6rem;padding:.65rem 1.2rem;
-  border:1px solid var(--fg);border-radius:2px;text-decoration:none;font-size:.86rem;font-weight:500;letter-spacing:.02em;
-  transition:background .18s var(--ease),color .18s var(--ease),transform .18s var(--ease)}
+.cv-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:2rem;padding:.78rem 1.4rem;
+  background:var(--fg);color:var(--paper);border:1px solid var(--fg);border-radius:2px;text-decoration:none;
+  font-size:.86rem;font-weight:500;letter-spacing:.02em;
+  box-shadow:0 1px 2px rgba(34,30,23,.14),0 6px 18px -8px rgba(34,30,23,.3);
+  transition:background .18s var(--ease),color .18s var(--ease),transform .18s var(--ease),box-shadow .18s var(--ease)}
+.cv-btn:hover{background:#100d08;box-shadow:0 2px 4px rgba(34,30,23,.18),0 12px 26px -10px rgba(34,30,23,.36);transform:translateY(-1px)}
 .cv-btn:active{transform:scale(.98)}
-.cv-btn:hover{background:var(--fg);color:var(--paper)}
 
 /* ---------- projects pieces ---------- */
-.feature{border:1px solid var(--line);background:var(--raised);padding:clamp(1.4rem,4vw,2.4rem);
-  display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start}
-.feature h3{font-family:var(--serif);font-weight:400;font-size:1.6rem}
+/* an entry in a catalogue, not a card: the rule carries the separation the
+   box used to, and the row keeps the paper it sits on */
+.feature{border-top:1px solid var(--line);padding:1.25rem 0 1.5rem;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.9rem 2rem;align-items:baseline}
+.feature h3{font-family:var(--serif);font-weight:400;font-size:clamp(1.42rem,2.4vw,1.75rem);
+  letter-spacing:-.008em;margin:0}
 .feature p{max-width:58ch;font-family:var(--text);font-size:1.02rem;color:#4c463b;margin-top:.5rem}
-.feature .go{font-size:.84rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:nowrap;
+.col-lead{font-family:var(--text);font-size:1.08rem;line-height:1.62;color:#4c463b;max-width:58ch}
+.go-block{display:inline-block;margin-top:1.3rem;font-family:var(--sans);font-size:.84rem;font-weight:500;
+  letter-spacing:.03em;color:var(--accent);text-decoration:none;
+  border-bottom:1px solid var(--line);padding-bottom:.15em;transition:border-color .18s var(--ease)}
+.go-block:hover{border-bottom-color:var(--accent)}
+.feature .go{justify-self:start;font-size:.84rem;font-weight:500;color:var(--accent);
+  text-decoration:none;white-space:nowrap;
   border-bottom:1px solid var(--line);transition:border-color .18s var(--ease)}
 .feature .go:hover{border-bottom-color:var(--accent)}
 .repo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;background:var(--line);
@@ -178,10 +267,17 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 .repo p{font-family:var(--text);font-size:.92rem;color:#4c463b;margin-top:.35rem;line-height:1.45}
 
 /* ---------- contact ---------- */
-.mail-line{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-top:1rem}
-.mail-line a.addr{font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,4vw,2.6rem);text-decoration:none;
-  border-bottom:1px solid var(--line)}
-.mail-line a.addr:hover{border-bottom-color:var(--accent)}
+/* The address is the page. It gets the size, and the rule under it thickens
+   on hover rather than changing colour, so the target reads as one object. */
+.mail-line{display:flex;flex-wrap:wrap;align-items:baseline;gap:1rem;margin-top:.2rem}
+.mail-line a.addr{font-family:var(--serif);font-weight:300;font-size:clamp(1.5rem,4.2vw,2.75rem);
+  letter-spacing:-.015em;text-decoration:none;padding-bottom:.1em;
+  border-bottom:1px solid var(--line);
+  /* the rule thickens on hover through a shadow, so nothing reflows */
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+.mail-line a.addr:hover{border-bottom-color:var(--accent);box-shadow:0 1px 0 0 var(--accent)}
+.c-help{margin-top:1.8rem;font-family:var(--text);font-size:1.05rem;line-height:1.6;
+  color:#4c463b;max-width:56ch}
 .copy{font-size:.78rem;font-weight:500;letter-spacing:.02em;color:var(--dim);
   background:none;border:1px solid var(--line);border-radius:2px;padding:.5em .9em;cursor:pointer;
   transition:color .15s var(--ease),border-color .15s var(--ease)}
@@ -258,8 +354,9 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
   input[type="range"]{height:44px;margin:0;padding:0}
   .demo-src a{display:inline-flex;align-items:center;min-height:44px}
 }
-.rise{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .7s cubic-bezier(.22,1,.36,1)}
-.rise.in{opacity:1;transform:none}
+.rise{opacity:0;transform:translateY(18px);filter:blur(3px);
+  transition:opacity .75s ease,transform .9s cubic-bezier(.16,1,.3,1),filter .75s ease}
+.rise.in{opacity:1;transform:none;filter:none}
 @media (prefers-reduced-motion:reduce){.rise{opacity:1;transform:none;transition:none}}
 #cvsheet{display:none}
 @media print{
@@ -298,7 +395,7 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 <header class="bar">
   <div class="wrap">
     <a class="home" href="index.html">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" aria-current="page" data-i="nav-c">Contact</a><a href="tools.html" data-i="nav-t">Tools</a><a href="game.html" data-i="nav-g">Game Theory</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="profile.html" data-i="nav-p">Profile</a><a href="projects.html" data-i="nav-j">Projects</a><a href="tools.html" data-i="nav-t">Tools</a><a href="tools/economics/" data-i="nav-e">Economics</a><a href="game.html" data-i="nav-g">Game Theory</a><a href="simea/" data-i="nav-s">Simulations</a><a href="notes.html" data-i="nav-n">Notes</a><a href="contact.html" aria-current="page" data-i="nav-c">Contact</a>
       <div class="langs" role="group" aria-label="Language" data-ia="a-lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -316,54 +413,81 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 </div>
 
 <section aria-label="Email" data-ia="a-email">
-  <div class="mail-line">
-    <a class="addr" href="mailto:kozdemir3523@gmail.com">kozdemir3523@gmail.com</a>
-    <button type="button" class="copy" data-copy="kozdemir3523@gmail.com" data-label="copy" data-done="copied" data-i="cp" data-i-done="cp-done">copy</button>
+  <div class="spread">
+    <div class="rail">
+      <b data-i="ct-city">Munich</b>
+      <span data-i="ct-reply">Reply within a day</span>
+      <span data-i="ct-langs">English, Turkish, German</span>
+    </div>
+    <div>
+      <div class="mail-line">
+        <a class="addr" href="mailto:kozdemir3523@gmail.com">kozdemir3523@gmail.com</a>
+        <button type="button" class="copy" data-copy="kozdemir3523@gmail.com" data-label="copy" data-done="copied" data-i="cp" data-i-done="cp-done">copy</button>
+      </div>
+      <p class="c-help" data-i="c-help">If you are writing about a role, the useful things to include are the hours, whether it is a working student position or a project, and roughly when it starts.</p>
+      <div class="socials">
+        <a href="https://www.linkedin.com/in/keremozdemir23/" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
+        <a href="defter.html" data-i="c-gb2">Guestbook</a>
+      </div>
+    </div>
   </div>
-  <div class="socials">
-    <a href="https://www.linkedin.com/in/keremozdemir23/" rel="noopener noreferrer">LinkedIn</a>
-    <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
-  </div>
-  <p style="margin-top:2.4rem;color:var(--dim);font-family:var(--text);font-size:1rem;max-width:52ch" data-i="c-note">Based in Munich. I read every message and reply within a day.</p>
-  <p class="quiet-line" style="margin-top:.6rem;font-size:1rem;max-width:52ch" data-i="c-gb">Or leave a public note in the <a href="defter.html">guestbook</a>.</p>
 </section>
 
 <section aria-labelledby="wr-h" id="writeSection" style="display:none">
-  <h2 id="wr-h" data-i="f-h">Write directly</h2>
-  <form id="wForm" class="wform">
-    <p class="vh" aria-hidden="true"><label>website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></p>
-    <div class="frow"><label for="fName" data-i="f-name">Name</label><input id="fName" name="name" type="text" required autocomplete="name"></div>
-    <div class="frow"><label for="fEmail" data-i="f-email">Email</label><input id="fEmail" name="email" type="email" required autocomplete="email"></div>
-    <div class="frow"><label for="fMsg" data-i="f-msg">Message</label><textarea id="fMsg" name="message" rows="5" required></textarea></div>
-    <button type="submit" class="cv-btn" id="fSend" style="margin-top:1.2rem" data-i="f-send">Send</button>
-    <p id="fOk" hidden class="fnote ok" data-i="f-ok">Sent. I read everything.</p>
-    <p id="fErr" hidden class="fnote err" data-i="f-err">It did not go through. Email works instead.</p>
-  </form>
+  <div class="spread">
+    <div class="rail">
+      <b data-i="f-rail1">Goes to the same inbox</b>
+      <span data-i="f-rail2">Nothing is stored on this site</span>
+    </div>
+    <div>
+      <h2 id="wr-h" data-i="f-h">Write directly</h2>
+      <form id="wForm" class="wform">
+        <p class="vh" aria-hidden="true"><label>website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></p>
+        <div class="frow"><label for="fName" data-i="f-name">Name</label><input id="fName" name="name" type="text" required autocomplete="name"></div>
+        <div class="frow"><label for="fEmail" data-i="f-email">Email</label><input id="fEmail" name="email" type="email" required autocomplete="email"></div>
+        <div class="frow"><label for="fMsg" data-i="f-msg">Message</label><textarea id="fMsg" name="message" rows="6" required></textarea></div>
+        <button type="submit" class="cv-btn" id="fSend" style="margin-top:1.4rem" data-i="f-send">Send</button>
+        <p id="fOk" hidden class="fnote ok" data-i="f-ok">Sent. I read everything.</p>
+        <p id="fErr" hidden class="fnote err" data-i="f-err">It did not go through. Email works instead.</p>
+      </form>
+    </div>
+  </div>
 </section>
 
 </main>
 <footer class="site-foot"><div class="wrap">
   <span>© 2026 Kerem Özdemir</span>
+  <a href="sources.html" data-i="nav-src">Sources</a>
   <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
 </div></footer>
 <script>
-window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "a-site": "Site", "a-lang": "Dil", "a-email": "E-posta", "cp-done": "kopyalandı", "c-h1": "İletişim", "c-lede": "Roller, iş birlikleri ve çalışmalarımla ilgili sorular için.", "cp": "kopyala", "c-note": "Münih'teyim. Her mesajı okur, bir gün içinde yanıtlarım.", "c-gb": "Ya da <a href=\"defter.html\">ziyaretçi defterine</a> herkese açık bir not bırak.", "f-h": "Doğrudan yaz", "f-name": "İsim", "f-email": "E-posta", "f-msg": "Mesaj", "f-send": "Gönder", "f-ok": "Gönderildi. Her şeyi okurum.", "f-err": "Gitmedi. E-posta her zaman çalışır."}, "de": {"nav-p": "Profil", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "a-site": "Website", "a-lang": "Sprache", "a-email": "E-Mail", "cp-done": "kopiert", "c-h1": "Kontakt", "c-lede": "Für Positionen, Kooperationen und Fragen zu meiner Arbeit.", "cp": "kopieren", "c-note": "In München. Ich lese jede Nachricht und antworte innerhalb eines Tages.", "c-gb": "Oder hinterlasse eine öffentliche Notiz im <a href=\"defter.html\">Gästebuch</a>.", "f-h": "Direkt schreiben", "f-name": "Name", "f-email": "E-Mail", "f-msg": "Nachricht", "f-send": "Senden", "f-ok": "Gesendet. Ich lese alles.", "f-err": "Es ist nicht durchgegangen. E-Mail funktioniert stattdessen."}};
+window.I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "ct-city": "Münih", "ct-reply": "Bir gün içinde yanıt", "ct-langs": "İngilizce, Türkçe, Almanca", "c-help": "Bir pozisyon için yazıyorsan, işe yarayan bilgiler şunlar: haftalık saat, working student mi yoksa proje mi, ve kabaca ne zaman başlıyor.", "c-gb2": "Ziyaretçi defteri", "f-rail1": "Aynı gelen kutusuna düşer", "f-rail2": "Bu sitede hiçbir şey saklanmaz", "a-email": "E-posta", "cp-done": "kopyalandı", "c-h1": "İletişim", "c-lede": "Roller, iş birlikleri ve çalışmalarımla ilgili sorular için.", "cp": "kopyala", "c-note": "Münih'teyim. Her mesajı okur, bir gün içinde yanıtlarım.", "c-gb": "Ya da <a href=\"defter.html\">ziyaretçi defterine</a> herkese açık bir not bırak.", "f-h": "Doğrudan yaz", "f-name": "İsim", "f-email": "E-posta", "f-msg": "Mesaj", "f-send": "Gönder", "f-ok": "Gönderildi. Her şeyi okurum.", "f-err": "Gitmedi. E-posta her zaman çalışır."}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "ct-city": "München", "ct-reply": "Antwort innerhalb eines Tages", "ct-langs": "Englisch, Türkisch, Deutsch", "c-help": "Wenn Sie wegen einer Position schreiben, sind die nützlichen Angaben: der Stundenumfang, ob es eine Werkstudentenstelle oder ein Projekt ist, und ungefähr wann es losgeht.", "c-gb2": "Gästebuch", "f-rail1": "Geht an denselben Posteingang", "f-rail2": "Auf dieser Seite wird nichts gespeichert", "a-email": "E-Mail", "cp-done": "kopiert", "c-h1": "Kontakt", "c-lede": "Für Positionen, Kooperationen und Fragen zu meiner Arbeit.", "cp": "kopieren", "c-note": "In München. Ich lese jede Nachricht und antworte innerhalb eines Tages.", "c-gb": "Oder hinterlasse eine öffentliche Notiz im <a href=\"defter.html\">Gästebuch</a>.", "f-h": "Direkt schreiben", "f-name": "Name", "f-email": "E-Mail", "f-msg": "Nachricht", "f-send": "Senden", "f-ok": "Gesendet. Ich lese alles.", "f-err": "Es ist nicht durchgegangen. E-Mail funktioniert stattdessen."}};
 
 (function(){
   "use strict";
   /* arrival: the page rises section by section */
   try {
-    var rises = [].slice.call(document.querySelectorAll(".crown, main > section, footer .wrap"));
-    rises.forEach(function (el) { el.classList.add("rise"); });
-    rises.forEach(function (el, i) {
-      setTimeout(function () { el.classList.add("in"); }, 160 + i * 90);
-    });
+    var opening = document.querySelector(".crown");
+    if (opening) {
+      opening.classList.add("rise");
+      setTimeout(function () { opening.classList.add("in"); }, 120);
+    }
   } catch (e) {}
   /* language: the same dictionaries drive every inner page */
+  /* First visit only. A German recruiter should not have to find the switch
+     before the page speaks to them; once they choose, the choice is theirs. */
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
   var lang = "en";
-  try { lang = localStorage.getItem("lang") || "en"; } catch(e){}
+  try { lang = localStorage.getItem("lang") || preferred(); } catch(e){ lang = preferred(); }
   window.__lang = lang;
-  var base = {}, baseA = {};
+  var base = {}, baseA = {}, titleBase = null;
   /* one lookup the whole page shares: text nodes, attributes and anything a
      script writes after the fact all ask the same dictionary */
   window.__t = function(k, fallback){
@@ -391,8 +515,27 @@ window.I18N = {"tr": {"nav-p": "Profil", "nav-j": "Projeler", "nav-n": "Notlar",
     attr("data-it", "title");
     attr("data-ip", "placeholder");
     document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. Where the title opens with the page's own
+       heading, that part follows the language too. */
+    if (titleBase === null) titleBase = document.title;
+    var h1 = document.querySelector("h1[data-i]");
+    if (h1) {
+      var h1en = base[h1.getAttribute("data-i")];
+      if (h1en) {
+        var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+        if (plain && titleBase.indexOf(plain) === 0) {
+          document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+        }
+      }
+    }
     document.querySelectorAll(".langs button").forEach(function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true":"false");
+    });
+    /* a German reader gets the German document, not the English one with a
+       German label on the button */
+    document.querySelectorAll("a[data-cv]").forEach(function(a){
+      var f = a.getAttribute("data-cv-" + l) || a.getAttribute("data-cv");
+      a.setAttribute("href", f); a.setAttribute("download", f);
     });
     try { localStorage.setItem("lang", l); } catch(e){}
     try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch(e){}
