@@ -16,9 +16,7 @@
 <meta name="twitter:image" content="https://keremozdemir.de/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
 <meta property="og:url" content="https://keremozdemir.de/">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Instrument+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Kerem Özdemir",
  "url":"https://keremozdemir.de/",
@@ -316,7 +314,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         <circle class="sgdot" cx="124.7" cy="-3.4" r="1.15"/>
       </svg></h1>
 
-    <nav id="portal" aria-label="Site" data-ia="a-site">
+    <nav id="portal" aria-label="Site" data-ia="a-site" inert>
       <a class="door" href="profile.html">
         <h2 data-i="d1">Profile</h2>
         <p data-i="d1p">Who I am, where I study, what I have done.</p>
@@ -704,6 +702,8 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   var GREENS_RGB = GREENS.map(hex), AUTUMN_RGB = AUTUMN.map(hex), BLOSSOM_RGB = BLOSSOM.map(hex);
   var WINTER_RGB = [200, 204, 196];
 
+  var LEAF_T = -1e9, LEAF_B = 1e9;   // the canopy's world band, for culling
+
   function buildLeaves() {
     LEAVES.length = 0;
     N = small ? 950 : 2000;
@@ -741,6 +741,18 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       L.px = gsx * 82;
       L.py = 10 - Math.abs((rnd() + rnd() - 1)) * 20 - (1 - Math.abs(gsx)) * 8;
     });
+    /* the band the canopy occupies, anchors and fallen leaves together.
+       Once the descent lifts this off the top of the canvas there is nothing
+       to see, and the two thousand of them can be skipped in one test. */
+    LEAF_T = 1e9; LEAF_B = -1e9;
+    for (var lb = 0; lb < LEAVES.length; lb++) {
+      var Lb = LEAVES[lb];
+      if (Lb.ay < LEAF_T) LEAF_T = Lb.ay;
+      if (Lb.gy > LEAF_B) LEAF_B = Lb.gy;
+      if (Lb.ay > LEAF_B) LEAF_B = Lb.ay;
+    }
+    LEAF_T -= 90; LEAF_B += 90;          // flutter, spin and the long fall
+
     aoBlobs.length = 0;
     for (var ab = 0; ab < 16; ab++) {
       var tp = tips[(rnd() * tips.length) | 0];
@@ -1747,6 +1759,212 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     g.stroke();
     g.strokeStyle = "rgba(240,236,222,.85)"; g.lineWidth = 1.2;   // the light rim
     g.beginPath(); g.moveTo(cx4 - 4.6, pY - 39.8); g.lineTo(cx4 + 4.6, pY - 39.8); g.stroke();
+    /* ---- erguvan, the Judas tree: the flower comes before the leaf ----
+       Cercis siliquastrum blooms along both shores in late March and April,
+       on bare wood. For a month the slope is that colour and nothing else. */
+    (function erguvan() {
+      var ex = w * 0.845, ey = gy - 2, spring = (season === 0);
+      g.strokeStyle = spring ? "rgba(74,58,48,.92)" : "rgba(66,54,42,.9)";
+      g.lineCap = "round";
+      var limbs = [[-0.9, 34, 3.4], [-0.35, 42, 3.0], [0.15, 39, 2.8], [0.7, 31, 2.6]];
+      g.lineWidth = 5.2;
+      g.beginPath(); g.moveTo(ex, ey); g.lineTo(ex, ey - 17); g.stroke();
+      for (var li = 0; li < limbs.length; li++) {
+        var a2 = limbs[li][0], ln = limbs[li][1];
+        g.lineWidth = limbs[li][2];
+        var tipx = ex + Math.sin(a2) * ln, tipy = ey - 17 - Math.cos(a2) * ln;
+        g.beginPath(); g.moveTo(ex, ey - 17);
+        g.quadraticCurveTo(ex + Math.sin(a2) * ln * 0.4, ey - 17 - ln * 0.62, tipx, tipy);
+        g.stroke();
+        limbs[li][3] = tipx; limbs[li][4] = tipy;
+      }
+      if (spring) {
+        /* the blossom sits in clusters on the wood, not as a canopy */
+        for (var bi = 0; bi < 54; bi++) {
+          var L2 = limbs[bi % 4], u2 = 0.25 + ((bi * 0.137) % 0.78);
+          var bx = ex + (L2[3] - ex) * u2 + Math.sin(bi * 2.9) * 5.5;
+          var by = (ey - 17) + (L2[4] - (ey - 17)) * u2 + Math.cos(bi * 3.7) * 5.0;
+          var rr = 1.5 + (bi % 3) * 0.7;
+          g.fillStyle = bi % 5 === 0 ? "rgba(214,124,168,.85)" : "rgba(186,86,140,.82)";
+          g.beginPath(); g.arc(bx, by, rr, 0, 6.284); g.fill();
+        }
+        g.fillStyle = "rgba(176,78,132,.5)";       // what the wind already took
+        for (var fi = 0; fi < 9; fi++) {
+          g.beginPath();
+          g.arc(ex - 16 + fi * 4.4 + Math.sin(fi * 3.1) * 3, ey + 1 + Math.cos(fi * 2.2) * 1.6, 1.2, 0, 6.284);
+          g.fill();
+        }
+      } else {
+        var leafC = (season === 2) ? "rgba(150,120,58,.8)"
+                  : (season === 3) ? "rgba(96,92,80,.5)" : "rgba(96,124,74,.82)";
+        if (season !== 3) {
+          g.fillStyle = leafC;
+          for (var qi = 0; qi < 44; qi++) {
+            var L3 = limbs[qi % 4], u3 = 0.2 + ((qi * 0.151) % 0.82);
+            g.beginPath();
+            g.ellipse(ex + (L3[3] - ex) * u3 + Math.sin(qi * 2.4) * 6,
+                      (ey - 17) + (L3[4] - (ey - 17)) * u3 + Math.cos(qi * 3.1) * 5.5,
+                      2.8, 2.2, qi * 0.7, 0, 6.284);
+            g.fill();
+          }
+        }
+      }
+    })();
+
+    /* ---- the pier at work: rods over the rail, a cat, a simit cart ---- */
+    (function pierLife() {
+      var pL2 = w * 0.545, pR2 = w * 0.805, pY2 = gy - 4;
+
+      /* rods, the way the bridge is fished: leaning out, lines to the water */
+      g.strokeStyle = "rgba(196,182,150,.55)"; g.lineWidth = 1.1;
+      var rods = [0.13, 0.24, 0.44, 0.63, 0.76];
+      for (var ri = 0; ri < rods.length; ri++) {
+        var rx = pL2 + (pR2 - pL2) * rods[ri];
+        g.beginPath();
+        g.moveTo(rx, pY2 - 8);
+        g.quadraticCurveTo(rx + 13, pY2 - 21, rx + 25, pY2 - 24);
+        g.stroke();
+        g.strokeStyle = "rgba(214,206,182,.22)"; g.lineWidth = 0.6;
+        g.beginPath(); g.moveTo(rx + 25, pY2 - 24); g.lineTo(rx + 27, pY2 + 12); g.stroke();
+        g.strokeStyle = "rgba(196,182,150,.55)"; g.lineWidth = 1.1;
+      }
+
+      /* a bucket, because the point of a rod is the bucket */
+      g.fillStyle = "rgba(120,112,96,.8)";
+      g.beginPath();
+      g.moveTo(pL2 + 30, pY2 - 7); g.lineTo(pL2 + 39, pY2 - 7);
+      g.lineTo(pL2 + 37.5, pY2 - 0.5); g.lineTo(pL2 + 31.5, pY2 - 0.5);
+      g.closePath(); g.fill();
+      g.strokeStyle = "rgba(150,142,124,.7)"; g.lineWidth = 0.9;
+      g.beginPath(); g.arc(pL2 + 34.5, pY2 - 7, 4.4, 3.34, 6.08); g.stroke();
+
+      /* the cat: on the rail, facing the bucket, entirely unhurried */
+      var cx7 = pR2 - 46, cy7 = pY2 - 8.5;
+      g.fillStyle = "rgba(198,186,164,.9)";
+      g.beginPath();
+      g.moveTo(cx7 - 7, cy7);
+      g.quadraticCurveTo(cx7 - 7.5, cy7 - 5.4, cx7 - 2.4, cy7 - 5.6);
+      g.quadraticCurveTo(cx7 + 3.4, cy7 - 5.8, cx7 + 4.6, cy7 - 2.2);
+      g.lineTo(cx7 + 5.4, cy7);
+      g.closePath(); g.fill();
+      g.beginPath(); g.arc(cx7 + 5.2, cy7 - 8.4, 3.5, 0, 6.284); g.fill();   // head
+      g.beginPath();                                                          // ears
+      g.moveTo(cx7 + 2.6, cy7 - 10.6); g.lineTo(cx7 + 3.4, cy7 - 13.6); g.lineTo(cx7 + 5.4, cy7 - 11.4);
+      g.closePath(); g.fill();
+      g.beginPath();
+      g.moveTo(cx7 + 6.2, cy7 - 11.5); g.lineTo(cx7 + 8.2, cy7 - 13.8); g.lineTo(cx7 + 8.6, cy7 - 10.4);
+      g.closePath(); g.fill();
+      g.strokeStyle = "rgba(198,186,164,.9)"; g.lineWidth = 2.1; g.lineCap = "round";
+      g.beginPath();                                                          // the tail, hanging
+      g.moveTo(cx7 - 6.6, cy7 - 1.5);
+      g.quadraticCurveTo(cx7 - 12.5, cy7 + 4, cx7 - 10.5, cy7 + 10);
+      g.stroke();
+
+      /* simit cart, glass box on a red frame, wheel showing. It stands on the
+         landward end of the deck: everything left of the coast is water. */
+      var sx7 = pR2 - 16, sy7 = pY2 - 6;
+      g.fillStyle = "rgba(150,62,50,.9)";
+      g.fillRect(sx7 - 15, sy7 - 20, 30, 5);
+      g.fillRect(sx7 - 13, sy7 - 15, 3, 13);
+      g.fillRect(sx7 + 10, sy7 - 15, 3, 13);
+      g.fillStyle = "rgba(180,196,198,.22)";                                  // the glass
+      g.fillRect(sx7 - 15, sy7 - 44, 30, 24);
+      g.strokeStyle = "rgba(150,62,50,.9)"; g.lineWidth = 2;
+      g.strokeRect(sx7 - 15, sy7 - 44, 30, 24);
+      g.strokeStyle = "rgba(196,150,80,.9)"; g.lineWidth = 1.7;               // the simit
+      for (var si = 0; si < 6; si++) {
+        g.beginPath();
+        g.arc(sx7 - 10 + (si % 3) * 10, sy7 - 38 + ((si / 3) | 0) * 11, 3.6, 0, 6.284);
+        g.stroke();
+      }
+      g.strokeStyle = "rgba(90,84,74,.85)"; g.lineWidth = 1.6;
+      g.beginPath(); g.arc(sx7 - 6, sy7 - 1.5, 4.2, 0, 6.284); g.stroke();
+      g.beginPath(); g.arc(sx7 + 7, sy7 - 1.5, 4.2, 0, 6.284); g.stroke();
+    })();
+
+    /* ---- what is under the city ----
+       Yenikapı, dug for the Marmaray tunnel: the Ottoman ground near the top,
+       the Theodosian harbour and its ships about a metre under the old sea
+       level, and six metres under that a Neolithic shore with footprints
+       still in the mud. The gap between the last two is the point: it is
+       about five times the one above it. */
+    (function istanbulUnder() {
+      var uT = gy + 12, uB = h - 4, band = uB - uT;
+      if (band < 40) return;
+      var lx = coast - w * 0.02, rx = w;          // only under the land
+      var yOtt = uT + band * 0.16;
+      var yByz = uT + band * 0.30;
+      var yNeo = uT + band * 0.92;                // five times further down
+
+      /* the three floors, drawn as bedding rather than lines */
+      [[yOtt, "rgba(120,100,72,.30)"], [yByz, "rgba(132,118,86,.34)"],
+       [yNeo, "rgba(96,86,66,.40)"]].forEach(function (row) {
+        g.strokeStyle = row[1]; g.lineWidth = 1.1;
+        g.beginPath();
+        for (var bx = lx; bx < rx; bx += 9) {
+          g.lineTo(bx, row[0] + Math.sin(bx * 0.06) * 1.4);
+        }
+        g.stroke();
+      });
+
+      /* a cistern column standing in the dark water it was built to hold,
+         and at its foot the head that was laid on its side */
+      var cxU = lx + (rx - lx) * 0.30, colT = yOtt + 3, colB = yByz + band * 0.20;
+      g.fillStyle = "rgba(24,26,30,.55)";                 // the standing water
+      g.fillRect(lx + 4, colB - 5, (rx - lx) * 0.52, band * 0.13);
+      g.fillStyle = "rgba(158,148,126,.85)";
+      g.fillRect(cxU - 3.4, colT, 6.8, colB - colT);
+      g.fillRect(cxU - 5.4, colT - 3.6, 10.8, 3.6);       // capital
+      g.fillStyle = "rgba(176,166,142,.85)";
+      g.fillRect(cxU - 5.8, colB - 4.2, 11.6, 4.2);       // the head, on its side
+      g.fillStyle = "rgba(120,112,94,.9)";
+      g.beginPath(); g.arc(cxU - 1.6, colB - 2.1, 1.1, 0, 6.284); g.fill();
+      g.beginPath(); g.arc(cxU + 1.9, colB - 2.1, 1.1, 0, 6.284); g.fill();
+      g.strokeStyle = "rgba(150,140,118,.7)"; g.lineWidth = 0.8;
+      for (var sn = 0; sn < 5; sn++) {                    // the snakes
+        g.beginPath();
+        g.moveTo(cxU - 5.8, colB - 3.6 + sn * 0.9);
+        g.quadraticCurveTo(cxU - 9, colB - 5 + sn * 1.2, cxU - 11.5, colB - 3 + sn * 1.1);
+        g.stroke();
+      }
+      /* its twin, upside down, further along the same corner */
+      var cx8 = cxU + (rx - lx) * 0.17;
+      g.fillStyle = "rgba(158,148,126,.85)";
+      g.fillRect(cx8 - 3.4, colT + 6, 6.8, colB - colT - 6);
+      g.fillStyle = "rgba(176,166,142,.85)";
+      g.fillRect(cx8 - 5.2, colB - 3.8, 10.4, 3.8);
+      g.fillStyle = "rgba(120,112,94,.9)";                // the eyes sit low: inverted
+      g.beginPath(); g.arc(cx8 - 1.7, colB - 1.1, 1.05, 0, 6.284); g.fill();
+      g.beginPath(); g.arc(cx8 + 1.7, colB - 1.1, 1.05, 0, 6.284); g.fill();
+
+      /* a ship on the harbour floor, ribs open to the sky that buried it */
+      var shx = lx + (rx - lx) * 0.68, shy = yByz + band * 0.10;
+      g.strokeStyle = "rgba(122,96,64,.9)"; g.lineWidth = 2.1; g.lineCap = "round";
+      g.beginPath();                                       // the keel
+      g.moveTo(shx - 26, shy);
+      g.quadraticCurveTo(shx, shy + 7, shx + 26, shy - 1);
+      g.stroke();
+      g.lineWidth = 1.5;
+      for (var rb = 0; rb < 9; rb++) {                     // the ribs
+        var ru = rb / 8, rxx = shx - 26 + 52 * ru;
+        var ryy = shy + Math.sin(ru * 3.14) * 6.2;
+        var lean = (ru - 0.5) * 9;
+        g.beginPath();
+        g.moveTo(rxx, ryy);
+        g.quadraticCurveTo(rxx + lean * 0.4, ryy - 7, rxx + lean, ryy - 12.5);
+        g.stroke();
+      }
+
+      /* the deepest floor: a shore, and the feet that crossed it */
+      g.fillStyle = "rgba(150,138,112,.55)";
+      for (var ft = 0; ft < 7; ft++) {
+        var fx2 = lx + (rx - lx) * (0.18 + ft * 0.10) + Math.sin(ft * 2.1) * 3;
+        var fy2 = yNeo - 4 + (ft % 2) * 3;
+        g.beginPath(); g.ellipse(fx2, fy2, 2.5, 1.4, 0.32, 0, 6.284); g.fill();
+        g.beginPath(); g.ellipse(fx2 + 1.6, fy2 - 2.4, 1.5, 0.9, 0.32, 0, 6.284); g.fill();
+      }
+    })();
+
     /* caption */
     g.font = "italic 22px Georgia";
     g.fillStyle = "rgba(242,238,226,0.5)";
@@ -2109,6 +2327,76 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     g.beginPath(); g.arc(mp, gy - ph + 14, 7.2, 0, 6.284); g.stroke();
     g.fillStyle = "rgba(232,226,210,0.8)";
     g.beginPath(); g.arc(mp, gy - ph - 2.5, 2.4, 0, 6.284); g.fill();
+
+    /* ---- what is under the city ----
+       Munich stands on the Schotterebene, gravel washed out from under three
+       glaciers: Würm on top, then Riss, then Mindel, and the Molasse rock
+       under all of it. The breweries went through the lot for their water,
+       and the U Bahn only ever got as far as the gravel. */
+    (function munichUnder() {
+      var uT = gy + 12, uB = h - 4, band = uB - uT;
+      if (band < 40) return;
+      var yW = uT + band * 0.22, yR = uT + band * 0.48, yM = uT + band * 0.74;
+
+      /* three gravels, each a coarser stone than the one above */
+      [[uT, yW, 1.1, 0.055, "rgba(150,136,110,.30)"],
+       [yW, yR, 1.5, 0.042, "rgba(140,126,100,.28)"],
+       [yR, yM, 2.0, 0.032, "rgba(128,116,92,.26)"]].forEach(function (L, li) {
+        g.fillStyle = L[4];
+        var stepx = 1 / L[3];
+        for (var gx = 4; gx < w; gx += stepx) {
+          var gy8 = L[0] + 3 + ((Math.sin(gx * 1.7 + li * 9) + 1) / 2) * (L[1] - L[0] - 6);
+          g.beginPath();
+          g.ellipse(gx + Math.sin(gx * 0.9) * 4, gy8, L[2], L[2] * 0.72, gx * 0.3, 0, 6.284);
+          g.fill();
+        }
+        g.strokeStyle = "rgba(112,100,78,.34)"; g.lineWidth = 1;
+        g.beginPath();
+        for (var bx2 = 0; bx2 < w; bx2 += 11) g.lineTo(bx2, L[1] + Math.sin(bx2 * 0.05 + li) * 1.6);
+        g.stroke();
+      });
+      /* the rock the gravel was laid on */
+      g.fillStyle = "rgba(74,66,54,.45)";
+      g.fillRect(0, yM, w, uB - yM);
+
+      /* the brewery well: it goes past everything, and off the bottom */
+      var wx8 = w * 0.30;
+      g.strokeStyle = "rgba(96,86,70,.9)"; g.lineWidth = 5.5;
+      g.beginPath(); g.moveTo(wx8, gy + 4); g.lineTo(wx8, uB); g.stroke();
+      g.strokeStyle = "rgba(150,140,118,.55)"; g.lineWidth = 1.9;
+      g.beginPath(); g.moveTo(wx8, gy + 4); g.lineTo(wx8, uB); g.stroke();
+      g.fillStyle = "rgba(196,176,120,.5)";                 // water on its way up
+      for (var wd = 0; wd < 5; wd++) {
+        g.beginPath(); g.arc(wx8, yM - 6 - wd * (band * 0.11), 1.5, 0, 6.284); g.fill();
+      }
+
+      /* the U Bahn: a tunnel ring directly under its own staircase */
+      var ux8 = w * 0.66 + 30, uy8 = yW + (yR - yW) * 0.45, ur8 = Math.min(15, band * 0.15);
+      g.fillStyle = "rgba(18,16,14,.75)";
+      g.beginPath(); g.arc(ux8, uy8, ur8, 0, 6.284); g.fill();
+      g.strokeStyle = "rgba(126,116,98,.75)"; g.lineWidth = 2.4;
+      g.beginPath(); g.arc(ux8, uy8, ur8, 0, 6.284); g.stroke();
+      g.strokeStyle = "rgba(150,140,120,.35)"; g.lineWidth = 1;
+      g.beginPath(); g.moveTo(ux8 - ur8 + 2, uy8 + ur8 * 0.55); g.lineTo(ux8 + ur8 - 2, uy8 + ur8 * 0.55); g.stroke();
+      g.fillStyle = "rgba(186,168,110,.5)";                 // a train, small and late
+      g.fillRect(ux8 - 7, uy8 + ur8 * 0.2, 14, 5);
+      /* the stair that arrives at it */
+      g.strokeStyle = "rgba(96,88,72,.5)"; g.lineWidth = 1.2;
+      g.beginPath(); g.moveTo(w * 0.66 + 30, gy + 12); g.lineTo(ux8, uy8 - ur8); g.stroke();
+
+      /* the oldest thing anybody has found here is a hole people used
+         in the thirteenth century, which is the honest kind of oldest */
+      var px8 = w * 0.83, py8 = yR + 6;
+      g.strokeStyle = "rgba(120,104,80,.85)"; g.lineWidth = 2;
+      g.beginPath();
+      g.moveTo(px8 - 9, py8 - 9);
+      g.lineTo(px8 - 7, py8 + 9); g.lineTo(px8 + 7, py8 + 9); g.lineTo(px8 + 9, py8 - 9);
+      g.stroke();
+      g.fillStyle = "rgba(58,50,38,.6)";
+      g.fillRect(px8 - 7.4, py8 - 2, 14.8, 11);
+      g.fillStyle = "rgba(142,126,98,.7)";                  // a broken cup, thrown in
+      g.beginPath(); g.arc(px8 - 2, py8 + 5, 2.2, 3.34, 6.28); g.fill();
+    })();
 
     /* caption */
     g.font = "italic 22px Georgia";
@@ -3123,11 +3411,15 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     var leafDim = Math.min(0.72, Math.max(
       Math.max(smooth((p - 0.52) / 0.3), gNightIdle * 0.9) * 0.6,
       smooth((descend - 0.15) / 0.45) * 0.72));
-    for (var pass = 0; pass < 2; pass++) {
-      for (var i = 0; i < N; i++) {
-        var L = LEAVES[i];
-        if ((pass === 0) !== (L.depth < 6)) continue;
-        drawLeaf(L, p, t, wind, gust, pass, leafDim);
+    /* the canopy in screen terms: the descent slides it up and out */
+    var canopyOn = (LEAF_B - camY) > -40 && (LEAF_T - camY) < H + 40;
+    if (canopyOn) {
+      for (var pass = 0; pass < 2; pass++) {
+        for (var i = 0; i < N; i++) {
+          var L = LEAVES[i];
+          if ((pass === 0) !== (L.depth < 6)) continue;
+          drawLeaf(L, p, t, wind, gust, pass, leafDim);
+        }
       }
     }
 
@@ -3391,7 +3683,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       });
   }
   function drawCreatures(t, descend, camY) {
-    if (reduced || descend < 0.12) return;
+    if (reduced || descend < 0.12) { EGG.moleRect = null; return; }
     var vis = smooth((descend - 0.12) / 0.3);
     ctx.save();
     ctx.translate(0, -camY);
@@ -3900,7 +4192,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       b: "It shows how much of a valuation is forecast, and how much is perpetuity." },
     { s: 1, k: "tablet", h: "notes.html",
       n: "SIMEA", yr: "August 2026",
-      a: "A research programme on the agent as a decision subject inside systems.",
+      a: "A research project on the agent as a decision subject inside systems.",
       b: "Three things it tries to measure: the influence gradient, the autonomy threshold, the entropy of the choice set." },
     { s: 2, k: "token", h: "profile.html",
       n: "Ferry token", yr: "İstanbul",
@@ -5989,6 +6281,8 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     if (portal) {
       var on = p > 0.87;
       portal.classList.toggle("live", on);
+      /* a door you cannot see is not a door you should be able to tab into */
+      if (portal.inert !== !on) portal.inert = !on;
     }
     document.documentElement.style.setProperty("--filmp", p.toFixed(3));
   }
@@ -6048,7 +6342,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     resize();
     readScroll();
     draw(1, 0); ui(1);
-    if (portal) portal.classList.add("live");
+    if (portal) { portal.classList.add("live"); portal.inert = false; }
     window.addEventListener("resize", function () { resize(); draw(1, 0); });
   } else {
     window.addEventListener("scroll", readScroll, { passive: true });
@@ -6191,30 +6485,26 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   }, { rootMargin: "0px 0px 0px 0px", threshold: 0 }).observe(foot);
 })();
 
-/* real weather: if it rains over Munich, it rains here */
+/* Rain.
+   This used to ask an API in Germany what the weather was doing over Munich,
+   and rain here when it rained there. It was a nice thing and it is gone: it
+   meant every visitor's address was handed to a third party before they had
+   agreed to anything, which is not a trade this site is willing to make for
+   a weather effect. The rain now belongs to the season, and says so. */
 (function(){
   var EGG = window.__EGG || {};
-  var rainTimer = null;
-  function apply(code) {
-    if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95) {
-      if (EGG.rainRequest) {
-        EGG.rainRequest();
-        if (rainTimer) clearInterval(rainTimer);      // never stack the weather
-        rainTimer = setInterval(EGG.rainRequest, 11000);
-      }
-    }
+  var wet = [0.30, 0.16, 0.34, 0.22];        // spring, summer, autumn, winter
+  function season() {
+    var m = new Date().getMonth();
+    return m <= 1 || m === 11 ? 3 : m <= 4 ? 0 : m <= 7 ? 1 : 2;
   }
-  try {
-    var c = JSON.parse(localStorage.getItem("wx") || "null");
-    if (c && Date.now() - c.t < 1800000) { apply(c.code); return; }
-  } catch(e){}
-  fetch("https://api.open-meteo.com/v1/forecast?latitude=48.14&longitude=11.58&current=weather_code")
-    .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(j){
-      if (!j || !j.current) return;
-      try { localStorage.setItem("wx", JSON.stringify({ t: Date.now(), code: j.current.weather_code })); } catch(e){}
-      apply(j.current.weather_code);
-    }).catch(function(){});
+  /* one draw per visit, so a session is either a wet one or a dry one */
+  if (Math.random() < wet[season()] && EGG.rainRequest) {
+    EGG.rainRequest();
+    setInterval(function(){
+      if (!document.hidden && EGG.rainRequest) EGG.rainRequest();
+    }, 11000);
+  }
 })();
 
 /* the season dial: turn the wheel, the year turns with it */
@@ -6334,7 +6624,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     wind.start();
     // wind follows the film; crickets only at dusk; gulls only by the sea
     cricketTimer = setInterval(function(){
-      if (!actx) return;
+      if (!actx || document.hidden) return;      // a hidden tab is a quiet one
       var p = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--filmp")) || 0;
       if (windGain) windGain.gain.value = 0.03 + p * 0.06 * (p < 0.7 ? 1 : (1 - p) * 3);
       if (p > 0.45 && p < 0.9 && Math.random() < 0.5) chirp(actx, actx.currentTime + Math.random() * 1.5);
@@ -6829,7 +7119,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     { h: "The essays, the simulations and the games", ps: [
       "Four essays sit beside the instruments, under the name Explorable Economics. Who actually pays a tax, on incidence, where the statute turns out not to decide who bears the cost. The market for lemons, on what one side knows and the other does not. The evolution of cooperation, which holds a tournament between strategies and then lets the winners reproduce. And why the future is cheap, on discounting.",
       "You bring nothing to an essay. The model in the middle of each one is there so the argument can be checked rather than believed, and every essay ends by saying what its model cannot tell you.",
-      "Five simulations sit under Notes, at the end of the note on SIMEA, which is the research programme I keep in the open. A Schelling board where a mild preference settles into a severely separated city. A recommender that decides what a population sees, run beside the same population with a neutral feed so that the three things the programme says are measurable can be defined on screen and measured while it happens. A contagion held fixed while the shape of the network under it changes. A ring road that jams with nothing blocking it. And a pile of grains that holds itself at the edge, where the size of the next avalanche cannot be forecast at all.",
+      "Five simulations sit under Notes, at the end of the note on SIMEA, which is the research project I keep in the open. A Schelling board where a mild preference settles into a severely separated city. A recommender that decides what a population sees, run beside the same population with a neutral feed so that the three things the project says are measurable can be defined on screen and measured while it happens. A contagion held fixed while the shape of the network under it changes. A ring road that jams with nothing blocking it. And a pile of grains that holds itself at the edge, where the size of the next avalanche cannot be forecast at all.",
       "Each of the five is a canvas you drive. Every one of them cites the paper it came from, says which of its numbers you set and which it worked out, and ends by saying what it does not show. They are demonstrations of mechanisms and none of them is evidence about people.",
       "Game Theory holds six games: The Long Game, The Stag Hunt, The Ultimatum, The Commons, The Beauty Contest and Matching Pennies. Each is a situation people are actually in, written in as few numbers as it takes. Four more are named there and not built yet, because a plan nobody can see is not a plan.",
       "None of the games is evidence about people. Every opponent in them is a short rule written by hand, and each one ends by saying what it left out.",

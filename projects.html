@@ -10,8 +10,6 @@
 <meta property="og:title" content="Projects. Kerem Özdemir">
 <meta property="og:description" content="CoLaunch, five live analytical instruments, and the public repositories behind them.">
 <meta property="og:type" content="profile">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <link rel="alternate" type="application/rss+xml" title="Notes" href="feed.xml">
@@ -21,7 +19,7 @@
      paste the token below and remove the comment markers.
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "YOUR_TOKEN"}'></script>
 -->
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
 :root{
   --serif:"Fraunces",Georgia,serif;
@@ -1737,26 +1735,23 @@ window.I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-j": "Proje
   });
 })();
 
-/* live repository freshness, quietly, with a silent fallback */
+/* Repository freshness. The dates came from GitHub when this page was
+   built, not from your browser now: asking GitHub from here would hand
+   your address to them before you had agreed to anything. They are as
+   fresh as the last publish, and the page says which day that was. */
 (function(){
-  fetch("https://api.github.com/users/Keremozdemirra/repos?per_page=100")
-    .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(list){
-      if (!list) return;
-      var by = {};
-      list.forEach(function(r){ by[r.name] = r; });
-      document.querySelectorAll("[data-gh]").forEach(function(card){
-        var r = by[card.getAttribute("data-gh")];
-        if (!r || !r.pushed_at) return;
-        var d = new Date(r.pushed_at);
-        var days = Math.round((Date.now() - d) / 86400000);
-        var label = days <= 0 ? window.__t("x-today", "updated today")
-                  : days === 1 ? window.__t("x-yday", "updated yesterday")
-                  : window.__t("x-days", "updated {d} days ago").replace("{d}", days);
-        var t = card.querySelector(".t");
-        if (t) t.textContent = t.textContent + " · " + label;
-      });
-    }).catch(function(){});
+  var PUSHED = {"agent-kit":"2026-08-20T17:27:58Z","analyst-toolkit":"2026-08-24T17:55:57Z","career-agent":"2026-08-20T17:28:30Z","cbam-calc":"2026-08-19T20:52:10Z","deck-agent":"2026-08-20T17:28:12Z","esg-toolkit":"2026-08-24T17:55:14Z","excel-agent":"2026-08-20T17:28:09Z","finance-agent":"2026-08-20T17:28:18Z","github-agent":"2026-08-22T05:29:42Z","keremozdemir-araclar":"2026-08-21T19:28:27Z","keremozdemir-tools":"2026-08-21T21:30:26Z","keremozdemirra.github.io":"2026-08-24T18:09:45Z","open-climate-data":"2026-08-24T17:56:29Z","research-agent":"2026-08-20T17:28:24Z","risk-agent":"2026-08-20T17:28:04Z","simea":"2026-08-19T20:23:12Z","site-agent":"2026-08-20T17:28:06Z","strategy-agent":"2026-08-20T17:28:15Z","sustainability-agent":"2026-08-20T17:28:21Z","unitguard":"2026-08-24T17:57:05Z","writing-agent":"2026-08-20T17:28:27Z"};
+  document.querySelectorAll("[data-gh]").forEach(function(card){
+    var when = PUSHED[card.getAttribute("data-gh")];
+    if (!when) return;
+    var days = Math.round((Date.now() - new Date(when)) / 86400000);
+    if (days < 0) days = 0;
+    var label = days <= 0 ? window.__t("x-today", "updated today")
+              : days === 1 ? window.__t("x-yday", "updated yesterday")
+              : window.__t("x-days", "updated {d} days ago").replace("{d}", days);
+    var t = card.querySelector(".t");
+    if (t) t.textContent = t.textContent + " · " + label;
+  });
 })();
 
 </script>
