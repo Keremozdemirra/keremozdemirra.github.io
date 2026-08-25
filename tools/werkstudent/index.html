@@ -47,9 +47,10 @@
   --ink:        #2b2620;
   --ink-soft:   #4b443b;
   --dim:        #6f6558;
-  --faint:      #8d8375;
+  --faint:      #6f6759;
   --rule:       #d8d2c4;
   --rule-firm:  #bdb5a4;
+  --rule-edge:  #9c9280;   /* control boundaries: 3.07:1 on white */
   --accent:     #8a5a24;
   --accent-lit: #f0e6d6;
   --flag:       #8c3b1e;
@@ -176,7 +177,12 @@ a:hover { border-bottom-color: var(--accent); }
 input[type="text"], input[type="number"], input[type="search"], select, textarea {
   width: 100%; min-width: 0;
   background: var(--field);
-  border: 1px solid var(--rule-firm);
+  /* A control's boundary needs 3:1 against what is inside it. --rule-firm
+     measured 1.9 against the white of a field, so the edge of every input on
+     every instrument was below the floor; --rule-edge is 3.07. It is used
+     for control boundaries only, not for the hairlines between rows, which
+     are decoration and carry no meaning. */
+  border: 1px solid var(--rule-edge);
   border-radius: 0;
   color: var(--ink);
   font-family: var(--mono); font-size: 0.88rem; font-weight: 400;
@@ -578,6 +584,39 @@ footer a:hover{color:var(--fg)}
     align-items:center;justify-content:flex-end}
 }
 
+/* the same thumb, on the page itself */
+@media (pointer:coarse){
+  .cv-btn{min-height:44px;padding:.8rem 1.25rem}
+  .copy,.share-link{min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center}
+  .socials a{min-height:44px;display:inline-flex;align-items:center}
+  .mail-line a.addr{display:inline-flex;align-items:center;min-height:44px}
+  .note-read{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .feature .go{min-height:44px;display:inline-flex;align-items:center}
+  .gcard .go{min-height:44px;display:inline-flex;align-items:center}
+  .go-block{min-height:44px;display:inline-flex;align-items:center}
+  .k-btn,.k-skip,.skip{min-height:44px;display:inline-flex;align-items:center}
+  input[type=range]{height:44px}
+  select{min-height:44px}
+  /* a link sitting inside a sentence: the line opens up so the link can be
+     a thumb tall without the paragraph closing over it */
+  .quiet-line{line-height:2.1}
+  .quiet-line a{display:inline-block;padding:.78rem 0;line-height:1.25}
+  .note-item h2 a{display:inline-block;padding:.5rem 0;border-bottom:0;
+    text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
+  .note-item h2 a:hover{text-decoration-color:var(--accent)}
+  /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px;min-height:44px}
+  body .frow textarea{min-height:8rem}
+  /* a 4px tall slider is not a control: the whole strip takes the touch */
+  input[type="range"]{height:44px;margin:0;padding:0}
+  /* and a sixteen pixel box is not one either */
+  input[type="checkbox"],input[type="radio"]{width:22px;height:22px}
+  input[type="checkbox"]+label,input[type="radio"]+label{
+    display:inline-flex;align-items:center;min-height:44px}
+  .demo-src a{display:inline-flex;align-items:center;min-height:44px}
+}
 
 /* ---------- the crown, on a page whose interior is its own ---------- */
 .k-crown-no{
@@ -851,7 +890,22 @@ var Kit = (function () {
   }
   function toNum(raw) {
     if (raw === null || raw === undefined) return null;
-    var s = String(raw).trim().replace(/\s+/g, "").replace(/,/g, ".");
+    /* "1.234,56" used to become "1.234.56" and then NaN, so a German reader
+       typing their own thousands separator into any field on any instrument
+       got "not calculable". Both conventions are read, by the one rule that
+       tells them apart without knowing the language: whichever separator
+       comes last is the decimal point, and the other one is grouping. */
+    var s = String(raw).trim().replace(/\s+/g, "");
+    var lastC = s.lastIndexOf(","), lastD = s.lastIndexOf(".");
+    if (lastC >= 0 && lastD >= 0) {
+      if (lastC > lastD) s = s.replace(/\./g, "").replace(",", ".");
+      else s = s.replace(/,/g, "");
+    } else if (lastC >= 0) {
+      /* one kind only: repeated, it can only be grouping */
+      s = (s.split(",").length > 2) ? s.replace(/,/g, "") : s.replace(",", ".");
+    } else if (s.split(".").length > 2) {
+      s = s.replace(/\./g, "");
+    }
     if (s === "") return null;
     var n = Number(s);
     return isFinite(n) ? n : null;
@@ -1411,6 +1465,68 @@ en: {
 "un-6":"Solidarity surcharge above the threshold","un-6v":"The tapering rate just above 20 350 EUR of yearly tax could not be confirmed for 2026. Below the threshold the surcharge is zero, which is where a working student sits."
 },
 tr: {
+"cn-v0":"12 348 EUR",
+"cn-v1":"914,51 / 1400 / 173,10 / 2397 / 1034,87 / 0,42 / 0,45",
+"cn-v2":"1 230 EUR",
+"cn-v3":"36 EUR",
+"cn-v4":"4 260 EUR",
+"cn-v5":"Çalışanın emeklilik payının %100'ü, 9 430,20 EUR ile sınırlı",
+"cn-v6":"%5,5, yıllık verginin 20 350 EUR eşiğinden sonra",
+"cn-v7":"Bavyera ve Baden-Württemberg'de %8, diğer yerlerde %9",
+"cn-v8":"Saat başına 13,90 EUR",
+"cn-v9":"Ayda 603 EUR, yılda 7 236 EUR",
+"cn-v10":"Çalışan %3,6, işveren %31,17",
+"cn-v11":"%2",
+"cn-v12":"Toplam %18,6, çalışan payı %9,3",
+"cn-v13":"Ayda 8 450 EUR, yılda 101 400 EUR",
+"cn-v14":"603,01 ile 2 000 EUR arası, faktör F 0,6619, çalışan matrahı 1,43163922691 × ücret − 863,2784538207",
+"cn-v15":"Sağlık, bakım ve işsizlik sigortasından muaf, emeklilik sigortası devam ediyor",
+"cn-v16":"Ders döneminde haftada 20 saat, tatilde sınırsız, yılda 20 saatin üstünde 26 hafta ya da 182 gün",
+"cn-v17":"855 EUR matrah, sağlık %10,22, bakım %3,6, çocuğu olmayan 23 yaş üstü için %4,2",
+"cn-v18":"Genel oran %14,6, ortalama ek katkı %2,9",
+"cn-v19":"30",
+"cn-v20":"Yılda 140 tam gün ya da 280 yarım gün; dört saate kadar bir gün yarım gün sayılıyor",
+"cn-v21":"140 / 280, üniversitedeki öğrenci asistanlığı hariç",
+"cn-v22":"Her konut için ayda 18,36 EUR",
+"cn-v23":"Ayda 37,80 EUR, dönemde 226,80 EUR",
+"cn-v24":"Münih 800, Berlin 650, Hamburg 650, Köln 620, Düsseldorf 630, Bonn 510 EUR",
+"cn-v25":"Ayda 267 EUR",
+"cn-v26":"Ayda 842 EUR",
+"cn-v27":"Dönemde 97 EUR",
+"cn-v28":"Dönemde 352,70 EUR; bunun 226,80'i ulaşım kartı",
+"cn-v29":"Taşındıktan sonra iki hafta",
+"cn-v30":"Dört ila sekiz hafta, posta ile",
+"cn-y0":"2026",
+"cn-y1":"2026",
+"cn-y2":"2026",
+"cn-y3":"2026",
+"cn-y4":"2023'ten itibaren",
+"cn-y5":"2026",
+"cn-y6":"2026",
+"cn-y7":"geçerli",
+"cn-y8":"2026",
+"cn-y9":"2026",
+"cn-y10":"2026",
+"cn-y11":"geçerli",
+"cn-y12":"2026",
+"cn-y13":"2026",
+"cn-y14":"2026",
+"cn-y15":"geçerli",
+"cn-y16":"geçerli",
+"cn-y17":"2026",
+"cn-y18":"2026",
+"cn-y19":"2026",
+"cn-y20":"geçerli",
+"cn-y21":"geçerli",
+"cn-y22":"geçerli",
+"cn-y23":"2026 ve 2027 kış dönemi",
+"cn-y24":"2026 yaz dönemi",
+"cn-y25":"geçerli",
+"cn-y26":"geçerli",
+"cn-y27":"2026 yaz dönemi",
+"cn-y28":"2026 ve 2027 kış dönemi",
+"cn-y29":"geçerli",
+"cn-y30":"geçerli",
 "cn-w0":"Temel vergi muafiyeti, § 32a EStG",
 "cn-w1":"Gelir vergisi tarife dilimleri, § 32a EStG",
 "cn-w2":"Çalışan götürü indirimi",
@@ -1425,9 +1541,9 @@ tr: {
 "cn-w11":"Minijob'da tek oranlı götürü vergi; işveren öder, gelir vergisini, dayanışma katkısını ve kilise vergisini kapsar",
 "cn-w12":"Emeklilik sigortası oranı",
 "cn-w13":"Emeklilik primi tavanı",
-"cn-w14":"Geçiş aralığı, yani midijob; bir working student'ın emeklilik payını düşürür",
-"cn-w15":"Working student kuralı, kazanç tavanı yok",
-"cn-w16":"Working student kuralı, saatler",
+"cn-w14":"Geçiş aralığı, yani midijob; bir Werkstudent'ın emeklilik payını düşürür",
+"cn-w15":"Werkstudent kuralı, kazanç tavanı yok",
+"cn-w16":"Werkstudent kuralı, saatler",
 "cn-w17":"Öğrenci sağlık sigortası, prim matrahı ve oranlar",
 "cn-w18":"Yasal sağlık sigortası oranları",
 "cn-w19":"Öğrenci sağlık sigortası oranının bittiği yaş",
@@ -1496,7 +1612,7 @@ tr: {
 "tx-annual":"Yılın brüt ücreti, 12 ay",
 "tx-an":"eksi çalışan götürü indirimi",
 "tx-sa":"eksi özel giderler götürü indirimi",
-"tx-vp":"eksi emeklilik payı, önlem indirimi",
+"tx-vp":"eksi emeklilik payı, ihtiyat götürüsü",
 "tx-ent":"eksi tek ebeveyn indirimi, 2. sınıf",
 "tx-zve":"Vergiye tabi yıllık tutar, aşağı yuvarlanmış",
 "tx-tarif":"Yılın gelir vergisi, EStG 32a maddesi",
@@ -1565,7 +1681,7 @@ tr: {
 "tk6":"Üniversiteye kayıt","tk6n":"Kabul mektubu, sağlık sandığınızın elektronik bildirimi, ödenmiş sömestir katkısı, pasaport.","tk6t":"Üniversitenizin belirlediği kayıt penceresi içinde. Kaçırmak bir sömestire mal olur.","tk6w":"Öğrenci belgesi, diğer bütün dairelere öğrenci olduğunuzu kanıtlayan şeydir.",
 "tk7":"Yayın katkı payı kaydı","tk7n":"Adresiniz ve taşınma tarihiniz.","tk7t":"Çevrimiçi on beş dakika.","tk7w":"Televizyonunuz olsa da olmasa da konut için doğar. Paylaşımlı evde yalnızca bir kişi öder, kimin ödeyeceğini kararlaştırın, BAf\u00f6G alıyorsanız muafiyet başvurusu yapabilirsiniz.",
 "cn-val":"Değer","cn-what":"Nedir","cn-src":"Kaynak","cn-year":"Geçerli",
-"cn-checked":"Kontrol",
+"cn-checked":"Kontrol tarihi",
 "un-1":"Münih ve Köln dışındaki sömestir katkısı","un-1v":"Üniversite sayfaları otomatik okumayı engelliyor, bu yüzden yalnızca ikisi doğrulandı. Karşılaştırma alanı size bırakır.",
 "un-2":"Aylık yemek","un-2v":"Şehir bazında resmî bir rakam bulunamadı. Kendi tutarınızı girin. Studierendenwerk yemekhane fiyatlarını yayımlar, iyi bir başlangıçtır.",
 "un-3":"Aylık telefon","un-3v":"Tarifeler ticaridir ve sürekli değişir. Sözleşmenizin tutarını girin.",
@@ -1579,6 +1695,68 @@ tr: {
 "un-6":"Eşiğin üstünde dayanışma katkısı","un-6v":"Yıllık 20 350 EUR verginin hemen üstündeki kademeli oran 2026 için doğrulanamadı. Eşiğin altında katkı sıfırdır, bir Werkstudent zaten oradadır."
 },
 de: {
+"cn-v0":"12 348 EUR",
+"cn-v1":"914,51 / 1400 / 173,10 / 2397 / 1034,87 / 0,42 / 0,45",
+"cn-v2":"1 230 EUR",
+"cn-v3":"36 EUR",
+"cn-v4":"4 260 EUR",
+"cn-v5":"100 % des Arbeitnehmeranteils zur Rentenversicherung, gedeckelt bei 9 430,20 EUR",
+"cn-v6":"5,5 %, Freigrenze 20 350 EUR Jahressteuer",
+"cn-v7":"8 % in Bayern und Baden-Württemberg, 9 % sonst",
+"cn-v8":"13,90 EUR je Stunde",
+"cn-v9":"603 EUR im Monat, 7 236 EUR im Jahr",
+"cn-v10":"3,6 % Arbeitnehmer, 31,17 % Arbeitgeber",
+"cn-v11":"2 %",
+"cn-v12":"18,6 % insgesamt, 9,3 % Arbeitnehmer",
+"cn-v13":"8 450 EUR im Monat, 101 400 EUR im Jahr",
+"cn-v14":"603,01 bis 2 000 EUR, Faktor F 0,6619, Arbeitnehmer-Bemessungsgrundlage 1,43163922691 × Entgelt − 863,2784538207",
+"cn-v15":"Frei von Kranken-, Pflege- und Arbeitslosenversicherung, Rentenversicherung bleibt",
+"cn-v16":"20 Stunden pro Woche in der Vorlesungszeit, unbegrenzt in der vorlesungsfreien Zeit, 26 Wochen oder 182 Tage im Jahr über 20 Stunden",
+"cn-v17":"855 EUR Bemessungsgrundlage, 10,22 % Kranken-, 3,6 % Pflegeversicherung, 4,2 % ab 23 ohne Kinder",
+"cn-v18":"14,6 % allgemeiner Beitragssatz, 2,9 % durchschnittlicher Zusatzbeitrag",
+"cn-v19":"30",
+"cn-v20":"140 ganze oder 280 halbe Tage im Jahr, ein Tag bis vier Stunden zählt als halber",
+"cn-v21":"140 / 280, studentische Nebentätigkeit ausgenommen",
+"cn-v22":"18,36 EUR im Monat je Wohnung",
+"cn-v23":"37,80 EUR im Monat, 226,80 EUR im Semester",
+"cn-v24":"München 800, Berlin 650, Hamburg 650, Köln 620, Düsseldorf 630, Bonn 510 EUR",
+"cn-v25":"267 EUR im Monat",
+"cn-v26":"842 EUR im Monat",
+"cn-v27":"97 EUR im Semester",
+"cn-v28":"352,70 EUR im Semester, davon 226,80 für das Ticket",
+"cn-v29":"Zwei Wochen ab dem Einzug",
+"cn-v30":"Vier bis acht Wochen, per Post",
+"cn-y0":"2026",
+"cn-y1":"2026",
+"cn-y2":"2026",
+"cn-y3":"2026",
+"cn-y4":"ab 2023",
+"cn-y5":"2026",
+"cn-y6":"2026",
+"cn-y7":"aktuell",
+"cn-y8":"2026",
+"cn-y9":"2026",
+"cn-y10":"2026",
+"cn-y11":"aktuell",
+"cn-y12":"2026",
+"cn-y13":"2026",
+"cn-y14":"2026",
+"cn-y15":"aktuell",
+"cn-y16":"aktuell",
+"cn-y17":"2026",
+"cn-y18":"2026",
+"cn-y19":"2026",
+"cn-y20":"aktuell",
+"cn-y21":"aktuell",
+"cn-y22":"aktuell",
+"cn-y23":"Wintersemester 2026 und 2027",
+"cn-y24":"Sommersemester 2026",
+"cn-y25":"aktuell",
+"cn-y26":"aktuell",
+"cn-y27":"Sommersemester 2026",
+"cn-y28":"Wintersemester 2026 und 2027",
+"cn-y29":"aktuell",
+"cn-y30":"aktuell",
 "cn-w0":"Grundfreibetrag, § 32a EStG",
 "cn-w1":"Tarifzonen der Einkommensteuer, § 32a EStG",
 "cn-w2":"Arbeitnehmer-Pauschbetrag",
@@ -1610,7 +1788,7 @@ de: {
 "cn-w28":"Semesterbeitrag, TH Köln",
 "cn-w29":"Frist zur Anmeldung des Wohnsitzes, § 17 Bundesmeldegesetz",
 "cn-w30":"Steueridentifikationsnummer nach der Erstanmeldung",
-"skip":"Zum Werkzeug springen","mark":"offenes Instrument","a-lang":"Sprache",
+"skip":"Zum Werkzeug springen","mark":"quelloffenes Instrument","a-lang":"Sprache",
 "h1":"Neben dem Studium in Deutschland arbeiten",
 "lede":"Eine Seite für Studierende von außerhalb der Europäischen Union. Was wirklich auf dem Konto ankommt, Zeile für Zeile gerechnet. Die zwei Arbeitsgrenzen, die ständig verwechselt werden, nebeneinander. Was ein Monat in sechs Städten kostet. Und die Behördengänge nach der Ankunft in der Reihenfolge, in der sie nötig sind. Jede Zahl trägt ihre Quelle und den Tag, an dem sie geprüft wurde.",
 "s1":"Was wirklich ankommt","s1leg":"Ihr Job",
@@ -1638,8 +1816,8 @@ de: {
 "f-priv":"Läuft vollständig in Ihrem Browser. Nichts, was Sie eingeben, verlässt diese Seite. Kein Server, keine Datenbank, keine Messung und nach dem Laden der Schriften kein Netzaufruf, die Seite arbeitet also offline, sobald sie einmal zwischengespeichert ist. Ihre Liste und Ihre Zahlen liegen nur in diesem Browser, im lokalen Speicher, und Sie können sie jederzeit löschen.",
 "f-by":"Gebaut von","f-tum":"TUM, München.",
 "cls":"Klasse","cls-hint-1":"ledig, ein Job","cls-hint-2":"alleinerziehend","cls-hint-3":"verheiratet, höherer Verdienst","cls-hint-4":"verheiratet, ähnlicher Verdienst","cls-hint-5":"verheiratet, geringerer Verdienst","cls-hint-6":"zweiter Job",
-"ch-none":"Keine","ch-8":"8 Prozent, Bayern oder Baden Württemberg","ch-9":"9 Prozent, alle übrigen Länder",
-"empty-pay":"Tragen Sie oben einen Monatsbrutto ein. Die Rechnung erscheint hier, Zeile für Zeile.",
+"ch-none":"Keine","ch-8":"8 Prozent, Bayern oder Baden-Württemberg","ch-9":"9 Prozent, alle übrigen Länder",
+"empty-pay":"Tragen Sie oben Ihr Monatsbrutto ein. Die Rechnung erscheint hier, Zeile für Zeile.",
 "kind-mini":"Das ist ein Minijob","kind-werk":"Das ist ein regulärer Werkstudentenjob",
 "kind-mini-p":"Ihr Verdienst liegt auf oder unter der Minijobgrenze 2026 von 603 EUR im Monat. Ein Minijob wird anders versteuert und versichert als jeder andere Job, die Zeilen unten sind also nicht die gewöhnlichen.",
 "kind-werk-p":"Ihr Verdienst liegt über der Minijobgrenze 2026 von 603 EUR im Monat, es gelten also die gewöhnlichen Regeln, gemildert durch das Werkstudentenprivileg. Für Werkstudenten gibt es keine Verdienstobergrenze. Die Grenze liegt bei den Stunden, nicht beim Geld.",
@@ -1697,7 +1875,7 @@ de: {
 "lim-a-used":"Verbraucht, in vollen Tagen","lim-a-left":"Volle Tage übrig","lim-a-budget":"Jahresbudget",
 "lim-a-risk":"Wenn Sie darüber gehen: Sie haben ohne Erlaubnis gearbeitet und Ihr Aufenthaltstitel steht auf dem Spiel, fragen Sie die Ausländerbehörde also vorher, nicht nachher.",
 "lim-b-h":"Wochenstunden, die Versicherungsregel",
-"lim-b-p":"Bis 20 Stunden pro Woche in der Vorlesungszeit bleibt die Freiheit von Kranken-, Pflege- und Arbeitslosenversicherung erhalten. In der vorlesungsfreien Zeit dürfen es mehr als zwanzig Stunden sein, aber auch diese Wochen zählen auf die 26 an. Außerhalb davon sind mehr als 20 Stunden nur am Abend, in der Nacht oder am Wochenende erlaubt, und alle solchen Zeiträume zusammen müssen in zwölf Monaten unter 26 Wochen bleiben.",
+"lim-b-p":"Bis 20 Stunden pro Woche in der Vorlesungszeit bleibt die Freiheit von Kranken-, Pflege- und Arbeitslosenversicherung erhalten. In der vorlesungsfreien Zeit dürfen es mehr als zwanzig Stunden sein, aber auch diese Wochen werden auf die 26 angerechnet. Außerhalb davon sind mehr als 20 Stunden nur am Abend, in der Nacht oder am Wochenende erlaubt, und alle solchen Zeiträume zusammen müssen in zwölf Monaten unter 26 Wochen bleiben.",
 "lim-b-now":"Ihre Wochenstunden jetzt","lim-b-weeks":"Wochen über 20 Stunden in diesem Jahr",
 "lim-b-left":"Von den 26 Wochen übrig","lim-b-ceiling":"Grenze in der Vorlesungszeit",
 "lim-b-risk":"Wenn Sie darüber gehen: Das Privileg entfällt und volle Beiträge werden fällig, grob ein Fünftel Ihres Verdienstes von Ihnen und noch einmal so viel vom Arbeitgeber.",
@@ -1728,10 +1906,10 @@ de: {
 "tk1":"Wohnsitz beim Bürgeramt anmelden","tk1n":"Pass, die Wohnungsgeberbestätigung und die Mietunterlagen.","tk1t":"Zwei Wochen ab dem Einzug. Der Termin selbst ist kostenlos und kurz, ein freier Platz kann aber Wochen entfernt liegen, buchen Sie also an dem Tag, an dem Sie eine Adresse haben.","tk1w":"Fast alles andere verlangt die Meldebestätigung. Vorher bewegt sich nichts.",
 "tk2":"Ein Bankkonto eröffnen","tk2n":"Pass, Meldebestätigung und Zulassungs- oder Immatrikulationsschreiben.","tk2t":"Online am selben Tag, für einen Filialtermin bis zu zwei Wochen.","tk2w":"Arbeitgeber, Vermieter und Hochschule zahlen und ziehen per Überweisung ein.",
 "tk3":"Krankenversicherung abschließen","tk3n":"Pass, Meldebestätigung, Zulassungsschreiben und Ihr Geburtsdatum für den studentischen Beitrag.","tk3t":"Wenige Tage. Die Kasse meldet es der Hochschule elektronisch.","tk3w":"Ohne sie keine Einschreibung, und der studentische Beitrag endet mit 30.",
-"tk4":"Auf die steuerliche Identifikationsnummer warten","tk4n":"Nichts. Sie kommt per Post, sobald die Meldebehörde Ihre Daten übermittelt hat.","tk4t":"Vier bis acht Wochen bei der ersten Anmeldung. Kommt nach drei Monaten nichts, schreiben Sie an das Bundeszentralamt für Steuern.","f-forget":"Alles vergessen, was ich eingegeben habe","f-tum":"Student an der TUM. Ein persönliches Projekt, weder mit der Technischen Universität München verbunden noch von ihr unterstützt.","f-stale":"Eine Zahl auf dieser Seite sollten Sie jetzt nachprüfen. Der studentische Krankenversicherungsbeitrag wird auf den BAföG-Satz gerechnet, und der kann sich zum Wintersemester ändern. Bestätigen Sie den aktuellen Satz bei Ihrer eigenen Kasse, bevor Sie sich auf die Zeile zur Krankenversicherung verlassen.","tk4w":"Bis sie da ist darf Ihr Arbeitgeber Sie, wenn Sie die Verzögerung nicht zu vertreten haben, bis zu drei Kalendermonate nach Ihrer voraussichtlichen Klasse versteuern. Danach ist es Klasse 6, die härteste, und zwar rückwirkend.",
+"tk4":"Auf die steuerliche Identifikationsnummer warten","tk4n":"Nichts. Sie kommt per Post, sobald die Meldebehörde Ihre Daten übermittelt hat.","tk4t":"Vier bis acht Wochen bei der ersten Anmeldung. Kommt nach drei Monaten nichts, schreiben Sie an das Bundeszentralamt für Steuern.","f-forget":"Alles vergessen, was ich eingegeben habe","f-tum":"Student an der TUM. Ein persönliches Projekt, weder mit der Technischen Universität München verbunden noch von ihr unterstützt.","f-stale":"Eine Zahl auf dieser Seite sollten Sie jetzt nachprüfen. Der studentische Krankenversicherungsbeitrag wird auf Basis des BAföG-Bedarfssatzes berechnet, und der kann sich zum Wintersemester ändern. Bestätigen Sie den aktuellen Satz bei Ihrer eigenen Kasse, bevor Sie sich auf die Zeile zur Krankenversicherung verlassen.","tk4w":"Bis sie da ist, darf Ihr Arbeitgeber Sie, wenn Sie die Verzögerung nicht zu vertreten haben, bis zu drei Kalendermonate nach Ihrer voraussichtlichen Klasse versteuern. Danach ist es Klasse 6, die härteste, und zwar rückwirkend.",
 "tk5":"Termin bei der Ausländerbehörde buchen","tk5n":"Pass, Visum, Meldebestätigung, Immatrikulationsbescheinigung, Nachweis der Krankenversicherung, Finanzierungsnachweis, ein biometrisches Foto.","tk5t":"So früh buchen, wie Ihre Stadt es zulässt. Zwei bis drei Monate Wartezeit sind gewöhnlich.","tk5w":"Der Titel muss vorliegen, bevor das Visum abläuft. Es entscheidet die Behörde, nicht die Hochschule.",
 "tk6":"An der Hochschule einschreiben","tk6n":"Zulassungsschreiben, die elektronische Meldung Ihrer Kasse, den gezahlten Semesterbeitrag, den Pass.","tk6t":"Innerhalb der Frist, die Ihre Hochschule setzt. Verpassen kostet ein Semester.","tk6w":"Die Immatrikulationsbescheinigung ist das, was Sie bei jeder anderen Stelle als Studierende ausweist.",
-"tk7":"Rundfunkbeitrag anmelden","tk7n":"Ihre Adresse und das Einzugsdatum.","tk7t":"Fünfzehn Minuten online.","tk7w":"Er ist für die Wohnung fällig, ob Sie einen Fernseher haben oder nicht. In einer WG zahlt nur eine Person, klären Sie wer, und mit BAföG können Sie eine Befreiung beantragen.",
+"tk7":"Rundfunkbeitrag anmelden","tk7n":"Ihre Adresse und das Einzugsdatum.","tk7t":"Fünfzehn Minuten online.","tk7w":"Er ist für die Wohnung fällig, ob Sie einen Fernseher haben oder nicht. In einer WG zahlt nur eine Person, klären Sie, wer, und mit BAföG können Sie eine Befreiung beantragen.",
 "cn-val":"Wert","cn-what":"Worum es geht","cn-src":"Quelle","cn-year":"Gilt für","cn-checked":"Geprüft",
 "un-1":"Semesterbeitrag außerhalb Münchens und Kölns","un-1v":"Hochschulseiten sperren das automatische Lesen, geprüft wurden daher nur zwei. Der Vergleich lässt das Feld für Sie frei.",
 "un-2":"Ernährung im Monat","un-2v":"Keine amtliche Zahl je Stadt gefunden. Tragen Sie Ihre eigene ein. Ihr Studierendenwerk veröffentlicht die Mensapreise, das ist ein guter Anfang.",
@@ -1739,7 +1917,7 @@ de: {
 "un-4":"Betrag auf dem Sperrkonto für das Visum","un-4v":"Deutsche Auslandsvertretungen nennen auf verschiedenen Seiten verschiedene Beträge, von 10 332 bis 11 904 EUR im Jahr, daher wurde keiner eingetragen. Fragen Sie die Vertretung, die Ihr Visum ausstellt.",
 "un-5":"Lohnsteuer in den Klassen 5 und 6","un-5v":"Die Sonderformel dieser Klassen nutzt Schwellen für 2026, die nicht bestätigt werden konnten, dort wird also nichts gedruckt.",
 "unit-net":"EUR netto im Monat",
-"no-net":"Es wird kein Nettobetrag gedruckt, weil die Lohnsteuer dieser Klasse nicht gerechnet wurde.",
+"no-net":"Es wird kein Nettobetrag gedruckt, weil die Lohnsteuer dieser Klasse nicht berechnet wurde.",
 "fee-muenchen":"Studierendenwerk München Oberbayern, Sommersemester 2026",
 "fee-koeln":"TH Köln, Wintersemester 2026 und 2027",
 "cmp-plus":"Ein Pluszeichen an der Summe heißt, dass mindestens eine Zeile noch leer ist, der echte Betrag also höher liegt.",
@@ -1749,10 +1927,15 @@ de: {
 
   function own(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
   var LANG = "en";
-  function t(k) {
+  function t(k, en) {
     var d = D[LANG] || D.en;
-    if (d[k] !== undefined) return d[k];
-    return D.en[k] !== undefined ? D.en[k] : k;
+    if (own(d, k)) return d[k];
+    if (own(D.en, k)) return D.en[k];
+    /* A key the English dictionary does not hold is not a mistake: the
+       constants table is keyed per row in tr and de only, and its English
+       lives in the array itself. Without this the English page printed the
+       key names. */
+    return en !== undefined ? en : k;
   }
   var LOCALE = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
   function num(v, dp) {
@@ -2345,13 +2528,13 @@ de: {
     var tb = el("tbody");
     CONSTS.forEach(function (c, ci) {
       tb.appendChild(el("tr", null, [
-        el("td", { class: "k-n", text: c[0] }),
+        el("td", { class: "k-n", text: t("cn-v" + ci, c[0]) }),
         el("td", { text: t("cn-w" + ci, c[1]) }),
         el("td", { class: "k-src-cell" }, [
           el("a", { href: c[2], target: "_blank", rel: "noreferrer noopener", text: c[3] }),
           el("span", { text: " " + t("cn-checked").toLowerCase() + " " + CHECKED })
         ]),
-        el("td", { class: "k-n", text: c[4] })
+        el("td", { class: "k-n", text: t("cn-y" + ci, c[4]) })
       ]));
     });
     tbl.appendChild(tb);

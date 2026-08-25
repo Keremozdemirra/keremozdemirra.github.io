@@ -32,7 +32,7 @@
 :root{
   --soil:#2c2115; --timber:#67503a; --terracotta:#8a4a2c;
   --accent:#e0a050; --ink:#2b2620; --paper:#f2efe6; --verdigris:#5e7a6a;
-  --ink-soft:#4b443b; --dim:#6f6558; --faint:#8d8375;
+  --ink-soft:#4b443b; --dim:#6f6558; --faint:#6f6759;
   --rule:rgba(103,80,58,.32); --rule-firm:rgba(103,80,58,.55);
   --display:"Fraunces","Iowan Old Style",Georgia,serif;
   --serif:"Newsreader",Georgia,"Times New Roman",serif;
@@ -299,6 +299,39 @@ footer a:hover{color:var(--fg)}
     align-items:center;justify-content:flex-end}
 }
 
+/* the same thumb, on the page itself */
+@media (pointer:coarse){
+  .cv-btn{min-height:44px;padding:.8rem 1.25rem}
+  .copy,.share-link{min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center}
+  .socials a{min-height:44px;display:inline-flex;align-items:center}
+  .mail-line a.addr{display:inline-flex;align-items:center;min-height:44px}
+  .note-read{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .feature .go{min-height:44px;display:inline-flex;align-items:center}
+  .gcard .go{min-height:44px;display:inline-flex;align-items:center}
+  .go-block{min-height:44px;display:inline-flex;align-items:center}
+  .k-btn,.k-skip,.skip{min-height:44px;display:inline-flex;align-items:center}
+  input[type=range]{height:44px}
+  select{min-height:44px}
+  /* a link sitting inside a sentence: the line opens up so the link can be
+     a thumb tall without the paragraph closing over it */
+  .quiet-line{line-height:2.1}
+  .quiet-line a{display:inline-block;padding:.78rem 0;line-height:1.25}
+  .note-item h2 a{display:inline-block;padding:.5rem 0;border-bottom:0;
+    text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
+  .note-item h2 a:hover{text-decoration-color:var(--accent)}
+  /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px;min-height:44px}
+  body .frow textarea{min-height:8rem}
+  /* a 4px tall slider is not a control: the whole strip takes the touch */
+  input[type="range"]{height:44px;margin:0;padding:0}
+  /* and a sixteen pixel box is not one either */
+  input[type="checkbox"],input[type="radio"]{width:22px;height:22px}
+  input[type="checkbox"]+label,input[type="radio"]+label{
+    display:inline-flex;align-items:center;min-height:44px}
+  .demo-src a{display:inline-flex;align-items:center;min-height:44px}
+}
 
 /* ---------- the crown, on a page whose interior is its own ---------- */
 .k-crown-no{
@@ -1115,7 +1148,7 @@ function drawFigure(x, y, t, o) {
   } else if (o.prop === "spear") {
     ctx.strokeStyle = dk("#6b5334"); ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(9, -30); ctx.lineTo(11, 1); ctx.stroke();
-    ctx.fillStyle = dk("#8d8375");
+    ctx.fillStyle = dk("#6f6759");
     ctx.beginPath(); ctx.moveTo(9, -30); ctx.lineTo(11.4, -36); ctx.lineTo(11.6, -29.6); ctx.closePath(); ctx.fill();
   } else if (o.prop === "dog") {
     ctx.save();

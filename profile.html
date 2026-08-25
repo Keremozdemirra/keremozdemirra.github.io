@@ -271,7 +271,13 @@ section:has(> .note-item:last-of-type) + section{border-top:0}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(1.2rem,4vw,3rem)}
 dl .item{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
 dl .item .v{color:var(--dim);text-align:right;font-size:.8rem;padding-top:.1rem;
-  flex-shrink:0;min-width:0;overflow-wrap:anywhere}
+  min-width:0;overflow-wrap:anywhere}
+/* A value is allowed to wrap and to give ground. It used to be flex-shrink:0,
+   which is fine while every value is a year and catastrophic the moment one
+   is a sentence: the work permit line ran four hundred pixels past its own
+   column and printed over the next one. */
+dl .item .v{flex:0 1 auto}
+dl .item .k{flex:1 1 auto;min-width:0}
 /* one column, and a value long enough to need the whole of it: German legal
    names do this, and a value that cannot shrink pushes the page sideways */
 @media (max-width:560px){
@@ -310,8 +316,14 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
   text-decoration:none;white-space:nowrap;
   border-bottom:1px solid var(--line);transition:border-color .18s var(--ease)}
 .feature .go:hover{border-bottom-color:var(--accent)}
-.repo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;background:var(--line);
-  border:1px solid var(--line);margin-top:.4rem}
+/* The gap between cells used to be the grid's own background showing
+   through, which is a neat trick until the last row is short: five cards in
+   three tracks left one empty cell painting a solid block of the rule
+   colour. The rules are drawn on the cells instead, so a missing cell leaves
+   paper rather than a slab. */
+.repo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:.4rem}
+.repo-grid > *{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
 .repo{background:var(--paper);padding:1rem 1.1rem;text-decoration:none;transition:background .16s var(--ease)}
 .repo:hover{background:var(--raised)}
 .repo h3{font-family:var(--sans);font-weight:500;font-size:.95rem}
@@ -339,6 +351,14 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 .socials a{font-size:.9rem;font-weight:500;letter-spacing:.02em;color:var(--dim);text-decoration:none;
   border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .socials a:hover{color:var(--fg);border-bottom-color:var(--fg)}
+
+/* A line of its own, quieter than the body, used on ten pages to add an
+   aside under something. It only ever had rules inside the coarse pointer
+   block, so with a mouse it had no space above it and touched the element
+   before it. */
+.quiet-line{margin-top:1.1rem;font-family:var(--text);font-size:.98rem;
+  line-height:1.6;color:var(--dim);max-width:62ch}
+.quiet-line a{color:var(--accent-text)}
 
 /* ---------- share chip on instruments ---------- */
 .share-link{font-size:.7rem;font-weight:500;letter-spacing:.02em;color:var(--dim);
@@ -382,6 +402,30 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
   .mail-line a.addr{word-break:break-all;line-height:1.25}
 }
 
+.rise{opacity:0;transform:translateY(18px);filter:blur(3px);
+  transition:opacity .75s ease,transform .9s cubic-bezier(.16,1,.3,1),filter .75s ease}
+.rise.in{opacity:1;transform:none;filter:none}
+@media (prefers-reduced-motion:reduce){.rise{opacity:1;transform:none;transition:none}}
+#cvsheet{display:none}
+@media print{
+  .rise{opacity:1!important;transform:none!important}
+  @page{size:A4;margin:13mm 15mm}
+  .bar,footer,.leaf-mark,.cv-btn,.langs{display:none!important}
+  body{background:#fff;color:#000}
+  body::after{display:none}
+  body.has-cv main>section,body.has-cv .crown{display:none!important}
+  body.has-cv main.wrap{max-width:none;padding:0}
+  body.has-cv{font-family:var(--sans)}
+  #cvsheet{display:block;font-size:9.3pt;line-height:1.38}
+  #cvsheet .nm{font-family:var(--serif);font-weight:400;font-size:20pt;margin:0}
+  #cvsheet .cl{font-size:8.4pt;color:#333;margin:.25em 0 .9em;border-bottom:.6pt solid #999;padding-bottom:.7em}
+  #cvsheet h2{font-family:var(--sans);font-weight:600;font-size:9.5pt;letter-spacing:.06em;text-transform:uppercase;
+    margin:.85em 0 .3em;border-bottom:.6pt solid #bbb;padding-bottom:.15em}
+  #cvsheet table{border-collapse:collapse;width:100%}
+  #cvsheet td{vertical-align:top;padding:.14em 0}
+  #cvsheet td.d{width:78pt;white-space:nowrap;color:#444;font-size:8.4pt;padding-right:8pt;padding-top:.24em}
+  #cvsheet .sk{margin:.1em 0}
+}
 /* the same thumb, on the page itself */
 @media (pointer:coarse){
   .cv-btn{min-height:44px;padding:.8rem 1.25rem}
@@ -414,30 +458,6 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
   input[type="checkbox"]+label,input[type="radio"]+label{
     display:inline-flex;align-items:center;min-height:44px}
   .demo-src a{display:inline-flex;align-items:center;min-height:44px}
-}
-.rise{opacity:0;transform:translateY(18px);filter:blur(3px);
-  transition:opacity .75s ease,transform .9s cubic-bezier(.16,1,.3,1),filter .75s ease}
-.rise.in{opacity:1;transform:none;filter:none}
-@media (prefers-reduced-motion:reduce){.rise{opacity:1;transform:none;transition:none}}
-#cvsheet{display:none}
-@media print{
-  .rise{opacity:1!important;transform:none!important}
-  @page{size:A4;margin:13mm 15mm}
-  .bar,footer,.leaf-mark,.cv-btn,.langs{display:none!important}
-  body{background:#fff;color:#000}
-  body::after{display:none}
-  body.has-cv main>section,body.has-cv .crown{display:none!important}
-  body.has-cv main.wrap{max-width:none;padding:0}
-  body.has-cv{font-family:var(--sans)}
-  #cvsheet{display:block;font-size:9.3pt;line-height:1.38}
-  #cvsheet .nm{font-family:var(--serif);font-weight:400;font-size:20pt;margin:0}
-  #cvsheet .cl{font-size:8.4pt;color:#333;margin:.25em 0 .9em;border-bottom:.6pt solid #999;padding-bottom:.7em}
-  #cvsheet h2{font-family:var(--sans);font-weight:600;font-size:9.5pt;letter-spacing:.06em;text-transform:uppercase;
-    margin:.85em 0 .3em;border-bottom:.6pt solid #bbb;padding-bottom:.15em}
-  #cvsheet table{border-collapse:collapse;width:100%}
-  #cvsheet td{vertical-align:top;padding:.14em 0}
-  #cvsheet td.d{width:78pt;white-space:nowrap;color:#444;font-size:8.4pt;padding-right:8pt;padding-top:.24em}
-  #cvsheet .sk{margin:.1em 0}
 }
 </style>
 </head>
