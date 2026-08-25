@@ -47,7 +47,7 @@ html,body{margin:0;padding:0;overflow-x:hidden;max-width:100%}
 html{-webkit-text-size-adjust:100%}
 body{
   font-family:var(--serif); color:var(--ink); background:#c8c4b6;
-  min-height:100dvh; overscroll-behavior-y:none;
+  min-height:calc(100dvh - var(--barh, 0px)); overscroll-behavior-y:none;
 }
 canvas#world{
   position:fixed; inset:0; width:100%; height:100%; display:block; z-index:0;
@@ -62,7 +62,9 @@ canvas#world{
 .skip:focus{left:.6rem;top:.6rem}
 
 #shell{
-  position:relative; z-index:2; min-height:100dvh;
+  /* the viewport, less whatever the site bar above it is taking. Asking for
+     the whole of it put the start button below the fold on a laptop. */
+  position:relative; z-index:2; min-height:calc(100dvh - var(--barh, 0px));
   display:flex; flex-direction:column; justify-content:space-between;
   padding:clamp(.6rem,2vw,1.1rem);
   padding-bottom:calc(clamp(.6rem,2vw,1.1rem) + env(safe-area-inset-bottom,0px));
@@ -2227,6 +2229,16 @@ window.CHROME_I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdile
   window.__t = function(k, fallback){ return fallback; };
   window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
+  /* A page that wants a whole viewport of height has to know how much of it
+     the bar has already taken, or it overhangs the fold by exactly that much
+     and clips whatever sits at its bottom. */
+  function barHeight(){
+    var b = document.querySelector(".bar");
+    document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
+  }
+  barHeight();
+  addEventListener("resize", barHeight);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
   /* the nav is one scrolling line on a phone, so the page you are on can
      start off past its right edge. Bring it into view without moving the
      page. The generated pages do the same. */

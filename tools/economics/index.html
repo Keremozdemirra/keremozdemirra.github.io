@@ -1896,6 +1896,16 @@ window.CHROME_I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdile
   window.__t = function(k, fallback){ return fallback; };
   window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
+  /* A page that wants a whole viewport of height has to know how much of it
+     the bar has already taken, or it overhangs the fold by exactly that much
+     and clips whatever sits at its bottom. */
+  function barHeight(){
+    var b = document.querySelector(".bar");
+    document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
+  }
+  barHeight();
+  addEventListener("resize", barHeight);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
   /* the nav is one scrolling line on a phone, so the page you are on can
      start off past its right edge. Bring it into view without moving the
      page. The generated pages do the same. */

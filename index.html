@@ -1683,8 +1683,9 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         t.beginPath(); t.moveTo(0, ly + 0.5); t.lineTo(W, ly + 0.5); t.stroke();
         t.font = "italic " + (small ? 11 : 13) + "px " + CANVAS_SERIF;
         t.fillStyle = "rgba(238,224,196,.62)";
-        t.fillText(STRATA[bi], nx, ly + (small ? 11 : 13));
-        var tw6 = t.measureText(STRATA[bi]).width;
+        var stNm = window.__t ? window.__t("stra" + bi, STRATA[bi]) : STRATA[bi];
+        t.fillText(stNm, nx, ly + (small ? 11 : 13));
+        var tw6 = t.measureText(stNm).width;
         t.strokeStyle = "rgba(206,176,126,.11)";
         t.beginPath();
         t.moveTo(nx + tw6 + 6, ly + (small ? 8 : 9.5));
@@ -11090,16 +11091,23 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     /* the thirteen: a breathing ring each, and a museum label on the one the
        cursor has found. Name and year on the head line, then two lines of
        what he did and what came of it. */
+    /* A relic's label in the reader's language, falling back to the English
+       in the MUSEUM array. The key is the relic's position, which is why the
+       order of that array is not something to shuffle casually. */
+    function museT(M, f) {
+      var i = MUSEUM.indexOf(M);
+      return window.__t ? window.__t("mu" + i + f, M[f]) : M[f];
+    }
     function museLabel(M, sy4) {
       var maxW = Math.min(W - 24, small ? 320 : 348);
       ctx.font = "italic 11.5px " + CANVAS_SERIF;
-      var lns = capWrap(M.a, maxW - 22).concat(capWrap(M.b, maxW - 22));
+      var lns = capWrap(museT(M, "a"), maxW - 22).concat(capWrap(museT(M, "b"), maxW - 22));
       var bw = 0, li;
       for (li = 0; li < lns.length; li++) bw = Math.max(bw, ctx.measureText(lns[li]).width);
       ctx.font = "12.5px " + CANVAS_SERIF;
-      var nmW = ctx.measureText(M.n).width;
+      var nmW = ctx.measureText(museT(M, "n")).width;
       ctx.font = "italic 10.5px " + CANVAS_SERIF;
-      bw = Math.max(bw, nmW + 9 + ctx.measureText(M.yr).width);
+      bw = Math.max(bw, nmW + 9 + ctx.measureText(museT(M, "yr")).width);
       var cw4 = Math.min(maxW, bw + 22);
       var ch4 = 32 + lns.length * 15;
       var cx4 = clamp(M.x, cw4 / 2 + 8, W - cw4 / 2 - 8);
@@ -11115,10 +11123,10 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       var bx4 = cx4 - cw4 / 2 + 11;
       ctx.font = "12.5px " + CANVAS_SERIF;
       ctx.fillStyle = "rgba(240,233,214,.96)";
-      ctx.fillText(M.n, bx4, by4 + 18);
+      ctx.fillText(museT(M, "n"), bx4, by4 + 18);
       ctx.font = "italic 10.5px " + CANVAS_SERIF;
       ctx.fillStyle = "rgba(224,170,96,.55)";
-      ctx.fillText(M.yr, bx4 + nmW + 9, by4 + 18);
+      ctx.fillText(museT(M, "yr"), bx4 + nmW + 9, by4 + 18);
       ctx.strokeStyle = "rgba(224,170,96,.16)";
       ctx.beginPath();
       ctx.moveTo(bx4, by4 + 24.5); ctx.lineTo(cx4 + cw4 / 2 - 11, by4 + 24.5);
@@ -12605,7 +12613,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
 (function(){
   "use strict";
   var D = {
-    tr: {"nav-imp":"Künye","nav-dsg":"Gizlilik",
+    tr: {"mu0a":"CoLaunch ile üçüncülük; startup fikirlerini onları kurabilecek insanlarla eşleştiren bir platform.","mu0b":"Gerçek bir eksiklikten doğdu; savunacağım kısmı da bu.","mu1a":"Aynı fikir ulusal tura taşındı, JA Startup takımları arasında yarıştı.","mu1b":"YTÜ Girişimcilik yarı finaline kadar gitti.","mu2n":"Pazar genişleme çalışması","mu2yr":"Microbify, 2025","mu2a":"Straubing'deki Microbify için bir pazar genişleme çalışması; bir TUM proje çalışması olarak yazıldı.","mu2b":"TUM notu 1,0 ile döndü. Söylenecek başka bir şey yok.","mu3n":"Sertifikalar","mu3yr":"2024 ile 2026","mu3a":"2026'da McKinsey Forward ve BCG Dijital Dönüşüm simülasyonu, 2025'te Emory'de Yönetim Danışmanlığı ve UIUC'de Sürdürülebilirlik Danışmanlığı.","mu3b":"2024'te Google Proje Yönetimi ve Google AI Essentials. Altı tane, tek bir tomarda.","mu4yr":"127 test","mu4a":"Dönüştürülemeyecek olanı dönüştürmeyi reddeden bir dönüştürücü.","mu4b":"Bir sayı eksikse tahmin etmek yerine hangisinin eksik olduğunu söylüyor.","mu5yr":"esg toolkit","mu5a":"Bir azaltım maliyet eğrisi. On önlem, her biri tasarruf ettiği ton üzerinden fiyatlanmış.","mu5b":"Bir karbon fiyatı gir, hangilerinin yapmaya değdiğini söylüyor.","mu6yr":"esg toolkit","mu6a":"İki yıl arasındaki emisyonların LMDI ayrıştırması.","mu6b":"Değişimi çıktı, bileşim, enerji yoğunluğu ve emisyon katsayısı olarak ayırıyor.","mu7yr":"analyst toolkit","mu7a":"Nihai değeri parçalarına ayrılmış bir indirgenmiş nakit akışı.","mu7b":"Bir değerlemenin ne kadarının öngörü, ne kadarının sonsuz akış olduğunu gösteriyor.","mu8yr":"analyst toolkit","mu8a":"Aynı pazar, yukarıdan aşağı ve aşağıdan yukarı ölçülmüş.","mu8b":"İki cevap arasındaki farkı ortalayıp yok etmek yerine sayfada bırakıyor.","mu9yr":"Ağustos 2026","mu9a":"Sistemlerin içinde bir karar öznesi olarak fail üzerine bir araştırma projesi.","mu9b":"Ölçmeye çalıştığı üç şey: etki eğimi, özerklik eşiği, seçim kümesinin entropisi.","mu10n":"Vapur jetonu","mu10yr":"İstanbul","mu10a":"Eski jeton; pirinç, ceplerde aşınıp pürüzsüzleşmiş.","mu10b":"Boğaz'ın bir geçişini alırdı, başka hiçbir şeyi değil.","mu11n":"Biniş kartı","mu11yr":"İstanbul'dan München'e","mu11a":"Bir koçanın yırtık yarısı, bir palto cebinde saklanmış.","mu11b":"Öteki ikisinin arasındaki mesafe, bir kez katlanmış.","mu12n":"U Bahn bileti","mu12yr":"München","mu12a":"Peronda küçük kutuda delinmiş, Münih'in istediği gibi.","mu12b":"Jetonla aynı kısa yolculuk, daha soğuk bir dilde.","stra0":"Kazanılan","stra1":"Yapılan","stra2":"Yaşanan","nav-imp":"Künye","nav-dsg":"Gizlilik",
          "d1":"Profil","d1p":"Kim olduğum, nerede okuduğum, ne yaptığım.",
          "d2":"Projeler","d2p":"Repolar, vaka çalışmaları ve CoLaunch.",
          "d3":"İletişim","d3p":"E-posta, LinkedIn, GitHub.","d4":"Notlar","d4p":"Yazmaya değer şeyler.","d5":"Araçlar","d5p":"Aritmetiği üstlenen üç alet.",
@@ -12618,7 +12626,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
          "place-back":"çıkmak için esc","place-back-tap":"kapat",
          "d1n":"üniversite","d2n":"araç","d3n":"ulaşma yolu","d4n":"not",
          "d5n":"alet","d6n":"oyun","d7n":"deneme","d8n":"model"},
-    de: {"nav-imp":"Impressum","nav-dsg":"Datenschutz",
+    de: {"mu0a":"Dritter Platz für CoLaunch, eine Plattform, die Gründungsideen mit den Leuten zusammenbringt, die sie bauen können.","mu0b":"Es begann bei einem echten Mangel, und das ist der Teil, den ich verteidigen würde.","mu1a":"Dieselbe Idee, weitergetragen in die nationale Runde, im Wettbewerb der JA-Startup-Teams.","mu1b":"Sie kam bis ins Halbfinale des YTU Entrepreneurship.","mu2n":"Studie zur Markterweiterung","mu2yr":"Microbify, 2025","mu2a":"Eine Studie zur Markterweiterung für Microbify in Straubing, geschrieben als TUM-Projektstudie.","mu2b":"Sie kam mit der Note 1,0 zurück. Mehr ist dazu nicht zu sagen.","mu3n":"Zertifikate","mu3yr":"2024 bis 2026","mu3a":"McKinsey Forward und die BCG-Simulation zur digitalen Transformation 2026, Management Consulting an der Emory und Nachhaltigkeitsberatung an der UIUC 2025.","mu3b":"Google Projektmanagement und Google AI Essentials 2024. Sechs Stück, zusammengerollt zu einem Stapel.","mu4yr":"127 Tests","mu4a":"Ein Rechner, der sich weigert umzurechnen, was sich nicht umrechnen lässt.","mu4b":"Fehlt eine Zahl, sagt er welche, statt zu raten.","mu5yr":"esg toolkit","mu5a":"Eine Vermeidungskostenkurve. Zehn Maßnahmen, jede nach der Tonne bepreist, die sie einspart.","mu5b":"Setzen Sie einen CO2-Preis, und sie sagt, welche sich lohnen.","mu6yr":"esg toolkit","mu6a":"Eine LMDI-Zerlegung der Emissionen zwischen zwei Jahren.","mu6b":"Sie teilt die Veränderung in Produktion, Zusammensetzung, Energieintensität und Emissionsfaktor.","mu7yr":"analyst toolkit","mu7a":"Ein Discounted Cash Flow, bei dem der Endwert auseinandergenommen ist.","mu7b":"Er zeigt, wie viel einer Bewertung Prognose ist und wie viel ewige Rente.","mu8yr":"analyst toolkit","mu8a":"Derselbe Markt, einmal von oben nach unten und einmal von unten nach oben gemessen.","mu8b":"Er lässt die Lücke zwischen beiden Antworten stehen, statt sie wegzumitteln.","mu9yr":"August 2026","mu9a":"Ein Forschungsprojekt über den Akteur als Entscheidungssubjekt innerhalb von Systemen.","mu9b":"Drei Dinge, die es zu messen versucht: den Einflussgradienten, die Autonomieschwelle, die Entropie der Wahlmenge.","mu10n":"Fährjeton","mu10yr":"Istanbul","mu10a":"Der alte Jeton, Messing, von Hosentaschen glatt getragen.","mu10b":"Er kaufte eine Überfahrt über den Bosporus und sonst nichts.","mu11n":"Bordkarte","mu11yr":"Istanbul nach München","mu11a":"Die abgerissene Hälfte eines Abschnitts, in einer Manteltasche aufgehoben.","mu11b":"Sie ist der Abstand zwischen den beiden anderen, einmal gefaltet.","mu12n":"U-Bahn-Fahrschein","mu12yr":"München","mu12a":"Am kleinen Kasten auf dem Bahnsteig entwertet, wie München es verlangt.","mu12b":"Dieselbe kurze Fahrt wie der Jeton, in einer kälteren Sprache.","stra0":"Gewonnen","stra1":"Gemacht","stra2":"Gelebt","nav-imp":"Impressum","nav-dsg":"Datenschutz",
          "d1":"Profil","d1p":"Wer ich bin, wo ich studiere, was ich gemacht habe.",
          "d2":"Projekte","d2p":"Repositories, Fallstudien und CoLaunch.",
          "d3":"Kontakt","d3p":"E-Mail, LinkedIn, GitHub.","d4":"Notizen","d4p":"Dinge, die es wert sind.","d5":"Werkzeuge","d5p":"Drei Instrumente, die die Rechnung übernehmen.",
@@ -12667,8 +12675,23 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   document.querySelectorAll(".langs button").forEach(function(b){
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
-  /* the cover always opens in English; the choice still carries to the inner
-     pages, where reading language actually matters */
+  /* The cover opens in the language the reader chose, like every other page.
+     It used to always open in English, which left the eight door cards, the
+     museum labels and the film's own controls in English for somebody who
+     had read the whole site in Turkish, and left the language buttons
+     reporting EN while localStorage said otherwise. Anything on this page
+     with no translation falls back to the English it is written in, which is
+     most of the notebook and everything the man says. */
+  var start = "en";
+  try {
+    var stored = localStorage.getItem("lang");
+    if (stored === "tr" || stored === "de" || stored === "en") start = stored;
+    else {
+      var nav0 = (navigator.language || "en").slice(0, 2).toLowerCase();
+      if (nav0 === "tr" || nav0 === "de") start = nav0;
+    }
+  } catch (e) {}
+  apply(start);
 })();
 
 /* the footer is the end of the film: while it is on screen the two corner

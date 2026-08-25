@@ -984,6 +984,16 @@ window.I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yen
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   apply(lang);
+  /* A page that wants a whole viewport of height has to know how much of it
+     the bar has already taken, or it overhangs the fold by exactly that much
+     and clips whatever sits at its bottom. */
+  function barHeight(){
+    var b = document.querySelector(".bar");
+    document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
+  }
+  barHeight();
+  addEventListener("resize", barHeight);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
   /* On a narrow screen the nav is one scrolling line, so the page you are on
      may start off past the right edge of it. Bring it into view, without
      scrolling the page itself. */
