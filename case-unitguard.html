@@ -114,9 +114,21 @@ footer a:hover{color:var(--fg)}
   .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
-  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
-  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:nowrap;
+    justify-content:flex-start;gap:clamp(.7rem,3.4vw,1.2rem);
+    overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    /* the last name fades rather than being cut, which is what says there
+       is more of it to the right */
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    padding-right:2.2rem}
+  .bar nav::-webkit-scrollbar{display:none}
+  .bar nav a{font-size:.8rem;padding:.55rem 0;flex:0 0 auto}
+  /* the name of the page you are on is brought into view on load, so a
+     reader arriving deep in the site is not looking at a row that starts
+     somewhere else */
+  .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
   .bar .wrap{position:relative}
@@ -226,9 +238,15 @@ section:has(> .note-item:last-of-type) + section{border-top:0}
 .opening{font-family:var(--text);font-weight:400;
   font-size:clamp(1.14rem,1.5vw,1.32rem);line-height:1.5;color:var(--fg);
   max-width:46ch;text-wrap:pretty}
-.opening + .after{margin-top:1.8rem;font-family:var(--text);font-size:1.08rem;
+/* The prose that follows the opening statement. It used to be selected as
+   ".opening + .after", which stopped working the moment the opening moved up
+   into the crown to lead the page; the class carries it now. */
+.opening + .after,.opening-after{margin-top:1.8rem;font-family:var(--text);font-size:1.08rem;
   line-height:1.62;color:#4c463b;max-width:62ch}
-.opening + .after p + p{margin-top:.9em}
+.opening + .after p + p,.opening-after p + p{margin-top:.9em}
+/* with the statement gone from inside the spread, the prose starts level
+   with the rail beside it rather than an inch below it */
+.spread--intro .opening-after{margin-top:.1rem}
 
 /* The artifact a claim leaves behind, in the type the instruments use for
    measurement. Not decoration: if a line has no artifact it gets none. */
@@ -328,10 +346,14 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
   transition:color .15s var(--ease),border-color .15s var(--ease)}
 .copy:hover{color:var(--fg);border-color:var(--fg)}
 .copy.done{color:var(--accent);border-color:var(--accent)}
-.socials{display:flex;gap:1.6rem;margin-top:2rem}
-.socials a{font-size:.9rem;font-weight:500;letter-spacing:.02em;color:var(--dim);text-decoration:none;
-  border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
-.socials a:hover{color:var(--fg);border-bottom-color:var(--fg)}
+/* These were dim, undecorated, and carried a rule that only appeared on
+   hover, so on a phone, which has no hover, three links were indistinguishable
+   from three words. They rest with a rule under them now. */
+.socials{display:flex;flex-wrap:wrap;gap:1.6rem;margin-top:2rem}
+.socials a{font-size:.95rem;font-weight:500;letter-spacing:.02em;color:var(--accent-text);
+  text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:.12em;
+  transition:color .18s var(--ease),border-color .18s var(--ease)}
+.socials a:hover{color:var(--fg);border-bottom-color:var(--accent)}
 
 /* A line of its own, quieter than the body, used on ten pages to add an
    aside under something. It only ever had rules inside the coarse pointer
@@ -709,6 +731,15 @@ window.I18N = {"tr": {"nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer d
     b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
   });
   apply(lang);
+  /* On a narrow screen the nav is one scrolling line, so the page you are on
+     may start off past the right edge of it. Bring it into view, without
+     scrolling the page itself. */
+  try {
+    var cur = document.querySelector(".bar nav a[aria-current]");
+    if (cur && cur.parentNode.scrollWidth > cur.parentNode.clientWidth) {
+      cur.parentNode.scrollLeft = Math.max(0, cur.offsetLeft - 24);
+    }
+  } catch(e){}
 
   /* soft travel: no internal link jumps straight */
   var fadeEl = document.createElement("div");

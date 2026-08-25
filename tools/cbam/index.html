@@ -530,9 +530,21 @@ footer a:hover{color:var(--fg)}
   .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
     padding-top:.5rem;padding-bottom:.15rem}
   .bar .home{white-space:nowrap;font-size:1rem}
-  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:wrap;
-    justify-content:flex-start;gap:clamp(.45rem,2.2vw,.9rem);row-gap:.1rem}
-  .bar nav a{font-size:.8rem;padding:.55rem 0}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:nowrap;
+    justify-content:flex-start;gap:clamp(.7rem,3.4vw,1.2rem);
+    overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    /* the last name fades rather than being cut, which is what says there
+       is more of it to the right */
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    padding-right:2.2rem}
+  .bar nav::-webkit-scrollbar{display:none}
+  .bar nav a{font-size:.8rem;padding:.55rem 0;flex:0 0 auto}
+  /* the name of the page you are on is brought into view on load, so a
+     reader arriving deep in the site is not looking at a row that starts
+     somewhere else */
+  .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
   /* the three languages take the right end of the name's own line: a third
      row of bar would eat a fifth of the screen */
   .bar .wrap{position:relative}
@@ -666,7 +678,7 @@ footer a:hover{color:var(--fg)}
           <div class="cb-lines" id="lines"></div>
         </fieldset>
         <div class="k-btnbar" style="margin-top:1rem">
-          <button type="button" class="k-btn" id="b-add" data-i="cb-024">Add line item</button>
+          <button type="button" class="k-btn k-btn-key" id="b-add" data-i="cb-024">Add line item</button>
           <button type="button" class="k-btn k-btn-quiet" id="b-example" data-i="cb-025">Load an example</button>
           <button type="button" class="k-btn k-btn-quiet" id="b-reset" data-i="cb-026">Clear all</button>
         </div>
@@ -708,7 +720,7 @@ footer a:hover{color:var(--fg)}
           plain statement of what is missing and who holds it where you do not. Column headings are written so
           that a procurement team can send the file to a supplier without editing it.</p>
           <div class="k-btnbar" style="margin-top:1rem">
-            <button type="button" class="k-btn k-btn-key" id="b-csv" data-i="cb-027">Download CSV</button>
+            <button type="button" class="k-btn" id="b-csv" data-i="cb-027">Download CSV</button>
             <button type="button" class="k-btn" id="b-csvcopy" data-i="cb-028">Copy table</button>
             <button type="button" class="k-btn" id="b-link" data-i="cb-029">Copy link to these inputs</button>
           </div>
@@ -2153,7 +2165,7 @@ var Kit = (function () {
       focusLastLine();
     });
 
-    Kit.qs("#b-example").addEventListener("click", function () {
+    function loadExample() {
       S.year = 2026;
       S.price = ETS_PRICE_INDICATIVE;
       S.lines = [
@@ -2164,7 +2176,13 @@ var Kit = (function () {
       Kit.qs("#f-year").value = String(S.year);
       Kit.qs("#f-price").value = String(S.price);
       render();
-    });
+    }
+    Kit.qs("#b-example").addEventListener("click", loadExample);
+    /* Nobody arrives at a form wanting to fill it in. The instrument opens
+       showing what it does: three line items, one of them missing its
+       supplier figure, which is the whole argument. A shared link still wins,
+       and Clear all empties it in one press. */
+    if (!restored) loadExample();
 
     Kit.qs("#b-reset").addEventListener("click", function () {
       S.year = 2026; S.price = ETS_PRICE_INDICATIVE; S.lines = [];
@@ -2287,6 +2305,15 @@ window.CHROME_I18N = {"tr": {"nx-sims": "Diğer simülasyonlar", "nx-essays": "D
   window.__t = function(k, fallback){ return fallback; };
   window.__relang = function(){ apply(window.__lang || "en"); };
   apply(lang);
+  /* the nav is one scrolling line on a phone, so the page you are on can
+     start off past its right edge. Bring it into view without moving the
+     page. The generated pages do the same. */
+  try {
+    var cur = document.querySelector(".bar nav a[aria-current]");
+    if (cur && cur.parentNode.scrollWidth > cur.parentNode.clientWidth) {
+      cur.parentNode.scrollLeft = Math.max(0, cur.offsetLeft - 24);
+    }
+  } catch(e){}
 })();
 
 </script>
