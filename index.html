@@ -3,6 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- The same policy every generated page carries; see the note beside it in
+     pagegen.py. connect-src is the one that matters: this page makes no
+     network call after the fonts load, and with the policy in place it
+     cannot start making one by accident. frame-ancestors is deliberately
+     absent: a meta tag cannot set it, and GitHub Pages cannot send a
+     header, so that protection is simply not available here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 <title>Kerem Özdemir</title>
 <meta name="description" content="Kerem Özdemir. Munich.">
 <meta name="author" content="Kerem Özdemir">
@@ -7705,6 +7712,32 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     var gr2 = wingR.getContext("2d"); gr2.scale(DPR, DPR);
     paintIstanbulWing(gl, wingW, H, H * 0.885, seasonCur, W, H);
     paintMunichWing(gr2, wingW, H, H * 0.885, seasonCur, W, H);
+    /* ---- where a city meets the meadow ----
+       Each wing used to end on a ruled vertical line: the Munich plain began
+       with a hard green edge and the Istanbul sea with a hard blue one, right
+       where the meadow stopped. Panning across it read as sliding one picture
+       over another rather than as travelling.
+
+       The edge that touches the meadow is dissolved instead. It is the far
+       end of each city, so what dissolves is only distance and haze, and the
+       ground the fade uncovers is the same soil the meadow stands on, laid
+       right across the world below. Istanbul is the left wing, so the edge
+       that faces the meadow is its right one; Munich is the right wing, so it
+       is its left. */
+    var FEATHER = Math.round(Math.min(190, wingW * 0.22));
+    [[gl, 1], [gr2, -1]].forEach(function (pair) {
+      var gg2 = pair[0], inner = pair[1];       // 1: fade the right edge
+      gg2.save();
+      gg2.globalCompositeOperation = "destination-out";
+      var x0 = inner === 1 ? wingW - FEATHER : FEATHER;
+      var fgr = gg2.createLinearGradient(x0, 0, inner === 1 ? wingW : 0, 0);
+      fgr.addColorStop(0, "rgba(0,0,0,0)");
+      fgr.addColorStop(0.55, "rgba(0,0,0,.55)");
+      fgr.addColorStop(1, "rgba(0,0,0,1)");
+      gg2.fillStyle = fgr;
+      gg2.fillRect(inner === 1 ? wingW - FEATHER : 0, 0, FEATHER, H);
+      gg2.restore();
+    });
     // night editions: the same picture, seen later
     wingLN = document.createElement("canvas");
     wingRN = document.createElement("canvas");
@@ -8091,10 +8124,20 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         ctx.arc(wvx - 5 - fcp * 17, eY2 - 6 + crl * 0.5 - Math.sin(fcp * Math.PI) * 3, 0.8 + fcp * 0.8, 0, 6.284);
         ctx.fill();
       }
-      // the surfer, 1.6x, crouched low with both arms out
+      /* ---- the surfer ----
+         He was a black stick figure while every other person in this film
+         has skin, hair and clothes, and next to them he read as a hole in
+         the picture rather than as a man. He is drawn properly now. The suit
+         stays dark because that is what he would really be wearing: the
+         Eisbach runs at about eight degrees in winter and the people on that
+         wave are in neoprene all year. So: a wetsuit with a seam and a
+         lighter panel down the flank, bare hands and a bare head, and wet
+         hair. The head is the tell. A face-sized patch of skin is the whole
+         difference between a person and a silhouette. */
       ctx.save();
       ctx.translate(wvx + 5, eY2 - 4 + sbob * 0.5);
       ctx.rotate(slean - 0.05);
+      var suit = "#26303a", suitLit = "#3c4a56", surfSkin = "#d4ab82";
       ctx.fillStyle = "rgba(238,232,214,.95)";                    // board, nose lifted
       ctx.beginPath();
       ctx.moveTo(-14, 2.2);
@@ -8103,26 +8146,69 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       ctx.quadraticCurveTo(9.5, -0.4, 3, 0);
       ctx.quadraticCurveTo(-6, 0.6, -14, 2.2);
       ctx.closePath(); ctx.fill();
-      ctx.strokeStyle = "rgba(120,104,80,.5)"; ctx.lineWidth = 0.8;
-      ctx.beginPath(); ctx.moveTo(-11.5, 2); ctx.quadraticCurveTo(0, 2.4, 12, -2.2); ctx.stroke();
+      /* a stripe down the deck and a fin behind: the board was a blank
+         lozenge, and a blank lozenge is a shoe sole, not a surfboard */
+      ctx.strokeStyle = "rgba(150,60,40,.45)"; ctx.lineWidth = 1.1;
+      ctx.beginPath(); ctx.moveTo(-11.5, 2); ctx.quadraticCurveTo(0, 2.2, 12, -2.4); ctx.stroke();
+      ctx.fillStyle = "rgba(214,206,188,.9)";
+      ctx.beginPath();
+      ctx.moveTo(-12.5, 2.3); ctx.lineTo(-14.5, 5.4); ctx.lineTo(-10, 2.9);
+      ctx.closePath(); ctx.fill();
+
       // legs: wide stance, knees truly bent, weight low
-      ctx.strokeStyle = "#2b2620"; ctx.lineWidth = 3; ctx.lineCap = "round";
+      ctx.strokeStyle = suit; ctx.lineWidth = 3.2; ctx.lineCap = "round";
       ctx.beginPath(); ctx.moveTo(-7, 1.2); ctx.lineTo(-5, -4.5); ctx.lineTo(-1.2, -7.2); ctx.stroke();  // back leg
       ctx.beginPath(); ctx.moveTo(4.5, 0.6); ctx.lineTo(4.2, -5); ctx.lineTo(-0.2, -7.4); ctx.stroke();  // front leg
-      // shoes flat on the deck
-      ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(-8.6, 1.4); ctx.lineTo(-5.2, 1.1); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(2.9, 0.9); ctx.lineTo(6.3, 0.5); ctx.stroke();
-      // torso: folded forward over the front knee
-      ctx.strokeStyle = "#2b2620"; ctx.lineWidth = 4.4;
-      ctx.beginPath(); ctx.moveTo(-0.8, -7.2); ctx.quadraticCurveTo(0.6, -10.5, 2.6, -13); ctx.stroke();
-      // both arms out for balance, palms open to the river
-      ctx.strokeStyle = "#2b2620"; ctx.lineWidth = 2.2;
-      ctx.beginPath(); ctx.moveTo(0.6, -11.5); ctx.lineTo(-5.5, -13.5 + sbob * 0.7); ctx.lineTo(-10.5, -12.8 + sbob); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(1.6, -12); ctx.lineTo(8, -14.5 - sbob * 0.7); ctx.lineTo(12.6, -13.8 - sbob); ctx.stroke();
-      // head, watching the nose
-      ctx.fillStyle = "#2b2620";
-      ctx.beginPath(); ctx.arc(4.4, -15.8, 2.8, 0, 6.284); ctx.fill();
+      // the panel down the outside of the near leg
+      ctx.strokeStyle = suitLit; ctx.lineWidth = 0.9;
+      ctx.beginPath(); ctx.moveTo(5.4, 0.4); ctx.lineTo(5.2, -5.1); ctx.stroke();
+      // booties, flat on the deck
+      ctx.strokeStyle = "#1a2028"; ctx.lineWidth = 2.2; 
+      ctx.beginPath(); ctx.moveTo(-8.8, 1.4); ctx.lineTo(-5.0, 1.1); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(2.7, 0.9); ctx.lineTo(6.5, 0.5); ctx.stroke();
+
+      /* torso: a shape rather than a line, so the suit has a body in it and
+         the shoulders are wider than the waist */
+      ctx.fillStyle = suit;
+      ctx.beginPath();
+      ctx.moveTo(-2.6, -6.8);
+      ctx.quadraticCurveTo(-1.6, -10.4, 0.2, -13.2);
+      ctx.lineTo(4.6, -12.4);
+      ctx.quadraticCurveTo(3.4, -9.6, 2.0, -6.2);
+      ctx.closePath(); ctx.fill();
+      // the light down his flank, from the sky he is leaning into
+      ctx.fillStyle = suitLit;
+      ctx.beginPath();
+      ctx.moveTo(2.2, -6.4);
+      ctx.quadraticCurveTo(3.5, -9.6, 4.6, -12.4);
+      ctx.lineTo(3.2, -12.2);
+      ctx.quadraticCurveTo(2.2, -9.4, 0.9, -6.3);
+      ctx.closePath(); ctx.fill();
+      // the zip seam across the shoulders
+      ctx.strokeStyle = "rgba(160,178,192,.5)"; ctx.lineWidth = 0.7;
+      ctx.beginPath(); ctx.moveTo(-0.2, -12.4); ctx.lineTo(4.2, -11.6); ctx.stroke();
+
+      // both arms out for balance, in the sleeve, bare from the wrist
+      ctx.strokeStyle = suit; ctx.lineWidth = 2.4; ctx.lineCap = "round";
+      var aLx = -5.5, aLy = -13.5 + sbob * 0.7, aLx2 = -10.5, aLy2 = -12.8 + sbob;
+      var aRx = 8, aRy = -14.5 - sbob * 0.7, aRx2 = 12.6, aRy2 = -13.8 - sbob;
+      ctx.beginPath(); ctx.moveTo(0.6, -11.5); ctx.lineTo(aLx, aLy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(1.6, -12); ctx.lineTo(aRx, aRy); ctx.stroke();
+      ctx.strokeStyle = surfSkin; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(aLx, aLy); ctx.lineTo(aLx2, aLy2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(aRx, aRy); ctx.lineTo(aRx2, aRy2); ctx.stroke();
+
+      // neck, head and wet hair, watching the nose of the board
+      ctx.strokeStyle = surfSkin; ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.moveTo(2.4, -13.0); ctx.lineTo(3.6, -14.2); ctx.stroke();
+      ctx.fillStyle = surfSkin;
+      ctx.beginPath(); ctx.arc(4.4, -15.8, 2.9, 0, 6.284); ctx.fill();
+      /* hair, pushed back and flat: nobody on that wave has dry hair */
+      ctx.fillStyle = "#241a12";
+      ctx.beginPath();
+      ctx.arc(4.4, -15.8, 2.9, Math.PI * 1.05, Math.PI * 2.15);
+      ctx.quadraticCurveTo(1.2, -16.6, 1.6, -15.2);
+      ctx.closePath(); ctx.fill();
       ctx.restore();
       // spray kicked off the tail, drifting downstream
       ctx.fillStyle = "rgba(230,236,230,.55)";
@@ -8352,18 +8438,27 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
        so a fill written here in local coordinates began at the middle of the
        screen: the deep sky ended up under the horizon instead of over the
        head, and its top edge drew a hard line straight across the picture.
-       The transform is set aside for the length of the fill. */
-    var zTop = [(SKY_NOW.top[0] * 0.54 + 128 * 0.46) | 0,
-                (SKY_NOW.top[1] * 0.54 + 150 * 0.46) | 0,
-                (SKY_NOW.top[2] * 0.54 + 186 * 0.46) | 0];
+       The transform is set aside for the length of the fill.
+
+       The zenith is not a fixed blue laid over the sky. Mixing a warm
+       daylight sky toward a cool constant cancels to grey, which is what the
+       room used to look like, and at night the same constant lifted the dark
+       back up into blue-grey. So the deep sky is derived from the sky that is
+       already there: the same colour, darkened, with the red end pulled down
+       harder than the blue. That reads as altitude in daylight and as depth
+       after dark, from one rule. */
+    var zTop = [(SKY_NOW.top[0] * 0.72) | 0,
+                (SKY_NOW.top[1] * 0.80) | 0,
+                (SKY_NOW.top[2] * 0.94) | 0];
     ctx.save();
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    var zg2 = ctx.createLinearGradient(0, 0, 0, H * 0.62);
-    zg2.addColorStop(0, rgb(zTop, 0.62 * gSkyS));
-    zg2.addColorStop(0.55, rgb(zTop, 0.20 * gSkyS));
+    var zg2 = ctx.createLinearGradient(0, 0, 0, H * 0.80);
+    zg2.addColorStop(0, rgb(zTop, 0.85 * gSkyS));
+    zg2.addColorStop(0.35, rgb(zTop, 0.52 * gSkyS));
+    zg2.addColorStop(0.70, rgb(zTop, 0.18 * gSkyS));
     zg2.addColorStop(1, rgb(zTop, 0));
     ctx.fillStyle = zg2;
-    ctx.fillRect(0, 0, W, H * 0.62);
+    ctx.fillRect(0, 0, W, H * 0.80);
     ctx.restore();
     ctx.save();
     ctx.translate(0, -H * SKY_RISE);
@@ -8916,6 +9011,19 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       }
     }
     ctx.save();
+
+    /* One ground, the whole width of the world. The meadow's own soil is a
+       canvas exactly as wide as the screen, so beyond its two edges there was
+       nothing at all, and the cities had to draw their own floor and butt it
+       against this one. The soil is laid across everything first; the meadow
+       and the two cities then paint their surfaces on top of it, and where a
+       city dissolves into the meadow the same earth is underneath both. */
+    var soilG9 = ctx.createLinearGradient(0, H * 0.885, 0, H * 0.885 + H * 1.25);
+    soilG9.addColorStop(0, "#2c2115");
+    soilG9.addColorStop(0.5, "#221a10");
+    soilG9.addColorStop(1, "#17110a");
+    ctx.fillStyle = soilG9;
+    ctx.fillRect(-wingW - 80, H * 0.885, W + wingW * 2 + 160, H * 1.25);
 
     // ground: real soil from the first frame, so the descent has nowhere to jump
     ctx.drawImage(rootCanvas, 0, H * 0.885, W, H * 1.25);
@@ -9650,8 +9758,13 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
 
       cc.save();
       cc.globalCompositeOperation = "source-atop";
+      /* The light on a cloud has a temperature, and that is most of what
+         makes one read as water rather than as smoke: the crown carries the
+         warmth of the sun, the underside carries the cold blue of the sky it
+         is turned away from. Both were neutral greys here, which is why the
+         old clouds looked like smudges at any size. */
       /* the crown the sun is on */
-      cc.fillStyle = "rgba(255,254,250,.85)";
+      cc.fillStyle = "rgba(255,251,238,.88)";
       lobes.forEach(function (L) {
         cc.beginPath();
         cc.ellipse(L[0] - L[2] * 0.12, L[1] - L[2] * 0.34, L[2] * 0.70, L[2] * 0.40, 0, 0, 6.284);
@@ -9659,16 +9772,16 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       });
       /* the shaded underside, because the light is coming from above */
       var ug = cc.createLinearGradient(0, CLOUD_BASE - 62, 0, CLOUD_BASE - 2);
-      ug.addColorStop(0, "rgba(206,200,192,0)");
-      ug.addColorStop(1, "rgba(188,180,172,.75)");
+      ug.addColorStop(0, "rgba(186,192,204,0)");
+      ug.addColorStop(1, "rgba(170,178,194,.72)");
       cc.fillStyle = ug;
       cc.fillRect(0, CLOUD_BASE - 62, CLOUD_W, 62);
       /* one turn of shade under each lobe, so the lumps have volume */
       lobes.forEach(function (L) {
         var sx9 = L[0] + L[2] * 0.2, sy9 = L[1] + L[2] * 0.5;
         var lg = cc.createRadialGradient(sx9, sy9, 0, sx9, sy9, L[2] * 1.1);
-        lg.addColorStop(0, "rgba(196,188,180,.30)");
-        lg.addColorStop(1, "rgba(196,188,180,0)");
+        lg.addColorStop(0, "rgba(178,186,200,.32)");
+        lg.addColorStop(1, "rgba(178,186,200,0)");
         cc.fillStyle = lg;
         cc.beginPath(); cc.arc(sx9, sy9, L[2] * 1.1, 0, 6.284); cc.fill();
       });
@@ -9860,7 +9973,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
      s: which stratum (0 nearest the surface) · k: how it is drawn
      n: its name · yr: the year, or what stands in for one
      a, b: what he did, and what came of it · h: the page it opens */
-  var MUSE = [];                       // where the twelve were last drawn
+  var MUSE = [];                       // where the thirteen were last drawn
   var DOORS = { t: 0, b: 0, h: 0 };    // where the four door cards stand
   var STRATA = ["Won", "Made", "Lived"];
   var MUSEUM = [
@@ -9874,7 +9987,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       b: "It carried on to a semi final at YTU Entrepreneurship." },
     { s: 0, k: "plate", h: "profile.html",
       n: "Market expansion study", yr: "Microbify, 2025",
-      a: "A market expansion study written for Microbify, in Straubing.",
+      a: "A market expansion study for Microbify in Straubing, written as a TUM project study.",
       b: "It came back graded 1.0. Nothing else about it needs saying." },
     { s: 0, k: "scrolls", h: "profile.html",
       n: "Certificates", yr: "2024 to 2026",
@@ -12895,7 +13008,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       "Each of the five is a canvas you drive. Every one of them cites the paper it came from, says which of its numbers you set and which it worked out, and ends by saying what it does not show. They are demonstrations of mechanisms and none of them is evidence about people.",
       "Game Theory holds six games: The Long Game, The Stag Hunt, The Ultimatum, The Commons, The Beauty Contest and Matching Pennies. Each is a situation people are actually in, written in as few numbers as it takes. Four more are named there and not built yet, because a plan nobody can see is not a plan.",
       "None of the games is evidence about people. Every opponent in them is a short rule written by hand, and each one ends by saying what it left out.",
-      "Projects carries a case study for each of the five instruments behind it. Notes carries the first note on SIMEA and the five simulations that go with it, and a guestbook anyone can write in."
+      "Projects carries a case study for each of the five instruments behind it. Notes carries the first note on SIMEA and the five simulations that go with it, and a guestbook anyone can write in, where the notes I have read appear."
     ] },
     { h: "The controls", ps: [
       "The dial in the bottom left corner changes the season, regrows the tree and calls the rain, as described above.",

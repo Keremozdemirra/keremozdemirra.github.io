@@ -8,6 +8,10 @@
 <meta name="author" content="Kerem Özdemir">
 <meta name="color-scheme" content="light">
 <link rel="stylesheet" href="../../fonts/fonts.css">
+<!-- The same policy the generated pages carry. See the note beside it in
+     _HEAD: connect-src 'none' is what turns each instrument's promise that
+     nothing you type leaves the page into something the browser enforces. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 <link rel="canonical" href="https://keremozdemir.de/tools/werkstudent/">
 <meta property="og:title" content="Werkstudent">
 <meta property="og:type" content="website">
@@ -838,7 +842,11 @@ var Kit = (function () {
   }
   function pct(v, dp) {
     if (v === null || v === undefined || !isFinite(v)) return na();
-    return num(v * 100, dp === undefined ? 1 : dp) + " %";
+    var np = num(v * 100, dp === undefined ? 1 : dp);
+    /* Turkish writes the sign in front of the number and closed up,
+       German and English behind it with a space. The chrome already
+       encodes this rule for the simulations; this is the same rule. */
+    return (window.__lang === "tr") ? "%" + np : np + " %";
   }
   function toNum(raw) {
     if (raw === null || raw === undefined) return null;
@@ -976,7 +984,12 @@ var Kit = (function () {
     var kids = [];
     if (src.what) kids.push(el("span", { text: src.what }));
     if (src.url) kids.push(el("a", { href: src.url, rel: "noreferrer noopener", target: "_blank", text: src.label || src.url }));
-    if (src.checked) kids.push(el("span", { class: "k-checked", text: "checked " + src.checked }));
+    if (src.checked) {
+      /* the word in front of the date belongs to the reader's language:
+         it was printed in English under every number on every instrument */
+      var ck = window.__t ? window.__t("kit-checked", "checked") : "checked";
+      kids.push(el("span", { class: "k-checked", text: ck + " " + src.checked }));
+    }
     return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
   }
 
@@ -1005,7 +1018,7 @@ var Kit = (function () {
   var TAX_YEAR = 2026;
 
   /* Some of these figures have a date on them from the day they are set.
-     The student health insurance contribution is worked out on the BAfoeG
+     The student health insurance contribution is worked out on the BAf\u00f6G
      rate, and that rate is due to move for the winter semester, so the
      number below stops being right at the end of September 2026. Rather
      than let a reader find that out from their own payslip, the page says
@@ -1071,7 +1084,7 @@ var Kit = (function () {
   var SOLI_FREIGRENZE = 20350;
 
   /* CONSTANT: church tax, 8 percent of the income tax in Bavaria and
-     Baden Wuerttemberg, 9 percent in every other federal state.
+     Baden-W\u00fcrttemberg, 9 percent in every other federal state.
      Source: https://www.kirchenfinanzen.de/kirchensteuer/kirchensteuerhebesatz.html
      Checked 2026 08 21. Current. */
   var KIRCHE_RATES = [0, 0.08, 0.09];
@@ -1079,8 +1092,8 @@ var Kit = (function () {
   /* CONSTANT: minimum wage 13.90 EUR an hour from 1 January 2026, and the
      minijob earnings limit that is tied to it, 603 EUR a month and 7 236
      EUR a year.
-     Source: Deutsche Rentenversicherung Baden Wuerttemberg,
-       https://www.deutsche-rentenversicherung.de/BadenWuerttemberg/DE/Presse/Pressemitteilungen/2025/251222_Minijob
+     Source: Deutsche Rentenversicherung Baden-W\u00fcrttemberg,
+       https://www.deutsche-rentenversicherung.de/BadenWürttemberg/DE/Presse/Pressemitteilungen/2025/251222_Minijob
        and the Minijob Zentrale,
        https://www.minijob-zentrale.de/DE/die-minijobs/minijob-mit-verdienstgrenze
      Checked 2026 08 21. Applies to 2026. */
@@ -1150,7 +1163,7 @@ var Kit = (function () {
   var WERK_HOURS = 20, WERK_WEEKS = 26, WERK_DAYS = 182;
 
   /* CONSTANT: student health insurance. The contribution is worked out on
-     the BAfoeG rate of 855 EUR a month. Health insurance is 10.22 percent
+     the BAf\u00f6G rate of 855 EUR a month. Health insurance is 10.22 percent
      of it, 87.38 EUR, plus the supplementary rate each fund sets for
      itself. The average supplementary rate for 2026 is 2.9 percent.
      Nursing insurance is 3.6 percent, 30.78 EUR, and 4.2 percent, 35.91
@@ -1178,7 +1191,7 @@ var Kit = (function () {
   /* CONSTANT: broadcasting fee 18.36 EUR a month for each flat, however
      many people live in it. One person in a shared flat pays for all. A
      room in a hall of residence reached from a public corridor counts as a
-     flat of its own. Students on BAfoeG can apply to be released.
+     flat of its own. Students on BAf\u00f6G can apply to be released.
      Source: https://www.rundfunkbeitrag.de/buergerinnen_und_buerger/informationen/index_ger.html
      Checked 2026 08 21. Current. */
   var RUNDFUNK = 18.36;
@@ -1187,7 +1200,7 @@ var Kit = (function () {
      is 226.80 EUR a semester, from the winter semester 2026 and 2027. In
      the summer semester 2026 it was 34.80 EUR a month, 208.80 a semester.
      Source: VRR, https://www.vrr.de/tickets-tarife/deutschlandticket/semesterticket/
-       and the fee table of TH Koeln, which prints 226.80 for the winter
+       and the fee table of TH K\u00f6ln, which prints 226.80 for the winter
        semester 2026 and 2027,
        https://www.th-koeln.de/studium/beitraege-und-gebuehren_5343.php
      Checked 2026 08 21. Applies to the winter semester 2026 and 2027. */
@@ -1205,7 +1218,7 @@ var Kit = (function () {
      CONSTANT: semester fee. Munich, 97 EUR from the summer semester 2026,
        source https://www.studierendenwerk-muenchen-oberbayern.de/ueber-uns/studierendenwerksbeitrag/
        Munich carries no compulsory transport ticket in the fee.
-     Cologne, 352.70 EUR at TH Koeln for the winter semester 2026 and 2027,
+     Cologne, 352.70 EUR at TH K\u00f6ln for the winter semester 2026 and 2027,
        of which 226.80 is the Deutschlandsemesterticket,
        source https://www.th-koeln.de/studium/beitraege-und-gebuehren_5343.php
      For the other four towns no fee was verified, so the field is left
@@ -1240,7 +1253,7 @@ var Kit = (function () {
      Checked 2026 08 21. Current.
 
      CONSTANT: the tax identification number is sent by post by the
-     Bundeszentralamt fuer Steuern once the registration office has passed
+     Bundeszentralamt f\u00fcr Steuern once the registration office has passed
      on the data. On a first registration in Germany it takes four to eight
      weeks. After three months with nothing, write to the office.
      Source: https://www.hamburg.de/service/info/11266790/
@@ -1285,11 +1298,11 @@ en: {
 "t-const":"Constants","t-unknown":"What this tool could not verify",
 "p-unknown":"These figures were not written into the code. Where the tool needs one it shows an empty field and says where to find the answer.",
 "f-disc":"This is an estimate for orientation. It is not tax, legal or immigration advice.",
-"f-disc2":"A payroll office runs a longer official procedure than the one printed here, so your payslip can differ by a few euro. The answer that counts comes from the Auslaenderbehoerde for anything about your permit, from the Finanzamt for anything about tax, and from your own insurer for anything about contributions. Ask them before you act on this page.",
+"f-disc2":"A payroll office runs a longer official procedure than the one printed here, so your payslip can differ by a few euro. The answer that counts comes from the Ausl\u00e4nderbeh\u00f6rde for anything about your permit, from the Finanzamt for anything about tax, and from your own insurer for anything about contributions. Ask them before you act on this page.",
 "f-priv":"Runs entirely in your browser. Nothing you type leaves this page. No server, no database, no analytics and no network call after the fonts have loaded, so it works offline once the page is cached. Your checklist and your figures are kept in this browser only, in local storage, and you can clear them at any time.",
 "f-by":"Built by","f-tum":"TUM, Munich.",
 "cls":"Class","cls-hint-1":"single, one job","cls-hint-2":"single parent","cls-hint-3":"married, higher earner","cls-hint-4":"married, similar earnings","cls-hint-5":"married, lower earner","cls-hint-6":"second job",
-"ch-none":"None","ch-8":"8 percent, Bavaria or Baden Wuerttemberg","ch-9":"9 percent, every other state",
+"ch-none":"None","ch-8":"8 percent, Bavaria or Baden-W\u00fcrttemberg","ch-9":"9 percent, every other state",
 "empty-pay":"Enter a gross monthly figure above. The arithmetic appears here, one line at a time.",
 "kind-mini":"This is a minijob","kind-werk":"This is a regular working student job",
 "kind-mini-p":"Your pay stays at or under the 2026 minijob limit of 603 EUR a month. A minijob is taxed and insured differently from any other job, so the lines below are not the ordinary ones.",
@@ -1346,7 +1359,7 @@ en: {
 "lim-a-p":"A student from outside the European Union may work 140 full days or 280 half days in a calendar year, unless your own permit says otherwise. A day of up to four hours counts as a half day. Student assistant work at your own university does not count against this, but you still have to tell the Ausländerbehörde about it.",
 "lim-a-full":"Full days already worked","lim-a-half":"Half days already worked",
 "lim-a-used":"Used, counted in full days","lim-a-left":"Full days left","lim-a-budget":"Yearly budget",
-"lim-a-risk":"If you cross it: you have worked without permission and your residence permit is at risk, so ask the Auslaenderbehoerde before, not after.",
+"lim-a-risk":"If you cross it: you have worked without permission and your residence permit is at risk, so ask the Ausl\u00e4nderbeh\u00f6rde before, not after.",
 "lim-b-h":"Hours a week, the insurance rule",
 "lim-b-p":"Up to 20 hours a week in the lecture period keeps the exemption from health, nursing and unemployment insurance. In the semester break you may work more than twenty hours, but those weeks still count against the twenty six. Outside the break more than 20 hours is only allowed in the evening, at night or at the weekend, and all such stretches together must stay under 26 weeks in twelve months.",
 "lim-b-now":"Your hours a week now","lim-b-weeks":"Weeks over 20 hours used this year",
@@ -1379,10 +1392,10 @@ en: {
 "tk1":"Register your address at the city office","tk1n":"Passport, the confirmation from whoever gave you the flat, and the tenancy papers.","tk1t":"Two weeks from moving in. The appointment itself is free and short, but a slot can be weeks away, so book it the day you have an address.","tk1w":"Almost everything else asks for the registration certificate. Nothing moves before this.",
 "tk2":"Open a bank account","tk2n":"Passport, the registration certificate, and your enrolment or admission letter.","tk2t":"Same day online, up to two weeks for a branch appointment.","tk2w":"Your employer, your landlord and your university all pay or collect by transfer.",
 "tk3":"Take out health insurance","tk3n":"Passport, registration certificate, admission letter, and your date of birth for the student rate.","tk3t":"A few days. The fund sends the university an electronic notice.","tk3w":"You cannot enrol without it, and the student rate ends at 30.",
-"tk4":"Wait for the tax identification number","tk4n":"Nothing. It comes by post once the city has passed your data on.","tk4t":"Four to eight weeks on a first registration. After three months with nothing, write to the Bundeszentralamt fuer Steuern.","tk4w":"Until it arrives, if the delay is not your fault, your employer may tax you at your likely class for up to three calendar months. After that it is class 6, the harshest one, and it is applied back to the start.",
+"tk4":"Wait for the tax identification number","tk4n":"Nothing. It comes by post once the city has passed your data on.","tk4t":"Four to eight weeks on a first registration. After three months with nothing, write to the Bundeszentralamt f\u00fcr Steuern.","tk4w":"Until it arrives, if the delay is not your fault, your employer may tax you at your likely class for up to three calendar months. After that it is class 6, the harshest one, and it is applied back to the start.",
 "tk5":"Book the residence permit appointment","tk5n":"Passport, visa, registration certificate, enrolment certificate, proof of health insurance, proof of money, a biometric photo.","tk5t":"Book as early as your city allows. Waiting times of two or three months are ordinary.","tk5w":"The permit has to be in hand before the visa runs out. The office decides, not the university.",
 "tk6":"Enrol at the university","tk6n":"Admission letter, the electronic notice from your health fund, the paid semester fee, passport.","tk6t":"Within the enrolment window your university sets. Missing it costs a semester.","tk6w":"The enrolment certificate is what proves you are a student to every other office.",
-"tk7":"Register for the broadcasting fee","tk7n":"Your address and the date you moved in.","tk7t":"Fifteen minutes online.","tk7w":"It is due for the flat whether or not you own a television. In a shared flat only one person pays, so agree who, and if you are on BAfoeG you can apply to be released.",
+"tk7":"Register for the broadcasting fee","tk7n":"Your address and the date you moved in.","tk7t":"Fifteen minutes online.","tk7w":"It is due for the flat whether or not you own a television. In a shared flat only one person pays, so agree who, and if you are on BAf\u00f6G you can apply to be released.",
 "cn-val":"Value","cn-what":"What it is","cn-src":"Source","cn-year":"Applies to","cn-checked":"Checked",
 "un-1":"Semester fee outside Munich and Cologne","un-1v":"University pages block automated reading, so only two were confirmed. The comparison leaves the field empty for you.",
 "un-2":"Food per month","un-2v":"No official per city figure was found. Enter your own. Your Studierendenwerk publishes canteen prices, which is a good starting point.",
@@ -1391,8 +1404,8 @@ en: {
 "un-5":"Income tax in classes 5 and 6","un-5v":"The special formula for those classes uses 2026 thresholds this tool could not confirm, so it prints nothing there.",
 "unit-net":"EUR net for the month",
 "no-net":"No net figure is printed, because the income tax for this class was not computed.",
-"fee-muenchen":"Studierendenwerk Muenchen Oberbayern, summer semester 2026",
-"fee-koeln":"TH Koeln, winter semester 2026 and 2027",
+"fee-muenchen":"Studierendenwerk M\u00fcnchen Oberbayern, summer semester 2026",
+"fee-koeln":"TH K\u00f6ln, winter semester 2026 and 2027",
 "cmp-plus":"A plus sign on a total means at least one line is still empty, so the real figure is higher.",
 "un-6":"Solidarity surcharge above the threshold","un-6v":"The tapering rate just above 20 350 EUR of yearly tax could not be confirmed for 2026. Below the threshold the surcharge is zero, which is where a working student sits."
 },
@@ -1421,11 +1434,11 @@ tr: {
 "t-const":"Sabitler","t-unknown":"Bu aracın doğrulayamadıkları",
 "p-unknown":"Bu sayılar koda yazılmadı. Araç birine ihtiyaç duyduğunda boş bir alan gösterir ve cevabın nerede bulunacağını söyler.",
 "f-disc":"Bu yön bulmak için bir tahmindir. Vergi, hukuk veya göçmenlik danışmanlığı değildir.",
-"f-disc2":"Bir bordro servisi burada yazılandan daha uzun bir resmî yöntem uygular, dolayısıyla maaş bordronuz birkaç euro farklı çıkabilir. Bağlayıcı cevap izinle ilgili her şeyde Auslaenderbehoerde'den, vergiyle ilgili her şeyde Finanzamt'tan, primlerle ilgili her şeyde kendi sigortanızdan gelir. Bu sayfaya göre hareket etmeden önce onlara sorun.",
+"f-disc2":"Bir bordro servisi burada yazılandan daha uzun bir resmî yöntem uygular, dolayısıyla maaş bordronuz birkaç euro farklı çıkabilir. Bağlayıcı cevap izinle ilgili her şeyde Ausl\u00e4nderbeh\u00f6rde'den, vergiyle ilgili her şeyde Finanzamt'tan, primlerle ilgili her şeyde kendi sigortanızdan gelir. Bu sayfaya göre hareket etmeden önce onlara sorun.",
 "f-priv":"Tamamen tarayıcınızda çalışır. Yazdığınız hiçbir şey bu sayfadan çıkmaz. Sunucu yok, veritabanı yok, ölçüm yok ve yazı tipleri yüklendikten sonra ağ isteği yok, yani sayfa bir kez önbelleğe alındıktan sonra çevrimdışı çalışır. Listeniz ve sayılarınız yalnızca bu tarayıcıda, yerel depolamada tutulur ve istediğiniz an silebilirsiniz.",
 "f-by":"Yapan","f-tum":"TUM, Münih.",
 "cls":"Sınıf","cls-hint-1":"bekâr, tek iş","cls-hint-2":"tek ebeveyn","cls-hint-3":"evli, yüksek kazanan","cls-hint-4":"evli, benzer kazanç","cls-hint-5":"evli, düşük kazanan","cls-hint-6":"ikinci iş",
-"ch-none":"Yok","ch-8":"yüzde 8, Bavyera veya Baden Wuerttemberg","ch-9":"yüzde 9, diğer bütün eyaletler",
+"ch-none":"Yok","ch-8":"yüzde 8, Bavyera veya Baden-W\u00fcrttemberg","ch-9":"yüzde 9, diğer bütün eyaletler",
 "empty-pay":"Yukarıya aylık brüt bir tutar girin. Hesap burada satır satır belirir.",
 "kind-mini":"Bu bir minijob","kind-werk":"Bu normal bir Werkstudent işi",
 "kind-mini-p":"Ücretiniz 2026 minijob sınırı olan aylık 603 EUR'nun altında veya tam üzerinde. Minijob başka her işten farklı vergilendirilir ve sigortalanır, bu yüzden aşağıdaki satırlar olağan satırlar değildir.",
@@ -1482,7 +1495,7 @@ tr: {
 "lim-a-p":"Avrupa Birliği dışından bir öğrenci yılda takvim yılında 140 tam gün veya 280 yarım gün çalışabilir; kendi izninizde başka yazmıyorsa. Dört saate kadar süren bir gün yarım gün sayılır. Kendi üniversitenizdeki öğrenci asistanlığı bu hesaba girmez, ama yine de Ausländerbehörde'ye bildirilmesi gerekir.",
 "lim-a-full":"Çalışılmış tam gün","lim-a-half":"Çalışılmış yarım gün",
 "lim-a-used":"Kullanılan, tam gün cinsinden","lim-a-left":"Kalan tam gün","lim-a-budget":"Yıllık bütçe",
-"lim-a-risk":"Aşarsanız: izinsiz çalışmış olursunuz ve oturma izniniz tehlikeye girer, bu yüzden Auslaenderbehoerde'ye sonradan değil önceden sorun.",
+"lim-a-risk":"Aşarsanız: izinsiz çalışmış olursunuz ve oturma izniniz tehlikeye girer, bu yüzden Ausl\u00e4nderbeh\u00f6rde'ye sonradan değil önceden sorun.",
 "lim-b-h":"Haftalık saat, sigorta kuralı",
 "lim-b-p":"Ders döneminde haftada 20 saate kadar çalışmak sağlık, bakım ve işsizlik sigortası muafiyetini korur. Sömestir tatilinde yirmi saatin üzerinde çalışabilirsiniz, ama o haftalar da 26 haftalık bütçeden düşer. Tatil dışında 20 saatin üzeri yalnızca akşam, gece veya hafta sonu çalışılırsa mümkündür ve bütün bu dönemler toplamda on iki ayda 26 haftayı geçmemelidir.",
 "lim-b-now":"Şu anki haftalık saatiniz","lim-b-weeks":"Bu yıl 20 saati aşan hafta sayısı",
@@ -1515,10 +1528,10 @@ tr: {
 "tk1":"Şehir dairesinde adres kaydı","tk1n":"Pasaport, evi veren kişiden alınan onay ve kira evrakı.","tk1t":"Taşındıktan sonra iki hafta. Randevunun kendisi ücretsiz ve kısadır, ama boş yer haftalar sonrasına düşebilir, o yüzden adresiniz olduğu gün randevu alın.","tk1w":"Neredeyse her şey kayıt belgesini ister. Bundan önce hiçbir şey ilerlemez.",
 "tk2":"Banka hesabı açmak","tk2n":"Pasaport, kayıt belgesi ve kabul veya kayıt mektubu.","tk2t":"Çevrimiçi aynı gün, şube randevusu için iki haftaya kadar.","tk2w":"İşvereniniz, ev sahibiniz ve üniversiteniz havaleyle öder veya tahsil eder.",
 "tk3":"Sağlık sigortası yaptırmak","tk3n":"Pasaport, kayıt belgesi, kabul mektubu ve öğrenci tarifesi için doğum tarihiniz.","tk3t":"Birkaç gün. Sandık üniversiteye elektronik bildirim gönderir.","tk3w":"Onsuz kayıt yaptıramazsınız ve öğrenci tarifesi 30 yaşında biter.",
-"tk4":"Vergi kimlik numarasını beklemek","tk4n":"Hiçbir şey. Şehir verilerinizi ilettikten sonra posta ile gelir.","tk4t":"İlk kayıtta dört ila sekiz hafta. Üç ay geçip gelmediyse Bundeszentralamt fuer Steuern'e yazın.","f-forget":"Yazdığım her şeyi unut","f-tum":"TUM öğrencisi. Kişisel bir proje; Münih Teknik Üniversitesi ile bağlantılı değil ve onun tarafından desteklenmiyor.","f-stale":"Bu sayfadaki bir rakam, doğru bilindiği tarihi geçti: öğrenci sağlık sigortası katkısı BAföG oranı üzerinden hesaplanıyor ve o oran kış dönemiyle birlikte değişiyor. Sağlık sigortası satırına güvenmeden önce güncel oranı kendi sigortandan teyit et.","tk4w":"Gelene kadar, gecikme sizin kusurunuz değilse, işvereniniz sizi en fazla üç takvim ayı boyunca muhtemel sınıfınıza göre vergilendirebilir. Ondan sonrası en ağır sınıf olan 6. sınıftır ve geriye dönük uygulanır.",
+"tk4":"Vergi kimlik numarasını beklemek","tk4n":"Hiçbir şey. Şehir verilerinizi ilettikten sonra posta ile gelir.","tk4t":"İlk kayıtta dört ila sekiz hafta. Üç ay geçip gelmediyse Bundeszentralamt f\u00fcr Steuern'e yazın.","f-forget":"Yazdığım her şeyi unut","f-tum":"TUM öğrencisi. Kişisel bir proje; Münih Teknik Üniversitesi ile bağlantılı değil ve onun tarafından desteklenmiyor.","f-stale":"Bu sayfadaki bir rakam, doğru bilindiği tarihi geçti: öğrenci sağlık sigortası katkısı BAföG oranı üzerinden hesaplanıyor ve o oran kış dönemiyle birlikte değişiyor. Sağlık sigortası satırına güvenmeden önce güncel oranı kendi sigortanızdan teyit edin.","tk4w":"Gelene kadar, gecikme sizin kusurunuz değilse, işvereniniz sizi en fazla üç takvim ayı boyunca muhtemel sınıfınıza göre vergilendirebilir. Ondan sonrası en ağır sınıf olan 6. sınıftır ve geriye dönük uygulanır.",
 "tk5":"Oturma izni randevusu almak","tk5n":"Pasaport, vize, kayıt belgesi, öğrenci belgesi, sağlık sigortası kanıtı, para kanıtı, biyometrik fotoğraf.","tk5t":"Şehriniz izin verdiği an randevu alın. İki üç aylık bekleme olağandır.","tk5w":"İzin, vize bitmeden elinizde olmalıdır. Kararı üniversite değil daire verir.",
 "tk6":"Üniversiteye kayıt","tk6n":"Kabul mektubu, sağlık sandığınızın elektronik bildirimi, ödenmiş sömestir katkısı, pasaport.","tk6t":"Üniversitenizin belirlediği kayıt penceresi içinde. Kaçırmak bir sömestire mal olur.","tk6w":"Öğrenci belgesi, diğer bütün dairelere öğrenci olduğunuzu kanıtlayan şeydir.",
-"tk7":"Yayın katkı payı kaydı","tk7n":"Adresiniz ve taşınma tarihiniz.","tk7t":"Çevrimiçi on beş dakika.","tk7w":"Televizyonunuz olsa da olmasa da konut için doğar. Paylaşımlı evde yalnızca bir kişi öder, kimin ödeyeceğini kararlaştırın, BAfoeG alıyorsanız muafiyet başvurusu yapabilirsiniz.",
+"tk7":"Yayın katkı payı kaydı","tk7n":"Adresiniz ve taşınma tarihiniz.","tk7t":"Çevrimiçi on beş dakika.","tk7w":"Televizyonunuz olsa da olmasa da konut için doğar. Paylaşımlı evde yalnızca bir kişi öder, kimin ödeyeceğini kararlaştırın, BAf\u00f6G alıyorsanız muafiyet başvurusu yapabilirsiniz.",
 "cn-val":"Değer","cn-what":"Nedir","cn-src":"Kaynak","cn-year":"Geçerli",
 "cn-checked":"Kontrol",
 "un-1":"Münih ve Köln dışındaki sömestir katkısı","un-1v":"Üniversite sayfaları otomatik okumayı engelliyor, bu yüzden yalnızca ikisi doğrulandı. Karşılaştırma alanı size bırakır.",
@@ -1528,8 +1541,8 @@ tr: {
 "un-5":"5. ve 6. sınıfta gelir vergisi","un-5v":"Bu sınıfların özel formülü, bu araçça doğrulanamayan 2026 eşiklerini kullanır, o yüzden orada bir şey yazmaz.",
 "unit-net":"EUR aylık net",
 "no-net":"Net tutar yazılmadı, çünkü bu sınıfın gelir vergisi hesaplanmadı.",
-"fee-muenchen":"Studierendenwerk Muenchen Oberbayern, 2026 yaz sömestri",
-"fee-koeln":"TH Koeln, 2026 ve 2027 kış sömestri",
+"fee-muenchen":"Studierendenwerk M\u00fcnchen Oberbayern, 2026 yaz sömestri",
+"fee-koeln":"TH K\u00f6ln, 2026 ve 2027 kış sömestri",
 "cmp-plus":"Toplamın yanındaki artı işareti en az bir satırın boş olduğunu, yani gerçek tutarın daha yüksek olduğunu gösterir.",
 "un-6":"Eşiğin üstünde dayanışma katkısı","un-6v":"Yıllık 20 350 EUR verginin hemen üstündeki kademeli oran 2026 için doğrulanamadı. Eşiğin altında katkı sıfırdır, bir Werkstudent zaten oradadır."
 },
@@ -1546,18 +1559,18 @@ de: {
 "l-rvfree":"Nur Minijob: Ich habe die Befreiung von der Rentenversicherungspflicht beantragt",
 "l-indtax":"Nur Minijob: Mein Arbeitgeber versteuert individuell nach Steuerklasse statt mit den zwei Prozent",
 "s2":"Die zwei Grenzen",
-"s2note":"Das sind zwei verschiedene Regeln zweier verschiedener Behörden. Die eine schützt Ihren Aufenthaltstitel. Die andere schützt Ihre Versicherungsfreiheit. Die eine zu reißen reißt die andere nicht, und die eine zu halten hält die andere nicht.",
+"s2note":"Das sind zwei verschiedene Regeln zweier verschiedener Behörden. Die eine schützt Ihren Aufenthaltstitel. Die andere schützt Ihre Versicherungsfreiheit. Die eine zu brechen bricht die andere nicht, und die eine zu halten hält die andere nicht.",
 "s3":"Was ein Monat kostet",
 "s3note":"Zwei Städte nebeneinander. Die Miete ist die einzige Zeile, die sich zwischen Städten wirklich bewegt, und sie hat die beste Datenlage. Wo dieses Werkzeug keine geprüfte Zahl für Sie hat, bleibt das Feld leer und bittet Sie um Ihre eigene, statt an Ihrer Stelle zu raten.",
 "l-cityA":"Stadt A","l-cityB":"Stadt B","l-home":"Wo Sie wohnen",
 "s4":"Die Behördengänge, der Reihe nach",
 "s4note":"Sieben Schritte. Die Reihenfolge zählt, weil drei davon ein Papier brauchen, das ein früherer Schritt erzeugt. Ein gesetztes Häkchen wird in diesem Browser gespeichert und übersteht das Neuladen.",
 "b-clear":"Liste zurücksetzen",
-"s5":"Quellen und Daten",
+"s5":"Quellen und Pr\u00fcfdaten",
 "s5note":"Jede Zahl, die dieses Werkzeug kennt, steht hier mit Wert, Herkunft, Lesedatum und Geltungsjahr. Sonst ist nichts fest verdrahtet. Hat sich eine Zahl unten bewegt, dann irrt dieses Werkzeug und die Quelle hat recht.",
 "t-const":"Konstanten","t-unknown":"Was dieses Werkzeug nicht prüfen konnte",
 "p-unknown":"Diese Zahlen wurden nicht in den Code geschrieben. Wo das Werkzeug eine braucht, zeigt es ein leeres Feld und sagt, wo die Antwort steht.",
-"f-disc":"Das ist eine Schätzung zur Orientierung. Es ist keine Steuer, Rechts oder Aufenthaltsberatung.",
+"f-disc":"Das ist eine Schätzung zur Orientierung. Es ist keine Steuer-, Rechts- oder Aufenthaltsberatung.",
 "f-disc2":"Eine Lohnabrechnung folgt einem längeren amtlichen Verfahren als dem hier gedruckten, Ihre Abrechnung kann also um einige Euro abweichen. Verbindlich antwortet die Ausländerbehörde zu allem, was den Titel betrifft, das Finanzamt zu allem Steuerlichen und Ihre Kasse zu allen Beiträgen. Fragen Sie dort, bevor Sie nach dieser Seite handeln.",
 "f-priv":"Läuft vollständig in Ihrem Browser. Nichts, was Sie eingeben, verlässt diese Seite. Kein Server, keine Datenbank, keine Messung und nach dem Laden der Schriften kein Netzaufruf, die Seite arbeitet also offline, sobald sie einmal zwischengespeichert ist. Ihre Liste und Ihre Zahlen liegen nur in diesem Browser, im lokalen Speicher, und Sie können sie jederzeit löschen.",
 "f-by":"Gebaut von","f-tum":"TUM, München.",
@@ -1577,7 +1590,7 @@ de: {
 "st-rvueb":"Rentenversicherung, 9,3 Prozent davon",
 "st-rvfull":"Rentenversicherung, 9,3 Prozent vom Brutto",
 "st-rvcap":"Rentenversicherung, 9,3 Prozent der Grenze von 8 450",
-"st-kv0":"Kranken, Pflege und Arbeitslosenversicherung",
+"st-kv0":"Kranken-, Pflege- und Arbeitslosenversicherung",
 "st-kv0-r":"0,00, Werkstudentenprivileg",
 "st-tax":"Lohnsteuer des Monats",
 "st-soli":"Solidaritätszuschlag",
@@ -1586,17 +1599,17 @@ de: {
 "st-net":"Was auf dem Konto ankommt",
 "t-taxwork":"Wie die Lohnsteuer zustande kommt",
 "tx-annual":"Bruttoverdienst des Jahres, 12 Monate",
-"tx-an":"abzüglich Arbeitnehmer Pauschbetrag",
-"tx-sa":"abzüglich Sonderausgaben Pauschbetrag",
+"tx-an":"abzüglich Arbeitnehmer-Pauschbetrag",
+"tx-sa":"abzüglich Sonderausgaben-Pauschbetrag",
 "tx-vp":"abzüglich Rentenanteil der Vorsorgepauschale",
 "tx-ent":"abzüglich Entlastungsbetrag für Alleinerziehende, Klasse 2",
 "tx-zve":"Zu versteuernder Jahresbetrag, abgerundet",
 "tx-tarif":"Jahreslohnsteuer nach Paragraf 32a EStG",
 "tx-split":"Klasse 3, das Doppelte der Steuer auf die Hälfte",
 "tx-month":"geteilt durch 12",
-"tx-note":"Der Kranken und Pflegeteil der Vorsorgepauschale bleibt außen vor, weil ein Werkstudent nicht über den Job versichert ist und den studentischen Beitrag selbst zahlt. Ihr Arbeitgeber rechnet nach einem längeren amtlichen Verfahren, die Abrechnung kann also um einige Euro abweichen.",
+"tx-note":"Der Kranken- und Pflegeteil der Vorsorgepauschale bleibt außen vor, weil ein Werkstudent nicht über den Job versichert ist und den studentischen Beitrag selbst zahlt. Ihr Arbeitgeber rechnet nach einem längeren amtlichen Verfahren, die Abrechnung kann also um einige Euro abweichen.",
 "t-own":"Was Sie weiterhin selbst zahlen",
-"ow-p":"Das Privileg spart Ihnen die Arbeitgeberseite der Krankenversicherung. Versichert sind Sie damit nicht. Die Einschreibung verlangt eine Krankenversicherung, den studentischen Beitrag zahlen Sie also selbst.",
+"ow-p":"Das Privileg nimmt den Job aus der Kranken-, Pflege- und Arbeitslosenversicherung heraus. Versichert sind Sie damit nicht. Die Einschreibung verlangt eine Krankenversicherung, den studentischen Beitrag zahlen Sie also selbst.",
 "ow-kv":"Studentische Krankenversicherung, 10,22 Prozent von 855",
 "ow-zu":"Zusatzbeitrag, Durchschnitt 2026 von 2,9 Prozent",
 "ow-pv":"Pflegeversicherung",
@@ -1614,14 +1627,14 @@ de: {
 "t-solimuch":"Solidaritätszuschlag nicht gerechnet",
 "p-solimuch":"Ihre Jahreslohnsteuer übersteigt die Schwelle von 20 350. Knapp darüber greift eine Milderung, deren Satz dieses Werkzeug nicht prüfen konnte, es wird also keine Zahl gedruckt. Nutzen Sie den amtlichen Rechner.",
 "warn-hours":"Mehr als 20 Stunden pro Woche",
-"warn-hours-p":"Über 20 Stunden pro Woche in der Vorlesungszeit entfällt das Werkstudentenprivileg, und Kranken, Pflege und Arbeitslosenversicherung werden in voller Höhe fällig, bei Ihnen und bei Ihrem Arbeitgeber. Siehe die zweite Grenze unten.",
+"warn-hours-p":"Über 20 Stunden pro Woche in der Vorlesungszeit entfällt das Werkstudentenprivileg, und Kranken-, Pflege- und Arbeitslosenversicherung werden in voller Höhe fällig, bei Ihnen und bei Ihrem Arbeitgeber. Siehe die zweite Grenze unten.",
 "lim-a-h":"Arbeitstage, die Aufenthaltsregel",
 "lim-a-p":"Studierende von außerhalb der Europäischen Union dürfen 140 volle Tage oder 280 halbe Tage im Kalenderjahr arbeiten, sofern in Ihrem Aufenthaltstitel nichts anderes steht. Ein Arbeitstag bis vier Stunden zählt als halber Tag. Studentische Hilfstätigkeit an der eigenen Hochschule zählt nicht dagegen, ist der Ausländerbehörde aber trotzdem anzuzeigen.",
 "lim-a-full":"Volle Tage bereits gearbeitet","lim-a-half":"Halbe Tage bereits gearbeitet",
 "lim-a-used":"Verbraucht, in vollen Tagen","lim-a-left":"Volle Tage übrig","lim-a-budget":"Jahresbudget",
 "lim-a-risk":"Wenn Sie darüber gehen: Sie haben ohne Erlaubnis gearbeitet und Ihr Aufenthaltstitel steht auf dem Spiel, fragen Sie die Ausländerbehörde also vorher, nicht nachher.",
 "lim-b-h":"Wochenstunden, die Versicherungsregel",
-"lim-b-p":"Bis 20 Stunden pro Woche in der Vorlesungszeit bleibt die Freiheit von Kranken, Pflege und Arbeitslosenversicherung erhalten. In der vorlesungsfreien Zeit dürfen es mehr als zwanzig Stunden sein, aber auch diese Wochen zählen auf die 26 an. Außerhalb davon sind mehr als 20 Stunden nur am Abend, in der Nacht oder am Wochenende erlaubt, und alle solchen Zeiträume zusammen müssen in zwölf Monaten unter 26 Wochen bleiben.",
+"lim-b-p":"Bis 20 Stunden pro Woche in der Vorlesungszeit bleibt die Freiheit von Kranken-, Pflege- und Arbeitslosenversicherung erhalten. In der vorlesungsfreien Zeit dürfen es mehr als zwanzig Stunden sein, aber auch diese Wochen zählen auf die 26 an. Außerhalb davon sind mehr als 20 Stunden nur am Abend, in der Nacht oder am Wochenende erlaubt, und alle solchen Zeiträume zusammen müssen in zwölf Monaten unter 26 Wochen bleiben.",
 "lim-b-now":"Ihre Wochenstunden jetzt","lim-b-weeks":"Wochen über 20 Stunden in diesem Jahr",
 "lim-b-left":"Von den 26 Wochen übrig","lim-b-ceiling":"Grenze in der Vorlesungszeit",
 "lim-b-risk":"Wenn Sie darüber gehen: Das Privileg entfällt und volle Beiträge werden fällig, grob ein Fünftel Ihres Verdienstes von Ihnen und noch einmal so viel vom Arbeitgeber.",
@@ -1650,7 +1663,7 @@ de: {
 "t-tasks":"Sieben Schritte",
 "tk-needs":"Braucht","tk-takes":"Dauert","tk-why":"Warum",
 "tk1":"Wohnsitz beim Bürgeramt anmelden","tk1n":"Pass, die Wohnungsgeberbestätigung und die Mietunterlagen.","tk1t":"Zwei Wochen ab dem Einzug. Der Termin selbst ist kostenlos und kurz, ein freier Platz kann aber Wochen entfernt liegen, buchen Sie also an dem Tag, an dem Sie eine Adresse haben.","tk1w":"Fast alles andere verlangt die Meldebestätigung. Vorher bewegt sich nichts.",
-"tk2":"Ein Bankkonto eröffnen","tk2n":"Pass, Meldebestätigung und Zulassungs oder Immatrikulationsschreiben.","tk2t":"Online am selben Tag, für einen Filialtermin bis zu zwei Wochen.","tk2w":"Arbeitgeber, Vermieter und Hochschule zahlen und ziehen per Überweisung ein.",
+"tk2":"Ein Bankkonto eröffnen","tk2n":"Pass, Meldebestätigung und Zulassungs- oder Immatrikulationsschreiben.","tk2t":"Online am selben Tag, für einen Filialtermin bis zu zwei Wochen.","tk2w":"Arbeitgeber, Vermieter und Hochschule zahlen und ziehen per Überweisung ein.",
 "tk3":"Krankenversicherung abschließen","tk3n":"Pass, Meldebestätigung, Zulassungsschreiben und Ihr Geburtsdatum für den studentischen Beitrag.","tk3t":"Wenige Tage. Die Kasse meldet es der Hochschule elektronisch.","tk3w":"Ohne sie keine Einschreibung, und der studentische Beitrag endet mit 30.",
 "tk4":"Auf die steuerliche Identifikationsnummer warten","tk4n":"Nichts. Sie kommt per Post, sobald die Meldebehörde Ihre Daten übermittelt hat.","tk4t":"Vier bis acht Wochen bei der ersten Anmeldung. Kommt nach drei Monaten nichts, schreiben Sie an das Bundeszentralamt für Steuern.","f-forget":"Alles vergessen, was ich eingegeben habe","f-tum":"Student an der TUM. Ein persönliches Projekt, weder mit der Technischen Universität München verbunden noch von ihr unterstützt.","f-stale":"Eine Zahl auf dieser Seite hat das Datum überschritten, bis zu dem sie als richtig bekannt war: der studentische Krankenversicherungsbeitrag wird auf den BAföG-Satz gerechnet, und der ändert sich zum Wintersemester. Prüfen Sie den aktuellen Satz bei Ihrer eigenen Kasse, bevor Sie sich auf die Zeile zur Krankenversicherung verlassen.","tk4w":"Bis sie da ist darf Ihr Arbeitgeber Sie, wenn Sie die Verzögerung nicht zu vertreten haben, bis zu drei Kalendermonate nach Ihrer voraussichtlichen Klasse versteuern. Danach ist es Klasse 6, die härteste, und zwar rückwirkend.",
 "tk5":"Termin bei der Ausländerbehörde buchen","tk5n":"Pass, Visum, Meldebestätigung, Immatrikulationsbescheinigung, Nachweis der Krankenversicherung, Finanzierungsnachweis, ein biometrisches Foto.","tk5t":"So früh buchen, wie Ihre Stadt es zulässt. Zwei bis drei Monate Wartezeit sind gewöhnlich.","tk5w":"Der Titel muss vorliegen, bevor das Visum abläuft. Es entscheidet die Behörde, nicht die Hochschule.",
@@ -1677,7 +1690,7 @@ de: {
     if (d[k] !== undefined) return d[k];
     return D.en[k] !== undefined ? D.en[k] : k;
   }
-  var LOCALE = { en: "en-GB", tr: "de-DE", de: "de-DE" };
+  var LOCALE = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
   function num(v, dp) {
     if (v === null || v === undefined || !isFinite(v)) return "";
     var d = dp === undefined ? 2 : dp;
@@ -1691,7 +1704,7 @@ de: {
     berlin:      { en: "Berlin",     tr: "Berlin",    de: "Berlin" },
     hamburg:     { en: "Hamburg",    tr: "Hamburg",   de: "Hamburg" },
     koeln:       { en: "Cologne",    tr: "Köln",      de: "Köln" },
-    duesseldorf: { en: "Duesseldorf",tr: "Düsseldorf",de: "Düsseldorf" },
+    duesseldorf: { en: "D\u00fcsseldorf",tr: "Düsseldorf",de: "Düsseldorf" },
     bonn:        { en: "Bonn",       tr: "Bonn",      de: "Bonn" }
   };
   function cityName(id) { var c = CITYNAME[id]; return c ? (c[LANG] || c.en) : id; }
@@ -1734,8 +1747,23 @@ de: {
       var raw = localStorage.getItem(KEY);
       if (!raw) return;
       var o = JSON.parse(raw);
+      /* Iterating the defaults rather than the stored object is already an
+         allowlist of keys, so nothing new can be introduced. What was missing
+         was a type: a value planted in storage could turn S.gross into a
+         string or S.tasks into a number and the arithmetic below would carry
+         it. A stored value is input; it has to look like what it replaces. */
       if (o && typeof o === "object") {
-        Object.keys(S).forEach(function (k) { if (o[k] !== undefined && o[k] !== null) S[k] = o[k]; });
+        Object.keys(S).forEach(function (k) {
+          var v = o[k], want = typeof S[k];
+          if (v === undefined || v === null) return;
+          if (want === "number") { if (typeof v === "number" && isFinite(v)) S[k] = v; return; }
+          if (want === "boolean") { if (typeof v === "boolean") S[k] = v; return; }
+          if (want === "string") { if (typeof v === "string" && v.length < 200) S[k] = v; return; }
+          if (want === "object") {
+            if (v && typeof v === "object" && !Array.isArray(v) === !Array.isArray(S[k])) S[k] = v;
+            return;
+          }
+        });
       }
     } catch (e) {}
   }
@@ -1911,7 +1939,7 @@ de: {
         el("h3", { text: t("t-hour") }),
         el("p", { style: "font-size:0.95rem", text: t("hr-rate") + " " + num(rate) + " EUR " + t("hr-per") + " " + num(S.hours, 1) + " " + t("hr-weeks") + ". " + t("hr-min") + (under ? " " + t("hr-under") : "") })
       ]);
-      hp.appendChild(src("Mindestlohn " + TAX_YEAR, "https://www.deutsche-rentenversicherung.de/BadenWuerttemberg/DE/Presse/Pressemitteilungen/2025/251222_Minijob", "deutsche-rentenversicherung.de", TAX_YEAR));
+      hp.appendChild(src("Mindestlohn " + TAX_YEAR, "https://www.deutsche-rentenversicherung.de/BadenWürttemberg/DE/Presse/Pressemitteilungen/2025/251222_Minijob", "deutsche-rentenversicherung.de", TAX_YEAR));
       box.appendChild(hp);
     }
 
@@ -2205,8 +2233,8 @@ de: {
     ["4 260 EUR", "Relief for single parents, class 2, section 24b EStG", "https://dejure.org/gesetze/EStG/24b.html", "dejure.org", "from 2023"],
     ["100 % of the employee pension share, capped at 9 430.20 EUR", "Pension part of the provision allowance in the payroll tax deduction", "https://www.lohn-info.de/vorsorgepauschale.html", "lohn-info.de", "2026"],
     ["5.5 %, threshold 20 350 EUR of yearly tax", "Solidarity surcharge, sections 3 and 4 SolZG", "https://www.ordio.com/insights/lexikon/solidaritaetszuschlag", "ordio.com", "2026"],
-    ["8 % in Bavaria and Baden Wuerttemberg, 9 % elsewhere", "Church tax rate on the income tax", "https://www.kirchenfinanzen.de/kirchensteuer/kirchensteuerhebesatz.html", "kirchenfinanzen.de", "current"],
-    ["13.90 EUR an hour", "Statutory minimum wage", "https://www.deutsche-rentenversicherung.de/BadenWuerttemberg/DE/Presse/Pressemitteilungen/2025/251222_Minijob", "deutsche-rentenversicherung.de", "2026"],
+    ["8 % in Bavaria and Baden-W\u00fcrttemberg, 9 % elsewhere", "Church tax rate on the income tax", "https://www.kirchenfinanzen.de/kirchensteuer/kirchensteuerhebesatz.html", "kirchenfinanzen.de", "current"],
+    ["13.90 EUR an hour", "Statutory minimum wage", "https://www.deutsche-rentenversicherung.de/BadenWürttemberg/DE/Presse/Pressemitteilungen/2025/251222_Minijob", "deutsche-rentenversicherung.de", "2026"],
     ["603 EUR a month, 7 236 EUR a year", "Minijob earnings limit", "https://www.minijob-zentrale.de/DE/die-minijobs/minijob-mit-verdienstgrenze", "minijob-zentrale.de", "2026"],
     ["3.6 % employee, 31.17 % employer", "Minijob contributions, commercial sector, release from pension insurance on application", "https://www.minijob-zentrale.de/DE/die-minijobs/minijob-mit-verdienstgrenze", "minijob-zentrale.de", "2026"],
     ["2 %", "Single flat tax on a minijob, paid by the employer, covering income tax, solidarity surcharge and church tax", "https://www.minijob-zentrale.de/DE/meta/faq-bereich/steuer/27_was_ist_die_einheitliche_pauschsteuer/faq_27_was_ist_die_einheitliche_pauschsteuer", "minijob-zentrale.de", "current"],
@@ -2220,13 +2248,13 @@ de: {
     ["30", "Age at which the student health insurance rate ends", "https://www.krankenkassen.de/gesetzliche-krankenkassen/krankenkasse-beitrag/studenten/", "krankenkassen.de", "2026"],
     ["140 full days or 280 half days a year, a day up to four hours is a half day", "Work allowance for students from outside the European Union. The older 120 and 240 figure is out of date", "https://www.make-it-in-germany.com/en/study-vocational-training/studies-in-germany/work", "make-it-in-germany.com", "current"],
     ["140 / 280, student assistant work excluded", "The same rule as stated by DAAD", "https://www.daad.de/en/studying-in-germany/work-career/side-jobs/", "daad.de", "current"],
-    ["18.36 EUR a month for each flat", "Broadcasting fee, one payment for a shared flat, release possible on BAfoeG", "https://www.rundfunkbeitrag.de/buergerinnen_und_buerger/informationen/index_ger.html", "rundfunkbeitrag.de", "current"],
+    ["18.36 EUR a month for each flat", "Broadcasting fee, one payment for a shared flat, release possible on BAf\u00f6G", "https://www.rundfunkbeitrag.de/buergerinnen_und_buerger/informationen/index_ger.html", "rundfunkbeitrag.de", "current"],
     ["37.80 EUR a month, 226.80 EUR a semester", "Deutschlandsemesterticket", "https://www.vrr.de/tickets-tarife/deutschlandticket/semesterticket/", "vrr.de", "winter semester 2026 and 2027"],
-    ["Munich 800, Berlin 650, Hamburg 650, Cologne 620, Duesseldorf 630, Bonn 510 EUR", "Average warm rent of a room in a shared flat", "https://www.moses-mendelssohn-institut.de/aktuelles/SoSe2026", "moses-mendelssohn-institut.de", "summer semester 2026"],
+    ["Munich 800, Berlin 650, Hamburg 650, Cologne 620, D\u00fcsseldorf 630, Bonn 510 EUR", "Average warm rent of a room in a shared flat", "https://www.moses-mendelssohn-institut.de/aktuelles/SoSe2026", "moses-mendelssohn-institut.de", "summer semester 2026"],
     ["267 EUR a month", "Room in a hall of residence, national average", "https://www.daad.de/de/in-deutschland-studieren/leben-in-deutschland/wohnen/", "daad.de", "current"],
     ["842 EUR a month", "Average total spend of a student in Germany", "https://www.daad.de/de/in-deutschland-studieren/leben-in-deutschland/finanzen/", "daad.de", "current"],
     ["97 EUR a semester", "Student union fee, Munich, no compulsory transport ticket", "https://www.studierendenwerk-muenchen-oberbayern.de/ueber-uns/studierendenwerksbeitrag/", "studierendenwerk-muenchen-oberbayern.de", "summer semester 2026"],
-    ["352.70 EUR a semester, of which 226.80 is the ticket", "Semester fee, TH Koeln", "https://www.th-koeln.de/studium/beitraege-und-gebuehren_5343.php", "th-koeln.de", "winter semester 2026 and 2027"],
+    ["352.70 EUR a semester, of which 226.80 is the ticket", "Semester fee, TH K\u00f6ln", "https://www.th-koeln.de/studium/beitraege-und-gebuehren_5343.php", "th-koeln.de", "winter semester 2026 and 2027"],
     ["Two weeks from moving in", "Deadline to register an address, section 17 Bundesmeldegesetz", "https://service.berlin.de/dienstleistung/120686/", "service.berlin.de", "current"],
     ["Four to eight weeks, by post", "Tax identification number after a first registration", "https://www.hamburg.de/service/info/11266790/", "hamburg.de", "current"]
   ];
@@ -2384,7 +2412,7 @@ de: {
 })();
 </script>
 <script>
-window.CHROME_I18N = {"tr": {"nav-p": "Profil", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinın neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Araç · Almanya'da yaşamak ve çalışmak</i>"}, "de": {"nav-p": "Profil", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Instrument · Leben und Arbeiten in Deutschland</i>"}};
+window.CHROME_I18N = {"tr": {"kit-checked": "kontrol tarihi", "nav-p": "Profil", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space</kbd> {space}, <kbd>S</kbd> bir adım atar, <kbd>R</kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Araç · Almanya'da yaşamak ve çalışmak</i>"}, "de": {"kit-checked": "geprüft", "nav-p": "Profil", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space</kbd> {space}, <kbd>S</kbd> geht einen Schritt, <kbd>R</kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/></svg><i>Instrument · Leben und Arbeiten in Deutschland</i>"}};
 
 (function(){
   "use strict";

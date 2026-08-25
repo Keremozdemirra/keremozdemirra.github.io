@@ -3,6 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The same policy every generated page carries; see the note beside it in
+     pagegen.py. connect-src is the one that matters: this page makes no
+     network call after the fonts load, and with the policy in place it
+     cannot start making one by accident. frame-ancestors is deliberately
+     absent: a meta tag cannot set it, and GitHub Pages cannot send a
+     header, so that protection is simply not available here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 <title>Lost underground, Kerem Özdemir</title>
 <meta name="author" content="Kerem Özdemir">
 <meta name="robots" content="noindex">
