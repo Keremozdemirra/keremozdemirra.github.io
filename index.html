@@ -1087,7 +1087,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     }
   }
 
-  /* ---- the twelve, drawn with the same few materials ----
+  /* ---- the thirteen, drawn with the same few materials ----
      brass for what was won, chalky limestone in darker rock for what was
      made, and for the two cities their own stuff: brass, paper, card. */
   function drawMuseObj(t, k, x, y, sc) {
@@ -1571,7 +1571,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       t.beginPath(); t.arc(gx2, gy2, 0.8 + rnd() * 1.6, 0, 6.284); t.fill();
     }
 
-    /* ---- the museum: twelve objects in three strata, deepest is earliest ---- */
+    /* ---- the museum: thirteen objects in three strata, deepest is earliest ---- */
     RELICS.length = 0;
     MUSE.length = 0;
     (function museum() {
@@ -9236,12 +9236,19 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
        against this one. The soil is laid across everything first; the meadow
        and the two cities then paint their surfaces on top of it, and where a
        city dissolves into the meadow the same earth is underneath both. */
-    var soilG9 = ctx.createLinearGradient(0, H * 0.885, 0, H * 0.885 + H * 1.25);
-    soilG9.addColorStop(0, "#2c2115");
-    soilG9.addColorStop(0.5, "#221a10");
-    soilG9.addColorStop(1, "#17110a");
-    ctx.fillStyle = soilG9;
-    ctx.fillRect(-wingW - 80, H * 0.885, W + wingW * 2 + 160, H * 1.25);
+    /* Only the two strips the meadow's own soil canvas does not reach, and
+       only while there is a city to put ground under. Filling the whole
+       width was about eight million pixels a frame on a laptop, all but a
+       third of it immediately painted over by rootCanvas. */
+    if (camXs * camXs > 1 && wingL) {
+      var soilG9 = ctx.createLinearGradient(0, H * 0.885, 0, H * 0.885 + H * 1.25);
+      soilG9.addColorStop(0, "#2c2115");
+      soilG9.addColorStop(0.5, "#221a10");
+      soilG9.addColorStop(1, "#17110a");
+      ctx.fillStyle = soilG9;
+      ctx.fillRect(-wingW - 80, H * 0.885, wingW + 80, H * 1.25);
+      ctx.fillRect(W, H * 0.885, wingW + 80, H * 1.25);
+    }
 
     // ground: real soil from the first frame, so the descent has nowhere to jump
     ctx.drawImage(rootCanvas, 0, H * 0.885, W, H * 1.25);
@@ -10187,7 +10194,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   EGG._dbg = function () { return { state: GUY.state, next: GUY.next, present: BIKE.present, back: BIKE.back, gone: BIKE.gone, night: gNightIdle }; };
   var HOUSE = { doorOpen: 0, knockT: 0 };
   var RELICS = [];
-  /* ---- the museum below the meadow: twelve objects, three strata ----
+  /* ---- the museum below the meadow: thirteen objects, three strata ----
      s: which stratum (0 nearest the surface) · k: how it is drawn
      n: its name · yr: the year, or what stands in for one
      a, b: what he did, and what came of it · h: the page it opens */
@@ -10987,7 +10994,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     }
     return in9(EGG.benchRect) || in9(EGG.tableRect);
   };
-  /* which of the twelve is under a finger or a cursor, if any */
+  /* which of the thirteen is under a finger or a cursor, if any */
   EGG.museumAt = function (cx8, cy8) {
     if (!ARCH.live) return null;
     var top8 = canvas.getBoundingClientRect().top;
@@ -11080,7 +11087,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       hoverCap(R2.x, R2.y, R2.r, R2.cap, ri, true);
     }
 
-    /* the twelve: a breathing ring each, and a museum label on the one the
+    /* the thirteen: a breathing ring each, and a museum label on the one the
        cursor has found. Name and year on the head line, then two lines of
        what he did and what came of it. */
     function museLabel(M, sy4) {
@@ -13166,7 +13173,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         return;
       }
     }
-    /* one of the twelve: the iris closes over it and the page it belongs
+    /* one of the thirteen: the iris closes over it and the page it belongs
        to opens. On a finger this is the second tap, the first having asked. */
     var mus8 = EGG.museumAt && EGG.museumAt(e.clientX, e.clientY);
     if (mus8 && window.__travel) {
@@ -13380,7 +13387,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     { h: "The controls", ps: [
       "The dial in the bottom left corner changes the season, regrows the tree and calls the rain, as described above.",
       "The button in the bottom right corner turns the sound on and opens a volume slider. Every sound is synthesised on the spot: wind that follows the film, crickets at dusk, a ferry horn, a church bell, his whistling. Nothing was recorded.",
-      "The site speaks English, Turkish and German. The buttons are at the bottom of every page, and it remembers your choice.",
+      "The site speaks English, Turkish and German. The buttons are at the foot of this page and in the bar at the top of every other one, and it remembers your choice.",
       "The console answers to kerem. Try kerem.wave(), kerem.ride(), kerem.rain(), kerem.season('winter'), kerem.regrow(), kerem.istanbul(), kerem.munich(), kerem.home(), kerem.sky(), kerem.throwMe() and kerem.secrets(), which opens this notebook.",
       "If your system asks for reduced motion, the film stops moving and the site becomes a plain, quiet document with the doors already open. Nothing is lost."
     ] },
