@@ -240,12 +240,25 @@ footer a:hover{color:#fff}
   opacity:0;pointer-events:none;transition:opacity .6s ease;
   -webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 .edgeNav span{font-size:2rem;line-height:1;font-family:var(--serif)}
-.edgeNav i{font-style:italic;font-family:var(--serif);font-size:.72rem;letter-spacing:.04em;
-  opacity:0;transition:opacity .3s cubic-bezier(.22,1,.36,1)}
-.edgeNav:hover i,.edgeNav:focus i,.edgeNav:focus-visible i{opacity:.95;transition-delay:.15s}
+/* The city's name used to appear only on hover, so on a phone it never
+   appeared at all and the only invitation to pan was a grey chevron at
+   forty five per cent. Nobody finds two cities that way. The name is
+   always there at the cover, and the chevron is legible. */
+.edgeNav i{font-style:italic;font-family:var(--serif);font-size:.76rem;letter-spacing:.04em;
+  opacity:.8;transition:opacity .3s cubic-bezier(.22,1,.36,1);white-space:nowrap}
+.edgeNav:hover i,.edgeNav:focus i,.edgeNav:focus-visible i{opacity:1;transition-delay:.05s}
 #edgeL{left:.35rem} #edgeR{right:.35rem}
-body.atCover .edgeNav{opacity:.45;pointer-events:auto}
+body.atCover .edgeNav{opacity:.72;pointer-events:auto}
 body.atCover .edgeNav:hover{opacity:1}
+/* it breathes once, a few seconds in, and then never again */
+@keyframes edgeBeckon{
+  0%,100%{transform:translateY(-50%) translateX(0)}
+  50%{transform:translateY(-50%) translateX(var(--beck,4px))}
+}
+body.atCover #edgeL{--beck:-4px}
+body.atCover #edgeR{--beck:4px}
+body.atCover.beckon .edgeNav{animation:edgeBeckon 1.5s ease 2}
+@media (prefers-reduced-motion:reduce){body.atCover.beckon .edgeNav{animation:none}}
 .edgeNav:focus-visible{outline:2px solid #e0a050;outline-offset:2px;opacity:1}
 body.atL #edgeL,body.atR #edgeR{opacity:0!important;pointer-events:none!important}
 @keyframes dawn{from{opacity:1}to{opacity:0}}
@@ -11221,6 +11234,17 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     ctx.strokeStyle = tone(92, 88, 80, dk, 0.75); ctx.lineWidth = 0.7;
     ctx.stroke();
     ctx.beginPath(); ctx.moveTo(20, -20.7); ctx.lineTo(25.8, -2.4); ctx.stroke();
+    /* teeth along the cutting edge. A blade with none is a metal wedge; a
+       saw is the one tool people recognise by its edge alone. */
+    ctx.strokeStyle = tone(74, 70, 62, dk, 0.8); ctx.lineWidth = 0.6;
+    ctx.beginPath();
+    for (var tw = 0; tw <= 11; tw++) {
+      var tu = tw / 11;
+      var ex = 21 + (27 - 21) * tu, ey = -20.8 + (-2.5 + 20.8) * tu;
+      if (tw === 0) ctx.moveTo(ex, ey);
+      else ctx.lineTo(ex + (tw % 2 ? 1.1 : 0), ey);
+    }
+    ctx.stroke();
     ctx.fillStyle = tone(122, 78, 40, dk);
     ctx.beginPath(); ctx.roundRect(15.6, -24.6, 6.4, 4.6, 1.6); ctx.fill();
     // a mallet lying where it was put down
@@ -12425,6 +12449,10 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       hintEl.classList.add("nudge");
       setTimeout(function () { hintEl.classList.remove("nudge"); }, 1800);
     }
+    /* and the two edges lean out once, so that somebody who has not moved
+       learns there is a world either side of this one */
+    document.body.classList.add("beckon");
+    setTimeout(function () { document.body.classList.remove("beckon"); }, 3200);
   }, 8000);
 
   function ui(p) {
@@ -13271,7 +13299,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     ] },
     { h: "The world", ps: [
       "The cover is not the whole map. Scroll up from it and the sky opens: clouds, a hot air balloon towing a banner, birds circling a thermal, and at night the stars.",
-      "Drag sideways at the cover, or use the arrows at the left and right edges, and the camera pans off the meadow. To the west lies Istanbul, with the Bosphorus, Kiz Kulesi, a working ferry and the Beyazit gate of Istanbul University. To the east lies Munich, with the Alps, the Frauenkirche, the Eisbach and its surfer, a beer garden, the U Bahn and TUM.",
+      "Drag sideways at the cover, or press the two names at the left and right edges, and the camera pans off the meadow. To the west lies Istanbul, with the Bosphorus, Kiz Kulesi, a working ferry and the Beyazit gate of Istanbul University. To the east lies Munich, with the Alps, the Frauenkirche, the Eisbach and its surfer, a beer garden, the U Bahn and TUM.",
       "Underground there is more than roots: a cellar under the house, a well whose rope reaches the water table, an ant colony with branching galleries, a mole, a sleeping rabbit, a buried amphora, an aquifer with a blind fish in it, and a museum of thirteen objects laid along the taproot in three bands, the deepest being the earliest."
     ] },
     { h: "The two in the grass", ps: [
