@@ -1611,9 +1611,13 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         bestGap = Math.max(140, aqY - 64) / 3;
         spread(34, Math.max(174, aqY - 30), 3);
       }
-      // the bands may be tight: the objects come down to meet them
-      var hr = Math.max(14, Math.min(small ? 20 : 30, Math.round(bestGap / 2 - 1)));
-      var sc = Math.max(0.6, Math.min(1, hr / (small ? 20 : 21)));
+      /* The bands may be tight, so the objects come down to meet them. They
+         used to come down too far: at twenty four pixels against brown soil a
+         medal and a ticket are the same smudge, and the catalogue number
+         under them was unreadable at any distance. The ceiling is raised and
+         the floor with it, and the number is set larger below. */
+      var hr = Math.max(18, Math.min(small ? 24 : 38, Math.round(bestGap / 2 - 1)));
+      var sc = Math.max(0.78, Math.min(1.34, hr / (small ? 19 : 20)));
       var bandY = [sy[0] + top0, sy[1] + top0, sy[2] + top0];   // in soil space
       /* where each object stands in its band. The middle band has six in it
          since the market sizer joined them, and on a wide screen they part
@@ -1661,11 +1665,11 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         bg2.addColorStop(1, "rgba(0,0,0,.055)");
         t.fillStyle = bg2;
         t.fillRect(0, ly, W, off * 2);
-        t.strokeStyle = "rgba(206,176,126,.16)";
+        t.strokeStyle = "rgba(206,176,126,.26)";
         t.lineWidth = 1;
         t.beginPath(); t.moveTo(0, ly + 0.5); t.lineTo(W, ly + 0.5); t.stroke();
-        t.font = "italic " + (small ? 10 : 11.5) + "px " + CANVAS_SERIF;
-        t.fillStyle = "rgba(232,218,190,.40)";
+        t.font = "italic " + (small ? 11 : 13) + "px " + CANVAS_SERIF;
+        t.fillStyle = "rgba(238,224,196,.62)";
         t.fillText(STRATA[bi], nx, ly + (small ? 11 : 13));
         var tw6 = t.measureText(STRATA[bi]).width;
         t.strokeStyle = "rgba(206,176,126,.11)";
@@ -1691,19 +1695,30 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         var mx = W * col;
         var my = bandY[M0.s] + (mi % 2 ? 1.5 : -1.5);
         var plw = hr * 1.5;
-        t.fillStyle = "rgba(18,12,7,.34)";                 /* what it casts */
+        /* Each one gets its own light. Thirteen small brown things on brown
+           soil is thirteen things nobody finds; the same thirteen standing
+           each in a pool of warm light is a museum, and the reason the room
+           around them is dark. */
+        var vg = t.createRadialGradient(mx, my - hr * 0.28, 1, mx, my - hr * 0.1, hr * 2.1);
+        vg.addColorStop(0, "rgba(240,196,128,.20)");
+        vg.addColorStop(0.45, "rgba(216,166,100,.085)");
+        vg.addColorStop(1, "rgba(196,148,88,0)");
+        t.fillStyle = vg;
+        t.beginPath(); t.arc(mx, my - hr * 0.1, hr * 2.1, 0, 6.284); t.fill();
+
+        t.fillStyle = "rgba(18,12,7,.40)";                 /* what it casts */
         t.beginPath();
-        t.ellipse(mx + hr * 0.14, my + 2.6, plw * 0.44, 2.4, 0, 0, 6.284);
+        t.ellipse(mx + hr * 0.14, my + 2.8, plw * 0.44, 2.8, 0, 0, 6.284);
         t.fill();
         drawMuseObj(t, M0.k, mx, my, sc);
-        t.strokeStyle = "rgba(206,176,126,.26)";           /* the shelf line */
-        t.lineWidth = 1;
+        t.strokeStyle = "rgba(214,184,134,.40)";           /* the shelf line */
+        t.lineWidth = 1.2;
         t.beginPath();
         t.moveTo(mx - plw / 2, my + 2.5); t.lineTo(mx + plw / 2, my + 2.5);
         t.stroke();
-        t.font = (small ? 7 : 8) + "px " + CANVAS_MONO;    /* its number */
-        t.fillStyle = "rgba(206,176,126,.44)";
-        t.fillText((mi + 1 < 10 ? "0" : "") + (mi + 1), mx - plw / 2, my + 12);
+        t.font = (small ? 8.5 : 10) + "px " + CANVAS_MONO; /* its number */
+        t.fillStyle = "rgba(226,196,146,.62)";
+        t.fillText((mi + 1 < 10 ? "0" : "") + (mi + 1), mx - plw / 2, my + 15);
         MUSE.push({ x: mx, y: my, r: hr, n: M0.n, yr: M0.yr, a: M0.a, b: M0.b, h: M0.h });
       }
     })();
@@ -1745,68 +1760,192 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     t.closePath(); t.fill();
     RELICS.push({ x: amx, y: amy - 6, r: 22, cap: "Older than all of us. The sea left it." });
 
-    /* ---- the root cellar, under the house ---- */
+    /* ---- the root cellar, under the house ----
+       It was a black arch with two shelves of jars floating in solid earth
+       a hundred pixels below it, and its hover ring pointed at that empty
+       soil rather than at the room. It is a room now: a vaulted chamber with
+       a floor, its shelves inside it, and a lantern on the sill.
+
+       The lantern is the point. Everything down here is one brown against
+       another brown, and the eye has nowhere to land; a single warm light in
+       a dark room gives it somewhere, and gives the whole depth a reason to
+       be dark. What the light falls on is drawn lit, and the walls take a
+       little of it. */
     var cx6 = W * 0.858, cw6 = Math.min(W * 0.11, 150);
-    t.fillStyle = "rgba(14,10,6,.85)";
-    t.beginPath();
-    t.moveTo(cx6 - cw6 / 2, RH * 0.115);
-    t.quadraticCurveTo(cx6, RH * 0.075, cx6 + cw6 / 2, RH * 0.115);
-    t.lineTo(cx6 + cw6 / 2, RH * 0.20);
-    t.lineTo(cx6 - cw6 / 2, RH * 0.20);
-    t.closePath(); t.fill();
-    t.strokeStyle = "rgba(96,74,48,.5)"; t.lineWidth = 2;
-    t.stroke();
-    // two shelves of jars
+    var cTop = RH * 0.075, cSpring = RH * 0.115, cFloor = RH * 0.205;
+    var cL = cx6 - cw6 / 2, cR = cx6 + cw6 / 2;
+
+    function cellarRoom(pth) {                 // the chamber, as one path
+      pth.beginPath();
+      pth.moveTo(cL, cSpring);
+      pth.quadraticCurveTo(cx6, cTop, cR, cSpring);
+      pth.lineTo(cR, cFloor);
+      pth.lineTo(cL, cFloor);
+      pth.closePath();
+    }
+
+    // the air in the room: dark, but not the black of a hole in the paper
+    cellarRoom(t);
+    var cAir = t.createLinearGradient(0, cTop, 0, cFloor);
+    cAir.addColorStop(0, "rgba(26,19,12,.96)");
+    cAir.addColorStop(1, "rgba(14,10,6,.96)");
+    t.fillStyle = cAir; t.fill();
+
+    t.save();
+    cellarRoom(t); t.clip();                   // nothing below leaves the room
+
+    /* the lantern's light, thrown from the sill on the left */
+    var lanX = cL + 15, lanY = cFloor - 46;
+    var lanG = t.createRadialGradient(lanX, lanY, 2, lanX, lanY, cw6 * 1.15);
+    lanG.addColorStop(0, "rgba(255,208,132,.50)");
+    lanG.addColorStop(0.35, "rgba(228,164,88,.20)");
+    lanG.addColorStop(1, "rgba(198,132,64,0)");
+    t.fillStyle = lanG;
+    t.fillRect(cL, cTop, cw6, cFloor - cTop);
+
+    // the brick floor, catching most of it
+    t.fillStyle = "rgba(78,58,38,.75)";
+    t.fillRect(cL, cFloor - 7, cw6, 7);
+    t.strokeStyle = "rgba(40,28,18,.5)"; t.lineWidth = 0.8;
+    for (var fb = 1; fb < 6; fb++) {
+      t.beginPath();
+      t.moveTo(cL + cw6 * fb / 6, cFloor - 7);
+      t.lineTo(cL + cw6 * fb / 6, cFloor);
+      t.stroke();
+    }
+    // the courses of the vault, lit on the lantern's side
+    t.strokeStyle = "rgba(120,92,58,.30)"; t.lineWidth = 1;
+    for (var vc = 0; vc < 7; vc++) {
+      var vu = vc / 6;
+      t.beginPath();
+      t.moveTo(cL + cw6 * vu, cSpring + 3);
+      t.quadraticCurveTo(cL + cw6 * vu, cTop + 22, cL + cw6 * vu * 0.86 + cw6 * 0.07, cTop + 6);
+      t.stroke();
+    }
+
+    /* two shelves of preserves, in the room this time */
     for (var sh5 = 0; sh5 < 2; sh5++) {
-      var shy = RH * (0.305 + sh5 * 0.032);
+      var shy = cFloor - 14 - sh5 * 30;
       t.strokeStyle = "#4a3826"; t.lineWidth = 2.4;
-      t.beginPath(); t.moveTo(cx6 - cw6 * 0.38, shy); t.lineTo(cx6 + cw6 * 0.38, shy); t.stroke();
+      t.beginPath();
+      t.moveTo(cx6 - cw6 * 0.30, shy); t.lineTo(cR - 6, shy);
+      t.stroke();
       for (var jr = 0; jr < 4; jr++) {
-        var jx = cx6 - cw6 * 0.30 + jr * cw6 * 0.20;
-        t.fillStyle = ["rgba(168,110,60,.8)", "rgba(120,130,70,.8)", "rgba(190,150,90,.8)", "rgba(140,90,80,.8)"][jr % 4];
-        t.fillRect(jx - 3.4, shy - 9, 6.8, 8.4);
-        t.fillStyle = "rgba(226,216,192,.7)";
-        t.fillRect(jx - 3.8, shy - 10.6, 7.6, 2);
-        t.fillStyle = "rgba(240,230,210,.25)";
-        t.fillRect(jx - 2.6, shy - 8.4, 1.4, 6);
+        var jx = cx6 - cw6 * 0.24 + jr * cw6 * 0.17;
+        /* the jar's own colour, then the lantern on the side facing it */
+        t.fillStyle = ["rgba(178,116,62,.92)", "rgba(126,138,72,.92)",
+                       "rgba(200,158,92,.92)", "rgba(148,94,82,.92)"][jr % 4];
+        t.fillRect(jx - 3.6, shy - 9.4, 7.2, 8.8);
+        t.fillStyle = "rgba(255,214,150,.22)";
+        t.fillRect(jx - 3.6, shy - 9.4, 2.4, 8.8);
+        t.fillStyle = "rgba(232,222,198,.8)";                 // the lid
+        t.fillRect(jx - 4, shy - 11, 8, 2.1);
+        t.fillStyle = "rgba(255,240,214,.30)";                // the glass
+        t.fillRect(jx - 2.6, shy - 8.6, 1.3, 6.4);
       }
     }
-    RELICS.push({ x: cx6, y: RH * 0.32, r: 26, cap: "The cellar keeps last summer in jars." });
+
+    /* the lantern itself, on a bracket */
+    t.strokeStyle = "rgba(88,68,44,.85)"; t.lineWidth = 1.4;
+    t.beginPath(); t.moveTo(cL + 2, lanY - 12); t.lineTo(lanX, lanY - 12);
+    t.moveTo(lanX, lanY - 12); t.lineTo(lanX, lanY - 7); t.stroke();
+    t.fillStyle = "rgba(58,44,28,.95)";
+    t.fillRect(lanX - 5, lanY - 7, 10, 12);
+    t.fillStyle = "rgba(255,216,150,.92)";
+    t.fillRect(lanX - 3.4, lanY - 5.4, 6.8, 8.8);
+    t.fillStyle = "rgba(255,244,214,.95)";
+    t.beginPath(); t.ellipse(lanX, lanY - 1, 1.5, 2.6, 0, 0, 6.284); t.fill();
+    t.restore();
+
+    // the arch itself, in brick, so the room is cut into something
+    t.strokeStyle = "rgba(112,86,56,.65)"; t.lineWidth = 2.4;
+    cellarRoom(t); t.stroke();
+    t.strokeStyle = "rgba(196,150,92,.20)"; t.lineWidth = 1;
+    t.beginPath();
+    t.moveTo(cL + 2, cSpring);
+    t.quadraticCurveTo(cx6, cTop + 3, cR - 2, cSpring);
+    t.stroke();
+
+    RELICS.push({ x: cx6, y: (cSpring + cFloor) / 2, r: Math.max(30, cw6 * 0.42),
+                  cap: "The cellar keeps last summer in jars." });
     // ladder shaft up to the daylight (kept for wide screens only)
     if (!small) {
     t.strokeStyle = "rgba(96,78,52,.6)"; t.lineWidth = 1.6;
-    t.beginPath(); t.moveTo(cx6 + cw6 * 0.42, 2); t.lineTo(cx6 + cw6 * 0.42, RH * 0.30); t.stroke();
-    t.beginPath(); t.moveTo(cx6 + cw6 * 0.42 + 7, 2); t.lineTo(cx6 + cw6 * 0.42 + 7, RH * 0.30); t.stroke();
+    t.beginPath(); t.moveTo(cR + 10, 2); t.lineTo(cR + 10, cFloor - 4); t.stroke();
+    t.beginPath(); t.moveTo(cR + 17, 2); t.lineTo(cR + 17, cFloor - 4); t.stroke();
     for (var lr = 0; lr < 15; lr++) {
+      var lry = RH * 0.02 + lr * RH * 0.019;
+      if (lry > cFloor - 6) break;
       t.beginPath();
-      t.moveTo(cx6 + cw6 * 0.42, RH * 0.02 + lr * RH * 0.019);
-      t.lineTo(cx6 + cw6 * 0.42 + 7, RH * 0.02 + lr * RH * 0.019);
+      t.moveTo(cR + 10, lry);
+      t.lineTo(cR + 17, lry);
       t.stroke();
     }
     /* the hatch it comes up through, so it does not emerge from solid earth */
     t.fillStyle = "rgba(92,74,50,.9)";
-    t.fillRect(cx6 + cw6 * 0.42 - 8, -1, 30, 5);
+    t.fillRect(cR + 2, -1, 30, 5);
     t.fillStyle = "rgba(64,50,34,.9)";
-    t.fillRect(cx6 + cw6 * 0.42 - 5, 4, 4, 2.4);
-    t.fillRect(cx6 + cw6 * 0.42 + 14, 4, 4, 2.4);
+    t.fillRect(cR + 5, 4, 4, 2.4);
+    t.fillRect(cR + 24, 4, 4, 2.4);
     }
 
-    /* ---- the well shaft, the rope, and the water table ---- */
-    var wx2 = wellX();
-    t.strokeStyle = "rgba(120,100,72,.35)"; t.lineWidth = 1;
-    t.setLineDash([4, 5]);
-    t.beginPath(); t.moveTo(wx2, 0); t.lineTo(wx2, RH * 0.858); t.stroke();
-    t.setLineDash([]);
-    /* the bucket, half in the water. It used to hang forty pixels above the
-       water table whose name its own caption says the rope knows. */
-    t.fillStyle = "#4a3826";
+    /* ---- the well shaft, the rope, and the water table ----
+       The whole thing was one dotted hairline and a bucket the size of a
+       thumbnail, so the deepest thing on the page read as a stray guide. It
+       is a shaft now: two lined walls with the dark between them, a rope of
+       its own down the middle, and a bucket standing in the water at the
+       bottom of it. */
+    var wx2 = wellX(), wsw = 9;
+    var shG = t.createLinearGradient(wx2 - wsw, 0, wx2 + wsw, 0);
+    shG.addColorStop(0, "rgba(40,29,18,.52)");
+    shG.addColorStop(0.5, "rgba(16,11,7,.60)");
+    shG.addColorStop(1, "rgba(32,23,14,.52)");
+    t.fillStyle = shG;
+    t.fillRect(wx2 - wsw, 0, wsw * 2, RH * 0.858);
+    /* the lining, in courses, thinning with depth the way the light does */
+    t.lineWidth = 1;
+    for (var ws = 0; ws < 34; ws++) {
+      var wsy = RH * 0.858 * (ws + 0.5) / 34;
+      t.strokeStyle = "rgba(126,98,64," + (0.20 * (1 - ws / 40)) + ")";
+      t.beginPath();
+      t.moveTo(wx2 - wsw, wsy); t.lineTo(wx2 - wsw + 4, wsy);
+      t.moveTo(wx2 + wsw - 4, wsy); t.lineTo(wx2 + wsw, wsy);
+      t.stroke();
+    }
+    /* the two walls fade with depth: near the surface they are masonry a
+       hand could touch, and by the water they are only the edge of the dark */
+    var wallG = t.createLinearGradient(0, 0, 0, RH * 0.858);
+    wallG.addColorStop(0, "rgba(140,110,72,.34)");
+    wallG.addColorStop(1, "rgba(140,110,72,.10)");
+    t.strokeStyle = wallG; t.lineWidth = 1.2;
     t.beginPath();
-    t.moveTo(wx2 - 6, RH * 0.845); t.lineTo(wx2 + 6, RH * 0.845);
-    t.lineTo(wx2 + 4.6, RH * 0.845 + 9); t.lineTo(wx2 - 4.6, RH * 0.845 + 9);
+    t.moveTo(wx2 - wsw, 0); t.lineTo(wx2 - wsw, RH * 0.858);
+    t.moveTo(wx2 + wsw, 0); t.lineTo(wx2 + wsw, RH * 0.858);
+    t.stroke();
+    // the rope, hanging its own slight curve
+    t.strokeStyle = "rgba(186,158,110,.40)"; t.lineWidth = 1.4;
+    t.beginPath();
+    t.moveTo(wx2, 0);
+    t.quadraticCurveTo(wx2 + 3, RH * 0.42, wx2, RH * 0.838);
+    t.stroke();
+    /* the bucket, standing in the water. It used to hang forty pixels above
+       the water table whose name its own caption says the rope knows. */
+    var wby = RH * 0.845, wbw = 9.5;
+    t.fillStyle = "#5a4530";
+    t.beginPath();
+    t.moveTo(wx2 - wbw, wby); t.lineTo(wx2 + wbw, wby);
+    t.lineTo(wx2 + wbw * 0.78, wby + 15); t.lineTo(wx2 - wbw * 0.78, wby + 15);
     t.closePath(); t.fill();
-    t.strokeStyle = "rgba(200,180,150,.4)"; t.lineWidth = 1;
-    t.beginPath(); t.moveTo(wx2 - 6, RH * 0.847); t.lineTo(wx2 + 6, RH * 0.847); t.stroke();
-    RELICS.push({ x: wx2, y: RH * 0.845, r: 24, cap: "The rope knows the water table by name." });
+    t.strokeStyle = "rgba(44,32,20,.7)"; t.lineWidth = 0.9;
+    t.beginPath();
+    t.moveTo(wx2 - wbw * 0.94, wby + 5); t.lineTo(wx2 + wbw * 0.94, wby + 5);
+    t.moveTo(wx2 - wbw * 0.86, wby + 10); t.lineTo(wx2 + wbw * 0.86, wby + 10);
+    t.stroke();
+    t.fillStyle = "rgba(214,196,168,.5)";                 // the iron band
+    t.fillRect(wx2 - wbw, wby - 1.6, wbw * 2, 2.4);
+    t.strokeStyle = "rgba(186,158,110,.6)"; t.lineWidth = 1.4;   // the handle
+    t.beginPath(); t.arc(wx2, wby, wbw * 0.9, Math.PI * 1.06, Math.PI * 1.94); t.stroke();
+    RELICS.push({ x: wx2, y: wby, r: 26, cap: "The rope knows the water table by name." });
     // the aquifer: still, dark, patient
     /* the aquifer, and it is the floor: the film used to end on a strip of
        soil under a hard edged band of water */
@@ -2629,25 +2768,74 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         var COATS = ["#3d5566", "#7a4a44", "#4a5f42", "#6a5570", "#2f4048"];
         var HAIRS = ["curly", "braid", "crop", "bun", "cap", "scarfhead"];
 
-        /* the wake, boiling away from the stern and spreading as it goes.
-           It is foam over the sea, not a shape cut out of it, so it thins
-           with distance instead of ending in a line. */
-        /* no hard shape: the wake is only ever the foam in it */
-        var sty = HOR + (DECK - HOR) * 0.72;
-        var stg = c.createRadialGradient(w2 * 0.5, sty, 0, w2 * 0.5, sty, w2 * 0.15);
-        stg.addColorStop(0, "rgba(248,252,248,.42)");
-        stg.addColorStop(1, "rgba(248,252,248,0)");
-        c.fillStyle = stg;
-        c.beginPath(); c.ellipse(w2 * 0.5, sty, w2 * 0.15, (DECK - HOR) * 0.14, 0, 0, 6.284); c.fill();
-        c.fillStyle = "rgba(244,248,244,.38)";
-        for (var fo = 0; fo < 34; fo++) {
-          var fu = ((tt * 0.22 + fo * 0.041) % 1);
-          var fy = RAIL - 6 - fu * (RAIL - HOR - 14);
-          var spread = 0.08 + fu * 0.42;
+        /* ---- the wake ----
+           You are standing at the stern looking back, so the wake is not a
+           patch of foam somewhere out in the strait: it starts under your
+           feet and opens away from you, narrowing to nothing where the boat
+           was a minute ago. It used to be one pale ellipse in mid water with
+           thirty four opaque white lozenges scattered over the whole sea,
+           which read as pills floating on it rather than as broken water.
+
+           Three parts, in the order water actually does it: the flat road of
+           disturbed water, the two arms of foam that mark its edges, and the
+           churn right at the rail where the screws are. */
+        var wkNear = RAIL - 4, wkFar = HOR + (DECK - HOR) * 0.10;
+        var wkSpan = wkNear - wkFar;
+        var wkHalfNear = w2 * 0.33, wkHalfFar = w2 * 0.022;
+        var wkAt = function (u) {              // u: 0 at the rail, 1 far off
+          return { y: wkNear - u * wkSpan,
+                   half: wkHalfNear + (wkHalfFar - wkHalfNear) * Math.pow(u, 0.72) };
+        };
+
+        c.save();
+        c.beginPath();                         // the road, as one soft wedge
+        c.moveTo(w2 * 0.5 - wkHalfNear, wkNear);
+        c.lineTo(w2 * 0.5 - wkHalfFar, wkFar);
+        c.lineTo(w2 * 0.5 + wkHalfFar, wkFar);
+        c.lineTo(w2 * 0.5 + wkHalfNear, wkNear);
+        c.closePath();
+        c.clip();
+        var wkG = c.createLinearGradient(0, wkFar, 0, wkNear);
+        wkG.addColorStop(0, "rgba(226,238,236,0)");
+        wkG.addColorStop(0.45, "rgba(232,242,238,.10)");
+        wkG.addColorStop(1, "rgba(240,248,244,.26)");
+        c.fillStyle = wkG;
+        c.fillRect(0, wkFar, w2, wkSpan);
+        c.restore();
+
+        /* the two arms. Each speck fades in and out along its run, so the
+           foam is never a thing that appears or vanishes at an edge. */
+        for (var fo = 0; fo < 40; fo++) {
+          var fu = ((tt * 0.13 + fo * 0.025) % 1);
+          var at = wkAt(fu);
           var side = (fo % 2 ? 1 : -1);
-          var fx = w2 * 0.5 + side * w2 * spread * (0.5 + ((fo * 7) % 5) * 0.1);
+          var jit = (((fo * 13) % 7) / 7 - 0.5) * 0.13;
+          var fx = w2 * 0.5 + side * at.half * (0.86 + jit);
+          var fa = Math.sin(fu * Math.PI) * 0.34;
+          if (fa < 0.01) continue;
+          c.fillStyle = "rgba(244,250,246," + fa.toFixed(3) + ")";
           c.beginPath();
-          c.ellipse(fx, fy, 9 * (1 - fu * 0.6), 2.4 * (1 - fu * 0.5), 0, 0, 6.284);
+          c.ellipse(fx, at.y, 5.5 * (1 - fu * 0.72), 1.5 * (1 - fu * 0.6), 0, 0, 6.284);
+          c.fill();
+        }
+
+        /* the churn under the counter, where the screws are turning */
+        var chY = RAIL - 2;
+        var chG = c.createRadialGradient(w2 * 0.5, chY, 0, w2 * 0.5, chY, w2 * 0.20);
+        chG.addColorStop(0, "rgba(250,254,250,.40)");
+        chG.addColorStop(0.55, "rgba(246,252,248,.14)");
+        chG.addColorStop(1, "rgba(246,252,248,0)");
+        c.fillStyle = chG;
+        c.beginPath();
+        c.ellipse(w2 * 0.5, chY, w2 * 0.20, (DECK - HOR) * 0.10, 0, 0, 6.284);
+        c.fill();
+        for (var cb = 0; cb < 12; cb++) {
+          var cu = ((tt * 0.9 + cb * 0.083) % 1);
+          var ca = Math.sin(cu * Math.PI) * 0.30;
+          c.fillStyle = "rgba(252,255,252," + ca.toFixed(3) + ")";
+          c.beginPath();
+          c.arc(w2 * (0.5 + (((cb * 5) % 9) / 9 - 0.5) * 0.30),
+                chY - cu * 10, 1.4 + cu * 1.8, 0, 6.284);
           c.fill();
         }
 
@@ -4789,9 +4977,16 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   var PGUY = { x: 0, tx: 0, face: 1, t: 0,
                job: null, jobFor: 0, jobT0: 0 };   // and what he is doing there
 
-  EGG.openPlace = function (key) {
+  /* Where on the screen the place was entered from. A place used to arrive
+     as a straight crossfade: one picture dissolving into an unrelated one,
+     which reads as a slide changing rather than as going somewhere. It opens
+     out of the thing you pressed instead, and closes back into it. */
+  EGG.openPlace = function (key, cx, cy) {
     if (!PLACE_DEFS[key]) return;
     PLACE.key = key; PLACE.t = performance.now() / 1000;
+    var r = canvas.getBoundingClientRect();
+    PLACE.ox = (cx == null) ? W * 0.5 : Math.max(0, Math.min(W, cx - r.left));
+    PLACE.oy = (cy == null) ? H * 0.62 : Math.max(0, Math.min(H, cy - r.top));
     PGUY.x = W * 0.5; PGUY.tx = W * 0.5; PGUY.face = 1; PGUY.job = null;
   };
   EGG.closePlace = function () { PLACE.key = null; };
@@ -4838,6 +5033,16 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     ctx.fillRect(0, 0, W, H);
 
     ctx.globalAlpha = e;
+    /* the place opens out of the point it was entered from, and shuts back
+       into it. At rest the scale is one, so nothing is transformed while you
+       are standing in it and the way out stays where the finger expects. */
+    var eS = e * e * (3 - 2 * e);
+    var pox = PLACE.ox == null ? box.w * 0.5 : PLACE.ox;
+    var poy = PLACE.oy == null ? box.h * 0.62 : PLACE.oy;
+    var pSc = 0.86 + 0.14 * eS;
+    ctx.translate(pox, poy);
+    ctx.scale(pSc, pSc);
+    ctx.translate(-pox, -poy);
 
     /* baked once per place per season, kept for as long as the tab lives */
     var ck = PLACE.key + "|" + seasonCur + "|" + box.w + "x" + box.h;
@@ -10126,14 +10331,26 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       }
     }
 
-    // stone foundation
-    ctx.fillStyle = "#4a4038";
-    ctx.fillRect(-48, -7, 96, 7);
-    ctx.fillStyle = "rgba(120,110,96,.5)";
-    for (var fs2 = 0; fs2 < 6; fs2++) {
+    /* one seeded stream for everything on the house that should look made
+       rather than repeated: the stones, the planks, the tiles and the bricks
+       all take their small differences from it, and take the same ones every
+       frame */
+    var hR = vrnd(4471);
+
+    // stone foundation, laid in courses with mortar between
+    ctx.fillStyle = "#40372f";
+    ctx.fillRect(-48, -8, 96, 8);
+    for (var fs2 = 0; fs2 < 9; fs2++) {
+      var stw = 8 + hR() * 4, stx = -47 + fs2 * 10.6;
+      var stv = 0.34 + hR() * 0.34;
+      ctx.fillStyle = "rgba(" + (128 + hR() * 26 | 0) + "," + (118 + hR() * 22 | 0) + ",102," + stv + ")";
       ctx.beginPath();
-      ctx.ellipse(-40 + fs2 * 16, -3.5, 6.5, 2.6, 0, 0, 6.284);
+      ctx.roundRect ? ctx.roundRect(stx, -7.2, stw, 6.4, 1.4)
+                    : ctx.rect(stx, -7.2, stw, 6.4);
       ctx.fill();
+      // the light catches the top edge of each one
+      ctx.fillStyle = "rgba(200,190,170,.16)";
+      ctx.fillRect(stx + 0.8, -7.2, stw - 1.6, 1);
     }
 
     // walls: warm timber with plank shading
@@ -10142,13 +10359,27 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     wg.addColorStop(1, "#523d29");
     ctx.fillStyle = wg;
     ctx.fillRect(-46, -72, 92, 65);
-    ctx.strokeStyle = "rgba(30,20,12,.35)"; ctx.lineWidth = 1;
-    for (var pl = 1; pl < 6; pl++) {
-      var py5 = -72 + pl * 11;
-      ctx.beginPath(); ctx.moveTo(-46, py5); ctx.lineTo(46, py5); ctx.stroke();
-      ctx.strokeStyle = "rgba(180,150,110,.14)";
-      ctx.beginPath(); ctx.moveTo(-46, py5 + 1); ctx.lineTo(46, py5 + 1); ctx.stroke();
-      ctx.strokeStyle = "rgba(30,20,12,.35)";
+    /* Six identical planks with a rule between them is a fence, not a wall.
+       Each board takes its own slight tone from the seeded stream, and two of
+       them carry a knot, which is the detail that says timber. */
+    ctx.lineWidth = 1;
+    for (var pl = 0; pl < 6; pl++) {
+      var pTop = -72 + pl * 11, py5 = pTop + 11;
+      ctx.fillStyle = "rgba(" + (168 + hR() * 40 | 0) + ",140,96," + (0.03 + hR() * 0.055) + ")";
+      ctx.fillRect(-46, pTop, 92, 11);
+      if (pl < 5) {
+        ctx.strokeStyle = "rgba(30,20,12,.38)";
+        ctx.beginPath(); ctx.moveTo(-46, py5); ctx.lineTo(46, py5); ctx.stroke();
+        ctx.strokeStyle = "rgba(180,150,110,.15)";
+        ctx.beginPath(); ctx.moveTo(-46, py5 + 1); ctx.lineTo(46, py5 + 1); ctx.stroke();
+      }
+      if (pl === 1 || pl === 4) {                       // a knot in the board
+        var knx = -34 + hR() * 66, kny = pTop + 5.5;
+        ctx.strokeStyle = "rgba(34,22,12,.26)"; ctx.lineWidth = 0.7;
+        ctx.beginPath(); ctx.ellipse(knx, kny, 1.8, 1.15, 0, 0, 6.284); ctx.stroke();
+        ctx.beginPath(); ctx.ellipse(knx, kny, 0.7, 0.45, 0, 0, 6.284); ctx.stroke();
+        ctx.lineWidth = 1;
+      }
     }
     // corner boards
     ctx.fillStyle = "#4a3826";
@@ -10182,6 +10413,17 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       for (var sh2 = -8; sh2 <= 8; sh2++) ctx.arc(sh2 * 8 + off, ry, 4.4, Math.PI, 0, true);
       ctx.lineTo(66, ry + 7.5); ctx.lineTo(-66, ry + 7.5);
       ctx.closePath(); ctx.fill();
+      /* a fired clay tile is never quite its neighbour's colour, and a roof
+         where they all are reads as scales rather than as a roof */
+      for (var tj = -8; tj <= 8; tj++) {
+        ctx.fillStyle = "rgba(" + (188 + hR() * 46 | 0) + "," + (96 + hR() * 34 | 0) +
+                        ",54," + (hR() * 0.13) + ")";
+        ctx.beginPath();
+        ctx.arc(tj * 8 + off, ry, 4.4, Math.PI, 0, true);
+        ctx.lineTo(tj * 8 + off + 4.4, ry + 7.5);
+        ctx.lineTo(tj * 8 + off - 4.4, ry + 7.5);
+        ctx.closePath(); ctx.fill();
+      }
       ctx.strokeStyle = "rgba(30,12,6,.42)";
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -10206,13 +10448,38 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       ctx.beginPath();
       ctx.moveTo(-58, -68); ctx.lineTo(0, -112); ctx.lineTo(58, -68); ctx.closePath();
       ctx.fill();
-      // soft lip of snow hanging over the eaves
-      ctx.fillStyle = "rgba(240,242,240,.9)";
-      ctx.beginPath(); ctx.ellipse(-29, -69.5, 30, 3.2, -0.65, 0, 6.284); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(29, -69.5, 30, 3.2, 0.65, 0, 6.284); ctx.fill();
+      /* The lip of snow that hangs over the eaves. It used to be a sixty
+         pixel ellipse turned thirty seven degrees, which came off the roof
+         like a pair of wings; it follows the eaves now and stops there. */
+      ctx.fillStyle = "rgba(240,242,240,.92)";
+      ctx.beginPath();
+      ctx.moveTo(-58, -68);
+      ctx.lineTo(0, -112);
+      ctx.lineTo(58, -68);
+      ctx.lineTo(58, -64.4);
+      ctx.quadraticCurveTo(34, -78, 0, -107.6);
+      ctx.quadraticCurveTo(-34, -78, -58, -64.4);
+      ctx.closePath(); ctx.fill();
       ctx.globalAlpha = 1;
     }
     ctx.restore();
+    /* the fascia along both eaves, and two rafter ends showing under it.
+       Without them the roof is a triangle laid on a box: a roof has a depth
+       you can see from below, and this is the cheapest way to say so. */
+    ctx.strokeStyle = "#42250f"; ctx.lineWidth = 3.4; ctx.lineCap = "butt";
+    ctx.beginPath();
+    ctx.moveTo(-59, -66.4); ctx.lineTo(0, -110.4);
+    ctx.moveTo(0, -110.4); ctx.lineTo(59, -66.4);
+    ctx.stroke();
+    /* the rafter ends sit on the roof line, which runs from the eaves at
+       (-59, -66.4) to the ridge at (0, -110.4): a slope of 0.746 per pixel
+       out from the middle, not the guess that put one on the wall */
+    ctx.fillStyle = "rgba(74,44,22,.9)";
+    [-44, -26, 26, 44].forEach(function (rf) {
+      var ry9 = -110.4 + Math.abs(rf) * 0.746;
+      ctx.fillRect(rf - 1.5, ry9 + 2.2, 3, 3.2);
+    });
+
     // ridge cap
     ctx.strokeStyle = sw(3) > 0.5 ? "#d8dcd8" : "#3a1e10";
     ctx.lineWidth = 3; ctx.lineCap = "round";
@@ -10242,13 +10509,25 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       ctx.restore();
     }
 
-    // chimney with cap
-    ctx.fillStyle = "#4a3826";
+    // chimney: brick, in courses, corbelled out under the cap
+    ctx.fillStyle = "#5b3a28";
     ctx.fillRect(22, -104, 12, 26);
-    ctx.strokeStyle = "rgba(20,14,9,.4)"; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(22, -95); ctx.lineTo(34, -95); ctx.stroke();
-    ctx.fillStyle = "#33261a";
-    ctx.fillRect(20, -107, 16, 4);
+    for (var bc = 0; bc < 6; bc++) {
+      var bcy = -103 + bc * 4.2;
+      ctx.fillStyle = "rgba(" + (150 + hR() * 34 | 0) + ",84,58," + (0.16 + hR() * 0.16) + ")";
+      ctx.fillRect(22, bcy, 12, 3.4);
+      ctx.strokeStyle = "rgba(28,18,12,.32)"; ctx.lineWidth = 0.7;
+      ctx.beginPath();
+      ctx.moveTo(22 + (bc % 2 ? 4 : 8), bcy); ctx.lineTo(22 + (bc % 2 ? 4 : 8), bcy + 3.4);
+      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(22, bcy + 3.6); ctx.lineTo(34, bcy + 3.6); ctx.stroke();
+    }
+    ctx.fillStyle = "#4a2f20";                              // the corbel
+    ctx.fillRect(20.6, -106.5, 14.8, 2.6);
+    ctx.fillStyle = "#33261a";                              // the cap
+    ctx.fillRect(19.6, -109, 16.8, 3);
+    ctx.fillStyle = "rgba(12,8,5,.85)";                     // the flue
+    ctx.fillRect(24.6, -109, 6.8, 1.6);
 
     // doorway: darkness first, so the opening door reveals the inside
     ctx.fillStyle = night2 > 0.25 ? "rgba(46,30,14,.98)" : "rgba(16,11,7,.96)";
@@ -10326,6 +10605,62 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     ctx.moveTo(24.5, -60); ctx.lineTo(24.5, -43); ctx.stroke();
     ctx.fillStyle = "#2c2014";
     ctx.fillRect(14.5, -43, 20, 2.4);        // sill
+
+    /* shutters, hooked back against the wall, and a box under the sill.
+       The wall carried one window and forty pixels of nothing either side of
+       it, which is what made the whole face read as a shed. */
+    for (var sd = 0; sd < 2; sd++) {
+      var sdx = sd ? 33 : 10.5;
+      ctx.fillStyle = "#5a4028";
+      ctx.fillRect(sdx, -61, 5, 19);
+      ctx.strokeStyle = "rgba(24,16,10,.42)"; ctx.lineWidth = 0.7;
+      for (var sl = 0; sl < 5; sl++) {
+        ctx.beginPath();
+        ctx.moveTo(sdx + 0.6, -59.4 + sl * 3.6); ctx.lineTo(sdx + 4.4, -59.4 + sl * 3.6);
+        ctx.stroke();
+      }
+      ctx.fillStyle = "rgba(210,178,128,.16)";
+      ctx.fillRect(sdx, -61, 1.2, 19);
+    }
+    // the box under the sill: earth all year, planted in the warm half
+    ctx.fillStyle = "#4a3524";
+    ctx.fillRect(15, -41.4, 19, 5);
+    ctx.fillStyle = "rgba(206,172,120,.14)";
+    ctx.fillRect(15, -41.4, 19, 1.2);
+    ctx.fillStyle = "rgba(38,26,15,.9)";
+    ctx.fillRect(16, -41, 17, 2);
+    var bloom = sw(0) + sw(1);
+    if (bloom > 0.04) {
+      ctx.globalAlpha = Math.min(1, bloom);
+      for (var fl9 = 0; fl9 < 7; fl9++) {
+        var fx9 = 16.6 + fl9 * 2.7, fh9 = 3 + hR() * 2.6;
+        ctx.strokeStyle = "rgba(92,116,66,.85)"; ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(fx9, -41);
+        ctx.lineTo(fx9 + Math.sin(t * 0.9 + fl9) * 0.8, -41 - fh9);
+        ctx.stroke();
+        ctx.fillStyle = ["#c8543c", "#d8863c", "#e0b850", "#b8484c"][fl9 % 4];
+        ctx.beginPath();
+        ctx.arc(fx9 + Math.sin(t * 0.9 + fl9) * 0.8, -41.6 - fh9, 1.5, 0, 6.284);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+    /* firewood against the gable end, stacked in the cold half of the year
+       and mostly gone by summer, because that is what a woodpile does */
+    var cold = sw(2) * 0.6 + sw(3);
+    if (cold > 0.05) {
+      var rows9 = Math.max(1, Math.round(cold * 4));
+      for (var wr = 0; wr < rows9; wr++) {
+        for (var wc = 0; wc < 7; wc++) {
+          var lx9 = -45 + wc * 4.3 + (wr % 2 ? 2.15 : 0), ly9 = -3.5 - wr * 4.4;
+          ctx.fillStyle = "rgba(" + (92 + hR() * 26 | 0) + ",70,48,.95)";
+          ctx.beginPath(); ctx.ellipse(lx9, ly9, 2.3, 2.1, 0, 0, 6.284); ctx.fill();
+          ctx.fillStyle = "rgba(206,182,146,.22)";          /* the cut face */
+          ctx.beginPath(); ctx.ellipse(lx9 - 0.5, ly9 - 0.4, 1.15, 1, 0, 0, 6.284); ctx.fill();
+        }
+      }
+    }
 
     // lantern by the door at night, and its small congregation
     if (night2 > 0.3) {
@@ -12849,29 +13184,32 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     }
     if (hit(EGG.sofiaRect, x, y) && EGG.openPlace) {
       if (window.__churchbell) window.__churchbell();
-      EGG.openPlace("ayasofya");
+      EGG.openPlace("ayasofya", e.clientX, e.clientY);
       return;
     }
     if (hit(EGG.ferryRect, x, y)) {
       EGG.wingFx && EGG.wingFx("gulls");
       if (window.__horn) window.__horn();
-      if (EGG.openPlace) setTimeout(function () { EGG.openPlace("vapur"); }, 420);
+      var vpX = e.clientX, vpY = e.clientY;
+      if (EGG.openPlace) setTimeout(function () { EGG.openPlace("vapur", vpX, vpY); }, 420);
       return;
     }
     if (hit(EGG.kirkRect, x, y)) {
       EGG.wingFx && EGG.wingFx("bell");
       if (window.__churchbell) window.__churchbell();
-      if (EGG.openPlace) setTimeout(function () { EGG.openPlace("frauenkirche"); }, 480);
+      var fkX = e.clientX, fkY = e.clientY;
+      if (EGG.openPlace) setTimeout(function () { EGG.openPlace("frauenkirche", fkX, fkY); }, 480);
       return;
     }
     if (hit(EGG.mugRect, x, y)) {
       EGG.wingFx && EGG.wingFx("foam");
       if (window.__clink) window.__clink();
-      if (EGG.openPlace) setTimeout(function () { EGG.openPlace("biergarten"); }, 420);
+      var bgX = e.clientX, bgY = e.clientY;
+      if (EGG.openPlace) setTimeout(function () { EGG.openPlace("biergarten", bgX, bgY); }, 420);
       return;
     }
     if (hit(EGG.waveRect, x, y) && EGG.openPlace) {
-      EGG.openPlace("garten");
+      EGG.openPlace("garten", e.clientX, e.clientY);
       return;
     }
     if (hit(EGG.moleRect, x, y)) {
@@ -12944,6 +13282,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     ] },
     { h: "What is real", ps: [
       "The rain belongs to the season. It used to be Munich's real weather, fetched live, until it became clear that asking cost every visitor's address to a third party. That was not a trade worth making for rain.",
+      "The form on the contact page is the same story. It used to hand what you wrote to a relay in the United States. Now it writes the message into your own mail programme and this site never sees it, which is the only version of that promise a browser can actually keep.",
       "The moon shows tonight's true phase, calculated from the date. It waxes and wanes over the month exactly as the real one does.",
       "The two clocks on the Beyazıt gate of Istanbul University show the current hour and minute. The Frauenkirche has none on its towers, whatever it used to have here: its famous clock is the automaton inside the church.",
       "The sun sits where the time of day puts it, and every shadow on the meadow leans away from it accordingly.",
@@ -12979,7 +13318,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       "A cat sits on the ridge of the roof at night and flicks its tail. An owl keeps the branch. Moths gather at the lantern by the door."
     ] },
     { h: "In the cities", ps: [
-      "Click the ferry in Istanbul and it sounds its horn while the gulls scatter. It docks and departs on a loop of its own, whether or not anyone is watching.",
+      "Click the ferry in Istanbul and it sounds its horn while the gulls scatter. It docks and departs on a loop of its own, whether or not anyone is watching. Then the deck of it opens out of the exact point you pressed, and closes back into it when you leave. Every one of the five places you can go inside does that.",
       "At night the tower blinks its light across the water and the city lights come on behind it.",
       "Click the towers of the Frauenkirche in Munich and the bells ring.",
       "Click the beer mugs on the table and they clink.",
@@ -12990,8 +13329,8 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       "Thirteen objects are buried along the taproot, in three bands. Nearest the surface, Won: the Boğaziçi Enterprize medal for CoLaunch, the JA Startup badge, the brass plate for the Microbify study that came back graded 1.0, and six certificates kept rolled in one stack.",
       "Below them, Made: six things I made. A cracked spreadsheet for unitguard, ribs that read as a bar chart for the abatement cost curve, a river delta splitting four ways for the carbon decomposition, a coil for the discounted cash flow, a pair of callipers holding the gap between two market sizings, and a stone tablet cut with the letters SIMEA.",
       "Deepest, Lived: an Istanbul ferry token, a punched Munich U Bahn ticket, and the torn half of a boarding pass between the two cities.",
-      "Hover any of the thirteen, or tap it once on a phone, and a museum label gives its name, its year, and two lines about what came of it. Click it, or tap it again, and it opens the page it belongs to: the five instruments open their own case studies, not the index they are listed on.",
-      "The rest of the ground answers a hover too. An amphora lies half buried where an old sea reached. The cellar keeps last summer in jars. The well rope goes down to the water, where a blind fish follows your cursor without ever seeing it. A rabbit sleeps in her burrow through every season but spring.",
+      "Each of the thirteen stands in its own small pool of light, which is why the ground around them is as dark as it is. Hover any of them, or tap it once on a phone, and a museum label gives its name, its year, and two lines about what came of it. Click it, or tap it again, and it opens the page it belongs to: the five instruments open their own case studies, not the index they are listed on.",
+      "The rest of the ground answers a hover too. An amphora lies half buried where an old sea reached. The cellar under the house is a vaulted room with a lantern burning on the sill and last summer standing on its shelves in jars. The well is a lined shaft with a rope down the middle of it and a bucket standing in the water at the bottom, where a blind fish follows your cursor without ever seeing it. A rabbit sleeps in her burrow through every season but spring.",
       "The ants run a colony with a main gallery, three branch tunnels and chambers at the ends. Click them and the line stops to look at you."
     ] },
     { h: "The instruments", ps: [
@@ -13021,7 +13360,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       "This page is one HTML file. No frameworks, no images, no video, no tracking, and every other page here is built the same way. The tree, the roots and the grass are grown by a seeded random function, so the same seed always produces the same tree, and a new seed produces a genuinely different one.",
       "The heavy parts are drawn once into off screen canvases and reused every frame: the trunk, the roots, the grass, the stars, the clouds, the two cities. That is why it stays smooth while so much is moving.",
       "The name at the top is not a font. It is drawn stroke by stroke as a signature, and the dots on the O land last.",
-      "The bird brought you this notebook. You clicked it while it was perched, it fetched the parchment, and the parchment opened this. The console is the only other way in.",
+      "The bird brought you this notebook. You clicked it while it was perched, it fetched the parchment, and the parchment opened this. The console is the only other way in. There are sixteen leaves; the rule at the foot of each one shows how far through you are.",
       "Thank you for reading this far. Kerem"
     ] },
     null   // the last leaf is blank, as it should be
@@ -13054,12 +13393,25 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
       s += '<h3 style="font-weight:400;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;' +
            'color:#8a6d48;margin:0 0 ' + (sv ? ".55rem" : ".95rem") + ';">' + P.h + "</h3>";
       for (var k = 0; k < P.ps.length; k++) {
-        s += '<p style="margin:' + (sv ? ".42em" : ".55em") + ' 0;font-size:' +
-             (sv ? ".76rem" : ".84rem") + ';line-height:' + (sv ? "1.42" : "1.5") +
-             ';font-style:italic;color:#4a3c2b">' + P.ps[k] + "</p>";
+        /* The whole notebook used to be set in italic, which is a voice
+           for one line and a chore for five paragraphs of it. The italic
+           stays on the opening line and the running head; the body is
+           upright, and a size larger, because it is meant to be read. */
+        s += '<p style="margin:' + (sv ? ".5em" : ".7em") + ' 0;font-size:' +
+             (sv ? ".82rem" : ".92rem") + ';line-height:' + (sv ? "1.5" : "1.62") +
+             ';color:#463829">' + P.ps[k] + "</p>";
       }
     }
     if (i < BOOK_PAGES.length - 1 || P) {
+      /* how far in you are, as a rule that fills: seventeen spreads is a lot
+         to leaf through with nothing but a page number to go on */
+      var frac = (i + 1) / BOOK_PAGES.length;
+      var barB = (BOOK.single || bookTight()) ? "2.1rem" : "1.75rem";
+      s += '<span style="position:absolute;left:1.3rem;right:1.3rem;bottom:' + barB +
+           ';height:1px;background:rgba(120,96,58,.16)"></span>' +
+           '<span style="position:absolute;left:1.3rem;bottom:' + barB +
+           ';width:calc((100% - 2.6rem) * ' + frac.toFixed(3) +
+           ');height:1px;background:rgba(138,109,72,.55)"></span>';
       s += '<span style="position:absolute;bottom:' + ((BOOK.single || bookTight()) ? ".95rem" : ".7rem") + ';' +
            (BOOK.single || bookTight() ? "left:50%;transform:translateX(-50%)"
                         : (i % 2 === 0 ? "left:1.3rem" : "right:1.3rem")) +
@@ -13122,7 +13474,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     var f = document.createElement("div");
     f.className = "bkFace";
     f.style.cssText =
-      "position:absolute;inset:0;background:#efe7d2;padding:" + bookPad() + ";overflow:hidden;" +
+      "position:absolute;inset:0;background:radial-gradient(circle at 22% 18%,rgba(146,116,72,.055),rgba(146,116,72,0) 42%),radial-gradient(circle at 78% 72%,rgba(120,92,54,.05),rgba(120,92,54,0) 46%),linear-gradient(168deg,#f3ecd9,#e9dfc6);padding:" + bookPad() + ";overflow:hidden;" +
       "backface-visibility:hidden;-webkit-backface-visibility:hidden;" +
       (back ? "transform:rotateY(180deg);" : "");
     f.innerHTML = html;
@@ -13221,7 +13573,10 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         var pgg = document.createElement("div");
         pgg.style.cssText =
           "position:absolute;top:0;height:100%;width:50%;left:" + (leftSide ? "0" : "50%") + ";" +
-          "background:#efe7d2;padding:1.7rem 1.6rem 2.2rem;" +
+          /* paper, not a beige rectangle: two soft stains and a warm fall
+             across the sheet, all in gradients so it costs nothing */
+          "background:radial-gradient(circle at 22% 18%,rgba(146,116,72,.055),rgba(146,116,72,0) 42%),radial-gradient(circle at 78% 72%,rgba(120,92,54,.05),rgba(120,92,54,0) 46%),linear-gradient(168deg,#f3ecd9,#e9dfc6);" +
+          "padding:1.7rem 1.6rem 2.2rem;" +
           "overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;" +
           "-webkit-overflow-scrolling:touch;" +
           "border-radius:" + (leftSide ? "9px 2px 2px 9px" : "2px 9px 9px 2px") + ";" +
