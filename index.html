@@ -7777,6 +7777,58 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
        side: it is matched rather than erased */
     g.restore();
 
+    /* ---- the distance the fade left empty ----
+       Erasing the last fifth of the town is right: the meadow next door is
+       open ground and the town should not butt up against it. But erasing
+       leaves nothing, and nothing is what the eye reads as a wall. A landscape
+       does not stop, it recedes. So one very pale layer goes back into the
+       strip the fade has just cleared, painted after it so the fade cannot
+       take it: a low line of far hills and a treeline under them, at an alpha
+       that ends at nothing against the meadow and never rises far enough to
+       be read as a thing rather than as distance. */
+    (function farDistanceM() {
+      var strip = w * 0.30, base = gy - 6;
+      /* This erases at the meadow and stops erasing inside the strip, which is
+         the opposite way round from the town's own fade. The town has to be
+         gone by the time it reaches the meadow; this layer has to be present
+         exactly where the town is not, and only give up in the last stretch
+         where the meadow actually begins. */
+      var far = g.createLinearGradient(0, 0, strip, 0);
+      far.addColorStop(0, "rgba(0,0,0,1)");
+      far.addColorStop(0.40, "rgba(0,0,0,0)");
+      far.addColorStop(1, "rgba(0,0,0,0)");
+      g.save();
+      /* the hills: one soft ridge, drawn as a run of low arcs so it is a
+         horizon and not a shape */
+      g.beginPath();
+      g.moveTo(0, base);
+      var hn = 7, hw = strip / hn;
+      for (var i2 = 0; i2 <= hn; i2++) {
+        var hx = i2 * hw;
+        var hy = base - 16 - Math.sin(i2 * 1.9 + 0.6) * 7 - (i2 / hn) * 10;
+        if (i2 === 0) g.lineTo(hx, hy);
+        else g.quadraticCurveTo(hx - hw * 0.5, hy - 5, hx, hy);
+      }
+      g.lineTo(strip, base); g.closePath();
+      g.fillStyle = "rgba(150,158,150,.30)";
+      g.fill();
+      /* the treeline: a band of small crowns along the foot of the ridge */
+      g.fillStyle = "rgba(120,136,116,.26)";
+      for (var t2 = 0; t2 < 34; t2++) {
+        var tx = (t2 / 33) * strip;
+        var ty = base - 5 - Math.sin(t2 * 0.7) * 2;
+        g.beginPath();
+        g.ellipse(tx, ty, 5 + (t2 % 3), 3.4 + (t2 % 2), 0, 0, 6.284);
+        g.fill();
+      }
+      /* and then the same fade the town got, so it arrives at the meadow as
+         nothing rather than as an edge of its own */
+      g.globalCompositeOperation = "destination-out";
+      g.fillStyle = far;
+      g.fillRect(0, 0, strip, base);
+      g.restore();
+    })();
+
     /* ---- what is under the city ----
        Munich stands on the Schotterebene, gravel washed out from under three
        glaciers: Würm on top, then Riss, then Mindel, and the Molasse rock
