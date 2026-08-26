@@ -785,13 +785,17 @@ footer.site-foot{background:var(--paper)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
   border-bottom:0;color:var(--fg)}
+.bar nav:not(.langs){margin-left:auto}
 .bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
   justify-content:flex-end;row-gap:.15rem}
 .bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
   padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
-.langs{display:flex;gap:.1rem;margin-left:.6rem}
+/* clear of the last nav name by more than the names are clear of each
+   other, so the languages read as their own control and not as a tenth
+   link in the row */
+.langs{display:flex;gap:.1rem;margin-left:clamp(1rem,2.2vw,1.8rem)}
 .langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
   border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
 .langs button:hover{color:var(--fg)}
@@ -839,7 +843,7 @@ footer a:hover{color:var(--fg)}
   footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
 }
 
-/* eight nav names on a narrow phone: the row takes a second and a third
+/* nine nav names on a narrow phone: the row takes a second and a third
    line rather than push the page sideways, and the words are set tighter
    so that most phones only need two */
 @media (max-width:430px){
@@ -916,6 +920,7 @@ footer a:hover{color:var(--fg)}
   <div class="wrap">
     <a class="home" href="../../../index.html">Kerem Özdemir</a>
     <nav aria-label="Site" data-ia="a-site"><a href="../../../workshop/" data-i="nav-w">Workshop</a><a href="../../../tools.html" data-i="nav-t">Tools</a><a href="../../../simea/" data-i="nav-s">Simulations</a><a href="../../../tools/economics/" aria-current="page" data-i="nav-e">Economics</a><a href="../../../game.html" data-i="nav-g">Game Theory</a><a href="../../../projects.html" data-i="nav-j">Projects</a><a href="../../../profile.html" data-i="nav-p">Profile</a><a href="../../../notes.html" data-i="nav-n">Notes</a><a href="../../../contact.html" data-i="nav-c">Contact</a></nav>
+    <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
   </div>
 </header>
 
