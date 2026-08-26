@@ -825,24 +825,16 @@ addEventListener("resize", function () {
 });
 
 function save(blob, filename) {
-  var host = window.claude;
-  if (!host || typeof host.use !== "function") {
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = url; a.download = filename;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-    return;
-  }
-  host.use("downloads").then(function (d) {
-    if (!d) return;
-    return d.save({ filename: filename, data: blob }).then(null, function (err) {
-      var c = err && err.code;
-      if (c === "declined" || c === "rate_limited") return;
-      $("warn").innerHTML = '<div class="note stop"><b>The PDF was built but could not ' +
-        'be handed to you here.</b> Open this page in its own browser tab.</div>';
-    });
-  });
+  /* The build this came from also ran inside a host that offered its own
+     download service, and this function asked for it first. There is no such
+     host here and never will be, so the branch was dead code naming another
+     platform on a page that is not on it. What is left is the path that
+     always ran. */
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
 }
 $("go").addEventListener("click", function () {
   var L = layout();
