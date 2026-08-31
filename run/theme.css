@@ -410,7 +410,12 @@ a:hover {
 .k-toc {
   position: fixed;
   top: 50%;
-  left: clamp(1rem, calc((100vw - 1184px) / 2 - 13rem), 4rem);
+  /* Measured at 1440 the rail reached x=192 while the text column starts at
+     x=184: six pixels inside it, escaping notice only because no glyph happened
+     to sit there. The offset now leaves the column alone and the rail is only
+     built above 1400px anyway. */
+  left: clamp(0.75rem, calc((100vw - 1184px) / 2 - 14.5rem), 3rem);
+  max-width: 10rem;
   transform: translateY(-50%);
   z-index: 20;
   max-height: 76vh;
@@ -430,7 +435,7 @@ a:hover {
   align-items: baseline;
   gap: 0.5rem;
   padding: 0.3rem 0;
-  max-width: 11rem;
+  max-width: 100%;
   text-decoration: none;
   color: var(--faint);
   transition: color 0.25s ease, opacity 0.25s ease;
