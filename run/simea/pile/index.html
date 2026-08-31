@@ -1,0 +1,2883 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The same policy the generated pages carry. See the note beside it in
+     _HEAD: connect-src 'none' is what turns each instrument's promise that
+     nothing you type leaves the page into something the browser enforces. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+
+<title>The pile</title>
+<meta name="description" content="A sandpile driven one grain at a time. It organises itself to the edge of stability, where the next grain may do nothing at all or may bring down a quarter of the pile. Watch the avalanche size distribution build up on a log log plot while you drop grains.">
+<meta name="author" content="Kerem Özdemir">
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="/run/fonts/fonts.css">
+<link rel="canonical" href="/run/simea/pile/index.html">
+<meta property="og:title" content="The pile">
+<meta property="og:description" content="A sandpile driven one grain at a time. It organises itself to the edge of stability, where the next grain may do nothing at all or may bring down a quarter of the pile. Watch the avalanche size distribution build up on a log log plot while you drop grains.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   kit.css
+   House visual system for the open instruments at this site
+   Paper palette, Fraunces display, Newsreader body, IBM Plex Mono
+   for every number. No framework, no build step.
+
+   The host document loads its faces from fonts/fonts.css on this domain,
+   and makes no request to anywhere else:
+     Fraunces      opsz,wght 9..144 at 300, 400, 500
+     Newsreader    ital,opsz,wght 6..72 at 400, 500 and italic 400
+     IBM Plex Mono 400, 500
+   Every family here has a real fallback stack, so the page stays legible
+   if the fonts never arrive.
+   ============================================================ */
+
+/* ---------- 1. tokens ---------- */
+
+:root {
+  color-scheme: light;
+
+  --paper:      #f2efe6;
+  --paper-sunk: #ebe7dc;
+  --panel:      #f7f5ee;
+  --field:      #fdfcf8;
+  --ink:        #2b2620;
+  --ink-soft:   #4b443b;
+  --dim:        #6f6558;
+  --faint:      #6f6759;
+  --rule:       #d8d2c4;
+  --rule-firm:  #bdb5a4;
+  --rule-edge:  #9c9280;   /* control boundaries: 3.07:1 on white */
+  --accent:     #8a5a24;
+  --accent-lit: #f0e6d6;
+  --flag:       #8c3b1e;
+  --flag-lit:   #f3e4de;
+  --good:       #3f5c3a;
+  --good-lit:   #e5eade;
+
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --serif:   "Newsreader", Georgia, "Times New Roman", serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 66ch;
+  --gap:     clamp(1rem, 2.4vw, 1.6rem);
+  --pad:     clamp(0.95rem, 2.4vw, 1.5rem);
+  --edge:    clamp(1.1rem, 5vw, 3.25rem);
+}
+
+/* The instruments used to flip to a dark palette with the system.  They
+   sit inside this site now, whose paper is light and whose top bar
+   and footer are painted from the site's own tokens, so a page that went
+   dark underneath a light bar would only look broken.  One palette. */
+
+/* ---------- 2. reset and page ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, 0.97rem + 0.16vw, 1.08rem);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.15; letter-spacing: -0.02em; }
+
+p { margin: 0 0 0.9em; max-width: var(--measure); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-firm); }
+a:hover { border-bottom-color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+.k-shell :focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--accent-lit); color: var(--ink); }
+
+.k-vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0);
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.k-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  background: var(--ink); color: var(--paper); border: 0;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+}
+.k-skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- 3. shell ---------- */
+
+.k-shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+.k-wrap { width: 100%; max-width: 74rem; margin: 0 auto; padding-inline: var(--edge); }
+
+/* The top bar is the site's, spliced in from pagegen.py by build.sh, so
+   there is no header of the kit's own any more. */
+
+.k-main { flex: 1 0 auto; padding-block: clamp(1.8rem, 5vw, 3.2rem) clamp(2.5rem, 6vw, 4rem); }
+
+.k-lede { max-width: 62ch; }
+.k-lede h1 {
+  font-size: clamp(1.85rem, 1.2rem + 2.6vw, 3rem);
+  letter-spacing: -0.032em; margin-bottom: 0.5rem;
+}
+.k-lede .k-standfirst {
+  font-size: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  color: var(--ink-soft); line-height: 1.5;
+}
+
+.k-sect { margin-top: clamp(2.2rem, 5.5vw, 3.4rem); }
+.k-sect > h2 {
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule-firm);
+  margin-bottom: 1.1rem;
+}
+.k-sect > h2 .k-num {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+}
+.k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
+
+/* ---------- 4. input row ---------- */
+
+.k-row {
+  display: grid; gap: 0.7rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  align-items: end;
+}
+.k-row.k-row-tight { gap: 0.55rem 0.9rem; }
+
+.k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.k-field > label, .k-lab {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+}
+.k-field .k-hint {
+  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
+  line-height: 1.45; letter-spacing: 0.02em;
+}
+
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
+  width: 100%; min-width: 0;
+  background: var(--field);
+  /* A control's boundary needs 3:1 against what is inside it. --rule-firm
+     measured 1.9 against the white of a field, so the edge of every input on
+     every instrument was below the floor; --rule-edge is 3.07. It is used
+     for control boundaries only, not for the hairlines between rows, which
+     are decoration and carry no meaning. */
+  border: 1px solid var(--rule-edge);
+  border-radius: 0;
+  color: var(--ink);
+  font-family: var(--mono); font-size: 0.88rem; font-weight: 400;
+  padding: 0.55rem 0.6rem;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+input[type="number"] { font-variant-numeric: tabular-nums; text-align: right; }
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.9rem;
+}
+input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--panel); }
+input::placeholder { color: var(--faint); }
+input[aria-invalid="true"] { border-color: var(--flag); }
+
+.k-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--rule-firm); border-radius: 0;
+  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  padding: 0.62rem 0.95rem; cursor: pointer;
+  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.k-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.k-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
+.k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.k-btn-key { color: #f7f5ee; }
+.k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+
+.k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+
+/* ---------- 5. result panel ---------- */
+
+.k-panel {
+  background: var(--panel);
+  border: 1px solid var(--rule-firm);
+  padding: var(--pad);
+}
+.k-panel + .k-panel { margin-top: var(--gap); }
+.k-panel > h3, .k-panel-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+.k-panel-sunk { background: var(--paper-sunk); }
+
+.k-stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem; }
+.k-stat .k-big {
+  font-family: var(--mono); font-weight: 500;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+  line-height: 1.05; color: var(--ink);
+}
+.k-stat .k-unit { font-family: var(--mono); font-size: 0.78rem; color: var(--dim); letter-spacing: 0.05em; }
+
+.k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+
+.k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
+.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dd {
+  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
+}
+.k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
+
+/* arithmetic trace: every step printed */
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem; padding: 0.3rem 0;
+  border-bottom: 1px dotted var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+.k-steps li:last-child { border-bottom: 0; }
+.k-steps .k-op { color: var(--dim); }
+.k-steps .k-res { color: var(--ink); font-weight: 500; text-align: right; white-space: nowrap; }
+.k-steps li.k-step-final { border-top: 1px solid var(--rule-firm); border-bottom: 0; margin-top: 0.3rem; padding-top: 0.5rem; }
+.k-steps li.k-step-final .k-res { color: var(--accent); font-size: 0.92rem; }
+
+/* ---------- 6. source line ---------- */
+
+.k-source {
+  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  margin-top: 0.7rem; padding-top: 0.55rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-source::before {
+  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--faint); flex: none;
+}
+.k-source.k-source-bare::before { content: none; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.k-source .k-checked { color: var(--faint); white-space: nowrap; }
+
+/* ---------- 7. warning and refusal ---------- */
+
+.k-warn {
+  background: var(--flag-lit);
+  border: 1px solid var(--flag);
+  border-left-width: 3px;
+  padding: var(--pad);
+}
+.k-warn > h3, .k-warn .k-panel-h { color: var(--flag); }
+.k-warn p { color: var(--ink); }
+.k-warn + .k-warn, .k-panel + .k-warn, .k-warn + .k-panel { margin-top: var(--gap); }
+
+.k-ok { background: var(--good-lit); border: 1px solid var(--good); border-left-width: 3px; padding: var(--pad); }
+.k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
+
+.k-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
+  white-space: nowrap;
+}
+.k-tag-gap { color: var(--flag); background: var(--flag-lit); }
+.k-tag-known { color: var(--good); background: var(--good-lit); }
+.k-tag-quiet { color: var(--faint); background: transparent; }
+
+.k-ask { margin: 0.85rem 0 0; padding: 0; list-style: none; }
+.k-ask li {
+  display: grid; grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.2rem 0.9rem; padding: 0.4rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.92rem;
+}
+.k-ask li > b {
+  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.22rem;
+}
+
+/* ---------- 8. tables ---------- */
+
+.k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-table th, .k-table td {
+  text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule); vertical-align: top;
+}
+.k-table th {
+  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  border-bottom-color: var(--rule-firm); white-space: nowrap;
+}
+.k-table td.k-n, .k-table th.k-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  text-align: right; padding-right: 0; white-space: nowrap;
+}
+.k-table tbody tr:last-child td { border-bottom: 0; }
+.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell a { word-break: break-all; }
+
+/* ---------- 9. timeline ---------- */
+
+.k-time { margin: 0; padding: 0; list-style: none; }
+.k-time li {
+  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0.25rem 1.1rem; padding: 0.7rem 0;
+  border-top: 1px solid var(--rule);
+}
+.k-time li:first-child { border-top: 0; padding-top: 0; }
+.k-time .k-when {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
+}
+.k-time .k-what { font-size: 0.96rem; color: var(--ink); }
+.k-time .k-what small {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+}
+.k-time li.k-past .k-when { color: var(--faint); }
+.k-time li.k-past .k-what { color: var(--dim); }
+
+/* ---------- 10. the closing note ---------- */
+/* Each instrument ends with its own disclaimer and its own privacy line.
+   That is the page's last word, not the site's, so it is a closing panel
+   and the site's footer follows it. */
+
+.k-endnote {
+  border-top: 1px solid var(--rule-firm);
+  background: var(--paper-sunk);
+  padding-block: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: 0.9rem; color: var(--dim);
+}
+.k-endnote .k-wrap { display: grid; gap: 1.1rem; }
+.k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
+.k-endnote .k-fine {
+  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
+.k-endnote a:hover { color: var(--accent); }
+
+/* ---------- 11. toast for copy actions ---------- */
+
+.k-toast {
+  position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.k-toast[data-on="1"] { opacity: 1; }
+
+/* ---------- 12. responsive ---------- */
+
+@media (max-width: 640px) {
+  .k-ask li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-time li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-steps li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .k-steps .k-res { text-align: left; }
+}
+
+@media print {
+  .k-btnbar, .k-skip, .k-toast { display: none; }
+  body { background: #fff; color: #000; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   essay.css
+   The shared chrome for Explorable Economics. It sits on top of
+   kit.css and adds only what an essay with a live model needs:
+   a reading column, a model figure that breaks out of it, a
+   control rack, a live readout, and a running summary line that
+   says in words what the picture is showing.
+
+   Spliced into every essay by build.sh at the ESSAY_CSS marker,
+   so that each page still ships as one self contained file.
+   ============================================================ */
+
+/* ---------- reading column ---------- */
+
+.ex-body {
+  display: grid;
+  /* minmax(0, 1fr) rather than auto, so that one wide child can never
+     stretch the whole reading column past the width of the screen */
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 0;
+}
+.ex-body > * {
+  width: 100%;
+  max-width: 40rem;
+  min-width: 0;
+  justify-self: center;
+}
+
+.ex-body > p {
+  max-width: 40rem;
+  font-size: clamp(1.02rem, 0.99rem + 0.2vw, 1.13rem);
+  line-height: 1.68;
+  margin: 0 0 1.05em;
+}
+.ex-body > h2 {
+  font-size: clamp(1.25rem, 1.08rem + 0.7vw, 1.62rem);
+  margin: clamp(2.3rem, 5vw, 3.3rem) 0 0.9rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--rule-firm);
+}
+.ex-body > h2 .k-num {
+  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
+}
+.ex-body > h3 {
+  font-size: 1.1rem; margin: 1.9rem 0 0.6rem; color: var(--ink);
+}
+.ex-body > ul, .ex-body > ol { max-width: 40rem; padding-left: 1.15rem; margin: 0 0 1.05em; }
+.ex-body > ul li, .ex-body > ol li { margin-bottom: 0.45em; }
+
+.ex-lead {
+  font-size: clamp(1.1rem, 1.03rem + 0.4vw, 1.28rem) !important;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.ex-aside {
+  border-left: 2px solid var(--rule-firm);
+  padding: 0.1rem 0 0.1rem 1rem;
+  margin: 0 0 1.15em;
+  font-size: 0.94rem;
+  color: var(--dim);
+}
+.ex-aside p { font-size: inherit; margin-bottom: 0.6em; }
+
+.ex-em { font-style: italic; }
+.ex-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 0.94em; color: var(--accent); font-weight: 500;
+  white-space: nowrap;
+}
+.ex-n-flag { color: var(--flag); }
+.ex-n-long { white-space: normal; }
+
+/* a formula set on its own line, in words rather than symbols */
+.ex-formula {
+  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  color: var(--ink); background: var(--panel);
+  border-left: 2px solid var(--accent);
+  padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
+  max-width: 40rem; overflow-wrap: break-word;
+}
+.ex-formula small {
+  display: block; font-size: 0.66rem; color: var(--faint);
+  margin-top: 0.35rem; letter-spacing: 0.02em;
+}
+
+/* ---------- the model figure, wider than the prose ---------- */
+
+.ex-model {
+  max-width: 60rem;
+  margin: clamp(1.5rem, 4vw, 2.3rem) 0 clamp(1.7rem, 4.5vw, 2.6rem);
+  border: 1px solid var(--rule-firm);
+  background: var(--panel);
+  padding: var(--pad);
+}
+.ex-model > figcaption,
+.ex-model-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.85rem;
+  display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
+}
+.ex-model > figcaption .ex-model-sub,
+.ex-model-h .ex-model-sub {
+  color: var(--faint); letter-spacing: 0.1em; text-transform: none;
+  font-family: var(--mono); font-weight: 400;
+}
+
+.ex-plot { width: 100%; overflow: hidden; }
+.ex-plot svg {
+  display: block; width: 100%; height: auto;
+  touch-action: none;
+  -webkit-user-select: none; user-select: none;
+}
+.ex-plot.ex-draggable { cursor: grab; touch-action: none; }
+.ex-plot.ex-dragging { cursor: grabbing; }
+.ex-plot.ex-draggable svg { cursor: inherit; }
+
+.ex-plot + .ex-plot { margin-top: 0.9rem; }
+
+/* ---------- control rack ---------- */
+
+.ex-ctrls {
+  display: grid; gap: 0.85rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
+  margin-bottom: 1.1rem;
+}
+.ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
+}
+.ex-ctrl .ex-val {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+.ex-ctrl .k-hint {
+  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
+  line-height: 1.5; letter-spacing: 0.02em;
+}
+
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; min-width: 0; height: 1.9rem; margin: 0;
+  background: transparent; color: var(--accent);
+  display: block;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px; background: var(--rule-firm); border: 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 1.15rem; height: 1.15rem; margin-top: -0.53rem;
+  border-radius: 50%; border: 0; background: var(--accent); cursor: pointer;
+}
+input[type="range"]::-moz-range-track { height: 2px; background: var(--rule-firm); border: 0; }
+input[type="range"]::-moz-range-thumb {
+  width: 1.15rem; height: 1.15rem; border: 0; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+}
+input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type="range"]:hover::-webkit-slider-thumb { background: var(--ink); }
+input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
+
+/* segmented radio group */
+.ex-seg { border: 0; margin: 0; padding: 0; min-width: 0; }
+.ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
+.ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
+.ex-seg-row > label {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
+  border: 1px solid var(--rule-firm); margin-left: -1px;
+  background: var(--field); line-height: 1.3; white-space: nowrap;
+}
+.ex-seg-row > label:first-of-type { margin-left: 0; }
+.ex-seg-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ex-seg-row > label:has(input:checked) { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+:root[data-theme="dark"] .ex-seg-row > label:has(input:checked) { color: #17140f; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ex-seg-row > label:has(input:checked) { color: #17140f; }
+}
+.ex-seg-row > label:hover { border-color: var(--accent); color: var(--ink); }
+.ex-seg-row > label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* fallback for browsers without :has, checked state still readable */
+.ex-seg-row > label.ex-on { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.ex-check {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--dim); cursor: pointer;
+}
+.ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
+
+/* ---------- readout and running summary ---------- */
+
+.ex-read {
+  display: grid; gap: 0.55rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  margin-top: 1rem; padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+}
+.ex-read > div { min-width: 0; }
+.ex-read dt, .ex-read .ex-read-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  margin: 0 0 0.15rem;
+}
+.ex-read dd, .ex-read .ex-read-v {
+  margin: 0; font-family: var(--mono); font-weight: 500;
+  font-size: 1.06rem; font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
+}
+.ex-read .ex-read-v small {
+  display: block; font-size: 0.63rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+}
+.ex-read-hot .ex-read-v { color: var(--accent); }
+.ex-read-flag .ex-read-v { color: var(--flag); }
+
+.ex-sum {
+  margin-top: 0.9rem; padding-top: 0.7rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
+  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+}
+.ex-sum b { color: var(--ink-soft); font-weight: 500; }
+.ex-sum::before {
+  content: "reading"; display: block;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 0.3rem;
+}
+
+/* the paragraph of prose that answers what the reader just did */
+.ex-says {
+  max-width: 40rem;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-lit);
+  padding: 0.85rem 1.05rem;
+  margin: 0 0 1.15em;
+  font-size: 1rem; line-height: 1.6; color: var(--ink);
+}
+.ex-says p { max-width: none; margin-bottom: 0.55em; font-size: inherit; }
+.ex-says p:last-child { margin-bottom: 0; }
+
+/* ---------- legend ---------- */
+
+.ex-key {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
+  margin-top: 0.7rem;
+  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
+  letter-spacing: 0.02em;
+}
+.ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
+.ex-key i.ex-line { height: 0; border-top: 2px solid currentColor; width: 0.95rem; }
+
+/* stacked bar for a two way split */
+.ex-split { display: flex; height: 1.5rem; border: 1px solid var(--rule-firm); overflow: hidden; }
+.ex-split i { display: block; height: 100%; transition: width 0.12s linear; }
+.ex-split .a { background: var(--accent); }
+.ex-split .b { background: var(--rule); }
+@media (prefers-reduced-motion: reduce) { .ex-split i { transition: none; } }
+
+/* ---------- essay foot: limits, sources, next ---------- */
+
+.ex-limits { max-width: 46rem; }
+.ex-limits .k-ask li > b { padding-top: 0.25rem; }
+
+.ex-cites { max-width: 46rem; margin: 0; padding: 0; list-style: none; }
+.ex-cites li {
+  border-top: 1px solid var(--rule);
+  padding: 0.75rem 0;
+  font-size: 0.92rem; line-height: 1.55; color: var(--ink-soft);
+  max-width: none;
+}
+.ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
+.ex-cites .ex-cite-w {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.65;
+}
+.ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.ex-cites .ex-cite-t { font-style: italic; }
+
+.ex-next {
+  max-width: 60rem;
+  margin-top: clamp(2.4rem, 6vw, 3.6rem);
+  border-top: 1px solid var(--rule-firm);
+  padding-top: 1.2rem;
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+.ex-next a {
+  display: flex; flex-direction: column; gap: 0.3rem;
+  border: 1px solid var(--rule-firm); background: var(--panel);
+  padding: var(--pad); color: inherit; text-decoration: none;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+.ex-next a:hover { border-color: var(--accent); background: var(--field); }
+.ex-next a:hover .ex-next-t { color: var(--accent); }
+.ex-next .ex-next-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--faint);
+}
+.ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
+.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+
+/* ---------- mobile ---------- */
+
+@media (max-width: 640px) {
+  .ex-model { padding: 0.85rem 0.8rem 0.95rem; }
+  .ex-ctrls { grid-template-columns: minmax(0, 1fr); gap: 0.7rem; }
+  .ex-read { grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.5rem 0.9rem; }
+  .ex-read dd, .ex-read .ex-read-v { font-size: 0.98rem; }
+  .ex-seg-row { width: 100%; }
+  .ex-seg-row > label { flex: 1 1 auto; text-align: center; }
+  .ex-says { padding: 0.7rem 0.85rem; }
+}
+
+/* ============================================================
+   sim.css
+   The extra layer the SIMEA simulations need on top of kit.css
+   and essay.css. An essay figure here is a canvas rather than an
+   svg, it runs rather than sits still, and it has a transport:
+   run, step, reset. Everything else is the essay chrome.
+
+   Spliced into every simulation by build.sh at the SIM_CSS
+   marker, so each page still ships as one self contained file.
+   ============================================================ */
+
+/* ---------- the canvas itself ---------- */
+
+.sm-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--field);
+  border: 1px solid var(--rule);
+  touch-action: manipulation;
+}
+.sm-canvas + .sm-canvas { margin-top: 0.7rem; }
+.sm-canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.sm-canvas-lab {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--faint);
+  margin: 0.55rem 0 0.25rem;
+}
+
+/* ---------- transport ---------- */
+
+.sm-bar {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+  margin-top: 0.95rem; padding-top: 0.8rem;
+  border-top: 1px solid var(--rule);
+}
+.sm-bar .sm-clock {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--faint); font-variant-numeric: tabular-nums;
+  margin-left: auto; text-align: right;
+}
+.sm-btn-run[data-on="1"] { background: var(--accent); border-color: var(--accent); color: #f7f5ee; }
+.sm-btn-run[data-on="1"]:hover { background: var(--ink); border-color: var(--ink); }
+
+.sm-keys {
+  font-family: var(--mono); font-size: 0.63rem; line-height: 1.65;
+  color: var(--faint); letter-spacing: 0.02em;
+  margin: 0.6rem 0 0;
+}
+.sm-keys kbd {
+  font-family: var(--mono); font-size: 0.63rem;
+  border: 1px solid var(--rule-firm); border-radius: 2px;
+  padding: 0.05em 0.3em; color: var(--dim);
+}
+
+.sm-still {
+  font-family: var(--mono); font-size: 0.63rem; line-height: 1.6;
+  color: var(--accent); letter-spacing: 0.02em;
+  margin: 0.55rem 0 0;
+}
+
+/* ---------- a construct, defined where it is measured ---------- */
+
+.sm-constructs { margin: 0 0 1.15em; display: grid; gap: 0.75rem; }
+.sm-construct {
+  border: 1px solid var(--rule-firm);
+  border-left: 3px solid var(--accent);
+  background: var(--panel);
+  padding: 0.8rem 0.95rem;
+}
+.sm-construct h3 {
+  font-family: var(--mono); font-weight: 500; font-size: 0.66rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.4rem;
+}
+.sm-construct p { font-size: 0.95rem; margin-bottom: 0.5em; max-width: none; }
+.sm-construct .sm-eq {
+  font-family: var(--mono); font-size: 0.76rem; line-height: 1.65;
+  color: var(--ink); background: var(--field);
+  border: 1px solid var(--rule);
+  padding: 0.5rem 0.6rem; margin: 0 0 0.45em;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  white-space: pre-wrap; overflow-wrap: break-word;
+}
+.sm-construct .sm-honest {
+  font-family: var(--mono); font-size: 0.65rem; line-height: 1.7;
+  color: var(--faint); letter-spacing: 0.02em; margin: 0; max-width: none;
+}
+.sm-construct .sm-live {
+  font-family: var(--mono); font-weight: 500; font-size: 1.02rem;
+  font-variant-numeric: tabular-nums; color: var(--ink);
+  float: right; margin-left: 1rem;
+}
+
+/* ---------- the hub ---------- */
+
+.sm-cards {
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  margin-top: 1.4rem; max-width: 60rem;
+}
+.sm-card {
+  display: flex; flex-direction: column; gap: 0.4rem;
+  border: 1px solid var(--rule-firm); background: var(--panel);
+  padding: var(--pad); color: inherit; text-decoration: none;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+.sm-card:hover { border-color: var(--accent); background: var(--field); }
+.sm-card:hover .sm-card-t { color: var(--accent); }
+.sm-card-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--faint);
+}
+.sm-card-t { font-family: var(--display); font-size: 1.2rem; letter-spacing: -0.02em; }
+.sm-card-d { font-size: 0.92rem; color: var(--dim); line-height: 1.5; }
+.sm-card-w {
+  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
+  letter-spacing: 0.02em; line-height: 1.6; margin-top: 0.15rem;
+}
+.sm-card canvas {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--rule); background: var(--field);
+  margin-bottom: 0.15rem;
+}
+
+@media (max-width: 640px) {
+  .sm-cards { grid-template-columns: minmax(0, 1fr); }
+  .sm-construct { padding: 0.7rem 0.8rem; }
+  .sm-construct .sm-live { float: none; display: block; margin: 0 0 0.3rem; }
+  .sm-bar { gap: 0.45rem; }
+  .sm-bar .sm-clock { margin-left: 0; flex: 1 0 100%; text-align: left; }
+}
+
+@media (pointer: coarse) {
+  .sm-bar .k-btn { min-height: 44px; }
+}
+
+/* ---------- simulation five ---------- */
+
+.pl-two { display: grid; gap: 0.7rem; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+@media (max-width: 640px) { .pl-two { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- the site's clothes, worn by an instrument ---------- */
+.bar,footer.site-foot,.leaf-mark{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#f2efe6;
+  --fg:#221e17;
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --accent:#8a5a24;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+.bar,footer.site-foot{color:var(--fg)}
+footer.site-foot{background:var(--paper)}
+.bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav:not(.langs){margin-left:auto}
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+/* clear of the last nav name by more than the names are clear of each
+   other, so the languages read as their own control and not as a tenth
+   link in the row */
+.langs{display:flex;gap:.1rem;margin-left:clamp(1rem,2.2vw,1.8rem)}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .foot-links{display:flex;gap:clamp(.9rem,2.4vw,1.6rem);align-items:center;flex-wrap:wrap}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:nowrap;
+    justify-content:flex-start;gap:clamp(.7rem,3.4vw,1.2rem);
+    overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    /* the last name fades rather than being cut, which is what says there
+       is more of it to the right */
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    padding-right:2.2rem}
+  .bar nav::-webkit-scrollbar{display:none}
+  .bar nav a{font-size:.8rem;padding:.55rem 0;flex:0 0 auto}
+  /* the name of the page you are on is brought into view on load, so a
+     reader arriving deep in the site is not looking at a row that starts
+     somewhere else */
+  .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* nine nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
+@media (max-width:430px){
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+/* the same thumb, on the page itself */
+@media (pointer:coarse){
+  .cv-btn{min-height:44px;padding:.8rem 1.25rem}
+  .copy,.share-link{min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center}
+  .socials a{min-height:44px;display:inline-flex;align-items:center}
+  .mail-line a.addr{display:inline-flex;align-items:center;min-height:44px}
+  .note-read{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .feature .go{min-height:44px;display:inline-flex;align-items:center}
+  .gcard .go{min-height:44px;display:inline-flex;align-items:center}
+  .go-block{min-height:44px;display:inline-flex;align-items:center}
+  .k-btn,.k-skip,.skip{min-height:44px;display:inline-flex;align-items:center}
+  input[type=range]{height:44px}
+  select{min-height:44px}
+  /* a link sitting inside a sentence: the line opens up so the link can be
+     a thumb tall without the paragraph closing over it */
+  .quiet-line{line-height:2.1}
+  .quiet-line a{display:inline-block;padding:.78rem 0;line-height:1.25}
+  .note-item h2 a{display:inline-block;padding:.5rem 0;border-bottom:0;
+    text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
+  .note-item h2 a:hover{text-decoration-color:var(--accent)}
+  /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px;min-height:44px}
+  body .frow textarea{min-height:8rem}
+  /* a 4px tall slider is not a control: the whole strip takes the touch */
+  input[type="range"]{height:44px;margin:0;padding:0}
+  /* and a sixteen pixel box is not one either */
+  input[type="checkbox"],input[type="radio"]{width:22px;height:22px}
+  input[type="checkbox"]+label,input[type="radio"]+label{
+    display:inline-flex;align-items:center;min-height:44px}
+  .demo-src a{display:inline-flex;align-items:center;min-height:44px}
+}
+
+/* ---------- the crown, on a page whose interior is its own ---------- */
+.k-crown-no{
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;
+  font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;
+  color:var(--accent);
+}
+.k-crown-no svg{flex:none}
+.k-lede h1{margin-top:0}
+
+
+</style>
+</head>
+<body>
+
+<a class="k-skip" href="#sim" data-i="pl-skip">Skip to the simulation</a>
+
+<div class="k-shell">
+
+<main class="k-main" id="sim">
+    <div class="k-wrap">
+
+      <div class="k-lede k-crown">
+        <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Simulation five of five</i></span>
+        <h1 data-i="pl-001">The pile</h1>
+        <p class="k-standfirst" data-i="pl-009">Grains dropped one at a time onto a table. Nothing tunes it, nothing
+        balances it, and nobody is holding it at any particular state. It walks to the edge of its own
+        stability and stays there, and once it is there the next grain may do nothing at all or may bring
+        down a quarter of the pile, and no amount of watching will tell you which.</p>
+      </div>
+
+      <div class="ex-body">
+
+        <p class="ex-lead" data-i="pl-010">Bak, Tang and Wiesenfeld published this in 1987 with a claim attached that is
+        still doing work: that a system with many parts and a slow drive will move by itself to a critical
+        point, without anybody setting a parameter to a special value, and that once there its behaviour
+        has no characteristic size.</p>
+
+        <p data-i="pl-011">The model is almost nothing. A grid of cells, each holding a small number of grains. Drop a
+        grain on a cell. If a cell ever holds four or more, it topples: it gives one grain to each of its
+        four neighbours and keeps the rest. Toppling can push a neighbour over its own limit, so a single
+        grain can start a chain that runs across the table. Grains that fall off the edge are gone.</p>
+
+        <p data-i="pl-012">That is the whole of it. There is no parameter to tune, and that is the point.</p>
+
+        <h2 id="s1" data-i="pl-002"><span class="k-num">01</span>The table and the record</h2>
+
+        <p data-i="pl-013">On the left is the pile, shaded by how many grains each cell holds, with the cells that toppled
+        in the last avalanche marked. On the right is the record: every avalanche so far, sorted by size,
+        drawn on a plot where both axes are logarithmic. A distribution with a characteristic size would
+        show a hump. A power law shows a straight line, and the straighter it gets the more grains you
+        drop.</p>
+
+        <figure class="ex-model" id="m1">
+          <figcaption data-i="pl-033">Figure one <span class="ex-model-sub">drop grains and watch the record fill in</span></figcaption>
+          <div class="ex-ctrls" id="pl-ctrls"></div>
+          <div class="pl-two">
+            <div>
+              <p class="sm-canvas-lab" data-i="pl-014">The pile</p>
+              <div id="pl-grid"></div>
+            </div>
+            <div>
+              <p class="sm-canvas-lab" data-i="pl-015">Avalanche sizes, both axes logarithmic</p>
+              <div id="pl-plot"></div>
+            </div>
+          </div>
+          <p class="ex-key" id="pl-key"></p>
+          <div id="pl-read"></div>
+          <p class="ex-sum" id="pl-sum" role="status" aria-live="polite"></p>
+          <div id="pl-bar"></div>
+        </figure>
+
+        <div class="ex-says" id="pl-says"></div>
+
+        <h2 id="s2" data-i="pl-003"><span class="k-num">02</span>What the straight line means</h2>
+
+        <p data-i="pl-016">A straight line on a plot where both axes are logarithmic says that the number of avalanches of
+        a given size falls as some fixed power of that size. Halving the frequency requires multiplying the
+        size by a constant factor, whatever size you started from. That is what it means for a distribution
+        to have no characteristic scale: there is no typical avalanche, and asking for the average size of
+        the next one is asking a question the distribution does not answer usefully.</p>
+
+        <p class="ex-formula" data-i="pl-017">number of avalanches of size s  ∝  s to the power of minus τ
+        <small data-i="pl-034">The exponent printed under the plot is fitted by least squares to the logarithmically binned
+        counts, over the bins that have enough avalanches in them to be worth fitting. It is a crude
+        estimate on a small table and it should be read as an indication that the line is straight rather
+        than as a measurement of τ.</small></p>
+
+        <p data-i="pl-018">Notice how the plot fills in. The small avalanches arrive immediately and in enormous numbers.
+        The large ones arrive rarely, and the largest one you have seen keeps being overtaken. That is not
+        the record settling down towards a true maximum. There is no true maximum here except the size of
+        the table, and on a larger table the largest event would simply be larger.</p>
+
+        <h2 id="s3" data-i="pl-004"><span class="k-num">03</span>Nothing is being tuned</h2>
+
+        <p data-i="pl-019">Watch the average number of grains per cell in the readout. It climbs while the pile is filling,
+        then stops climbing and stays put. From that point on, whatever you do to the pile, it returns to
+        roughly the same average height. Grains going in are balanced by grains falling off the edges, and
+        the balance is maintained by the avalanches themselves.</p>
+
+        <p data-i="pl-020">This is what makes the word organised do work in the phrase. The pile is not held at criticality
+        by anybody. Add grains faster and it is still there. Start it from an empty table and it walks
+        there. Start it from an overloaded table and it collapses back to it. The critical state is where
+        the dynamics take it, which is why the effect turns up in systems nobody is administering.</p>
+
+        <h2 id="s4" data-i="pl-005"><span class="k-num">04</span>Why this belongs to SIMEA</h2>
+
+        <p data-i="pl-021">Two reasons, and the second is the one I care about.</p>
+
+        <p data-i="pl-022">The first is the forecasting point. In a state like this the size of the next event is genuinely
+        unforecastable, and not because anybody is ignorant. The distribution is known exactly here, since
+        I wrote it, and knowing it does not help: it tells you the odds over a run and says nothing at all
+        about the next grain. There is a habit of treating unpredictability as a shortfall of data or of
+        model quality, on the assumption that a better instrument would resolve it. Some unpredictability
+        is a property of the system and survives any instrument, and a research project that wants to
+        talk about what can and cannot be forecast has to be able to tell the two apart.</p>
+
+        <p data-i="pl-023">The second is about responsibility. When a large avalanche happens, the grain that started it is
+        indistinguishable from the thousands of grains that started nothing. It was not a special grain. It
+        did not fall harder. Looking for what was different about it will find nothing, because nothing
+        was, and the difference lies entirely in the state the pile had already reached. Every institution
+        that reviews a disaster by looking for the last action before it is doing this, and the pile is the
+        cleanest demonstration I know that the last action can be innocent and the outcome still enormous.</p>
+
+        <h2 id="s5" data-i="pl-006"><span class="k-num">05</span>Where the model stops</h2>
+
+        <div class="k-warn ex-limits">
+          <h3 data-i="pl-008">Assumptions and limits</h3>
+          <ul class="k-ask">
+            <li data-i="pl-026"><b>It is not sand</b>Real granular piles were tested against this model and behave less
+            cleanly than it does, for reasons to do with inertia and friction that the model has no way of
+            representing. The name is a picture and not a claim about sand.</li>
+            <li data-i="pl-027"><b>The table is small</b>Every power law here is cut off by the size of the grid, which is
+            why the right hand end of the plot bends down. The exponent fitted from a few thousand
+            avalanches on a table this size is a rough indication and nothing more.</li>
+            <li data-i="pl-028"><b>The transient is included</b>Every avalanche is recorded, including those from the early
+            period when the pile was still filling up and had not reached its critical state. Press reset
+            and drop a few thousand grains before reading the plot seriously.</li>
+            <li data-i="pl-029"><b>The drive is separated from the response</b>Each avalanche is run to completion before
+            the next grain is dropped. That separation of timescales is an assumption of the model, and a
+            system driven faster than it can relax would behave differently.</li>
+            <li data-i="pl-030"><b>Power laws are easy to see and hard to establish</b>A straight stretch on a log log plot
+            is weak evidence on its own, and the statistical literature on distinguishing a power law from
+            other heavy tailed distributions is not kind to eyeball fits. This page shows a mechanism that
+            produces one, not a method for detecting one.</li>
+            <li data-i="pl-031"><b>An analogy is not a finding</b>The two paragraphs above about forecasting and about
+            responsibility are arguments by analogy. This model does not establish anything about markets,
+            institutions or disasters, and no number from this page belongs in a claim about them.</li>
+          </ul>
+        </div>
+
+        <h2 id="s6" data-i="pl-007"><span class="k-num">06</span>Source</h2>
+
+        <ul class="ex-cites">
+          <li data-i="pl-032">
+            The paper that introduced the model and the idea of self organised criticality: dynamical
+            systems with spatial degrees of freedom naturally evolve into a self organised critical state,
+            which the authors connect to flicker noise and to the origin of fractal structures.
+            <span class="ex-cite-w">Per Bak, Chao Tang and Kurt Wiesenfeld, <span class="ex-cite-t">Self-organized
+            criticality: An explanation of the 1/f noise</span>, Physical Review Letters 59(4), 27 July
+            1987, page 381.
+            <a href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381" target="_blank" rel="noreferrer noopener">journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381</a>
+            Checked 2026 08 22.</span>
+          </li>
+        </ul>
+
+        <nav class="ex-next" data-ia="nx-sims" aria-label="More simulations">
+          <a href="../recommender/index.html">
+            <span class="ex-next-k" data-i="xn-k-flag">The flagship</span>
+            <span class="ex-next-t" data-i="xn-t-rec">The recommender</span>
+            <span class="ex-next-d" data-i="xn-d-rec">A population, a feed that decides what each of them sees, and the three
+            SIMEA constructs measured live against a counterfactual run.</span>
+          </a>
+          <a href="/run/simea/index.html">
+            <span class="ex-next-k" data-i="xn-k-back">Back</span>
+            <span class="ex-next-t" data-i="xn-t-all5">All five simulations</span>
+            <span class="ex-next-d" data-i="xn-d-all5">Why a research project about systems and agents needs models you can
+            run.</span>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </main>
+
+  <aside class="k-endnote">
+    <div class="k-wrap">
+      <p data-i="pl-024"><strong>This is a teaching model, not a measurement.</strong> Every number on this page is one you
+      set or one this model produced from what you set. Nothing here describes sand, markets or any real
+      system.</p>
+      <p class="k-fine" data-i="pl-025">
+        Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no
+        network call after the fonts have loaded. Part of
+        <a href="/run/simea/index.html">the SIMEA simulations</a>, built by
+        <a href="/">Kerem Özdemir</a>.
+      </p>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+/* ============================================================
+   kit.js
+   Shared behaviour for the open instruments at this site
+   No dependencies. No network calls. Safe to inline.
+
+   Kit.el        small DOM builder
+   Kit.fmt       number and date formatting
+   Kit.state     read and write tool state in the URL hash
+   Kit.share     copy the link that restores the current state
+   Kit.csv       build CSV, copy to clipboard, offer a download
+   Kit.toast     brief confirmation line
+   ============================================================ */
+
+var Kit = (function () {
+  "use strict";
+
+  /* ---------- DOM ---------- */
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v;
+        else if (k === "html") n.innerHTML = v;
+        else if (k.slice(0, 2) === "on" && typeof v === "function") {
+          n.addEventListener(k.slice(2).toLowerCase(), v);
+        } else n.setAttribute(k, v === true ? "" : String(v));
+      });
+    }
+    (kids || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+
+  /* ---------- numbers ---------- */
+
+  /* The page is read in three languages, so a number has to be written in
+     three. Turkish and German put the comma where English puts the point, and
+     "3,035 billion" read as Turkish says three, not three thousand. Read at
+     call time rather than cached, because the language changes under us. */
+  var LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
+  function locale() { return LOCALES[window.__lang] || "en-GB"; }
+  function na() { return window.__t ? window.__t("kit-na", "not available") : "not available"; }
+
+  function num(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return na();
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(locale(), { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function money(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return na();
+    return "EUR " + num(v, dp === undefined ? 2 : dp);
+  }
+  function pct(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return na();
+    var np = num(v * 100, dp === undefined ? 1 : dp);
+    /* Turkish writes the sign in front of the number and closed up,
+       German and English behind it with a space. The chrome already
+       encodes this rule for the simulations; this is the same rule. */
+    return (window.__lang === "tr") ? "%" + np : np + " %";
+  }
+  function toNum(raw) {
+    if (raw === null || raw === undefined) return null;
+    /* "1.234,56" used to become "1.234.56" and then NaN, so a German reader
+       typing their own thousands separator into any field on any instrument
+       got "not calculable". Both conventions are read, by the one rule that
+       tells them apart without knowing the language: whichever separator
+       comes last is the decimal point, and the other one is grouping. */
+    var s = String(raw).trim().replace(/\s+/g, "");
+    var lastC = s.lastIndexOf(","), lastD = s.lastIndexOf(".");
+    if (lastC >= 0 && lastD >= 0) {
+      if (lastC > lastD) s = s.replace(/\./g, "").replace(",", ".");
+      else s = s.replace(/,/g, "");
+    } else if (lastC >= 0) {
+      /* one kind only: repeated, it can only be grouping */
+      s = (s.split(",").length > 2) ? s.replace(/,/g, "") : s.replace(",", ".");
+    } else if (s.split(".").length > 2) {
+      s = s.replace(/\./g, "");
+    }
+    if (s === "") return null;
+    var n = Number(s);
+    return isFinite(n) ? n : null;
+  }
+
+  /* ---------- URL hash state ---------- */
+
+  function b64urlEncode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64urlDecode(str) {
+    var s = String(str).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var bin = atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  var state = {
+    /* Serialise the object into the location hash without adding a history entry. */
+    write: function (obj) {
+      var h = "";
+      try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
+      if (h.length > 8000) return "";
+      try {
+        history.replaceState(null, "", location.pathname + location.search + h);
+      } catch (e) {
+        location.hash = h;
+      }
+      return location.href;
+    },
+    /* Read the object back. Returns null when the hash is absent or unreadable. */
+    read: function () {
+      var m = /(?:^|[#&])s=([A-Za-z0-9\-_]+)/.exec(location.hash || "");
+      if (!m) return null;
+      try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
+    },
+    clear: function () {
+      try { history.replaceState(null, "", location.pathname + location.search); }
+      catch (e) { location.hash = ""; }
+    }
+  };
+
+  /* ---------- clipboard ---------- */
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; },
+        function () { return legacyCopy(text); });
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  /* ---------- share ---------- */
+
+  function share(obj, msg) {
+    var url = state.write(obj) || location.href;
+    return copyText(url).then(function (ok) {
+      var tr = function (k, en) { return window.__t ? window.__t(k, en) : en; };
+      toast(ok ? (msg || tr("kit-share-ok", "Link copied. It reopens with these inputs."))
+               : tr("kit-copy-blocked", "Copy blocked by the browser. The address bar now holds the link."));
+      return ok;
+    });
+  }
+
+  /* ---------- CSV ---------- */
+
+  function csvCell(v) {
+    if (v === null || v === undefined) return "";
+    var s = String(v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function csvBuild(rows) {
+    return rows.map(function (r) { return r.map(csvCell).join(","); }).join("\r\n");
+  }
+  function csvDownload(rows, filename) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    /* BOM so that spreadsheet software reads UTF-8 correctly */
+    var blob = new Blob(["﻿" + text], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = el("a", { href: url, download: filename || "export.csv" });
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1200);
+  }
+  function csvCopy(rows) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    return copyText(text).then(function (ok) {
+      var tc = function (k, en) { return window.__t ? window.__t(k, en) : en; };
+      toast(ok ? tc("kit-csv-ok", "Table copied. Paste it into a spreadsheet.")
+               : tc("kit-csv-blocked", "Copy blocked by the browser. Use the download instead."));
+      return ok;
+    });
+  }
+
+  /* ---------- toast ---------- */
+
+  var toastNode = null, toastTimer = null;
+  function toast(msg) {
+    if (!toastNode) {
+      toastNode = el("div", { class: "k-toast", role: "status", "aria-live": "polite" });
+      document.body.appendChild(toastNode);
+    }
+    toastNode.textContent = msg;
+    toastNode.setAttribute("data-on", "1");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastNode.setAttribute("data-on", "0"); }, 3600);
+  }
+
+  /* ---------- source line ---------- */
+
+  /* src: { what, url, checked } -> the standard line that says where a number came from */
+  function sourceLine(src, bare) {
+    var kids = [];
+    if (src.what) kids.push(el("span", { text: src.what }));
+    if (src.url) kids.push(el("a", { href: src.url, rel: "noreferrer noopener", target: "_blank", text: src.label || src.url }));
+    if (src.checked) {
+      /* the word in front of the date belongs to the reader's language:
+         it was printed in English under every number on every instrument */
+      var ck = window.__t ? window.__t("kit-checked", "checked") : "checked";
+      kids.push(el("span", { class: "k-checked", text: ck + " " + src.checked }));
+    }
+    return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
+  }
+
+  return {
+    el: el, qs: qs, qsa: qsa, clear: clear,
+    num: num, money: money, pct: pct, toNum: toNum,
+    state: state, share: share,
+    copyText: copyText,
+    csvBuild: csvBuild, csvDownload: csvDownload, csvCopy: csvCopy,
+    toast: toast, sourceLine: sourceLine
+  };
+})();
+
+/* ============================================================
+   essay.js
+   The shared machinery behind every model in Explorable
+   Economics. It sits on top of kit.js and adds only what a
+   drawn, dragged and keyboard driven model needs.
+
+     Ex.s        make an SVG element
+     Ex.plot     set up a plot with a scale and a drag surface
+     Ex.slider   a labelled range control wired to a callback
+     Ex.seg      a segmented radio group, arrow keys included
+     Ex.drag     pointer and touch dragging in plot coordinates
+     Ex.rng      a seeded generator so a shared link replays
+     Ex.round    rounding that does not lie about precision
+     Ex.words    small helpers for prose that has to agree with
+                 the arithmetic on screen
+
+   No dependencies beyond kit.js. No network calls.
+   Spliced into every essay by build.sh at the ESSAY_JS marker.
+   ============================================================ */
+
+var Ex = (function () {
+  "use strict";
+
+  var NS = "http://www.w3.org/2000/svg";
+
+  /* ---------- svg ---------- */
+
+  function s(tag, attrs, text) {
+    var n = document.createElementNS(NS, tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        n.setAttribute(k, String(v));
+      });
+    }
+    if (text !== undefined && text !== null) n.appendChild(document.createTextNode(String(text)));
+    return n;
+  }
+
+  function svgRoot(w, h, label) {
+    var n = s("svg", {
+      viewBox: "0 0 " + w + " " + h,
+      width: w, height: h,
+      preserveAspectRatio: "xMidYMid meet",
+      role: "img",
+      "aria-label": label || ""
+    });
+    return n;
+  }
+
+  /* text sized for the plot, in the house mono */
+  function label(x, y, str, opt) {
+    var o = opt || {};
+    return s("text", {
+      x: x, y: y,
+      "text-anchor": o.anchor || "middle",
+      fill: o.fill || "var(--dim)",
+      "font-family": "var(--mono)",
+      "font-size": o.size || 10,
+      "font-weight": o.weight || 400,
+      "letter-spacing": o.track === undefined ? 0.2 : o.track,
+      opacity: o.opacity === undefined ? 1 : o.opacity
+    }, str);
+  }
+
+  /* ---------- dragging, in plot coordinates ---------- */
+
+  /* Convert a pointer event into the svg user coordinate system,
+     which is what every plot here draws in. */
+  function toLocal(svg, evt) {
+    var r = svg.getBoundingClientRect();
+    var vb = svg.viewBox.baseVal;
+    var w = vb && vb.width ? vb.width : r.width;
+    var h = vb && vb.height ? vb.height : r.height;
+    if (!r.width || !r.height) return { x: 0, y: 0 };
+    return { x: (evt.clientX - r.left) * w / r.width, y: (evt.clientY - r.top) * h / r.height };
+  }
+
+  /* drag(surface, { start, move, end }, measure) where each handler
+     receives the point in plot coordinates. The surface is the element
+     that listens, which must survive a redraw. The optional measure
+     function returns the svg currently inside it, so the plot can be
+     rebuilt mid gesture without the gesture being dropped.
+     Works with mouse, pen and touch. */
+  function drag(surface, handlers, measure) {
+    var active = false, id = null;
+    function box() { return (measure ? measure() : surface) || surface; }
+
+    function down(e) {
+      if (e.button !== undefined && e.button !== 0) return;
+      var p = toLocal(box(), e);
+      if (handlers.start && handlers.start(p, e) === false) return;
+      active = true; id = e.pointerId;
+      surface.classList.add("ex-dragging");
+      if (surface.setPointerCapture && id !== undefined && id !== null) {
+        try { surface.setPointerCapture(id); } catch (err) { /* capture is a nicety */ }
+      }
+      e.preventDefault();
+    }
+    function move(e) {
+      if (!active) {
+        if (handlers.hover) handlers.hover(toLocal(box(), e), e);
+        return;
+      }
+      if (id !== null && e.pointerId !== id) return;
+      if (handlers.move) handlers.move(toLocal(box(), e), e);
+      e.preventDefault();
+    }
+    function up(e) {
+      if (!active) return;
+      active = false;
+      surface.classList.remove("ex-dragging");
+      if (surface.releasePointerCapture && id !== undefined && id !== null) {
+        try { surface.releasePointerCapture(id); } catch (err) { /* already gone */ }
+      }
+      id = null;
+      if (handlers.end) handlers.end(toLocal(box(), e), e);
+    }
+
+    surface.addEventListener("pointerdown", down);
+    surface.addEventListener("pointermove", move);
+    surface.addEventListener("pointerup", up);
+    surface.addEventListener("pointercancel", up);
+    surface.addEventListener("pointerleave", function (e) { if (handlers.leave) handlers.leave(e); });
+    surface.classList.add("ex-draggable");
+    return { active: function () { return active; } };
+  }
+
+  /* ---------- controls ---------- */
+
+  var uid = 0;
+  function nextId(p) { uid += 1; return (p || "ex") + "-" + uid; }
+
+  /* slider(host, spec) -> { input, set, el }
+     spec: { label, min, max, step, value, format, hint, onInput, unit } */
+  function slider(host, spec) {
+    var id = nextId("sl");
+    var wrap = Kit.el("div", { class: "ex-ctrl" });
+    var valSpan = Kit.el("span", { class: "ex-val" });
+    var lab = Kit.el("label", { for: id }, [
+      Kit.el("span", { text: spec.label }),
+      valSpan
+    ]);
+    var input = Kit.el("input", {
+      type: "range", id: id,
+      min: spec.min, max: spec.max, step: spec.step,
+      value: spec.value
+    });
+    input.setAttribute("aria-describedby", id + "-v");
+    valSpan.id = id + "-v";
+
+    function paint(v) { valSpan.textContent = spec.format ? spec.format(v) : String(v); }
+    paint(Number(spec.value));
+
+    input.addEventListener("input", function () {
+      var v = Number(input.value);
+      paint(v);
+      if (spec.onInput) spec.onInput(v);
+    });
+
+    wrap.appendChild(lab);
+    wrap.appendChild(input);
+    if (spec.hint) wrap.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(wrap);
+
+    return {
+      el: wrap, input: input,
+      get: function () { return Number(input.value); },
+      set: function (v, quiet) {
+        input.value = String(v);
+        paint(Number(input.value));
+        if (!quiet && spec.onInput) spec.onInput(Number(input.value));
+      }
+    };
+  }
+
+  /* seg(host, spec) -> { get, set, el }
+     spec: { label, name, options: [{value,label}], value, onChange } */
+  function seg(host, spec) {
+    var fs = Kit.el("fieldset", { class: "ex-ctrl ex-seg" });
+    fs.appendChild(Kit.el("legend", {}, [Kit.el("span", { text: spec.label })]));
+    var row = Kit.el("div", { class: "ex-seg-row" });
+    var inputs = [];
+
+    spec.options.forEach(function (o) {
+      var lid = nextId("sg");
+      var inp = Kit.el("input", { type: "radio", name: spec.name, id: lid, value: o.value });
+      if (String(o.value) === String(spec.value)) inp.checked = true;
+      var lb = Kit.el("label", { for: lid }, [inp, document.createTextNode(o.label)]);
+      if (inp.checked) lb.classList.add("ex-on");
+      inp.addEventListener("change", function () {
+        paintOn();
+        if (inp.checked && spec.onChange) spec.onChange(o.value);
+      });
+      inputs.push({ inp: inp, lb: lb, value: o.value });
+      row.appendChild(lb);
+    });
+
+    function paintOn() {
+      inputs.forEach(function (r) { r.lb.classList.toggle("ex-on", r.inp.checked); });
+    }
+
+    fs.appendChild(row);
+    if (spec.hint) fs.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(fs);
+
+    return {
+      el: fs,
+      get: function () {
+        for (var i = 0; i < inputs.length; i++) if (inputs[i].inp.checked) return inputs[i].value;
+        return null;
+      },
+      set: function (v, quiet) {
+        inputs.forEach(function (r) { r.inp.checked = String(r.value) === String(v); });
+        paintOn();
+        if (!quiet && spec.onChange) spec.onChange(v);
+      }
+    };
+  }
+
+  /* check(host, spec) -> { get, set, el } */
+  function check(host, spec) {
+    var id = nextId("ck");
+    var inp = Kit.el("input", { type: "checkbox", id: id });
+    inp.checked = !!spec.value;
+    var lb = Kit.el("label", { class: "ex-check", for: id }, [inp, document.createTextNode(spec.label)]);
+    inp.addEventListener("change", function () { if (spec.onChange) spec.onChange(inp.checked); });
+    host.appendChild(lb);
+    return {
+      el: lb, get: function () { return inp.checked; },
+      set: function (v, quiet) { inp.checked = !!v; if (!quiet && spec.onChange) spec.onChange(inp.checked); }
+    };
+  }
+
+  /* readout(host, keys) -> set(key, value, sub)
+     The row of large figures under a plot. */
+  function readout(host, keys) {
+    var map = {};
+    var wrap = Kit.el("div", { class: "ex-read" });
+    keys.forEach(function (k) {
+      var v = Kit.el("p", { class: "ex-read-v" });
+      var cell = Kit.el("div", { class: k.tone ? "ex-read-" + k.tone : null }, [
+        Kit.el("p", { class: "ex-read-k", text: k.label }), v
+      ]);
+      map[k.id] = v;
+      wrap.appendChild(cell);
+    });
+    host.appendChild(wrap);
+    return function (id, value, sub) {
+      var n = map[id];
+      if (!n) return;
+      Kit.clear(n);
+      n.appendChild(document.createTextNode(String(value)));
+      if (sub) n.appendChild(Kit.el("small", { text: sub }));
+    };
+  }
+
+  /* ---------- numbers and words ---------- */
+
+  function round(v, dp) {
+    var f = Math.pow(10, dp === undefined ? 2 : dp);
+    return Math.round(v * f) / f;
+  }
+  function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+
+  /* Percentage of a whole, written the way the prose reads it. */
+  function share(part, whole, dp) {
+    if (!isFinite(whole) || whole === 0) return "not defined";
+    return Kit.num(100 * part / whole, dp === undefined ? 0 : dp) + " per cent";
+  }
+
+  var ORD = ["zeroth", "first", "second", "third", "fourth", "fifth", "sixth",
+    "seventh", "eighth", "ninth", "tenth"];
+  function ordinal(n) { return ORD[n] || (String(n) + "th"); }
+
+  var CARD = ["no", "one", "two", "three", "four", "five", "six", "seven",
+    "eight", "nine", "ten", "eleven", "twelve"];
+  function cardinal(n) { return CARD[n] !== undefined ? CARD[n] : String(n); }
+
+  /* ---------- a seeded generator ---------- */
+
+  /* mulberry32. Small, fast and identical in every browser, which is
+     what makes a shared link reproduce the same tournament. */
+  function rng(seed) {
+    var a = (seed >>> 0) || 1;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /* ---------- deferred redraw, one frame at a time ---------- */
+
+  function frames(fn) {
+    var queued = false;
+    return function () {
+      if (queued) return;
+      queued = true;
+      var run = function () { queued = false; fn(); };
+      if (window.requestAnimationFrame) window.requestAnimationFrame(run);
+      else setTimeout(run, 16);
+    };
+  }
+
+  /* ---------- responsive plot width ---------- */
+
+  /* Report the pixel width available to a plot so that the drawing code
+     can choose a viewBox that keeps the labels legible on a narrow
+     screen instead of scaling them down with the picture. */
+  function widthOf(host, fallback) {
+    var w = host.clientWidth || 0;
+    if (!w && host.parentNode) w = host.parentNode.clientWidth || 0;
+    return Math.max(260, Math.round(w || fallback || 640));
+  }
+
+  function onResize(fn) {
+    var t = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(t);
+      t = setTimeout(fn, 120);
+    });
+  }
+
+  return {
+    s: s, svgRoot: svgRoot, label: label,
+    drag: drag, toLocal: toLocal,
+    slider: slider, seg: seg, check: check, readout: readout,
+    round: round, clamp: clamp, share: share,
+    ordinal: ordinal, cardinal: cardinal,
+    rng: rng, frames: frames, widthOf: widthOf, onResize: onResize,
+    nextId: nextId
+  };
+})();
+
+/* ============================================================
+   sim.js
+   The shared machinery behind the five SIMEA simulations. It
+   sits on top of kit.js and essay.js and adds only what a model
+   that runs needs and a model that sits still does not.
+
+     Sim.palette   the kit's colours, resolved into real values
+                   so that a canvas can paint in them
+     Sim.canvas    a crisp canvas that follows its container
+     Sim.transport run, step, reset, share, and a clock, wired
+                   to the keyboard and to prefers reduced motion
+     Sim.still     whether the reader has asked for stillness
+     Sim.line      a small time series plot on a canvas
+     Sim.axis      shared axis furniture for those plots
+
+   No dependencies beyond kit.js and essay.js. No network calls.
+   Spliced into every simulation by build.sh at the SIM_JS marker.
+   ============================================================ */
+
+var Sim = (function () {
+  "use strict";
+
+  /* ---------- stillness ---------- */
+
+  var stillQuery = null;
+  function still() {
+    if (!stillQuery && window.matchMedia) {
+      stillQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    }
+    return !!(stillQuery && stillQuery.matches);
+  }
+
+  /* ---------- palette ---------- */
+
+  /* A canvas cannot paint in var(--accent), so the kit's tokens are read
+     once from the document and handed over as real colours. */
+  var PAL = null;
+  function palette() {
+    if (PAL) return PAL;
+    var cs = getComputedStyle(document.documentElement);
+    function tok(name, fallback) {
+      var v = cs.getPropertyValue(name);
+      v = v ? v.trim() : "";
+      return v || fallback;
+    }
+    PAL = {
+      paper: tok("--paper", "#f2efe6"),
+      sunk: tok("--paper-sunk", "#ebe7dc"),
+      panel: tok("--panel", "#f7f5ee"),
+      field: tok("--field", "#fdfcf8"),
+      ink: tok("--ink", "#2b2620"),
+      inkSoft: tok("--ink-soft", "#4b443b"),
+      dim: tok("--dim", "#6f6558"),
+      faint: tok("--faint", "#6f6759"),
+      rule: tok("--rule", "#d8d2c4"),
+      ruleFirm: tok("--rule-firm", "#bdb5a4"),
+      accent: tok("--accent", "#8a5a24"),
+      accentLit: tok("--accent-lit", "#f0e6d6"),
+      flag: tok("--flag", "#8c3b1e"),
+      flagLit: tok("--flag-lit", "#f3e4de"),
+      good: tok("--good", "#3f5c3a"),
+      goodLit: tok("--good-lit", "#e5eade"),
+      mono: '11px "IBM Plex Mono", ui-monospace, Menlo, monospace',
+      monoSmall: '9px "IBM Plex Mono", ui-monospace, Menlo, monospace'
+    };
+    return PAL;
+  }
+
+  /* mix two hex colours, t from 0 (a) to 1 (b) */
+  function mix(a, b, t) {
+    function rgb(h) {
+      h = String(h).trim();
+      if (h.charAt(0) === "#") h = h.slice(1);
+      if (h.length === 3) h = h.charAt(0) + h.charAt(0) + h.charAt(1) + h.charAt(1) + h.charAt(2) + h.charAt(2);
+      var n = parseInt(h, 16);
+      if (!isFinite(n)) return [0, 0, 0];
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+    var x = rgb(a), y = rgb(b), o = [0, 0, 0];
+    for (var i = 0; i < 3; i++) o[i] = Math.round(x[i] + (y[i] - x[i]) * t);
+    return "rgb(" + o[0] + "," + o[1] + "," + o[2] + ")";
+  }
+
+  /* ---------- canvas ---------- */
+
+  /* canvas(host, spec) -> { cv, ctx, w, h, resize, label }
+     spec: { aspect, minH, maxH, label, id, focus }
+     w and h are css pixels; the context is already scaled by the device
+     pixel ratio, so everything is drawn in css pixels and stays crisp. */
+  function canvas(host, spec) {
+    var s = spec || {};
+    var cv = document.createElement("canvas");
+    cv.className = "sm-canvas";
+    if (s.id) cv.id = s.id;
+    cv.setAttribute("role", "img");
+    cv.setAttribute("aria-label", s.label || "");
+    if (s.focus) cv.setAttribute("tabindex", "0");
+    host.appendChild(cv);
+    var ctx = cv.getContext("2d");
+
+    var api = {
+      cv: cv, ctx: ctx, w: 300, h: 200,
+      label: function (text) { cv.setAttribute("aria-label", text); },
+      resize: function () {
+        var w = host.clientWidth || cv.clientWidth || 320;
+        if (w < 240) w = 240;
+        var h = Math.round(w * (s.aspect === undefined ? 0.62 : s.aspect));
+        if (s.minH && h < s.minH) h = s.minH;
+        if (s.maxH && h > s.maxH) h = s.maxH;
+        var dpr = Math.min(2, window.devicePixelRatio || 1);
+        api.w = w; api.h = h;
+        cv.style.height = h + "px";
+        cv.width = Math.round(w * dpr);
+        cv.height = Math.round(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return api;
+      }
+    };
+    api.resize();
+    return api;
+  }
+
+  function clear(c, colour) {
+    var p = palette();
+    c.ctx.fillStyle = colour || p.field;
+    c.ctx.fillRect(0, 0, c.w, c.h);
+  }
+
+  function text(c, str, x, y, opt) {
+    var o = opt || {}, p = palette();
+    c.ctx.save();
+    c.ctx.font = o.font || (o.small ? p.monoSmall : p.mono);
+    c.ctx.fillStyle = o.fill || p.faint;
+    c.ctx.textAlign = o.align || "left";
+    c.ctx.textBaseline = o.baseline || "alphabetic";
+    c.ctx.fillText(str, x, y);
+    c.ctx.restore();
+  }
+
+  /* ---------- a small time series plot ---------- */
+
+  /* line(c, spec)
+     spec: { series: [{ data, colour, name, dash }], yMin, yMax, xLabel,
+             yTicks: [{v,label}], pad, maxPoints } */
+  function line(c, spec) {
+    var p = palette(), ctx = c.ctx;
+    var padL = spec.padL === undefined ? 42 : spec.padL;
+    var padR = spec.padR === undefined ? 10 : spec.padR;
+    var padT = spec.padT === undefined ? 10 : spec.padT;
+    var padB = spec.padB === undefined ? 26 : spec.padB;
+    var iw = c.w - padL - padR, ih = c.h - padT - padB;
+    if (iw < 10 || ih < 10) return;
+
+    clear(c, p.field);
+    ctx.strokeStyle = p.rule;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(padL + 0.5, padT + 0.5, iw - 1, ih - 1);
+
+    var yMin = spec.yMin === undefined ? 0 : spec.yMin;
+    var yMax = spec.yMax === undefined ? 1 : spec.yMax;
+    if (yMax <= yMin) yMax = yMin + 1;
+    function Y(v) { return padT + ih - (v - yMin) / (yMax - yMin) * ih; }
+
+    var n = 0;
+    spec.series.forEach(function (s) { if (s.data.length > n) n = s.data.length; });
+    var span = Math.max(spec.minSpan || 40, n);
+    function X(i) { return padL + (span <= 1 ? 0 : i * iw / (span - 1)); }
+
+    (spec.yTicks || []).forEach(function (t) {
+      var yy = Y(t.v);
+      ctx.strokeStyle = p.rule;
+      ctx.setLineDash([1, 4]);
+      ctx.beginPath(); ctx.moveTo(padL, yy); ctx.lineTo(padL + iw, yy); ctx.stroke();
+      ctx.setLineDash([]);
+      text(c, t.label, padL - 6, yy + 3, { align: "right", small: true, fill: p.faint });
+    });
+
+    spec.series.forEach(function (s) {
+      if (!s.data.length) return;
+      ctx.strokeStyle = s.colour;
+      ctx.lineWidth = s.width || 1.8;
+      if (s.dash) ctx.setLineDash(s.dash); else ctx.setLineDash([]);
+      ctx.beginPath();
+      for (var i = 0; i < s.data.length; i++) {
+        var xx = X(i), yy = Y(s.data[i]);
+        if (i === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    if (spec.xLabel) {
+      text(c, spec.xLabel, padL + iw / 2, c.h - 8, { align: "center", small: true });
+    }
+    if (spec.legend !== false) {
+      var lx = padL + 6, ly = padT + 12;
+      spec.series.forEach(function (s) {
+        if (!s.name) return;
+        ctx.strokeStyle = s.colour; ctx.lineWidth = 2.2;
+        if (s.dash) ctx.setLineDash(s.dash); else ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(lx, ly - 3); ctx.lineTo(lx + 14, ly - 3); ctx.stroke();
+        ctx.setLineDash([]);
+        text(c, s.name, lx + 19, ly, { small: true, fill: p.dim });
+        ly += 13;
+      });
+    }
+  }
+
+  /* keep a series to a fixed number of points by dropping the oldest */
+  function push(arr, v, cap) {
+    arr.push(v);
+    if (arr.length > cap) arr.splice(0, arr.length - cap);
+    return arr;
+  }
+
+  /* ---------- transport ---------- */
+
+  /* transport(host, spec) -> { running, start, stop, toggle, tick, reset,
+                                setClock, el }
+     spec: { onStep, onDraw, onReset, onShare, stepsPerFrame, clock,
+             burst, focusEl, runLabel, stillLabel }
+
+     Under prefers reduced motion nothing animates by itself: the run
+     button becomes an advance button that computes a burst of steps and
+     paints once at the end, and the step button is always there, so the
+     model stays fully usable without a single frame of movement. */
+  function tt(k, en, v) {
+    var out = window.__t ? window.__t(k, en) : en;
+    if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+    return out;
+  }
+
+  function transport(host, spec) {
+    var s = spec || {};
+    var burst = s.burst || 25;
+    function runWord() { return tt(s.runKey || "sim-run", s.runLabel || "Run"); }
+    var spf = s.stepsPerFrame || 1;
+    var quiet = still();
+
+    var bar = Kit.el("div", { class: "sm-bar" });
+    var runBtn = Kit.el("button", {
+      type: "button", class: "k-btn sm-btn-run",
+      text: quiet ? tt("sim-advance", "Advance {n} steps", { n: burst }) : runWord()
+    });
+    var stepBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: tt("sim-step", "Step") });
+    var resetBtn = Kit.el("button", { type: "button", class: "k-btn k-btn-quiet", text: tt("sim-reset", "Reset") });
+    var shareBtn = s.onShare
+      ? Kit.el("button", { type: "button", class: "k-btn k-btn-quiet",
+                           text: tt("sim-share", "Copy link to this run") })
+      : null;
+    var clock = Kit.el("span", { class: "sm-clock", text: "" });
+
+    bar.appendChild(runBtn);
+    bar.appendChild(stepBtn);
+    bar.appendChild(resetBtn);
+    if (shareBtn) bar.appendChild(shareBtn);
+    bar.appendChild(clock);
+    host.appendChild(bar);
+
+    if (quiet) {
+      host.appendChild(Kit.el("p", { class: "sm-still", text: tt("sim-still",
+        "Your system asks for reduced motion, so this model never animates. Advance moves it {n} steps "
+        + "and draws the result once. Step moves it one.", { n: burst }) }));
+    }
+
+    var keysNote = Kit.el("p", { class: "sm-keys" });
+    function paintKeys() {
+      keysNote.innerHTML = tt("sim-keys",
+        "Keyboard: <kbd>Space</kbd> {space}, <kbd>S</kbd> steps once, <kbd>R</kbd> resets. Every control "
+        + "below is a standard slider, radio group or button.",
+        { space: quiet ? tt("sim-keys-adv", "advances") : tt("sim-keys-run", "runs and pauses") });
+    }
+    paintKeys();
+    host.appendChild(keysNote);
+
+    var api = {
+      el: bar, running: false, runBtn: runBtn,
+      setClock: function (t) { clock.textContent = t; },
+      /* how many steps a frame takes while running, which some models let
+         the reader set: it changes the waiting and not the model */
+      setRate: function (v) { spf = Math.max(1, Math.round(v)); }
+    };
+
+    var raf = null;
+    function frame() {
+      if (!api.running) return;
+      for (var i = 0; i < spf; i++) s.onStep();
+      if (s.onDraw) s.onDraw();
+      raf = window.requestAnimationFrame(frame);
+    }
+
+    api.start = function () {
+      if (quiet || api.running) return;
+      api.running = true;
+      runBtn.textContent = tt("sim-pause", "Pause");
+      runBtn.setAttribute("data-on", "1");
+      raf = window.requestAnimationFrame(frame);
+    };
+    api.stop = function () {
+      if (!api.running) return;
+      api.running = false;
+      runBtn.textContent = runWord();
+      runBtn.removeAttribute("data-on");
+      if (raf) window.cancelAnimationFrame(raf);
+      raf = null;
+      if (s.onSettle) s.onSettle();
+    };
+    api.toggle = function () {
+      if (quiet) {
+        for (var i = 0; i < burst; i++) s.onStep();
+        if (s.onDraw) s.onDraw();
+        if (s.onSettle) s.onSettle();
+        return;
+      }
+      if (api.running) api.stop(); else api.start();
+    };
+    api.tick = function () {
+      s.onStep();
+      if (s.onDraw) s.onDraw();
+      if (s.onSettle) s.onSettle();
+    };
+    api.reset = function () {
+      api.stop();
+      if (s.onReset) s.onReset();
+    };
+
+    runBtn.addEventListener("click", api.toggle);
+    stepBtn.addEventListener("click", function () { api.stop(); api.tick(); });
+    resetBtn.addEventListener("click", api.reset);
+    if (shareBtn) shareBtn.addEventListener("click", function () { s.onShare(); });
+
+    /* the keys work while the figure, or anything inside it, has focus */
+    var scope = s.scope || host;
+    scope.addEventListener("keydown", function (e) {
+      var tag = (e.target && e.target.tagName) || "";
+      if (tag === "INPUT" && e.key === " ") return;
+      if (tag === "BUTTON" && (e.key === " " || e.key === "Enter")) return;
+      if (e.key === " ") { e.preventDefault(); api.toggle(); }
+      else if (e.key === "s" || e.key === "S") { e.preventDefault(); api.stop(); api.tick(); }
+      else if (e.key === "r" || e.key === "R") { e.preventDefault(); api.reset(); }
+    });
+
+    /* a model that is running while its page is hidden is only heat */
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) api.stop();
+    });
+
+    document.addEventListener("langchange", function () {
+      runBtn.textContent = api.running
+        ? tt("sim-pause", "Pause")
+        : (quiet ? tt("sim-advance", "Advance {n} steps", { n: burst }) : runWord());
+      stepBtn.textContent = tt("sim-step", "Step");
+      resetBtn.textContent = tt("sim-reset", "Reset");
+      if (shareBtn) shareBtn.textContent = tt("sim-share", "Copy link to this run");
+      var still = host.querySelector(".sm-still");
+      if (still) still.textContent = tt("sim-still",
+        "Your system asks for reduced motion, so this model never animates. Advance moves it {n} steps "
+        + "and draws the result once. Step moves it one.", { n: burst });
+      paintKeys();
+    });
+
+    api.quiet = quiet;
+    return api;
+  }
+
+  /* ---------- numbers ---------- */
+
+  /* Fixed decimals, but written in the language being read: Turkish and
+     German put the comma where English puts the point, and every number in
+     every simulation comes through here. */
+  var FIX_LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
+  function fix(v, dp) {
+    if (!isFinite(v)) return window.__t ? window.__t("sim-undef", "not defined") : "not defined";
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(FIX_LOCALES[window.__lang] || "en-GB",
+      { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+
+  /* Shannon entropy of a histogram of counts, in bits, normalised by the
+     entropy of the flat distribution over the same number of bins so that
+     it runs from zero to one. */
+  function entropy(counts) {
+    var total = 0, i;
+    for (i = 0; i < counts.length; i++) total += counts[i];
+    if (total <= 0 || counts.length < 2) return 0;
+    var h = 0;
+    for (i = 0; i < counts.length; i++) {
+      var q = counts[i] / total;
+      if (q > 0) h -= q * Math.log(q);
+    }
+    return h / Math.log(counts.length);
+  }
+
+  /* The distance between two histograms measured along the axis they sit
+     on: how far, on average, the mass of one would have to be carried to
+     lie exactly on the other, as a share of the whole width of the axis.
+     Zero when the two are identical, one when they sit at opposite ends.
+     Unlike a total variation distance it does not jump to one the moment
+     two collapsed distributions stop overlapping, which is what makes it
+     usable once a population has gathered into a few positions. */
+  function emd(a, b) {
+    var sa = 0, sb = 0, i;
+    for (i = 0; i < a.length; i++) sa += a[i];
+    for (i = 0; i < b.length; i++) sb += b[i];
+    if (sa <= 0 || sb <= 0 || a.length < 2) return 0;
+    var fa = 0, fb = 0, sum = 0;
+    for (i = 0; i < a.length - 1; i++) {
+      fa += a[i] / sa;
+      fb += b[i] / sb;
+      sum += Math.abs(fa - fb);
+    }
+    return sum / (a.length - 1);
+  }
+
+  /* total variation distance between two histograms of counts */
+  function tvd(a, b) {
+    var sa = 0, sb = 0, i;
+    for (i = 0; i < a.length; i++) sa += a[i];
+    for (i = 0; i < b.length; i++) sb += b[i];
+    if (sa <= 0 || sb <= 0) return 0;
+    var d = 0;
+    for (i = 0; i < a.length; i++) d += Math.abs(a[i] / sa - b[i] / sb);
+    return d / 2;
+  }
+
+  return {
+    still: still, palette: palette, mix: mix,
+    canvas: canvas, clear: clear, text: text, line: line, push: push,
+    transport: transport, fix: fix, entropy: entropy, tvd: tvd, emd: emd
+  };
+})();
+
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"pg-desc": "Teker teker tane bırakılan bir kum yığını. Kendini kararlılığın eşiğine örgütlüyor; orada bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor. Sen tane bırakırken çığ büyüklüğü dağılımının log log grafikte kuruluşunu izle.", "pl-001": "Yığın", "pl-002": "<span class=\"k-num\">01</span>Masa ve kayıt", "pl-003": "<span class=\"k-num\">02</span>Düz çizgi ne demek", "pl-004": "<span class=\"k-num\">03</span>Hiçbir şey ayarlanmıyor", "pl-005": "<span class=\"k-num\">04</span>Bu neden SIMEA'ya ait", "pl-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "pl-007": "<span class=\"k-num\">06</span>Kaynak", "pl-008": "Varsayımlar ve sınırlar", "pl-009": "Bir masaya teker teker bırakılan taneler. Hiçbir şey onu ayarlamıyor, hiçbir şey dengelemiyor, ve kimse onu belirli bir durumda tutmuyor. Kendi kararlılığının eşiğine kadar yürüyor ve orada kalıyor; ve oraya vardıktan sonra bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor, ve ne kadar izlersen izle hangisi olacağını söyleyemiyorsun.", "pl-010": "Bak, Tang ve Wiesenfeld bunu 1987'de, hâlâ iş gören bir iddiayla birlikte yayımladı: çok parçalı ve yavaş sürülen bir sistem, kimse bir parametreyi özel bir değere ayarlamadan kendiliğinden kritik bir noktaya gider, ve oraya vardığında davranışının karakteristik bir büyüklüğü kalmaz.", "pl-011": "Model neredeyse hiçbir şey. Bir hücre ızgarası, her hücrede az sayıda tane. Bir hücreye bir tane bırak. Bir hücre dört ya da daha fazlasını tutarsa deviriyor: dört komşusunun her birine birer tane veriyor ve kalanı tutuyor. Devirme bir komşuyu kendi sınırının üstüne itebiliyor, yani tek bir tane masayı boydan boya geçen bir zincir başlatabiliyor. Kenardan düşen taneler gidiyor.", "pl-012": "Hepsi bu. Ayarlanacak bir parametre yok, ve asıl mesele de bu.", "pl-013": "Solda yığın var, her hücrenin kaç tane tuttuğuna göre gölgelenmiş, son çığda devrilen hücreler işaretli. Sağda kayıt var: şimdiye kadarki her çığ, büyüklüğüne göre sıralanmış, iki ekseni de logaritmik olan bir grafiğe çizilmiş. Karakteristik büyüklüğü olan bir dağılım bir tümsek gösterirdi. Bir kuvvet yasası düz bir çizgi gösteriyor, ve ne kadar çok tane bırakırsan o kadar düzeliyor.", "pl-014": "Yığın", "pl-015": "Çığ büyüklükleri, iki eksen de logaritmik", "pl-016": "İki ekseni de logaritmik olan bir grafikteki düz çizgi şunu söylüyor: belli bir büyüklükteki çığların sayısı, o büyüklüğün sabit bir kuvveti kadar düşüyor. Sıklığı yarıya indirmek için büyüklüğü sabit bir katsayıyla çarpmak gerekiyor, hangi büyüklükten başlarsan başla. Bir dağılımın karakteristik ölçeği olmaması bu demek: tipik bir çığ yok, ve bir sonrakinin ortalama büyüklüğünü sormak, dağılımın işe yarar biçimde cevaplamadığı bir soru sormak.", "pl-017": "s büyüklüğündeki çığların sayısı ∝ s üzeri eksi τ <small data-i=\"pl-034\">Grafiğin altında basılan üs, logaritmik olarak kutulanmış sayımlara en küçük kareler yöntemiyle uyduruluyor; yalnızca uydurmaya değecek kadar çığ içeren kutular üzerinden. Küçük bir masada kaba bir tahmin, ve τ'nun ölçümü olarak değil çizginin düz olduğunun göstergesi olarak okunmalı.</small>", "pl-018": "Grafiğin nasıl dolduğuna dikkat et. Küçük çığlar hemen ve muazzam sayıda geliyor. Büyükler seyrek geliyor, ve gördüğün en büyük olan sürekli aşılıyor. Bu, kaydın gerçek bir azami değere doğru yatışması değil. Burada masanın boyutundan başka gerçek bir azami yok, ve daha büyük bir masada en büyük olay basitçe daha büyük olurdu.", "pl-019": "Okumada hücre başına ortalama tane sayısını izle. Yığın dolarken tırmanıyor, sonra tırmanmayı bırakıp yerinde duruyor. O noktadan sonra yığına ne yaparsan yap, kabaca aynı ortalama yüksekliğe dönüyor. Giren taneler kenarlardan düşenlerle dengeleniyor, ve dengeyi çığların kendisi koruyor.", "pl-020": "Bu ifadedeki örgütlü sözcüğüne işlevini kazandıran şey bu. Yığını kritiklikte tutan kimse yok. Taneleri daha hızlı ekle, yine orada. Boş bir masadan başlat, oraya yürüyor. Aşırı yüklü bir masadan başlat, ona geri çöküyor. Kritik durum, dinamiğin onu götürdüğü yer; etkinin kimsenin yönetmediği sistemlerde ortaya çıkmasının sebebi de bu.", "pl-021": "İki sebep, ve önemsediğim ikincisi.", "pl-022": "Birincisi öngörü meselesi. Böyle bir durumda bir sonraki olayın büyüklüğü gerçekten öngörülemez, ve bunun sebebi kimsenin cahil olması değil. Dağılım burada tam olarak biliniyor, çünkü onu ben yazdım; ve bilmek yardım etmiyor: bir koşu boyunca ihtimalleri söylüyor, bir sonraki tane hakkında hiçbir şey söylemiyor. Öngörülemezliği, daha iyi bir aletin çözeceği varsayımıyla, veri ya da model kalitesi eksikliği sayma alışkanlığı var. Bazı öngörülemezlik sistemin bir özelliğidir ve her aletten sağ çıkar; neyin öngörülebilip neyin öngörülemeyeceğinden söz etmek isteyen bir araştırma projesinın ikisini ayırt edebilmesi gerekir.", "pl-023": "İkincisi sorumlulukla ilgili. Büyük bir çığ olduğunda, onu başlatan tane hiçbir şey başlatmayan binlerce taneden ayırt edilemez. Özel bir tane değildi. Daha sert düşmedi. Onun neyinin farklı olduğunu aramak hiçbir şey bulmayacak, çünkü hiçbir şeyi farklı değildi; fark tamamen yığının çoktan ulaştığı durumda yatıyor. Bir felaketi ondan önceki son eylemi arayarak inceleyen her kurum bunu yapıyor, ve yığın, son eylemin masum olup sonucun yine de muazzam olabileceğinin bildiğim en temiz gösterimi.", "pl-024": "<strong>Bu bir öğretim modeli, ölçüm değil.</strong> Bu sayfadaki her sayı ya senin ayarladığın ya da bu modelin senin ayarladığından ürettiği bir sayı. Burada ne kum ne piyasa ne de gerçek bir sistem tarif ediliyor.", "pl-025": "Tamamen tarayıcında çalışır. Burada yaptığın hiçbir şey sayfadan çıkmaz. Sunucu yok, analitik yok, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Özdemir</a>.", "pl-026": "<b>Bu kum değil</b>Gerçek granüler yığınlar bu modele karşı sınandı ve ondan daha az temiz davranıyorlar; sebebi, modelin temsil edecek hiçbir yolunun olmadığı atalet ve sürtünme. İsim bir resim, kum hakkında bir iddia değil.", "pl-027": "<b>Masa küçük</b>Buradaki her kuvvet yasası ızgaranın boyutuyla kesiliyor; grafiğin sağ ucunun aşağı kıvrılmasının sebebi bu. Bu boyutta bir masada birkaç bin çığdan uydurulan üs kaba bir gösterge, fazlası değil.", "pl-028": "<b>Geçiş dönemi dahil</b>Her çığ kaydediliyor; yığının hâlâ dolmakta olduğu ve kritik durumuna henüz ulaşmadığı erken dönemdekiler dahil. Grafiği ciddiye alarak okumadan önce sıfırla ve birkaç bin tane bırak.", "pl-029": "<b>Sürücü tepkiden ayrılmış</b>Her çığ, bir sonraki tane bırakılmadan önce sonuna kadar çalışıyor. Zaman ölçeklerinin bu ayrımı modelin bir varsayımı, ve gevşeyebileceğinden daha hızlı sürülen bir sistem farklı davranırdı.", "pl-030": "<b>Kuvvet yasalarını görmek kolay, kanıtlamak zordur</b>Log log grafikte düz bir bölüm tek başına zayıf bir kanıttır, ve bir kuvvet yasasını diğer ağır kuyruklu dağılımlardan ayırmaya dair istatistik literatürü göz kararı uydurmalara nazik değildir. Bu sayfa, bir kuvvet yasası üreten bir mekanizmayı gösteriyor; onu saptamanın bir yöntemini değil.", "pl-031": "<b>Benzetme bulgu değildir</b>Yukarıdaki iki paragraf, öngörü ve sorumluluk üzerine, benzetmeye dayalı savlar. Bu model piyasalar, kurumlar ya da felaketler hakkında hiçbir şey ortaya koymuyor, ve bu sayfadan çıkan hiçbir sayının onlara dair bir iddiada yeri yok.", "pl-033": "Şekil bir <span class=\"ex-model-sub\">tane bırak ve kaydın dolmasını izle</span>", "pl-skip": "Simülasyona geç", "pl-run": "Tane bırak", "pl-plot-empty": "Çığ büyüklükleri dağılımı hâlâ boş.", "pl-plot-empty2": "Çığ büyüklükleri dağılımı hâlâ boş: şimdiye kadar yalnızca {n} çığ kaydedildi.", "pl-plot-none": "henüz yeterli çığ yok", "pl-ax-size": "çığın büyüklüğü", "pl-ax-often": "ne sıklıkta", "pl-slope": "eğim {s}, yani τ yaklaşık {t}", "pl-plot": "Çığ büyüklüklerinin, iki ekseni de logaritmik bir grafikteki dağılımı; {d} taneden gelen {n} çığ üzerinden. Noktalar eğimi {s} olan düz bir çizgiye yakın düşüyor, ki bu yaklaşık {t} üslü bir kuvvet yasası. Şimdiye kadarki en büyük çığ {big} hücre devirdi.", "pl-sum": "{n} x {n} bir masa, hücre başına ortalama {mh} tane tutuyor; {d} tane {where} bırakıldıktan ve {av} çığdan sonra. Son tane {last} devirdi, ve şimdiye kadarki en büyük çığ {big} devirdi.", "pl-where-centre": "ortaya", "pl-where-random": "rastgele", "pl-cells": "{n} hücre", "pl-s0": "Masa boş. Tane bırak ve ortalama yüksekliğin tırmanmasını, sonra tırmanmayı bırakmasını, ve sağdaki kaydın düzelmeye başlamasını izle.", "pl-s1": "{d} sonra yığın {mh} tutuyor{tail}", "pl-s1-filling": " ve hâlâ doluyor. Kenarlardan henüz tanelerin geldiği hıza yakın bir şey düşmüyor, yani sağdaki kayıt kritik dağılım değil.", "pl-s1-critical": ", ve orada kalıyor. Buradan sonra gelen taneler kenarlardan gidenlerle dengeleniyor, ve dengeyi onu ayarlayan bir şey değil, çığların kendisi koruyor.", "pl-s2": "Son tane {last} devirdi{none} Şimdiye kadarki en büyüğü {big} devirdi{share} Onu başlatan tane diğer her taneyle aynıydı.", "pl-s2-none": ": indi ve hiçbir şey olmadı.", "pl-s2-some": ".", "pl-s2-over": ", ki bu masadaki hücre sayısından fazla devirme, çünkü bir hücre tek bir çığda kendi sınırını birden fazla kez aşabiliyor.", "pl-s2-share": ", ki bu masadaki hücrelerin yüzde {p} kadarı.", "pl-grains": "{n} tane", "pl-per-cell": "hücre başına {n}", "pl-sl-n": "Masa boyu", "pl-sl-n-h": "Daha büyük bir masa kritik durumuna daha geç ulaşıyor ve daha büyük çığlar tutuyor.", "pl-fmt-n": "{v} x {v}", "pl-sg-w": "Tanenin düştüğü yer", "pl-sg-w-h": "Yalnızca ortaya bırakmak klasik deseni daha yavaş kuruyor.", "pl-opt-random": "herhangi bir yere", "pl-opt-centre": "ortaya", "pl-sl-r": "Çalışırken kare başına tane", "pl-sl-r-h": "Sürücünün ne hızla çalıştığı. Fiziği değil, yalnızca bekleyişi değiştiriyor.", "pl-rd-drops": "Bırakılan tane", "pl-rd-av": "Çığ", "pl-rd-last": "Son çığ", "pl-rd-big": "Şimdiye kadarki en büyük", "pl-rd-mh": "Hücre başına tane", "pl-rd-tau": "Uydurulan üs", "pl-sub-nothing": "{n} tane hiçbir şey yapmadı", "pl-sub-toppled": "hücre devrildi", "pl-sub-big": "hücre devrildi, bazıları birden fazla kez", "pl-sub-mh": "ortalama yükseklik", "pl-notyet": "henüz yok", "pl-sub-bins": "{n} kutudan", "pl-sub-keep": "bırakmaya devam et", "pl-key-empty": "boş", "pl-key-two": "iki tane", "pl-key-three": "üç tane", "pl-key-topple": "az önce devrildi", "pl-share": "Bağlantı kopyalandı. Bu kadar tane bırakılmış hâliyle açılıyor.", "pl-032": "Modeli ve kendiliğinden örgütlenen kritiklik fikrini tanıtan makale: uzamsal serbestlik dereceleri olan dinamik sistemler doğal olarak kendiliğinden örgütlenen kritik bir duruma evriliyor; yazarlar bunu titreşim gürültüsüne ve fraktal yapıların kökenine bağlıyor. <span class=\"ex-cite-w\">Per Bak, Chao Tang and Kurt Wiesenfeld, <span class=\"ex-cite-t\">Self-organized\n            criticality: An explanation of the 1/f noise</span>, Physical Review Letters 59(4), 27 July\n            1987, page 381.\n            <a href=\"https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381\" target=\"_blank\" rel=\"noreferrer noopener\">journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "pg-title": "Yığın"}, "de": {"pg-desc": "Ein Sandhaufen, Korn für Korn beschickt. Er organisiert sich selbst an die Kante der Stabilität, wo das nächste Korn gar nichts bewirken oder ein Viertel des Haufens zum Einsturz bringen kann. Sehen Sie zu, wie sich die Verteilung der Lawinengrößen im Log-Log-Diagramm aufbaut, während Sie Körner fallen lassen.", "pl-001": "Der Haufen", "pl-002": "<span class=\"k-num\">01</span>Der Tisch und das Protokoll", "pl-003": "<span class=\"k-num\">02</span>Was die Gerade bedeutet", "pl-004": "<span class=\"k-num\">03</span>Es wird nichts eingestellt", "pl-005": "<span class=\"k-num\">04</span>Warum das zu SIMEA gehört", "pl-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "pl-007": "<span class=\"k-num\">06</span>Quelle", "pl-008": "Annahmen und Grenzen", "pl-009": "Körner, eines nach dem anderen auf einen Tisch fallen gelassen. Nichts stellt ihn ein, nichts balanciert ihn aus, und niemand hält ihn in einem bestimmten Zustand. Er wandert von selbst an die Kante seiner eigenen Stabilität und bleibt dort, und ist er einmal dort, kann das nächste Korn gar nichts bewirken oder ein Viertel des Haufens zum Einsturz bringen, und kein noch so langes Zusehen sagt Ihnen, welches von beidem.", "pl-010": "Bak, Tang und Wiesenfeld veröffentlichten das 1987 mit einer Behauptung, die noch immer arbeitet: dass ein System mit vielen Teilen und einem langsamen Antrieb von selbst an einen kritischen Punkt wandert, ohne dass jemand einen Parameter auf einen besonderen Wert setzt, und dass sein Verhalten dort keine charakteristische Größe mehr hat.", "pl-011": "Das Modell ist fast nichts. Ein Gitter aus Zellen, jede mit einer kleinen Zahl von Körnern. Lassen Sie ein Korn auf eine Zelle fallen. Hält eine Zelle je vier oder mehr, kippt sie: Sie gibt jedem ihrer vier Nachbarn ein Korn und behält den Rest. Das Kippen kann einen Nachbarn über sein eigenes Limit schieben, ein einzelnes Korn kann also eine Kette auslösen, die über den Tisch läuft. Körner, die über die Kante fallen, sind weg.", "pl-012": "Das ist alles. Es gibt keinen Parameter einzustellen, und genau darum geht es.", "pl-013": "Links ist der Haufen, schattiert danach, wie viele Körner jede Zelle hält, mit den Zellen markiert, die in der letzten Lawine gekippt sind. Rechts ist das Protokoll: jede Lawine bisher, nach Größe sortiert, auf einem Diagramm mit zwei logarithmischen Achsen. Eine Verteilung mit einer charakteristischen Größe zeigte einen Buckel. Ein Potenzgesetz zeigt eine Gerade, und je mehr Körner Sie fallen lassen, desto gerader wird sie.", "pl-014": "Der Haufen", "pl-015": "Lawinengrößen, beide Achsen logarithmisch", "pl-016": "Eine Gerade auf einem Diagramm mit zwei logarithmischen Achsen sagt, dass die Zahl der Lawinen einer gegebenen Größe wie eine feste Potenz dieser Größe fällt. Die Häufigkeit zu halbieren verlangt, die Größe mit einem konstanten Faktor zu multiplizieren, von welcher Größe Sie auch ausgehen. Das heißt es, wenn eine Verteilung keine charakteristische Skala hat: Es gibt keine typische Lawine, und nach der durchschnittlichen Größe der nächsten zu fragen heißt, eine Frage zu stellen, die die Verteilung nicht nützlich beantwortet.", "pl-017": "Zahl der Lawinen der Größe s ∝ s hoch minus τ <small data-i=\"pl-034\">Der unter dem Diagramm gedruckte Exponent wird durch kleinste Quadrate an die logarithmisch gebinnten Zählungen angepasst, über die Bins, die genug Lawinen enthalten, um eine Anpassung zu lohnen. Es ist eine grobe Schätzung auf einem kleinen Tisch und sollte als Hinweis darauf gelesen werden, dass die Linie gerade ist, und nicht als Messung von τ.</small>", "pl-018": "Achten Sie darauf, wie sich das Diagramm füllt. Die kleinen Lawinen kommen sofort und in gewaltiger Zahl. Die großen kommen selten, und die größte, die Sie gesehen haben, wird immer wieder überholt. Das ist nicht das Protokoll, das sich auf ein wahres Maximum zubewegt. Ein wahres Maximum gibt es hier nicht außer der Größe des Tisches, und auf einem größeren Tisch wäre das größte Ereignis schlicht größer.", "pl-019": "Beobachten Sie in der Ablesung die mittlere Zahl der Körner je Zelle. Sie klettert, während sich der Haufen füllt, hört dann auf zu klettern und bleibt stehen. Von da an kehrt der Haufen, was immer Sie mit ihm tun, zu ungefähr derselben mittleren Höhe zurück. Hineingehende Körner werden durch Körner ausgeglichen, die über die Kanten fallen, und das Gleichgewicht halten die Lawinen selbst.", "pl-020": "Das ist es, was das Wort selbstorganisiert in der Wendung arbeiten lässt. Der Haufen wird von niemandem an der Kritikalität gehalten. Fügen Sie Körner schneller hinzu, und sie ist immer noch da. Starten Sie von einem leeren Tisch, und er wandert dorthin. Starten Sie von einem überladenen Tisch, und er fällt darauf zurück. Der kritische Zustand ist der, wohin die Dynamik ihn trägt, weshalb der Effekt in Systemen auftaucht, die niemand verwaltet.", "pl-021": "Zwei Gründe, und der zweite ist der, der mir wichtig ist.", "pl-022": "Der erste ist der Prognosepunkt. In einem solchen Zustand ist die Größe des nächsten Ereignisses wirklich unprognostizierbar, und nicht, weil jemand unwissend wäre. Die Verteilung ist hier exakt bekannt, denn ich habe sie geschrieben, und sie zu kennen hilft nicht: Sie nennt die Chancen über einen Lauf und sagt über das nächste Korn überhaupt nichts. Es gibt die Gewohnheit, Unvorhersehbarkeit für einen Mangel an Daten oder Modellgüte zu halten, in der Annahme, ein besseres Instrument würde sie auflösen. Manche Unvorhersehbarkeit ist eine Eigenschaft des Systems und übersteht jedes Instrument, und ein Forschungsprojekt, das darüber sprechen will, was sich prognostizieren lässt und was nicht, muss beides auseinanderhalten können.", "pl-023": "Der zweite handelt von Verantwortung. Wenn eine große Lawine geschieht, ist das Korn, das sie auslöste, nicht von den Tausenden Körnern zu unterscheiden, die nichts auslösten. Es war kein besonderes Korn. Es fiel nicht härter. Zu suchen, was an ihm anders war, findet nichts, denn nichts war anders, und der Unterschied liegt ganz im Zustand, den der Haufen bereits erreicht hatte. Jede Institution, die eine Katastrophe untersucht, indem sie nach der letzten Handlung davor sucht, tut genau das, und der Haufen ist die sauberste mir bekannte Demonstration, dass die letzte Handlung unschuldig und das Ergebnis dennoch gewaltig sein kann.", "pl-024": "<strong>Das ist ein Lehrmodell, keine Messung.</strong> Jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die dieses Modell daraus erzeugt hat. Nichts hier beschreibt Sand, Märkte oder irgendein reales System.", "pl-025": "Läuft vollständig in Ihrem Browser. Nichts, was Sie hier tun, verlässt die Seite. Kein Server, keine Analyse, kein Netzwerkaufruf, nachdem die Schriften geladen sind. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>.", "pl-026": "<b>Es ist kein Sand</b>Reale granulare Haufen wurden gegen dieses Modell geprüft und verhalten sich weniger sauber als es, aus Gründen mit Trägheit und Reibung zu tun, die das Modell nicht darstellen kann. Der Name ist ein Bild und keine Behauptung über Sand.", "pl-027": "<b>Der Tisch ist klein</b>Jedes Potenzgesetz hier wird von der Größe des Gitters abgeschnitten, weshalb sich das rechte Ende des Diagramms nach unten biegt. Der aus einigen tausend Lawinen auf einem Tisch dieser Größe angepasste Exponent ist ein grober Hinweis und nicht mehr.", "pl-028": "<b>Die Einschwingphase ist enthalten</b>Jede Lawine wird protokolliert, auch die aus der frühen Zeit, als sich der Haufen noch füllte und seinen kritischen Zustand nicht erreicht hatte. Drücken Sie Zurücksetzen und lassen Sie einige tausend Körner fallen, bevor Sie das Diagramm ernst nehmen.", "pl-029": "<b>Der Antrieb ist von der Antwort getrennt</b>Jede Lawine läuft zu Ende, bevor das nächste Korn fällt. Diese Trennung der Zeitskalen ist eine Annahme des Modells, und ein System, das schneller angetrieben wird, als es relaxieren kann, verhielte sich anders.", "pl-030": "<b>Potenzgesetze sind leicht zu sehen und schwer zu belegen</b>Ein gerades Stück auf einem Log-Log-Diagramm ist für sich genommen ein schwacher Beleg, und die statistische Literatur zur Unterscheidung eines Potenzgesetzes von anderen schwerschwänzigen Verteilungen ist mit Augenmaßanpassungen nicht nachsichtig. Diese Seite zeigt einen Mechanismus, der eines erzeugt, und keine Methode, eines nachzuweisen.", "pl-031": "<b>Eine Analogie ist kein Befund</b>Die zwei Absätze oben über Prognose und über Verantwortung sind Argumente per Analogie. Dieses Modell belegt nichts über Märkte, Institutionen oder Katastrophen, und keine Zahl von dieser Seite gehört in eine Behauptung über sie.", "pl-033": "Abbildung eins <span class=\"ex-model-sub\">Körner fallen lassen und zusehen, wie sich das Protokoll füllt</span>", "pl-skip": "Zur Simulation springen", "pl-run": "Körner fallen lassen", "pl-plot-empty": "Die Verteilung der Lawinengrößen ist noch leer.", "pl-plot-empty2": "Die Verteilung der Lawinengrößen ist noch leer: Bisher wurden nur {n} Lawinen protokolliert.", "pl-plot-none": "noch nicht genug Lawinen", "pl-ax-size": "Größe der Lawine", "pl-ax-often": "wie oft", "pl-slope": "Steigung {s}, τ ist also etwa {t}", "pl-plot": "Die Verteilung der Lawinengrößen auf einem Diagramm mit zwei logarithmischen Achsen, über {n} Lawinen aus {d} Körnern. Die Punkte liegen nahe an einer Geraden der Steigung {s}, was ein Potenzgesetz mit einem Exponenten von etwa {t} ist. Die größte Lawine bisher hat {big} Zellen gekippt.", "pl-sum": "Ein Tisch von {n} mal {n} hält im Mittel {mh} Körner je Zelle, nach {d} Körnern, die {where} gefallen sind, und {av} Lawinen. Das letzte Korn hat {last} gekippt, und die größte Lawine bisher hat {big} gekippt.", "pl-where-centre": "auf die Mitte", "pl-where-random": "zufällig", "pl-cells": "{n} Zellen", "pl-s0": "Der Tisch ist leer. Lassen Sie Körner fallen und sehen Sie zu, wie die mittlere Höhe klettert, dann aufhört zu klettern, und wie sich das Protokoll rechts zu begradigen beginnt.", "pl-s1": "Nach {d} hält der Haufen {mh}{tail}", "pl-s1-filling": " und füllt sich noch. Über die Kanten fällt noch nichts annähernd so schnell, wie Körner ankommen, das Protokoll rechts ist also nicht die kritische Verteilung.", "pl-s1-critical": ", und dort bleibt er. Von hier an werden ankommende Körner durch Körner ausgeglichen, die über die Kanten gehen, und das Gleichgewicht halten die Lawinen selbst und nicht irgendetwas, das es einstellt.", "pl-s2": "Das letzte Korn hat {last} gekippt{none} Die größte bisher hat {big} gekippt{share} Das Korn, das sie auslöste, war wie jedes andere Korn.", "pl-s2-none": ": Es landete und es geschah überhaupt nichts.", "pl-s2-some": ".", "pl-s2-over": ", was mehr Kippvorgänge sind, als es Zellen auf dem Tisch gibt, denn eine Zelle kann in einer einzigen Lawine mehr als einmal über ihr Limit gehen.", "pl-s2-share": ", was {p} Prozent der Zellen auf dem Tisch sind.", "pl-grains": "{n} Körnern", "pl-per-cell": "{n} je Zelle", "pl-sl-n": "Tischgröße", "pl-sl-n-h": "Ein größerer Tisch braucht länger bis zu seinem kritischen Zustand und hält größere Lawinen.", "pl-fmt-n": "{v} mal {v}", "pl-sg-w": "Wo das Korn landet", "pl-sg-w-h": "Nur auf die Mitte fallen zu lassen baut das klassische Muster langsamer auf.", "pl-opt-random": "irgendwo", "pl-opt-centre": "die Mitte", "pl-sl-r": "Körner je Bild im Lauf", "pl-sl-r-h": "Wie schnell der Antrieb läuft. Es ändert nicht die Physik, nur das Warten.", "pl-rd-drops": "Gefallene Körner", "pl-rd-av": "Lawinen", "pl-rd-last": "Letzte Lawine", "pl-rd-big": "Größte bisher", "pl-rd-mh": "Körner je Zelle", "pl-rd-tau": "Angepasster Exponent", "pl-sub-nothing": "{n} Körner bewirkten nichts", "pl-sub-toppled": "Zellen gekippt", "pl-sub-big": "Zellen gekippt, manche mehr als einmal", "pl-sub-mh": "mittlere Höhe", "pl-notyet": "noch nicht", "pl-sub-bins": "aus {n} Bins", "pl-sub-keep": "weiter fallen lassen", "pl-key-empty": "leer", "pl-key-two": "zwei Körner", "pl-key-three": "drei Körner", "pl-key-topple": "gerade gekippt", "pl-share": "Link kopiert. Er öffnet mit so vielen gefallenen Körnern.", "pl-032": "Die Arbeit, die das Modell und die Idee der selbstorganisierten Kritikalität einführte: Dynamische Systeme mit räumlichen Freiheitsgraden entwickeln sich von selbst in einen selbstorganisierten kritischen Zustand, den die Autoren mit Flimmerrauschen und mit dem Ursprung fraktaler Strukturen verbinden. <span class=\"ex-cite-w\">Per Bak, Chao Tang and Kurt Wiesenfeld, <span class=\"ex-cite-t\">Self-organized\n            criticality: An explanation of the 1/f noise</span>, Physical Review Letters 59(4), 27 July\n            1987, page 381.\n            <a href=\"https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381\" target=\"_blank\" rel=\"noreferrer noopener\">journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381</a>\n            Geprüft: 2026 08 22.</span>\n          ", "pg-title": "Der Haufen"}};
+function T(k, en, v) {
+  var out = window.__t ? window.__t(k, en) : en;
+  if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+  return out;
+}
+
+var SWEEP = {
+  "Table size": "pl-sl-n",
+  "A larger table takes longer to reach its critical state and holds larger avalanches.": "pl-sl-n-h",
+  "Where the grain lands": "pl-sg-w",
+  "Dropping only on the centre builds the classic pattern more slowly.": "pl-sg-w-h",
+  "anywhere": "pl-opt-random", "the centre": "pl-opt-centre",
+  "Grains per frame while running": "pl-sl-r",
+  "How fast the drive runs. It does not change the physics, only the waiting.": "pl-sl-r-h",
+  "Grains dropped": "pl-rd-drops", "Avalanches": "pl-rd-av", "Last avalanche": "pl-rd-last",
+  "Largest so far": "pl-rd-big", "Grains per cell": "pl-rd-mh", "Fitted exponent": "pl-rd-tau",
+  "empty": "pl-key-empty", "two grains": "pl-key-two", "three grains": "pl-key-three",
+  "toppled just now": "pl-key-topple"
+};
+function sweepI18n() {
+  document.querySelectorAll(".ex-ctrl label > span:first-child, .ex-ctrl legend > span, "
+    + ".ex-seg-row label, .ex-read-k, .k-hint, #pl-key span").forEach(function (n) {
+    var en = n.getAttribute("data-en");
+    if (en === null) {
+      en = (n.childNodes.length && n.lastChild.nodeType === 3 ? n.lastChild.textContent : n.textContent).trim();
+      n.setAttribute("data-en", en);
+    }
+    var k = SWEEP[en];
+    if (!k) return;
+    var tgt = n.lastChild && n.lastChild.nodeType === 3 ? n.lastChild : n;
+    tgt.textContent = T(k, en);
+  });
+}
+function cellsT(n) { return T("pl-cells", "{n} cell" + (n === 1 ? "" : "s"), { n: n }); }
+
+/* ============================================================
+   Simulation five: the pile
+
+   The Bak, Tang and Wiesenfeld cellular automaton. A square
+   lattice of heights, a grain added to one site, and the rule
+
+     if z >= 4:  z -= 4 and each of the four neighbours gains 1
+
+   applied until nothing exceeds the threshold. Grains pushed off
+   the boundary leave the system, which is what lets the pile
+   reach a stationary state instead of filling up.
+
+   The avalanche size is the number of topplings. Sizes are kept
+   in logarithmic bins rather than as a list, so that a run of a
+   hundred thousand grains costs no more memory than a run of a
+   hundred, and the distribution is drawn as a density: the count
+   in a bin divided by the width of the bin and the total.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var Q = Kit.qs;
+
+  var THRESH = 4;
+  var NB = 64;                /* logarithmic bins for the size distribution */
+  var RATIO = 1.3;
+  var MAXDROPS = 400000;
+
+  var S = { n: 51, where: "random", rate: 40, seed: 3 };
+
+  var z = null, N = 0, rand = null;
+  var toppled = null, lastSize = 0, drops = 0, avalanches = 0, biggest = 0, lost = 0;
+  var counts = null, edges = null;
+
+  /* ---------- the pile ---------- */
+
+  function reset() {
+    N = S.n;
+    rand = Ex.rng(S.seed * 15485863 + 17);
+    z = new Uint8Array(N * N);
+    toppled = new Uint8Array(N * N);
+    counts = new Int32Array(NB);
+    edges = new Float64Array(NB + 1);
+    for (var k = 0; k <= NB; k++) edges[k] = Math.pow(RATIO, k);
+    drops = 0; avalanches = 0; biggest = 0; lastSize = 0; lost = 0;
+  }
+
+  function record(size) {
+    if (size > biggest) biggest = size;
+    if (size < 1) return;          /* a grain that landed and did nothing */
+    avalanches++;
+    var k = Math.floor(Math.log(size) / Math.log(RATIO));
+    if (k < 0) k = 0;
+    if (k >= NB) k = NB - 1;
+    counts[k]++;
+  }
+
+  function drop() {
+    if (drops >= MAXDROPS) return;
+    var i;
+    for (i = 0; i < toppled.length; i++) toppled[i] = 0;
+    var x, y;
+    if (S.where === "centre") { x = (N / 2) | 0; y = (N / 2) | 0; }
+    else { x = Math.floor(rand() * N); y = Math.floor(rand() * N); }
+    z[y * N + x] += 1;
+    drops++;
+
+    var stack = [], size = 0;
+    if (z[y * N + x] >= THRESH) stack.push(y * N + x);
+    while (stack.length) {
+      var idx = stack.pop();
+      if (z[idx] < THRESH) continue;
+      z[idx] -= THRESH;
+      toppled[idx] = 1;
+      size++;
+      var cx = idx % N, cy = (idx / N) | 0;
+      var d = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+      for (var k = 0; k < 4; k++) {
+        var nx = cx + d[k][0], ny = cy + d[k][1];
+        if (nx < 0 || ny < 0 || nx >= N || ny >= N) { lost++; continue; }
+        var nid = ny * N + nx;
+        z[nid] += 1;
+        if (z[nid] >= THRESH) stack.push(nid);
+      }
+    }
+    lastSize = size;
+    record(size);
+  }
+
+  function meanHeight() {
+    var s = 0;
+    for (var i = 0; i < z.length; i++) s += z[i];
+    return z.length ? s / z.length : 0;
+  }
+
+  /* ---------- the fitted exponent ---------- */
+
+  function fit() {
+    var pts = [], total = 0, k;
+    for (k = 0; k < NB; k++) total += counts[k];
+    if (total < 40) return null;
+    for (k = 0; k < NB; k++) {
+      if (counts[k] < 5) continue;
+      var lo = edges[k], hi = edges[k + 1];
+      var width = hi - lo;
+      var centre = Math.sqrt(lo * hi);
+      if (centre < 1) continue;
+      var dens = counts[k] / (total * width);
+      pts.push([Math.log10(centre), Math.log10(dens)]);
+    }
+    if (pts.length < 4) return null;
+    var n = pts.length, sx = 0, sy = 0, sxy = 0, sxx = 0;
+    for (k = 0; k < n; k++) {
+      sx += pts[k][0]; sy += pts[k][1];
+      sxy += pts[k][0] * pts[k][1]; sxx += pts[k][0] * pts[k][0];
+    }
+    var den = n * sxx - sx * sx;
+    if (Math.abs(den) < 1e-12) return null;
+    var slope = (n * sxy - sx * sy) / den;
+    var inter = (sy - slope * sx) / n;
+    return { slope: slope, inter: inter, pts: pts, n: n, total: total };
+  }
+
+  /* ---------- drawing ---------- */
+
+  var cGrid = null, cPlot = null;
+
+  function drawGrid() {
+    var p = Sim.palette(), ctx = cGrid.ctx;
+    Sim.clear(cGrid, p.panel);
+    var side = Math.min(cGrid.w, cGrid.h) - 4;
+    var cell = side / N;
+    var ox = (cGrid.w - side) / 2, oy = (cGrid.h - side) / 2;
+    var shades = [p.field, Sim.mix(p.field, p.accent, 0.28),
+                  Sim.mix(p.field, p.accent, 0.58), Sim.mix(p.field, p.accent, 0.92)];
+    for (var y = 0; y < N; y++) {
+      for (var x = 0; x < N; x++) {
+        var v = z[y * N + x];
+        ctx.fillStyle = shades[v > 3 ? 3 : v];
+        ctx.fillRect(ox + x * cell, oy + y * cell, Math.ceil(cell), Math.ceil(cell));
+      }
+    }
+    if (lastSize > 0) {
+      ctx.fillStyle = p.flag;
+      ctx.globalAlpha = 0.5;
+      for (y = 0; y < N; y++) {
+        for (x = 0; x < N; x++) {
+          if (!toppled[y * N + x]) continue;
+          ctx.fillRect(ox + x * cell, oy + y * cell, Math.ceil(cell), Math.ceil(cell));
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+    ctx.strokeStyle = p.ruleFirm;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(ox + 0.5, oy + 0.5, side - 1, side - 1);
+    cGrid.label(summary());
+  }
+
+  function drawPlot() {
+    var p = Sim.palette(), ctx = cPlot.ctx;
+    Sim.clear(cPlot, p.field);
+    var padL = 44, padR = 10, padT = 12, padB = 46;
+    var iw = cPlot.w - padL - padR, ih = cPlot.h - padT - padB;
+    if (iw < 20 || ih < 20) return;
+    ctx.strokeStyle = p.rule;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(padL + 0.5, padT + 0.5, iw - 1, ih - 1);
+
+    var f = fit();
+    if (!f) {
+      Sim.text(cPlot, T("pl-plot-none", "not enough avalanches yet"), padL + iw / 2, padT + ih / 2,
+        { align: "center", fill: p.faint });
+      Sim.text(cPlot, T("pl-ax-size", "size of avalanche"), padL + iw / 2, cPlot.h - 21,
+        { align: "center", small: true });
+      cPlot.label(T("pl-plot-empty2",
+        "The distribution of avalanche sizes is still empty: only {n} avalanches have been recorded so "
+        + "far.", { n: avalanches }));
+      return;
+    }
+
+    var xs = f.pts.map(function (q) { return q[0]; });
+    var ys = f.pts.map(function (q) { return q[1]; });
+    var x0 = 0, x1 = Math.max(1, Math.ceil(Math.max.apply(null, xs)));
+    var y1 = Math.ceil(Math.max.apply(null, ys));
+    var y0 = Math.floor(Math.min.apply(null, ys));
+    if (y1 - y0 < 2) y0 = y1 - 2;
+    function X(v) { return padL + (v - x0) / (x1 - x0) * iw; }
+    function Y(v) { return padT + ih - (v - y0) / (y1 - y0) * ih; }
+
+    var d;
+    for (d = x0; d <= x1; d++) {
+      ctx.strokeStyle = p.rule;
+      ctx.setLineDash([1, 4]);
+      ctx.beginPath(); ctx.moveTo(X(d), padT); ctx.lineTo(X(d), padT + ih); ctx.stroke();
+      ctx.setLineDash([]);
+      Sim.text(cPlot, d === 0 ? "1" : ("10^" + d), X(d), padT + ih + 12, { align: "center", small: true });
+    }
+    for (d = y0; d <= y1; d++) {
+      ctx.strokeStyle = p.rule;
+      ctx.setLineDash([1, 4]);
+      ctx.beginPath(); ctx.moveTo(padL, Y(d)); ctx.lineTo(padL + iw, Y(d)); ctx.stroke();
+      ctx.setLineDash([]);
+      Sim.text(cPlot, "10^" + d, padL - 6, Y(d) + 3, { align: "right", small: true });
+    }
+
+    /* the fitted straight line, behind the points */
+    ctx.strokeStyle = p.good;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(X(x0), Y(f.inter + f.slope * x0));
+    ctx.lineTo(X(x1), Y(f.inter + f.slope * x1));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = p.accent;
+    for (var k = 0; k < f.pts.length; k++) {
+      ctx.beginPath();
+      ctx.arc(X(f.pts[k][0]), Y(f.pts[k][1]), 2.6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    Sim.text(cPlot, T("pl-ax-size", "size of avalanche"), padL + iw / 2, cPlot.h - 21,
+      { align: "center", small: true });
+    Sim.text(cPlot, T("pl-slope", "slope {s}, so \u03c4 is about {t}",
+      { s: Sim.fix(f.slope, 2), t: Sim.fix(-f.slope, 2) }),
+      padL + iw / 2, cPlot.h - 7, { align: "center", small: true, fill: p.dim });
+    var yl = T("pl-ax-often", "how often");
+    Sim.text(cPlot, yl, padL + 4, padT + 11, { small: true, fill: p.faint });
+    cPlot.label(plotWords(f));
+  }
+
+  /* ---------- words ---------- */
+
+  function plotWords(f) {
+    if (!f) f = fit();
+    if (!f) return T("pl-plot-empty", "The distribution of avalanche sizes is still empty.");
+    return T("pl-plot",
+      "The distribution of avalanche sizes on a plot with both axes logarithmic, over {n} avalanches from "
+      + "{d} grains. The points fall close to a straight line of slope {s}, which is a power law with an "
+      + "exponent of about {t}. The largest avalanche so far toppled {big} cells.",
+      { n: f.total, d: drops, s: Sim.fix(f.slope, 2), t: Sim.fix(-f.slope, 2), big: biggest });
+  }
+
+  function summary() {
+    return T("pl-sum",
+      "A {n} by {n} table holding {mh} grains per cell on average, after {d} grains dropped {where} and "
+      + "{av} avalanches. The last grain toppled {last} and the largest avalanche so far toppled {big}.",
+      { n: N, mh: Sim.fix(meanHeight(), 2), d: drops,
+        where: S.where === "centre" ? T("pl-where-centre", "on the centre")
+                                    : T("pl-where-random", "at random"),
+        av: avalanches, last: cellsT(lastSize), big: cellsT(biggest) });
+  }
+
+  function says() {
+    var host = Q("#pl-says");
+    Kit.clear(host);
+    var e = Kit.el;
+    function nh(t, flag) { return '<span class="ex-n' + (flag ? " ex-n-flag" : "") + '">' + t + "</span>"; }
+
+    var p1 = e("p");
+    if (drops === 0) {
+      p1.innerHTML = T("pl-s0",
+        "The table is empty. Drop grains and watch the average height climb, then stop climbing, and the "
+        + "record on the right start to straighten.");
+      host.appendChild(p1);
+      return;
+    }
+
+    var mh = meanHeight();
+    p1.innerHTML = T("pl-s1", "After {d} the pile is holding {mh}{tail}",
+      { d: nh(T("pl-grains", "{n} grains", { n: drops })),
+        mh: nh(T("pl-per-cell", "{n} per cell", { n: Sim.fix(mh, 2) })),
+        tail: mh < 2.0
+          ? T("pl-s1-filling", " and is still filling up. Nothing is falling off the edges yet at "
+              + "anything like the rate grains are arriving, so the record on the right is not the "
+              + "critical distribution.")
+          : T("pl-s1-critical", ", which is where it stays. From here on, grains arriving are balanced by "
+              + "grains leaving over the edges, and the balance is maintained by the avalanches "
+              + "themselves rather than by anything tuning it.") });
+    host.appendChild(p1);
+
+    var p2 = e("p");
+    p2.innerHTML = T("pl-s2",
+      "The last grain toppled {last}{none} The largest so far toppled {big}{share} The grain that started "
+      + "it was the same as every other grain.",
+      { last: nh(cellsT(lastSize), lastSize > 200),
+        none: lastSize === 0 ? T("pl-s2-none", ": it landed and nothing happened at all.")
+                             : T("pl-s2-some", "."),
+        big: nh(cellsT(biggest), true),
+        share: biggest > N * N
+          ? T("pl-s2-over", ", which is more topplings than there are cells on the table, because a cell "
+              + "can go over its limit more than once in a single avalanche.")
+          : T("pl-s2-share", ", which is {p} per cent of the cells on the table.",
+              { p: Sim.fix(100 * biggest / (N * N), 1) }) });
+    host.appendChild(p2);
+  }
+
+  /* ---------- controls ---------- */
+
+  var cN, cW, cR, setRead, tr;
+
+  function buildControls() {
+    var rack = Q("#pl-ctrls");
+
+    cN = Ex.slider(rack, {
+      label: "Table size",
+      min: 21, max: 81, step: 2, value: S.n,
+      format: function (v) { return T("pl-fmt-n", "{v} by {v}", { v: v }); },
+      hint: "A larger table takes longer to reach its critical state and holds larger avalanches.",
+      onInput: function (v) { S.n = v; restart(); }
+    });
+
+    cW = Ex.seg(rack, {
+      label: "Where the grain lands", name: "pl-where", value: S.where,
+      options: [{ value: "random", label: "anywhere" }, { value: "centre", label: "the centre" }],
+      hint: "Dropping only on the centre builds the classic pattern more slowly.",
+      onChange: function (v) { S.where = v; restart(); }
+    });
+
+    cR = Ex.slider(rack, {
+      label: "Grains per frame while running",
+      min: 1, max: 200, step: 1, value: S.rate,
+      format: function (v) { return String(v); },
+      hint: "How fast the drive runs. It does not change the physics, only the waiting.",
+      onInput: function (v) { S.rate = v; if (tr) tr.setRate(v); }
+    });
+
+    setRead = Ex.readout(Q("#pl-read"), [
+      { id: "drops", label: "Grains dropped", tone: "hot" },
+      { id: "av", label: "Avalanches" },
+      { id: "last", label: "Last avalanche" },
+      { id: "big", label: "Largest so far", tone: "flag" },
+      { id: "mh", label: "Grains per cell" },
+      { id: "tau", label: "Fitted exponent" }
+    ]);
+
+    var p = Sim.palette();
+    var key = Q("#pl-key");
+    [[p.field, T("pl-key-empty", "empty")],
+     [Sim.mix(p.field, p.accent, 0.58), T("pl-key-two", "two grains")],
+     [Sim.mix(p.field, p.accent, 0.92), T("pl-key-three", "three grains")],
+     [p.flag, T("pl-key-topple", "toppled just now")]].forEach(function (k) {
+      var mark = Kit.el("i");
+      mark.style.background = k[0];
+      mark.style.border = "1px solid " + p.ruleFirm;
+      key.appendChild(Kit.el("span", {}, [mark, document.createTextNode(k[1])]));
+    });
+  }
+
+  function restart() {
+    if (tr) tr.stop();
+    reset();
+    paint();
+    Kit.state.write(hashOut());
+  }
+
+  /* ---------- state in the address ---------- */
+
+  function hashOut() {
+    return { n: S.n, w: S.where, r: S.rate, sd: S.seed, d: Math.min(drops, 40000) };
+  }
+
+  function hashIn() {
+    var o = Kit.state.read();
+    if (!o) return false;
+    if (isFinite(o.n)) S.n = Math.round(Ex.clamp(Number(o.n), 21, 81) / 2) * 2 + 1;
+    if (S.n > 81) S.n = 81;
+    if (o.w === "centre" || o.w === "random") S.where = o.w;
+    if (isFinite(o.r)) S.rate = Math.round(Ex.clamp(Number(o.r), 1, 200));
+    if (isFinite(o.sd)) S.seed = Math.round(Ex.clamp(Number(o.sd), 1, 999999));
+    reset();
+    /* A shared link can ask for forty thousand grains, and replaying them
+       in one synchronous loop froze the tab before first paint with no way
+       to interrupt. These links exist to be sent to people, so the replay
+       is bounded by the clock rather than by the count: it does as much as
+       it can in a quarter of a second and shows the state it reached. */
+    var want = isFinite(o.d) ? Math.round(Ex.clamp(Number(o.d), 0, 40000)) : 0;
+    var until = (window.performance ? performance.now() : Date.now()) + 250;
+    while (drops < want) {
+      drop();
+      if ((drops & 255) === 0 &&
+          (window.performance ? performance.now() : Date.now()) > until) break;
+    }
+    return true;
+  }
+
+  function sync() { cN.set(S.n, true); cW.set(S.where, true); cR.set(S.rate, true); }
+
+  /* ---------- render ---------- */
+
+  function clock() { return T("pl-grains", "{n} grains", { n: drops }); }
+
+  function paint() {
+    drawGrid();
+    drawPlot();
+    var f = fit();
+    setRead("drops", String(drops), S.where === "centre"
+      ? T("pl-where-centre", "on the centre") : T("pl-where-random", "at random"));
+    setRead("av", String(avalanches),
+      T("pl-sub-nothing", "{n} grains did nothing", { n: drops - avalanches }));
+    setRead("last", String(lastSize), T("pl-sub-toppled", "cells toppled"));
+    setRead("big", String(biggest), T("pl-sub-big", "cells toppled, some more than once"));
+    setRead("mh", Sim.fix(meanHeight(), 2), T("pl-sub-mh", "average height"));
+    setRead("tau", f ? Sim.fix(-f.slope, 2) : T("pl-notyet", "not yet"),
+      f ? T("pl-sub-bins", "from {n} bins", { n: f.n }) : T("pl-sub-keep", "keep dropping"));
+    Q("#pl-sum").textContent = summary();
+    says();
+    if (tr) tr.setClock(clock());
+  }
+
+  function init() {
+    cGrid = Sim.canvas(Q("#pl-grid"), { aspect: 1, label: "" });
+    cPlot = Sim.canvas(Q("#pl-plot"), { aspect: 0.92, minH: 210, label: "" });
+
+    buildControls();
+    if (!hashIn()) reset();
+    sync();
+
+    tr = Sim.transport(Q("#pl-bar"), {
+      scope: Q("#m1"),
+      burst: 400,
+      runKey: "pl-run", runLabel: "Drop grains",
+      onStep: function () { drop(); },
+      onDraw: function () {
+        drawGrid();
+        if (drops % 40 === 0) drawPlot();
+        if (tr) tr.setClock(clock());
+        if (drops >= MAXDROPS) { tr.stop(); paint(); }
+      },
+      onSettle: function () { paint(); Kit.state.write(hashOut()); },
+      onReset: function () { S.seed = (S.seed % 999999) + 1; reset(); paint(); Kit.state.write(hashOut()); },
+      onShare: function () { Kit.share(hashOut(), T("pl-share", "Link copied. It reopens with this many grains dropped.")); }
+    });
+    tr.setRate(S.rate);
+
+    paint();
+    Kit.state.write(hashOut());
+
+    sweepI18n();
+    document.addEventListener("langchange", function () { sweepI18n(); sync(); paint(); });
+    Ex.onResize(function () { cGrid.resize(); cPlot.resize(); paint(); });
+    window.addEventListener("hashchange", function () {
+      if (hashIn()) { sync(); paint(); }
+    });
+
+    window.__pl = {
+      set: function (o) {
+        Object.keys(o).forEach(function (k) { S[k] = o[k]; });
+        if (tr) tr.stop();
+        reset(); sync(); paint(); Kit.state.write(hashOut());
+      },
+      run: function (k) { for (var i = 0; i < k; i++) drop(); paint(); Kit.state.write(hashOut()); return this.read(); },
+      read: function () {
+        var f = fit();
+        return { drops: drops, avalanches: avalanches, biggest: biggest, last: lastSize,
+                 mean: meanHeight(), tau: f ? -f.slope : null, bins: f ? f.n : 0 };
+      }
+    };
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+
+<script>
+window.CHROME_I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Profil", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Atölye", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/><\/svg><i>Beş simülasyondan beşincisi<\/i>"}, "de": {"kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Profil", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Werkstatt", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/><\/svg><i>Simulation fünf von fünf<\/i>"}};
+
+(function(){
+  "use strict";
+  var KEY = "lang", lang = "en";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  /* Three languages exist and nothing else is one. Asking the dictionary
+     whether it has a key called l was the test, and CHROME_I18N["constructor"]
+     is truthy, so a value planted in localStorage became window.__lang and
+     every number on the instrument threw. The generated pages were fixed and
+     these twenty were not; they are the same rule. */
+  var descBase = null;
+  function known(l){ return l === "en" || l === "tr" || l === "de"; }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
+  function apply(l){
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
+    document.documentElement.setAttribute("lang", l);
+    /* The description is invisible on the page and is exactly what a search
+       result and a link preview show, so it follows the language too. */
+    if (descBase === null) {
+      var dm0 = document.querySelector('meta[name="description"]');
+      descBase = dm0 ? dm0.getAttribute("content") : "";
+    }
+    var wantD = (!en && d["pg-desc"] !== undefined) ? d["pg-desc"] : descBase;
+    var dm1 = document.querySelector('meta[name="description"]');
+    if (dm1) dm1.setAttribute("content", wantD);
+    var om1 = document.querySelector('meta[property="og:description"]');
+    if (om1) om1.setAttribute("content", wantD);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    var ot1 = document.querySelector('meta[property="og:title"]');
+    if (ot1) ot1.setAttribute("content", document.title);
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
+  apply(lang);
+  /* A page that wants a whole viewport of height has to know how much of it
+     the bar has already taken, or it overhangs the fold by exactly that much
+     and clips whatever sits at its bottom. */
+  function barHeight(){
+    var b = document.querySelector(".bar");
+    document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
+  }
+  barHeight();
+  addEventListener("resize", barHeight);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
+  /* the nav is one scrolling line on a phone, so the page you are on can
+     start off past its right edge. Bring it into view without moving the
+     page. The generated pages do the same. */
+  try {
+    var cur = document.querySelector(".bar nav a[aria-current]");
+    if (cur && cur.parentNode.scrollWidth > cur.parentNode.clientWidth) {
+      cur.parentNode.scrollLeft = Math.max(0, cur.offsetLeft - 24);
+    }
+  } catch(e){}
+})();
+
+</script>
+
+</body>
+</html>

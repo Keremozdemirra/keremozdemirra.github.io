@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Every page here claims, in its own text, that nothing it holds leaves the
+     browser. Until now that claim was enforced by a grep in denetim.sh; this
+     asks the browser to enforce it instead. connect-src is the directive that
+     matters: with it set to 'none' no page can open a connection to anywhere,
+     so a calculator cannot start sending what someone typed into it even if a
+     future edit tried to. The one page that does talk to a host, the
+     guestbook, widens this for itself and says so.
+
+     script-src keeps 'unsafe-inline' because the site is written as inline
+     script by design, and there are no external scripts and no inline event
+     handlers for an attacker to reach anyway. frame-ancestors is deliberately
+     absent: it is ignored in a meta tag by specification, and GitHub Pages
+     cannot set headers, so clickjacking protection is simply not available
+     here. Saying so is better than pretending otherwise. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<title>Notes. Kerem Özdemir</title>
+<meta name="description" content="Working notes, when they earn it.">
+<meta name="author" content="Kerem Özdemir">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://keremozdemir.de/notes.html">
+<meta property="og:title" content="Notes. Kerem Özdemir">
+<meta property="og:description" content="Working notes, when they earn it.">
+<meta property="og:type" content="profile">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<link rel="alternate" type="application/rss+xml" title="Notes" href="/run/feed.xml">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --text:"Newsreader",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --display:var(--serif);
+  --paper:#f2efe6;
+  --paper2:#eae6da;
+  --fg:#221e17;
+  --ink:var(--fg);
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --raised:#faf8f1;
+  --field:#ffffff;
+  --accent:#8a5a24;
+  --accent-text:#8a5a24;
+  --amber:#b06a24;
+  --petrol:#1d2b26;
+  --danger:#9c3a1e;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+#fadeout{position:fixed;inset:0;background:#17110a;opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:96}
+#fadeout.on{opacity:1}
+@keyframes surface{from{opacity:1}to{opacity:0}}
+body::after{content:"";position:fixed;inset:0;background:#17110a;pointer-events:none;z-index:95;
+  animation:surface .55s ease .05s forwards}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.crown{animation:riseIn .7s cubic-bezier(.16,1,.3,1) both;animation-delay:.1s}
+@media (prefers-reduced-motion:reduce){body::after{display:none}.crown{animation:none}}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--fg);font-family:var(--sans);line-height:1.6}
+::selection{background:#e3c893;color:#221e17}
+html{caret-color:var(--accent);scrollbar-color:#c9c0aa var(--paper);scrollbar-width:thin}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--paper)}
+::-webkit-scrollbar-thumb{background:#cdc4ae;border:3px solid var(--paper);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:#b3a88e}
+a{text-underline-offset:.18em;text-decoration-thickness:from-font}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav:not(.langs){margin-left:auto}
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+/* clear of the last nav name by more than the names are clear of each
+   other, so the languages read as their own control and not as a tenth
+   link in the row */
+.langs{display:flex;gap:.1rem;margin-left:clamp(1rem,2.2vw,1.8rem)}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .foot-links{display:flex;gap:clamp(.9rem,2.4vw,1.6rem);align-items:center;flex-wrap:wrap}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:nowrap;
+    justify-content:flex-start;gap:clamp(.7rem,3.4vw,1.2rem);
+    overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    /* the last name fades rather than being cut, which is what says there
+       is more of it to the right */
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    padding-right:2.2rem}
+  .bar nav::-webkit-scrollbar{display:none}
+  .bar nav a{font-size:.8rem;padding:.55rem 0;flex:0 0 auto}
+  /* the name of the page you are on is brought into view on load, so a
+     reader arriving deep in the site is not looking at a row that starts
+     somewhere else */
+  .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* nine nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
+@media (max-width:430px){
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+/* ---------- page head ---------- */
+.crown{padding:clamp(3.4rem,9vh,6rem) 0 clamp(2rem,5vh,3rem)}
+.crown .no{font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--accent);display:block;margin-bottom:.8rem}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.4rem,6vw,4.2rem);line-height:1.05;letter-spacing:.005em}
+.crown p.lede{margin-top:1.2rem;max-width:58ch;font-family:var(--text);font-size:1.15rem;color:var(--dim)}
+
+/* A page whose heading is a nav label rather than an argument sets that label
+   as a folio mark and lets the statement below be the opening voice. Setting
+   the word "Profile" in 67px display type was giving the page's largest
+   gesture to its least interesting word. */
+.crown h1.folio{font-family:var(--sans);font-weight:500;font-size:.82rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);line-height:1}
+.crown:has(h1.folio){padding:clamp(2.6rem,7vh,4.4rem) 0 clamp(1.2rem,3vh,1.8rem)}
+/* With the label demoted, the opening sentence is what the page says first,
+   so it is set as a statement rather than as a caption under a title. */
+.crown:has(h1.folio) p.lede{margin-top:.9rem;font-family:var(--text);font-weight:400;
+  color:var(--fg);font-size:clamp(1.36rem,2.8vw,1.92rem);line-height:1.3;
+  letter-spacing:-.012em;max-width:32ch;text-wrap:pretty}
+/* a two word opening does not need the full measure to breathe */
+.crown:has(h1.folio) p.lede:not(:has(*)){text-wrap:balance}
+/* A folio with no opening sentence under it left eighty pixels of nothing
+   between a small grey label and the page: the crown's own bottom padding
+   and the first section's top padding, stacked. The profile is the page
+   this happens on, because its opening lives inside the spread below. */
+.crown:has(h1.folio):not(:has(p.lede)) + section{padding-top:clamp(.4rem,1.2vh,.9rem)}
+/* the folio and the leaf sit on one line rather than stacking */
+.crown:has(h1.folio) .no{display:inline-block;margin:0 .7rem 0 0;vertical-align:middle}
+.crown:has(h1.folio) h1.folio{display:inline-block;vertical-align:middle}
+
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.6rem,3.2vw,2.3rem);letter-spacing:-.005em;margin:0 0 1.6rem}
+section{padding:clamp(2.2rem,6vh,4rem) 0}
+section + section{border-top:1px solid var(--line)}
+
+/* ---------- headings in the margin ----------
+   A reading column is about 62ch wide. On a laptop that leaves a third of the
+   page doing nothing, and the page starts to look like a blog post pasted into
+   a wide window. The section heading moves into that margin and stays with its
+   section while you read it, so the width carries the table of contents. */
+@media (min-width:1010px){
+  main > section:has(> h2){
+    display:grid;
+    grid-template-columns:minmax(0,13rem) minmax(0,1fr);
+    column-gap:clamp(1.8rem,4vw,3.4rem)}
+  main > section:has(> h2) > h2{
+    grid-column:1;grid-row:1 / span 200;align-self:start;
+    position:sticky;top:5.4rem;
+    margin:0;font-size:1.3rem;line-height:1.25;letter-spacing:0;text-wrap:balance}
+  main > section:has(> h2) > *:not(h2){grid-column:2}
+}
+/* a section that already closes itself with a rule does not need the next
+   section to draw a second one 30px below it */
+section:has(> .note-item:last-of-type) + section{border-top:0}
+
+/* ---------- the spread ----------
+   A narrow rail for dates, labels and marginalia, and a reading column beside
+   it. The rail is what fills the width honestly on a laptop, and it is the
+   same idea the essays use when they put a counter argument in the margin.
+   Below 900 it folds: the rail becomes a line above its entry. */
+.spread{display:grid;grid-template-columns:minmax(0,11.5rem) minmax(0,66ch);
+  gap:clamp(1.4rem,4vw,3.4rem);align-items:start}
+.spread > .rail{font-family:var(--mono);font-size:.76rem;letter-spacing:.04em;
+  line-height:1.5;color:var(--dim);padding-top:.42rem;font-variant-numeric:tabular-nums}
+.spread > .rail b{display:block;font-weight:500;color:var(--accent);font-variant-numeric:tabular-nums}
+.spread > .rail span{display:block;margin-top:.35rem}
+@media (max-width:900px){
+  .spread{grid-template-columns:1fr;gap:1.1rem}
+  .spread > .rail{padding:.1rem 0 .1rem .9rem;border-left:1px solid var(--line)}
+  .spread > .rail span{margin-top:.28rem}
+  .spread--intro > .rail{margin-bottom:.3rem}
+  .tl .row .rail{display:flex;gap:.9rem;border-left:0;padding-left:0}
+  .tl .row .rail span{margin-top:0}
+}
+
+/* The step the pages were missing: between a 4rem heading and 1.1rem body
+   there was nothing, so every page read as a title and then a paragraph. */
+/* The step between a display heading and body text. Kept plain: it states
+   where he is and what he is doing, and does not try to be memorable. */
+.opening{font-family:var(--text);font-weight:400;
+  font-size:clamp(1.14rem,1.5vw,1.32rem);line-height:1.5;color:var(--fg);
+  max-width:46ch;text-wrap:pretty}
+/* The prose that follows the opening statement. It used to be selected as
+   ".opening + .after", which stopped working the moment the opening moved up
+   into the crown to lead the page; the class carries it now. */
+.opening + .after,.opening-after{margin-top:1.8rem;font-family:var(--text);font-size:1.08rem;
+  line-height:1.62;color:#4c463b;max-width:62ch}
+.opening + .after p + p,.opening-after p + p{margin-top:.9em}
+/* with the statement gone from inside the spread, the prose starts level
+   with the rail beside it rather than an inch below it */
+.spread--intro .opening-after{margin-top:.1rem}
+
+/* The artifact a claim leaves behind, in the type the instruments use for
+   measurement. Not decoration: if a line has no artifact it gets none. */
+.ev{margin-top:.7rem;font-family:var(--mono);font-size:.75rem;letter-spacing:.03em;
+  color:var(--accent);display:flex;flex-wrap:wrap;gap:.35rem .9rem;
+  font-variant-numeric:tabular-nums}
+.ev i{font-style:normal;color:var(--dim)}
+
+/* ---------- profile pieces ---------- */
+.story{max-width:62ch;font-family:var(--text);font-size:1.13rem;line-height:1.65}
+.story p+p{margin-top:1em}
+.tl{margin-top:.4rem;border-top:1px solid var(--line)}
+.tl .row{padding:1.5rem 0;border-bottom:1px solid var(--line)}
+.tl .row:last-child{border-bottom:0}
+.tl h3{font-family:var(--serif);font-weight:400;font-size:1.32rem;letter-spacing:-.005em;line-height:1.15}
+.tl .role{display:block;font-family:var(--sans);font-size:.82rem;font-weight:500;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--dim);margin:.42rem 0 .6rem}
+.tl p{font-family:var(--text);font-size:1.04rem;line-height:1.6;color:#4c463b;max-width:62ch}
+.badge{display:inline-block;font-size:.72rem;color:var(--accent);
+  border:1px solid var(--line);border-radius:2px;padding:.15em .55em;margin-top:.5rem}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(1.2rem,4vw,3rem)}
+dl .item{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
+dl .item .v{color:var(--dim);text-align:right;font-size:.8rem;padding-top:.1rem;
+  min-width:0;overflow-wrap:anywhere}
+/* A value is allowed to wrap and to give ground. It used to be flex-shrink:0,
+   which is fine while every value is a year and catastrophic the moment one
+   is a sentence: the work permit line ran four hundred pixels past its own
+   column and printed over the next one. */
+dl .item .v{flex:0 1 auto}
+dl .item .k{flex:1 1 auto;min-width:0}
+/* one column, and a value long enough to need the whole of it: German legal
+   names do this, and a value that cannot shrink pushes the page sideways */
+@media (max-width:560px){
+  dl .item{display:block}
+  dl .item .v{text-align:left;padding-top:.3rem;flex-shrink:1}
+}
+/* a ledger row names who issued the thing before it names the thing */
+dl.led .item{align-items:baseline}
+dl.led .item .k{display:block}
+dl.led .iss{display:block;font-family:var(--mono);font-weight:400;font-size:.68rem;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:.18rem}
+dl.led .item .v{font-family:var(--mono);font-variant-numeric:tabular-nums;align-self:end}
+h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg);margin:0 0 .5rem}
+.cv-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:2rem;padding:.78rem 1.4rem;
+  background:var(--fg);color:var(--paper);border:1px solid var(--fg);border-radius:2px;text-decoration:none;
+  font-size:.86rem;font-weight:500;letter-spacing:.02em;
+  box-shadow:0 1px 2px rgba(34,30,23,.14),0 6px 18px -8px rgba(34,30,23,.3);
+  transition:background .18s var(--ease),color .18s var(--ease),transform .18s var(--ease),box-shadow .18s var(--ease)}
+.cv-btn:hover{background:#100d08;box-shadow:0 2px 4px rgba(34,30,23,.18),0 12px 26px -10px rgba(34,30,23,.36);transform:translateY(-1px)}
+.cv-btn:active{transform:scale(.98)}
+
+/* ---------- projects pieces ---------- */
+/* an entry in a catalogue, not a card: the rule carries the separation the
+   box used to, and the row keeps the paper it sits on */
+.feature{border-top:1px solid var(--line);padding:1.25rem 0 1.5rem;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.9rem 2rem;align-items:baseline}
+.feature h3{font-family:var(--serif);font-weight:400;font-size:clamp(1.42rem,2.4vw,1.75rem);
+  letter-spacing:-.008em;margin:0}
+.feature p{max-width:58ch;font-family:var(--text);font-size:1.02rem;color:#4c463b;margin-top:.5rem}
+.col-lead{font-family:var(--text);font-size:1.08rem;line-height:1.62;color:#4c463b;max-width:58ch}
+.go-block{display:inline-block;margin-top:1.3rem;font-family:var(--sans);font-size:.84rem;font-weight:500;
+  letter-spacing:.03em;color:var(--accent);text-decoration:none;
+  border-bottom:1px solid var(--line);padding-bottom:.15em;transition:border-color .18s var(--ease)}
+.go-block:hover{border-bottom-color:var(--accent)}
+.feature .go{justify-self:start;font-size:.84rem;font-weight:500;color:var(--accent);
+  text-decoration:none;white-space:nowrap;
+  border-bottom:1px solid var(--line);transition:border-color .18s var(--ease)}
+.feature .go:hover{border-bottom-color:var(--accent)}
+/* The gap between cells used to be the grid's own background showing
+   through, which is a neat trick until the last row is short: five cards in
+   three tracks left one empty cell painting a solid block of the rule
+   colour. The rules are drawn on the cells instead, so a missing cell leaves
+   paper rather than a slab. */
+.repo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:.4rem}
+.repo-grid > *{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.repo{background:var(--paper);padding:1rem 1.1rem;text-decoration:none;transition:background .16s var(--ease)}
+.repo:hover{background:var(--raised)}
+.repo h3{font-family:var(--sans);font-weight:500;font-size:.95rem}
+.repo .t{font-family:var(--serif);font-style:italic;font-size:.8rem;color:var(--accent)}
+.repo p{font-family:var(--text);font-size:.92rem;color:#4c463b;margin-top:.35rem;line-height:1.45}
+
+/* ---------- contact ---------- */
+/* The address is the page. It gets the size, and the rule under it thickens
+   on hover rather than changing colour, so the target reads as one object. */
+.mail-line{display:flex;flex-wrap:wrap;align-items:baseline;gap:1rem;margin-top:.2rem}
+.mail-line a.addr{font-family:var(--serif);font-weight:300;font-size:clamp(1.5rem,4.2vw,2.75rem);
+  letter-spacing:-.015em;text-decoration:none;padding-bottom:.1em;
+  border-bottom:1px solid var(--line);
+  /* the rule thickens on hover through a shadow, so nothing reflows */
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+.mail-line a.addr:hover{border-bottom-color:var(--accent);box-shadow:0 1px 0 0 var(--accent)}
+.c-help{margin-top:1.8rem;font-family:var(--text);font-size:1.05rem;line-height:1.6;
+  color:#4c463b;max-width:56ch}
+.copy{font-size:.78rem;font-weight:500;letter-spacing:.02em;color:var(--dim);
+  background:none;border:1px solid var(--line);border-radius:2px;padding:.5em .9em;cursor:pointer;
+  transition:color .15s var(--ease),border-color .15s var(--ease)}
+.copy:hover{color:var(--fg);border-color:var(--fg)}
+.copy.done{color:var(--accent);border-color:var(--accent)}
+/* These were dim, undecorated, and carried a rule that only appeared on
+   hover, so on a phone, which has no hover, three links were indistinguishable
+   from three words. They rest with a rule under them now. */
+.socials{display:flex;flex-wrap:wrap;gap:1.6rem;margin-top:2rem}
+.socials a{font-size:.95rem;font-weight:500;letter-spacing:.02em;color:var(--accent-text);
+  text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:.12em;
+  transition:color .18s var(--ease),border-color .18s var(--ease)}
+.socials a:hover{color:var(--fg);border-bottom-color:var(--accent)}
+
+/* A line of its own, quieter than the body, used on ten pages to add an
+   aside under something. It only ever had rules inside the coarse pointer
+   block, so with a mouse it had no space above it and touched the element
+   before it. */
+.quiet-line{margin-top:1.1rem;font-family:var(--text);font-size:.98rem;
+  line-height:1.6;color:var(--dim);max-width:62ch}
+.quiet-line a{color:var(--accent-text)}
+
+/* ---------- share chip on instruments ---------- */
+.share-link{font-size:.7rem;font-weight:500;letter-spacing:.02em;color:var(--dim);
+  background:none;border:1px solid var(--line);border-radius:2px;padding:.3em .7em;cursor:pointer;
+  margin-left:.8rem;vertical-align:middle;transition:color .15s var(--ease),border-color .15s var(--ease)}
+.share-link:hover{color:var(--fg);border-color:var(--fg)}
+.share-link.done{color:var(--accent);border-color:var(--accent)}
+
+/* ---------- the narrow reading, where a thumb does the work ---------- */
+@media (max-width:640px){
+
+  /* stacks: one column reads better than four squeezed ones */
+  .tl .row{grid-template-columns:1fr;gap:.2rem}
+  .feature{grid-template-columns:1fr}
+  .repo-grid{grid-template-columns:1fr}
+  .cols{gap:1.6rem}
+
+  /* nothing wide is allowed to push the page sideways: it scrolls in place */
+  main table{display:block;width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  main pre,main figure{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  main img,main svg,main canvas{max-width:100%;height:auto}
+
+  /* buttons and fields a finger can find */
+  .cv-btn{padding:.8rem 1.25rem;font-size:.88rem}
+  .copy{padding:.68em 1em}
+  .share-link{padding:.5em .8em;margin-left:.5rem}
+  body .frow input,body .frow textarea,
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px}
+  body .frow input,body input[type="text"],body input[type="email"]{min-height:46px}
+  .socials{gap:1.3rem;flex-wrap:wrap}
+
+  /* room to breathe: on one column the rules were sitting on the text */
+  .crown{padding-bottom:clamp(1.4rem,4vh,2.2rem)}
+  section{padding:1.9rem 0}
+  .tl .row{padding:1.25rem 0}
+  .tl .role{margin-bottom:.45rem}
+  dl .item{padding:.7rem 0;gap:.6rem;align-items:baseline}
+  .story{font-size:1.08rem}
+  .mail-line{gap:.8rem}
+  .mail-line a.addr{word-break:break-all;line-height:1.25}
+}
+
+.rise{opacity:0;transform:translateY(18px);filter:blur(3px);
+  transition:opacity .75s ease,transform .9s cubic-bezier(.16,1,.3,1),filter .75s ease}
+.rise.in{opacity:1;transform:none;filter:none}
+@media (prefers-reduced-motion:reduce){.rise{opacity:1;transform:none;transition:none}}
+#cvsheet{display:none}
+@media print{
+  .rise{opacity:1!important;transform:none!important}
+  @page{size:A4;margin:13mm 15mm}
+  .bar,footer,.leaf-mark,.cv-btn,.langs{display:none!important}
+  body{background:#fff;color:#000}
+  body::after{display:none}
+  body.has-cv main>section,body.has-cv .crown{display:none!important}
+  body.has-cv main.wrap{max-width:none;padding:0}
+  body.has-cv{font-family:var(--sans)}
+  #cvsheet{display:block;font-size:9.3pt;line-height:1.38}
+  #cvsheet .nm{font-family:var(--serif);font-weight:400;font-size:20pt;margin:0}
+  #cvsheet .cl{font-size:8.4pt;color:#333;margin:.25em 0 .9em;border-bottom:.6pt solid #999;padding-bottom:.7em}
+  #cvsheet h2{font-family:var(--sans);font-weight:600;font-size:9.5pt;letter-spacing:.06em;text-transform:uppercase;
+    margin:.85em 0 .3em;border-bottom:.6pt solid #bbb;padding-bottom:.15em}
+  #cvsheet table{border-collapse:collapse;width:100%}
+  #cvsheet td{vertical-align:top;padding:.14em 0}
+  #cvsheet td.d{width:78pt;white-space:nowrap;color:#444;font-size:8.4pt;padding-right:8pt;padding-top:.24em}
+  #cvsheet .sk{margin:.1em 0}
+}
+/* the same thumb, on the page itself */
+@media (pointer:coarse){
+  .cv-btn{min-height:44px;padding:.8rem 1.25rem}
+  .copy,.share-link{min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center}
+  .socials a{min-height:44px;display:inline-flex;align-items:center}
+  .mail-line a.addr{display:inline-flex;align-items:center;min-height:44px}
+  .note-read{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .feature .go{min-height:44px;display:inline-flex;align-items:center}
+  .gcard .go{min-height:44px;display:inline-flex;align-items:center}
+  .go-block{min-height:44px;display:inline-flex;align-items:center}
+  .k-btn,.k-skip,.skip{min-height:44px;display:inline-flex;align-items:center}
+  input[type=range]{height:44px}
+  select{min-height:44px}
+  /* a link sitting inside a sentence: the line opens up so the link can be
+     a thumb tall without the paragraph closing over it */
+  .quiet-line{line-height:2.1}
+  .quiet-line a{display:inline-block;padding:.78rem 0;line-height:1.25}
+  .note-item h2 a{display:inline-block;padding:.5rem 0;border-bottom:0;
+    text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
+  .note-item h2 a:hover{text-decoration-color:var(--accent)}
+  /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px;min-height:44px}
+  body .frow textarea{min-height:8rem}
+  /* a 4px tall slider is not a control: the whole strip takes the touch */
+  input[type="range"]{height:44px;margin:0;padding:0}
+  /* and a sixteen pixel box is not one either */
+  input[type="checkbox"],input[type="radio"]{width:22px;height:22px}
+  input[type="checkbox"]+label,input[type="radio"]+label{
+    display:inline-flex;align-items:center;min-height:44px}
+  .demo-src a{display:inline-flex;align-items:center;min-height:44px}
+}
+
+.note-item{padding:2rem 0;border-top:1px solid var(--line)}
+.note-item:last-of-type{border-bottom:1px solid var(--line)}
+.note-item h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.55rem,2.6vw,2rem);
+  line-height:1.16;letter-spacing:-.012em;max-width:24ch}
+.note-item h2 a{text-decoration:none;border-bottom:1px solid transparent;
+  transition:border-color .18s var(--ease)}
+.note-item h2 a:hover{border-bottom-color:var(--accent)}
+.note-x{font-family:var(--text);font-size:1.06rem;line-height:1.6;color:#4c463b;
+  max-width:58ch;margin-top:.7rem}
+.note-actions{display:flex;flex-wrap:wrap;gap:1.6rem;margin-top:1.1rem}
+.note-read{font-family:var(--sans);font-size:.82rem;font-weight:500;letter-spacing:.03em;
+  color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:.15em;
+  transition:border-color .18s var(--ease)}
+.note-read:hover{border-bottom-color:var(--accent)}
+.quiet-line{color:var(--dim);font-family:var(--text);font-size:1rem;max-width:56ch}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+
+<div class="crown">
+  <span class="no"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg></span>
+  <h1 class="folio" data-i="n-h1">Notes</h1>
+  <p class="lede" data-i="n-lede">Two notes so far. Things go here when they are worth writing down, and not before.</p>
+</div>
+
+<section aria-label="Notes" data-ia="a-notes">
+  <article class="note-item spread">
+    <div class="rail"><b data-i="sm-date">First note · August 2026</b></div>
+    <div>
+      <h2><a href="note-simea.html" data-i="sm-h">The agent was never alone: SIMEA</a></h2>
+      <p class="note-x" data-i="sm-x">A research project I keep in the open.</p>
+      <p class="note-actions">
+        <a class="note-read" href="note-simea.html" data-i="read">Read</a>
+        <a class="note-read" href="simea/index.html" data-i="sm-sim-cta">Open the simulations &#8594;</a>
+      </p>
+    </div>
+  </article>
+  <article class="note-item spread">
+    <div class="rail"><b data-i="dt-date">Second note · August 2026</b></div>
+    <div>
+      <h2><a href="note-determinism.html" data-i="dt-h">Determinism does not buy you a forecast</a></h2>
+      <p class="note-x" data-i="dt-x">If every decision is in principle knowable, is the financial future predictable? No, and the reason is structural.</p>
+      <p class="note-actions">
+        <a class="note-read" href="note-determinism.html" data-i="read">Read</a>
+        <a class="note-read" href="simea/recommender/index.html" data-i="dt-sim-cta">Run the recommender &#8594;</a>
+      </p>
+    </div>
+  </article>
+</section>
+
+<section aria-label="Guestbook" data-ia="a-gbook">
+  <p class="quiet-line" data-i="gb-link">Or leave a public note in the <a href="defter.html">guestbook</a>.</p>
+</section>
+
+</main>
+
+<script>
+window.I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Profil", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Atölye", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "pg-desc": "Hak ettiklerinde yazılan çalışma notları.", "a-notes": "Notlar", "a-gbook": "Ziyaretçi defteri", "a-note": "Not", "n-h1": "Notlar", "n-lede": "Şimdilik iki not. Bir şey yazmaya değdiğinde buraya giriyor, ondan önce değil.", "read": "Oku", "gb-link": "Ya da <a href=\"defter.html\">ziyaretçi defterine<\/a> herkese açık bir not bırak.", "sm-date": "İlk not · Ağustos 2026", "sm-h": "Özne hiç yalnız değildi: SIMEA", "sm1": "Açıkta tuttuğum bir araştırma projesi. Klasik iktisat, insanı rasyonel bir maksimize edici olarak modeller; davranışsal iktisat bu modeli korur ve hatalarını kataloglar. SIMEA başka bir yerden başlar: sistemlerin içine gömülü ve onlar tarafından yönlendirilen bir karar öznesi. Algoritmalar, platformlar, öneri mimarileri. Çerçeve ölçülebilir üç kavram önerir: bir sistemin seçim üzerindeki etki eğimi, öznenin kendinde kalan özerklik eşiği ve seçim ortamının entropisi.", "sm2": "İkinci makale çerçeveyi ciddiye alır ve öngörü için ne anlama geldiğini sorar: determinizm doğruysa finansal gelecekler öngörülebilir mi? Makale bunun çıkmadığını, öngörülebilirliğin özerkliğin bir fonksiyonu olduğunu savunur.", "sm3": "Makaleleri GitHub'da oku", "sm-x": "Açıkta tuttuğum bir araştırma projesi.", "sm-sim-h": "Çalıştırabileceğin beş simülasyon", "sm-sim-p": "Yazılmış bir çerçeveye katılmak kolay, onu sınamak zordur. Bu yüzden programın yanında artık tarayıcıda çalışan beş etmen tabanlı model var. Ilımlı bir tercihin ağır bir ayrışmaya oturduğu bir Schelling tahtası. Bir nüfusun ne göreceğine karar veren, aynı nüfusun tarafsız bir akışla yürütülen kopyasının yanında koşan bir öneri sistemi; böylece etki eğimi, özerklik eşiği ve seçim ortamının entropisi ekranda tanımlanıp olurken ölçülebiliyor. Altındaki ağın biçimi değişirken sabit tutulan bir bulaşma. Önünde hiçbir engel yokken tıkanan bir çember yol. Ve kendini eşikte tutan, bir sonraki olayın boyutunun gerçekten öngörülemez olduğu bir yığın. Her biri kaynağını gösteriyor ve neyi göstermediğini söyleyerek bitiyor.", "sm-sim-cta": "Simülasyonları aç →", "dt-date": "İkinci not · Ağustos 2026", "dt-h": "Determinizm size bir öngörü kazandırmaz", "dt1": "Bu notun çıktığı soru eski ve insanların uzandığı cevap genelde yanlış. Determinizm doğruysa, yani her karar ilkece kendisinden öncekilerden bilinebilirse, finansal geleceğin öngörülebilir olduğu sonucu çıkar mı? Makale, çıkmadığını ve bu başarısızlığın bir veri ya da işlem gücü eksikliği değil yapısal bir şey olduğunu savunuyor. Daha fazla veri bu açığı kapatmıyor, çünkü açık eksik veriden yapılmış değil.", "dt2": "İki farklı yerde, iki kez tökezliyor. Birincisi genel: başlangıç koşullarına hassas bağımlılık, hesaplanabilir indirgenemezlik ve bir öngörücünün, içinde bulunduğu bir sistemi öngörmesindeki sorun. İkincisi piyasalara özgü: bir tahmin, üzerine işlem yapıldığı anda tahmin ettiği şeyi değiştirir; bilgisel olarak etkin bir piyasa var olamaz, çünkü onu etkin kılan bilgiyi toplamak için kimse para ödemez; ve modeller, tarif ettiklerini iddia ettikleri davranışı biçimlendirir. Bunların hiçbiri bana ait değil. İyi derlenirse bu bir literatür taramasıdır, bir makale değil, ve not bunu kendisi hakkında söylüyor.", "dt3": "Geriye iddia edilecek ne kalıyorsa SIMEA'dan geliyor. Aktörler özerk optimize ediciler değil de sistemler tarafından yönlendirilen karar özneleriyse, bir davranışın ne kadarının dışarıdan üretildiği aktörden aktöre, piyasadan piyasaya ve zamanla değişir. Dışarıdan üretilmiş davranış, kuruluşu gereği daha öngörülebilirdir, çünkü bir modelcinin ilkece gözleyebileceği bir girdinin fonksiyonudur. Birinci önerme buradan çıkıyor: öngörülebilirlik, özerklik eşiği yükseldikçe düşer ve etki gradyanı büyüdükçe artar. Öngörülebilirlik, bir piyasanın sahip olduğu ya da olmadığı bir özellik olmaktan çıkıp üzerinde durduğu bir koordinat hâline gelir.", "dt4": "Bu, asıl soruyu evet ya da hayır diye cevaplamak yerine yeniden çerçeveliyor. Öngörülebilirlik hiçbir zaman determinizmin sonucu olmadı. Etkinin sonucudur. Bir dünya tamamen deterministik ve öngörülemez olabilir; bir dünya temellerinde belirlenimsiz olup yönlendirmenin gerçekleştiği düzeyde yüksek derecede öngörülebilir olabilir. Ve birinciyi rahat bırakmayan ikinci bir önerme var: sistemik etkiden doğan öngörülebilirlik, fark edildiği anda arbitrajla eritilir; bu da etki mimarilerini onu üretmeye devam edebilmek için daha sert yönlendirmeye iter.", "dt5": "Bu bir konumlandırma notu ve henüz taslak yok; durduğu yerin doğru tarifi bu. İçinde, argümanı neyin batıracağına dair bir bölüm var; başkası yazabilmeden önce yazılmış. Ve tek bir bölüm okunacaksa önce okunmasını isteyeceğim kısmı taşıyor: kaynak denetimi. Her referans bir yayıncı ya da DOI düzeyindeki kayda karşı doğrulanmış ve onu düzeltme gerektirmiş. Sonra her kaynak, notun ona atfettiği şeyi gerçekten söyleyip söylemediği açısından denetlenmiş. Yirmiden altısı bitmiş. Bu iddiaların dördü tutmuş, ikisi düşmüş; ikisi de Popper ve Samuelson okumasında ve ikisi de notta düzeltilmiş. Titizliği herkes iddia ediyor. Yayımlanmaya değer olan kısım, kendi iddialarınızın ikisini yanlış bulan denetim.", "dt6": "Konumlandırma notunu ve kaynak denetimini oku", "dt-x": "Her karar ilkece bilinebilirse, finansal gelecek öngörülebilir mi? Hayır, ve sebebi yapısal.", "dt-sim-h": "Önerme, çalışır halde", "dt-sim-p": "Birinci önerme, öngörülebilirliğin etki gradyanıyla arttığını ve özerklik eşiğiyle düştüğünü söylüyor. Bu bir mekanizma iddiası ve bir mekanizma iddiası, üzerinde tartışılmak yerine kurulabilir. Öneri simülasyonu bir popülasyonu, ne göreceğine karar veren bir akışın altında çalıştırıyor ve aynı popülasyonu yanında nötr bir akışla çalıştırıyor; iki büyüklük de ekranda tanımlı ve model çalışırken hesaplanıyor. Buradaki, önermenin testine en yakın şey ve beşinin hepsi gibi o da ne göstermediğini söyleyerek bitiyor.", "dt-sim-cta": "Öneri simülasyonunu çalıştır →"}, "de": {"kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Profil", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Werkstatt", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "pg-desc": "Arbeitsnotizen, wenn sie es verdienen.", "a-notes": "Notizen", "a-gbook": "Gästebuch", "a-note": "Notiz", "n-h1": "Notizen", "n-lede": "Bisher zwei Notizen. Hier landet etwas, wenn es das Aufschreiben wert ist, und vorher nicht.", "read": "Lesen", "gb-link": "Oder hinterlassen Sie eine öffentliche Notiz im <a href=\"defter.html\">Gästebuch<\/a>.", "sm-date": "Erste Notiz · August 2026", "sm-h": "Das Subjekt war nie allein: SIMEA", "sm1": "Ein Forschungsprojekt, das ich offen führe. Die klassische Ökonomik modelliert den Menschen als rationalen Maximierer; die Verhaltensökonomik behält ihn und katalogisiert seine Fehler. SIMEA beginnt woanders: beim Entscheidungssubjekt, eingebettet in Systeme und von ihnen gelenkt. Algorithmen, Plattformen, Empfehlungsarchitekturen. Der Rahmen schlägt drei messbare Konstrukte vor: den Einflussgradienten eines Systems auf eine Wahl, die Autonomieschwelle, die beim Subjekt bleibt, und die Entropie der Wahlumgebung selbst.", "sm2": "Ein zweites Papier nimmt den Rahmen ernst und fragt, was er für Prognosen bedeutet: Wenn Determinismus gilt, folgt daraus die Vorhersagbarkeit der Finanzmärkte? Es argumentiert: nein. Vorhersagbarkeit ist eine Funktion der Autonomie.", "sm3": "Die Papiere auf GitHub lesen", "sm-x": "Ein Forschungsprojekt, das ich offen führe.", "sm-sim-h": "Fünf Simulationen zum Laufenlassen", "sm-sim-p": "Einem aufgeschriebenen Rahmen stimmt man leicht zu; ihn zu prüfen ist schwer. Deshalb stehen neben dem Programm jetzt fünf agentenbasierte Modelle, die alle im Browser laufen. Ein Schelling-Brett, auf dem eine milde Präferenz sich zu einer schwer getrennten Stadt setzt. Ein Empfehlungssystem, das entscheidet, was eine Population sieht, neben derselben Population mit einem neutralen Feed, sodass Einflussgradient, Autonomieschwelle und Entropie der Wahlumgebung auf dem Bildschirm definiert und im Lauf gemessen werden können. Eine Ansteckung, die festgehalten wird, während sich die Form des Netzwerks darunter ändert. Eine Ringstraße, die ohne jedes Hindernis stockt. Und ein Haufen, der sich selbst an der Kante hält, wo die Größe des nächsten Ereignisses wirklich nicht vorhersagbar ist. Jedes nennt seine Quelle und endet damit, zu sagen, was es nicht zeigt.", "sm-sim-cta": "Die Simulationen öffnen →", "dt-date": "Zweite Notiz · August 2026", "dt-h": "Determinismus verschafft Ihnen keine Prognose", "dt1": "Die Frage, aus der diese Notiz stammt, ist alt, und die Antwort, nach der die meisten greifen, ist meist falsch. Wenn Determinismus gilt, wenn also jede Entscheidung im Prinzip aus dem Vorhergehenden erkennbar ist, folgt daraus, dass die finanzielle Zukunft vorhersagbar ist? Das Papier argumentiert, dass sie es nicht tut, und dass das Scheitern struktureller Art ist und nicht ein Mangel an Daten oder Rechenleistung. Mehr Daten schließen diese Lücke nicht, denn die Lücke besteht nicht aus fehlenden Daten.", "dt2": "Es scheitert zweimal, an zwei verschiedenen Stellen. Die erste ist allgemein: empfindliche Abhängigkeit von den Anfangsbedingungen, berechnungstechnische Nichtreduzierbarkeit und das Problem, dass ein Prognostiker ein System vorhersagen soll, in dem er selbst steckt. Die zweite ist marktspezifisch: eine Prognose verändert, sobald man nach ihr handelt, das, was sie prognostiziert hat; ein informationseffizienter Markt kann nicht existieren, weil niemand dafür zahlen würde, jene Information zu sammeln, die ihn effizient machte; und Modelle formen das Verhalten, das sie zu beschreiben behaupten. Nichts davon stammt von mir. Gut zusammengestellt ergibt das eine Literaturübersicht und kein Papier, und die Notiz sagt das über sich selbst.", "dt3": "Was zu behaupten bleibt, kommt von SIMEA. Sind Akteure Entscheidungssubjekte, die von Systemen gelenkt werden, und keine autonomen Optimierer, dann schwankt der Anteil eines Verhaltens, der extern erzeugt wird, zwischen Akteuren, zwischen Märkten und über die Zeit. Extern erzeugtes Verhalten ist konstruktionsbedingt besser prognostizierbar, weil es eine Funktion einer Eingabe ist, die ein Modellierer im Prinzip beobachten kann. Daraus folgt der erste Satz: die Prognostizierbarkeit sinkt, wenn die Autonomieschwelle steigt, und wächst, wenn der Einflussgradient zunimmt. Vorhersagbarkeit ist damit keine Eigenschaft mehr, die ein Markt hat oder nicht hat, sondern eine Koordinate, auf der er liegt.", "dt4": "Das rahmt die ursprüngliche Frage neu, statt sie mit ja oder nein zu beantworten. Vorhersagbarkeit war nie eine Folge des Determinismus. Sie ist eine Folge des Einflusses. Eine Welt kann vollständig deterministisch und unprognostizierbar sein, und eine Welt kann in ihren Grundlagen indeterministisch und auf der Ebene, wo gesteuert wird, hochgradig prognostizierbar sein. Und es gibt einen zweiten Satz, der den ersten nicht in Ruhe lässt: Vorhersagbarkeit, die durch systemischen Einfluss entsteht, wird wegarbitriert, sobald sie erkannt ist, was Einflussarchitekturen dazu drängt, zu eskalieren und härter zu steuern, um sie weiter zu erzeugen.", "dt5": "Die Notiz ist eine Positionsbestimmung, und es gibt noch keinen Entwurf, was die zutreffende Beschreibung ihres Standes ist. Sie enthält einen Abschnitt darüber, was das Argument versenken würde, geschrieben, bevor es jemand anders schreiben konnte. Und sie enthält den Teil, den ich zuerst gelesen wissen wollte, wenn nur ein Abschnitt gelesen werden könnte: die Quellenprüfung. Jede Referenz wurde gegen einen Verlags- oder DOI-Nachweis geprüft, und zehn mussten korrigiert werden. Dann wurde jede Quelle daraufhin geprüft, ob sie tatsächlich sagt, was die Notiz ihr zuschreibt. Sechs von zwanzig sind erledigt. Vier dieser Zuschreibungen hielten, zwei fielen durch, beide in der Behandlung von Popper und Samuelson, und beide sind in der Notiz korrigiert. Sorgfalt behauptet jeder. Der veröffentlichenswerte Teil ist die Prüfung, die zwei der eigenen Behauptungen als falsch erwiesen hat.", "dt6": "Die Positionsbestimmung und die Quellenprüfung lesen", "dt-x": "Wenn jede Entscheidung im Prinzip erkennbar ist, ist die finanzielle Zukunft dann vorhersagbar? Nein, und der Grund ist struktureller Art.", "dt-sim-h": "Der Satz, in Betrieb", "dt-sim-p": "Der erste Satz besagt, dass die Prognostizierbarkeit mit dem Einflussgradienten steigt und mit der Autonomieschwelle fällt. Das ist eine Behauptung über einen Mechanismus, und eine Behauptung über einen Mechanismus lässt sich bauen statt bestreiten. Die Empfehlungssimulation lässt eine Population unter einem Feed laufen, der auswählt, was sie sieht, und daneben dieselbe Population unter einem neutralen Feed, wobei beide Größen auf dem Bildschirm definiert und während des Laufs berechnet werden. Es ist das, was einer Prüfung des Satzes hier am nächsten kommt, und es endet, wie alle fünf, mit dem, was es nicht zeigt.", "dt-sim-cta": "Die Empfehlungssimulation starten →"}};
+
+(function(){
+  "use strict";
+  /* arrival: the page rises section by section */
+  try {
+    var opening = document.querySelector(".crown");
+    if (opening) {
+      opening.classList.add("rise");
+      setTimeout(function () { opening.classList.add("in"); }, 120);
+    }
+  } catch (e) {}
+  /* language: the same dictionaries drive every inner page */
+  /* First visit only. A German recruiter should not have to find the switch
+     before the page speaks to them; once they choose, the choice is theirs. */
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  /* Three languages exist and nothing else is one. The value comes out of
+     localStorage, which any page on this origin can write, and it was used
+     unchecked as a key into window.I18N: "constructor" or "__proto__" would
+     have resolved to a member of Object instead of a dictionary. Nothing
+     exploitable came of it, because no data-i key collides with a property
+     of Object.prototype, but a value read from storage is input and input
+     gets checked. */
+  function knownLang(l){ return l === "en" || l === "tr" || l === "de"; }
+  var lang = "en";
+  try { lang = localStorage.getItem("lang") || preferred(); } catch(e){ lang = preferred(); }
+  if (!knownLang(lang)) lang = "en";
+  window.__lang = lang;
+  var base = {}, baseA = {}, titleBase = null;
+  /* one lookup the whole page shares: text nodes, attributes and anything a
+     script writes after the fact all ask the same dictionary */
+  var owns = function(o, k){ return Object.prototype.hasOwnProperty.call(o, k); };
+  window.__t = function(k, fallback){
+    var l = window.__lang || "en";
+    var dict = (l !== "en" && knownLang(l) && window.I18N && window.I18N[l]) || null;
+    return (dict && owns(dict, k) && dict[k] !== undefined) ? dict[k] : fallback;
+  };
+  function attr(sel, name){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if(!(id in baseA)) baseA[id] = el.getAttribute(name) || "";
+      el.setAttribute(name, window.__t(k, baseA[id]));
+    });
+  }
+  function apply(l){
+    if (!knownLang(l)) l = "en";
+    window.__lang = l;
+    var dict = (window.I18N && knownLang(l) && window.I18N[l]) || {};
+    document.querySelectorAll("[data-i]").forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if(!(k in base)) base[k] = el.innerHTML;
+      if(l === "en"){ el.innerHTML = base[k]; return; }
+      if(owns(dict, k) && dict[k] !== undefined) el.innerHTML = dict[k];
+    });
+    attr("data-ia", "aria-label");
+    attr("data-it", "title");
+    attr("data-ip", "placeholder");
+    document.documentElement.setAttribute("lang", l);
+    /* The tab is part of the page. Where the title opens with the page's own
+       heading, that part follows the language too. */
+    if (titleBase === null) titleBase = document.title;
+    var h1 = document.querySelector("h1[data-i]");
+    if (h1) {
+      var h1en = base[h1.getAttribute("data-i")];
+      if (h1en) {
+        var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+        if (plain && titleBase.indexOf(plain) === 0) {
+          document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+        }
+      }
+    }
+    /* An explicit pg-title wins over the heuristic above, which is the only
+       way the pages whose h1 carries no data-i can translate their tab at
+       all: the case studies, the privacy page and the 404. */
+    var pgT = window.__t("pg-title", null);
+    if (pgT) document.title = pgT;
+    /* And the description, which nothing translated before. It is invisible
+       on the page and it is exactly what a German or Turkish reader sees in
+       a search result or a link preview, so it was the English one every
+       time. */
+    var pgD = window.__t("pg-desc", null);
+    if (pgD) {
+      var dm = document.querySelector('meta[name="description"]');
+      if (dm) dm.setAttribute("content", pgD);
+      var om = document.querySelector('meta[property="og:description"]');
+      if (om) om.setAttribute("content", pgD);
+    }
+    var otm = document.querySelector('meta[property="og:title"]');
+    if (otm) otm.setAttribute("content", document.title);
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true":"false");
+    });
+    /* a German reader gets the German document, not the English one with a
+       German label on the button */
+    document.querySelectorAll("a[data-cv]").forEach(function(a){
+      var f = a.getAttribute("data-cv-" + l) || a.getAttribute("data-cv");
+      a.setAttribute("href", f); a.setAttribute("download", f);
+    });
+    try { localStorage.setItem("lang", l); } catch(e){}
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch(e){}
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  apply(lang);
+  /* A page that wants a whole viewport of height has to know how much of it
+     the bar has already taken, or it overhangs the fold by exactly that much
+     and clips whatever sits at its bottom. */
+  function barHeight(){
+    var b = document.querySelector(".bar");
+    document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
+  }
+  barHeight();
+  addEventListener("resize", barHeight);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
+  /* On a narrow screen the nav is one scrolling line, so the page you are on
+     may start off past the right edge of it. Bring it into view, without
+     scrolling the page itself. */
+  try {
+    var cur = document.querySelector(".bar nav a[aria-current]");
+    if (cur && cur.parentNode.scrollWidth > cur.parentNode.clientWidth) {
+      cur.parentNode.scrollLeft = Math.max(0, cur.offsetLeft - 24);
+    }
+  } catch(e){}
+
+  /* soft travel: no internal link jumps straight */
+  var fadeEl = document.createElement("div");
+  fadeEl.id = "fadeout";
+  document.body.appendChild(fadeEl);
+  document.querySelectorAll('a[href$=".html"], a[href="/run/film.html"]').forEach(function(a){
+    var h = a.getAttribute("href");
+    if (/^https?:/.test(h)) return;
+    a.addEventListener("click", function(e){
+      if (e.metaKey || e.ctrlKey) return;
+      e.preventDefault();
+      fadeEl.classList.add("on");
+      setTimeout(function(){ location.href = h; }, 280);
+    });
+  });
+
+  /* copy buttons */
+  document.querySelectorAll(".copy[data-copy]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var t = b.getAttribute("data-copy");
+      var idle = function(){ return window.__t(b.getAttribute("data-i") || "", b.getAttribute("data-label") || "copy"); };
+      var done = function(){ return window.__t(b.getAttribute("data-i-done") || "", b.getAttribute("data-done") || "copied"); };
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject())
+        .then(function(){ b.classList.add("done"); b.textContent = done();
+          setTimeout(function(){ b.classList.remove("done"); b.textContent = idle(); }, 1600); })
+        .catch(function(){});
+    });
+  });
+
+  /* the world continues here: now and then a leaf drifts by, and once in a
+     while something small walks across a rule line. Never louder than that. */
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function oneLeaf(){
+    if(still || document.hidden) return;
+    var leaf = document.createElement("div");
+    leaf.className = "leaf-mark";
+    var hue = ["#b06a24","#9c5a1e","#c07c2e"][Math.floor(Math.random()*3)];
+    leaf.innerHTML = '<svg width="16" height="23" viewBox="0 0 18 26"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="'+hue+'" opacity=".85"/><path d="M9 3 L9 23" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg>';
+    document.body.appendChild(leaf);
+    var x = 8 + Math.random() * 80, t0 = null, dur = 8000 + Math.random() * 5000;
+    function fall(ts){
+      if(!t0) t0 = ts;
+      var p = (ts - t0) / dur;
+      if(p >= 1){ leaf.remove(); return; }
+      leaf.style.left = "calc(" + x + "vw + " + (Math.sin(p * 8) * 44) + "px)";
+      leaf.style.top = (p * 108) + "vh";
+      leaf.style.transform = "rotate(" + (p * 460) + "deg)";
+      leaf.style.opacity = p > .85 ? (1 - p) / .15 : 1;
+      requestAnimationFrame(fall);
+    }
+    requestAnimationFrame(fall);
+  }
+  if(!still){
+    setTimeout(oneLeaf, 1500);
+    setInterval(oneLeaf, 21000 + Math.random() * 9000);
+  }
+
+  /* the ladybird: crosses one section rule, once, slowly */
+  function ladybird(){
+    if(still || document.hidden) return;
+    var rules = document.querySelectorAll("main>section + section");
+    if(!rules.length) return;
+    var host = rules[Math.floor(Math.random() * rules.length)];
+    var bug = document.createElement("div");
+    bug.setAttribute("aria-hidden","true");
+    bug.style.cssText = "position:absolute;width:9px;height:7px;margin-top:-4px;pointer-events:none;z-index:4;";
+    bug.innerHTML = '<svg width="9" height="7" viewBox="0 0 9 7"><ellipse cx="5" cy="3.5" rx="3.6" ry="3" fill="#8a3b1e"/><circle cx="1.6" cy="3.5" r="1.4" fill="#2b2118"/><line x1="5" y1="1" x2="5" y2="6" stroke="#2b2118" stroke-width=".5"/><circle cx="4" cy="2.6" r=".5" fill="#2b2118"/><circle cx="6.2" cy="4.2" r=".5" fill="#2b2118"/></svg>';
+    host.style.position = "relative";
+    host.appendChild(bug);
+    var dir = Math.random() < .5 ? 1 : -1, t0 = null, dur = 26000;
+    if(dir < 0) bug.firstChild.style.transform = "scaleX(-1)";
+    function walk(ts){
+      if(!t0) t0 = ts;
+      var p = (ts - t0) / dur;
+      if(p >= 1){ bug.remove(); return; }
+      var wob = Math.sin(p * 90) * 0.6;
+      var xx = dir > 0 ? p * 100 : 100 - p * 100;
+      bug.style.left = xx + "%";
+      bug.style.top = wob + "px";
+      bug.style.opacity = p < .05 ? p / .05 : p > .95 ? (1 - p) / .05 : .8;
+      requestAnimationFrame(walk);
+    }
+    requestAnimationFrame(walk);
+  }
+  if(!still) setTimeout(ladybird, 9000 + Math.random() * 14000);
+})();
+
+
+</script>
+</body>
+</html>

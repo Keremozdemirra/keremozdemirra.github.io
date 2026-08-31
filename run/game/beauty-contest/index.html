@@ -1,0 +1,2058 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- The same policy the generated pages carry. See the note beside it in
+     _HEAD: connect-src 'none' is what turns each instrument's promise that
+     nothing you type leaves the page into something the browser enforces. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+
+<title>The Beauty Contest</title>
+<meta name="description" content="Everyone in the village chalks a number from zero to one hundred on a slate. Whoever is nearest to two thirds of the average takes the purse. Play it six times against a village that is watching you back and watch the numbers walk downhill.">
+<meta name="author" content="Kerem Özdemir">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#2c2115">
+<link rel="stylesheet" href="/run/fonts/fonts.css">
+<link rel="canonical" href="/run/game/beauty-contest/">
+<meta property="og:title" content="The Beauty Contest">
+<meta property="og:description" content="Everyone in the village chalks a number from zero to one hundred on a slate. Whoever is nearest to two thirds of the average takes the purse. Play it six times against a village that is watching you back and watch the numbers walk downhill.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   The painted world, shared by the games under game/
+   The Long Game was written before this file existed and keeps
+   its own copy of these rules inside its own source; every game
+   built after it takes them from here, so that five pages stay
+   one world instead of five.
+   ============================================================ */
+
+:root{
+  --soil:#2c2115; --timber:#67503a; --terracotta:#8a4a2c;
+  --accent:#e0a050; --ink:#2b2620; --paper:#f2efe6; --verdigris:#5e7a6a;
+  --ink-soft:#4b443b; --dim:#6f6558; --faint:#6f6759;
+  --rule:rgba(103,80,58,.32); --rule-firm:rgba(103,80,58,.55);
+  --display:"Fraunces","Iowan Old Style",Georgia,serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --card:rgba(242,239,230,.955);
+  --card-sunk:rgba(232,227,214,.9);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;overflow-x:hidden;max-width:100%}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--serif); color:var(--ink); background:#c8c4b6;
+  min-height:calc(100dvh - var(--barh, 0px)); overscroll-behavior-y:none;
+}
+canvas#world{
+  position:fixed; inset:0; width:100%; height:100%; display:block; z-index:0;
+}
+
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+    clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+.skip{position:absolute;left:-9999px;top:0;z-index:60;background:var(--paper);
+  color:var(--ink);padding:.6rem .9rem;font-family:var(--mono);font-size:.72rem;
+  border:1px solid var(--rule-firm)}
+.skip:focus{left:.6rem;top:.6rem}
+
+#shell{
+  /* the viewport, less whatever the site bar above it is taking. Asking for
+     the whole of it put the start button below the fold on a laptop. */
+  position:relative; z-index:2; min-height:calc(100dvh - var(--barh, 0px));
+  display:flex; flex-direction:column; justify-content:space-between;
+  padding:clamp(.6rem,2vw,1.1rem);
+  padding-bottom:calc(clamp(.6rem,2vw,1.1rem) + env(safe-area-inset-bottom,0px));
+  gap:.7rem;
+}
+
+#topbar{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:.4rem .9rem;
+  background:var(--card); border:1px solid var(--rule-firm);
+  padding:.5rem .8rem; max-width:64rem; width:100%; margin:0 auto; flex:none;
+  box-shadow:0 1px 0 rgba(44,33,21,.14);
+}
+#topbar .ch{font-family:var(--display);font-weight:400;font-size:.98rem;
+  letter-spacing:-.01em;margin:0}
+#topbar .meta{font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--dim);margin:0}
+#topbar .spacer{flex:1 1 auto}
+#topbar button{flex:none}
+
+#panel{
+  background:var(--card); border:1px solid var(--rule-firm);
+  padding:clamp(.85rem,2.4vw,1.25rem);
+  max-width:64rem; width:100%; margin:0 auto; flex:none;
+  box-shadow:0 2px 0 rgba(44,33,21,.16);
+  max-height:74dvh; overflow-y:auto; overscroll-behavior:contain;
+}
+#panel.read{max-width:49rem}
+@media (max-width:900px){ #panel.read{max-width:64rem} }
+#panel h2{font-family:var(--display);font-weight:400;font-size:clamp(1.18rem,3.4vw,1.5rem);
+  letter-spacing:-.02em;margin:0 0 .45rem;line-height:1.2}
+#panel h3{font-family:var(--display);font-weight:400;font-size:1.02rem;margin:1.1rem 0 .35rem}
+#panel p{margin:0 0 .6rem;font-size:clamp(.95rem,2.6vw,1.02rem);line-height:1.62;
+  max-width:60ch;color:var(--ink-soft)}
+#panel p.say{color:var(--ink);font-style:italic}
+#panel p.tight{margin-bottom:.35rem}
+#panel ul{margin:0 0 .7rem;padding-left:1.1rem;max-width:60ch}
+#panel li{font-size:.95rem;line-height:1.6;margin-bottom:.3rem;color:var(--ink-soft)}
+#panel a{color:var(--terracotta);text-underline-offset:.2em}
+#panel a:hover{color:var(--accent)}
+
+.kicker{font-family:var(--mono);font-size:.63rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);margin:0 0 .3rem}
+
+.row{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:.75rem;align-items:stretch}
+button{
+  font-family:var(--serif); font-size:1rem; color:var(--ink);
+  background:rgba(253,252,248,.96); border:1px solid var(--rule-firm);
+  padding:.6rem 1rem; cursor:pointer; line-height:1.3;
+  transition:background-color .13s ease,border-color .13s ease,transform .08s ease;
+  min-height:2.75rem;
+}
+button:hover{background:#fffdf7;border-color:var(--terracotta)}
+button:active{transform:translateY(1px)}
+button:focus-visible{outline:2px solid var(--terracotta);outline-offset:2px}
+button[disabled]{opacity:.45;cursor:default}
+button .k{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--faint);margin-top:.18rem}
+button.big{font-family:var(--display);font-size:1.06rem;padding:.7rem 1.25rem;flex:1 1 11rem}
+button.share{border-color:rgba(94,122,106,.75);background:rgba(232,238,231,.96)}
+button.share:hover{background:#e9f0e7;border-color:var(--verdigris)}
+button.keep{border-color:rgba(138,74,44,.7);background:rgba(244,232,224,.96)}
+button.keep:hover{background:#f7e9e0;border-color:var(--terracotta)}
+button.quiet{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;
+  text-transform:uppercase;padding:.42rem .7rem;min-height:2.1rem;color:var(--dim);
+  background:transparent;border-color:var(--rule)}
+button.quiet:hover{color:var(--ink);background:rgba(253,252,248,.8)}
+
+.tally{display:flex;flex-wrap:wrap;gap:.35rem 1.4rem;font-family:var(--mono);
+  font-size:.72rem;letter-spacing:.04em;color:var(--dim);
+  border-top:1px solid var(--rule);padding-top:.55rem;margin-top:.75rem}
+.tally b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+
+.tblwrap{overflow-x:auto;margin:.4rem 0 .9rem;max-width:100%}
+table.pay{border-collapse:collapse;font-family:var(--mono);font-size:.76rem;min-width:20rem}
+table.pay th,table.pay td{border:1px solid var(--rule-firm);padding:.42rem .6rem;text-align:center}
+table.pay th{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim);font-weight:500;background:var(--card-sunk)}
+table.pay td{background:rgba(253,252,248,.8);min-width:7rem}
+table.pay td b{color:var(--terracotta);font-weight:500;font-size:.95rem}
+table.pay td span{color:var(--dim)}
+table.pay td.win{background:rgba(232,238,231,.9)}
+
+/* ---------- a measured quantity, drawn as a strip ---------- */
+.meter{display:grid;grid-template-columns:9.5rem 1fr auto;gap:.6rem;align-items:center;
+  font-family:var(--mono);font-size:.7rem;color:var(--dim);margin:.3rem 0}
+.meter .bar{height:.7rem;background:rgba(103,80,58,.16);position:relative}
+.meter .bar i{position:absolute;inset:0 auto 0 0;display:block;background:var(--terracotta)}
+.meter .bar i.good{background:var(--verdigris)}
+.meter .n{font-variant-numeric:tabular-nums;color:var(--ink);min-width:3.4rem;text-align:right}
+@media (max-width:640px){.meter{grid-template-columns:7.2rem 1fr auto;font-size:.66rem}}
+
+/* ---------- a run of past rounds, as glyphs ---------- */
+.glyphs{font-family:var(--mono);font-size:.95rem;letter-spacing:.16em;color:var(--ink);
+  word-break:break-all;margin:.2rem 0 .5rem;max-width:60ch}
+.glyphs .lose{color:var(--terracotta)}
+.glyphs .win{color:var(--verdigris)}
+
+/* ---------- fields ---------- */
+.fields{display:grid;gap:.6rem .9rem;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));
+  max-width:46rem;margin:.5rem 0 .3rem}
+.fields label{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:.2rem}
+.fields input,.fields select{
+  width:100%;font-family:var(--mono);font-size:.85rem;padding:.4rem .5rem;
+  background:rgba(253,252,248,.96);border:1px solid var(--rule-firm);color:var(--ink)}
+.fields input:focus-visible,.fields select:focus-visible{
+  outline:2px solid var(--terracotta);outline-offset:1px}
+input[type="range"]{width:100%;max-width:22rem;accent-color:#8a4a2c}
+.bignum{font-family:var(--display);font-size:clamp(2rem,9vw,3rem);color:var(--ink);
+  line-height:1;margin:.2rem 0 .3rem;font-variant-numeric:tabular-nums}
+
+/* ---------- the source lines at the foot of a game ---------- */
+.sources{border-top:1px solid var(--rule);margin-top:1rem;padding-top:.6rem}
+.sources li{font-family:var(--mono);font-size:.68rem;line-height:1.65;color:var(--dim);
+  margin-bottom:.45rem;word-break:break-word}
+.sources li b{color:var(--ink);font-weight:500}
+.sources a{color:var(--terracotta);word-break:break-all}
+
+@media (max-width:640px){
+  #panel{max-height:62dvh}
+  #topbar{padding:.45rem .6rem;gap:.3rem .6rem}
+  #topbar .ch{font-size:.92rem}
+  button.big{flex:1 1 100%}
+  .tally{gap:.25rem .9rem;font-size:.68rem}
+}
+@media (prefers-reduced-motion:reduce){
+  button:active{transform:none}
+  button{transition:none}
+}
+
+/* ---------- the square's own few rules ---------- */
+.guessrow{display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap;margin:.3rem 0 .1rem}
+.guessrow .bignum{margin:0}
+.guessrow .cap{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--dim)}
+.slate-list{display:flex;flex-wrap:wrap;gap:.35rem;margin:.4rem 0 .6rem;max-width:44rem}
+.slate-list span{font-family:var(--mono);font-size:.74rem;padding:.28rem .5rem;
+  border:1px solid var(--rule);background:rgba(253,252,248,.7);color:var(--ink)}
+.slate-list span.win{border-color:var(--verdigris);background:rgba(232,238,231,.9)}
+.slate-list span.you{border-color:var(--terracotta);background:rgba(244,232,224,.9)}
+.tracks{font-family:var(--mono);font-size:.72rem;color:var(--dim);line-height:1.9;margin:.3rem 0}
+.tracks b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+
+/* ---------- the site's clothes, worn by an instrument ---------- */
+.bar,footer.site-foot,.leaf-mark{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#f2efe6;
+  --fg:#221e17;
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --accent:#8a5a24;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+.bar,footer.site-foot{color:var(--fg)}
+footer.site-foot{background:var(--paper)}
+.bar .wrap,footer.site-foot .wrap{max-width:calc(64rem + 2 * clamp(.6rem,2vw,1.1rem));
+  padding-inline:clamp(.6rem,2vw,1.1rem)}
+/* the village is a fixed canvas lying under the whole document, so
+   the bar and the footer have to be lifted over it; and the game's
+   own overflow rule stops a sticky bar from sticking, so it stands
+   still at the top of the page instead of following the scroll */
+.bar{position:relative;z-index:3}
+footer.site-foot{position:relative;z-index:3}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav:not(.langs){margin-left:auto}
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+/* clear of the last nav name by more than the names are clear of each
+   other, so the languages read as their own control and not as a tenth
+   link in the row */
+.langs{display:flex;gap:.1rem;margin-left:clamp(1rem,2.2vw,1.8rem)}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .foot-links{display:flex;gap:clamp(.9rem,2.4vw,1.6rem);align-items:center;flex-wrap:wrap}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:nowrap;
+    justify-content:flex-start;gap:clamp(.7rem,3.4vw,1.2rem);
+    overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    /* the last name fades rather than being cut, which is what says there
+       is more of it to the right */
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    padding-right:2.2rem}
+  .bar nav::-webkit-scrollbar{display:none}
+  .bar nav a{font-size:.8rem;padding:.55rem 0;flex:0 0 auto}
+  /* the name of the page you are on is brought into view on load, so a
+     reader arriving deep in the site is not looking at a row that starts
+     somewhere else */
+  .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* nine nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
+@media (max-width:430px){
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+/* the same thumb, on the page itself */
+@media (pointer:coarse){
+  .cv-btn{min-height:44px;padding:.8rem 1.25rem}
+  .copy,.share-link{min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center}
+  .socials a{min-height:44px;display:inline-flex;align-items:center}
+  .mail-line a.addr{display:inline-flex;align-items:center;min-height:44px}
+  .note-read{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .feature .go{min-height:44px;display:inline-flex;align-items:center}
+  .gcard .go{min-height:44px;display:inline-flex;align-items:center}
+  .go-block{min-height:44px;display:inline-flex;align-items:center}
+  .k-btn,.k-skip,.skip{min-height:44px;display:inline-flex;align-items:center}
+  input[type=range]{height:44px}
+  select{min-height:44px}
+  /* a link sitting inside a sentence: the line opens up so the link can be
+     a thumb tall without the paragraph closing over it */
+  .quiet-line{line-height:2.1}
+  .quiet-line a{display:inline-block;padding:.78rem 0;line-height:1.25}
+  .note-item h2 a{display:inline-block;padding:.5rem 0;border-bottom:0;
+    text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
+  .note-item h2 a:hover{text-decoration-color:var(--accent)}
+  /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px;min-height:44px}
+  body .frow textarea{min-height:8rem}
+  /* a 4px tall slider is not a control: the whole strip takes the touch */
+  input[type="range"]{height:44px;margin:0;padding:0}
+  /* and a sixteen pixel box is not one either */
+  input[type="checkbox"],input[type="radio"]{width:22px;height:22px}
+  input[type="checkbox"]+label,input[type="radio"]+label{
+    display:inline-flex;align-items:center;min-height:44px}
+  .demo-src a{display:inline-flex;align-items:center;min-height:44px}
+}
+
+/* ---------- the crown, on a page whose interior is its own ---------- */
+.k-crown-no{
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;
+  font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;
+  color:var(--accent);
+}
+.k-crown-no svg{flex:none}
+.k-lede h1{margin-top:0}
+
+
+</style>
+</head>
+<body>
+
+<a class="skip" href="#panel" data-i="bc-skip">Skip to the choices</a>
+
+<h1 class="vh" data-i="bc-h1">The Beauty Contest</h1>
+
+<canvas id="world" aria-hidden="true"></canvas>
+
+<div id="shell">
+
+  <div id="topbar">
+    <p class="ch" id="chLabel">The Beauty Contest</p>
+    <p class="meta" id="whenLabel">the village square, market day</p>
+    <span class="spacer"></span>
+    <button type="button" class="quiet" id="menuBtn" hidden data-i="bc-restart">Start over</button>
+  </div>
+
+  <main id="panel" tabindex="-1"></main>
+
+</div>
+
+<p class="vh" id="live" role="status" aria-live="polite" aria-atomic="true"></p>
+
+<script>
+/* ============================================================
+   The painted world, shared by the games under game/
+   ------------------------------------------------------------
+   Sky, hills, soil, grass, a house with a lit window, a tree, a
+   fence, the people and the things they carry. Everything is
+   drawn with canvas primitives. Nothing is loaded, no library is
+   used, and once the fonts have arrived no game on this site
+   makes a network call.
+
+   The Long Game was written before this file and carries its own
+   copy of the same painting inside its own source. Every game
+   built after it takes the world from here, and adds only the
+   creatures its own subject needs.
+
+   window.KW is the whole surface:
+     KW.M            live metrics {W,H,GY,CX,DX,small}
+     KW.ctx          the 2d context, after KW.start()
+     KW.world        {season, prev, mix, day, dayT, t}
+     KW.season(i)    move the year on, with a crossfade
+     KW.daylight(v)  0 morning, .55 afternoon, 1 night
+     KW.sky()        the current sky pair and how dark it is
+     KW.land(t)      sky, hills, the far village, soil and grass
+     KW.house(t) .tree(t) .fence(t)
+     KW.figure(x,y,t,opts) .basket(x,y,sc,full,spill)
+     KW.shadow(x,w,a) .slate(x,y,txt,sc) .coin(x,y,r,a)
+     KW.ui           panel helpers
+     KW.store(key)   save, load, wipe
+     KW.keys(fn)     a keyboard handler that leaves fields alone
+     KW.lift(px)     lift the ground line, to leave a band of soil
+     KW.start(opts)  {draw:function(t){}, resize:function(){}, lift:px}
+   ============================================================ */
+
+window.KW = (function () {
+"use strict";
+
+var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var FAST = false;
+try { FAST = new URLSearchParams(location.search).get("fast") === "1"; } catch (e) {}
+
+function $(id) { return document.getElementById(id); }
+function el(tag, cls, txt) {
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt != null) n.textContent = txt;
+  return n;
+}
+function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+function lerp(a, b, u) { return a + (b - a) * u; }
+function smooth(u) { u = clamp(u, 0, 1); return u * u * (3 - 2 * u); }
+function rgb(c, a) { return "rgba(" + (c[0] | 0) + "," + (c[1] | 0) + "," + (c[2] | 0) + "," + (a == null ? 1 : a) + ")"; }
+function mix(a, b, u) { return [lerp(a[0], b[0], u), lerp(a[1], b[1], u), lerp(a[2], b[2], u)]; }
+
+/* a small deterministic generator, so that the same year can be
+   handed to two different villages and be the same year */
+function mulberry(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* ---------- the year ---------- */
+
+var SEASON_NAMES = ["Spring", "Summer", "Autumn", "Winter"];
+
+var SKY_DAY = [
+  { top: [178, 200, 214], bot: [238, 226, 206] },
+  { top: [162, 192, 214], bot: [240, 230, 198] },
+  { top: [196, 196, 188], bot: [242, 210, 158] },
+  { top: [186, 200, 214], bot: [224, 226, 224] }
+];
+var SKY_DUSK = [
+  { top: [116, 96, 118], bot: [222, 158, 116] },
+  { top: [104, 106, 130], bot: [230, 168, 112] },
+  { top: [104, 84, 92], bot: [212, 140, 88] },
+  { top: [92, 100, 122], bot: [186, 158, 146] }
+];
+var SKY_NIGHT = [
+  { top: [38, 28, 52], bot: [54, 42, 66] },
+  { top: [22, 28, 46], bot: [36, 42, 62] },
+  { top: [30, 22, 34], bot: [46, 34, 44] },
+  { top: [14, 20, 36], bot: [24, 32, 50] }
+];
+var HAZE = [[200, 198, 190], [196, 200, 194], [198, 176, 146], [196, 200, 204]];
+
+var GREENS = [[90, 125, 74], [107, 143, 84], [76, 112, 64], [125, 160, 95], [135, 168, 106]];
+var AUTUMN = [[200, 132, 46], [178, 91, 40], [217, 154, 60], [163, 74, 34], [194, 106, 36]];
+var BLOSSOM = [[232, 180, 200], [242, 210, 221], [223, 160, 184], [240, 198, 212]];
+var FROST = [[200, 204, 196]];
+
+var world = { season: 1, prev: 1, mix: 1, day: 0.2, dayT: 0.2, t: 0 };
+
+function sw(k) {
+  return (k === world.prev ? (1 - world.mix) : 0) + (k === world.season ? world.mix : 0);
+}
+function seasonBlend(table, key) {
+  var acc = [0, 0, 0];
+  for (var k = 0; k < 4; k++) {
+    var w = sw(k), c = key ? table[k][key] : table[k];
+    acc[0] += c[0] * w; acc[1] += c[1] * w; acc[2] += c[2] * w;
+  }
+  return acc;
+}
+
+/* ---------- the canvas and its measures ---------- */
+
+var M = { W: 0, H: 0, GY: 0, CX: 0, DX: 0, small: false, DPR: 1 };
+var cv = null, ctx = null;
+var anchorSel = "#panel";
+var groundLift = 0;   /* how far above the panel the ground line sits */
+var onResize = null, drawGame = null;
+var greenLoss = 0;   /* a commons can bleach its own grass: 0 lush, 1 bare */
+var showVillage = true;  /* the far houses on the ridge, off where they crowd */
+
+/* ---- seeded furniture ---- */
+
+var treeCanvas = null, treeTips = [], leaves = [], treeW = 0, treeH = 0;
+var grassFrames = [], grassKey = -1, grassW = 0, grassLoss = -1;
+var farVillage = [];
+
+function buildTree() {
+  var rnd = mulberry(20260821);
+  treeW = M.small ? 360 : 560;
+  treeH = M.small ? 210 : 320;
+  treeCanvas = document.createElement("canvas");
+  treeCanvas.width = treeW; treeCanvas.height = treeH;
+  var g = treeCanvas.getContext("2d");
+  treeTips = [];
+  var baseX = treeW * 0.5, baseY = treeH;
+
+  function limb(x, y, ang, len, wid, depth) {
+    if (depth > 7 || len < 5 || wid < 0.6) { treeTips.push({ x: x, y: y, s: depth / 7 }); return; }
+    var a = ang + (rnd() - 0.5) * 0.34;
+    var nx = x + Math.cos(a) * len, ny = y + Math.sin(a) * len;
+    var bow = (rnd() - 0.5) * len * 0.3;
+    g.strokeStyle = "rgb(" + Math.round(lerp(58, 118, depth / 7)) + "," +
+                    Math.round(lerp(44, 96, depth / 7)) + "," +
+                    Math.round(lerp(30, 70, depth / 7)) + ")";
+    g.lineWidth = wid; g.lineCap = "round";
+    g.beginPath();
+    g.moveTo(x, y);
+    g.quadraticCurveTo((x + nx) / 2 - Math.sin(a) * bow, (y + ny) / 2 + Math.cos(a) * bow, nx, ny);
+    g.stroke();
+    var kids = depth < 2 ? 3 : 2;
+    for (var k = 0; k < kids; k++) {
+      var na = a + (k - (kids - 1) / 2) * lerp(0.42, 0.86, rnd()) + (rnd() - 0.5) * 0.22;
+      limb(nx, ny, na, len * lerp(0.66, 0.82, rnd()), wid * 0.62, depth + 1);
+    }
+  }
+  limb(baseX, baseY, -Math.PI / 2, treeH * 0.25, M.small ? 10 : 14, 0);
+
+  leaves = [];
+  var n = M.small ? 320 : 620;
+  for (var i = 0; i < n; i++) {
+    var tip = treeTips[(rnd() * treeTips.length) | 0];
+    var ang = rnd() * 6.283, spread = lerp(4, 30, rnd());
+    leaves.push({
+      x: tip.x + Math.cos(ang) * spread,
+      y: tip.y + Math.sin(ang) * spread * 0.82 - 4,
+      sz: lerp(2.6, 5.4, rnd()) * (M.small ? 0.85 : 1),
+      gi: (rnd() * GREENS.length) | 0,
+      ai: (rnd() * AUTUMN.length) | 0,
+      bi: (rnd() * BLOSSOM.length) | 0,
+      sway: rnd(), ph: rnd() * 6.283, tilt: rnd() * 6.283,
+      keep: rnd()
+    });
+  }
+}
+
+function buildGrass() {
+  grassKey = world.prev * 100 + world.season * 10 + Math.round(world.mix * 2);
+  grassLoss = Math.round(greenLoss * 4) / 4;
+  grassW = Math.max(360, Math.ceil(M.W));
+  grassFrames = [];
+  var win = sw(3), aut = sw(2), spr = sw(0);
+  var bare = grassLoss;
+  for (var f = 0; f < 3; f++) {
+    var c = document.createElement("canvas");
+    c.width = grassW; c.height = 24;
+    var g = c.getContext("2d");
+    g.lineCap = "round";
+    var rnd = mulberry(9182 + f * 0);
+    var tufts = Math.round(grassW / 9 * (1 - bare * 0.62));
+    for (var i = 0; i < tufts; i++) {
+      var gx = rnd() * grassW, ph = rnd() * 6.283;
+      var blades = 3 + (rnd() * 3 | 0);
+      for (var b = 0; b < blades; b++) {
+        var bx = gx + (rnd() - 0.5) * 6;
+        var hgt = (5 + rnd() * 10) * (1 - bare * 0.5);
+        var lean = Math.sin(f / 3 * 6.283 + ph + b * 0.9) * (1.8 + hgt * 0.15);
+        var u = rnd();
+        var r = Math.round(lerp(lerp(74, 148, u * 0.5), 170, aut * 0.55 + win * 0.72 + bare * 0.5));
+        var gg = Math.round(lerp(lerp(106, 138, u), 152, win * 0.75) * (1 - bare * 0.28));
+        var bb = Math.round(lerp(lerp(52, 70, u * 0.4), 132, win * 0.85));
+        g.strokeStyle = "rgba(" + r + "," + gg + "," + bb + ",.86)";
+        g.lineWidth = 1.25 - hgt * 0.028;
+        g.beginPath();
+        g.moveTo(bx, 23);
+        g.bezierCurveTo(bx + lean * 0.15, 23 - hgt * 0.45,
+                        bx + lean * 0.6, 23 - hgt * 0.85,
+                        bx + lean + (rnd() - 0.5) * 3, 23 - hgt);
+        g.stroke();
+      }
+      if (rnd() < 0.09 * Math.max(0, 1 - win * 1.4) * (1 - aut * 0.5) * (1 - bare)) {
+        var fx = gx + 2, fy = 23 - 8 - rnd() * 4;
+        g.strokeStyle = "rgba(88,118,60,.8)"; g.lineWidth = 0.9;
+        g.beginPath(); g.moveTo(fx, 23); g.lineTo(fx, fy + 2); g.stroke();
+        g.fillStyle = rnd() < 0.5 ? "rgba(246,242,230,.95)" : "rgba(232,196,90,.95)";
+        for (var pe = 0; pe < 5; pe++) {
+          var pa = pe * 1.257 + f;
+          g.beginPath();
+          g.ellipse(fx + Math.cos(pa) * 2, fy + Math.sin(pa) * 2, 1.4, 0.85, pa, 0, 6.283);
+          g.fill();
+        }
+        g.fillStyle = spr > 0.4 ? "rgba(240,170,60,.9)" : "rgba(120,90,40,.9)";
+        g.beginPath(); g.arc(fx, fy, 1.1, 0, 6.283); g.fill();
+      }
+    }
+    grassFrames.push(c);
+  }
+}
+
+function buildFarVillage() {
+  var rnd = mulberry(4711);
+  farVillage = [];
+  for (var i = 0; i < 6; i++) {
+    farVillage.push({ u: 0.05 + i * 0.165 + (rnd() - 0.5) * 0.05, w: 16 + rnd() * 14, h: 12 + rnd() * 12, lit: rnd() });
+  }
+}
+
+function layout() {
+  var a = document.querySelector(anchorSel);
+  var top = a ? a.getBoundingClientRect().top : M.H * 0.7;
+  M.GY = clamp(top - 10 - groundLift, M.H * 0.34, M.H * 0.84);
+  M.CX = M.W * 0.5;
+  M.DX = M.small ? Math.min(66, M.W * 0.19) : Math.min(140, M.W * 0.15);
+}
+
+function resize() {
+  M.DPR = Math.min(2, window.devicePixelRatio || 1);
+  M.W = window.innerWidth; M.H = window.innerHeight;
+  M.small = M.W < 700;
+  cv.width = Math.round(M.W * M.DPR); cv.height = Math.round(M.H * M.DPR);
+  cv.style.width = M.W + "px"; cv.style.height = M.H + "px";
+  ctx.setTransform(M.DPR, 0, 0, M.DPR, 0, 0);
+  layout();
+  buildTree(); buildGrass(); buildFarVillage();
+  if (onResize) onResize();
+  frameOnce();
+}
+
+/* ---------- painting ---------- */
+
+function shadow(x, w, a) {
+  ctx.save();
+  ctx.translate(x, M.GY + 1);
+  ctx.scale(1, 0.2);
+  var g = ctx.createRadialGradient(0, 0, 0, 0, 0, w);
+  g.addColorStop(0, "rgba(20,14,8," + a + ")");
+  g.addColorStop(1, "rgba(20,14,8,0)");
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.arc(0, 0, w, 0, 6.283); ctx.fill();
+  ctx.restore();
+}
+
+function skyPair() {
+  var d = world.dayT;
+  var day = seasonBlend(SKY_DAY, "top"), dayB = seasonBlend(SKY_DAY, "bot");
+  var dusk = seasonBlend(SKY_DUSK, "top"), duskB = seasonBlend(SKY_DUSK, "bot");
+  var night = seasonBlend(SKY_NIGHT, "top"), nightB = seasonBlend(SKY_NIGHT, "bot");
+  var top, bot;
+  if (d < 0.6) { var u = smooth(d / 0.6); top = mix(day, dusk, u); bot = mix(dayB, duskB, u); }
+  else { var v = smooth((d - 0.6) / 0.4); top = mix(dusk, night, v); bot = mix(duskB, nightB, v); }
+  return { top: top, bot: bot, night: clamp((d - 0.55) / 0.35, 0, 1) };
+}
+
+function drawSky(t) {
+  var W = M.W, H = M.H, GY = M.GY, small = M.small;
+  var sk = skyPair();
+  var g = ctx.createLinearGradient(0, 0, 0, GY + 40);
+  g.addColorStop(0, rgb(sk.top));
+  g.addColorStop(1, rgb(sk.bot));
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  if (sk.night > 0.08) {
+    var rnd = mulberry(3311);
+    ctx.save();
+    for (var i = 0; i < (small ? 46 : 90); i++) {
+      var sx = rnd() * W, sy = rnd() * GY * 0.72;
+      var tw = 0.45 + Math.sin(t * (0.8 + rnd() * 1.6) + i) * 0.35;
+      ctx.fillStyle = "rgba(236,232,216," + (sk.night * tw * 0.8) + ")";
+      ctx.fillRect(sx, sy, 1.5, 1.5);
+    }
+    ctx.restore();
+  }
+
+  var sunU = world.dayT;
+  var arcX = W * (0.24 + sunU * 0.6);
+  var arcY = GY * (0.26 + Math.pow(clamp((sunU - 0.1) / 0.8, 0, 1), 1.7) * 0.56);
+  var sunA = 1 - clamp((sunU - 0.55) / 0.28, 0, 1);
+  if (sunA > 0.02) {
+    var warm = mix([250, 240, 212], [244, 168, 96], smooth(clamp((sunU - 0.25) / 0.4, 0, 1)));
+    var hg = ctx.createRadialGradient(arcX, arcY, 0, arcX, arcY, GY * 0.5);
+    hg.addColorStop(0, rgb(warm, 0.3 * sunA));
+    hg.addColorStop(1, rgb(warm, 0));
+    ctx.fillStyle = hg;
+    ctx.fillRect(arcX - GY * 0.5, arcY - GY * 0.5, GY, GY);
+    ctx.fillStyle = rgb(warm, 0.95 * sunA);
+    ctx.beginPath(); ctx.arc(arcX, arcY, small ? 13 : 17, 0, 6.283); ctx.fill();
+  }
+  if (sk.night > 0.2) {
+    var mx = W * 0.78, my = GY * 0.2;
+    ctx.fillStyle = "rgba(238,236,222," + (0.9 * sk.night) + ")";
+    ctx.beginPath(); ctx.arc(mx, my, small ? 11 : 14, 0, 6.283); ctx.fill();
+    ctx.fillStyle = rgb(sk.top, 0.85 * sk.night);
+    ctx.beginPath(); ctx.arc(mx + 5, my - 4, small ? 10 : 13, 0, 6.283); ctx.fill();
+  }
+
+  if (sk.night < 0.6 && sw(3) < 0.7) {
+    var bn = small ? 3 : 5;
+    ctx.strokeStyle = "rgba(70,60,48," + (0.45 * (1 - sk.night)) + ")";
+    ctx.lineWidth = 1.2;
+    for (var bi = 0; bi < bn; bi++) {
+      var ba = t * (0.16 + bi * 0.03) + bi * 2.1;
+      var brr = (small ? 26 : 44) + bi * (small ? 7 : 11);
+      var bx2 = W * 0.68 + Math.cos(ba) * brr;
+      var by2 = GY * 0.34 + Math.sin(ba) * brr * 0.4 - bi * 7;
+      var bf = reduced ? 1.4 : Math.sin(t * 5 + bi * 2.4) * 2.2;
+      ctx.beginPath();
+      ctx.moveTo(bx2 - 5, by2);
+      ctx.quadraticCurveTo(bx2 - 2.5, by2 - 3 - bf, bx2, by2);
+      ctx.quadraticCurveTo(bx2 + 2.5, by2 - 3 - bf, bx2 + 5, by2);
+      ctx.stroke();
+    }
+  }
+
+  var cloudA = 0.5 * (1 - sk.night * 0.7);
+  if (cloudA > 0.02) {
+    var cl = [[0.09, 0.16, 1.15, 13], [0.42, 0.10, 0.85, 9], [0.72, 0.22, 1.0, 17]];
+    for (var c = 0; c < 3; c++) {
+      var cx = ((t * cl[c][3] * 0.35 + cl[c][0] * (W + 400)) % (W + 400)) - 200;
+      var cy = GY * cl[c][1];
+      var s = cl[c][2] * (small ? 0.7 : 1);
+      ctx.fillStyle = "rgba(248,245,236," + (cloudA * 0.62) + ")";
+      for (var p = 0; p < 5; p++) {
+        ctx.beginPath();
+        ctx.ellipse(cx + p * 26 * s, cy + Math.sin(p * 1.7) * 5 * s,
+                    (26 - Math.abs(p - 2) * 6) * s, (13 - Math.abs(p - 2) * 2.4) * s, 0, 0, 6.283);
+        ctx.fill();
+      }
+    }
+  }
+}
+
+function hill(y, amp, freq, ph, col) {
+  ctx.fillStyle = col;
+  ctx.beginPath();
+  ctx.moveTo(-20, M.H);
+  for (var x = -20; x <= M.W + 20; x += 10) {
+    ctx.lineTo(x, y + Math.sin(x * freq * 6.28 + ph) * amp * 0.4 + Math.sin(x * freq * 17 + ph * 1.7) * amp * 0.2);
+  }
+  ctx.lineTo(M.W + 20, M.H);
+  ctx.closePath(); ctx.fill();
+}
+
+function drawLand(t, opts) {
+  opts = opts || {};
+  var W = M.W, H = M.H, GY = M.GY, small = M.small;
+  var sk = skyPair();
+  var hz = seasonBlend(HAZE);
+  hz = mix(hz, [40, 44, 58], sk.night * 0.75);
+
+  hill(GY - (small ? 42 : 66), small ? 16 : 26, 0.0011, 8, rgb(hz, 0.34));
+
+  if (opts.village !== false && showVillage) {
+    for (var i = 0; i < farVillage.length; i++) {
+      var v = farVillage[i];
+      var vx = v.u * W, vy = GY - (small ? 18 : 27), vw = v.w * (small ? 0.4 : 0.58), vh = v.h * (small ? 0.4 : 0.58);
+      ctx.fillStyle = rgb(mix(hz, [52, 42, 30], 0.82), 0.9);
+      ctx.fillRect(vx, vy - vh, vw, vh);
+      ctx.beginPath();
+      ctx.moveTo(vx - 3, vy - vh); ctx.lineTo(vx + vw / 2, vy - vh - vh * 0.5); ctx.lineTo(vx + vw + 3, vy - vh);
+      ctx.closePath(); ctx.fill();
+      if (sk.night > 0.25 && v.lit > 0.3) {
+        ctx.fillStyle = "rgba(240,196,110," + (0.75 * sk.night) + ")";
+        ctx.fillRect(vx + vw * 0.35, vy - vh * 0.6, 2.2, 2.2);
+      }
+    }
+  }
+  hill(GY - (small ? 16 : 26), small ? 10 : 15, 0.0017, 40, rgb(hz, 0.62));
+
+  var fog = ctx.createLinearGradient(0, GY - (small ? 60 : 92), 0, GY);
+  fog.addColorStop(0, rgb(hz, 0));
+  fog.addColorStop(1, rgb(hz, 0.3));
+  ctx.fillStyle = fog;
+  ctx.fillRect(0, GY - (small ? 60 : 92), W, small ? 60 : 92);
+
+  var soil = ctx.createLinearGradient(0, GY, 0, H);
+  var s0 = mix([64, 52, 36], [26, 24, 38], sk.night * 0.7);
+  var s1 = mix([44, 33, 21], [16, 16, 28], sk.night * 0.7);
+  soil.addColorStop(0, rgb(s0));
+  soil.addColorStop(1, rgb(s1));
+  ctx.fillStyle = soil;
+  ctx.fillRect(0, GY, W, H - GY);
+
+  var want = world.prev * 100 + world.season * 10 + Math.round(world.mix * 2);
+  if (grassKey !== want || grassW < W || grassLoss !== Math.round(greenLoss * 4) / 4) buildGrass();
+  var ph = reduced ? 0 : (Math.sin(t * 0.9) * 0.5 + 0.5);
+  var f0 = Math.floor(ph * 3) % 3, f1 = (f0 + 1) % 3, u = (ph * 3) % 1;
+  ctx.save();
+  ctx.globalAlpha = 1;
+  ctx.drawImage(grassFrames[f0], 0, GY - 22, grassW, 24);
+  ctx.globalAlpha = u;
+  ctx.drawImage(grassFrames[f1], 0, GY - 22, grassW, 24);
+  ctx.globalAlpha = 1;
+  if (sk.night > 0.03) {
+    ctx.fillStyle = "rgba(22,25,42," + (0.4 * sk.night) + ")";
+    ctx.fillRect(0, GY - 22, W, H - GY + 22);
+  }
+  ctx.restore();
+}
+
+function drawHouse(t, ux) {
+  var W = M.W, GY = M.GY, small = M.small;
+  var sk = skyPair();
+  var s = small ? 0.76 : 1.05;
+  var hx = ux == null ? (small ? W * 0.17 : W * 0.145) : ux, hy = GY;
+  ctx.save();
+  ctx.translate(hx, hy);
+  ctx.scale(s, s);
+
+  var lit = Math.max(sk.night, sw(3) * 0.22);
+
+  if (sw(3) > 0.35 || sw(2) > 0.5 || sk.night > 0.25) {
+    for (var m = 0; m < 3; m++) {
+      var st = ((reduced ? 0.4 : t * 0.22) + m * 0.33) % 1;
+      ctx.fillStyle = "rgba(200,195,185," + (0.2 * (1 - st)) + ")";
+      ctx.beginPath();
+      ctx.arc(28 + Math.sin(st * 5 + m) * 6, -102 - st * 34, 4 + st * 7, 0, 6.283);
+      ctx.fill();
+    }
+  }
+
+  shadow(0, 60, 0.3 * (1 - sk.night * 0.5));
+
+  ctx.fillStyle = "#4a4038";
+  ctx.fillRect(-48, -7, 96, 7);
+  ctx.fillStyle = "rgba(120,110,96,.5)";
+  for (var f = 0; f < 6; f++) {
+    ctx.beginPath(); ctx.ellipse(-40 + f * 16, -3.5, 6.5, 2.6, 0, 0, 6.283); ctx.fill();
+  }
+
+  var wg = ctx.createLinearGradient(0, -72, 0, -7);
+  wg.addColorStop(0, "#67503a");
+  wg.addColorStop(1, "#523d29");
+  ctx.fillStyle = wg;
+  ctx.fillRect(-46, -72, 92, 65);
+  for (var pl = 1; pl < 6; pl++) {
+    var py = -72 + pl * 11;
+    ctx.strokeStyle = "rgba(30,20,12,.35)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(-46, py); ctx.lineTo(46, py); ctx.stroke();
+    ctx.strokeStyle = "rgba(180,150,110,.14)";
+    ctx.beginPath(); ctx.moveTo(-46, py + 1); ctx.lineTo(46, py + 1); ctx.stroke();
+  }
+  ctx.fillStyle = "#4a3826";
+  ctx.fillRect(-48, -73, 4, 66);
+  ctx.fillRect(44, -73, 4, 66);
+  var es = ctx.createLinearGradient(0, -72, 0, -58);
+  es.addColorStop(0, "rgba(15,10,6,.45)");
+  es.addColorStop(1, "rgba(15,10,6,0)");
+  ctx.fillStyle = es;
+  ctx.fillRect(-46, -72, 92, 14);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(-58, -68); ctx.lineTo(0, -112); ctx.lineTo(58, -68);
+  ctx.closePath();
+  var rg = ctx.createLinearGradient(0, -112, 0, -68);
+  rg.addColorStop(0, "#8a4a2c");
+  rg.addColorStop(1, "#66311c");
+  ctx.fillStyle = rg;
+  ctx.fill();
+  ctx.clip();
+  for (var row = 0; row < 6; row++) {
+    var ry = -70 - row * 7.5, off = row % 2 ? 4 : 0;
+    ctx.fillStyle = row % 2 ? "rgba(196,110,66,.2)" : "rgba(96,42,22,.24)";
+    ctx.beginPath();
+    for (var s2 = -8; s2 <= 8; s2++) ctx.arc(s2 * 8 + off, ry, 4.4, Math.PI, 0, true);
+    ctx.lineTo(66, ry + 7.5); ctx.lineTo(-66, ry + 7.5);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "rgba(30,12,6,.42)"; ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var s3 = -8; s3 <= 8; s3++) ctx.arc(s3 * 8 + off, ry, 4.4, Math.PI, 0, true);
+    ctx.stroke();
+  }
+  var snow = sw(3);
+  if (snow > 0.05) {
+    ctx.globalAlpha = snow;
+    var sg = ctx.createLinearGradient(0, -112, 0, -70);
+    sg.addColorStop(0, "rgba(236,238,236,.96)");
+    sg.addColorStop(1, "rgba(236,238,236,.34)");
+    ctx.fillStyle = sg;
+    ctx.beginPath();
+    ctx.moveTo(-58, -68); ctx.lineTo(0, -112); ctx.lineTo(58, -68); ctx.closePath(); ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
+  ctx.strokeStyle = snow > 0.5 ? "#d8dcd8" : "#3a1e10";
+  ctx.lineWidth = 3; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(-58, -70); ctx.lineTo(0, -113); ctx.lineTo(58, -70); ctx.stroke();
+
+  ctx.fillStyle = "#4a3826"; ctx.fillRect(22, -104, 12, 26);
+  ctx.fillStyle = "#33261a"; ctx.fillRect(20, -107, 16, 4);
+
+  ctx.fillStyle = sk.night > 0.25 ? "rgba(46,30,14,.98)" : "rgba(16,11,7,.96)";
+  ctx.fillRect(-16, -44, 22, 44);
+  ctx.strokeStyle = "#3a2b1c"; ctx.lineWidth = 2.4;
+  ctx.strokeRect(-17, -45, 24, 45);
+  var dg = ctx.createLinearGradient(-16, 0, 6, 0);
+  dg.addColorStop(0, "#46331f"); dg.addColorStop(1, "#33241a");
+  ctx.fillStyle = dg; ctx.fillRect(-16, -44, 22, 44);
+  ctx.strokeStyle = "rgba(18,12,7,.6)"; ctx.lineWidth = 1.4;
+  ctx.strokeRect(-12.5, -40, 15, 16);
+  ctx.strokeRect(-12.5, -20, 15, 16);
+  ctx.fillStyle = "#c9a05a";
+  ctx.beginPath(); ctx.arc(2.4, -21, 1.6, 0, 6.283); ctx.fill();
+  ctx.fillStyle = "#4a3826"; ctx.fillRect(-20, -1.5, 30, 3.5);
+
+  ctx.fillStyle = "#3a2b1c"; ctx.fillRect(14, -62, 21, 21);
+  if (lit > 0.22) {
+    var g2 = ctx.createRadialGradient(24.5, -51.5, 1, 24.5, -51.5, 12);
+    g2.addColorStop(0, "rgba(244,196,110," + (0.72 + lit * 0.22) + ")");
+    g2.addColorStop(1, "rgba(180,120,50," + (0.5 * lit) + ")");
+    ctx.fillStyle = g2;
+  } else ctx.fillStyle = "rgba(52,46,38,.95)";
+  ctx.fillRect(16, -60, 17, 17);
+  if (lit <= 0.22) {
+    ctx.strokeStyle = "rgba(235,230,215,.35)"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(18, -46); ctx.lineTo(30, -58); ctx.stroke();
+  }
+  ctx.strokeStyle = "#2c2014"; ctx.lineWidth = 1.6;
+  ctx.strokeRect(16, -60, 17, 17);
+  ctx.beginPath(); ctx.moveTo(16, -51.5); ctx.lineTo(33, -51.5);
+  ctx.moveTo(24.5, -60); ctx.lineTo(24.5, -43); ctx.stroke();
+  ctx.fillStyle = "#2c2014"; ctx.fillRect(14.5, -43, 20, 2.4);
+
+  if (lit > 0.35) {
+    var lg = ctx.createRadialGradient(24.5, -51.5, 2, 24.5, -51.5, 46);
+    lg.addColorStop(0, "rgba(232,176,84," + (0.24 * lit) + ")");
+    lg.addColorStop(1, "rgba(232,176,84,0)");
+    ctx.fillStyle = lg;
+    ctx.beginPath(); ctx.arc(24.5, -51.5, 46, 0, 6.283); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawTree(t, ux, scale) {
+  if (!treeCanvas) return;
+  var W = M.W, GY = M.GY, small = M.small;
+  var sk = skyPair();
+  var s = (small ? 0.74 : 0.98) * (scale || 1);
+  var tx = ux == null ? (small ? W * 0.82 : W * 0.83) : ux, ty = GY;
+  ctx.save();
+  ctx.translate(tx, ty);
+  ctx.scale(s, s);
+  shadow(0, treeW * 0.24, 0.26 * (1 - sk.night * 0.5));
+  ctx.drawImage(treeCanvas, -treeW / 2, -treeH);
+  var gust = reduced ? 0 : (0.5 + Math.sin(t * 0.5) * 0.5);
+  var win = sw(3), aut = sw(2), spr = sw(0);
+  for (var i = 0; i < leaves.length; i++) {
+    var L = leaves[i];
+    if (win > 0.5 && L.keep > 1 - (win - 0.5) * 1.6) continue;
+    var col = GREENS[L.gi];
+    if (aut > 0) col = mix(col, AUTUMN[L.ai], aut * 0.92);
+    if (spr > 0 && L.gi % 3 === 0) col = mix(col, BLOSSOM[L.bi], spr * 0.9);
+    if (win > 0) col = mix(col, FROST[0], win * 0.7);
+    if (sk.night > 0) col = mix(col, [30, 34, 46], sk.night * 0.62);
+    var sway = reduced ? 0 : Math.sin(t * 1.6 + L.ph) * (1.2 + L.sway * 5) * (0.4 + gust * 0.6);
+    ctx.save();
+    ctx.translate(-treeW / 2 + L.x + sway, -treeH + L.y);
+    ctx.rotate(L.tilt + sway * 0.03);
+    ctx.fillStyle = rgb(col);
+    ctx.beginPath();
+    ctx.moveTo(0, -L.sz);
+    ctx.quadraticCurveTo(L.sz * 0.7, -L.sz * 0.2, 0, L.sz);
+    ctx.quadraticCurveTo(-L.sz * 0.7, -L.sz * 0.2, 0, -L.sz);
+    ctx.fill();
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+function drawFence(t, ux) {
+  var GY = M.GY, small = M.small;
+  var sk = skyPair();
+  var n = 6;
+  var cx = ux == null ? M.CX : ux;
+  var bx = cx, by = GY + (small ? 22 : 34);
+  var tx = cx + (small ? 16 : 26), ty = GY - (small ? 34 : 54);
+  var pts = [];
+  for (var i = 0; i < n; i++) {
+    var u = i / (n - 1);
+    pts.push({ x: lerp(bx, tx, u), y: lerp(by, ty, u), h: lerp(small ? 34 : 52, small ? 13 : 20, u), w: lerp(4.4, 1.8, u) });
+  }
+  var dark = sk.night;
+  var post = mix([103, 80, 58], [34, 32, 44], dark * 0.7);
+  var rail = mix([120, 96, 68], [40, 38, 50], dark * 0.7);
+  var levels = [0.74, 0.5, 0.26];
+  for (var r = 0; r < levels.length; r++) {
+    ctx.fillStyle = rgb(rail, 0.95);
+    ctx.beginPath();
+    for (var j = 0; j < n; j++) {
+      var p = pts[j], th = lerp(4.2, 1.6, j / (n - 1));
+      var yy = p.y - p.h * levels[r];
+      if (j === 0) ctx.moveTo(p.x, yy - th / 2); else ctx.lineTo(p.x, yy - th / 2);
+    }
+    for (var j2 = n - 1; j2 >= 0; j2--) {
+      var p2 = pts[j2], th2 = lerp(4.2, 1.6, j2 / (n - 1));
+      ctx.lineTo(p2.x, p2.y - p2.h * levels[r] + th2 / 2);
+    }
+    ctx.closePath(); ctx.fill();
+  }
+  for (var k = 0; k < n; k++) {
+    var q = pts[k];
+    ctx.fillStyle = rgb(post, 0.98);
+    ctx.fillRect(q.x - q.w / 2, q.y - q.h, q.w, q.h);
+    ctx.fillStyle = "rgba(20,14,8,.32)";
+    ctx.fillRect(q.x - q.w / 2, q.y - q.h, q.w * 0.34, q.h);
+    ctx.fillStyle = rgb(mix(post, [180, 156, 120], 0.35), 0.95);
+    ctx.fillRect(q.x - q.w / 2, q.y - q.h, q.w, 1.4);
+  }
+  return pts[0];
+}
+
+/* ---------- the people ---------- */
+
+function drawFigure(x, y, t, o) {
+  var s = (o.scale || 1) * (M.small ? 1.6 : 2.05);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(s, s);
+  if (o.face === -1) ctx.scale(-1, 1);
+
+  var sk = skyPair();
+  var dim = sk.night * 0.55;
+  function dk(hex) {
+    var c = [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+    return rgb(mix(c, [30, 32, 44], dim));
+  }
+  var coat = dk(o.coat || "#27423a");
+  var trouser = dk("#2c2622");
+  var skin = dk(o.skin || "#c99a72");
+  var hair = dk(o.hair || "#241a12");
+  var armCol = o.sleeves === false ? skin : coat;
+
+  var walking = o.pose === "walk";
+  var step = walking ? Math.sin(t * 8) : 0;
+  var bounce = walking ? Math.abs(Math.cos(t * 8)) * 1.2 : 0;
+  ctx.translate(0, -bounce);
+
+  ctx.strokeStyle = trouser; ctx.lineWidth = 3; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(-2 + step * 3.4, -10 + Math.abs(step)); ctx.lineTo(-2 + step * 4.4, 0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(2 - step * 3.4, -10 + Math.abs(step)); ctx.lineTo(2 - step * 4.4, 0); ctx.stroke();
+  ctx.strokeStyle = dk("#17110c"); ctx.lineWidth = 2.2;
+  ctx.beginPath(); ctx.moveTo(-2 + step * 4.4, 0); ctx.lineTo(1.2 + step * 4.4, 0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(2 - step * 4.4, 0); ctx.lineTo(5.2 - step * 4.4, 0); ctx.stroke();
+
+  ctx.strokeStyle = coat; ctx.lineWidth = o.stout ? 6.2 : 5;
+  ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(0, -31); ctx.stroke();
+
+  ctx.strokeStyle = armCol; ctx.lineWidth = 2.6;
+  if (o.pose === "offer") {
+    var reach = o.reach == null ? 1 : o.reach;
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(-3, -24); ctx.lineTo(-3.5, -19); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(6 + reach * 4, -25); ctx.lineTo(10 + reach * 7, -22); ctx.stroke();
+  } else if (o.pose === "withhold") {
+    ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(-5, -24); ctx.lineTo(-2, -20); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(5, -24); ctx.lineTo(2, -20); ctx.stroke();
+  } else if (o.pose === "wave") {
+    var wa = reduced ? 0.2 : Math.sin(t * 7) * 0.5;
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(-4, -24); ctx.lineTo(-5, -20); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(6, -33); ctx.lineTo(9 + wa * 2, -39 + Math.abs(wa)); ctx.stroke();
+    ctx.fillStyle = skin;
+    ctx.beginPath(); ctx.arc(9.6 + wa * 2, -40 + Math.abs(wa), 1.7, 0, 6.283); ctx.fill();
+  } else if (o.pose === "hold") {
+    /* both hands out in front, holding something up */
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(4, -27); ctx.lineTo(6, -31); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(-4, -26); ctx.lineTo(-6, -30); ctx.stroke();
+  } else if (o.pose === "aim") {
+    /* a spear held level, the far arm forward */
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(5, -27); ctx.lineTo(9, -26); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -27); ctx.lineTo(3, -23); ctx.lineTo(6, -24); ctx.stroke();
+  } else if (o.pose === "sit") {
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(5, -26); ctx.lineTo(8, -24); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(-4, -25); ctx.lineTo(-2, -22); ctx.stroke();
+  } else {
+    var swing = step * 2.4;
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(-2 - swing, -24); ctx.lineTo(-2.5 - swing, -19); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(2 + swing, -24); ctx.lineTo(2.5 + swing, -19); ctx.stroke();
+  }
+
+  if (o.scarf) {
+    ctx.strokeStyle = dk(o.scarf); ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(-3.4, -30.5); ctx.lineTo(3.4, -30.5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(2.4, -30); ctx.lineTo(3.4, -24); ctx.stroke();
+  }
+
+  ctx.save();
+  ctx.translate(0, -36);
+  ctx.fillStyle = skin;
+  ctx.beginPath(); ctx.arc(0, 0, 4.6, 0, 6.283); ctx.fill();
+  ctx.fillStyle = hair;
+  var hs = o.hairStyle || "curly";
+  if (hs === "curly") {
+    for (var c = 0; c < 7; c++) {
+      var ca = -3.0 + c * 0.44;
+      ctx.beginPath(); ctx.arc(Math.cos(ca) * 4.4, -0.8 + Math.sin(ca) * 4.4, 2.2, 0, 6.283); ctx.fill();
+    }
+  } else if (hs === "braid") {
+    ctx.beginPath(); ctx.arc(0, -0.8, 5, Math.PI, 0); ctx.fill();
+    ctx.fillRect(-5, -1.2, 10, 1.6);
+    ctx.strokeStyle = hair; ctx.lineWidth = 2.2; ctx.lineCap = "round";
+    var bw = reduced ? 0 : Math.sin(t * 1.4) * 1.2;
+    ctx.beginPath(); ctx.moveTo(-4.4, -0.4); ctx.quadraticCurveTo(-7 + bw, 4, -5.4 + bw, 9); ctx.stroke();
+  } else if (hs === "crop") {
+    ctx.beginPath(); ctx.arc(0, -1, 4.9, Math.PI * 1.02, -0.02); ctx.fill();
+    ctx.fillRect(-4.8, -1.4, 9.6, 1.4);
+  } else if (hs === "bun") {
+    ctx.beginPath(); ctx.arc(0, -1, 5, Math.PI, 0); ctx.fill();
+    ctx.fillRect(-5, -1.4, 10, 1.5);
+    ctx.beginPath(); ctx.arc(-5.4, -3.4, 2.6, 0, 6.283); ctx.fill();
+  } else if (hs === "cap") {
+    ctx.beginPath(); ctx.arc(0, -0.6, 5.1, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = dk(o.capCol || "#5b7d8a");
+    ctx.beginPath(); ctx.arc(0, -1.2, 5.2, Math.PI, 0); ctx.fill();
+    ctx.fillRect(-7.4, -1.6, 9, 1.5);
+  } else if (hs === "hat") {
+    ctx.beginPath(); ctx.arc(0, -0.6, 4.9, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = dk(o.capCol || "#6b5334");
+    ctx.fillRect(-8, -4.6, 16, 1.8);
+    ctx.fillRect(-4.2, -10, 8.4, 5.6);
+  }
+  ctx.strokeStyle = "rgba(60,34,20,.8)"; ctx.lineWidth = 0.7;
+  ctx.beginPath(); ctx.arc(0.6, 1, 1.8, 0.3, 2.0); ctx.stroke();
+  ctx.restore();
+
+  if (o.prop === "stick") {
+    ctx.strokeStyle = dk("#6b5334"); ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(-3, -19); ctx.lineTo(-6, 1); ctx.stroke();
+  } else if (o.prop === "spear") {
+    ctx.strokeStyle = dk("#6b5334"); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(9, -30); ctx.lineTo(11, 1); ctx.stroke();
+    ctx.fillStyle = dk("#6f6759");
+    ctx.beginPath(); ctx.moveTo(9, -30); ctx.lineTo(11.4, -36); ctx.lineTo(11.6, -29.6); ctx.closePath(); ctx.fill();
+  } else if (o.prop === "dog") {
+    ctx.save();
+    ctx.translate(-13, 0);
+    ctx.fillStyle = dk("#5a4a34");
+    ctx.beginPath(); ctx.ellipse(0, -5, 5.4, 3.2, 0, 0, 6.283); ctx.fill();
+    ctx.beginPath(); ctx.arc(5, -8.4, 2.8, 0, 6.283); ctx.fill();
+    ctx.strokeStyle = dk("#5a4a34"); ctx.lineWidth = 1.6; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(-3, -3); ctx.lineTo(-3.4, 0); ctx.moveTo(3, -3); ctx.lineTo(3.4, 0); ctx.stroke();
+    var tw = reduced ? 0 : Math.sin(t * 6) * 2.4;
+    ctx.beginPath(); ctx.moveTo(-5, -6); ctx.lineTo(-8, -9 + tw); ctx.stroke();
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+function drawBasket(x, y, sc, full, spill) {
+  var sk = skyPair();
+  var dim = sk.night * 0.5;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(sc, sc);
+  if (full) {
+    ctx.fillStyle = rgb(mix([224, 176, 84], [40, 40, 56], dim));
+    ctx.beginPath(); ctx.ellipse(0, -7, 8.4, 3.6, 0, 0, 6.283); ctx.fill();
+    ctx.fillStyle = rgb(mix([236, 196, 112], [46, 46, 62], dim));
+    ctx.beginPath(); ctx.ellipse(-2, -8.2, 4.2, 2, 0, 0, 6.283); ctx.fill();
+  }
+  ctx.fillStyle = rgb(mix([138, 98, 54], [34, 34, 48], dim));
+  ctx.beginPath();
+  ctx.moveTo(-9.5, -7); ctx.lineTo(9.5, -7); ctx.lineTo(6.5, 3); ctx.lineTo(-6.5, 3);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "rgba(40,26,12,.5)"; ctx.lineWidth = 0.9;
+  for (var i = 1; i < 3; i++) {
+    var yy = -7 + i * 3.2, sh = 9.5 - i * 1;
+    ctx.beginPath(); ctx.moveTo(-sh, yy); ctx.lineTo(sh, yy); ctx.stroke();
+  }
+  ctx.strokeStyle = rgb(mix([104, 74, 40], [30, 30, 44], dim)); ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.arc(0, -7, 7, Math.PI, 0); ctx.stroke();
+  if (spill) {
+    ctx.fillStyle = rgb(mix([224, 176, 84], [40, 40, 56], dim), 0.9);
+    for (var s = 0; s < 7; s++) {
+      ctx.beginPath();
+      ctx.arc(-14 + s * 4.6 + (s % 3) * 1.4, 3 + (s % 2) * 1.6, 1.2, 0, 6.283);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+/* a coin: one round of silver, seen flat or on its edge */
+function drawCoin(x, y, r, spin) {
+  var sk = skyPair();
+  var dim = sk.night * 0.5;
+  var w = spin == null ? 1 : Math.abs(Math.cos(spin));
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = rgb(mix([208, 200, 176], [70, 72, 88], dim));
+  ctx.beginPath(); ctx.ellipse(0, 0, Math.max(0.6, r * w), r, 0, 0, 6.283); ctx.fill();
+  ctx.strokeStyle = rgb(mix([120, 112, 90], [40, 42, 56], dim)); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.ellipse(0, 0, Math.max(0.6, r * w), r, 0, 0, 6.283); ctx.stroke();
+  if (w > 0.55) {
+    ctx.fillStyle = rgb(mix([150, 142, 118], [50, 52, 66], dim), 0.8);
+    ctx.beginPath(); ctx.ellipse(0, 0, r * w * 0.44, r * 0.44, 0, 0, 6.283); ctx.fill();
+  }
+  ctx.restore();
+}
+
+/* a slate held up with something chalked on it */
+function drawSlate(x, y, text, sc, tone) {
+  var sk = skyPair();
+  var dim = sk.night * 0.55;
+  sc = sc || 1;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(sc, sc);
+  var w = 26, h = 18;
+  ctx.fillStyle = rgb(mix([70, 62, 54], [30, 32, 44], dim));
+  ctx.fillRect(-w / 2 - 2, -h - 2, w + 4, h + 4);
+  ctx.fillStyle = rgb(mix(tone || [44, 46, 44], [22, 24, 34], dim));
+  ctx.fillRect(-w / 2, -h, w, h);
+  ctx.fillStyle = rgb(mix([236, 232, 218], [150, 150, 160], dim), 0.94);
+  ctx.font = "600 12px 'IBM Plex Mono', monospace";
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText(String(text), 0, -h / 2 + 0.5);
+  ctx.restore();
+}
+
+/* ---------- weather ---------- */
+
+var motes = [];
+function stepMotes(t, dt) {
+  var win = sw(3), spr = sw(0), aut = sw(2);
+  var want = reduced ? 0 : Math.round(win * (M.small ? 30 : 60) + spr * (M.small ? 12 : 22) + aut * (M.small ? 14 : 26));
+  while (motes.length < want) {
+    motes.push({ x: Math.random() * M.W, y: Math.random() * M.GY, vx: (Math.random() - 0.5) * 12,
+                 vy: 12 + Math.random() * 26, r: 1 + Math.random() * 2.2, ph: Math.random() * 6.28 });
+  }
+  while (motes.length > want) motes.pop();
+  for (var i = 0; i < motes.length; i++) {
+    var m = motes[i];
+    m.y += m.vy * dt;
+    m.x += (m.vx + Math.sin(t * 1.4 + m.ph) * 14) * dt;
+    if (m.y > M.GY - 2) { m.y = -6; m.x = Math.random() * M.W; }
+    if (m.x < -10) m.x = M.W + 8; else if (m.x > M.W + 10) m.x = -8;
+  }
+}
+function drawMotes() {
+  var win = sw(3), spr = sw(0), aut = sw(2);
+  var col = win > Math.max(spr, aut) ? [236, 240, 240] : spr > aut ? [238, 196, 214] : [196, 120, 52];
+  var sk = skyPair();
+  ctx.fillStyle = rgb(mix(col, [60, 62, 80], sk.night * 0.5), 0.7);
+  for (var i = 0; i < motes.length; i++) {
+    var m = motes[i];
+    ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, 6.283); ctx.fill();
+  }
+}
+
+/* ---------- the loop ---------- */
+
+var lastT = 0;
+function paint(t) {
+  ctx.setTransform(M.DPR, 0, 0, M.DPR, 0, 0);
+  drawSky(t);
+  drawLand(t);
+  if (drawGame) drawGame(t);
+  drawMotes();
+  var v = ctx.createRadialGradient(M.W / 2, M.GY * 0.55, M.GY * 0.4, M.W / 2, M.GY * 0.6, Math.max(M.W, M.H) * 0.8);
+  v.addColorStop(0, "rgba(0,0,0,0)");
+  v.addColorStop(1, "rgba(10,10,16,.26)");
+  ctx.fillStyle = v;
+  ctx.fillRect(0, 0, M.W, M.H);
+}
+function frameOnce() { paint(world.t); }
+function frame(now) {
+  var tt = now / 1000;
+  var dt = Math.min(0.05, tt - lastT || 0.016);
+  lastT = tt;
+  if (!reduced) world.t = tt;
+  if (world.mix < 1) world.mix = Math.min(1, world.mix + dt * (reduced ? 4 : 0.9));
+  world.dayT += (world.day - world.dayT) * (reduced ? 1 : Math.min(1, dt * 1.6));
+  stepMotes(world.t, dt);
+  paint(world.t);
+  requestAnimationFrame(frame);
+}
+
+/* ---------- the interface, in ordinary HTML ---------- */
+
+var ui = {
+  panel: null, live: null,
+  say: function (msg) { if (ui.live) ui.live.textContent = msg; },
+  top: function (title, when) {
+    var a = $("chLabel"), b = $("whenLabel");
+    if (a) a.textContent = title;
+    if (b) b.textContent = when;
+  },
+  clear: function () { while (ui.panel.firstChild) ui.panel.removeChild(ui.panel.firstChild); },
+  para: function (txt, cls) { var p = el("p", cls || null, txt); ui.panel.appendChild(p); return p; },
+  head: function (txt) { var h = el("h2", null, txt); ui.panel.appendChild(h); return h; },
+  sub: function (txt) { var h = el("h3", null, txt); ui.panel.appendChild(h); return h; },
+  kick: function (txt) { var k = el("p", "kicker", txt); ui.panel.appendChild(k); return k; },
+  list: function (items, cls) {
+    var u = el("ul", cls || null);
+    items.forEach(function (s) { u.appendChild(el("li", null, s)); });
+    ui.panel.appendChild(u);
+    return u;
+  },
+  actions: function () { var r = el("div", "row"); ui.panel.appendChild(r); return r; },
+  btn: function (row, label, key, fn, cls) {
+    var b = el("button", cls || null);
+    b.appendChild(document.createTextNode(label));
+    if (key) b.appendChild(el("span", "k", key));
+    b.addEventListener("click", function () { ui.acted = true; fn(); });
+    row.appendChild(b);
+    return b;
+  },
+  meter: function (label, u, value, good) {
+    var d = el("div", "meter");
+    d.appendChild(el("span", null, label));
+    var bar = el("div", "bar"), fill = el("i", good ? "good" : null);
+    fill.style.width = clamp(u, 0, 1) * 100 + "%";
+    bar.appendChild(fill);
+    d.appendChild(bar);
+    d.appendChild(el("span", "n", value));
+    ui.panel.appendChild(d);
+    return d;
+  },
+  glyphs: function (parts) {
+    var d = el("p", "glyphs");
+    parts.forEach(function (p) {
+      var s = el("span", p.cls || null, p.txt);
+      d.appendChild(s);
+    });
+    ui.panel.appendChild(d);
+    return d;
+  },
+  sources: function (items) {
+    var u = el("ul", "sources");
+    items.forEach(function (it) {
+      var li = el("li");
+      li.appendChild(el("b", null, it.what));
+      li.appendChild(document.createTextNode(" " + it.cite + " "));
+      var a = el("a", null, it.url);
+      a.href = it.url; a.rel = "noopener noreferrer";
+      li.appendChild(a);
+      if (it.tail) li.appendChild(document.createTextNode(" " + it.tail));
+      u.appendChild(li);
+    });
+    ui.panel.appendChild(u);
+    return u;
+  },
+  acted: false,
+  reading: {},
+  focusFirst: function (viewName) {
+    ui.panel.scrollTop = 0;
+    if (!ui.acted) return;
+    if (ui.reading[viewName]) { ui.panel.focus({ preventScroll: true }); return; }
+    var b = ui.panel.querySelector("button:not([disabled])");
+    if (b) b.focus({ preventScroll: true });
+  }
+};
+
+function store(key) {
+  return {
+    save: function (o) { try { localStorage.setItem(key, JSON.stringify(o)); } catch (e) {} },
+    load: function () {
+      try {
+        var raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    },
+    wipe: function () { try { localStorage.removeItem(key); } catch (e) {} }
+  };
+}
+
+function keys(fn) {
+  document.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var tag = (e.target && e.target.tagName) || "";
+    if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+    fn(String(e.key || "").toLowerCase(), e);
+  });
+}
+
+function start(opts) {
+  opts = opts || {};
+  cv = $("world"); ctx = cv.getContext("2d");
+  api.ctx = ctx;
+  ui.panel = $("panel"); ui.live = $("live");
+  anchorSel = opts.anchor || "#panel";
+  groundLift = opts.lift || 0;
+  drawGame = opts.draw || null;
+  onResize = opts.resize || null;
+  var rsz;
+  window.addEventListener("resize", function () {
+    clearTimeout(rsz);
+    rsz = setTimeout(resize, 120);
+  }, { passive: true });
+  /* the game gets its first screen before the first paint, so that the
+     panel it writes is what the ground line is measured against */
+  if (opts.ready) opts.ready();
+  resize();
+  requestAnimationFrame(frame);
+}
+
+var api = {
+  reduced: reduced, FAST: FAST,
+  $: $, el: el, clamp: clamp, lerp: lerp, smooth: smooth, rgb: rgb, mix: mix, mulberry: mulberry,
+  M: M, ctx: null, world: world, SEASONS: SEASON_NAMES,
+  sw: sw, sky: skyPair, shadow: shadow,
+  land: drawLand, house: drawHouse, tree: drawTree, fence: drawFence,
+  figure: drawFigure, basket: drawBasket, coin: drawCoin, slate: drawSlate,
+  hill: hill,
+  season: function (i, immediate) {
+    world.prev = world.season;
+    world.season = ((i % 4) + 4) % 4;
+    world.mix = (immediate || world.season === world.prev) ? 1 : 0;
+  },
+  daylight: function (v, immediate) {
+    world.day = clamp(v, 0, 1);
+    if (immediate) world.dayT = world.day;
+  },
+  green: function (v) { greenLoss = clamp(v, 0, 1); },
+  villages: function (v) { showVillage = !!v; },
+  lift: function (v) { groundLift = v || 0; layout(); },
+  layout: layout,
+  ui: ui, store: store, keys: keys, start: start
+};
+return api;
+})();
+</script>
+
+<script>
+(function () {
+"use strict";
+
+var el = KW.el, clamp = KW.clamp, lerp = KW.lerp;
+
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"pg-desc": "Köydeki herkes sıfırla yüz arasında bir sayıyı tahtasına yazıyor. Ortalamanın üçte ikisine en yakın olan keseyi alıyor. Seni de izleyen bir köye karşı altı kez oyna ve sayıların yokuş aşağı yürüyüşünü izle.", "bc-h1": "Güzellik Yarışması", "bc-skip": "Seçimlere atla", "bc-restart": "Baştan başla", "bc-name": "Güzellik Yarışması", "bc-when-square": "köy meydanı, pazarın kurulduğu gün", "bc-when-day": "pazar {a} / {b}", "bc-when-arg": "savın kendisi, açıkça", "bc-you": "Sen", "bc-t-p1": "Köyden on iki kişi ve sen. Herkes taş tahtasına sıfırla yüz arasında bir sayı yazıyor ve tahtalar aynı anda çevriliyor. Tahtalar toplanıyor, ortalama alınıyor ve o ortalamanın üçte ikisi kazanan sayı oluyor. Ona en yakın sayıyı yazan keseyi alıyor.", "bc-t-p2": "Altı kez pazar kurulacak. Her birinden sonra bütün tahtaları görüyorsun; yani köyün geçen sefer tam olarak ne yaptığını biliyorsun.", "bc-b-resume": "{n}. pazardan devam et", "bc-b-take": "Bir tahta al", "bc-s-title": "Güzellik Yarışması. Sıfırla yüz arasında bir sayı yaz. Ortalamanın üçte ikisi kazanır.", "bc-g-kick": "{n}. pazar", "bc-g-h": "Tahtaya ne yazıyorsun", "bc-g-p0": "Henüz kimse bir şey yazmadı ve meydandaki hiç kimse bu oyunu daha önce oynamadı. Köyün ne yapacağı hakkında senin fikrin, onların senin hakkındaki fikri kadar.", "bc-g-prev": "Geçen sefer ortalama {a}, kazanan sayı {t} idi. {w} Meydandaki herkes senin gördüğünü gördü.", "bc-g-prev-you": "Keseyi sen aldın.", "bc-g-prev-other": "Keseyi {g} yazarak {n} aldı.", "bc-g-cap": "senin tahtan", "bc-g-aria": "Sıfırla yüz arasındaki sayın", "bc-b-turn": "Tahtayı çevir", "bc-b-lower": "Azalt", "bc-b-higher": "Artır", "bc-g-purses": "Alınan keseler ", "bc-s-guess": "{n}. pazar. Sayını ok tuşlarıyla seç ve tahtayı çevir.", "bc-rv-kick": "Tahtalar çevriliyor", "bc-rv-h-you": "Kese senin", "bc-rv-h-other": "Keseyi {w} alıyor", "bc-rv-p": "On üç tahtanın ortalaması {a} çıktı. Bunun üçte ikisi {t}. Sen {m} yazdın; kazanan sayıya uzaklığın {d} idi. {r}", "bc-rv-none": "Kimse daha yakın değildi.", "bc-rv-wrote": "{w} {g} yazdı.", "bc-rv-track": "Şimdiye kadarki kazanan sayılar: ", "bc-b-endview": "Meydanın yaptığı şey", "bc-b-nextday": "Sonraki pazar", "bc-s-rv": "Ortalama {a}, kazanan sayı {t}. {w}", "bc-s-rv-you": "Keseyi sen aldın.", "bc-s-rv-other": "Keseyi {n} aldı.", "bc-e-kick": "Sonu", "bc-e-h": "Sayılar yokuş aşağı yürüdü ve varamadı", "bc-e-p0": "Kazanan sayı ilk pazarda {f} iken son pazarda {l} oldu. Köy, köyün ne yaptığını her öğrendiğinde düştü ve sıfıra hiç ulaşmadı.", "bc-e-p1": "Muhakemenin sonuna kadar ayakta kalan tek sayı sıfır. Herkes sıfır yazarsa ortalamanın üçte ikisi sıfırdır, herkes kazanan sayıyı yazmıştır ve hiç kimse tek başına başka bir şey yazarak daha iyisini yapamaz. Denge budur ve senin meydanında kimsenin yazmadığı tek cevap da o.", "bc-e-p2": "Sebep insanların aptal olması değil. Sıfır yazmak ancak herkes muhakemeyi yaparsa, sonuna kadar yaparsa ve senin onların yapacağına inandığına inanırsa doğrudur. O meydandaki iki kişi bunu hiç yapmıyordu; bunu bildiğin anda sıfıra yakın bir sayı zekice değil kötü bir bahistir. Doğru muhakeme derinliği, içinde gerçekten bulunduğun odanın bir adım ötesidir ve bu matematik hakkında değil oda hakkında bir olgudur.", "bc-e-sub1": "Nereden geliyor", "bc-e-keynes": "Keynes durumu 1936'da, profesyonel yatırımcıların gerçekte ne yaptığını yazarken tarif etti:", "bc-e-q1": "“Profesyonel yatırım, yarışmacıların yüz fotoğraf arasından en güzel altı yüzü seçtiği ve ödülün, seçimi yarışmacıların bir bütün olarak ortalama tercihine en çok yaklaşana verildiği gazete yarışmalarına benzetilebilir; öyle ki her yarışmacı kendisinin en güzel bulduğu yüzleri değil, diğer yarışmacıların beğenisini yakalamaya en olası saydığı yüzleri seçmek zorundadır ve hepsi soruna aynı noktadan bakmaktadır.”", "bc-e-q2": "“Zekâmızı, ortalama görüşün ortalama görüşten ne beklediğini öngörmeye adadığımız üçüncü dereceye ulaşmış bulunuyoruz. Ve sanırım dördüncü, beşinci ve daha yüksek dereceleri uygulayanlar da var.”", "bc-e-sub2": "Gerçek insanlarla ne oluyor", "bc-e-p3": "Rosemarie Nagel tam olarak bu oyunu laboratuvarda oynattı ve sonuçları 1995'te yayımladı. Hedefin ortalamanın üçte ikisi olduğu oturumlarda ilk turda seçilen sayıların ortalaması 36,73'tü: sıfırdaki dengenin yanına bile yaklaşmayan, muhakemenin bir iki turunun vereceği değere yakın bir sayı. Sonuçlar duyurularak tekrar tekrar oynandığında seçimler tur tur düştü ama sıfıra varmadı.", "bc-e-p4": "Asıl işe yarayan o ilk sayı. Oda, diğerlerinin de öyle olduğunu bilen kusursuz rasyonel oyuncularla dolu olsaydı sayı sıfır olurdu. 36,73 çıktı; bu da kabaca muhakemeyi bir ya da iki kez yapıp duran birinin cevabı.", "bc-e-sub3": "Bunun göstermediği", "bc-e-l1": "On iki komşun, yazarın seçtiği, elle yazılmış bir muhakeme derinlikleri karışımı. Ölçülmüş bir nüfus değiller ve karışım yayımlanmış herhangi bir çalışmadan alınmadı.", "bc-e-l2": "İkisi muhakemeyi hiç yapmıyor. Ortalarda bir yerden başlıyor, sonra geçen sefer kazanana doğru kayıyorlar. Kazanan sayıyı sıfırdan uzak tutan işin çoğunu bu tek varsayım yapıyor; farklı bir varsayım farklı bir taban verirdi.", "bc-e-l3": "Gerçek oyuncular geçen seferin üçte ikisini alarak güncellemez. Daha dağınık bir şey yaparlar ve yayımlanmış çalışmalar bunu birbiriyle yarışan birkaç biçimde modeller.", "bc-e-l4": "On üç kişiyle altı tur bir deney değildir. Bu sayfada ölçülen hiçbir şey, sen dahil, kimse hakkında kanıt değildir.", "bc-e-l5": "36,73 sayısı, belirli bir denek havuzu ve tasarımı olan tek bir makaleden tek bir rakam. Başka çalışmalar başka ilk tur ortalamaları bulur ve binlerce katılımcılı gazete sürümleri daha düşük çıkar.", "bc-e-src": "Kaynaklar", "bc-src1": "Gazete yarışması.", "bc-src2": "Deney.", "bc-src3": "Denge.", "bc-src-tail": "Okundu: 2026 08 21.", "bc-fam": "Ailenin geri kalanı, öngörülebilir olmanın kaybetmenin tek yolu olduğu biri de dahil: ", "bc-fam-a": "bütün oyunlar burada", "bc-b-again": "Yeniden bir tahta al", "bc-s-end": "Son. Kazanan sayı sıfıra doğru düşer ve ona hiç ulaşmaz.", "bc-k-return": "enter", "bc-k-start": "başla", "bc-k-go": "devam", "bc-k-again": "tekrar", "bc-k-enter": "enter", "pg-title": "Güzellik Yarışması"}, "de": {"pg-desc": "Alle im Dorf schreiben eine Zahl zwischen null und hundert auf eine Tafel. Wer zwei Dritteln des Durchschnitts am nächsten kommt, nimmt den Einsatz. Spielen Sie sechsmal gegen ein Dorf, das Sie ebenfalls beobachtet, und sehen Sie die Zahlen bergab wandern.", "bc-h1": "Der Schönheitswettbewerb", "bc-skip": "Zu den Entscheidungen springen", "bc-restart": "Von vorn beginnen", "bc-name": "Der Schönheitswettbewerb", "bc-when-square": "der Dorfplatz, Markttag", "bc-when-day": "Markttag {a} von {b}", "bc-when-arg": "das Argument, schlicht gesagt", "bc-you": "Sie", "bc-t-p1": "Zwölf Leute aus dem Dorf und Sie. Alle schreiben eine Zahl von null bis hundert auf eine Tafel und drehen sie im selben Moment um. Die Tafeln werden zusammengezählt, der Durchschnitt genommen, und zwei Drittel dieses Durchschnitts sind die Gewinnzahl. Wer die Zahl geschrieben hat, die ihr am nächsten kommt, nimmt den Beutel.", "bc-t-p2": "Sechs Markttage. Nach jedem sehen Sie jede Tafel, Sie wissen also genau, was das Dorf beim letzten Mal getan hat.", "bc-b-resume": "Weiter ab Markttag {n}", "bc-b-take": "Nehmen Sie eine Tafel", "bc-s-title": "Der Schönheitswettbewerb. Schreiben Sie eine Zahl von null bis hundert. Zwei Drittel des Durchschnitts gewinnen.", "bc-g-kick": "Markttag {n}", "bc-g-h": "Was schreiben Sie darauf", "bc-g-p0": "Noch hat niemand etwas geschrieben, und niemand auf dem Platz hat das hier je gespielt. Sie wissen über das Dorf so viel, wie das Dorf über Sie weiß.", "bc-g-prev": "Beim letzten Mal war der Durchschnitt {a} und die Gewinnzahl {t}. {w} Alle auf dem Platz sahen dasselbe wie Sie.", "bc-g-prev-you": "Den Beutel nahmen Sie.", "bc-g-prev-other": "{n} nahm den Beutel mit {g}.", "bc-g-cap": "Ihre Tafel", "bc-g-aria": "Ihre Zahl von null bis hundert", "bc-b-turn": "Die Tafel umdrehen", "bc-b-lower": "Niedriger", "bc-b-higher": "Höher", "bc-g-purses": "Genommene Beutel ", "bc-s-guess": "Markttag {n}. Wählen Sie Ihre Zahl mit den Pfeiltasten und drehen Sie die Tafel um.", "bc-rv-kick": "Die Tafeln drehen sich um", "bc-rv-h-you": "Der Beutel ist Ihrer", "bc-rv-h-other": "{w} nimmt den Beutel", "bc-rv-p": "Der Durchschnitt der dreizehn Tafeln war {a}. Zwei Drittel davon sind {t}. Sie schrieben {m}, das war {d} entfernt. {r}", "bc-rv-none": "Niemand war näher dran.", "bc-rv-wrote": "{w} schrieb {g}.", "bc-rv-track": "Die Gewinnzahl bisher: ", "bc-b-endview": "Was der Platz getan hat", "bc-b-nextday": "Der nächste Markttag", "bc-s-rv": "Durchschnitt {a}, Gewinnzahl {t}. {w}", "bc-s-rv-you": "Den Beutel nahmen Sie.", "bc-s-rv-other": "{n} nahm den Beutel.", "bc-e-kick": "Das Ende", "bc-e-h": "Die Zahlen gingen bergab und kamen nie an", "bc-e-p0": "Die Gewinnzahl ging von {f} am ersten Markttag auf {l} am letzten. Sie fiel jedes Mal, wenn das Dorf erfuhr, was das Dorf getan hatte, und sie erreichte nie null.", "bc-e-p1": "Null ist die einzige Zahl, die die Überlegung bis ganz nach unten übersteht. Schreiben alle null, sind zwei Drittel des Durchschnitts null, alle haben die Gewinnzahl geschrieben, und kein Einzelner kann sich verbessern, indem er etwas anderes schreibt. Das ist das Gleichgewicht, und es ist die eine Antwort, die auf Ihrem Platz nie jemand geschrieben hat.", "bc-e-p2": "Der Grund ist nicht, dass Menschen dumm wären. Null zu schreiben ist nur richtig, wenn alle anderen die Überlegung auch anstellen, sie zu Ende führen und glauben, dass Sie glauben, dass sie es tun. Zwei Menschen auf diesem Platz taten das überhaupt nicht, und sobald man das weiß, ist eine Zahl nahe null keine kluge Wette, sondern eine schlechte. Die richtige Tiefe der Überlegung liegt einen Schritt hinter dem Raum, in dem man tatsächlich sitzt, und das ist eine Tatsache über den Raum, nicht über die Mathematik.", "bc-e-sub1": "Woher es kommt", "bc-e-keynes": "Keynes beschrieb die Lage 1936, als er darüber schrieb, was professionelle Anleger tatsächlich tun:", "bc-e-q1": "„Professionelle Kapitalanlage lässt sich mit jenen Zeitungswettbewerben vergleichen, bei denen die Teilnehmer aus hundert Fotografien die sechs hübschesten Gesichter auszuwählen haben und der Preis dem zufällt, dessen Wahl der durchschnittlichen Vorliebe aller Teilnehmer am nächsten kommt; sodass jeder nicht die Gesichter zu wählen hat, die er selbst am hübschesten findet, sondern jene, von denen er glaubt, dass sie am ehesten den Geschmack der anderen treffen, die alle das Problem vom selben Standpunkt aus betrachten.“", "bc-e-q2": "„Wir sind bei der dritten Stufe angelangt, auf der wir unsere Intelligenz darauf verwenden, vorwegzunehmen, was die durchschnittliche Meinung als durchschnittliche Meinung erwartet. Und es gibt, glaube ich, einige, die die vierte, fünfte und höhere Stufen üben.“", "bc-e-sub2": "Was mit echten Menschen geschieht", "bc-e-p3": "Rosemarie Nagel ließ genau dieses Spiel im Labor spielen und veröffentlichte die Ergebnisse 1995. In den Sitzungen, in denen das Ziel zwei Drittel des Durchschnitts war, lag der Mittelwert der in der ersten Periode gewählten Zahlen bei 36,73: nirgendwo in der Nähe des Gleichgewichts bei null und nahe an dem, was ein oder zwei Runden der Überlegung ergeben würden. Wiederholt gespielt, mit bekannt gegebenen Ergebnissen, fielen die Zahlen Periode um Periode, ohne bei null anzukommen.", "bc-e-p4": "Die nützliche Zahl ist die erste. Wäre der Raum voller vollkommen rationaler Spieler, die wüssten, dass es die anderen auch sind, wäre sie null gewesen. Sie war 36,73, ungefähr die Antwort von jemandem, der die Überlegung ein oder zwei Mal anstellt und dann aufhört.", "bc-e-sub3": "Was das nicht zeigt", "bc-e-l1": "Ihre zwölf Nachbarn sind eine von Hand geschriebene Mischung von Überlegungstiefen, gewählt vom Autor. Sie sind keine gemessene Population, und die Mischung stammt aus keiner veröffentlichten Studie.", "bc-e-l2": "Zwei von ihnen stellen die Überlegung nie an. Sie beginnen irgendwo in der Mitte und driften dann zu dem, was zuletzt gewann. Diese eine Annahme leistet die meiste Arbeit dabei, die Gewinnzahl von null fernzuhalten, und eine andere ergäbe einen anderen Boden.", "bc-e-l3": "Echte Spieler aktualisieren nicht, indem sie zwei Drittel des letzten Mals nehmen. Sie tun etwas Unordentlicheres, und die veröffentlichte Literatur modelliert es auf mehrere konkurrierende Arten.", "bc-e-l4": "Sechs Runden mit dreizehn Leuten sind kein Experiment. Nichts, was auf dieser Seite gemessen wird, ist ein Beleg über irgendjemanden, Sie eingeschlossen.", "bc-e-l5": "Die Zahl 36,73 ist eine Angabe aus einer Arbeit mit einem bestimmten Teilnehmerkreis und Design. Andere Studien finden andere Erstrundenmittel, und Zeitungsversionen des Spiels mit Tausenden von Einsendungen fallen niedriger aus.", "bc-e-src": "Quellen", "bc-src1": "Der Zeitungswettbewerb.", "bc-src2": "Das Experiment.", "bc-src3": "Gleichgewicht.", "bc-src-tail": "Gelesen: 2026 08 21.", "bc-fam": "Der Rest der Familie, darunter eines, in dem Vorhersagbarkeit die einzige Art ist zu verlieren: ", "bc-fam-a": "alle Spiele sind hier", "bc-b-again": "Noch einmal eine Tafel nehmen", "bc-s-end": "Das Ende. Die Gewinnzahl fällt gegen null und erreicht es nie.", "bc-k-return": "Enter", "bc-k-start": "Start", "bc-k-go": "weiter", "bc-k-again": "erneut", "bc-k-enter": "Enter", "pg-title": "Der Schönheitswettbewerb"}};
+function T(k, en, v) {
+  var s = window.__t ? window.__t(k, en) : en;
+  if (v) for (var n in v) s = s.split("{" + n + "}").join(String(v[n]));
+  return s;
+}
+function disp(name) { return name === "You" ? T("bc-you", "You") : name; }
+
+var ui = KW.ui, ctx = null;
+var store = KW.store("kw.beauty.v1");
+
+/* ============================================================
+   1. the game itself
+   Everyone writes a number from 0 to 100. Two thirds of the
+   average wins. The only equilibrium is everybody at zero, and
+   nobody has ever seen a room get there.
+   ============================================================ */
+
+var P = 2 / 3;
+
+function target(all) {
+  var sum = 0;
+  for (var i = 0; i < all.length; i++) sum += all[i];
+  return P * (sum / all.length);
+}
+
+/* ============================================================
+   2. the village
+   Each villager has a depth. Depth zero writes whatever comes
+   into their head. Depth one takes two thirds of what they think
+   the room will do, depth two takes two thirds of that, and so on.
+   ============================================================ */
+
+var VILLAGERS = [
+  { name: "Bruno",  depth: 0, fig: { coat: "#6b5334", hairStyle: "hat", capCol: "#4a3826", hair: "#3a2a18", stout: true } },
+  { name: "Leyla",  depth: 0, fig: { coat: "#6b4a72", hairStyle: "bun", hair: "#241a12", skin: "#c99a72" } },
+  { name: "Mira",   depth: 1, fig: { coat: "#7a6a8a", hairStyle: "braid", hair: "#3a2a18", skin: "#c99a72" } },
+  { name: "Halil",  depth: 1, fig: { coat: "#8a4a2c", hairStyle: "crop", hair: "#1f1710", skin: "#c08a5e" } },
+  { name: "Tomas",  depth: 1, fig: { coat: "#7a6a2f", hairStyle: "cap", capCol: "#4d5a3a", hair: "#2a1c10" } },
+  { name: "Ana",    depth: 2, fig: { coat: "#40566e", hairStyle: "braid", hair: "#4a3218", skin: "#d0a37c" } },
+  { name: "Deniz",  depth: 2, fig: { coat: "#5e7a6a", hairStyle: "bun", hair: "#2a1c10", skin: "#b98a62" } },
+  { name: "Emre",   depth: 2, fig: { coat: "#4a6b6b", hairStyle: "curly", hair: "#1f1710", skin: "#bd8f66" } },
+  { name: "Roza",   depth: 3, fig: { coat: "#5b7d8a", hairStyle: "braid", hair: "#241a12", skin: "#c99a72" } },
+  { name: "Tarik",  depth: 3, fig: { coat: "#67503a", hairStyle: "cap", capCol: "#5b7d8a", hair: "#2a1c10" } },
+  { name: "Elif",   depth: 4, fig: { coat: "#c9c2ab", hairStyle: "bun", hair: "#241a12", skin: "#d0a37c" } },
+  { name: "Nadir",  depth: 1, fig: { coat: "#27423a", hairStyle: "crop", hair: "#1f1710", skin: "#b98a62" } }
+];
+
+var ROUNDS = 6;
+var rnd = KW.mulberry(4242);
+
+/* what each villager wrote last time, so that the ones who are not
+   reasoning still have somewhere to start from */
+var prevG = [];
+
+function villagerGuess(v, i, lastAvg, lastTarget, round) {
+  if (v.depth === 0) {
+    /* they are not doing the reasoning at all. The first time they write
+       something out of the middle of the range, and after that they drift
+       toward whatever won last time, because that is what a person does
+       who has no theory and can read a slate. */
+    if (round === 0 || prevG[i] == null || lastTarget == null) {
+      return Math.round(clamp(20 + rnd() * 60, 0, 100));
+    }
+    var d = prevG[i] + (lastTarget - prevG[i]) * 0.4 + (rnd() - 0.5) * 8;
+    return Math.round(clamp(d, 0, 100));
+  }
+  var anchor = (round === 0 || lastAvg == null) ? 50 : lastAvg;
+  var g = anchor * Math.pow(P, v.depth);
+  g += (rnd() - 0.5) * Math.max(1.5, g * 0.22);
+  return Math.round(clamp(g, 0, 100));
+}
+
+/* ============================================================
+   3. state
+   ============================================================ */
+
+var G = {
+  view: "title", round: 0, guess: 33, wins: 0, purse: 0,
+  lastAvg: null, lastTarget: null, rounds: [], last: null
+};
+
+var scene = { guesses: null, target: 0, winner: -1, show: false, t0: -99 };
+
+function save() {
+  store.save({ view: G.view, round: G.round, wins: G.wins, purse: G.purse,
+               lastAvg: G.lastAvg, lastTarget: G.lastTarget, prevG: prevG, rounds: G.rounds });
+}
+
+/* ============================================================
+   4. the square, painted
+   ============================================================ */
+
+/* the chalk line the village draws on the flat stones every market day */
+function drawChalkLine(t) {
+  var M = KW.M;
+  var y = M.GY + (M.small ? 16 : 24);
+  var x0 = M.W * (M.small ? 0.08 : 0.12), x1 = M.W * (M.small ? 0.92 : 0.88);
+  var chalk = "rgba(238,234,220,";
+  ctx.strokeStyle = chalk + ".55)";
+  ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke();
+  ctx.font = "500 10px 'IBM Plex Mono', monospace";
+  ctx.textAlign = "center"; ctx.textBaseline = "top";
+  for (var v = 0; v <= 100; v += 10) {
+    var x = lerp(x0, x1, v / 100);
+    var big = v % 50 === 0;
+    ctx.strokeStyle = chalk + (big ? ".6)" : ".3)");
+    ctx.beginPath(); ctx.moveTo(x, y - (big ? 6 : 3)); ctx.lineTo(x, y + (big ? 6 : 3)); ctx.stroke();
+    if (big) {
+      ctx.fillStyle = chalk + ".55)";
+      ctx.fillText(String(v), x, y + 7);
+    }
+  }
+  if (!scene.show || !scene.guesses) return;
+
+  /* every number the village wrote, as a mark on the line */
+  for (var i = 0; i < scene.guesses.length; i++) {
+    var gx = lerp(x0, x1, clamp(scene.guesses[i], 0, 100) / 100);
+    var me = i === scene.guesses.length - 1;
+    ctx.fillStyle = me ? "rgba(224,160,80,.95)" : "rgba(238,234,220,.72)";
+    ctx.beginPath(); ctx.arc(gx, y - (me ? 12 : 8), me ? 3.6 : 2.6, 0, 6.283); ctx.fill();
+  }
+  /* two thirds of the average, marked with a cross */
+  var tx = lerp(x0, x1, clamp(scene.target, 0, 100) / 100);
+  ctx.strokeStyle = "rgba(138,74,44,.95)"; ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(tx - 5, y - 5); ctx.lineTo(tx + 5, y + 5);
+  ctx.moveTo(tx + 5, y - 5); ctx.lineTo(tx - 5, y + 5);
+  ctx.stroke();
+}
+
+function drawWorld(t) {
+  var M = KW.M;
+  KW.villages(false);
+  KW.house(t, M.small ? M.W * 0.1 : M.W * 0.09);
+  KW.tree(t, M.small ? M.W * 0.94 : M.W * 0.92, 0.78);
+
+  /* the village, standing about the square with their slates */
+  var n = VILLAGERS.length;
+  var cols = M.small ? 6 : 12;
+  var pad = M.W * (M.small ? 0.08 : 0.1);
+  var span = M.W - pad * 2;
+  for (var i = 0; i < n; i++) {
+    var row = (i / cols) | 0, col = i % cols;
+    var x = pad + (col + 0.5) * (span / cols);
+    var y = M.GY - 4 - row * (M.small ? 26 : 0);
+    var s = (M.small ? 0.44 : 0.6) * (1 - row * 0.08);
+    KW.figure(x, y, t + i * 0.6, Object.assign({}, VILLAGERS[i].fig, {
+      face: -1, scale: s, pose: scene.show ? "hold" : "stand"
+    }));
+    if (scene.show && scene.guesses) {
+      KW.slate(x + (M.small ? 6 : 9), y - (M.small ? 30 : 42), scene.guesses[i],
+               (M.small ? 0.52 : 0.72),
+               i === scene.winner ? [58, 82, 66] : null);
+    }
+  }
+  drawChalkLine(t);
+}
+
+/* ============================================================
+   5. views
+   ============================================================ */
+
+var VIEWS = {};
+ui.reading = { title: 1, ending: 1 };
+
+function view(name) {
+  G.view = name;
+  ui.clear();
+  ui.panel.className = ui.reading[name] ? "read" : "";
+  VIEWS[name]();
+  KW.layout();
+  ui.focusFirst(name);
+  save();
+}
+
+VIEWS.title = function () {
+  scene.show = false; scene.guesses = null;
+  KW.season(1, true); KW.daylight(0.18, true);
+  KW.$("menuBtn").hidden = true;
+  ui.top(T("bc-name", "The Beauty Contest"), T("bc-when-square", "the village square, market day"));
+  ui.head(T("bc-name", "The Beauty Contest"));
+  ui.para(T("bc-t-p1", "Twelve people from the village and you. Everyone chalks a number from zero to one hundred on a slate and turns it over at the same moment. The slates are added up, the average is taken, and two thirds of that average is the winning number. Whoever wrote the number nearest to it takes the purse."));
+  ui.para(T("bc-t-p2", "Six market days. After each one you see every slate, so you know exactly what the village did the last time."));
+  var r = ui.actions();
+  var s = store.load();
+  if (s && s.round > 0) {
+    ui.btn(r, T("bc-b-resume", "Go on from market day {n}", {n: s.round + 1}), T("bc-k-return", "return"), function () { resume(s); }, "big");
+  }
+  ui.btn(r, T("bc-b-take", "Take a slate"), T("bc-k-start", "start"), function () {
+    ui.acted = true;
+    G.round = 0; G.wins = 0; G.purse = 0; G.lastAvg = null; G.lastTarget = null;
+    G.rounds = []; prevG = [];
+    rnd = KW.mulberry(4242);
+    KW.$("menuBtn").hidden = false;
+    view("guess");
+  }, "big");
+  ui.say(T("bc-s-title", "The Beauty Contest. Write a number from zero to one hundred. Two thirds of the average wins."));
+};
+
+function resume(s) {
+  ui.acted = true;
+  G.round = s.round || 0; G.wins = s.wins || 0; G.purse = s.purse || 0;
+  G.lastAvg = s.lastAvg == null ? null : s.lastAvg;
+  G.lastTarget = s.lastTarget == null ? null : s.lastTarget;
+  prevG = s.prevG || [];
+  G.rounds = s.rounds || [];
+  rnd = KW.mulberry(4242 + G.round * 31);
+  KW.$("menuBtn").hidden = false;
+  view(G.round >= ROUNDS ? "ending" : "guess");
+}
+
+var widgets = null;
+
+VIEWS.guess = function () {
+  scene.show = false;
+  KW.season(G.round % 4, G.round === 0);
+  KW.daylight(0.15 + (G.round / ROUNDS) * 0.55);
+  ui.top(T("bc-name", "The Beauty Contest"), T("bc-when-day", "market day {a} of {b}", {a: G.round + 1, b: ROUNDS}));
+  ui.kick(T("bc-g-kick", "Market day {n}", {n: G.round + 1}));
+  ui.head(T("bc-g-h", "What do you chalk on it"));
+
+  if (G.round === 0) {
+    ui.para(T("bc-g-p0", "Nobody has written anything yet, and nobody in the square has ever played this before. You have as much idea what the village will do as they have about you."));
+  } else {
+    var prev = G.rounds[G.rounds.length - 1];
+    ui.para(T("bc-g-prev", "Last time the average was {a} and the winning number was {t}. {w} Everyone in the square saw the same thing you did.",
+            {a: fmt(prev.avg), t: fmt(prev.target),
+             w: prev.winnerName === "You" ? T("bc-g-prev-you", "You took the purse.")
+                                          : T("bc-g-prev-other", "{n} took the purse with {g}.", {n: prev.winnerName, g: prev.winnerGuess})}));
+  }
+
+  var row = el("div", "guessrow");
+  var num = el("div", "bignum", String(G.guess));
+  var cap = el("span", "cap", T("bc-g-cap", "your slate"));
+  row.appendChild(num); row.appendChild(cap);
+  ui.panel.appendChild(row);
+
+  var box = el("div", "slider");
+  var lab = el("label", "vh", T("bc-g-aria", "Your number from zero to one hundred"));
+  lab.setAttribute("for", "g");
+  var inp = el("input");
+  inp.type = "range"; inp.id = "g"; inp.min = 0; inp.max = 100; inp.step = 1;
+  inp.value = String(G.guess);
+  inp.setAttribute("aria-label", T("bc-g-aria", "Your number from zero to one hundred"));
+  inp.addEventListener("input", function () { setGuess(parseInt(inp.value, 10) || 0); });
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); ui.acted = true; play(G.guess); }
+  });
+  box.appendChild(lab); box.appendChild(inp);
+  ui.panel.appendChild(box);
+  widgets = { inp: inp, num: num };
+
+  var r = ui.actions();
+  ui.btn(r, T("bc-b-turn", "Turn the slate over"), T("bc-k-enter", "press enter"), function () { play(G.guess); }, "big");
+  var r2 = ui.actions();
+  ui.btn(r2, T("bc-b-lower", "Lower"), null, function () { setGuess(G.guess - 1); }, "quiet");
+  ui.btn(r2, T("bc-b-higher", "Higher"), null, function () { setGuess(G.guess + 1); }, "quiet");
+
+  var d = el("div", "tally");
+  var a = el("span");
+  a.appendChild(document.createTextNode(T("bc-g-purses", "Purses taken ")));
+  a.appendChild(el("b", null, String(G.wins)));
+  d.appendChild(a);
+  ui.panel.appendChild(d);
+
+  setTimeout(function () { if (ui.acted && G.view === "guess") inp.focus({ preventScroll: true }); }, 0);
+  ui.say(T("bc-s-guess", "Market day {n}. Choose your number with the arrow keys and turn the slate over.", {n: G.round + 1}));
+};
+
+function setGuess(v) {
+  G.guess = clamp(Math.round(v), 0, 100);
+  if (widgets && G.view === "guess") {
+    widgets.inp.value = String(G.guess);
+    widgets.num.textContent = String(G.guess);
+  }
+}
+
+function fmt(x) { return String(Math.round(x * 10) / 10); }
+
+function play(mine) {
+  var all = [], i;
+  for (i = 0; i < VILLAGERS.length; i++) {
+    var g = villagerGuess(VILLAGERS[i], i, G.lastAvg, G.lastTarget, G.round);
+    prevG[i] = g;
+    all.push(g);
+  }
+  all.push(clamp(Math.round(mine), 0, 100));
+  var sum = 0;
+  for (i = 0; i < all.length; i++) sum += all[i];
+  var avg = sum / all.length;
+  var tgt = P * avg;
+
+  var best = 0, bestD = Math.abs(all[0] - tgt);
+  for (i = 1; i < all.length; i++) {
+    var d = Math.abs(all[i] - tgt);
+    if (d < bestD) { bestD = d; best = i; }
+  }
+  var youWon = best === all.length - 1;
+  if (youWon) { G.wins++; G.purse += 10; }
+
+  var rec = {
+    round: G.round + 1, all: all, avg: avg, target: tgt,
+    winner: best, winnerName: youWon ? "You" : VILLAGERS[best].name,
+    winnerGuess: all[best], mine: all[all.length - 1], youWon: youWon
+  };
+  G.rounds.push(rec);
+  G.lastAvg = avg; G.lastTarget = tgt;
+  G.last = rec;
+  G.round++;
+
+  scene.guesses = all; scene.target = tgt; scene.winner = best; scene.show = true;
+  scene.t0 = KW.world.t;
+  widgets = null;
+  save();
+  view("reveal");
+}
+
+VIEWS.reveal = function () {
+  var r = G.last;
+  ui.top(T("bc-name", "The Beauty Contest"), T("bc-when-day", "market day {a} of {b}", {a: r.round, b: ROUNDS}));
+  ui.kick(T("bc-rv-kick", "The slates turn over"));
+  ui.head(r.youWon ? T("bc-rv-h-you", "The purse is yours") : T("bc-rv-h-other", "{w} takes the purse", {w: r.winnerName}));
+  ui.para(T("bc-rv-p", "The average of the thirteen slates was {a}. Two thirds of that is {t}. You wrote {m}, which was {d} away. {r}",
+          {a: fmt(r.avg), t: fmt(r.target), m: r.mine, d: fmt(Math.abs(r.mine - r.target)),
+           r: r.youWon ? T("bc-rv-none", "Nobody was nearer.") : T("bc-rv-wrote", "{w} wrote {g}.", {w: r.winnerName, g: r.winnerGuess})}));
+
+  var list = el("div", "slate-list");
+  for (var i = 0; i < r.all.length; i++) {
+    var me = i === r.all.length - 1;
+    var cls = i === r.winner ? "win" : me ? "you" : null;
+    var name = me ? T("bc-you", "You") : VILLAGERS[i].name;
+    list.appendChild(el("span", cls, name + " " + r.all[i]));
+  }
+  ui.panel.appendChild(list);
+
+  if (G.rounds.length > 1) {
+    var tr = el("div", "tracks");
+    tr.appendChild(document.createTextNode(T("bc-rv-track", "The winning number so far: ")));
+    for (var j = 0; j < G.rounds.length; j++) {
+      if (j) tr.appendChild(document.createTextNode(", "));
+      tr.appendChild(el("b", null, fmt(G.rounds[j].target)));
+    }
+    ui.panel.appendChild(tr);
+  }
+
+  var row = ui.actions();
+  if (G.round >= ROUNDS) {
+    ui.btn(row, T("bc-b-endview", "What the square was doing"), T("bc-k-go", "go on"), function () { view("ending"); }, "big");
+  } else {
+    ui.btn(row, T("bc-b-nextday", "The next market day"), T("bc-k-go", "go on"), function () { view("guess"); }, "big");
+  }
+  ui.say(T("bc-s-rv", "Average {a}, winning number {t}. {w}",
+         {a: fmt(r.avg), t: fmt(r.target),
+          w: r.youWon ? T("bc-s-rv-you", "You took the purse.") : T("bc-s-rv-other", "{n} took the purse.", {n: r.winnerName})}));
+};
+
+/* ============================================================
+   6. the ending
+   ============================================================ */
+
+VIEWS.ending = function () {
+  scene.show = false;
+  KW.season(2, true); KW.daylight(0.62);
+  var first = G.rounds[0], last = G.rounds[G.rounds.length - 1];
+  ui.top(T("bc-name", "The Beauty Contest"), T("bc-when-arg", "the argument, plainly"));
+  ui.kick(T("bc-e-kick", "The end of it"));
+  ui.head(T("bc-e-h", "The numbers walked downhill and did not arrive"));
+
+  if (first && last) {
+    ui.para(T("bc-e-p0", "The winning number went from {f} on the first market day to {l} on the last. It fell every time the village learned what the village had done, and it never reached zero.",
+            {f: fmt(first.target), l: fmt(last.target)}));
+  }
+  ui.para(T("bc-e-p1", "Zero is the only number that survives the reasoning all the way down. If everybody writes zero, two thirds of the average is zero and everybody has written the winning number, and no single person can do better by writing anything else. That is the equilibrium, and it is the one answer nobody in your square ever wrote."));
+  ui.para(T("bc-e-p2", "The reason is not that people are stupid. Writing zero is only correct if everybody else does the reasoning too, and does it to the end, and believes that you believe that they will. Two people in that square were not doing this at all, and once you know that, a number near zero is a bad bet rather than a clever one. The right depth of reasoning is one step past the room you are actually in, and that is a fact about the room and not about the mathematics."));
+
+  ui.sub(T("bc-e-sub1", "Where it comes from"));
+  ui.para(T("bc-e-keynes", "Keynes described the situation in 1936, writing about what professional investors are actually doing:"));
+  var q = el("p", "say");
+  q.appendChild(document.createTextNode(T("bc-e-q1", "„Professional investment may be likened to those newspaper competitions in which the competitors have to pick out the six prettiest faces from a hundred photographs, the prize being awarded to the competitor whose choice most nearly corresponds to the average preferences of the competitors as a whole; so that each competitor has to pick, not those faces which he himself finds prettiest, but those which he thinks likeliest to catch the fancy of the other competitors, all of whom are looking at the problem from the same point of view.“")));
+  ui.panel.appendChild(q);
+  var q2 = el("p", "say");
+  q2.appendChild(document.createTextNode(T("bc-e-q2", "„We have reached the third degree where we devote our intelligences to anticipating what average opinion expects the average opinion to be. And there are some, I believe, who practise the fourth, fifth and higher degrees.“")));
+  ui.panel.appendChild(q2);
+
+  ui.sub(T("bc-e-sub2", "What happens with real people"));
+  ui.para(T("bc-e-p3", "Rosemarie Nagel ran this exact game in a laboratory and published the results in 1995. In the sessions where the target was two thirds of the average, the mean number chosen in the first period was 36.73, nowhere near the equilibrium of zero and close to what one or two rounds of the reasoning would give. Played repeatedly with the results announced, the choices fell period after period without arriving at zero."));
+  ui.para(T("bc-e-p4", "That first number is the useful one. If the room were full of perfectly rational players who knew the others were too, it would have been zero. It was 36.73, which is roughly the answer of somebody doing the reasoning once or twice and stopping."));
+
+  ui.sub(T("bc-e-sub3", "What this does not show"));
+  ui.list([
+    T("bc-e-l1", "Your twelve neighbours are a hand written mixture of reasoning depths, chosen by the author. They are not a measured population and the mixture was not taken from any published study."),
+    T("bc-e-l2", "Two of them never do the reasoning at all. They start somewhere in the middle and then drift toward whatever won last time. That single assumption does most of the work in keeping the winning number off zero, and a different one would give a different floor."),
+    T("bc-e-l3", "Real players do not update by taking two thirds of last time. They do something messier, and the published work models it in several competing ways."),
+    T("bc-e-l4", "Six rounds with thirteen people is not an experiment. Nothing measured on this page is evidence about anybody, including you."),
+    T("bc-e-l5", "The number 36.73 is one figure from one paper with a particular subject pool and design. Other studies find other first round averages, and newspaper versions of the game with thousands of entrants come out lower.")
+  ]);
+
+  ui.sub(T("bc-e-src", "Sources"));
+  ui.sources([
+    { what: T("bc-src1", "The newspaper competition."),
+      cite: "John Maynard Keynes, The General Theory of Employment, Interest and Money, 1936, chapter 12, The State of Long Term Expectation. The German and Turkish renderings here are my own.",
+      url: "https://www.marxists.org/reference/subject/economics/keynes/general-theory/ch12.htm",
+      tail: T("bc-src-tail", "Read 2026 08 21.") },
+    { what: T("bc-src2", "The experiment."),
+      cite: "Rosemarie Nagel, Unraveling in Guessing Games: An Experimental Study, American Economic Review 85(5), 1995, pages 1313 to 1326.",
+      url: "https://extranet.parisschoolofeconomics.eu/docs/guesnerie-roger/nagel95.pdf",
+      tail: T("bc-src-tail", "Read 2026 08 21.") },
+    { what: T("bc-src3", "Equilibrium."),
+      cite: "John F. Nash, Equilibrium Points in n Person Games, Proceedings of the National Academy of Sciences 36(1), 1950, pages 48 and 49.",
+      url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC1063129/",
+      tail: T("bc-src-tail", "Read 2026 08 21.") }
+  ]);
+
+  var p = el("p");
+  p.appendChild(document.createTextNode(T("bc-fam", "The rest of the family, including one where being predictable is the only way to lose: ")));
+  var a = el("a", null, T("bc-fam-a", "all of the games are here"));
+  a.href = "../../game.html";
+  p.appendChild(a);
+  p.appendChild(document.createTextNode("."));
+  ui.panel.appendChild(p);
+
+  var r = ui.actions();
+  ui.btn(r, T("bc-b-again", "Take a slate again"), T("bc-k-again", "again"), function () {
+    store.wipe();
+    G.round = 0; G.wins = 0; G.purse = 0; G.lastAvg = null; G.lastTarget = null;
+    G.rounds = []; prevG = [];
+    rnd = KW.mulberry(4242);
+    view("guess");
+  }, "big");
+  ui.say(T("bc-s-end", "The ending. The winning number falls toward zero and never reaches it."));
+};
+
+/* ============================================================
+   7. keyboard, boot, and a hook for testing
+   ============================================================ */
+
+KW.keys(function (k, e) {
+  if (G.view !== "guess") return;
+  if (k === "enter") { e.preventDefault(); ui.acted = true; play(G.guess); }
+  else if (k === "arrowleft" || k === "arrowdown") { setGuess(G.guess - 1); }
+  else if (k === "arrowright" || k === "arrowup") { setGuess(G.guess + 1); }
+});
+
+KW.$("menuBtn").addEventListener("click", function () {
+  ui.acted = true; view("title");
+});
+
+window.__G = {
+  state: G, villagers: VILLAGERS, p: P, target: target,
+  view: function () { return G.view; },
+  guess: function (n) { ui.acted = true; if (G.view === "guess") play(n); },
+  rounds: function () { return G.rounds; },
+  targets: function () { return G.rounds.map(function (r) { return r.target; }); },
+  press: function (label) {
+    var bs = ui.panel.querySelectorAll("button");
+    for (var i = 0; i < bs.length; i++) {
+      if (bs[i].textContent.toLowerCase().indexOf(label.toLowerCase()) === 0) { bs[i].click(); return true; }
+    }
+    return false;
+  },
+  buttons: function () {
+    return Array.prototype.map.call(ui.panel.querySelectorAll("button"), function (b) { return b.textContent; });
+  }
+};
+
+document.addEventListener("langchange", function () {
+  if (ctx) view(G.view);
+});
+
+KW.start({
+  draw: drawWorld,
+  lift: 46,      /* a band of flat stones below the square, for the chalk */
+  ready: function () { ctx = KW.ctx; view("title"); }
+});
+
+})();
+</script>
+
+<script>
+window.CHROME_I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Profil", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Atölye", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}"}, "de": {"kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Profil", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Werkstatt", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %"}};
+
+(function(){
+  "use strict";
+  var KEY = "lang", lang = "en";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  /* Three languages exist and nothing else is one. Asking the dictionary
+     whether it has a key called l was the test, and CHROME_I18N["constructor"]
+     is truthy, so a value planted in localStorage became window.__lang and
+     every number on the instrument threw. The generated pages were fixed and
+     these twenty were not; they are the same rule. */
+  var descBase = null;
+  function known(l){ return l === "en" || l === "tr" || l === "de"; }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
+  function apply(l){
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
+    document.documentElement.setAttribute("lang", l);
+    /* The description is invisible on the page and is exactly what a search
+       result and a link preview show, so it follows the language too. */
+    if (descBase === null) {
+      var dm0 = document.querySelector('meta[name="description"]');
+      descBase = dm0 ? dm0.getAttribute("content") : "";
+    }
+    var wantD = (!en && d["pg-desc"] !== undefined) ? d["pg-desc"] : descBase;
+    var dm1 = document.querySelector('meta[name="description"]');
+    if (dm1) dm1.setAttribute("content", wantD);
+    var om1 = document.querySelector('meta[property="og:description"]');
+    if (om1) om1.setAttribute("content", wantD);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    var ot1 = document.querySelector('meta[property="og:title"]');
+    if (ot1) ot1.setAttribute("content", document.title);
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
+  apply(lang);
+  /* A page that wants a whole viewport of height has to know how much of it
+     the bar has already taken, or it overhangs the fold by exactly that much
+     and clips whatever sits at its bottom. */
+  function barHeight(){
+    var b = document.querySelector(".bar");
+    document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
+  }
+  barHeight();
+  addEventListener("resize", barHeight);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
+  /* the nav is one scrolling line on a phone, so the page you are on can
+     start off past its right edge. Bring it into view without moving the
+     page. The generated pages do the same. */
+  try {
+    var cur = document.querySelector(".bar nav a[aria-current]");
+    if (cur && cur.parentNode.scrollWidth > cur.parentNode.clientWidth) {
+      cur.parentNode.scrollLeft = Math.max(0, cur.offsetLeft - 24);
+    }
+  } catch(e){}
+})();
+
+</script>
+
+</body>
+</html>

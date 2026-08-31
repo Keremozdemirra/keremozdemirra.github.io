@@ -1,0 +1,2499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The same policy the generated pages carry. See the note beside it in
+     _HEAD: connect-src 'none' is what turns each instrument's promise that
+     nothing you type leaves the page into something the browser enforces. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+
+<title>Who actually pays a tax</title>
+<meta name="description" content="An explorable essay on tax incidence. Drag the supply and demand curves, set a tax, and watch the burden split between buyer and seller. Who hands the money to the state turns out not to matter. Elasticity decides.">
+<meta name="author" content="Kerem Özdemir">
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="../../../fonts/fonts.css">
+<link rel="canonical" href="/run/tools/economics/tax/index.html">
+<meta property="og:title" content="Who actually pays a tax">
+<meta property="og:description" content="An explorable essay on tax incidence. Drag the supply and demand curves, set a tax, and watch the burden split between buyer and seller. Who hands the money to the state turns out not to matter. Elasticity decides.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   kit.css
+   House visual system for the open instruments at this site
+   Paper palette, Fraunces display, Newsreader body, IBM Plex Mono
+   for every number. No framework, no build step.
+
+   The host document loads its faces from fonts/fonts.css on this domain,
+   and makes no request to anywhere else:
+     Fraunces      opsz,wght 9..144 at 300, 400, 500
+     Newsreader    ital,opsz,wght 6..72 at 400, 500 and italic 400
+     IBM Plex Mono 400, 500
+   Every family here has a real fallback stack, so the page stays legible
+   if the fonts never arrive.
+   ============================================================ */
+
+/* ---------- 1. tokens ---------- */
+
+:root {
+  color-scheme: light;
+
+  --paper:      #f2efe6;
+  --paper-sunk: #ebe7dc;
+  --panel:      #f7f5ee;
+  --field:      #fdfcf8;
+  --ink:        #2b2620;
+  --ink-soft:   #4b443b;
+  --dim:        #6f6558;
+  --faint:      #6f6759;
+  --rule:       #d8d2c4;
+  --rule-firm:  #bdb5a4;
+  --rule-edge:  #9c9280;   /* control boundaries: 3.07:1 on white */
+  --accent:     #8a5a24;
+  --accent-lit: #f0e6d6;
+  --flag:       #8c3b1e;
+  --flag-lit:   #f3e4de;
+  --good:       #3f5c3a;
+  --good-lit:   #e5eade;
+
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --serif:   "Newsreader", Georgia, "Times New Roman", serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 66ch;
+  --gap:     clamp(1rem, 2.4vw, 1.6rem);
+  --pad:     clamp(0.95rem, 2.4vw, 1.5rem);
+  --edge:    clamp(1.1rem, 5vw, 3.25rem);
+}
+
+/* The instruments used to flip to a dark palette with the system.  They
+   sit inside this site now, whose paper is light and whose top bar
+   and footer are painted from the site's own tokens, so a page that went
+   dark underneath a light bar would only look broken.  One palette. */
+
+/* ---------- 2. reset and page ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, 0.97rem + 0.16vw, 1.08rem);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.15; letter-spacing: -0.02em; }
+
+p { margin: 0 0 0.9em; max-width: var(--measure); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-firm); }
+a:hover { border-bottom-color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+.k-shell :focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--accent-lit); color: var(--ink); }
+
+.k-vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0);
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.k-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  background: var(--ink); color: var(--paper); border: 0;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+}
+.k-skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- 3. shell ---------- */
+
+.k-shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+.k-wrap { width: 100%; max-width: 74rem; margin: 0 auto; padding-inline: var(--edge); }
+
+/* The top bar is the site's, spliced in from pagegen.py by build.sh, so
+   there is no header of the kit's own any more. */
+
+.k-main { flex: 1 0 auto; padding-block: clamp(1.8rem, 5vw, 3.2rem) clamp(2.5rem, 6vw, 4rem); }
+
+.k-lede { max-width: 62ch; }
+.k-lede h1 {
+  font-size: clamp(1.85rem, 1.2rem + 2.6vw, 3rem);
+  letter-spacing: -0.032em; margin-bottom: 0.5rem;
+}
+.k-lede .k-standfirst {
+  font-size: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  color: var(--ink-soft); line-height: 1.5;
+}
+
+.k-sect { margin-top: clamp(2.2rem, 5.5vw, 3.4rem); }
+.k-sect > h2 {
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule-firm);
+  margin-bottom: 1.1rem;
+}
+.k-sect > h2 .k-num {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+}
+.k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
+
+/* ---------- 4. input row ---------- */
+
+.k-row {
+  display: grid; gap: 0.7rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  align-items: end;
+}
+.k-row.k-row-tight { gap: 0.55rem 0.9rem; }
+
+.k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.k-field > label, .k-lab {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+}
+.k-field .k-hint {
+  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
+  line-height: 1.45; letter-spacing: 0.02em;
+}
+
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
+  width: 100%; min-width: 0;
+  background: var(--field);
+  /* A control's boundary needs 3:1 against what is inside it. --rule-firm
+     measured 1.9 against the white of a field, so the edge of every input on
+     every instrument was below the floor; --rule-edge is 3.07. It is used
+     for control boundaries only, not for the hairlines between rows, which
+     are decoration and carry no meaning. */
+  border: 1px solid var(--rule-edge);
+  border-radius: 0;
+  color: var(--ink);
+  font-family: var(--mono); font-size: 0.88rem; font-weight: 400;
+  padding: 0.55rem 0.6rem;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+input[type="number"] { font-variant-numeric: tabular-nums; text-align: right; }
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.9rem;
+}
+input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--panel); }
+input::placeholder { color: var(--faint); }
+input[aria-invalid="true"] { border-color: var(--flag); }
+
+.k-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--rule-firm); border-radius: 0;
+  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  padding: 0.62rem 0.95rem; cursor: pointer;
+  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.k-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.k-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
+.k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.k-btn-key { color: #f7f5ee; }
+.k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+
+.k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+
+/* ---------- 5. result panel ---------- */
+
+.k-panel {
+  background: var(--panel);
+  border: 1px solid var(--rule-firm);
+  padding: var(--pad);
+}
+.k-panel + .k-panel { margin-top: var(--gap); }
+.k-panel > h3, .k-panel-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+.k-panel-sunk { background: var(--paper-sunk); }
+
+.k-stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem; }
+.k-stat .k-big {
+  font-family: var(--mono); font-weight: 500;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+  line-height: 1.05; color: var(--ink);
+}
+.k-stat .k-unit { font-family: var(--mono); font-size: 0.78rem; color: var(--dim); letter-spacing: 0.05em; }
+
+.k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+
+.k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
+.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dd {
+  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
+}
+.k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
+
+/* arithmetic trace: every step printed */
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem; padding: 0.3rem 0;
+  border-bottom: 1px dotted var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+.k-steps li:last-child { border-bottom: 0; }
+.k-steps .k-op { color: var(--dim); }
+.k-steps .k-res { color: var(--ink); font-weight: 500; text-align: right; white-space: nowrap; }
+.k-steps li.k-step-final { border-top: 1px solid var(--rule-firm); border-bottom: 0; margin-top: 0.3rem; padding-top: 0.5rem; }
+.k-steps li.k-step-final .k-res { color: var(--accent); font-size: 0.92rem; }
+
+/* ---------- 6. source line ---------- */
+
+.k-source {
+  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  margin-top: 0.7rem; padding-top: 0.55rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-source::before {
+  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--faint); flex: none;
+}
+.k-source.k-source-bare::before { content: none; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.k-source .k-checked { color: var(--faint); white-space: nowrap; }
+
+/* ---------- 7. warning and refusal ---------- */
+
+.k-warn {
+  background: var(--flag-lit);
+  border: 1px solid var(--flag);
+  border-left-width: 3px;
+  padding: var(--pad);
+}
+.k-warn > h3, .k-warn .k-panel-h { color: var(--flag); }
+.k-warn p { color: var(--ink); }
+.k-warn + .k-warn, .k-panel + .k-warn, .k-warn + .k-panel { margin-top: var(--gap); }
+
+.k-ok { background: var(--good-lit); border: 1px solid var(--good); border-left-width: 3px; padding: var(--pad); }
+.k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
+
+.k-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
+  white-space: nowrap;
+}
+.k-tag-gap { color: var(--flag); background: var(--flag-lit); }
+.k-tag-known { color: var(--good); background: var(--good-lit); }
+.k-tag-quiet { color: var(--faint); background: transparent; }
+
+.k-ask { margin: 0.85rem 0 0; padding: 0; list-style: none; }
+.k-ask li {
+  display: grid; grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.2rem 0.9rem; padding: 0.4rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.92rem;
+}
+.k-ask li > b {
+  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.22rem;
+}
+
+/* ---------- 8. tables ---------- */
+
+.k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-table th, .k-table td {
+  text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule); vertical-align: top;
+}
+.k-table th {
+  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  border-bottom-color: var(--rule-firm); white-space: nowrap;
+}
+.k-table td.k-n, .k-table th.k-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  text-align: right; padding-right: 0; white-space: nowrap;
+}
+.k-table tbody tr:last-child td { border-bottom: 0; }
+.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell a { word-break: break-all; }
+
+/* ---------- 9. timeline ---------- */
+
+.k-time { margin: 0; padding: 0; list-style: none; }
+.k-time li {
+  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0.25rem 1.1rem; padding: 0.7rem 0;
+  border-top: 1px solid var(--rule);
+}
+.k-time li:first-child { border-top: 0; padding-top: 0; }
+.k-time .k-when {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
+}
+.k-time .k-what { font-size: 0.96rem; color: var(--ink); }
+.k-time .k-what small {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+}
+.k-time li.k-past .k-when { color: var(--faint); }
+.k-time li.k-past .k-what { color: var(--dim); }
+
+/* ---------- 10. the closing note ---------- */
+/* Each instrument ends with its own disclaimer and its own privacy line.
+   That is the page's last word, not the site's, so it is a closing panel
+   and the site's footer follows it. */
+
+.k-endnote {
+  border-top: 1px solid var(--rule-firm);
+  background: var(--paper-sunk);
+  padding-block: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: 0.9rem; color: var(--dim);
+}
+.k-endnote .k-wrap { display: grid; gap: 1.1rem; }
+.k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
+.k-endnote .k-fine {
+  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
+.k-endnote a:hover { color: var(--accent); }
+
+/* ---------- 11. toast for copy actions ---------- */
+
+.k-toast {
+  position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.k-toast[data-on="1"] { opacity: 1; }
+
+/* ---------- 12. responsive ---------- */
+
+@media (max-width: 640px) {
+  .k-ask li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-time li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-steps li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .k-steps .k-res { text-align: left; }
+}
+
+@media print {
+  .k-btnbar, .k-skip, .k-toast { display: none; }
+  body { background: #fff; color: #000; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   essay.css
+   The shared chrome for Explorable Economics. It sits on top of
+   kit.css and adds only what an essay with a live model needs:
+   a reading column, a model figure that breaks out of it, a
+   control rack, a live readout, and a running summary line that
+   says in words what the picture is showing.
+
+   Spliced into every essay by build.sh at the ESSAY_CSS marker,
+   so that each page still ships as one self contained file.
+   ============================================================ */
+
+/* ---------- reading column ---------- */
+
+.ex-body {
+  display: grid;
+  /* minmax(0, 1fr) rather than auto, so that one wide child can never
+     stretch the whole reading column past the width of the screen */
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 0;
+}
+.ex-body > * {
+  width: 100%;
+  max-width: 40rem;
+  min-width: 0;
+  justify-self: center;
+}
+
+.ex-body > p {
+  max-width: 40rem;
+  font-size: clamp(1.02rem, 0.99rem + 0.2vw, 1.13rem);
+  line-height: 1.68;
+  margin: 0 0 1.05em;
+}
+.ex-body > h2 {
+  font-size: clamp(1.25rem, 1.08rem + 0.7vw, 1.62rem);
+  margin: clamp(2.3rem, 5vw, 3.3rem) 0 0.9rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--rule-firm);
+}
+.ex-body > h2 .k-num {
+  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
+}
+.ex-body > h3 {
+  font-size: 1.1rem; margin: 1.9rem 0 0.6rem; color: var(--ink);
+}
+.ex-body > ul, .ex-body > ol { max-width: 40rem; padding-left: 1.15rem; margin: 0 0 1.05em; }
+.ex-body > ul li, .ex-body > ol li { margin-bottom: 0.45em; }
+
+.ex-lead {
+  font-size: clamp(1.1rem, 1.03rem + 0.4vw, 1.28rem) !important;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.ex-aside {
+  border-left: 2px solid var(--rule-firm);
+  padding: 0.1rem 0 0.1rem 1rem;
+  margin: 0 0 1.15em;
+  font-size: 0.94rem;
+  color: var(--dim);
+}
+.ex-aside p { font-size: inherit; margin-bottom: 0.6em; }
+
+.ex-em { font-style: italic; }
+.ex-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 0.94em; color: var(--accent); font-weight: 500;
+  white-space: nowrap;
+}
+.ex-n-flag { color: var(--flag); }
+.ex-n-long { white-space: normal; }
+
+/* a formula set on its own line, in words rather than symbols */
+.ex-formula {
+  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  color: var(--ink); background: var(--panel);
+  border-left: 2px solid var(--accent);
+  padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
+  max-width: 40rem; overflow-wrap: break-word;
+}
+.ex-formula small {
+  display: block; font-size: 0.66rem; color: var(--faint);
+  margin-top: 0.35rem; letter-spacing: 0.02em;
+}
+
+/* ---------- the model figure, wider than the prose ---------- */
+
+.ex-model {
+  max-width: 60rem;
+  margin: clamp(1.5rem, 4vw, 2.3rem) 0 clamp(1.7rem, 4.5vw, 2.6rem);
+  border: 1px solid var(--rule-firm);
+  background: var(--panel);
+  padding: var(--pad);
+}
+.ex-model > figcaption,
+.ex-model-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.85rem;
+  display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
+}
+.ex-model > figcaption .ex-model-sub,
+.ex-model-h .ex-model-sub {
+  color: var(--faint); letter-spacing: 0.1em; text-transform: none;
+  font-family: var(--mono); font-weight: 400;
+}
+
+.ex-plot { width: 100%; overflow: hidden; }
+.ex-plot svg {
+  display: block; width: 100%; height: auto;
+  touch-action: none;
+  -webkit-user-select: none; user-select: none;
+}
+.ex-plot.ex-draggable { cursor: grab; touch-action: none; }
+.ex-plot.ex-dragging { cursor: grabbing; }
+.ex-plot.ex-draggable svg { cursor: inherit; }
+
+.ex-plot + .ex-plot { margin-top: 0.9rem; }
+
+/* ---------- control rack ---------- */
+
+.ex-ctrls {
+  display: grid; gap: 0.85rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
+  margin-bottom: 1.1rem;
+}
+.ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
+}
+.ex-ctrl .ex-val {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+.ex-ctrl .k-hint {
+  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
+  line-height: 1.5; letter-spacing: 0.02em;
+}
+
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; min-width: 0; height: 1.9rem; margin: 0;
+  background: transparent; color: var(--accent);
+  display: block;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px; background: var(--rule-firm); border: 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 1.15rem; height: 1.15rem; margin-top: -0.53rem;
+  border-radius: 50%; border: 0; background: var(--accent); cursor: pointer;
+}
+input[type="range"]::-moz-range-track { height: 2px; background: var(--rule-firm); border: 0; }
+input[type="range"]::-moz-range-thumb {
+  width: 1.15rem; height: 1.15rem; border: 0; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+}
+input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type="range"]:hover::-webkit-slider-thumb { background: var(--ink); }
+input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
+
+/* segmented radio group */
+.ex-seg { border: 0; margin: 0; padding: 0; min-width: 0; }
+.ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
+.ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
+.ex-seg-row > label {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
+  border: 1px solid var(--rule-firm); margin-left: -1px;
+  background: var(--field); line-height: 1.3; white-space: nowrap;
+}
+.ex-seg-row > label:first-of-type { margin-left: 0; }
+.ex-seg-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ex-seg-row > label:has(input:checked) { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+:root[data-theme="dark"] .ex-seg-row > label:has(input:checked) { color: #17140f; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ex-seg-row > label:has(input:checked) { color: #17140f; }
+}
+.ex-seg-row > label:hover { border-color: var(--accent); color: var(--ink); }
+.ex-seg-row > label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* fallback for browsers without :has, checked state still readable */
+.ex-seg-row > label.ex-on { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.ex-check {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--dim); cursor: pointer;
+}
+.ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
+
+/* ---------- readout and running summary ---------- */
+
+.ex-read {
+  display: grid; gap: 0.55rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  margin-top: 1rem; padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+}
+.ex-read > div { min-width: 0; }
+.ex-read dt, .ex-read .ex-read-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  margin: 0 0 0.15rem;
+}
+.ex-read dd, .ex-read .ex-read-v {
+  margin: 0; font-family: var(--mono); font-weight: 500;
+  font-size: 1.06rem; font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
+}
+.ex-read .ex-read-v small {
+  display: block; font-size: 0.63rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+}
+.ex-read-hot .ex-read-v { color: var(--accent); }
+.ex-read-flag .ex-read-v { color: var(--flag); }
+
+.ex-sum {
+  margin-top: 0.9rem; padding-top: 0.7rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
+  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+}
+.ex-sum b { color: var(--ink-soft); font-weight: 500; }
+.ex-sum::before {
+  content: "reading"; display: block;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 0.3rem;
+}
+
+/* the paragraph of prose that answers what the reader just did */
+.ex-says {
+  max-width: 40rem;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-lit);
+  padding: 0.85rem 1.05rem;
+  margin: 0 0 1.15em;
+  font-size: 1rem; line-height: 1.6; color: var(--ink);
+}
+.ex-says p { max-width: none; margin-bottom: 0.55em; font-size: inherit; }
+.ex-says p:last-child { margin-bottom: 0; }
+
+/* ---------- legend ---------- */
+
+.ex-key {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
+  margin-top: 0.7rem;
+  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
+  letter-spacing: 0.02em;
+}
+.ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
+.ex-key i.ex-line { height: 0; border-top: 2px solid currentColor; width: 0.95rem; }
+
+/* stacked bar for a two way split */
+.ex-split { display: flex; height: 1.5rem; border: 1px solid var(--rule-firm); overflow: hidden; }
+.ex-split i { display: block; height: 100%; transition: width 0.12s linear; }
+.ex-split .a { background: var(--accent); }
+.ex-split .b { background: var(--rule); }
+@media (prefers-reduced-motion: reduce) { .ex-split i { transition: none; } }
+
+/* ---------- essay foot: limits, sources, next ---------- */
+
+.ex-limits { max-width: 46rem; }
+.ex-limits .k-ask li > b { padding-top: 0.25rem; }
+
+.ex-cites { max-width: 46rem; margin: 0; padding: 0; list-style: none; }
+.ex-cites li {
+  border-top: 1px solid var(--rule);
+  padding: 0.75rem 0;
+  font-size: 0.92rem; line-height: 1.55; color: var(--ink-soft);
+  max-width: none;
+}
+.ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
+.ex-cites .ex-cite-w {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.65;
+}
+.ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.ex-cites .ex-cite-t { font-style: italic; }
+
+.ex-next {
+  max-width: 60rem;
+  margin-top: clamp(2.4rem, 6vw, 3.6rem);
+  border-top: 1px solid var(--rule-firm);
+  padding-top: 1.2rem;
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+.ex-next a {
+  display: flex; flex-direction: column; gap: 0.3rem;
+  border: 1px solid var(--rule-firm); background: var(--panel);
+  padding: var(--pad); color: inherit; text-decoration: none;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+.ex-next a:hover { border-color: var(--accent); background: var(--field); }
+.ex-next a:hover .ex-next-t { color: var(--accent); }
+.ex-next .ex-next-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--faint);
+}
+.ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
+.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+
+/* ---------- mobile ---------- */
+
+@media (max-width: 640px) {
+  .ex-model { padding: 0.85rem 0.8rem 0.95rem; }
+  .ex-ctrls { grid-template-columns: minmax(0, 1fr); gap: 0.7rem; }
+  .ex-read { grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.5rem 0.9rem; }
+  .ex-read dd, .ex-read .ex-read-v { font-size: 0.98rem; }
+  .ex-seg-row { width: 100%; }
+  .ex-seg-row > label { flex: 1 1 auto; text-align: center; }
+  .ex-says { padding: 0.7rem 0.85rem; }
+}
+
+/* ---------- essay one ---------- */
+
+.tx-presets { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.tx-splitwrap { margin-top: 1rem; }
+.tx-splitlab {
+  display: flex; justify-content: space-between; gap: 1rem;
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--dim); margin-bottom: 0.35rem;
+}
+.tx-splitlab b { color: var(--ink); font-weight: 500; }
+
+/* ---------- the site's clothes, worn by an instrument ---------- */
+.bar,footer.site-foot,.leaf-mark{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#f2efe6;
+  --fg:#221e17;
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --accent:#8a5a24;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+.bar,footer.site-foot{color:var(--fg)}
+footer.site-foot{background:var(--paper)}
+.bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav:not(.langs){margin-left:auto}
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+/* clear of the last nav name by more than the names are clear of each
+   other, so the languages read as their own control and not as a tenth
+   link in the row */
+.langs{display:flex;gap:.1rem;margin-left:clamp(1rem,2.2vw,1.8rem)}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .foot-links{display:flex;gap:clamp(.9rem,2.4vw,1.6rem);align-items:center;flex-wrap:wrap}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:nowrap;
+    justify-content:flex-start;gap:clamp(.7rem,3.4vw,1.2rem);
+    overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    /* the last name fades rather than being cut, which is what says there
+       is more of it to the right */
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    padding-right:2.2rem}
+  .bar nav::-webkit-scrollbar{display:none}
+  .bar nav a{font-size:.8rem;padding:.55rem 0;flex:0 0 auto}
+  /* the name of the page you are on is brought into view on load, so a
+     reader arriving deep in the site is not looking at a row that starts
+     somewhere else */
+  .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* nine nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
+@media (max-width:430px){
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+/* the same thumb, on the page itself */
+@media (pointer:coarse){
+  .cv-btn{min-height:44px;padding:.8rem 1.25rem}
+  .copy,.share-link{min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center}
+  .socials a{min-height:44px;display:inline-flex;align-items:center}
+  .mail-line a.addr{display:inline-flex;align-items:center;min-height:44px}
+  .note-read{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .feature .go{min-height:44px;display:inline-flex;align-items:center}
+  .gcard .go{min-height:44px;display:inline-flex;align-items:center}
+  .go-block{min-height:44px;display:inline-flex;align-items:center}
+  .k-btn,.k-skip,.skip{min-height:44px;display:inline-flex;align-items:center}
+  input[type=range]{height:44px}
+  select{min-height:44px}
+  /* a link sitting inside a sentence: the line opens up so the link can be
+     a thumb tall without the paragraph closing over it */
+  .quiet-line{line-height:2.1}
+  .quiet-line a{display:inline-block;padding:.78rem 0;line-height:1.25}
+  .note-item h2 a{display:inline-block;padding:.5rem 0;border-bottom:0;
+    text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
+  .note-item h2 a:hover{text-decoration-color:var(--accent)}
+  /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px;min-height:44px}
+  body .frow textarea{min-height:8rem}
+  /* a 4px tall slider is not a control: the whole strip takes the touch */
+  input[type="range"]{height:44px;margin:0;padding:0}
+  /* and a sixteen pixel box is not one either */
+  input[type="checkbox"],input[type="radio"]{width:22px;height:22px}
+  input[type="checkbox"]+label,input[type="radio"]+label{
+    display:inline-flex;align-items:center;min-height:44px}
+  .demo-src a{display:inline-flex;align-items:center;min-height:44px}
+}
+
+/* ---------- the crown, on a page whose interior is its own ---------- */
+.k-crown-no{
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;
+  font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;
+  color:var(--accent);
+}
+.k-crown-no svg{flex:none}
+.k-lede h1{margin-top:0}
+
+
+</style>
+</head>
+<body>
+
+<a class="k-skip" href="#essay" data-i="tx-kskip">Skip to the essay</a>
+
+<div class="k-shell">
+
+<main class="k-main" id="essay">
+    <div class="k-wrap">
+
+      <div class="k-lede k-crown">
+        <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Essay one of four</i></span>
+        <h1 data-i="tx-001">Who actually pays a tax</h1>
+        <p class="k-standfirst" data-i="tx-009">A parliament can decide who hands the money to the state. It cannot decide who
+        ends up poorer. The first is a line in a statute. The second is settled by how easily each side of the
+        market can walk away, and you can watch it being settled below.</p>
+      </div>
+
+      <div class="ex-body">
+
+        <p class="ex-lead" data-i="tx-010">Every tax law names a payer. The shop remits the value added tax. The employer
+        remits half of the social contribution. The importer remits the customs duty. Read the statute and you
+        would think the question of who bears the cost has been answered in the text.</p>
+
+        <p data-i="tx-011">It has not. The statute fixes the <span class="ex-em">statutory incidence</span>, which is the name on
+        the transfer. What we usually want to know is the <span class="ex-em">economic incidence</span>, which is
+        whose consumption falls. These are different quantities, and the market decides the second one without
+        consulting the first.</p>
+
+        <p data-i="tx-012">The argument is short enough to state in a sentence, and that is exactly why it is worth running
+        rather than reading. Below is a market. You set how sensitive each side is to price by dragging its
+        curve, you set a tax, and you choose which side of the market the law tells to pay. Two of those three
+        controls change the answer. One of them does nothing at all.</p>
+
+        <h2 id="s1" data-i="tx-002"><span class="k-num">01</span>The market, and a tax placed on it</h2>
+
+        <p data-i="tx-013">Quantity runs along the bottom, price up the side. The downward line is demand: how much buyers want
+        at each price. The upward line is supply: how much sellers will bring at each price. Where they cross,
+        the market clears. Drag either line to make it flatter or steeper. A flat line means that side responds
+        strongly to price and can walk away. A steep line means it cannot.</p>
+
+        <figure class="ex-model" id="m1">
+          <figcaption data-i="tx-039">Figure one <span class="ex-model-sub">drag either curve, or use the sliders</span></figcaption>
+          <div class="tx-presets" id="tx-presets"></div>
+          <div class="ex-ctrls" id="tx-ctrls"></div>
+          <div class="ex-plot" id="tx-plot"></div>
+          <p class="ex-key" id="tx-key"></p>
+          <div class="tx-splitwrap">
+            <p class="tx-splitlab" data-i="tx-014"><span>Buyer bears <b id="tx-lab-b">0</b></span><span><b id="tx-lab-s">0</b> borne by seller</span></p>
+            <div class="ex-split" aria-hidden="true"><i class="a" id="tx-bar-b" style="width:50%"></i><i class="b" id="tx-bar-s" style="width:50%"></i></div>
+          </div>
+          <div id="tx-read"></div>
+          <p class="ex-sum" id="tx-sum" role="status" aria-live="polite"></p>
+          <div class="k-btnbar" style="margin-top:1rem">
+            <button type="button" class="k-btn k-btn-quiet" id="tx-share" data-i="tx-041">Copy link to this configuration</button>
+            <button type="button" class="k-btn k-btn-quiet" id="tx-reset" data-i="tx-042">Reset</button>
+          </div>
+        </figure>
+
+        <div class="ex-says" id="tx-says"></div>
+
+        <h2 id="s2" data-i="tx-003"><span class="k-num">02</span>Change who writes the cheque</h2>
+
+        <p data-i="tx-015">The last control in the rack is the one to distrust. It moves the tax from the seller to the buyer,
+        which in a real system would mean rewriting the law, retraining a finance department and reprinting the
+        forms. On the picture, one line moves instead of the other. The supply curve shifts up by the tax, or the
+        demand curve shifts down by it.</p>
+
+        <p data-i="tx-016">Watch the six figures in the readout while you switch. The price the buyer pays does not move. The
+        price the seller keeps does not move. The quantity does not move. The revenue does not move. The share
+        each side bears does not move. The tax opens a gap of a fixed size between what the buyer pays and what
+        the seller receives, and a gap does not care which end of it you nail down first.</p>
+
+        <p data-i="tx-017">This is the result that surprises people, and it is worth being precise about what it claims. It does
+        not say that the law is irrelevant to anything. It says that in this model, holding everything else
+        equal, the legal side of the transfer does not enter the arithmetic that determines the two prices.
+        Section five is where I set out the evidence that this clean claim is not the whole story in the world.</p>
+
+        <h2 id="s3" data-i="tx-004"><span class="k-num">03</span>The rule, in one line</h2>
+
+        <p data-i="tx-018">If the statute does not decide the split, something has to. It is elasticity: the percentage change in
+        quantity that follows a one per cent change in price. A buyer who can substitute easily has elastic
+        demand and can refuse to pay more. A seller who cannot cut production has inelastic supply and cannot
+        refuse to accept less. Whoever is less able to leave is the one who stays and pays.</p>
+
+        <p data-i="tx-019">Written out, with the elasticity of supply as <span class="ex-em">e of s</span> and the magnitude of
+        the elasticity of demand as <span class="ex-em">e of d</span>, the buyer's share of a small tax is
+        this and nothing else.</p>
+
+        <p class="ex-formula" data-i="tx-020">buyer's share of the tax = e of s / (e of s + e of d)
+        <small data-i="tx-043" data-verbatim>The whole of section two is contained in the fact that the side named by the statute does not
+        appear anywhere in that expression.</small></p>
+
+        <figure class="ex-model" id="m2">
+          <figcaption data-i="tx-040">Figure two <span class="ex-model-sub">the same answer with the market taken away</span></figcaption>
+          <div class="ex-plot" id="tx-plot2"></div>
+          <p class="ex-sum" id="tx-sum2" role="status" aria-live="polite"></p>
+        </figure>
+
+        <p data-i="tx-021">The curve above is that expression and nothing else. The marker is where the sliders currently put
+        you. Move them and the marker slides along a fixed line, because the market picture and this curve are
+        two drawings of one equation. When supply and demand are equally elastic the marker sits at half. When
+        one side is ten times as elastic as the other, the split is roughly ten to one against the side that
+        cannot move.</p>
+
+        <h2 id="s4" data-i="tx-005"><span class="k-num">04</span>The triangle nobody collects</h2>
+
+        <p data-i="tx-022">Raise the tax and a shaded wedge opens between the curves to the right of the new quantity. Those are
+        trades that would have happened and now do not. The buyer valued the unit above what the seller would
+        have accepted, so there was a gain to be had, and the tax made the two of them unable to reach each
+        other. Nobody receives that value. It is not revenue. It is simply gone.</p>
+
+        <p data-i="tx-023">The shape matters. Double the tax and the revenue rectangle roughly doubles, while the triangle
+        roughly quadruples, because both of its sides grow with the tax. Set the tax to five and note the loss.
+        Set it to ten and note it again. That is the arithmetic behind the standard advice to raise a small
+        amount from many bases rather than a large amount from one, and it is also why the loss is small enough
+        to ignore at low rates and impossible to ignore at high ones.</p>
+
+        <p data-i="tx-024">Notice too that the triangle grows with elasticity. Make both curves steep and a large tax destroys
+        almost no trades, because nobody was going to change their behaviour anyway. That is the same property
+        that made the inelastic side bear the burden, seen from the other direction: a tax on something nobody
+        can avoid raises money efficiently and falls on people who have no way out. The efficiency and the
+        distribution are the same fact reported twice.</p>
+
+        <h2 id="s5" data-i="tx-006"><span class="k-num">05</span>Where the model stops</h2>
+
+        <p data-i="tx-025">The picture above is a partial equilibrium model of one market with straight lines in it. That is a
+        strong set of assumptions, and every one of them is doing work. Here is what the model is not entitled
+        to tell you.</p>
+
+        <div class="k-warn ex-limits">
+          <h3 data-i="tx-008">Assumptions and limits</h3>
+          <ul class="k-ask">
+            <li data-i="tx-029"><b>One market</b>One market is drawn and everything else in the economy is held still. In truth
+            a tax on fuel moves the market for cars, for freight and for labour. Those effects can be larger than
+            the one shown here, and they are entirely outside the frame.</li>
+            <li data-i="tx-030"><b>No income effect</b>The demand curve is treated as a schedule of willingness to pay. It does
+            not account for the fact that a tax makes buyers poorer overall, which shifts what they want to buy
+            of everything. The model measures a substitution and calls it the whole response.</li>
+            <li data-i="tx-031"><b>Static</b>There is a before and an after and nothing in between. Real adjustment takes time,
+            and elasticity is almost always larger over years than over months, so a tax that lands on producers
+            in the first quarter can land on consumers by the third year. A single pair of elasticities cannot
+            express that.</li>
+            <li data-i="tx-032"><b>Straight lines</b>Linear curves make elasticity vary along the curve, so the elasticity you
+            set is the elasticity at the point where the market clears without the tax and nowhere else. The
+            share formula in section three is exact for a small tax and an approximation for a large one.</li>
+            <li data-i="tx-033"><b>Competition assumed</b>Both sides are price takers. A monopolist, or a market with a handful
+            of sellers watching each other, can pass on more than the tax or less than the tax, and this model
+            has no way of representing that.</li>
+            <li data-i="tx-034"><b>The statutory side really can matter</b>The clean result in section two is a property of the
+            model, not a law of nature. Saez, Matsaganis and Tsakloglou studied a Greek reform that raised both
+            employer and employee contributions for workers hired after a cutoff date, and found that employers
+            compensated those workers for the higher employer contribution but not for the higher employee
+            contribution. The nominal split changed the outcome. Benzarti collects further cases where it does.
+            Both are cited below.</li>
+            <li data-i="tx-035"><b>Numbers are illustrative</b>The prices, quantities and elasticities on this page are made up
+            so that the mechanism is visible. Nothing here is an estimate of any real market, and no figure from
+            this page belongs in an argument about a real tax.</li>
+          </ul>
+        </div>
+
+        <h2 id="s6" data-i="tx-007"><span class="k-num">06</span>Sources</h2>
+
+        <p data-i="tx-026">The model is standard partial equilibrium price theory and is not attributable to anyone in
+        particular. The empirical claims made above are these three, and only these three.</p>
+
+        <ul class="ex-cites">
+          <li data-i="tx-036">
+            Employers in a Greek natural experiment compensated new workers for higher employer contributions
+            but not for higher employee contributions, so the statutory split affected the economic outcome.
+            <span class="ex-cite-w">Emmanuel Saez, Manos Matsaganis and Panos Tsakloglou,
+            <span class="ex-cite-t">Earnings Determination and Taxes: Evidence From a Cohort-Based Payroll Tax
+            Reform in Greece</span>, Quarterly Journal of Economics 127(1), 2012, pages 493 to 533.
+            <a href="https://academic.oup.com/qje/article-abstract/127/1/493/1832830" target="_blank" rel="noreferrer noopener">academic.oup.com/qje/article-abstract/127/1/493/1832830</a>
+            Working version read at
+            <a href="https://eml.berkeley.edu/~saez/saez-matsaganis-tsakloglou09greecetax.pdf" target="_blank" rel="noreferrer noopener">eml.berkeley.edu</a>.
+            Checked 2026 08 21.</span>
+          </li>
+          <li data-i="tx-037">
+            Value added tax pass through is asymmetric: increases are passed to consumers several times more
+            fully than cuts are, and the gap persists for years. The same survey collects evidence that who
+            remits a tax can affect its economic incidence.
+            <span class="ex-cite-w">Youssef Benzarti, <span class="ex-cite-t">Tax Incidence Anomalies</span>,
+            NBER Working Paper 32819, August 2024.
+            <a href="https://www.nber.org/system/files/working_papers/w32819/w32819.pdf" target="_blank" rel="noreferrer noopener">nber.org/system/files/working_papers/w32819/w32819.pdf</a>
+            Checked 2026 08 21.</span>
+          </li>
+          <li data-i="tx-038">
+            The Congressional Budget Office estimates that about 58 per cent of the additional burden of a
+            broad increase in the payroll tax rate falls on employees in the short run, with the rest borne by
+            capital and other factors.
+            <span class="ex-cite-w">Dorian Carloni, <span class="ex-cite-t">Revisiting the Extent to Which
+            Payroll Taxes Are Passed Through to Employees</span>, CBO Working Paper 2021 06, June 2021.
+            <a href="https://www.cbo.gov/publication/57089" target="_blank" rel="noreferrer noopener">cbo.gov/publication/57089</a>
+            Checked 2026 08 21.</span>
+          </li>
+        </ul>
+
+        <nav class="ex-next" data-ia="nx-essays" aria-label="More essays">
+          <a href="../lemons/index.html">
+            <span class="ex-next-k" data-i="xn-k-next-e">Next essay</span>
+            <span class="ex-next-t" data-i="xn-t-lemons">The market for lemons</span>
+            <span class="ex-next-d" data-i="xn-d-lemons2">What happens to a market when one side knows something the other does not.
+            Run it and watch the good cars leave.</span>
+          </a>
+          <a href="/run/tools/economics/index.html">
+            <span class="ex-next-k" data-i="xn-k-back">Back</span>
+            <span class="ex-next-t" data-i="xn-t-all4">All four essays</span>
+            <span class="ex-next-d" data-i="xn-d-all4">Explorable Economics: models you run rather than conclusions you are
+            handed.</span>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </main>
+
+  <aside class="k-endnote">
+    <div class="k-wrap">
+      <p class="k-fine" data-i="tx-noadv">These are instruments for thinking, not advice. Nothing on this page is a recommendation about a real tax, a real market or a real decision, and no number on it was measured.</p>
+      <p data-i="tx-027"><strong>This is a teaching model, not a measurement.</strong> Every number on this page is one you set
+      or one the model derived from what you set. Nothing here describes a real market, and no figure from this
+      page should be carried into an argument about a real tax without an estimate of the real elasticities and
+      an author willing to defend it.</p>
+      <p class="k-fine" data-i="tx-028">
+        Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no network
+        call after the fonts have loaded. Part of
+        <a href="/run/tools/economics/index.html">Explorable Economics</a>, built by
+        <a href="/">Kerem Özdemir</a>.
+      </p>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+/* ============================================================
+   kit.js
+   Shared behaviour for the open instruments at this site
+   No dependencies. No network calls. Safe to inline.
+
+   Kit.el        small DOM builder
+   Kit.fmt       number and date formatting
+   Kit.state     read and write tool state in the URL hash
+   Kit.share     copy the link that restores the current state
+   Kit.csv       build CSV, copy to clipboard, offer a download
+   Kit.toast     brief confirmation line
+   ============================================================ */
+
+var Kit = (function () {
+  "use strict";
+
+  /* ---------- DOM ---------- */
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v;
+        else if (k === "html") n.innerHTML = v;
+        else if (k.slice(0, 2) === "on" && typeof v === "function") {
+          n.addEventListener(k.slice(2).toLowerCase(), v);
+        } else n.setAttribute(k, v === true ? "" : String(v));
+      });
+    }
+    (kids || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+
+  /* ---------- numbers ---------- */
+
+  /* The page is read in three languages, so a number has to be written in
+     three. Turkish and German put the comma where English puts the point, and
+     "3,035 billion" read as Turkish says three, not three thousand. Read at
+     call time rather than cached, because the language changes under us. */
+  var LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
+  function locale() { return LOCALES[window.__lang] || "en-GB"; }
+  function na() { return window.__t ? window.__t("kit-na", "not available") : "not available"; }
+
+  function num(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return na();
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(locale(), { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function money(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return na();
+    return "EUR " + num(v, dp === undefined ? 2 : dp);
+  }
+  function pct(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return na();
+    var np = num(v * 100, dp === undefined ? 1 : dp);
+    /* Turkish writes the sign in front of the number and closed up,
+       German and English behind it with a space. The chrome already
+       encodes this rule for the simulations; this is the same rule. */
+    return (window.__lang === "tr") ? "%" + np : np + " %";
+  }
+  function toNum(raw) {
+    if (raw === null || raw === undefined) return null;
+    /* "1.234,56" used to become "1.234.56" and then NaN, so a German reader
+       typing their own thousands separator into any field on any instrument
+       got "not calculable". Both conventions are read, by the one rule that
+       tells them apart without knowing the language: whichever separator
+       comes last is the decimal point, and the other one is grouping. */
+    var s = String(raw).trim().replace(/\s+/g, "");
+    var lastC = s.lastIndexOf(","), lastD = s.lastIndexOf(".");
+    if (lastC >= 0 && lastD >= 0) {
+      if (lastC > lastD) s = s.replace(/\./g, "").replace(",", ".");
+      else s = s.replace(/,/g, "");
+    } else if (lastC >= 0) {
+      /* one kind only: repeated, it can only be grouping */
+      s = (s.split(",").length > 2) ? s.replace(/,/g, "") : s.replace(",", ".");
+    } else if (s.split(".").length > 2) {
+      s = s.replace(/\./g, "");
+    }
+    if (s === "") return null;
+    var n = Number(s);
+    return isFinite(n) ? n : null;
+  }
+
+  /* ---------- URL hash state ---------- */
+
+  function b64urlEncode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64urlDecode(str) {
+    var s = String(str).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var bin = atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  var state = {
+    /* Serialise the object into the location hash without adding a history entry. */
+    write: function (obj) {
+      var h = "";
+      try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
+      if (h.length > 8000) return "";
+      try {
+        history.replaceState(null, "", location.pathname + location.search + h);
+      } catch (e) {
+        location.hash = h;
+      }
+      return location.href;
+    },
+    /* Read the object back. Returns null when the hash is absent or unreadable. */
+    read: function () {
+      var m = /(?:^|[#&])s=([A-Za-z0-9\-_]+)/.exec(location.hash || "");
+      if (!m) return null;
+      try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
+    },
+    clear: function () {
+      try { history.replaceState(null, "", location.pathname + location.search); }
+      catch (e) { location.hash = ""; }
+    }
+  };
+
+  /* ---------- clipboard ---------- */
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; },
+        function () { return legacyCopy(text); });
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  /* ---------- share ---------- */
+
+  function share(obj, msg) {
+    var url = state.write(obj) || location.href;
+    return copyText(url).then(function (ok) {
+      var tr = function (k, en) { return window.__t ? window.__t(k, en) : en; };
+      toast(ok ? (msg || tr("kit-share-ok", "Link copied. It reopens with these inputs."))
+               : tr("kit-copy-blocked", "Copy blocked by the browser. The address bar now holds the link."));
+      return ok;
+    });
+  }
+
+  /* ---------- CSV ---------- */
+
+  function csvCell(v) {
+    if (v === null || v === undefined) return "";
+    var s = String(v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function csvBuild(rows) {
+    return rows.map(function (r) { return r.map(csvCell).join(","); }).join("\r\n");
+  }
+  function csvDownload(rows, filename) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    /* BOM so that spreadsheet software reads UTF-8 correctly */
+    var blob = new Blob(["﻿" + text], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = el("a", { href: url, download: filename || "export.csv" });
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1200);
+  }
+  function csvCopy(rows) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    return copyText(text).then(function (ok) {
+      var tc = function (k, en) { return window.__t ? window.__t(k, en) : en; };
+      toast(ok ? tc("kit-csv-ok", "Table copied. Paste it into a spreadsheet.")
+               : tc("kit-csv-blocked", "Copy blocked by the browser. Use the download instead."));
+      return ok;
+    });
+  }
+
+  /* ---------- toast ---------- */
+
+  var toastNode = null, toastTimer = null;
+  function toast(msg) {
+    if (!toastNode) {
+      toastNode = el("div", { class: "k-toast", role: "status", "aria-live": "polite" });
+      document.body.appendChild(toastNode);
+    }
+    toastNode.textContent = msg;
+    toastNode.setAttribute("data-on", "1");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastNode.setAttribute("data-on", "0"); }, 3600);
+  }
+
+  /* ---------- source line ---------- */
+
+  /* src: { what, url, checked } -> the standard line that says where a number came from */
+  function sourceLine(src, bare) {
+    var kids = [];
+    if (src.what) kids.push(el("span", { text: src.what }));
+    if (src.url) kids.push(el("a", { href: src.url, rel: "noreferrer noopener", target: "_blank", text: src.label || src.url }));
+    if (src.checked) {
+      /* the word in front of the date belongs to the reader's language:
+         it was printed in English under every number on every instrument */
+      var ck = window.__t ? window.__t("kit-checked", "checked") : "checked";
+      kids.push(el("span", { class: "k-checked", text: ck + " " + src.checked }));
+    }
+    return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
+  }
+
+  return {
+    el: el, qs: qs, qsa: qsa, clear: clear,
+    num: num, money: money, pct: pct, toNum: toNum,
+    state: state, share: share,
+    copyText: copyText,
+    csvBuild: csvBuild, csvDownload: csvDownload, csvCopy: csvCopy,
+    toast: toast, sourceLine: sourceLine
+  };
+})();
+
+/* ============================================================
+   essay.js
+   The shared machinery behind every model in Explorable
+   Economics. It sits on top of kit.js and adds only what a
+   drawn, dragged and keyboard driven model needs.
+
+     Ex.s        make an SVG element
+     Ex.plot     set up a plot with a scale and a drag surface
+     Ex.slider   a labelled range control wired to a callback
+     Ex.seg      a segmented radio group, arrow keys included
+     Ex.drag     pointer and touch dragging in plot coordinates
+     Ex.rng      a seeded generator so a shared link replays
+     Ex.round    rounding that does not lie about precision
+     Ex.words    small helpers for prose that has to agree with
+                 the arithmetic on screen
+
+   No dependencies beyond kit.js. No network calls.
+   Spliced into every essay by build.sh at the ESSAY_JS marker.
+   ============================================================ */
+
+var Ex = (function () {
+  "use strict";
+
+  var NS = "http://www.w3.org/2000/svg";
+
+  /* ---------- svg ---------- */
+
+  function s(tag, attrs, text) {
+    var n = document.createElementNS(NS, tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        n.setAttribute(k, String(v));
+      });
+    }
+    if (text !== undefined && text !== null) n.appendChild(document.createTextNode(String(text)));
+    return n;
+  }
+
+  function svgRoot(w, h, label) {
+    var n = s("svg", {
+      viewBox: "0 0 " + w + " " + h,
+      width: w, height: h,
+      preserveAspectRatio: "xMidYMid meet",
+      role: "img",
+      "aria-label": label || ""
+    });
+    return n;
+  }
+
+  /* text sized for the plot, in the house mono */
+  function label(x, y, str, opt) {
+    var o = opt || {};
+    return s("text", {
+      x: x, y: y,
+      "text-anchor": o.anchor || "middle",
+      fill: o.fill || "var(--dim)",
+      "font-family": "var(--mono)",
+      "font-size": o.size || 10,
+      "font-weight": o.weight || 400,
+      "letter-spacing": o.track === undefined ? 0.2 : o.track,
+      opacity: o.opacity === undefined ? 1 : o.opacity
+    }, str);
+  }
+
+  /* ---------- dragging, in plot coordinates ---------- */
+
+  /* Convert a pointer event into the svg user coordinate system,
+     which is what every plot here draws in. */
+  function toLocal(svg, evt) {
+    var r = svg.getBoundingClientRect();
+    var vb = svg.viewBox.baseVal;
+    var w = vb && vb.width ? vb.width : r.width;
+    var h = vb && vb.height ? vb.height : r.height;
+    if (!r.width || !r.height) return { x: 0, y: 0 };
+    return { x: (evt.clientX - r.left) * w / r.width, y: (evt.clientY - r.top) * h / r.height };
+  }
+
+  /* drag(surface, { start, move, end }, measure) where each handler
+     receives the point in plot coordinates. The surface is the element
+     that listens, which must survive a redraw. The optional measure
+     function returns the svg currently inside it, so the plot can be
+     rebuilt mid gesture without the gesture being dropped.
+     Works with mouse, pen and touch. */
+  function drag(surface, handlers, measure) {
+    var active = false, id = null;
+    function box() { return (measure ? measure() : surface) || surface; }
+
+    function down(e) {
+      if (e.button !== undefined && e.button !== 0) return;
+      var p = toLocal(box(), e);
+      if (handlers.start && handlers.start(p, e) === false) return;
+      active = true; id = e.pointerId;
+      surface.classList.add("ex-dragging");
+      if (surface.setPointerCapture && id !== undefined && id !== null) {
+        try { surface.setPointerCapture(id); } catch (err) { /* capture is a nicety */ }
+      }
+      e.preventDefault();
+    }
+    function move(e) {
+      if (!active) {
+        if (handlers.hover) handlers.hover(toLocal(box(), e), e);
+        return;
+      }
+      if (id !== null && e.pointerId !== id) return;
+      if (handlers.move) handlers.move(toLocal(box(), e), e);
+      e.preventDefault();
+    }
+    function up(e) {
+      if (!active) return;
+      active = false;
+      surface.classList.remove("ex-dragging");
+      if (surface.releasePointerCapture && id !== undefined && id !== null) {
+        try { surface.releasePointerCapture(id); } catch (err) { /* already gone */ }
+      }
+      id = null;
+      if (handlers.end) handlers.end(toLocal(box(), e), e);
+    }
+
+    surface.addEventListener("pointerdown", down);
+    surface.addEventListener("pointermove", move);
+    surface.addEventListener("pointerup", up);
+    surface.addEventListener("pointercancel", up);
+    surface.addEventListener("pointerleave", function (e) { if (handlers.leave) handlers.leave(e); });
+    surface.classList.add("ex-draggable");
+    return { active: function () { return active; } };
+  }
+
+  /* ---------- controls ---------- */
+
+  var uid = 0;
+  function nextId(p) { uid += 1; return (p || "ex") + "-" + uid; }
+
+  /* slider(host, spec) -> { input, set, el }
+     spec: { label, min, max, step, value, format, hint, onInput, unit } */
+  function slider(host, spec) {
+    var id = nextId("sl");
+    var wrap = Kit.el("div", { class: "ex-ctrl" });
+    var valSpan = Kit.el("span", { class: "ex-val" });
+    var lab = Kit.el("label", { for: id }, [
+      Kit.el("span", { text: spec.label }),
+      valSpan
+    ]);
+    var input = Kit.el("input", {
+      type: "range", id: id,
+      min: spec.min, max: spec.max, step: spec.step,
+      value: spec.value
+    });
+    input.setAttribute("aria-describedby", id + "-v");
+    valSpan.id = id + "-v";
+
+    function paint(v) { valSpan.textContent = spec.format ? spec.format(v) : String(v); }
+    paint(Number(spec.value));
+
+    input.addEventListener("input", function () {
+      var v = Number(input.value);
+      paint(v);
+      if (spec.onInput) spec.onInput(v);
+    });
+
+    wrap.appendChild(lab);
+    wrap.appendChild(input);
+    if (spec.hint) wrap.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(wrap);
+
+    return {
+      el: wrap, input: input,
+      get: function () { return Number(input.value); },
+      set: function (v, quiet) {
+        input.value = String(v);
+        paint(Number(input.value));
+        if (!quiet && spec.onInput) spec.onInput(Number(input.value));
+      }
+    };
+  }
+
+  /* seg(host, spec) -> { get, set, el }
+     spec: { label, name, options: [{value,label}], value, onChange } */
+  function seg(host, spec) {
+    var fs = Kit.el("fieldset", { class: "ex-ctrl ex-seg" });
+    fs.appendChild(Kit.el("legend", {}, [Kit.el("span", { text: spec.label })]));
+    var row = Kit.el("div", { class: "ex-seg-row" });
+    var inputs = [];
+
+    spec.options.forEach(function (o) {
+      var lid = nextId("sg");
+      var inp = Kit.el("input", { type: "radio", name: spec.name, id: lid, value: o.value });
+      if (String(o.value) === String(spec.value)) inp.checked = true;
+      var lb = Kit.el("label", { for: lid }, [inp, document.createTextNode(o.label)]);
+      if (inp.checked) lb.classList.add("ex-on");
+      inp.addEventListener("change", function () {
+        paintOn();
+        if (inp.checked && spec.onChange) spec.onChange(o.value);
+      });
+      inputs.push({ inp: inp, lb: lb, value: o.value });
+      row.appendChild(lb);
+    });
+
+    function paintOn() {
+      inputs.forEach(function (r) { r.lb.classList.toggle("ex-on", r.inp.checked); });
+    }
+
+    fs.appendChild(row);
+    if (spec.hint) fs.appendChild(Kit.el("span", { class: "k-hint", text: spec.hint }));
+    host.appendChild(fs);
+
+    return {
+      el: fs,
+      get: function () {
+        for (var i = 0; i < inputs.length; i++) if (inputs[i].inp.checked) return inputs[i].value;
+        return null;
+      },
+      set: function (v, quiet) {
+        inputs.forEach(function (r) { r.inp.checked = String(r.value) === String(v); });
+        paintOn();
+        if (!quiet && spec.onChange) spec.onChange(v);
+      }
+    };
+  }
+
+  /* check(host, spec) -> { get, set, el } */
+  function check(host, spec) {
+    var id = nextId("ck");
+    var inp = Kit.el("input", { type: "checkbox", id: id });
+    inp.checked = !!spec.value;
+    var lb = Kit.el("label", { class: "ex-check", for: id }, [inp, document.createTextNode(spec.label)]);
+    inp.addEventListener("change", function () { if (spec.onChange) spec.onChange(inp.checked); });
+    host.appendChild(lb);
+    return {
+      el: lb, get: function () { return inp.checked; },
+      set: function (v, quiet) { inp.checked = !!v; if (!quiet && spec.onChange) spec.onChange(inp.checked); }
+    };
+  }
+
+  /* readout(host, keys) -> set(key, value, sub)
+     The row of large figures under a plot. */
+  function readout(host, keys) {
+    var map = {};
+    var wrap = Kit.el("div", { class: "ex-read" });
+    keys.forEach(function (k) {
+      var v = Kit.el("p", { class: "ex-read-v" });
+      var cell = Kit.el("div", { class: k.tone ? "ex-read-" + k.tone : null }, [
+        Kit.el("p", { class: "ex-read-k", text: k.label }), v
+      ]);
+      map[k.id] = v;
+      wrap.appendChild(cell);
+    });
+    host.appendChild(wrap);
+    return function (id, value, sub) {
+      var n = map[id];
+      if (!n) return;
+      Kit.clear(n);
+      n.appendChild(document.createTextNode(String(value)));
+      if (sub) n.appendChild(Kit.el("small", { text: sub }));
+    };
+  }
+
+  /* ---------- numbers and words ---------- */
+
+  function round(v, dp) {
+    var f = Math.pow(10, dp === undefined ? 2 : dp);
+    return Math.round(v * f) / f;
+  }
+  function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+
+  /* Percentage of a whole, written the way the prose reads it. */
+  function share(part, whole, dp) {
+    if (!isFinite(whole) || whole === 0) return "not defined";
+    return Kit.num(100 * part / whole, dp === undefined ? 0 : dp) + " per cent";
+  }
+
+  var ORD = ["zeroth", "first", "second", "third", "fourth", "fifth", "sixth",
+    "seventh", "eighth", "ninth", "tenth"];
+  function ordinal(n) { return ORD[n] || (String(n) + "th"); }
+
+  var CARD = ["no", "one", "two", "three", "four", "five", "six", "seven",
+    "eight", "nine", "ten", "eleven", "twelve"];
+  function cardinal(n) { return CARD[n] !== undefined ? CARD[n] : String(n); }
+
+  /* ---------- a seeded generator ---------- */
+
+  /* mulberry32. Small, fast and identical in every browser, which is
+     what makes a shared link reproduce the same tournament. */
+  function rng(seed) {
+    var a = (seed >>> 0) || 1;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /* ---------- deferred redraw, one frame at a time ---------- */
+
+  function frames(fn) {
+    var queued = false;
+    return function () {
+      if (queued) return;
+      queued = true;
+      var run = function () { queued = false; fn(); };
+      if (window.requestAnimationFrame) window.requestAnimationFrame(run);
+      else setTimeout(run, 16);
+    };
+  }
+
+  /* ---------- responsive plot width ---------- */
+
+  /* Report the pixel width available to a plot so that the drawing code
+     can choose a viewBox that keeps the labels legible on a narrow
+     screen instead of scaling them down with the picture. */
+  function widthOf(host, fallback) {
+    var w = host.clientWidth || 0;
+    if (!w && host.parentNode) w = host.parentNode.clientWidth || 0;
+    return Math.max(260, Math.round(w || fallback || 640));
+  }
+
+  function onResize(fn) {
+    var t = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(t);
+      t = setTimeout(fn, 120);
+    });
+  }
+
+  return {
+    s: s, svgRoot: svgRoot, label: label,
+    drag: drag, toLocal: toLocal,
+    slider: slider, seg: seg, check: check, readout: readout,
+    round: round, clamp: clamp, share: share,
+    ordinal: ordinal, cardinal: cardinal,
+    rng: rng, frames: frames, widthOf: widthOf, onResize: onResize,
+    nextId: nextId
+  };
+})();
+
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"pg-desc": "Vergi yansıması üzerine keşfedilebilir bir deneme. Arz ve talep eğrilerini sürükle, bir vergi koy ve yükün alıcıyla satıcı arasında nasıl bölündüğünü izle. Parayı devlete kimin verdiği önemli çıkmıyor. Esneklik karar veriyor.", "tx-c-ed-h": "Fiyattaki yüzde birlik bir değişimde talep edilen miktarın ne kadar oynadığı.", "tx-c-es-h": "Aynısı satıcılar için. Düşük bir değer, üretimi kısamadıkları anlamına gelir.", "tx-c-t-h": "Alınıp satılan her birim başına alınan sabit tutar.", "tx-c-who-h": "Sonuca hiçbir etkisi olmayan denetim bu.", "tx-p-1": "Kımıldayamayan talep", "tx-p-2": "Kımıldayamayan arz", "tx-p-3": "Denk güçler", "tx-p-4": "Ağır bir vergi", "tx-noadv": "Bunlar düşünmek için araçlar, tavsiye değil. Bu sayfadaki hiçbir şey gerçek bir vergi, gerçek bir piyasa ya da gerçek bir karar hakkında öneri değildir ve üzerindeki hiçbir sayı ölçülmüş değildir.", "tx-kskip": "Denemeye atla", "tx-001": "Bir vergiyi gerçekte kim öder", "tx-002": "<span class=\"k-num\">01</span>Piyasa ve üzerine konan vergi", "tx-003": "<span class=\"k-num\">02</span>Çeki kimin yazdığını değiştir", "tx-004": "<span class=\"k-num\">03</span>Kural, tek satırda", "tx-005": "<span class=\"k-num\">04</span>Kimsenin toplamadığı üçgen", "tx-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "tx-007": "<span class=\"k-num\">06</span>Kaynaklar", "tx-008": "Varsayımlar ve sınırlar", "tx-009": "Bir meclis, parayı devlete kimin uzatacağına karar verebilir. Kimin yoksullaşacağına karar veremez. İlki bir yasa maddesidir. İkincisine, piyasanın iki tarafının masadan ne kadar kolay kalkabildiği karar verir ve bunun kararlaştırılmasını aşağıda izleyebilirsin.", "tx-010": "Her vergi yasası bir ödeyen adı verir. KDV'yi dükkân yatırır. Sosyal kesintinin yarısını işveren yatırır. Gümrük vergisini ithalatçı yatırır. Yasayı okusan, yükü kimin taşıdığı sorusunun metinde cevaplandığını sanırsın.", "tx-011": "Cevaplanmamıştır. Yasa <span class=\"ex-em\">kanuni yükümlülüğü</span> sabitler; bu, havalenin üstündeki isimdir. Genelde bilmek istediğimizse <span class=\"ex-em\">iktisadi yüktür</span>; yani kimin tüketiminin düştüğü. Bunlar farklı niceliklerdir ve piyasa, ikincisine birincisine danışmadan karar verir.", "tx-012": "Sav, tek cümlede söylenecek kadar kısa; tam da bu yüzden okumak yerine çalıştırmaya değer. Aşağıda bir piyasa var. Her tarafın fiyata ne kadar duyarlı olduğunu eğrisini sürükleyerek ayarlıyorsun, bir vergi koyuyorsun ve yasanın piyasanın hangi tarafına ödemeyi emrettiğini seçiyorsun. Bu üç düğmeden ikisi cevabı değiştiriyor. Biri hiçbir şey yapmıyor.", "tx-013": "Miktar alt kenarda, fiyat yan kenarda. Aşağı inen çizgi talep: alıcıların her fiyatta ne kadar istediği. Yukarı çıkan çizgi arz: satıcıların her fiyatta ne kadar getireceği. Kesiştikleri yerde piyasa temizlenir. İki çizgiden birini sürükleyip yatıklaştır ya da dikleştir. Yatık çizgi, o tarafın fiyata güçlü tepki verdiği ve masadan kalkabildiği anlamına gelir. Dik çizgi, kalkamadığı.", "tx-014": "<span>Alıcının payı <b id=\"tx-lab-b\">0</b></span><span><b id=\"tx-lab-s\">0</b> satıcının payı</span>", "tx-015": "Sıradaki düğmeler arasında güvenilmeyecek olan sonuncusu. Vergiyi satıcıdan alıcıya taşıyor; gerçek bir sistemde bu, yasayı yeniden yazmak, bir mali işler bölümünü yeniden eğitmek ve formları yeniden bastırmak demek olurdu. Resimde ise bir çizgi yerine öbürü oynuyor. Arz eğrisi vergi kadar yukarı kayıyor ya da talep eğrisi o kadar aşağı.", "tx-016": "Anahtarı çevirirken okumadaki altı rakamı izle. Alıcının ödediği fiyat kımıldamıyor. Satıcının elinde kalan fiyat kımıldamıyor. Miktar kımıldamıyor. Gelir kımıldamıyor. Her tarafın taşıdığı pay kımıldamıyor. Vergi, alıcının ödediğiyle satıcının aldığı arasında sabit boyda bir boşluk açıyor ve bir boşluk, önce hangi ucunu çivilediğine aldırmıyor.", "tx-017": "İnsanları şaşırtan sonuç bu; neyi iddia ettiği konusunda titiz olmaya değer. Yasanın hiçbir şey için önemsiz olduğunu söylemiyor. Bu modelde, diğer her şey sabitken, havalenin hukuki tarafının iki fiyatı belirleyen aritmetiğe girmediğini söylüyor. Bu temiz iddianın dünyadaki hikâyenin tamamı olmadığına dair kanıtları beşinci bölümde sıralıyorum.", "tx-018": "Bölüşüme yasa karar vermiyorsa bir şey vermek zorunda. O şey esneklik: fiyattaki yüzde birlik değişimi izleyen miktardaki yüzde değişim. Kolayca ikame edebilen bir alıcının talebi esnektir ve daha fazlasını ödemeyi reddedebilir. Üretimi kısamayan bir satıcının arzı katıdır ve daha azına razı olmayı reddedemez. Ayrılmaya daha az gücü yeten, kalan ve ödeyen olur.", "tx-019": "Yazıya dökülürse, arz esnekliği <span class=\"ex-em\">e arz</span> ve talep esnekliğinin büyüklüğü <span class=\"ex-em\">e talep</span> olmak üzere, küçük bir vergide alıcının payı şudur ve başka bir şey değildir.", "tx-020": "alıcının vergi payı = e arz / (e arz + e talep)\n        <small>İkinci bölümün tamamı, yasanın adını verdiği tarafın bu ifadenin hiçbir yerinde geçmediği olgusunun içindedir.</small>", "tx-021": "Yukarıdaki eğri o ifadenin kendisi, başka bir şey değil. İmleç, sürgülerin seni şu an koyduğu yer. Onları oynat, imleç sabit bir çizgi boyunca kayar; çünkü piyasa resmi ile bu eğri, tek denklemin iki çizimi. Arz ve talep eşit esnekken imleç yarıda durur. Bir taraf diğerinin on katı esnek olduğunda bölüşüm, kımıldayamayan tarafın aleyhine kabaca ona birdir.", "tx-022": "Vergiyi yükselt; yeni miktarın sağında, eğrilerin arasında gölgeli bir kama açılır. Onlar, olacakken artık olmayan alışverişler. Alıcı, birimi satıcının kabul edeceğinin üstünde değerliyordu; yani ortada edinilecek bir kazanç vardı ve vergi ikisini birbirine ulaşamaz yaptı. O değeri kimse almıyor. Gelir değil. Düpedüz yok.", "tx-023": "Biçim önemli. Vergiyi ikiye katla; gelir dikdörtgeni kabaca ikiye katlanırken üçgen kabaca dörde katlanır, çünkü iki kenarı da vergiyle büyür. Vergiyi beşe kur, kaybı not et. Ona kur, yeniden not et. Az sayıda tabandan çok yerine çok tabandan az toplama yönündeki bildik öğüdün arkasındaki aritmetik bu; kaybın düşük oranlarda görmezden gelinebilecek, yüksek oranlarda gelinemeyecek olmasının sebebi de.", "tx-024": "Üçgenin esneklikle de büyüdüğüne dikkat et. İki eğriyi de dikleştir; büyük bir vergi neredeyse hiç alışveriş yok etmez, çünkü zaten kimse davranışını değiştirmeyecekti. Bu, katı tarafa yükü taşıtan özelliğin öbür yönden görünüşü: kimsenin kaçamadığı bir şeye konan vergi parayı verimli toplar ve çıkışı olmayan insanların üstüne düşer. Verimlilik ile bölüşüm, iki kez rapor edilen aynı olgudur.", "tx-025": "Yukarıdaki resim, içinde düz çizgiler olan tek piyasalık bir kısmi denge modeli. Bu güçlü bir varsayım kümesi ve her biri iş görüyor. Modelin sana söylemeye hakkı olmayanlar şunlar.", "tx-026": "Model, standart kısmi denge fiyat teorisidir ve özel olarak kimseye atfedilmez. Yukarıda yapılan görgül iddialar şu üçüdür, yalnızca bu üçü.", "tx-027": "<strong>Bu bir öğretim modeli, bir ölçüm değil.</strong> Bu sayfadaki her sayı ya senin kurduğun ya da modelin kurduklarından türettiği bir sayı. Burada hiçbir şey gerçek bir piyasayı tarif etmiyor ve bu sayfadan hiçbir rakam, gerçek esnekliklerin bir tahmini ve onu savunmaya hazır bir yazar olmadan gerçek bir vergi tartışmasına taşınmamalı.", "tx-028": "Tümüyle kendi tarayıcında çalışır. Burada yaptığın hiçbir şey sayfadan çıkmaz. Sunucu yok, analiz yok, yazı tipleri geldikten sonra ağ çağrısı yok. <a href=\"../index.html\">Explorable Economics</a>'in parçası; <a href=\"../../../index.html\">Kerem Özdemir</a> yaptı.", "tx-029": "<b>Tek piyasa</b>Tek piyasa çiziliyor ve ekonomideki diğer her şey sabit tutuluyor. Oysa yakıta konan bir vergi araba, nakliye ve emek piyasalarını oynatır. O etkiler buradakinden büyük olabilir ve tamamen çerçevenin dışındadır.", "tx-030": "<b>Gelir etkisi yok</b>Talep eğrisi bir ödeme istekliliği çizelgesi gibi ele alınıyor. Verginin alıcıları toplamda yoksullaştırdığını, bunun da her şeyden ne almak istediklerini kaydırdığını hesaba katmıyor. Model bir ikameyi ölçüyor ve ona tepkinin tamamı diyor.", "tx-031": "<b>Durağan</b>Bir öncesi ve bir sonrası var, arada hiçbir şey yok. Gerçek uyum zaman alır ve esneklik yıllar ölçeğinde aylardakinden neredeyse her zaman büyüktür; ilk çeyrekte üreticilere düşen bir vergi üçüncü yıla gelindiğinde tüketicilere düşebilir. Tek bir esneklik çifti bunu ifade edemez.", "tx-032": "<b>Düz çizgiler</b>Doğrusal eğrilerde esneklik eğri boyunca değişir; yani kurduğun esneklik, piyasanın vergisiz temizlendiği noktadaki esnekliktir, başka hiçbir yerdeki değil. Üçüncü bölümdeki pay formülü küçük vergi için kesin, büyüğü için bir yaklaşıklıktır.", "tx-033": "<b>Rekabet varsayıldı</b>İki taraf da fiyat alıcısı. Bir tekelci ya da birbirini kollayan bir avuç satıcılı piyasa, vergiden fazlasını da azını da yansıtabilir ve bu modelin bunu temsil etmenin bir yolu yok.", "tx-034": "<b>Kanuni taraf gerçekten önemli olabilir</b>İkinci bölümdeki temiz sonuç modelin bir özelliği, bir doğa yasası değil. Saez, Matsaganis ve Tsakloglou, belli bir tarihten sonra işe alınanlar için hem işveren hem işçi kesintilerini yükselten bir Yunan reformunu inceledi ve işverenlerin o işçilere yüksek işveren kesintisini telafi ettiğini ama yüksek işçi kesintisini etmediğini buldu. Nominal bölüşüm sonucu değiştirdi. Benzarti, değiştirdiği başka vakaları da derliyor. İkisi de aşağıda anılıyor.", "tx-035": "<b>Sayılar temsili</b>Bu sayfadaki fiyatlar, miktarlar ve esneklikler mekanizma görünsün diye uyduruldu. Burada hiçbir şey herhangi bir gerçek piyasanın tahmini değildir ve bu sayfadan hiçbir rakam gerçek bir vergi tartışmasına ait değildir.", "tx-039": "Birinci şekil <span class=\"ex-model-sub\">iki eğriden birini sürükle ya da sürgüleri kullan</span>", "tx-040": "İkinci şekil <span class=\"ex-model-sub\">piyasa resmi kaldırılınca aynı cevap</span>", "tx-041": "Bu yapılandırmanın bağlantısını kopyala", "tx-042": "Sıfırla", "tx-036": "Yunanistan'daki bir doğal deneyde işverenler, yeni işçilere yüksek işveren kesintilerini telafi etti ama yüksek işçi kesintilerini etmedi; yani kanuni bölüşüm iktisadi sonucu etkiledi.\n            <span class=\"ex-cite-w\">Emmanuel Saez, Manos Matsaganis and Panos Tsakloglou,\n            <span class=\"ex-cite-t\">Earnings Determination and Taxes: Evidence From a Cohort-Based Payroll Tax\n            Reform in Greece</span>, Quarterly Journal of Economics 127(1), 2012, pages 493 to 533.\n            <a href=\"https://academic.oup.com/qje/article-abstract/127/1/493/1832830\" target=\"_blank\" rel=\"noreferrer noopener\">academic.oup.com/qje/article-abstract/127/1/493/1832830</a>\n            Çalışma sürümü şuradan okundu:\n            <a href=\"https://eml.berkeley.edu/~saez/saez-matsaganis-tsakloglou09greecetax.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">eml.berkeley.edu</a>.\n            Kontrol tarihi: 2026 08 21.</span>", "tx-037": "KDV yansıması bakışımsızdır: artışlar tüketicilere, indirimlerden kat kat daha tam yansıtılır ve fark yıllarca sürer. Aynı derleme, vergiyi kimin yatırdığının iktisadi yükünü etkileyebildiğine dair kanıtları da toplar.\n            <span class=\"ex-cite-w\">Youssef Benzarti, <span class=\"ex-cite-t\">Tax Incidence Anomalies</span>,\n            NBER Working Paper 32819, August 2024.\n            <a href=\"https://www.nber.org/system/files/working_papers/w32819/w32819.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">nber.org/system/files/working_papers/w32819/w32819.pdf</a>\n            Kontrol tarihi: 2026 08 21.</span>", "tx-038": "Congressional Budget Office, sosyal güvenlik primi oranındaki geniş bir artışın ek yükünün kısa vadede yaklaşık yüzde 58'inin çalışanlara düştüğünü, kalanını sermaye ve diğer faktörlerin taşıdığını tahmin ediyor.\n            <span class=\"ex-cite-w\">Dorian Carloni, <span class=\"ex-cite-t\">Revisiting the Extent to Which\n            Payroll Taxes Are Passed Through to Employees</span>, CBO Working Paper 2021 06, June 2021.\n            <a href=\"https://www.cbo.gov/publication/57089\" target=\"_blank\" rel=\"noreferrer noopener\">cbo.gov/publication/57089</a>\n            Kontrol tarihi: 2026 08 21.</span>", "tx-l-buyerpays": "alıcı öder", "tx-l-sellerkeeps": "satıcıda kalır", "tx-l-clears": "piyasa burada temizlenir", "tx-l-qaxis": "miktar, bin birim", "tx-l-paxis": "fiyat, birim başına EUR", "tx-l-pctbuyer": " alıcıya yüzde", "tx-l-less": "arz 25 kat\ndaha az esnek", "tx-l-equal": "eşit\nesneklik", "tx-l-more": "arz 25 kat\ndaha esnek", "tx-w-barely": "fiyata neredeyse tepkisiz", "tx-w-weak": "fiyata zayıf tepki veriyor", "tx-w-one": "fiyata aşağı yukarı bire bir tepki veriyor", "tx-w-strong": "fiyata güçlü tepki veriyor", "tx-w-very": "fiyata çok güçlü tepki veriyor", "tx-r-pb": "Alıcının ödediği", "tx-r-ps": "Satıcıda kalan", "tx-r-q": "İşlem gören miktar", "tx-r-sh": "Alıcının vergi payı", "tx-r-rev": "Devletin geliri", "tx-r-dwl": "Refah kaybı", "tx-c-ed": "Talebin esnekliği", "tx-c-es": "Arzın esnekliği", "tx-c-t": "Vergi, birim başına EUR", "tx-c-who": "Yasaya göre parayı ödeyen", "tx-c-seller": "satıcı", "tx-c-buyer": "alıcı", "tx-k-demand": "talep", "tx-k-supply": "arz", "tx-k-rev": "toplanan gelir", "tx-k-dwl": "yok edilen alışverişler", "tx-sum1-a": "Tek piyasada arz ve talep. Talep esnekliği {ed}, arz esnekliği {es}, birim başına {t} EUR vergi; yatıran taraf: {who}.", "tx-sum1-zero": "Vergi yokken piyasa 50 fiyat ve 50 miktarda temizleniyor.", "tx-sum1-choke": "Vergi, herhangi bir alıcının ödeyeceği ile herhangi bir satıcının kabul edeceği arasındaki bütün aralıktan büyük; yani hiçbir şey işlem görmüyor, devlet hiçbir şey toplamıyor ve bu piyasadan doğan kazancın tamamı yok oluyor.", "tx-sum1-main": "Alıcı {pb} ödüyor, satıcıda {ps} kalıyor; verginin alıcıya düşen kısmı yüzde {sb}, satıcıya düşeni yüzde {ss}. Miktar 50'den {q} düzeyine iniyor. Gelir {rev} bin EUR, refah kaybı {dwl} bin EUR.", "tx-sum2": "Alıcının vergi payı, iki esnekliğin oranına karşı; solda arz talebin yirmi beşte biri kadar esnek, sağda yirmi beş katı. Eğri, ikisi eşitken yarımdan geçiyor. İmleç {ratio} oranında ve yüzde {sb} alıcı payında duruyor.", "tx-sy-zero": "Henüz vergi yok. Talep {ed}, arz {es}. Piyasa 50 fiyat ve 50 miktarda temizleniyor. Bir boşluk açmak için vergi sürgüsünü oynat.", "tx-sy-choke": "{t} vergisi, herhangi bir alıcının ödeyeceği en yüksek fiyatla herhangi bir satıcının kabul edeceği en düşük fiyat arasındaki bütün mesafeden fazla; bu eğimlerde o mesafe {c}. Hiçbir şey işlem görmüyor. Devlet hiçbir şey toplamıyor. Bu, dördüncü bölümdeki üçgenin piyasayı yuttuğu uç durum.", "tx-sy-lead": "Talep {ed}, arz {es}. ", "tx-sy-even": "İki taraf da masadan aşağı yukarı eşit kolaylıkla kalkabiliyor; vergiyi neredeyse eşit bölüşüyorlar: ", "tx-sy-uneq": "Arz, talepten {x} {dir} esnek; yani ağır ucu {heavy} taşıyor: ", "tx-sy-more": "kat daha", "tx-sy-less": "kat daha az", "tx-sy-buyer": "alıcı", "tx-sy-seller": "satıcı", "tx-sy-split": "{t} EUR'nun alıcıya düşen kısmı {sb}, satıcıya düşeni {ss}.", "tx-sy-pct": "yüzde {x}", "tx-sy-law": "Yasa şu an parayı {who} tarafının vermesini söylüyor. Anahtarı {other} tarafına çevir; kesikli çizgi öbür eğriye atlar. Ağır ucu taşıyan yine {heavy} olur ve payı yüzde {hs} kalır; miktar yine {q}, gelir yine {rev} bin EUR.", "pg-title": "Vergiyi gerçekte kim öder"}, "de": {"pg-desc": "Ein erkundbares Essay über Steuerinzidenz. Ziehen Sie die Angebots- und Nachfragekurven, setzen Sie eine Steuer und sehen Sie, wie sich die Last zwischen Käufer und Verkäufer teilt. Wer das Geld an den Staat abführt, erweist sich als unerheblich. Die Elastizität entscheidet.", "tx-c-ed-h": "Wie stark sich die nachgefragte Menge bei einer Preisänderung von einem Prozent bewegt.", "tx-c-es-h": "Dasselbe für die Anbieter. Ein niedriger Wert heißt, sie können nicht zurückfahren.", "tx-c-t-h": "Ein fester Betrag auf jede gehandelte Einheit.", "tx-c-who-h": "Das ist das Bedienelement, das am Ergebnis nichts ändert.", "tx-p-1": "Nachfrage, die nicht ausweichen kann", "tx-p-2": "Angebot, das nicht ausweichen kann", "tx-p-3": "Gleich stark", "tx-p-4": "Eine hohe Steuer", "tx-noadv": "Das sind Werkzeuge zum Nachdenken, keine Beratung. Nichts auf dieser Seite ist eine Empfehlung zu einer wirklichen Steuer, einem wirklichen Markt oder einer wirklichen Entscheidung, und keine Zahl darauf wurde gemessen.", "tx-kskip": "Zum Essay springen", "tx-001": "Wer eine Steuer wirklich zahlt", "tx-002": "<span class=\"k-num\">01</span>Der Markt, und eine Steuer darauf", "tx-003": "<span class=\"k-num\">02</span>Ändern Sie, wer die Steuer abführt", "tx-004": "<span class=\"k-num\">03</span>Die Regel, in einer Zeile", "tx-005": "<span class=\"k-num\">04</span>Das Dreieck, das niemand einsammelt", "tx-006": "<span class=\"k-num\">05</span>Wo das Modell endet", "tx-007": "<span class=\"k-num\">06</span>Quellen", "tx-008": "Annahmen und Grenzen", "tx-009": "Ein Parlament kann entscheiden, wer dem Staat das Geld reicht. Es kann nicht entscheiden, wer ärmer wird. Das Erste ist eine Zeile im Gesetz. Das Zweite entscheidet sich daran, wie leicht jede Marktseite gehen kann, und Sie können unten zusehen, wie es sich entscheidet.", "tx-010": "Jedes Steuergesetz nennt einen Zahler. Der Laden führt die Mehrwertsteuer ab. Der Arbeitgeber führt die Hälfte des Sozialbeitrags ab. Der Importeur führt den Zoll ab. Wer das Gesetz liest, könnte meinen, die Frage, wer die Last trägt, sei im Text beantwortet.", "tx-011": "Ist sie nicht. Das Gesetz legt die <span class=\"ex-em\">gesetzliche Inzidenz</span> fest, den Namen auf der Überweisung. Was wir meistens wissen wollen, ist die <span class=\"ex-em\">ökonomische Inzidenz</span>: wessen Konsum sinkt. Das sind verschiedene Größen, und über die zweite entscheidet der Markt, ohne die erste zu fragen.", "tx-012": "Das Argument ist kurz genug für einen Satz, und genau darum lohnt es sich, es laufen zu lassen statt zu lesen. Unten steht ein Markt. Sie stellen ein, wie empfindlich jede Seite auf den Preis reagiert, indem Sie ihre Kurve ziehen, Sie setzen eine Steuer, und Sie wählen, welcher Marktseite das Gesetz das Zahlen aufträgt. Zwei dieser drei Regler ändern die Antwort. Einer tut gar nichts.", "tx-013": "Die Menge läuft unten entlang, der Preis an der Seite hinauf. Die fallende Linie ist die Nachfrage: wie viel Käufer zu jedem Preis wollen. Die steigende ist das Angebot: wie viel Verkäufer zu jedem Preis bringen. Wo sie sich kreuzen, ist der Markt geräumt. Ziehen Sie eine der Linien flacher oder steiler. Eine flache Linie heißt, diese Seite reagiert stark auf den Preis und kann gehen. Eine steile heißt, sie kann es nicht.", "tx-014": "<span>Käufer trägt <b id=\"tx-lab-b\">0</b></span><span><b id=\"tx-lab-s\">0</b> trägt der Verkäufer</span>", "tx-015": "Der letzte Regler in der Reihe ist der, dem Sie misstrauen sollten. Er verschiebt die Steuer vom Verkäufer zum Käufer, was in einem echten System hieße, das Gesetz neu zu schreiben, eine Finanzabteilung umzuschulen und die Formulare neu zu drucken. Im Bild bewegt sich statt der einen Linie die andere. Die Angebotskurve rückt um die Steuer nach oben, oder die Nachfragekurve um sie nach unten.", "tx-016": "Beobachten Sie die sechs Zahlen der Anzeige, während Sie umschalten. Der Preis, den der Käufer zahlt, bewegt sich nicht. Der Preis, den der Verkäufer behält, bewegt sich nicht. Die Menge nicht. Die Einnahmen nicht. Der Anteil jeder Seite nicht. Die Steuer öffnet eine Lücke fester Größe zwischen dem, was der Käufer zahlt, und dem, was der Verkäufer erhält, und einer Lücke ist es gleich, welches Ende man zuerst festnagelt.", "tx-017": "Das ist das Ergebnis, das die Leute überrascht, und es lohnt sich, genau zu sagen, was es behauptet. Es sagt nicht, das Gesetz sei für nichts von Belang. Es sagt, dass in diesem Modell, alles andere gleich, die rechtliche Seite der Überweisung nicht in die Arithmetik eingeht, die die zwei Preise bestimmt. In Abschnitt fünf lege ich die Belege dafür vor, dass diese saubere Behauptung in der Welt nicht die ganze Geschichte ist.", "tx-018": "Wenn nicht das Gesetz über die Aufteilung entscheidet, muss es etwas anderes tun. Es ist die Elastizität: die prozentuale Mengenänderung auf ein Prozent Preisänderung. Ein Käufer, der leicht ausweichen kann, hat elastische Nachfrage und kann sich weigern, mehr zu zahlen. Ein Verkäufer, der die Produktion nicht drosseln kann, hat unelastisches Angebot und kann sich nicht weigern, weniger zu nehmen. Wer schlechter gehen kann, bleibt und zahlt.", "tx-019": "Ausgeschrieben, mit der Angebotselastizität als <span class=\"ex-em\">e A</span> und dem Betrag der Nachfrageelastizität als <span class=\"ex-em\">e N</span>, ist der Käuferanteil einer kleinen Steuer dies und nichts anderes.", "tx-020": "Käuferanteil der Steuer = e A / (e A + e N)\n        <small>Der ganze Abschnitt zwei steckt in der Tatsache, dass die vom Gesetz benannte Seite nirgendwo in diesem Ausdruck vorkommt.</small>", "tx-021": "Die Kurve oben ist dieser Ausdruck und nichts sonst. Die Markierung ist, wo die Regler Sie gerade hinsetzen. Bewegen Sie sie, gleitet die Markierung eine feste Linie entlang, denn das Marktbild und diese Kurve sind zwei Zeichnungen einer Gleichung. Sind Angebot und Nachfrage gleich elastisch, sitzt die Markierung bei der Hälfte. Ist eine Seite zehnmal so elastisch wie die andere, steht die Aufteilung ungefähr zehn zu eins gegen die Seite, die nicht ausweichen kann.", "tx-022": "Erhöhen Sie die Steuer, öffnet sich rechts der neuen Menge ein schattierter Keil zwischen den Kurven. Das sind Geschäfte, die stattgefunden hätten und es jetzt nicht tun. Der Käufer schätzte die Einheit über dem, was der Verkäufer akzeptiert hätte; es gab also einen Gewinn zu holen, und die Steuer machte die beiden füreinander unerreichbar. Diesen Wert erhält niemand. Er ist keine Einnahme. Er ist einfach fort.", "tx-023": "Die Form zählt. Verdoppeln Sie die Steuer, verdoppelt sich das Einnahmenrechteck ungefähr, während sich das Dreieck ungefähr vervierfacht, weil beide seiner Seiten mit der Steuer wachsen. Stellen Sie die Steuer auf fünf und notieren Sie den Verlust. Stellen Sie sie auf zehn und notieren Sie ihn wieder. Das ist die Arithmetik hinter dem üblichen Rat, wenig aus vielen Quellen zu holen statt viel aus einer, und auch der Grund, warum der Verlust bei niedrigen Sätzen zu übersehen ist und bei hohen nicht.", "tx-024": "Beachten Sie auch, dass das Dreieck mit der Elastizität wächst. Machen Sie beide Kurven steil, und eine große Steuer zerstört fast keine Geschäfte, weil ohnehin niemand sein Verhalten geändert hätte. Das ist dieselbe Eigenschaft, die die unelastische Seite die Last tragen ließ, von der anderen Seite gesehen: Eine Steuer auf etwas, dem niemand ausweichen kann, sammelt effizient Geld und fällt auf Menschen ohne Ausweg. Effizienz und Verteilung sind derselbe Sachverhalt, zweimal ausgedr\u00fcckt.", "tx-025": "Das Bild oben ist ein partielles Gleichgewichtsmodell eines Marktes mit geraden Linien darin. Das ist ein starkes Annahmenpaket, und jede Annahme leistet Arbeit. Hier steht, was das Modell Ihnen nicht sagen darf.", "tx-026": "Das Modell ist gewöhnliche partielle Gleichgewichtspreistheorie und niemandem im Besonderen zuzuschreiben. Die empirischen Behauptungen oben sind diese drei, und nur diese drei.", "tx-027": "<strong>Dies ist ein Lehrmodell, keine Messung.</strong> Jede Zahl auf dieser Seite haben Sie gesetzt, oder das Modell hat sie aus Ihren Eingaben abgeleitet. Nichts hier beschreibt einen echten Markt, und keine Zahl von dieser Seite gehört in ein Argument über eine echte Steuer ohne eine Schätzung der echten Elastizitäten und einen Autor, der sie verteidigt.", "tx-028": "Läuft vollständig in Ihrem Browser. Nichts, was Sie hier tun, verlässt die Seite. Kein Server, keine Analyse, kein Netzaufruf nach dem Laden der Schriften. Teil von <a href=\"../index.html\">Explorable Economics</a>, gebaut von <a href=\"../../../index.html\">Kerem Özdemir</a>.", "tx-029": "<b>Ein Markt</b>Ein Markt wird gezeichnet, alles andere in der Wirtschaft steht still. In Wahrheit bewegt eine Steuer auf Treibstoff die Märkte für Autos, Fracht und Arbeit. Diese Wirkungen können größer sein als die hier gezeigte und liegen ganz außerhalb des Rahmens.", "tx-030": "<b>Kein Einkommenseffekt</b>Die Nachfragekurve wird als Zahlungsbereitschaft gelesen. Sie berücksichtigt nicht, dass eine Steuer die Käufer insgesamt ärmer macht, was verschiebt, was sie von allem kaufen wollen. Das Modell misst eine Substitution und nennt sie die ganze Reaktion.", "tx-031": "<b>Statisch</b>Es gibt ein Vorher und ein Nachher und nichts dazwischen. Echte Anpassung braucht Zeit, und Elastizität ist über Jahre fast immer größer als über Monate; eine Steuer, die im ersten Quartal auf den Produzenten fällt, kann im dritten Jahr auf den Konsumenten liegen. Ein einziges Elastizitätspaar kann das nicht ausdrücken.", "tx-032": "<b>Gerade Linien</b>Bei linearen Kurven ändert sich die Elastizität entlang der Kurve; die von Ihnen gesetzte Elastizität gilt also im Punkt, in dem der Markt ohne Steuer räumt, und nirgendwo sonst. Die Anteilsformel in Abschnitt drei ist für eine kleine Steuer exakt und für eine große eine Näherung.", "tx-033": "<b>Wettbewerb unterstellt</b>Beide Seiten sind Preisnehmer. Ein Monopolist, oder ein Markt mit einer Handvoll einander beobachtender Verkäufer, kann mehr als die Steuer weitergeben oder weniger, und dieses Modell kann das nicht darstellen.", "tx-034": "<b>Die gesetzliche Seite kann wirklich zählen</b>Das saubere Ergebnis in Abschnitt zwei ist eine Eigenschaft des Modells, kein Naturgesetz. Saez, Matsaganis und Tsakloglou untersuchten eine griechische Reform, die für nach einem Stichtag Eingestellte Arbeitgeber- und Arbeitnehmerbeiträge erhöhte, und fanden, dass Arbeitgeber diesen Beschäftigten den höheren Arbeitgeberbeitrag ausglichen, den höheren Arbeitnehmerbeitrag aber nicht. Die nominale Aufteilung änderte das Ergebnis. Benzarti sammelt weitere Fälle, in denen sie es tut. Beide sind unten zitiert.", "tx-035": "<b>Zahlen sind illustrativ</b>Die Preise, Mengen und Elastizitäten auf dieser Seite sind erfunden, damit der Mechanismus sichtbar wird. Nichts hier ist eine Schätzung irgendeines echten Marktes, und keine Zahl von dieser Seite gehört in ein Argument über eine echte Steuer.", "tx-039": "Abbildung eins <span class=\"ex-model-sub\">ziehen Sie eine der Kurven oder nutzen Sie die Regler</span>", "tx-040": "Abbildung zwei <span class=\"ex-model-sub\">dieselbe Antwort ohne das Marktbild</span>", "tx-041": "Link zu dieser Einstellung kopieren", "tx-042": "Zurücksetzen", "tx-036": "In einem griechischen natürlichen Experiment glichen Arbeitgeber neuen Beschäftigten die höheren Arbeitgeberbeiträge aus, die höheren Arbeitnehmerbeiträge aber nicht; die gesetzliche Aufteilung beeinflusste also das ökonomische Ergebnis.\n            <span class=\"ex-cite-w\">Emmanuel Saez, Manos Matsaganis and Panos Tsakloglou,\n            <span class=\"ex-cite-t\">Earnings Determination and Taxes: Evidence From a Cohort-Based Payroll Tax\n            Reform in Greece</span>, Quarterly Journal of Economics 127(1), 2012, pages 493 to 533.\n            <a href=\"https://academic.oup.com/qje/article-abstract/127/1/493/1832830\" target=\"_blank\" rel=\"noreferrer noopener\">academic.oup.com/qje/article-abstract/127/1/493/1832830</a>\n            Arbeitsfassung gelesen bei\n            <a href=\"https://eml.berkeley.edu/~saez/saez-matsaganis-tsakloglou09greecetax.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">eml.berkeley.edu</a>.\n            Geprüft: 2026 08 21.</span>", "tx-037": "Die Überwälzung der Mehrwertsteuer ist asymmetrisch: Erhöhungen werden um ein Mehrfaches vollständiger an Konsumenten weitergegeben als Senkungen, und die Lücke hält Jahre an. Dieselbe Übersicht sammelt Belege, dass es die ökonomische Inzidenz beeinflussen kann, wer eine Steuer abführt.\n            <span class=\"ex-cite-w\">Youssef Benzarti, <span class=\"ex-cite-t\">Tax Incidence Anomalies</span>,\n            NBER Working Paper 32819, August 2024.\n            <a href=\"https://www.nber.org/system/files/working_papers/w32819/w32819.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">nber.org/system/files/working_papers/w32819/w32819.pdf</a>\n            Geprüft: 2026 08 21.</span>", "tx-038": "Das Congressional Budget Office schätzt, dass kurzfristig etwa 58 Prozent der zusätzlichen Last einer breiten Erhöhung des Lohnsummensteuersatzes auf die Beschäftigten fällt, der Rest auf Kapital und andere Faktoren.\n            <span class=\"ex-cite-w\">Dorian Carloni, <span class=\"ex-cite-t\">Revisiting the Extent to Which\n            Payroll Taxes Are Passed Through to Employees</span>, CBO Working Paper 2021 06, June 2021.\n            <a href=\"https://www.cbo.gov/publication/57089\" target=\"_blank\" rel=\"noreferrer noopener\">cbo.gov/publication/57089</a>\n            Geprüft: 2026 08 21.</span>", "tx-l-buyerpays": "Käufer zahlt", "tx-l-sellerkeeps": "Verkäufer behält", "tx-l-clears": "hier räumt der Markt", "tx-l-qaxis": "Menge, Tausend Einheiten", "tx-l-paxis": "Preis, EUR je Einheit", "tx-l-pctbuyer": " Prozent auf den Käufer", "tx-l-less": "Angebot 25-mal\nweniger elastisch", "tx-l-equal": "gleich\nelastisch", "tx-l-more": "Angebot 25-mal\nelastischer", "tx-w-barely": "reagiert kaum auf den Preis", "tx-w-weak": "reagiert schwach auf den Preis", "tx-w-one": "reagiert etwa eins zu eins auf den Preis", "tx-w-strong": "reagiert stark auf den Preis", "tx-w-very": "reagiert sehr stark auf den Preis", "tx-r-pb": "Käufer zahlt", "tx-r-ps": "Verkäufer behält", "tx-r-q": "Gehandelte Menge", "tx-r-sh": "Käuferanteil der Steuer", "tx-r-rev": "Einnahmen des Staates", "tx-r-dwl": "Wohlfahrtsverlust", "tx-c-ed": "Elastizität der Nachfrage", "tx-c-es": "Elastizität des Angebots", "tx-c-t": "Steuer, EUR je Einheit", "tx-c-who": "Laut Gesetz zahlt", "tx-c-seller": "Verkäufer", "tx-c-buyer": "Käufer", "tx-k-demand": "Nachfrage", "tx-k-supply": "Angebot", "tx-k-rev": "eingenommene Steuer", "tx-k-dwl": "zerstörte Geschäfte", "tx-sum1-a": "Angebot und Nachfrage in einem Markt. Nachfrageelastizität {ed}, Angebotselastizität {es}, Steuer {t} EUR je Einheit, abgeführt vom {who}.", "tx-sum1-zero": "Ohne Steuer räumt der Markt bei einem Preis von 50 und einer Menge von 50.", "tx-sum1-choke": "Die Steuer ist größer als die ganze Lücke zwischen dem, was irgendein Käufer zahlen und irgendein Verkäufer akzeptieren würde; also wird nichts gehandelt, der Staat nimmt nichts ein, und der gesamte Gewinn aus diesem Markt ist verloren.", "tx-sum1-main": "Der Käufer zahlt {pb}, der Verkäufer behält {ps}; der Käufer trägt also {sb} Prozent der Steuer und der Verkäufer {ss} Prozent. Die Menge fällt von 50 auf {q}. Die Einnahmen sind {rev} Tausend EUR, der Wohlfahrtsverlust {dwl} Tausend EUR.", "tx-sum2": "Der Käuferanteil der Steuer gegen das Verhältnis der zwei Elastizitäten, von 25-mal weniger elastischem Angebot links bis 25-mal elastischerem rechts. Die Kurve steigt durch die Hälfte, wo beide gleich sind. Die Markierung sitzt bei einem Verhältnis von {ratio} und einem Käuferanteil von {sb} Prozent.", "tx-sy-zero": "Noch keine Steuer. Die Nachfrage {ed}, das Angebot {es}. Der Markt räumt bei Preis 50 und Menge 50. Bewegen Sie den Steuerregler, um eine Lücke zu öffnen.", "tx-sy-choke": "Eine Steuer von {t} ist mehr als der ganze Abstand zwischen dem höchsten Preis, den irgendein Käufer zahlt, und dem niedrigsten, den irgendein Verkäufer akzeptiert; bei diesen Steigungen sind das {c}. Nichts wird gehandelt. Der Staat nimmt nichts ein. Das ist der Extremfall des Dreiecks aus Abschnitt vier, in dem das Dreieck den Markt gefressen hat.", "tx-sy-lead": "Die Nachfrage {ed}, das Angebot {es}. ", "tx-sy-even": "Beide Seiten können etwa gleich leicht gehen, also teilen sie die Steuer fast gleichmäßig: ", "tx-sy-uneq": "Das Angebot ist {x} {dir} elastisch als die Nachfrage, also trägt der {heavy} das schwerere Ende: ", "tx-sy-more": "mal so", "tx-sy-less": "mal weniger", "tx-sy-buyer": "Käufer", "tx-sy-seller": "Verkäufer", "tx-sy-split": "{sb} der {t} EUR fallen auf den Käufer und {ss} auf den Verkäufer.", "tx-sy-pct": "{x} Prozent", "tx-sy-law": "Das Gesetz sagt derzeit dem {who}, das Geld zu übergeben. Schalten Sie auf den {other} um, und die gestrichelte Linie springt zur anderen Kurve. Der {heavy} trägt weiterhin {hs} Prozent davon, die Menge ist weiterhin {q}, die Einnahmen sind weiterhin {rev} Tausend EUR.", "pg-title": "Wer eine Steuer wirklich zahlt"}};
+function T(k, en, v) {
+  var out = window.__t ? window.__t(k, en) : en;
+  if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+  return out;
+}
+/* control and legend labels are built once; sweep retranslates them in place */
+var SWEEP = {
+  "How far quantity demanded moves for a one per cent change in price.": "tx-c-ed-h",
+  "The same for the sellers. A low figure means they cannot cut back.": "tx-c-es-h",
+  "A flat amount charged on every unit traded.": "tx-c-t-h",
+  "This is the control that does nothing to the outcome.": "tx-c-who-h",
+  "Demand that cannot move": "tx-p-1",
+  "Supply that cannot move": "tx-p-2",
+  "Evenly matched": "tx-p-3",
+  "A heavy tax": "tx-p-4",
+  "Elasticity of demand": "tx-c-ed", "Elasticity of supply": "tx-c-es",
+  "Tax, EUR per unit": "tx-c-t", "The law says the money is paid by": "tx-c-who",
+  "seller": "tx-c-seller", "buyer": "tx-c-buyer",
+  "Buyer pays": "tx-r-pb", "Seller keeps": "tx-r-ps", "Quantity traded": "tx-r-q",
+  "Buyer's share of tax": "tx-r-sh", "Revenue to the state": "tx-r-rev", "Deadweight loss": "tx-r-dwl",
+  "demand": "tx-k-demand", "supply": "tx-k-supply",
+  "revenue collected": "tx-k-rev", "trades destroyed": "tx-k-dwl"
+};
+function sweepI18n() {
+  document.querySelectorAll(".ex-ctrl label > span:first-child, .ex-seg legend span, .ex-seg-row label, .ex-read-k, .ex-key span, .k-hint, #tx-presets button").forEach(function (n) {
+    var en = n.getAttribute("data-en");
+    if (en === null) {
+      en = (n.childNodes.length && n.lastChild.nodeType === 3 ? n.lastChild.textContent : n.textContent).trim();
+      n.setAttribute("data-en", en);
+    }
+    var k = SWEEP[en];
+    if (!k) return;
+    var tgt = n.lastChild && n.lastChild.nodeType === 3 ? n.lastChild : n;
+    tgt.textContent = (tgt === n.lastChild && n.childNodes.length > 1 ? "" : "") + T(k, en);
+  });
+}
+
+/* ============================================================
+   Essay one: who actually pays a tax
+
+   The model is linear partial equilibrium, written so that the
+   equilibrium without a tax never moves. Both curves rotate
+   about the point (50, 50), so changing an elasticity changes
+   the slope and nothing else. That is what makes the burden
+   split legible: the only thing that has changed is the thing
+   the reader changed.
+
+     demand   P = 50 - b (Q - 50),  b = 1 / elasticity of demand
+     supply   P = 50 + d (Q - 50),  d = 1 / elasticity of supply
+
+   With a tax t per unit the wedge condition P buyer minus P
+   seller equals t gives
+
+     Q  = 50 - t / (b + d)
+     Pb = 50 + b t / (b + d)
+     Ps = 50 - d t / (b + d)
+
+   so the buyer's share of the tax is b / (b + d), which is
+   elasticity of supply over the sum of the two elasticities.
+   The side the law names does not appear.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var E = Kit.el, Q = Kit.qs;
+
+  /* economic space is 0 to 100 on both axes, equilibrium at 50, 50 */
+  var EQ = 50;
+  var EL_MIN = 0.2, EL_MAX = 5;
+  var T_MAX = 40;
+
+  var S = { ed: 1, es: 1, t: 10, who: "seller" };
+
+  /* ---------- the model ---------- */
+
+  function solve(st) {
+    var b = 1 / st.ed;          /* slope magnitude of demand */
+    var d = 1 / st.es;          /* slope of supply */
+    var t = st.t;
+    var sum = b + d;
+
+    var qFree = EQ, pFree = EQ;
+    var choke = EQ * sum;       /* the tax at which trade stops entirely */
+    var choked = t >= choke;
+
+    var q = choked ? 0 : EQ - t / sum;
+    var wedge = choked ? choke : t;                 /* the gap actually opened */
+    var pb = choked ? EQ + b * EQ : EQ + b * t / sum;
+    var ps = choked ? EQ - d * EQ : EQ - d * t / sum;
+
+    var revenue = choked ? 0 : t * q;
+    var dwl = 0.5 * sum * (EQ - q) * (EQ - q);
+    var shareBuyer = sum === 0 ? 0.5 : b / sum;     /* equals es / (es + ed) */
+    var totalFree = 0.5 * choke * EQ;               /* gains from trade with no tax */
+
+    return {
+      b: b, d: d, t: t, sum: sum, choked: choked, choke: choke,
+      q: q, qFree: qFree, pFree: pFree, pb: pb, ps: ps, wedge: wedge,
+      revenue: revenue, dwl: dwl, shareBuyer: shareBuyer, totalFree: totalFree
+    };
+  }
+
+  /* ---------- geometry helpers ---------- */
+
+  /* The stretch of a line through (50, 50) that is inside the 0 to 100 box.
+     shift lifts the whole line by a constant, which is how a tax on one
+     side is drawn. */
+  function segment(slopeSigned, shift) {
+    /* P = 50 + slopeSigned (Q - 50) + shift */
+    var qs = [];
+    var m = slopeSigned;
+    function pAt(qq) { return EQ + m * (qq - EQ) + shift; }
+    function qAt(pp) { return EQ + (pp - shift - EQ) / m; }
+    [0, 100].forEach(function (qq) {
+      var pp = pAt(qq);
+      if (pp >= -0.0001 && pp <= 100.0001) qs.push({ q: qq, p: Ex.clamp(pp, 0, 100) });
+    });
+    [0, 100].forEach(function (pp) {
+      var qq = qAt(pp);
+      if (qq >= -0.0001 && qq <= 100.0001) qs.push({ q: Ex.clamp(qq, 0, 100), p: pp });
+    });
+    /* keep the two extreme points */
+    qs.sort(function (a, z) { return a.q - z.q; });
+    if (qs.length < 2) return null;
+    return [qs[0], qs[qs.length - 1]];
+  }
+
+  /* ---------- figure one ---------- */
+
+  var host1 = Q("#tx-plot"), svg1 = null, geo1 = null;
+
+  function draw1(r) {
+    Kit.clear(host1);
+    var W = Ex.widthOf(host1, 620);
+    var narrow = W < 520;
+    var H = narrow ? Math.max(260, Math.round(W * 0.86)) : Math.round(Math.min(400, W * 0.62));
+    var padL = narrow ? 40 : 54, padR = narrow ? 14 : 20, padT = 18, padB = narrow ? 40 : 42;
+    var iw = W - padL - padR, ih = H - padT - padB;
+
+    function X(q) { return padL + q * iw / 100; }
+    function Y(p) { return padT + (100 - p) * ih / 100; }
+    geo1 = { X: X, Y: Y, padL: padL, padT: padT, iw: iw, ih: ih,
+      toQ: function (x) { return (x - padL) * 100 / iw; },
+      toP: function (y) { return 100 - (y - padT) * 100 / ih; } };
+
+    var svg = Ex.svgRoot(W, H, summary1(r));
+    svg.setAttribute("role", "img");
+
+    /* frame */
+    svg.appendChild(Ex.s("rect", { x: padL, y: padT, width: iw, height: ih,
+      fill: "var(--field)", stroke: "var(--rule)", "stroke-width": 1 }));
+
+    /* grid every 20 units */
+    for (var g = 20; g < 100; g += 20) {
+      svg.appendChild(Ex.s("line", { x1: padL, y1: Y(g), x2: padL + iw, y2: Y(g),
+        stroke: "var(--rule)", "stroke-width": 1, "stroke-dasharray": "1 5" }));
+      svg.appendChild(Ex.s("line", { x1: X(g), y1: padT, x2: X(g), y2: padT + ih,
+        stroke: "var(--rule)", "stroke-width": 1, "stroke-dasharray": "1 5" }));
+    }
+
+    var fs = narrow ? 9 : 10;
+
+    /* revenue rectangle and the deadweight triangle, drawn under the lines */
+    if (!r.choked && r.t > 0 && r.q > 0) {
+      svg.appendChild(Ex.s("rect", {
+        x: X(0), y: Y(r.pb), width: X(r.q) - X(0), height: Y(r.ps) - Y(r.pb),
+        fill: "var(--accent)", opacity: 0.14
+      }));
+    }
+    if (r.t > 0 && r.q < EQ) {
+      var tri = [[X(r.q), Y(r.pb)], [X(r.q), Y(r.ps)], [X(EQ), Y(EQ)]]
+        .map(function (p) { return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" ");
+      svg.appendChild(Ex.s("polygon", { points: tri, fill: "var(--flag)", opacity: 0.26 }));
+      svg.appendChild(Ex.s("polygon", { points: tri, fill: "none",
+        stroke: "var(--flag)", "stroke-width": 1, opacity: 0.7 }));
+    }
+
+    /* the shifted curve the tax draws, dashed */
+    if (r.t > 0) {
+      var shifted = S.who === "seller"
+        ? segment(r.d, r.t)      /* supply lifted by the tax */
+        : segment(-r.b, -r.t);   /* demand pushed down by it */
+      if (shifted) {
+        svg.appendChild(Ex.s("line", {
+          x1: X(shifted[0].q), y1: Y(shifted[0].p), x2: X(shifted[1].q), y2: Y(shifted[1].p),
+          stroke: S.who === "seller" ? "var(--good)" : "var(--accent)",
+          "stroke-width": 1.4, "stroke-dasharray": "5 4", opacity: 0.85
+        }));
+      }
+    }
+
+    /* the two curves */
+    var dSeg = segment(-r.b, 0), sSeg = segment(r.d, 0);
+    function line(seg, colour) {
+      svg.appendChild(Ex.s("line", {
+        x1: X(seg[0].q), y1: Y(seg[0].p), x2: X(seg[1].q), y2: Y(seg[1].p),
+        stroke: colour, "stroke-width": 2.1, "stroke-linecap": "round"
+      }));
+    }
+    line(dSeg, "var(--accent)");
+    line(sSeg, "var(--good)");
+
+    /* drag handles, placed well away from the pivot so the gesture is obvious */
+    function handleAt(seg) {
+      var far = Math.abs(seg[1].q - EQ) >= Math.abs(seg[0].q - EQ) ? seg[1] : seg[0];
+      return { q: EQ + (far.q - EQ) * 0.78, p: EQ + (far.p - EQ) * 0.78 };
+    }
+    [[handleAt(dSeg), "var(--accent)"], [handleAt(sSeg), "var(--good)"]].forEach(function (h) {
+      svg.appendChild(Ex.s("circle", { cx: X(h[0].q), cy: Y(h[0].p), r: narrow ? 8 : 7,
+        fill: "var(--paper)", stroke: h[1], "stroke-width": 2 }));
+      svg.appendChild(Ex.s("circle", { cx: X(h[0].q), cy: Y(h[0].p), r: 2, fill: h[1] }));
+    });
+
+    /* price lines and the wedge */
+    if (r.t > 0) {
+      [[r.pb, "var(--accent)", T("tx-l-buyerpays", "buyer pays")], [r.ps, "var(--good)", T("tx-l-sellerkeeps", "seller keeps")]].forEach(function (pr) {
+        svg.appendChild(Ex.s("line", { x1: padL, y1: Y(pr[0]), x2: X(Math.max(r.q, 2)), y2: Y(pr[0]),
+          stroke: pr[1], "stroke-width": 1, "stroke-dasharray": "3 3", opacity: 0.9 }));
+      });
+      if (!r.choked) {
+        svg.appendChild(Ex.s("line", { x1: X(r.q), y1: Y(r.ps), x2: X(r.q), y2: Y(r.pb),
+          stroke: "var(--ink)", "stroke-width": 2 }));
+        var mid = (r.pb + r.ps) / 2;
+        var tx = X(r.q) + 8, anc = "start";
+        if (X(r.q) > padL + iw * 0.66) { tx = X(r.q) - 8; anc = "end"; }
+        svg.appendChild(Ex.label(tx, Y(mid) + 3.5, "tax " + Kit.num(r.t, 0),
+          { anchor: anc, fill: "var(--ink)", size: fs, weight: 500 }));
+      }
+    }
+
+    /* the equilibrium without a tax */
+    svg.appendChild(Ex.s("circle", { cx: X(EQ), cy: Y(EQ), r: 3, fill: "var(--dim)" }));
+    if (r.t === 0) {
+      svg.appendChild(Ex.label(X(EQ) + 8, Y(EQ) - 6, T("tx-l-clears", "market clears here"),
+        { anchor: "start", fill: "var(--dim)", size: fs }));
+    }
+
+    /* the traded quantity */
+    if (!r.choked && r.t > 0) {
+      svg.appendChild(Ex.s("line", { x1: X(r.q), y1: Y(r.ps), x2: X(r.q), y2: padT + ih,
+        stroke: "var(--ink)", "stroke-width": 1, "stroke-dasharray": "3 3", opacity: 0.6 }));
+    }
+
+    /* axis ticks */
+    [0, 20, 40, 60, 80, 100].forEach(function (v) {
+      svg.appendChild(Ex.label(X(v), padT + ih + 15, String(v), { fill: "var(--faint)", size: fs }));
+      svg.appendChild(Ex.label(padL - 7, Y(v) + 3.5, String(v),
+        { anchor: "end", fill: "var(--faint)", size: fs }));
+    });
+    svg.appendChild(Ex.label(padL + iw / 2, H - 5, T("tx-l-qaxis", "quantity, thousand units"),
+      { fill: "var(--faint)", size: fs }));
+    var yl = Ex.label(0, 0, T("tx-l-paxis", "price, EUR per unit"), { fill: "var(--faint)", size: fs });
+    yl.setAttribute("transform", "translate(" + (fs + 2) + "," + (padT + ih / 2) + ") rotate(-90)");
+    svg.appendChild(yl);
+
+    /* curve names, placed at the outer end of each line */
+    function name(seg, text, colour) {
+      var far = Math.abs(seg[1].q - EQ) >= Math.abs(seg[0].q - EQ) ? seg[1] : seg[0];
+      var nx = X(far.q), ny = Y(far.p);
+      var anc = nx > padL + iw * 0.6 ? "end" : "start";
+      nx += anc === "end" ? -6 : 6;
+      ny += far.p > EQ ? 12 : -6;
+      svg.appendChild(Ex.label(nx, ny, text, { anchor: anc, fill: colour, size: fs, weight: 500 }));
+    }
+    /* On a narrow screen the legend under the plot carries the names instead,
+       so that nothing has to be squeezed against the frame. */
+    if (!narrow) {
+      name(dSeg, "demand", "var(--accent)");
+      name(sSeg, "supply", "var(--good)");
+    }
+
+    host1.appendChild(svg);
+    svg1 = svg;
+  }
+
+  /* ---------- dragging either curve ---------- */
+
+  var grabbed = null;
+
+  function distanceToCurve(q, p, which) {
+    /* vertical distance in economic units is enough to pick a curve apart */
+    var r = solve(S);
+    var onCurve = which === "d" ? EQ - r.b * (q - EQ) : EQ + r.d * (q - EQ);
+    return Math.abs(p - onCurve);
+  }
+
+  /* The listeners live on the plot container, which survives a redraw, so a
+     gesture is never dropped when the picture is rebuilt under the finger. */
+  function wireDrag() {
+    Ex.drag(host1, {
+      start: function (pt) {
+        if (!geo1 || !svg1) return false;
+        var q = geo1.toQ(pt.x), p = geo1.toP(pt.y);
+        if (q < -6 || q > 106 || p < -6 || p > 106) return false;
+        var dd = distanceToCurve(q, p, "d"), ds = distanceToCurve(q, p, "s");
+        var lim = 14;
+        if (Math.min(dd, ds) > lim) return false;
+        grabbed = dd <= ds ? "d" : "s";
+        applyDrag(q, p);
+        return true;
+      },
+      move: function (pt) {
+        if (!grabbed || !geo1) return;
+        applyDrag(geo1.toQ(pt.x), geo1.toP(pt.y));
+      },
+      end: function () { grabbed = null; }
+    }, function () { return svg1; });
+  }
+
+  function applyDrag(q, p) {
+    if (Math.abs(q - EQ) < 6) return;              /* too near the pivot to define a slope */
+    if (grabbed === "d") {
+      var b = (EQ - p) / (q - EQ);
+      if (!(b > 0)) return;
+      S.ed = Ex.clamp(1 / b, EL_MIN, EL_MAX);
+      cEd.set(elToSlider(S.ed), true);
+    } else {
+      var d = (p - EQ) / (q - EQ);
+      if (!(d > 0)) return;
+      S.es = Ex.clamp(1 / d, EL_MIN, EL_MAX);
+      cEs.set(elToSlider(S.es), true);
+    }
+    render();
+  }
+
+  /* ---------- figure two: the share curve ---------- */
+
+  var host2 = Q("#tx-plot2");
+
+  function draw2(r) {
+    Kit.clear(host2);
+    var W = Ex.widthOf(host2, 620);
+    var narrow = W < 520;
+    var H = narrow ? 210 : 240;
+    var padL = narrow ? 40 : 52, padR = narrow ? 16 : 22, padT = 16, padB = narrow ? 44 : 46;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    var fs = narrow ? 9 : 10;
+
+    /* horizontal axis is the log of the ratio of supply to demand elasticity */
+    var LO = Math.log(EL_MIN / EL_MAX), HI = Math.log(EL_MAX / EL_MIN);
+    function X(u) { return padL + (u - LO) * iw / (HI - LO); }
+    function Y(f) { return padT + (1 - f) * ih; }
+
+    var svg = Ex.svgRoot(W, H, summary2(r));
+
+    svg.appendChild(Ex.s("rect", { x: padL, y: padT, width: iw, height: ih,
+      fill: "var(--field)", stroke: "var(--rule)", "stroke-width": 1 }));
+
+    [0.25, 0.5, 0.75].forEach(function (f) {
+      svg.appendChild(Ex.s("line", { x1: padL, y1: Y(f), x2: padL + iw, y2: Y(f),
+        stroke: "var(--rule)", "stroke-width": 1, "stroke-dasharray": f === 0.5 ? "4 4" : "1 5" }));
+    });
+
+    var dPath = "";
+    for (var i = 0; i <= 160; i++) {
+      var u = LO + (HI - LO) * i / 160;
+      var ratio = Math.exp(u);            /* elasticity of supply over elasticity of demand */
+      var f = ratio / (ratio + 1);        /* buyer's share */
+      dPath += (i ? " L" : "M") + X(u).toFixed(2) + " " + Y(f).toFixed(2);
+    }
+    svg.appendChild(Ex.s("path", { d: dPath, fill: "none", stroke: "var(--ink)",
+      "stroke-width": 2, "stroke-linejoin": "round" }));
+
+    var uNow = Math.log(S.es / S.ed);
+    var fNow = r.shareBuyer;
+    svg.appendChild(Ex.s("line", { x1: X(uNow), y1: padT, x2: X(uNow), y2: padT + ih,
+      stroke: "var(--accent)", "stroke-width": 1, "stroke-dasharray": "3 3" }));
+    svg.appendChild(Ex.s("circle", { cx: X(uNow), cy: Y(fNow), r: 5.5,
+      fill: "var(--accent)", stroke: "var(--paper)", "stroke-width": 2 }));
+
+    var lx = X(uNow) + 9, anc = "start";
+    if (X(uNow) > padL + iw * 0.6) { lx = X(uNow) - 9; anc = "end"; }
+    svg.appendChild(Ex.label(lx, Y(fNow) - 9, Kit.num(fNow * 100, 0) + T("tx-l-pctbuyer", " per cent on the buyer"),
+      { anchor: anc, fill: "var(--accent)", size: fs, weight: 500 }));
+
+    [[0, "0"], [0.5, "half"], [1, "all"]].forEach(function (t) {
+      svg.appendChild(Ex.label(padL - 7, Y(t[0]) + 3.5, t[1],
+        { anchor: "end", fill: "var(--faint)", size: fs }));
+    });
+
+    [[EL_MIN / EL_MAX, T("tx-l-less", "supply 25 times\nless elastic")], [1, T("tx-l-equal", "equally\nelastic")],
+     [EL_MAX / EL_MIN, T("tx-l-more", "supply 25 times\nmore elastic")]].forEach(function (t) {
+      var x = X(Math.log(t[0]));
+      var anchor = t[0] === 1 ? "middle" : (t[0] < 1 ? "start" : "end");
+      t[1].split("\n").forEach(function (lineText, k) {
+        svg.appendChild(Ex.label(x, padT + ih + 15 + k * 12, lineText,
+          { anchor: anchor, fill: "var(--faint)", size: fs }));
+      });
+    });
+
+    host2.appendChild(svg);
+  }
+
+  /* ---------- prose that has to agree with the picture ---------- */
+
+  function elWord(e) {
+    if (e < 0.4) return T("tx-w-barely", "barely responds to price");
+    if (e < 0.85) return T("tx-w-weak", "responds weakly to price");
+    if (e <= 1.2) return T("tx-w-one", "responds about one for one with price");
+    if (e < 2.5) return T("tx-w-strong", "responds strongly to price");
+    return T("tx-w-very", "responds very strongly to price");
+  }
+
+  function summary1(r) {
+    var parts = [];
+    parts.push(T("tx-sum1-a", "Supply and demand in a single market. Elasticity of demand {ed}, elasticity of supply {es}, tax {t} EUR per unit remitted by the {who}.",
+      {ed: Kit.num(S.ed, 2), es: Kit.num(S.es, 2), t: Kit.num(S.t, 0), who: T(S.who === "seller" ? "tx-c-seller" : "tx-c-buyer", S.who)}));
+    if (S.t === 0) {
+      parts.push(T("tx-sum1-zero", "With no tax the market clears at a price of 50 and a quantity of 50."));
+    } else if (r.choked) {
+      parts.push(T("tx-sum1-choke", "The tax is larger than the whole gap between what any buyer will pay and what any seller will accept, so nothing trades, the state collects nothing, and the entire gain from this market is lost."));
+    } else {
+      parts.push(T("tx-sum1-main", "The buyer pays {pb} and the seller keeps {ps}, so the buyer bears {sb} per cent of the tax and the seller {ss} per cent. Quantity falls from 50 to {q}. Revenue is {rev} thousand EUR and the deadweight loss is {dwl} thousand EUR.",
+        {pb: Kit.num(r.pb, 2), ps: Kit.num(r.ps, 2), sb: Kit.num(r.shareBuyer * 100, 0), ss: Kit.num((1 - r.shareBuyer) * 100, 0), q: Kit.num(r.q, 1), rev: Kit.num(r.revenue, 0), dwl: Kit.num(r.dwl, 0)}));
+    }
+    return parts.join(" ");
+  }
+
+  function summary2(r) {
+    return T("tx-sum2", "The buyer's share of the tax against the ratio of the two elasticities, from supply twenty five times less elastic than demand on the left to twenty five times more elastic on the right. The curve rises through one half where the two are equal. The marker sits at a ratio of {ratio} and a buyer share of {sb} per cent.",
+      {ratio: Kit.num(S.es / S.ed, 2), sb: Kit.num(r.shareBuyer * 100, 0)});
+  }
+
+  function says(r) {
+    var host = Q("#tx-says");
+    Kit.clear(host);
+    var p1 = E("p");
+    function nh(txt, flag) { return '<span class="ex-n' + (flag ? " ex-n-flag" : "") + '">' + txt + "</span>"; }
+    function pctW(x) { return T("tx-sy-pct", "{x} per cent", {x: x}); }
+    var buyerW = T("tx-sy-buyer", "buyer"), sellerW = T("tx-sy-seller", "seller");
+
+    if (S.t === 0) {
+      p1.innerHTML = T("tx-sy-zero", "There is no tax yet. Demand {ed} and supply {es}. The market clears at a price of 50 and a quantity of 50. Move the tax slider to open a gap.",
+        {ed: elWord(S.ed), es: elWord(S.es)});
+      host.appendChild(p1);
+      return;
+    }
+
+    if (r.choked) {
+      p1.innerHTML = T("tx-sy-choke", "A tax of {t} is more than the whole distance between the highest price any buyer will pay and the lowest any seller will accept, which at these slopes is {c}. Nothing trades. The state collects nothing. This is the extreme case of the triangle in section four, where the triangle has eaten the market.",
+        {t: nh(Kit.num(S.t, 0) + " EUR", true), c: nh(Kit.num(r.choke, 1) + " EUR", true)});
+      host.appendChild(p1);
+      return;
+    }
+
+    var ratio = S.es / S.ed;
+    var heavierIsBuyer = r.shareBuyer >= 0.5;
+    var heavierW = heavierIsBuyer ? buyerW : sellerW;
+    var heavyShare = Math.max(r.shareBuyer, 1 - r.shareBuyer);
+
+    var html = T("tx-sy-lead", "Demand {ed} and supply {es}. ", {ed: elWord(S.ed), es: elWord(S.es)});
+    if (Math.abs(ratio - 1) < 0.06) {
+      html += T("tx-sy-even", "The two sides are about equally able to walk away, so they split the tax almost evenly: ");
+    } else {
+      html += T("tx-sy-uneq", "Supply is {x} {dir} elastic than demand, so the {heavy} carries the heavier end of it: ",
+        {x: nh(Kit.num(ratio > 1 ? ratio : 1 / ratio, 1)), dir: ratio > 1 ? T("tx-sy-more", "times more") : T("tx-sy-less", "times less"), heavy: heavierW});
+    }
+    html += T("tx-sy-split", "{sb} of the {t} EUR falls on the buyer and {ss} on the seller.",
+      {sb: nh(pctW(Kit.num(r.shareBuyer * 100, 0))), ss: nh(pctW(Kit.num((1 - r.shareBuyer) * 100, 0))), t: Kit.num(S.t, 0)});
+    p1.innerHTML = html;
+    host.appendChild(p1);
+
+    var p2 = E("p");
+    p2.innerHTML = T("tx-sy-law", "The law currently tells the {who} to hand the money over. Switch it to the {other} and the dashed line jumps to the other curve. The {heavy} still bears {hs} per cent of it, the quantity is still {q}, and the revenue is still {rev} thousand EUR.",
+      {who: '<span class="ex-em">' + (S.who === "seller" ? sellerW : buyerW) + "</span>",
+       other: S.who === "seller" ? buyerW : sellerW,
+       heavy: heavierW, hs: Kit.num(heavyShare * 100, 0), q: Kit.num(r.q, 1), rev: Kit.num(r.revenue, 0)});
+    host.appendChild(p2);
+  }
+
+  /* ---------- controls ---------- */
+
+  var cEd, cEs, cT, cWho, setRead;
+
+  /* the elasticity sliders run on a log scale so that a factor of two is the
+     same distance anywhere along the track */
+  function elToSlider(e) { return Math.log(e / EL_MIN) / Math.log(EL_MAX / EL_MIN) * 100; }
+  function sliderToEl(v) { return EL_MIN * Math.pow(EL_MAX / EL_MIN, v / 100); }
+
+  function buildControls() {
+    var rack = Q("#tx-ctrls");
+
+    cEd = Ex.slider(rack, {
+      label: T("tx-c-ed", "Elasticity of demand"),
+      min: 0, max: 100, step: 0.5, value: elToSlider(S.ed),
+      format: function (v) { return Kit.num(sliderToEl(v), 2); },
+      hint: "How far quantity demanded moves for a one per cent change in price.",
+      onInput: function (v) { S.ed = Ex.round(sliderToEl(v), 3); render(); }
+    });
+
+    cEs = Ex.slider(rack, {
+      label: T("tx-c-es", "Elasticity of supply"),
+      min: 0, max: 100, step: 0.5, value: elToSlider(S.es),
+      format: function (v) { return Kit.num(sliderToEl(v), 2); },
+      hint: "The same for the sellers. A low figure means they cannot cut back.",
+      onInput: function (v) { S.es = Ex.round(sliderToEl(v), 3); render(); }
+    });
+
+    cT = Ex.slider(rack, {
+      label: T("tx-c-t", "Tax, EUR per unit"),
+      min: 0, max: T_MAX, step: 1, value: S.t,
+      format: function (v) { return Kit.num(v, 0); },
+      hint: "A flat amount charged on every unit traded.",
+      onInput: function (v) { S.t = v; render(); }
+    });
+
+    cWho = Ex.seg(rack, {
+      label: T("tx-c-who", "The law says the money is paid by"),
+      name: "tx-who",
+      value: S.who,
+      options: [{ value: "seller", label: T("tx-c-seller", "seller") }, { value: "buyer", label: T("tx-c-buyer", "buyer") }],
+      hint: "This is the control that does nothing to the outcome.",
+      onChange: function (v) { S.who = v; render(); }
+    });
+
+    setRead = Ex.readout(Q("#tx-read"), [
+      { id: "pb", label: T("tx-r-pb", "Buyer pays"), tone: "hot" },
+      { id: "ps", label: T("tx-r-ps", "Seller keeps") },
+      { id: "q", label: T("tx-r-q", "Quantity traded") },
+      { id: "sh", label: T("tx-r-sh", "Buyer's share of tax") },
+      { id: "rev", label: T("tx-r-rev", "Revenue to the state") },
+      { id: "dwl", label: T("tx-r-dwl", "Deadweight loss"), tone: "flag" }
+    ]);
+
+    var keys = [
+      ["var(--accent)", T("tx-k-demand", "demand")],
+      ["var(--good)", T("tx-k-supply", "supply")],
+      ["var(--accent)", T("tx-k-rev", "revenue collected"), "block"],
+      ["var(--flag)", T("tx-k-dwl", "trades destroyed"), "block"]
+    ];
+    var key = Q("#tx-key");
+    keys.forEach(function (k) {
+      var mark = E("i", { class: k[2] === "block" ? null : "ex-line" });
+      mark.style.color = k[0];
+      if (k[2] === "block") { mark.style.background = k[0]; mark.style.opacity = "0.42"; }
+      key.appendChild(E("span", {}, [mark, document.createTextNode(k[1])]));
+    });
+
+    var presets = [
+      { label: "Demand that cannot move", ed: 0.25, es: 2.5 },
+      { label: "Supply that cannot move", ed: 2.5, es: 0.25 },
+      { label: "Evenly matched", ed: 1, es: 1 },
+      { label: "A heavy tax", ed: 1.4, es: 0.6, t: 30 }
+    ];
+    var pHost = Q("#tx-presets");
+    presets.forEach(function (p) {
+      pHost.appendChild(E("button", {
+        type: "button", class: "k-btn k-btn-quiet", text: p.label,
+        onclick: function () {
+          S.ed = p.ed; S.es = p.es;
+          if (p.t !== undefined) S.t = p.t;
+          syncControls();
+          render();
+        }
+      }));
+    });
+
+    Q("#tx-share").addEventListener("click", function () { Kit.share(hashOut()); });
+    Q("#tx-reset").addEventListener("click", function () {
+      S = { ed: 1, es: 1, t: 10, who: "seller" };
+      syncControls();
+      Kit.state.clear();
+      render();
+    });
+  }
+
+  function syncControls() {
+    cEd.set(elToSlider(S.ed), true);
+    cEs.set(elToSlider(S.es), true);
+    cT.set(S.t, true);
+    cWho.set(S.who, true);
+  }
+
+  /* ---------- state in the address ---------- */
+
+  function hashOut() { return { ed: Ex.round(S.ed, 3), es: Ex.round(S.es, 3), t: S.t, w: S.who }; }
+
+  function hashIn() {
+    var o = Kit.state.read();
+    if (!o) return false;
+    if (isFinite(o.ed)) S.ed = Ex.clamp(Number(o.ed), EL_MIN, EL_MAX);
+    if (isFinite(o.es)) S.es = Ex.clamp(Number(o.es), EL_MIN, EL_MAX);
+    if (isFinite(o.t)) S.t = Ex.clamp(Number(o.t), 0, T_MAX);
+    if (o.w === "buyer" || o.w === "seller") S.who = o.w;
+    return true;
+  }
+
+  /* ---------- render ---------- */
+
+  var paint = Ex.frames(function () {
+    var r = solve(S);
+
+    draw1(r);
+    draw2(r);
+
+    setRead("pb", r.choked ? "no trade" : Kit.num(r.pb, 2), r.choked ? null : "EUR per unit");
+    setRead("ps", r.choked ? "no trade" : Kit.num(r.ps, 2), r.choked ? null : "EUR per unit");
+    setRead("q", Kit.num(r.q, 1), "thousand units");
+    setRead("sh", Kit.num(r.shareBuyer * 100, 0) + " %", "seller bears " + Kit.num((1 - r.shareBuyer) * 100, 0) + " %");
+    setRead("rev", Kit.num(r.revenue, 0), "thousand EUR");
+    setRead("dwl", Kit.num(r.dwl, 0), "thousand EUR of trades lost");
+
+    var bp = Math.round(r.shareBuyer * 1000) / 10;
+    Q("#tx-bar-b").style.width = bp + "%";
+    Q("#tx-bar-s").style.width = (100 - bp) + "%";
+    Q("#tx-lab-b").textContent = Kit.num(r.shareBuyer * 100, 0) + " %";
+    Q("#tx-lab-s").textContent = Kit.num((1 - r.shareBuyer) * 100, 0) + " %";
+
+    Q("#tx-sum").textContent = summary1(r);
+    Q("#tx-sum2").textContent = summary2(r);
+    says(r);
+
+    Kit.state.write(hashOut());
+  });
+
+  function render() { paint(); }
+
+  function init() {
+    hashIn();
+    buildControls();
+    syncControls();
+    render();
+    sweepI18n();
+    document.addEventListener("langchange", function () { sweepI18n(); syncControls(); render(); });
+    wireDrag();
+    Ex.onResize(render);
+    window.addEventListener("hashchange", function () {
+      if (hashIn()) { syncControls(); render(); }
+    });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+
+<script>
+window.CHROME_I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Profil", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Atölye", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/><\/svg><i>Dört denemeden birincisi<\/i>"}, "de": {"kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Profil", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Werkstatt", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/><\/svg><i>Essay eins von vier<\/i>"}};
+
+(function(){
+  "use strict";
+  var KEY = "lang", lang = "en";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  /* Three languages exist and nothing else is one. Asking the dictionary
+     whether it has a key called l was the test, and CHROME_I18N["constructor"]
+     is truthy, so a value planted in localStorage became window.__lang and
+     every number on the instrument threw. The generated pages were fixed and
+     these twenty were not; they are the same rule. */
+  var descBase = null;
+  function known(l){ return l === "en" || l === "tr" || l === "de"; }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
+  function apply(l){
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
+    document.documentElement.setAttribute("lang", l);
+    /* The description is invisible on the page and is exactly what a search
+       result and a link preview show, so it follows the language too. */
+    if (descBase === null) {
+      var dm0 = document.querySelector('meta[name="description"]');
+      descBase = dm0 ? dm0.getAttribute("content") : "";
+    }
+    var wantD = (!en && d["pg-desc"] !== undefined) ? d["pg-desc"] : descBase;
+    var dm1 = document.querySelector('meta[name="description"]');
+    if (dm1) dm1.setAttribute("content", wantD);
+    var om1 = document.querySelector('meta[property="og:description"]');
+    if (om1) om1.setAttribute("content", wantD);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    var ot1 = document.querySelector('meta[property="og:title"]');
+    if (ot1) ot1.setAttribute("content", document.title);
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
+  apply(lang);
+  /* A page that wants a whole viewport of height has to know how much of it
+     the bar has already taken, or it overhangs the fold by exactly that much
+     and clips whatever sits at its bottom. */
+  function barHeight(){
+    var b = document.querySelector(".bar");
+    document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
+  }
+  barHeight();
+  addEventListener("resize", barHeight);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
+  /* the nav is one scrolling line on a phone, so the page you are on can
+     start off past its right edge. Bring it into view without moving the
+     page. The generated pages do the same. */
+  try {
+    var cur = document.querySelector(".bar nav a[aria-current]");
+    if (cur && cur.parentNode.scrollWidth > cur.parentNode.clientWidth) {
+      cur.parentNode.scrollLeft = Math.max(0, cur.offsetLeft - 24);
+    }
+  } catch(e){}
+})();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1536 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The same policy the generated pages carry. See the note beside it in
+     _HEAD: connect-src 'none' is what turns each instrument's promise that
+     nothing you type leaves the page into something the browser enforces. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+
+<title>Provenance</title>
+<meta name="description" content="A figure is 412 gCO2e per kWh. Six months later nobody can say where it came from. A cited value that carries its source, dataset, version, retrieval instant and licence, and keeps carrying them through arithmetic. Runs entirely in the browser.">
+<meta name="author" content="Kerem Özdemir">
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="/run/fonts/fonts.css">
+<link rel="canonical" href="/run/tools/provenance/index.html">
+<meta property="og:title" content="Provenance">
+<meta property="og:description" content="A figure is 412 gCO2e per kWh. Six months later nobody can say where it came from. A cited value that carries its source, dataset, version, retrieval instant and licence, and keeps carrying them through arithmetic. Runs entirely in the browser.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   kit.css
+   House visual system for the open instruments at this site
+   Paper palette, Fraunces display, Newsreader body, IBM Plex Mono
+   for every number. No framework, no build step.
+
+   The host document loads its faces from fonts/fonts.css on this domain,
+   and makes no request to anywhere else:
+     Fraunces      opsz,wght 9..144 at 300, 400, 500
+     Newsreader    ital,opsz,wght 6..72 at 400, 500 and italic 400
+     IBM Plex Mono 400, 500
+   Every family here has a real fallback stack, so the page stays legible
+   if the fonts never arrive.
+   ============================================================ */
+
+/* ---------- 1. tokens ---------- */
+
+:root {
+  color-scheme: light;
+
+  --paper:      #f2efe6;
+  --paper-sunk: #ebe7dc;
+  --panel:      #f7f5ee;
+  --field:      #fdfcf8;
+  --ink:        #2b2620;
+  --ink-soft:   #4b443b;
+  --dim:        #6f6558;
+  --faint:      #6f6759;
+  --rule:       #d8d2c4;
+  --rule-firm:  #bdb5a4;
+  --rule-edge:  #9c9280;   /* control boundaries: 3.07:1 on white */
+  --accent:     #8a5a24;
+  --accent-lit: #f0e6d6;
+  --flag:       #8c3b1e;
+  --flag-lit:   #f3e4de;
+  --good:       #3f5c3a;
+  --good-lit:   #e5eade;
+
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --serif:   "Newsreader", Georgia, "Times New Roman", serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 66ch;
+  --gap:     clamp(1rem, 2.4vw, 1.6rem);
+  --pad:     clamp(0.95rem, 2.4vw, 1.5rem);
+  --edge:    clamp(1.1rem, 5vw, 3.25rem);
+}
+
+/* The instruments used to flip to a dark palette with the system.  They
+   sit inside this site now, whose paper is light and whose top bar
+   and footer are painted from the site's own tokens, so a page that went
+   dark underneath a light bar would only look broken.  One palette. */
+
+/* ---------- 2. reset and page ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, 0.97rem + 0.16vw, 1.08rem);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.15; letter-spacing: -0.02em; }
+
+p { margin: 0 0 0.9em; max-width: var(--measure); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-firm); }
+a:hover { border-bottom-color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+.k-shell :focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--accent-lit); color: var(--ink); }
+
+.k-vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0);
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.k-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  background: var(--ink); color: var(--paper); border: 0;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+}
+.k-skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- 3. shell ---------- */
+
+.k-shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+.k-wrap { width: 100%; max-width: 74rem; margin: 0 auto; padding-inline: var(--edge); }
+
+/* The top bar is the site's, spliced in from pagegen.py by build.sh, so
+   there is no header of the kit's own any more. */
+
+.k-main { flex: 1 0 auto; padding-block: clamp(1.8rem, 5vw, 3.2rem) clamp(2.5rem, 6vw, 4rem); }
+
+.k-lede { max-width: 62ch; }
+.k-lede h1 {
+  font-size: clamp(1.85rem, 1.2rem + 2.6vw, 3rem);
+  letter-spacing: -0.032em; margin-bottom: 0.5rem;
+}
+.k-lede .k-standfirst {
+  font-size: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  color: var(--ink-soft); line-height: 1.5;
+}
+
+.k-sect { margin-top: clamp(2.2rem, 5.5vw, 3.4rem); }
+.k-sect > h2 {
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule-firm);
+  margin-bottom: 1.1rem;
+}
+.k-sect > h2 .k-num {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+}
+.k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
+
+/* ---------- 4. input row ---------- */
+
+.k-row {
+  display: grid; gap: 0.7rem var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  align-items: end;
+}
+.k-row.k-row-tight { gap: 0.55rem 0.9rem; }
+
+.k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.k-field > label, .k-lab {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+}
+.k-field .k-hint {
+  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
+  line-height: 1.45; letter-spacing: 0.02em;
+}
+
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
+  width: 100%; min-width: 0;
+  background: var(--field);
+  /* A control's boundary needs 3:1 against what is inside it. --rule-firm
+     measured 1.9 against the white of a field, so the edge of every input on
+     every instrument was below the floor; --rule-edge is 3.07. It is used
+     for control boundaries only, not for the hairlines between rows, which
+     are decoration and carry no meaning. */
+  border: 1px solid var(--rule-edge);
+  border-radius: 0;
+  color: var(--ink);
+  font-family: var(--mono); font-size: 0.88rem; font-weight: 400;
+  padding: 0.55rem 0.6rem;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+input[type="number"] { font-variant-numeric: tabular-nums; text-align: right; }
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.9rem;
+}
+input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--panel); }
+input::placeholder { color: var(--faint); }
+input[aria-invalid="true"] { border-color: var(--flag); }
+
+.k-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--rule-firm); border-radius: 0;
+  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  padding: 0.62rem 0.95rem; cursor: pointer;
+  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.k-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.k-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
+.k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.k-btn-key { color: #f7f5ee; }
+.k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+
+.k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+
+/* ---------- 5. result panel ---------- */
+
+.k-panel {
+  background: var(--panel);
+  border: 1px solid var(--rule-firm);
+  padding: var(--pad);
+}
+.k-panel + .k-panel { margin-top: var(--gap); }
+.k-panel > h3, .k-panel-h {
+  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+.k-panel-sunk { background: var(--paper-sunk); }
+
+.k-stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem; }
+.k-stat .k-big {
+  font-family: var(--mono); font-weight: 500;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+  line-height: 1.05; color: var(--ink);
+}
+.k-stat .k-unit { font-family: var(--mono); font-size: 0.78rem; color: var(--dim); letter-spacing: 0.05em; }
+
+.k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+
+.k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
+.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dd {
+  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
+}
+.k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
+
+/* arithmetic trace: every step printed */
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem; padding: 0.3rem 0;
+  border-bottom: 1px dotted var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+.k-steps li:last-child { border-bottom: 0; }
+.k-steps .k-op { color: var(--dim); }
+.k-steps .k-res { color: var(--ink); font-weight: 500; text-align: right; white-space: nowrap; }
+.k-steps li.k-step-final { border-top: 1px solid var(--rule-firm); border-bottom: 0; margin-top: 0.3rem; padding-top: 0.5rem; }
+.k-steps li.k-step-final .k-res { color: var(--accent); font-size: 0.92rem; }
+
+/* ---------- 6. source line ---------- */
+
+.k-source {
+  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  margin-top: 0.7rem; padding-top: 0.55rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-source::before {
+  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--faint); flex: none;
+}
+.k-source.k-source-bare::before { content: none; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.k-source .k-checked { color: var(--faint); white-space: nowrap; }
+
+/* ---------- 7. warning and refusal ---------- */
+
+.k-warn {
+  background: var(--flag-lit);
+  border: 1px solid var(--flag);
+  border-left-width: 3px;
+  padding: var(--pad);
+}
+.k-warn > h3, .k-warn .k-panel-h { color: var(--flag); }
+.k-warn p { color: var(--ink); }
+.k-warn + .k-warn, .k-panel + .k-warn, .k-warn + .k-panel { margin-top: var(--gap); }
+
+.k-ok { background: var(--good-lit); border: 1px solid var(--good); border-left-width: 3px; padding: var(--pad); }
+.k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
+
+.k-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
+  white-space: nowrap;
+}
+.k-tag-gap { color: var(--flag); background: var(--flag-lit); }
+.k-tag-known { color: var(--good); background: var(--good-lit); }
+.k-tag-quiet { color: var(--faint); background: transparent; }
+
+.k-ask { margin: 0.85rem 0 0; padding: 0; list-style: none; }
+.k-ask li {
+  display: grid; grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.2rem 0.9rem; padding: 0.4rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.92rem;
+}
+.k-ask li > b {
+  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.22rem;
+}
+
+/* ---------- 8. tables ---------- */
+
+.k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-table th, .k-table td {
+  text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule); vertical-align: top;
+}
+.k-table th {
+  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  border-bottom-color: var(--rule-firm); white-space: nowrap;
+}
+.k-table td.k-n, .k-table th.k-n {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  text-align: right; padding-right: 0; white-space: nowrap;
+}
+.k-table tbody tr:last-child td { border-bottom: 0; }
+.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell a { word-break: break-all; }
+
+/* ---------- 9. timeline ---------- */
+
+.k-time { margin: 0; padding: 0; list-style: none; }
+.k-time li {
+  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0.25rem 1.1rem; padding: 0.7rem 0;
+  border-top: 1px solid var(--rule);
+}
+.k-time li:first-child { border-top: 0; padding-top: 0; }
+.k-time .k-when {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
+}
+.k-time .k-what { font-size: 0.96rem; color: var(--ink); }
+.k-time .k-what small {
+  display: block; font-family: var(--mono); font-size: 0.66rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+}
+.k-time li.k-past .k-when { color: var(--faint); }
+.k-time li.k-past .k-what { color: var(--dim); }
+
+/* ---------- 10. the closing note ---------- */
+/* Each instrument ends with its own disclaimer and its own privacy line.
+   That is the page's last word, not the site's, so it is a closing panel
+   and the site's footer follows it. */
+
+.k-endnote {
+  border-top: 1px solid var(--rule-firm);
+  background: var(--paper-sunk);
+  padding-block: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: 0.9rem; color: var(--dim);
+}
+.k-endnote .k-wrap { display: grid; gap: 1.1rem; }
+.k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
+.k-endnote .k-fine {
+  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
+  letter-spacing: 0.02em; color: var(--faint);
+}
+.k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
+.k-endnote a:hover { color: var(--accent); }
+
+/* ---------- 11. toast for copy actions ---------- */
+
+.k-toast {
+  position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.k-toast[data-on="1"] { opacity: 1; }
+
+/* ---------- 12. responsive ---------- */
+
+@media (max-width: 640px) {
+  .k-ask li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-time li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .k-steps li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .k-steps .k-res { text-align: left; }
+}
+
+@media print {
+  .k-btnbar, .k-skip, .k-toast { display: none; }
+  body { background: #fff; color: #000; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- this instrument's own layer ---------- */
+
+.pv-rec { display: grid; gap: 0.5rem; }
+.pv-rec .k-field label { letter-spacing: 0.09em; }
+
+/* A record with a hole in it is the normal case, not the error case, so the
+   missing field is marked in place rather than announced somewhere else. */
+.pv-miss input, .pv-miss select { border-color: var(--flag); }
+.pv-flag {
+  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.03em;
+  color: var(--flag); text-transform: uppercase;
+}
+
+.pv-canon {
+  font-family: var(--mono); font-size: 0.7rem; line-height: 1.65;
+  background: var(--paper-sunk); border: 1px solid var(--rule);
+  padding: 0.7rem 0.8rem; margin: 0.6rem 0 0;
+  white-space: pre; overflow-x: auto; color: var(--dim);
+}
+.pv-fp {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--accent);
+  word-break: break-all; letter-spacing: 0.02em;
+}
+
+.pv-leaf {
+  border-left: 2px solid var(--rule-firm); padding: 0.15rem 0 0.15rem 0.7rem;
+  margin: 0.45rem 0 0; font-family: var(--mono); font-size: 0.72rem;
+  line-height: 1.6; color: var(--dim);
+}
+.pv-leaf b { color: var(--ink); font-weight: 500; }
+.pv-leaf.pv-stale { border-left-color: var(--flag); }
+
+.pv-op { display: flex; flex-wrap: wrap; align-items: end; gap: 0.8rem; }
+.pv-op .k-field { min-width: 8rem; }
+
+.pv-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1px solid var(--rule-firm); padding: 0.1rem 0.35rem; margin-left: 0.4rem;
+  color: var(--dim);
+}
+.pv-tag-stale { border-color: var(--flag); color: var(--flag); }
+
+/* ---------- the site's clothes, worn by an instrument ---------- */
+.bar,footer.site-foot,.leaf-mark{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#f2efe6;
+  --fg:#221e17;
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --accent:#8a5a24;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+.bar,footer.site-foot{color:var(--fg)}
+footer.site-foot{background:var(--paper)}
+.bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav:not(.langs){margin-left:auto}
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+/* clear of the last nav name by more than the names are clear of each
+   other, so the languages read as their own control and not as a tenth
+   link in the row */
+.langs{display:flex;gap:.1rem;margin-left:clamp(1rem,2.2vw,1.8rem)}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .foot-links{display:flex;gap:clamp(.9rem,2.4vw,1.6rem);align-items:center;flex-wrap:wrap}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:nowrap;
+    justify-content:flex-start;gap:clamp(.7rem,3.4vw,1.2rem);
+    overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    /* the last name fades rather than being cut, which is what says there
+       is more of it to the right */
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    padding-right:2.2rem}
+  .bar nav::-webkit-scrollbar{display:none}
+  .bar nav a{font-size:.8rem;padding:.55rem 0;flex:0 0 auto}
+  /* the name of the page you are on is brought into view on load, so a
+     reader arriving deep in the site is not looking at a row that starts
+     somewhere else */
+  .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* nine nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
+@media (max-width:430px){
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+/* the same thumb, on the page itself */
+@media (pointer:coarse){
+  .cv-btn{min-height:44px;padding:.8rem 1.25rem}
+  .copy,.share-link{min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center}
+  .socials a{min-height:44px;display:inline-flex;align-items:center}
+  .mail-line a.addr{display:inline-flex;align-items:center;min-height:44px}
+  .note-read{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .feature .go{min-height:44px;display:inline-flex;align-items:center}
+  .gcard .go{min-height:44px;display:inline-flex;align-items:center}
+  .go-block{min-height:44px;display:inline-flex;align-items:center}
+  .k-btn,.k-skip,.skip{min-height:44px;display:inline-flex;align-items:center}
+  input[type=range]{height:44px}
+  select{min-height:44px}
+  /* a link sitting inside a sentence: the line opens up so the link can be
+     a thumb tall without the paragraph closing over it */
+  .quiet-line{line-height:2.1}
+  .quiet-line a{display:inline-block;padding:.78rem 0;line-height:1.25}
+  .note-item h2 a{display:inline-block;padding:.5rem 0;border-bottom:0;
+    text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
+  .note-item h2 a:hover{text-decoration-color:var(--accent)}
+  /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px;min-height:44px}
+  body .frow textarea{min-height:8rem}
+  /* a 4px tall slider is not a control: the whole strip takes the touch */
+  input[type="range"]{height:44px;margin:0;padding:0}
+  /* and a sixteen pixel box is not one either */
+  input[type="checkbox"],input[type="radio"]{width:22px;height:22px}
+  input[type="checkbox"]+label,input[type="radio"]+label{
+    display:inline-flex;align-items:center;min-height:44px}
+  .demo-src a{display:inline-flex;align-items:center;min-height:44px}
+}
+
+/* ---------- the crown, on a page whose interior is its own ---------- */
+.k-crown-no{
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;
+  font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;
+  color:var(--accent);
+}
+.k-crown-no svg{flex:none}
+.k-lede h1{margin-top:0}
+
+
+</style>
+</head>
+<body>
+
+<a class="k-skip" href="#work" data-i="pv-skip">Skip to the instrument</a>
+
+<div class="k-shell">
+
+<main class="k-main" id="work">
+    <div class="k-wrap">
+
+      <div class="k-lede k-crown">
+        <span class="k-crown-no" data-i="crown"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#b06a24" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg><i>Instrument · data and provenance</i></span>
+        <h1 data-i="pv-001">A number that remembers where it came from</h1>
+        <p class="k-standfirst" data-i="pv-002">A grid intensity figure is 412 gCO2e per kWh. Six months later somebody asks where that came from, and the honest answer is usually a shrug: it was copied out of a portal, the portal has restated it since, and the parameters that produced it are gone. This instrument is the record that stops that happening. It holds the source, the dataset, the version of the dataset, the instant of retrieval, the licence and the exact query, and it keeps holding them through arithmetic. Divide one cited value by another and the answer still knows about both retrievals.</p>
+      </div>
+
+      <!-- ============ 01 a cited value ============ -->
+      <section class="k-sect" aria-labelledby="h-r">
+        <h2 id="h-r" data-i="pv-003"><span class="k-num">01</span>A cited value</h2>
+        <p class="ad-lead" data-i="pv-004">Five fields are mandatory. A record will not construct without them, and the point is not that the boxes are full but that the gaps are written down: if a source states no licence, the honest entry is the word unstated, not an empty field and not a guess.</p>
+
+        <div class="k-grid">
+          <div class="k-panel">
+            <h3 data-i="pv-005">Value A</h3>
+            <div class="pv-rec" id="rec-a"></div>
+          </div>
+          <div class="k-panel">
+            <h3 data-i="pv-006">Value B</h3>
+            <div class="pv-rec" id="rec-b"></div>
+          </div>
+        </div>
+
+        <div class="k-btnbar" style="margin-top:1.2rem">
+          <button type="button" class="k-btn k-btn-key" id="r-run" data-i="pv-007">Construct the records</button>
+          <button type="button" class="k-btn k-btn-quiet" id="r-break" data-i="pv-008">Take a field away</button>
+          <button type="button" class="k-btn k-btn-quiet" id="r-ex" data-i="pv-009">Reload the example</button>
+        </div>
+
+        <div id="r-out" style="margin-top:1.4rem"></div>
+      </section>
+
+      <!-- ============ 02 arithmetic ============ -->
+      <section class="k-sect" aria-labelledby="h-a">
+        <h2 id="h-a" data-i="pv-010"><span class="k-num">02</span>Arithmetic keeps the lineage</h2>
+        <p class="ad-lead" data-i="pv-011">This is the part that makes the record worth keeping. A cited value is not a number with a note attached to it: the note travels through the operation. Divide two figures in the same unit and the unit cancels while the sources do not. The rule the Python pins with a sweep over four hundred randomly generated expression trees is that no operation can drop a source, and that combining values in a different order cannot change which sources the answer admits to.</p>
+
+        <div class="pv-op" style="margin-top:1rem">
+          <div class="k-field">
+            <label for="a-op" data-i="pv-012">Operation</label>
+            <select id="a-op">
+              <option value="div" data-i="pv-013">A divided by B</option>
+              <option value="mul" data-i="pv-014">A times B</option>
+              <option value="add" data-i="pv-015">A plus B</option>
+              <option value="sub" data-i="pv-016">A minus B</option>
+            </select>
+          </div>
+          <button type="button" class="k-btn" id="a-run" data-i="pv-017">Compute</button>
+        </div>
+        <div id="a-out" style="margin-top:1.4rem"></div>
+      </section>
+
+      <!-- ============ 03 the document ============ -->
+      <section class="k-sect" aria-labelledby="h-d">
+        <h2 id="h-d" data-i="pv-020"><span class="k-num">03</span>Auditing the document</h2>
+        <p class="ad-lead" data-i="pv-021">A published figure is only as current as the oldest retrieval underneath it. This panel reads the two values above and the one derived from them as a single document, and says what is wrong with it: what has aged past the threshold, what carries no address to go back to, what recorded no query, and whether the licences underneath have been mixed. The Python has a strict mode that exits non zero on any of these, meant for a build rather than for a person: a repository of derived figures should fail when its inputs age out, not when somebody eventually re-reads them.</p>
+
+        <div class="k-row k-row-tight" style="max-width:30rem;margin-top:1rem">
+          <div class="k-field">
+            <label for="d-age" data-i="pv-022">Stale after, days</label>
+            <input type="number" id="d-age" step="1" inputmode="numeric" value="365">
+          </div>
+          <div class="k-field">
+            <label for="d-now" data-i="pv-023">Reading it on</label>
+            <input type="date" id="d-now">
+          </div>
+        </div>
+        <div id="d-out" style="margin-top:1.4rem"></div>
+      </section>
+
+      <!-- ============ 04 method ============ -->
+      <section class="k-sect" aria-labelledby="h-m">
+        <h2 id="h-m" data-i="pv-030"><span class="k-num">04</span>Method, and what this refuses</h2>
+
+        <div class="k-panel">
+          <h3 data-i="pv-031">Identity is the canonical form</h3>
+          <p class="k-note" data-i="pv-032">A record's identity is a hash of its canonical form: sorted keys at every depth, no insignificant whitespace, and the timestamp normalised to UTC. Two records identify as the same retrieval exactly when they describe the same retrieval, however the fields were assembled and whichever offset the timestamp was written in. The query is part of that identity, so the same dataset at the same version and the same instant but a different country code is two different numbers and must never deduplicate against the other.</p>
+        </div>
+
+        <div class="k-panel">
+          <h3 data-i="pv-033">Lineage is a set union</h3>
+          <p class="k-note" data-i="pv-034">Merging two lineages is union over the identities. That makes it commutative, associative and idempotent, with the empty lineage as the identity element. Those laws are what guarantee that the order in which you combine values cannot change which sources the answer admits to, which is why the Python tests them directly rather than trusting them.</p>
+        </div>
+
+        <div class="k-panel k-panel-sunk">
+          <h3 data-i="pv-035">Three things this refuses to do</h3>
+          <ul class="k-steps">
+            <li><span data-i="pv-036">Construct a record with a missing mandatory field, because a figure whose licence nobody wrote down is not a figure you can publish</span></li>
+            <li><span data-i="pv-037">Accept a timestamp with no timezone, because an instant that could be any of twenty six is not an instant</span></li>
+            <li><span data-i="pv-038">Say whether two licences may be combined in a published figure. It will tell you they have been mixed. Whether that is permitted is a legal question with a jurisdiction attached, and neither this page nor the library behind it answers it</span></li>
+          </ul>
+        </div>
+
+        <p class="ad-case" data-i="pv-039">Method behind it:
+          <a href="../../case-provenance.html" rel="noreferrer noopener" target="_blank">the provenance case study</a>
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <aside class="k-endnote">
+    <div class="k-wrap">
+      <p data-i="pv-070"><strong>Every figure on this page is one you typed, and the example is labelled as an example.</strong>
+      The two agencies in it are invented and so are their numbers. Nothing here is a real emission factor, a real
+      dataset or a real licence, and nothing on this page should be cited as one. What is real is the record keeping.</p>
+      <p class="k-fine" data-i="pv-071">
+        Runs entirely in your browser. Nothing you type leaves this page. No server, no database, no analytics,
+        no network calls after the fonts have loaded, so it works offline once the page is cached.
+        Built by <a href="/">Kerem Özdemir</a>, a student at TUM and Istanbul University.
+        A personal project, not connected to or endorsed by either university.
+      </p>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+/* ============================================================
+   kit.js
+   Shared behaviour for the open instruments at this site
+   No dependencies. No network calls. Safe to inline.
+
+   Kit.el        small DOM builder
+   Kit.fmt       number and date formatting
+   Kit.state     read and write tool state in the URL hash
+   Kit.share     copy the link that restores the current state
+   Kit.csv       build CSV, copy to clipboard, offer a download
+   Kit.toast     brief confirmation line
+   ============================================================ */
+
+var Kit = (function () {
+  "use strict";
+
+  /* ---------- DOM ---------- */
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v;
+        else if (k === "html") n.innerHTML = v;
+        else if (k.slice(0, 2) === "on" && typeof v === "function") {
+          n.addEventListener(k.slice(2).toLowerCase(), v);
+        } else n.setAttribute(k, v === true ? "" : String(v));
+      });
+    }
+    (kids || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+
+  /* ---------- numbers ---------- */
+
+  /* The page is read in three languages, so a number has to be written in
+     three. Turkish and German put the comma where English puts the point, and
+     "3,035 billion" read as Turkish says three, not three thousand. Read at
+     call time rather than cached, because the language changes under us. */
+  var LOCALES = { en: "en-GB", tr: "tr-TR", de: "de-DE" };
+  function locale() { return LOCALES[window.__lang] || "en-GB"; }
+  function na() { return window.__t ? window.__t("kit-na", "not available") : "not available"; }
+
+  function num(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return na();
+    var d = dp === undefined ? 2 : dp;
+    return Number(v).toLocaleString(locale(), { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function money(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return na();
+    return "EUR " + num(v, dp === undefined ? 2 : dp);
+  }
+  function pct(v, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return na();
+    var np = num(v * 100, dp === undefined ? 1 : dp);
+    /* Turkish writes the sign in front of the number and closed up,
+       German and English behind it with a space. The chrome already
+       encodes this rule for the simulations; this is the same rule. */
+    return (window.__lang === "tr") ? "%" + np : np + " %";
+  }
+  function toNum(raw) {
+    if (raw === null || raw === undefined) return null;
+    /* "1.234,56" used to become "1.234.56" and then NaN, so a German reader
+       typing their own thousands separator into any field on any instrument
+       got "not calculable". Both conventions are read, by the one rule that
+       tells them apart without knowing the language: whichever separator
+       comes last is the decimal point, and the other one is grouping. */
+    var s = String(raw).trim().replace(/\s+/g, "");
+    var lastC = s.lastIndexOf(","), lastD = s.lastIndexOf(".");
+    if (lastC >= 0 && lastD >= 0) {
+      if (lastC > lastD) s = s.replace(/\./g, "").replace(",", ".");
+      else s = s.replace(/,/g, "");
+    } else if (lastC >= 0) {
+      /* one kind only: repeated, it can only be grouping */
+      s = (s.split(",").length > 2) ? s.replace(/,/g, "") : s.replace(",", ".");
+    } else if (s.split(".").length > 2) {
+      s = s.replace(/\./g, "");
+    }
+    if (s === "") return null;
+    var n = Number(s);
+    return isFinite(n) ? n : null;
+  }
+
+  /* ---------- URL hash state ---------- */
+
+  function b64urlEncode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64urlDecode(str) {
+    var s = String(str).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var bin = atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  var state = {
+    /* Serialise the object into the location hash without adding a history entry. */
+    write: function (obj) {
+      var h = "";
+      try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
+      if (h.length > 8000) return "";
+      try {
+        history.replaceState(null, "", location.pathname + location.search + h);
+      } catch (e) {
+        location.hash = h;
+      }
+      return location.href;
+    },
+    /* Read the object back. Returns null when the hash is absent or unreadable. */
+    read: function () {
+      var m = /(?:^|[#&])s=([A-Za-z0-9\-_]+)/.exec(location.hash || "");
+      if (!m) return null;
+      try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
+    },
+    clear: function () {
+      try { history.replaceState(null, "", location.pathname + location.search); }
+      catch (e) { location.hash = ""; }
+    }
+  };
+
+  /* ---------- clipboard ---------- */
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; },
+        function () { return legacyCopy(text); });
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  /* ---------- share ---------- */
+
+  function share(obj, msg) {
+    var url = state.write(obj) || location.href;
+    return copyText(url).then(function (ok) {
+      var tr = function (k, en) { return window.__t ? window.__t(k, en) : en; };
+      toast(ok ? (msg || tr("kit-share-ok", "Link copied. It reopens with these inputs."))
+               : tr("kit-copy-blocked", "Copy blocked by the browser. The address bar now holds the link."));
+      return ok;
+    });
+  }
+
+  /* ---------- CSV ---------- */
+
+  function csvCell(v) {
+    if (v === null || v === undefined) return "";
+    var s = String(v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function csvBuild(rows) {
+    return rows.map(function (r) { return r.map(csvCell).join(","); }).join("\r\n");
+  }
+  function csvDownload(rows, filename) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    /* BOM so that spreadsheet software reads UTF-8 correctly */
+    var blob = new Blob(["﻿" + text], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = el("a", { href: url, download: filename || "export.csv" });
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1200);
+  }
+  function csvCopy(rows) {
+    var text = typeof rows === "string" ? rows : csvBuild(rows);
+    return copyText(text).then(function (ok) {
+      var tc = function (k, en) { return window.__t ? window.__t(k, en) : en; };
+      toast(ok ? tc("kit-csv-ok", "Table copied. Paste it into a spreadsheet.")
+               : tc("kit-csv-blocked", "Copy blocked by the browser. Use the download instead."));
+      return ok;
+    });
+  }
+
+  /* ---------- toast ---------- */
+
+  var toastNode = null, toastTimer = null;
+  function toast(msg) {
+    if (!toastNode) {
+      toastNode = el("div", { class: "k-toast", role: "status", "aria-live": "polite" });
+      document.body.appendChild(toastNode);
+    }
+    toastNode.textContent = msg;
+    toastNode.setAttribute("data-on", "1");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastNode.setAttribute("data-on", "0"); }, 3600);
+  }
+
+  /* ---------- source line ---------- */
+
+  /* src: { what, url, checked } -> the standard line that says where a number came from */
+  function sourceLine(src, bare) {
+    var kids = [];
+    if (src.what) kids.push(el("span", { text: src.what }));
+    if (src.url) kids.push(el("a", { href: src.url, rel: "noreferrer noopener", target: "_blank", text: src.label || src.url }));
+    if (src.checked) {
+      /* the word in front of the date belongs to the reader's language:
+         it was printed in English under every number on every instrument */
+      var ck = window.__t ? window.__t("kit-checked", "checked") : "checked";
+      kids.push(el("span", { class: "k-checked", text: ck + " " + src.checked }));
+    }
+    return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
+  }
+
+  return {
+    el: el, qs: qs, qsa: qsa, clear: clear,
+    num: num, money: money, pct: pct, toNum: toNum,
+    state: state, share: share,
+    copyText: copyText,
+    csvBuild: csvBuild, csvDownload: csvDownload, csvCopy: csvCopy,
+    toast: toast, sourceLine: sourceLine
+  };
+})();
+
+/* ============================================================
+   Provenance
+
+   The Python this reimplements is open-climate-data/001-provenance.
+   Two things are kept faithfully and everything else is presentation:
+   identity is the canonical form of the record, and merging lineages is
+   union, so no operation can drop a source and order cannot change the
+   answer's sources.
+
+   The fingerprint is shown as a hash where the browser will compute one
+   and as the canonical form where it will not. The deduplication itself
+   never waits on the hash: it compares canonical forms directly, so the
+   arithmetic is correct with or without a crypto implementation.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  window.PAGE_I18N = {"de": {"pg-desc": "Eine Zahl lautet 412 gCO2e/kWh. Ein halbes Jahr später kann niemand mehr sagen, woher sie stammt. Ein zitierter Wert, der Quelle, Datensatz, Version, Abrufzeitpunkt und Lizenz mitführt und sie auch durch die Arithmetik weiter mitführt. Läuft vollständig im Browser.", "pv-001": "Eine Zahl, die sich erinnert, woher sie kommt", "pv-002": "Ein Wert für die Netzintensität lautet 412 gCO2e pro kWh. Ein halbes Jahr später fragt jemand, woher der stammt, und die ehrliche Antwort ist meist ein Schulterzucken: die Zahl wurde aus einem Portal kopiert, das Portal hat sie seither korrigiert, und die Parameter, die sie erzeugt haben, sind verschwunden. Dieses Instrument ist der Nachweis, der das verhindert. Es hält Quelle, Datensatz, Version des Datensatzes, Abrufzeitpunkt, Lizenz und die genaue Abfrage, und es hält sie auch durch die Arithmetik weiter. Teilen Sie einen zitierten Wert durch einen anderen, und die Antwort weiß immer noch von beiden Abrufen.", "pv-003": "<span class=\"k-num\">01<\/span>Ein zitierter Wert", "pv-004": "Fünf Felder sind Pflicht. Ohne sie entsteht kein Datensatz, und es geht nicht darum, dass die Felder gefüllt sind, sondern darum, dass die Lücken festgehalten werden: nennt eine Quelle keine Lizenz, ist der ehrliche Eintrag das Wort unbekannt, nicht ein leeres Feld und keine Vermutung.", "pv-005": "Wert A", "pv-006": "Wert B", "pv-007": "Datensätze erzeugen", "pv-008": "Ein Feld entfernen", "pv-008b": "Lizenz zurücksetzen", "pv-009": "Beispiel neu laden", "pv-010": "<span class=\"k-num\">02<\/span>Die Arithmetik behält die Herkunft", "pv-011": "Das ist der Teil, der den Nachweis lohnend macht. Ein zitierter Wert ist keine Zahl mit einer angehefteten Notiz: die Notiz wandert durch die Rechenoperation. Teilen Sie zwei Größen derselben Einheit, und die Einheit kürzt sich heraus, die Quellen nicht. Die Regel, die das Python mit einem Durchlauf über vierhundert zufällig erzeugte Ausdrucksbäume festnagelt, lautet: keine Operation darf eine Quelle verlieren, und eine andere Reihenfolge beim Kombinieren darf nicht ändern, zu welchen Quellen sich die Antwort bekennt.", "pv-012": "Operation", "pv-013": "A geteilt durch B", "pv-014": "A mal B", "pv-015": "A plus B", "pv-016": "A minus B", "pv-017": "Berechnen", "pv-020": "<span class=\"k-num\">03<\/span>Das Dokument prüfen", "pv-021": "Eine veröffentlichte Größe ist nur so aktuell wie der älteste Abruf darunter. Dieses Feld liest die beiden Werte oben und den daraus abgeleiteten als ein einziges Dokument und sagt, was daran nicht stimmt: was über die Schwelle hinaus gealtert ist, was keine Adresse zum Zurückkehren trägt, was keine Abfrage festgehalten hat, und ob die Lizenzen darunter vermischt wurden. Das Python hat einen strengen Modus, der bei all dem mit einem Fehlercode endet, gedacht für einen Build und nicht für einen Menschen: ein Verzeichnis abgeleiteter Größen sollte scheitern, wenn seine Eingaben veralten, und nicht erst, wenn irgendwann jemand nachliest.", "pv-022": "Veraltet nach, Tage", "pv-023": "Gelesen am", "pv-030": "<span class=\"k-num\">04<\/span>Methode, und was dies verweigert", "pv-031": "Die Identität ist die kanonische Form", "pv-032": "Die Identität eines Datensatzes ist ein Hash seiner kanonischen Form: sortierte Schlüssel in jeder Tiefe, keine unbedeutenden Leerzeichen und ein auf UTC normalisierter Zeitstempel. Zwei Datensätze gelten genau dann als derselbe Abruf, wenn sie denselben Abruf beschreiben, unabhängig davon, wie die Felder zusammengesetzt wurden und in welchem Zeitversatz der Zeitstempel geschrieben war. Die Abfrage ist Teil dieser Identität: derselbe Datensatz in derselben Version zum selben Zeitpunkt, aber mit einem anderen Ländercode, sind zwei verschiedene Zahlen und dürfen nie gegeneinander zusammenfallen.", "pv-033": "Herkunft ist eine Vereinigungsmenge", "pv-034": "Zwei Herkunftsketten zu verschmelzen ist die Vereinigung über den Identitäten. Das macht die Operation kommutativ, assoziativ und idempotent, mit der leeren Kette als neutralem Element. Diese Gesetze garantieren, dass die Reihenfolge, in der Sie Werte kombinieren, nicht ändern kann, zu welchen Quellen sich die Antwort bekennt. Deshalb prüft das Python sie direkt, statt ihnen zu vertrauen.", "pv-035": "Drei Dinge, die dies verweigert", "pv-036": "Einen Datensatz mit fehlendem Pflichtfeld zu erzeugen, denn eine Größe, deren Lizenz niemand festgehalten hat, ist keine Größe, die Sie veröffentlichen können", "pv-037": "Einen Zeitstempel ohne Zeitzone anzunehmen, denn ein Zeitpunkt, der jeder von sechsundzwanzig sein könnte, ist kein Zeitpunkt", "pv-038": "Zu sagen, ob zwei Lizenzen in einer veröffentlichten Größe kombiniert werden dürfen. Es sagt Ihnen, dass sie vermischt wurden. Ob das zulässig ist, ist eine Rechtsfrage mit einer Rechtsordnung daran, und weder diese Seite noch die Bibliothek dahinter beantwortet sie", "pv-039": "Die Methode dahinter: die Fallstudie zur Herkunft", "pv-070": "Jede Größe auf dieser Seite ist eine, die Sie eingegeben haben, und das Beispiel ist als Beispiel gekennzeichnet.", "pv-071": "Läuft vollständig in Ihrem Browser. Nichts, was Sie eingeben, verlässt diese Seite. Kein Server, keine Datenbank, keine Analytik, keine Netzwerkaufrufe nach dem Laden der Schriften, sodass es offline funktioniert, sobald die Seite zwischengespeichert ist. Gebaut von Kerem Özdemir, Student an der TUM und der Universität Istanbul. Ein persönliches Projekt, das mit keiner der beiden Universitäten verbunden ist und von keiner unterstützt wird.", "pv-100": "Datensatz {w}", "pv-101": "Kanonische Form, also die Identität", "pv-102": "Fingerabdruck, erste sechzehn Byte", "pv-103": "Beide Datensätze müssen erst entstehen, bevor daraus etwas berechnet werden kann.", "pv-104": "Der abgeleitete Wert", "pv-105": "dimensionslos, die Einheiten haben sich gekürzt", "pv-106": "Quellen, zu denen sich die Antwort bekennt", "pv-107": "Zwei Abrufe gingen hinein und zwei kamen heraus. Wäre derselbe Abruf zweimal verwendet worden, erschiene er einmal, denn die Herkunftskette entdoppelt nach Identität und nicht danach, wie oft ein Wert genannt wurde.", "pv-110": "Das Dokument", "pv-111": "{n} Tage alt", "pv-112": "veraltet", "pv-113": "Verschiedene Abrufe", "pv-114": "Quellen", "pv-115": "Lizenzen", "pv-116": "Veraltet, auf oder über der Schwelle", "pv-117": "Ohne Adresse zum Zurückkehren", "pv-118": "Ohne festgehaltene Abfrage", "pv-119": "Der strenge Modus würde bei diesem Dokument mit einem Fehlercode enden. Genau dafür ist er da: ein Build, der abgeleitete Größen veröffentlicht, soll scheitern, solange noch jemand hinsieht, und nicht an dem Tag, an dem endlich ein Leser nachprüft.", "pv-120": "Der strenge Modus würde dieses Dokument durchlassen.", "pv-121": "Vermischte Lizenzen", "pv-122": "Dieses Dokument vermischt {n} Lizenzen: {list}. Ob sie in einer veröffentlichten Größe kombiniert werden dürfen, ist eine Rechtsfrage mit einer Rechtsordnung daran, und weder diese Seite noch die Bibliothek dahinter beantwortet sie. Was beide tun, ist dafür zu sorgen, dass Sie es vor dem Veröffentlichen wissen und nicht danach.", "pv-badtime": "Der Abrufzeitpunkt ließ sich nicht als Datum und Uhrzeit lesen.", "pv-div0": "Wert B ist null.", "pv-f-dataset": "Datensatz", "pv-f-label": "Worum es sich handelt", "pv-f-licence": "Lizenz", "pv-f-query": "Abfrage", "pv-f-source": "Quelle", "pv-f-unit": "Einheit", "pv-f-url": "Adresse", "pv-f-value": "Wert", "pv-f-version": "Version des Datensatzes", "pv-f-when": "Abgerufen am", "pv-naive": "Der Abrufzeitpunkt trägt keine Zeitzone. Er wird verweigert, statt als UTC angenommen zu werden. Schreiben Sie ihn als 2025-03-04T09:14:00Z oder mit einem Versatz wie +02:00.", "pv-nofp": "kanonische Form oben; dieser Browser bietet keinen Hash", "pv-norm": "Der von Ihnen geschriebene Zeitpunkt wurde auf {t} normalisiert. Zwei Datensätze in verschiedenen Zeitversätzen gelten als derselbe Abruf, und genau darum wird vor dem Hashen normalisiert.", "pv-opt": "optional, und das Fehlen wird gemeldet", "pv-refuse": "Wert {w} entsteht nicht. Diese Pflichtfelder sind leer: {list}. Die Bibliothek bricht hier ab, statt die Lücke zu füllen, denn eine Größe, deren Herkunft niemand festgehalten hat, ist keine Größe, die Sie veröffentlichen können.", "pv-req": "Pflichtfeld", "pv-skip": "Zum Instrument springen", "pv-unit": "Diese stehen in verschiedenen Einheiten, {a} und {b}, und lassen sich daher nicht addieren oder subtrahieren. Sie umzurechnen ist eine eigene Frage mit einer eigenen Antwort, und diese Bibliothek rät dabei nicht."}, "tr": {"pg-desc": "Bir rakam 412 gCO2e/kWh. Altı ay sonra kimse nereden geldiğini söyleyemiyor. Kaynağını, veri setini, sürümünü, çekilme anını ve lisansını taşıyan ve bunları aritmetik boyunca taşımaya devam eden bir kaynaklı değer. Tamamı tarayıcıda çalışır.", "pv-001": "Nereden geldiğini hatırlayan bir sayı", "pv-002": "Bir şebeke yoğunluğu rakamı 412 gCO2e/kWh. Altı ay sonra biri bunun nereden geldiğini soruyor ve dürüst cevap genelde omuz silkmek oluyor: sayı bir portaldan kopyalanmış, portal o değeri sonradan revize etmiş ve rakamı üreten parametreler kaybolmuş. Bu araç, bunun olmasını engelleyen kayıt. Kaynağı, veri setini, veri setinin sürümünü, çekilme anını, lisansı ve tam sorguyu tutuyor; ve bunları aritmetik boyunca tutmaya devam ediyor. Bir kaynaklı değeri bir diğerine bölün, sonuç hâlâ iki çekilmeyi de biliyor.", "pv-003": "<span class=\"k-num\">01<\/span>Kaynaklı bir değer", "pv-004": "Beş alan zorunlu. Kayıt bunlar olmadan kurulmuyor; ve mesele kutuların dolu olması değil, boşlukların yazılı olması: bir kaynak lisans belirtmiyorsa dürüst giriş belirtilmemiş kelimesidir, boş bir alan ya da bir tahmin değil.", "pv-005": "Değer A", "pv-006": "Değer B", "pv-007": "Kayıtları kur", "pv-008": "Bir alanı çıkar", "pv-008b": "Lisansı geri koy", "pv-009": "Örneği yeniden yükle", "pv-010": "<span class=\"k-num\">02<\/span>Aritmetik soyağacını koruyor", "pv-011": "Kaydı tutmaya değer kılan kısım burası. Kaynaklı bir değer, üzerine not iliştirilmiş bir sayı değil: not işlemin içinden geçiyor. Aynı birimdeki iki rakamı bölün, birim sadeleşir ama kaynaklar sadeleşmez. Python'un rastgele üretilmiş dört yüz ifade ağacı üzerinde süpürerek sabitlediği kural şu: hiçbir işlem bir kaynağı düşüremez ve değerleri farklı sırayla birleştirmek, cevabın kabul ettiği kaynakları değiştiremez.", "pv-012": "İşlem", "pv-013": "A bölü B", "pv-014": "A çarpı B", "pv-015": "A artı B", "pv-016": "A eksi B", "pv-017": "Hesapla", "pv-020": "<span class=\"k-num\">03<\/span>Belgeyi denetlemek", "pv-021": "Yayımlanmış bir rakam, ancak altındaki en eski çekilme kadar günceldir. Bu panel yukarıdaki iki değeri ve onlardan türetileni tek bir belge olarak okuyup neyin yanlış olduğunu söylüyor: eşiği geçecek kadar bayatlamış olan, geri dönülecek adresi olmayan, hiçbir sorgu kaydetmemiş olan ve altındaki lisansların karıştırılıp karıştırılmadığı. Python'da bunlardan herhangi biri varsa sıfırdan farklı çıkan bir katı kip var; bir insan için değil bir derleme için tasarlanmış: türetilmiş rakamlar tutan bir depo, girdileri bayatladığında patlamalı, birisi sonunda onları yeniden okuduğunda değil.", "pv-022": "Şu kadar günden sonra bayat, gün", "pv-023": "Okunduğu tarih", "pv-030": "<span class=\"k-num\">04<\/span>Yöntem ve bunun reddettikleri", "pv-031": "Kimlik, kanonik biçimdir", "pv-032": "Bir kaydın kimliği, kanonik biçiminin özetidir: her derinlikte sıralı anahtarlar, anlamsız boşluk yok ve UTC'ye normalize edilmiş zaman damgası. İki kayıt, tam olarak aynı çekilmeyi tarif ettiklerinde aynı çekilme olarak tanımlanır; alanların nasıl bir araya getirildiğinden ve zaman damgasının hangi saat farkıyla yazıldığından bağımsız olarak. Sorgu da bu kimliğin parçası, yani aynı veri seti, aynı sürüm ve aynı an ama farklı ülke kodu iki farklı sayıdır ve asla birbirine karışmamalıdır.", "pv-033": "Soyağacı bir küme birleşimidir", "pv-034": "İki soyağacını birleştirmek, kimlikler üzerinde birleşim almaktır. Bu da işlemi değişmeli, birleşmeli ve etkisiz kılar; boş soyağacı da birim elemandır. Bu yasalar, değerleri hangi sırayla birleştirdiğinizin cevabın kabul ettiği kaynakları değiştiremeyeceğini garanti eden şeydir; Python'un onlara güvenmek yerine doğrudan test etmesinin sebebi de budur.", "pv-035": "Bunun yapmayı reddettiği üç şey", "pv-036": "Zorunlu bir alanı eksik olan bir kaydı kurmak; çünkü lisansını kimsenin yazmadığı bir rakam, yayımlayabileceğiniz bir rakam değildir", "pv-037": "Saat dilimi olmayan bir zaman damgasını kabul etmek; çünkü yirmi altı andan herhangi biri olabilecek bir an, bir an değildir", "pv-038": "İki lisansın yayımlanmış bir rakamda birleştirilip birleştirilemeyeceğini söylemek. Karıştırıldıklarını söyler. Bunun izinli olup olmadığı, bir yargı çevresi olan hukuki bir sorudur ve ne bu sayfa ne de arkasındaki kütüphane onu cevaplar", "pv-039": "Arkasındaki yöntem: kaynak zinciri vaka çalışması", "pv-070": "Bu sayfadaki her rakam sizin yazdığınızdır ve örnek, örnek olarak etiketlenmiştir.", "pv-071": "Tamamen tarayıcınızda çalışır. Yazdığınız hiçbir şey bu sayfadan çıkmaz. Sunucu yok, veritabanı yok, analitik yok, yazı tipleri yüklendikten sonra hiçbir ağ çağrısı yok; yani sayfa bir kez önbelleğe alındıktan sonra çevrimdışı da çalışır. Yapan: TUM ve İstanbul Üniversitesi öğrencisi Kerem Özdemir. Kişisel bir proje; iki üniversiteyle bağlantılı değil ve onlar tarafından onaylanmış değil.", "pv-100": "Kayıt {w}", "pv-101": "Kanonik biçim, yani kimlik", "pv-102": "Parmak izi, ilk on altı bayt", "pv-103": "Bir şey hesaplanabilmesi için iki kaydın da kurulmuş olması gerekiyor.", "pv-104": "Türetilen değer", "pv-105": "boyutsuz, birimler sadeleşti", "pv-106": "Cevabın kabul ettiği kaynaklar", "pv-107": "İki çekilme girdi ve iki çekilme çıktı. Aynı çekilme iki kez kullanılmış olsaydı bir kez görünürdü, çünkü soyağacı bir değerin kaç kez anıldığına göre değil kimliğine göre tekilleştiriyor.", "pv-110": "Belge", "pv-111": "{n} gün önce", "pv-112": "bayat", "pv-113": "Farklı çekilme sayısı", "pv-114": "Kaynak", "pv-115": "Lisanslar", "pv-116": "Bayat, eşikte ya da onu geçmiş", "pv-117": "Geri dönülecek adresi olmayan", "pv-118": "Hiçbir sorgu kaydetmemiş", "pv-119": "Katı kip bu belgede sıfırdan farklı çıkardı. Amaçlanan kullanım bu: türetilmiş rakamlar yayımlayan bir derleme, birileri hâlâ izlerken patlamalı; bir okuyucunun nihayet kontrol ettiği gün değil.", "pv-120": "Katı kip bu belgeyi geçirirdi.", "pv-121": "Karıştırılmış lisanslar", "pv-122": "Bu belge {n} lisansı karıştırıyor: {list}. Bunların yayımlanmış bir rakamda birleştirilip birleştirilemeyeceği, bir yargı çevresi olan hukuki bir sorudur ve ne bu sayfa ne de arkasındaki kütüphane onu cevaplar. İkisinin de yaptığı şey, yayımladıktan sonra değil önce bilmenizi sağlamaktır.", "pv-badtime": "Çekilme anı bir tarih ve saat olarak okunamadı.", "pv-div0": "Değer B sıfır.", "pv-f-dataset": "Veri seti", "pv-f-label": "Ne olduğu", "pv-f-licence": "Lisans", "pv-f-query": "Sorgu", "pv-f-source": "Kaynak", "pv-f-unit": "Birim", "pv-f-url": "Adres", "pv-f-value": "Değer", "pv-f-version": "Veri seti sürümü", "pv-f-when": "Çekilme anı", "pv-naive": "Çekilme anı saat dilimi taşımıyor. UTC varsayılmak yerine reddediliyor. 2025-03-04T09:14:00Z şeklinde ya da +02:00 gibi bir farkla yazın.", "pv-nofp": "kanonik biçim yukarıda; bu tarayıcı bir özet fonksiyonu sunmuyor", "pv-norm": "Yazdığınız an {t} olarak normalize edildi. Farklı saat farklarıyla yazılmış iki kayıt aynı çekilme olarak tanımlanır; özetlemeden önce normalize etmenin amacı da budur.", "pv-opt": "isteğe bağlı, ve yokluğu raporlanır", "pv-refuse": "Değer {w} kurulmayacak. Şu zorunlu alanlar boş: {list}. Kütüphane boşluğu doldurmak yerine burada hata veriyor, çünkü kaynak zincirini kimsenin yazmadığı bir rakam yayımlayabileceğiniz bir rakam değildir.", "pv-req": "zorunlu", "pv-skip": "Araca geç", "pv-unit": "Bunlar farklı birimlerde, {a} ve {b}, yani toplanmaz ya da çıkarılmazlar. Onları dönüştürmek kendi cevabı olan ayrı bir sorudur ve bu kütüphane onu tahmin etmez."}};
+
+  function T(k, en, v) {
+    var out = window.__t ? window.__t(k, en) : en;
+    if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
+    return out;
+  }
+
+  var E = Kit.el, Q = Kit.qs, C = Kit.clear;
+
+  var FIELDS = [
+    { k: "source",  i: "pv-f-source",  req: true,  en: "Source" },
+    { k: "dataset", i: "pv-f-dataset", req: true,  en: "Dataset" },
+    { k: "version", i: "pv-f-version", req: true,  en: "Dataset version" },
+    { k: "retrieved_at", i: "pv-f-when", req: true, en: "Retrieved at" },
+    { k: "licence", i: "pv-f-licence", req: true,  en: "Licence" },
+    { k: "query",   i: "pv-f-query",   req: false, en: "Query" },
+    { k: "url",     i: "pv-f-url",     req: false, en: "Address" }
+  ];
+
+  var EXAMPLE = {
+    a: {
+      value: "412", unit: "gCO2e/kWh", label: "grid intensity, country A",
+      source: "Example Agency (invented)", dataset: "annual-grid-intensity",
+      version: "2024-edition", retrieved_at: "2025-03-04T09:14:00Z",
+      licence: "CC-BY-4.0", query: "country=AA; year=2024; basis=location",
+      url: "https://example.invalid/annual-grid-intensity"
+    },
+    b: {
+      value: "188", unit: "gCO2e/kWh", label: "grid intensity, country B",
+      source: "Example Statistics Office (invented)", dataset: "electricity-emissions",
+      version: "r3", retrieved_at: "2023-06-11T22:00:00+02:00",
+      licence: "ODbL-1.0", query: "", url: ""
+    }
+  };
+
+  /* ---- the record ---- */
+
+  /* An ISO instant with an offset is normalised to UTC. A timestamp with no
+     offset at all is refused rather than assumed to be UTC, because an
+     instant that could be any of twenty six is not an instant. */
+  function normaliseInstant(raw) {
+    var s = (raw || "").trim();
+    if (!s) return { err: "empty" };
+    if (!/(Z|[+-]\d{2}:?\d{2})$/.test(s)) return { err: "naive" };
+    var d = new Date(s);
+    if (isNaN(d.getTime())) return { err: "unparsed" };
+    return { iso: d.toISOString().replace(/\.\d{3}Z$/, "Z"), date: d };
+  }
+
+  /* Sorted keys at every depth, no insignificant whitespace. This string is
+     the record's identity; the hash shown to the reader is a hash of it. */
+  function canonical(rec) {
+    var keys = [], k;
+    for (k in rec) if (rec[k] !== "" && rec[k] !== undefined) keys.push(k);
+    keys.sort();
+    var parts = keys.map(function (key) {
+      return JSON.stringify(key) + ":" + JSON.stringify(rec[key]);
+    });
+    return "{" + parts.join(",") + "}";
+  }
+
+  function readRecord(which) {
+    var root = Q("#rec-" + which), out = {}, missing = [], f, i, node;
+    for (i = 0; i < FIELDS.length; i++) {
+      f = FIELDS[i];
+      node = Q("#" + which + "-" + f.k, root);
+      var v = (node.value || "").trim();
+      node.parentNode.classList.remove("pv-miss");
+      if (f.req && !v) { missing.push(f); node.parentNode.classList.add("pv-miss"); }
+      if (v) out[f.k] = v;
+    }
+    var value = Kit.toNum(Q("#" + which + "-value", root).value);
+    var unit = (Q("#" + which + "-unit", root).value || "").trim();
+    var label = (Q("#" + which + "-label", root).value || "").trim();
+    var inst = out.retrieved_at ? normaliseInstant(out.retrieved_at) : { err: "empty" };
+    if (!inst.err) out.retrieved_at = inst.iso;
+    return {
+      which: which, value: value, unit: unit, label: label,
+      rec: out, missing: missing, instant: inst
+    };
+  }
+
+  /* ---- the form ---- */
+
+  function field(which, f) {
+    var id = which + "-" + f.k;
+    return E("div", { class: "k-field" }, [
+      E("label", { for: id, text: T(f.i, f.en) }),
+      E("input", { type: "text", id: id, autocomplete: "off", spellcheck: "false" }),
+      f.req ? E("span", { class: "pv-flag", text: T("pv-req", "required") })
+            : E("span", { class: "k-hint", text: T("pv-opt", "optional, and its absence is reported") })
+    ]);
+  }
+
+  function buildForm(which) {
+    var root = C(Q("#rec-" + which));
+    root.appendChild(E("div", { class: "k-row k-row-tight" }, [
+      E("div", { class: "k-field" }, [
+        E("label", { for: which + "-value", text: T("pv-f-value", "Value") }),
+        E("input", { type: "number", id: which + "-value", step: "any", inputmode: "decimal" })
+      ]),
+      E("div", { class: "k-field" }, [
+        E("label", { for: which + "-unit", text: T("pv-f-unit", "Unit") }),
+        E("input", { type: "text", id: which + "-unit", autocomplete: "off" })
+      ])
+    ]));
+    root.appendChild(E("div", { class: "k-field" }, [
+      E("label", { for: which + "-label", text: T("pv-f-label", "What it is") }),
+      E("input", { type: "text", id: which + "-label", autocomplete: "off" })
+    ]));
+    FIELDS.forEach(function (f) { root.appendChild(field(which, f)); });
+  }
+
+  function fillExample() {
+    ["a", "b"].forEach(function (w) {
+      var ex = EXAMPLE[w], k;
+      Q("#" + w + "-value").value = ex.value;
+      Q("#" + w + "-unit").value = ex.unit;
+      Q("#" + w + "-label").value = ex.label;
+      for (k in ex) {
+        var node = Q("#" + w + "-" + k);
+        if (node && k !== "value" && k !== "unit" && k !== "label") node.value = ex[k];
+      }
+    });
+  }
+
+  /* ---- the fingerprint ---- */
+
+  /* Display only. Nothing in the arithmetic waits for it, so a browser
+     without a crypto implementation loses the short form and keeps every
+     guarantee that matters. */
+  function fingerprint(canon, into) {
+    if (!(window.crypto && window.crypto.subtle && window.TextEncoder)) {
+      into.textContent = T("pv-nofp", "canonical form shown above; this browser offers no hash");
+      return;
+    }
+    try {
+      window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(canon)).then(function (buf) {
+        var b = Array.prototype.slice.call(new Uint8Array(buf));
+        into.textContent = b.map(function (x) { return ("0" + x.toString(16)).slice(-2); }).join("").slice(0, 32);
+      }, function () {
+        into.textContent = T("pv-nofp", "canonical form shown above; this browser offers no hash");
+      });
+    } catch (e) {
+      into.textContent = T("pv-nofp", "canonical form shown above; this browser offers no hash");
+    }
+  }
+
+  /* ---- 01 render ---- */
+
+  var A = null, B = null;
+
+  function refuseNote(r) {
+    var names = r.missing.map(function (f) { return T(f.i, f.en); }).join(", ");
+    return E("p", {
+      class: "k-warn",
+      text: T("pv-refuse", "Value {w} will not construct. These mandatory fields are empty: {list}. The library raises here rather than filling the gap, because a figure whose provenance nobody wrote down is not a figure you can publish.",
+        { w: r.which.toUpperCase(), list: names })
+    });
+  }
+
+  function recPanel(r) {
+    var panel = E("div", { class: "k-panel" });
+    panel.appendChild(E("h3", { text: T("pv-100", "Record {w}", { w: r.which.toUpperCase() }) }));
+    if (r.missing.length) { panel.appendChild(refuseNote(r)); return panel; }
+    if (r.instant.err === "naive") {
+      panel.appendChild(E("p", {
+        class: "k-warn",
+        text: T("pv-naive", "The retrieval instant carries no timezone. It is refused rather than assumed to be UTC. Write it as 2025-03-04T09:14:00Z, or with an offset such as +02:00.")
+      }));
+      return panel;
+    }
+    if (r.instant.err) {
+      panel.appendChild(E("p", { class: "k-warn", text: T("pv-badtime", "The retrieval instant could not be read as a date and time.") }));
+      return panel;
+    }
+    panel.appendChild(E("p", { class: "k-stat" }, [
+      E("span", { class: "k-big", text: Kit.num(r.value, 3) }),
+      E("span", { class: "k-unit", text: r.unit })
+    ]));
+    if (r.label) panel.appendChild(E("p", { class: "k-note", text: r.label }));
+    var canon = canonical(r.rec);
+    panel.appendChild(E("p", { class: "k-lab", text: T("pv-101", "Canonical form, which is the identity") }));
+    panel.appendChild(E("pre", { class: "pv-canon", text: canon.split(",").join(",\n ") }));
+    panel.appendChild(E("p", { class: "k-lab", text: T("pv-102", "Fingerprint, first sixteen bytes") }));
+    var fp = E("p", { class: "pv-fp", text: "…" });
+    panel.appendChild(fp);
+    fingerprint(canon, fp);
+    if (r.rec.retrieved_at !== (Q("#" + r.which + "-retrieved_at").value || "").trim()) {
+      panel.appendChild(E("p", {
+        class: "k-note",
+        text: T("pv-norm", "The instant you wrote was normalised to {t}. Two records written in different offsets identify as the same retrieval, which is the point of normalising before hashing.", { t: r.rec.retrieved_at })
+      }));
+    }
+    return panel;
+  }
+
+  function runRecords() {
+    var box = C(Q("#r-out"));
+    A = readRecord("a"); B = readRecord("b");
+    box.appendChild(E("div", { class: "k-grid" }, [recPanel(A), recPanel(B)]));
+    runArith();
+    runDoc();
+  }
+
+  /* ---- 02 arithmetic ---- */
+
+  /* Union over canonical forms, first seen order preserved. Commutative,
+     associative and idempotent, which is what makes the order of a
+     calculation unable to change the sources of its answer. */
+  function merge() {
+    var seen = {}, out = [], i, j, list;
+    for (i = 0; i < arguments.length; i++) {
+      list = arguments[i];
+      for (j = 0; j < list.length; j++) {
+        var c = canonical(list[j]);
+        if (!seen[c]) { seen[c] = 1; out.push(list[j]); }
+      }
+    }
+    return out;
+  }
+
+  function runArith() {
+    var box = C(Q("#a-out"));
+    if (!A || !B || A.missing.length || B.missing.length || A.instant.err || B.instant.err) {
+      box.appendChild(E("p", { class: "k-note", text: T("pv-103", "Both records have to construct before anything can be computed from them.") }));
+      return;
+    }
+    var op = Q("#a-op").value, v, unit, sym;
+    if (op === "div") {
+      if (B.value === 0) { box.appendChild(E("p", { class: "k-warn", text: T("pv-div0", "Value B is zero.") })); return; }
+      v = A.value / B.value; sym = "÷";
+      unit = (A.unit === B.unit) ? "" : (A.unit + " / " + B.unit);
+    } else if (op === "mul") {
+      v = A.value * B.value; sym = "×";
+      unit = A.unit && B.unit ? A.unit + "·" + B.unit : (A.unit || B.unit);
+    } else {
+      if (A.unit !== B.unit) {
+        box.appendChild(E("p", {
+          class: "k-warn",
+          text: T("pv-unit", "These are in different units, {a} and {b}, so they will not add or subtract. Converting them is a separate question with its own answer, and this library does not guess at it.", { a: A.unit || "none", b: B.unit || "none" })
+        }));
+        return;
+      }
+      v = op === "add" ? A.value + B.value : A.value - B.value;
+      sym = op === "add" ? "+" : "−";
+      unit = A.unit;
+    }
+    var lineage = merge([A.rec], [B.rec]);
+
+    var panel = E("div", { class: "k-panel" }, [
+      E("h3", { text: T("pv-104", "The derived value") }),
+      E("p", { class: "k-stat" }, [
+        E("span", { class: "k-big", text: Kit.num(v, 4) }),
+        E("span", { class: "k-unit", text: unit || T("pv-105", "dimensionless, the units cancelled") })
+      ]),
+      E("p", { class: "k-note", text: Kit.num(A.value, 3) + " " + A.unit + "  " + sym + "  " + Kit.num(B.value, 3) + " " + B.unit })
+    ]);
+    panel.appendChild(E("p", { class: "k-lab", text: T("pv-106", "Sources the answer admits to") }));
+    lineage.forEach(function (rec) {
+      panel.appendChild(E("p", { class: "pv-leaf" }, [
+        E("b", { text: rec.source }),
+        E("span", { text: " / " + rec.dataset + " @ " + rec.version }),
+        E("br"), E("span", { text: rec.retrieved_at + "  ·  " + rec.licence })
+      ]));
+    });
+    panel.appendChild(E("p", {
+      class: "k-note",
+      text: T("pv-107", "Two retrievals went in and two came out. Had the same retrieval been used twice it would appear once, because the lineage deduplicates on identity rather than on how many times a value was mentioned.")
+    }));
+    box.appendChild(panel);
+  }
+
+  /* ---- 03 the document ---- */
+
+  function daysBetween(a, b) { return Math.floor((b - a) / 86400000); }
+
+  function runDoc() {
+    var box = C(Q("#d-out"));
+    if (!A || !B || A.missing.length || B.missing.length || A.instant.err || B.instant.err) {
+      box.appendChild(E("p", { class: "k-note", text: T("pv-103", "Both records have to construct before anything can be computed from them.") }));
+      return;
+    }
+    var maxAge = Math.round(Kit.toNum(Q("#d-age").value)) || 365;
+    var nowRaw = Q("#d-now").value;
+    var now = nowRaw ? new Date(nowRaw + "T00:00:00Z") : new Date();
+    var recs = merge([A.rec], [B.rec]);
+
+    var stale = 0, noUrl = 0, noQuery = 0, licences = {}, sources = {}, oldest = null, newest = null;
+    var rows = recs.map(function (rec) {
+      var d = new Date(rec.retrieved_at), age = daysBetween(d, now);
+      var isStale = age >= maxAge;
+      if (isStale) stale++;
+      if (!rec.url) noUrl++;
+      if (!rec.query) noQuery++;
+      licences[rec.licence] = 1; sources[rec.source] = 1;
+      if (oldest === null || d < oldest) oldest = d;
+      if (newest === null || d > newest) newest = d;
+      return { rec: rec, age: age, stale: isStale };
+    });
+
+    var panel = E("div", { class: "k-panel" });
+    panel.appendChild(E("h3", { text: T("pv-110", "The document") }));
+    rows.forEach(function (r) {
+      var p = E("p", { class: "pv-leaf" + (r.stale ? " pv-stale" : "") }, [
+        E("b", { text: r.rec.source }),
+        E("span", { text: " / " + r.rec.dataset + " @ " + r.rec.version }),
+        E("span", { class: "pv-tag" + (r.stale ? " pv-tag-stale" : ""), text: T("pv-111", "{n} days old", { n: r.age }) + (r.stale ? " · " + T("pv-112", "stale") : "") })
+      ]);
+      panel.appendChild(p);
+    });
+
+    var lics = Object.keys(licences), srcs = Object.keys(sources);
+    panel.appendChild(E("dl", { class: "k-kv", style: "margin-top:1rem" }, [
+      E("dt", { text: T("pv-113", "Distinct retrievals") }), E("dd", { text: String(recs.length) }),
+      E("dt", { text: T("pv-114", "Sources") }), E("dd", { text: String(srcs.length) }),
+      E("dt", { text: T("pv-115", "Licences") }), E("dd", { text: lics.join(", ") }),
+      E("dt", { text: T("pv-116", "Stale, at or past the threshold") }), E("dd", { text: String(stale) }),
+      E("dt", { text: T("pv-117", "Without an address to return to") }), E("dd", { text: String(noUrl) }),
+      E("dt", { text: T("pv-118", "Recording no query") }), E("dd", { text: String(noQuery) })
+    ]));
+    box.appendChild(panel);
+
+    if (stale || noUrl || noQuery) {
+      box.appendChild(E("p", {
+        class: "k-warn",
+        text: T("pv-119", "Strict mode would exit non zero on this document. That is the intended use: a build that publishes derived figures should fail while somebody is still watching it, rather than the day a reader finally checks.")
+      }));
+    } else {
+      box.appendChild(E("p", { class: "k-ok", text: T("pv-120", "Strict mode would pass this document.") }));
+    }
+
+    if (lics.length > 1) {
+      box.appendChild(E("div", { class: "k-panel k-panel-sunk" }, [
+        E("h3", { text: T("pv-121", "Mixed licences") }),
+        E("p", {
+          class: "k-note",
+          text: T("pv-122", "This document mixes {n} licences: {list}. Whether they may be combined in a published figure is a legal question with a jurisdiction attached, and neither this page nor the library behind it answers it. What both do is make sure you know before you publish rather than after.",
+            { n: lics.length, list: lics.join(", ") })
+        })
+      ]));
+    }
+  }
+
+  /* ---- taking a field away ---- */
+
+  /* The refusal is the feature, so there is a button that causes one. */
+  var broke = false;
+  function breakField() {
+    if (!broke) {
+      Q("#a-licence").value = "";
+      broke = true;
+      Q("#r-break").textContent = T("pv-008b", "Put the licence back");
+    } else {
+      Q("#a-licence").value = EXAMPLE.a.licence;
+      broke = false;
+      Q("#r-break").textContent = T("pv-008", "Take a field away");
+    }
+    runRecords();
+  }
+
+  /* ---- wiring ---- */
+
+  buildForm("a"); buildForm("b");
+  fillExample();
+  Q("#d-now").value = new Date().toISOString().slice(0, 10);
+
+  Q("#r-run").addEventListener("click", runRecords);
+  Q("#r-ex").addEventListener("click", function () { broke = false; Q("#r-break").textContent = T("pv-008", "Take a field away"); fillExample(); runRecords(); });
+  Q("#r-break").addEventListener("click", breakField);
+  Q("#a-run").addEventListener("click", runArith);
+  Q("#a-op").addEventListener("change", runArith);
+  Q("#d-age").addEventListener("input", runDoc);
+  Q("#d-now").addEventListener("change", runDoc);
+
+  document.addEventListener("langchange", function () {
+    var keep = { a: {}, b: {} };
+    ["a", "b"].forEach(function (w) {
+      keep[w].value = Q("#" + w + "-value").value;
+      keep[w].unit = Q("#" + w + "-unit").value;
+      keep[w].label = Q("#" + w + "-label").value;
+      FIELDS.forEach(function (f) { keep[w][f.k] = Q("#" + w + "-" + f.k).value; });
+    });
+    buildForm("a"); buildForm("b");
+    ["a", "b"].forEach(function (w) {
+      Q("#" + w + "-value").value = keep[w].value;
+      Q("#" + w + "-unit").value = keep[w].unit;
+      Q("#" + w + "-label").value = keep[w].label;
+      FIELDS.forEach(function (f) { Q("#" + w + "-" + f.k).value = keep[w][f.k]; });
+    });
+    Q("#r-break").textContent = broke ? T("pv-008b", "Put the licence back") : T("pv-008", "Take a field away");
+    runRecords();
+  });
+
+  runRecords();
+})();
+</script>
+<script>
+window.CHROME_I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Profil", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Atölye", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/><\/svg><i>Araç · veri ve kaynak zinciri<\/i>"}, "de": {"kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Profil", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Werkstatt", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/><\/svg><i>Instrument · Daten und Herkunft<\/i>"}};
+
+(function(){
+  "use strict";
+  var KEY = "lang", lang = "en";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  /* Three languages exist and nothing else is one. Asking the dictionary
+     whether it has a key called l was the test, and CHROME_I18N["constructor"]
+     is truthy, so a value planted in localStorage became window.__lang and
+     every number on the instrument threw. The generated pages were fixed and
+     these twenty were not; they are the same rule. */
+  var descBase = null;
+  function known(l){ return l === "en" || l === "tr" || l === "de"; }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
+  function apply(l){
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
+    document.documentElement.setAttribute("lang", l);
+    /* The description is invisible on the page and is exactly what a search
+       result and a link preview show, so it follows the language too. */
+    if (descBase === null) {
+      var dm0 = document.querySelector('meta[name="description"]');
+      descBase = dm0 ? dm0.getAttribute("content") : "";
+    }
+    var wantD = (!en && d["pg-desc"] !== undefined) ? d["pg-desc"] : descBase;
+    var dm1 = document.querySelector('meta[name="description"]');
+    if (dm1) dm1.setAttribute("content", wantD);
+    var om1 = document.querySelector('meta[property="og:description"]');
+    if (om1) om1.setAttribute("content", wantD);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    var ot1 = document.querySelector('meta[property="og:title"]');
+    if (ot1) ot1.setAttribute("content", document.title);
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
+  apply(lang);
+  /* A page that wants a whole viewport of height has to know how much of it
+     the bar has already taken, or it overhangs the fold by exactly that much
+     and clips whatever sits at its bottom. */
+  function barHeight(){
+    var b = document.querySelector(".bar");
+    document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
+  }
+  barHeight();
+  addEventListener("resize", barHeight);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
+  /* the nav is one scrolling line on a phone, so the page you are on can
+     start off past its right edge. Bring it into view without moving the
+     page. The generated pages do the same. */
+  try {
+    var cur = document.querySelector(".bar nav a[aria-current]");
+    if (cur && cur.parentNode.scrollWidth > cur.parentNode.clientWidth) {
+      cur.parentNode.scrollLeft = Math.max(0, cur.offsetLeft - 24);
+    }
+  } catch(e){}
+})();
+
+</script>
+</body>
+</html>

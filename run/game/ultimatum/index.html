@@ -1,0 +1,2121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- The same policy the generated pages carry. See the note beside it in
+     _HEAD: connect-src 'none' is what turns each instrument's promise that
+     nothing you type leaves the page into something the browser enforces. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+
+<title>The Ultimatum</title>
+<meta name="description" content="Ten coins, one stranger, and one offer. They can take what you leave them or refuse it, and refusing costs you both. Play as the one who splits and as the one who answers, then see your own threshold beside what a purely self interested player would do.">
+<meta name="author" content="Kerem Özdemir">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#2c2115">
+<link rel="stylesheet" href="/run/fonts/fonts.css">
+<link rel="canonical" href="/run/game/ultimatum/">
+<meta property="og:title" content="The Ultimatum">
+<meta property="og:description" content="Ten coins, one stranger, and one offer. They can take what you leave them or refuse it, and refusing costs you both. Play as the one who splits and as the one who answers, then see your own threshold beside what a purely self interested player would do.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%231d1610%22/%3E%3Cpath d=%22M16 26V14M16 14C16 14 10 13 8 7C14 8 16 11 16 11M16 14C16 14 22 13 24 7C18 8 16 11 16 11M16 11V6%22 stroke=%22%23e0a050%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   The painted world, shared by the games under game/
+   The Long Game was written before this file existed and keeps
+   its own copy of these rules inside its own source; every game
+   built after it takes them from here, so that five pages stay
+   one world instead of five.
+   ============================================================ */
+
+:root{
+  --soil:#2c2115; --timber:#67503a; --terracotta:#8a4a2c;
+  --accent:#e0a050; --ink:#2b2620; --paper:#f2efe6; --verdigris:#5e7a6a;
+  --ink-soft:#4b443b; --dim:#6f6558; --faint:#6f6759;
+  --rule:rgba(103,80,58,.32); --rule-firm:rgba(103,80,58,.55);
+  --display:"Fraunces","Iowan Old Style",Georgia,serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --card:rgba(242,239,230,.955);
+  --card-sunk:rgba(232,227,214,.9);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;overflow-x:hidden;max-width:100%}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--serif); color:var(--ink); background:#c8c4b6;
+  min-height:calc(100dvh - var(--barh, 0px)); overscroll-behavior-y:none;
+}
+canvas#world{
+  position:fixed; inset:0; width:100%; height:100%; display:block; z-index:0;
+}
+
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+    clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+.skip{position:absolute;left:-9999px;top:0;z-index:60;background:var(--paper);
+  color:var(--ink);padding:.6rem .9rem;font-family:var(--mono);font-size:.72rem;
+  border:1px solid var(--rule-firm)}
+.skip:focus{left:.6rem;top:.6rem}
+
+#shell{
+  /* the viewport, less whatever the site bar above it is taking. Asking for
+     the whole of it put the start button below the fold on a laptop. */
+  position:relative; z-index:2; min-height:calc(100dvh - var(--barh, 0px));
+  display:flex; flex-direction:column; justify-content:space-between;
+  padding:clamp(.6rem,2vw,1.1rem);
+  padding-bottom:calc(clamp(.6rem,2vw,1.1rem) + env(safe-area-inset-bottom,0px));
+  gap:.7rem;
+}
+
+#topbar{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:.4rem .9rem;
+  background:var(--card); border:1px solid var(--rule-firm);
+  padding:.5rem .8rem; max-width:64rem; width:100%; margin:0 auto; flex:none;
+  box-shadow:0 1px 0 rgba(44,33,21,.14);
+}
+#topbar .ch{font-family:var(--display);font-weight:400;font-size:.98rem;
+  letter-spacing:-.01em;margin:0}
+#topbar .meta{font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--dim);margin:0}
+#topbar .spacer{flex:1 1 auto}
+#topbar button{flex:none}
+
+#panel{
+  background:var(--card); border:1px solid var(--rule-firm);
+  padding:clamp(.85rem,2.4vw,1.25rem);
+  max-width:64rem; width:100%; margin:0 auto; flex:none;
+  box-shadow:0 2px 0 rgba(44,33,21,.16);
+  max-height:74dvh; overflow-y:auto; overscroll-behavior:contain;
+}
+#panel.read{max-width:49rem}
+@media (max-width:900px){ #panel.read{max-width:64rem} }
+#panel h2{font-family:var(--display);font-weight:400;font-size:clamp(1.18rem,3.4vw,1.5rem);
+  letter-spacing:-.02em;margin:0 0 .45rem;line-height:1.2}
+#panel h3{font-family:var(--display);font-weight:400;font-size:1.02rem;margin:1.1rem 0 .35rem}
+#panel p{margin:0 0 .6rem;font-size:clamp(.95rem,2.6vw,1.02rem);line-height:1.62;
+  max-width:60ch;color:var(--ink-soft)}
+#panel p.say{color:var(--ink);font-style:italic}
+#panel p.tight{margin-bottom:.35rem}
+#panel ul{margin:0 0 .7rem;padding-left:1.1rem;max-width:60ch}
+#panel li{font-size:.95rem;line-height:1.6;margin-bottom:.3rem;color:var(--ink-soft)}
+#panel a{color:var(--terracotta);text-underline-offset:.2em}
+#panel a:hover{color:var(--accent)}
+
+.kicker{font-family:var(--mono);font-size:.63rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);margin:0 0 .3rem}
+
+.row{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:.75rem;align-items:stretch}
+button{
+  font-family:var(--serif); font-size:1rem; color:var(--ink);
+  background:rgba(253,252,248,.96); border:1px solid var(--rule-firm);
+  padding:.6rem 1rem; cursor:pointer; line-height:1.3;
+  transition:background-color .13s ease,border-color .13s ease,transform .08s ease;
+  min-height:2.75rem;
+}
+button:hover{background:#fffdf7;border-color:var(--terracotta)}
+button:active{transform:translateY(1px)}
+button:focus-visible{outline:2px solid var(--terracotta);outline-offset:2px}
+button[disabled]{opacity:.45;cursor:default}
+button .k{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--faint);margin-top:.18rem}
+button.big{font-family:var(--display);font-size:1.06rem;padding:.7rem 1.25rem;flex:1 1 11rem}
+button.share{border-color:rgba(94,122,106,.75);background:rgba(232,238,231,.96)}
+button.share:hover{background:#e9f0e7;border-color:var(--verdigris)}
+button.keep{border-color:rgba(138,74,44,.7);background:rgba(244,232,224,.96)}
+button.keep:hover{background:#f7e9e0;border-color:var(--terracotta)}
+button.quiet{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;
+  text-transform:uppercase;padding:.42rem .7rem;min-height:2.1rem;color:var(--dim);
+  background:transparent;border-color:var(--rule)}
+button.quiet:hover{color:var(--ink);background:rgba(253,252,248,.8)}
+
+.tally{display:flex;flex-wrap:wrap;gap:.35rem 1.4rem;font-family:var(--mono);
+  font-size:.72rem;letter-spacing:.04em;color:var(--dim);
+  border-top:1px solid var(--rule);padding-top:.55rem;margin-top:.75rem}
+.tally b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+
+.tblwrap{overflow-x:auto;margin:.4rem 0 .9rem;max-width:100%}
+table.pay{border-collapse:collapse;font-family:var(--mono);font-size:.76rem;min-width:20rem}
+table.pay th,table.pay td{border:1px solid var(--rule-firm);padding:.42rem .6rem;text-align:center}
+table.pay th{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim);font-weight:500;background:var(--card-sunk)}
+table.pay td{background:rgba(253,252,248,.8);min-width:7rem}
+table.pay td b{color:var(--terracotta);font-weight:500;font-size:.95rem}
+table.pay td span{color:var(--dim)}
+table.pay td.win{background:rgba(232,238,231,.9)}
+
+/* ---------- a measured quantity, drawn as a strip ---------- */
+.meter{display:grid;grid-template-columns:9.5rem 1fr auto;gap:.6rem;align-items:center;
+  font-family:var(--mono);font-size:.7rem;color:var(--dim);margin:.3rem 0}
+.meter .bar{height:.7rem;background:rgba(103,80,58,.16);position:relative}
+.meter .bar i{position:absolute;inset:0 auto 0 0;display:block;background:var(--terracotta)}
+.meter .bar i.good{background:var(--verdigris)}
+.meter .n{font-variant-numeric:tabular-nums;color:var(--ink);min-width:3.4rem;text-align:right}
+@media (max-width:640px){.meter{grid-template-columns:7.2rem 1fr auto;font-size:.66rem}}
+
+/* ---------- a run of past rounds, as glyphs ---------- */
+.glyphs{font-family:var(--mono);font-size:.95rem;letter-spacing:.16em;color:var(--ink);
+  word-break:break-all;margin:.2rem 0 .5rem;max-width:60ch}
+.glyphs .lose{color:var(--terracotta)}
+.glyphs .win{color:var(--verdigris)}
+
+/* ---------- fields ---------- */
+.fields{display:grid;gap:.6rem .9rem;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));
+  max-width:46rem;margin:.5rem 0 .3rem}
+.fields label{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:.2rem}
+.fields input,.fields select{
+  width:100%;font-family:var(--mono);font-size:.85rem;padding:.4rem .5rem;
+  background:rgba(253,252,248,.96);border:1px solid var(--rule-firm);color:var(--ink)}
+.fields input:focus-visible,.fields select:focus-visible{
+  outline:2px solid var(--terracotta);outline-offset:1px}
+input[type="range"]{width:100%;max-width:22rem;accent-color:#8a4a2c}
+.bignum{font-family:var(--display);font-size:clamp(2rem,9vw,3rem);color:var(--ink);
+  line-height:1;margin:.2rem 0 .3rem;font-variant-numeric:tabular-nums}
+
+/* ---------- the source lines at the foot of a game ---------- */
+.sources{border-top:1px solid var(--rule);margin-top:1rem;padding-top:.6rem}
+.sources li{font-family:var(--mono);font-size:.68rem;line-height:1.65;color:var(--dim);
+  margin-bottom:.45rem;word-break:break-word}
+.sources li b{color:var(--ink);font-weight:500}
+.sources a{color:var(--terracotta);word-break:break-all}
+
+@media (max-width:640px){
+  #panel{max-height:62dvh}
+  #topbar{padding:.45rem .6rem;gap:.3rem .6rem}
+  #topbar .ch{font-size:.92rem}
+  button.big{flex:1 1 100%}
+  .tally{gap:.25rem .9rem;font-size:.68rem}
+}
+@media (prefers-reduced-motion:reduce){
+  button:active{transform:none}
+  button{transition:none}
+}
+
+/* ---------- the market's own few rules ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;max-width:26rem;margin:.6rem 0 .2rem;
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.split b{display:block;font-family:var(--display);font-size:1.9rem;letter-spacing:0;
+  text-transform:none;color:var(--ink);font-variant-numeric:tabular-nums;font-weight:400}
+.split .them{text-align:right}
+.slider{max-width:26rem;margin:.2rem 0 .4rem}
+button.yes{border-color:rgba(94,122,106,.75);background:rgba(232,238,231,.96)}
+button.yes:hover{background:#e9f0e7;border-color:var(--verdigris)}
+button.no{border-color:rgba(138,74,44,.7);background:rgba(244,232,224,.96)}
+button.no:hover{background:#f7e9e0;border-color:var(--terracotta)}
+.ledger{font-family:var(--mono);font-size:.7rem;color:var(--dim);line-height:1.8;max-width:34rem}
+.ledger span.k{color:var(--ink)}
+
+/* ---------- the site's clothes, worn by an instrument ---------- */
+.bar,footer.site-foot,.leaf-mark{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#f2efe6;
+  --fg:#221e17;
+  --dim:#6f6759;
+  --line:#d8d2c2;
+  --accent:#8a5a24;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+.bar,footer.site-foot{color:var(--fg)}
+footer.site-foot{background:var(--paper)}
+.bar .wrap,footer.site-foot .wrap{max-width:calc(64rem + 2 * clamp(.6rem,2vw,1.1rem));
+  padding-inline:clamp(.6rem,2vw,1.1rem)}
+/* the village is a fixed canvas lying under the whole document, so
+   the bar and the footer have to be lifted over it; and the game's
+   own overflow rule stops a sticky bar from sticking, so it stands
+   still at the top of the page instead of following the scroll */
+.bar{position:relative;z-index:3}
+footer.site-foot{position:relative;z-index:3}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
+  border-bottom:0;color:var(--fg)}
+.bar nav:not(.langs){margin-left:auto}
+.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
+  justify-content:flex-end;row-gap:.15rem}
+.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
+  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
+/* clear of the last nav name by more than the names are clear of each
+   other, so the languages read as their own control and not as a tenth
+   link in the row */
+.langs{display:flex;gap:.1rem;margin-left:clamp(1rem,2.2vw,1.8rem)}
+.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
+  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs button:hover{color:var(--fg)}
+.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
+  background:none;font-family:var(--sans);line-height:1.6}
+footer .foot-links{display:flex;gap:clamp(.9rem,2.4vw,1.6rem);align-items:center;flex-wrap:wrap}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
+  font-size:.74rem;color:var(--dim)}
+footer a{text-decoration:none;color:var(--dim);border-bottom:0}
+footer a:hover{color:var(--fg)}
+
+/* ---------- a leaf, falling once ---------- */
+.leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
+@media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar and the footer, narrowed ---------- */
+@media (max-width:640px){
+  /* the bar gives the pages a line of their own instead of crowding them */
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
+    padding-top:.5rem;padding-bottom:.15rem}
+  .bar .home{white-space:nowrap;font-size:1rem}
+  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:nowrap;
+    justify-content:flex-start;gap:clamp(.7rem,3.4vw,1.2rem);
+    overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    /* the last name fades rather than being cut, which is what says there
+       is more of it to the right */
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
+    padding-right:2.2rem}
+  .bar nav::-webkit-scrollbar{display:none}
+  .bar nav a{font-size:.8rem;padding:.55rem 0;flex:0 0 auto}
+  /* the name of the page you are on is brought into view on load, so a
+     reader arriving deep in the site is not looking at a row that starts
+     somewhere else */
+  .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
+  /* the three languages take the right end of the name's own line: a third
+     row of bar would eat a fifth of the screen */
+  .bar .wrap{position:relative}
+  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
+  .langs button{font-size:.7rem;padding:.2em .4em}
+  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+
+/* nine nav names on a narrow phone: the row takes a second and a third
+   line rather than push the page sideways, and the words are set tighter
+   so that most phones only need two */
+@media (max-width:430px){
+  .bar nav{gap:.3rem .5rem}
+  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
+}
+
+/* a finger, not a cursor: every control a thumb has to find is at least a
+   thumb wide, in either orientation */
+@media (pointer:coarse){
+  .bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
+    justify-content:center;padding:.3rem .3rem}
+  .langs{gap:.05rem}
+  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
+    display:inline-flex;align-items:center;justify-content:center}
+  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:flex-end}
+}
+
+/* the same thumb, on the page itself */
+@media (pointer:coarse){
+  .cv-btn{min-height:44px;padding:.8rem 1.25rem}
+  .copy,.share-link{min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center}
+  .socials a{min-height:44px;display:inline-flex;align-items:center}
+  .mail-line a.addr{display:inline-flex;align-items:center;min-height:44px}
+  .note-read{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .feature .go{min-height:44px;display:inline-flex;align-items:center}
+  .gcard .go{min-height:44px;display:inline-flex;align-items:center}
+  .go-block{min-height:44px;display:inline-flex;align-items:center}
+  .k-btn,.k-skip,.skip{min-height:44px;display:inline-flex;align-items:center}
+  input[type=range]{height:44px}
+  select{min-height:44px}
+  /* a link sitting inside a sentence: the line opens up so the link can be
+     a thumb tall without the paragraph closing over it */
+  .quiet-line{line-height:2.1}
+  .quiet-line a{display:inline-block;padding:.78rem 0;line-height:1.25}
+  .note-item h2 a{display:inline-block;padding:.5rem 0;border-bottom:0;
+    text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
+  .note-item h2 a:hover{text-decoration-color:var(--accent)}
+  /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
+  body input[type="text"],body input[type="email"],body input[type="number"],
+  body select,body textarea{font-size:16px;min-height:44px}
+  body .frow textarea{min-height:8rem}
+  /* a 4px tall slider is not a control: the whole strip takes the touch */
+  input[type="range"]{height:44px;margin:0;padding:0}
+  /* and a sixteen pixel box is not one either */
+  input[type="checkbox"],input[type="radio"]{width:22px;height:22px}
+  input[type="checkbox"]+label,input[type="radio"]+label{
+    display:inline-flex;align-items:center;min-height:44px}
+  .demo-src a{display:inline-flex;align-items:center;min-height:44px}
+}
+
+/* ---------- the crown, on a page whose interior is its own ---------- */
+.k-crown-no{
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;
+  font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;
+  color:var(--accent);
+}
+.k-crown-no svg{flex:none}
+.k-lede h1{margin-top:0}
+
+
+</style>
+</head>
+<body>
+
+<a class="skip" href="#panel" data-i="ul-skip">Skip to the choices</a>
+
+<h1 class="vh" data-i="ul-h1">The Ultimatum</h1>
+
+<canvas id="world" aria-hidden="true"></canvas>
+
+<div id="shell">
+
+  <div id="topbar">
+    <p class="ch" id="chLabel">The Ultimatum</p>
+    <p class="meta" id="whenLabel">market day, one table, ten coins</p>
+    <span class="spacer"></span>
+    <button type="button" class="quiet" id="menuBtn" hidden data-i="ul-restart">Start over</button>
+  </div>
+
+  <main id="panel" tabindex="-1"></main>
+
+</div>
+
+<p class="vh" id="live" role="status" aria-live="polite" aria-atomic="true"></p>
+
+<script>
+/* ============================================================
+   The painted world, shared by the games under game/
+   ------------------------------------------------------------
+   Sky, hills, soil, grass, a house with a lit window, a tree, a
+   fence, the people and the things they carry. Everything is
+   drawn with canvas primitives. Nothing is loaded, no library is
+   used, and once the fonts have arrived no game on this site
+   makes a network call.
+
+   The Long Game was written before this file and carries its own
+   copy of the same painting inside its own source. Every game
+   built after it takes the world from here, and adds only the
+   creatures its own subject needs.
+
+   window.KW is the whole surface:
+     KW.M            live metrics {W,H,GY,CX,DX,small}
+     KW.ctx          the 2d context, after KW.start()
+     KW.world        {season, prev, mix, day, dayT, t}
+     KW.season(i)    move the year on, with a crossfade
+     KW.daylight(v)  0 morning, .55 afternoon, 1 night
+     KW.sky()        the current sky pair and how dark it is
+     KW.land(t)      sky, hills, the far village, soil and grass
+     KW.house(t) .tree(t) .fence(t)
+     KW.figure(x,y,t,opts) .basket(x,y,sc,full,spill)
+     KW.shadow(x,w,a) .slate(x,y,txt,sc) .coin(x,y,r,a)
+     KW.ui           panel helpers
+     KW.store(key)   save, load, wipe
+     KW.keys(fn)     a keyboard handler that leaves fields alone
+     KW.lift(px)     lift the ground line, to leave a band of soil
+     KW.start(opts)  {draw:function(t){}, resize:function(){}, lift:px}
+   ============================================================ */
+
+window.KW = (function () {
+"use strict";
+
+var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var FAST = false;
+try { FAST = new URLSearchParams(location.search).get("fast") === "1"; } catch (e) {}
+
+function $(id) { return document.getElementById(id); }
+function el(tag, cls, txt) {
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt != null) n.textContent = txt;
+  return n;
+}
+function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+function lerp(a, b, u) { return a + (b - a) * u; }
+function smooth(u) { u = clamp(u, 0, 1); return u * u * (3 - 2 * u); }
+function rgb(c, a) { return "rgba(" + (c[0] | 0) + "," + (c[1] | 0) + "," + (c[2] | 0) + "," + (a == null ? 1 : a) + ")"; }
+function mix(a, b, u) { return [lerp(a[0], b[0], u), lerp(a[1], b[1], u), lerp(a[2], b[2], u)]; }
+
+/* a small deterministic generator, so that the same year can be
+   handed to two different villages and be the same year */
+function mulberry(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* ---------- the year ---------- */
+
+var SEASON_NAMES = ["Spring", "Summer", "Autumn", "Winter"];
+
+var SKY_DAY = [
+  { top: [178, 200, 214], bot: [238, 226, 206] },
+  { top: [162, 192, 214], bot: [240, 230, 198] },
+  { top: [196, 196, 188], bot: [242, 210, 158] },
+  { top: [186, 200, 214], bot: [224, 226, 224] }
+];
+var SKY_DUSK = [
+  { top: [116, 96, 118], bot: [222, 158, 116] },
+  { top: [104, 106, 130], bot: [230, 168, 112] },
+  { top: [104, 84, 92], bot: [212, 140, 88] },
+  { top: [92, 100, 122], bot: [186, 158, 146] }
+];
+var SKY_NIGHT = [
+  { top: [38, 28, 52], bot: [54, 42, 66] },
+  { top: [22, 28, 46], bot: [36, 42, 62] },
+  { top: [30, 22, 34], bot: [46, 34, 44] },
+  { top: [14, 20, 36], bot: [24, 32, 50] }
+];
+var HAZE = [[200, 198, 190], [196, 200, 194], [198, 176, 146], [196, 200, 204]];
+
+var GREENS = [[90, 125, 74], [107, 143, 84], [76, 112, 64], [125, 160, 95], [135, 168, 106]];
+var AUTUMN = [[200, 132, 46], [178, 91, 40], [217, 154, 60], [163, 74, 34], [194, 106, 36]];
+var BLOSSOM = [[232, 180, 200], [242, 210, 221], [223, 160, 184], [240, 198, 212]];
+var FROST = [[200, 204, 196]];
+
+var world = { season: 1, prev: 1, mix: 1, day: 0.2, dayT: 0.2, t: 0 };
+
+function sw(k) {
+  return (k === world.prev ? (1 - world.mix) : 0) + (k === world.season ? world.mix : 0);
+}
+function seasonBlend(table, key) {
+  var acc = [0, 0, 0];
+  for (var k = 0; k < 4; k++) {
+    var w = sw(k), c = key ? table[k][key] : table[k];
+    acc[0] += c[0] * w; acc[1] += c[1] * w; acc[2] += c[2] * w;
+  }
+  return acc;
+}
+
+/* ---------- the canvas and its measures ---------- */
+
+var M = { W: 0, H: 0, GY: 0, CX: 0, DX: 0, small: false, DPR: 1 };
+var cv = null, ctx = null;
+var anchorSel = "#panel";
+var groundLift = 0;   /* how far above the panel the ground line sits */
+var onResize = null, drawGame = null;
+var greenLoss = 0;   /* a commons can bleach its own grass: 0 lush, 1 bare */
+var showVillage = true;  /* the far houses on the ridge, off where they crowd */
+
+/* ---- seeded furniture ---- */
+
+var treeCanvas = null, treeTips = [], leaves = [], treeW = 0, treeH = 0;
+var grassFrames = [], grassKey = -1, grassW = 0, grassLoss = -1;
+var farVillage = [];
+
+function buildTree() {
+  var rnd = mulberry(20260821);
+  treeW = M.small ? 360 : 560;
+  treeH = M.small ? 210 : 320;
+  treeCanvas = document.createElement("canvas");
+  treeCanvas.width = treeW; treeCanvas.height = treeH;
+  var g = treeCanvas.getContext("2d");
+  treeTips = [];
+  var baseX = treeW * 0.5, baseY = treeH;
+
+  function limb(x, y, ang, len, wid, depth) {
+    if (depth > 7 || len < 5 || wid < 0.6) { treeTips.push({ x: x, y: y, s: depth / 7 }); return; }
+    var a = ang + (rnd() - 0.5) * 0.34;
+    var nx = x + Math.cos(a) * len, ny = y + Math.sin(a) * len;
+    var bow = (rnd() - 0.5) * len * 0.3;
+    g.strokeStyle = "rgb(" + Math.round(lerp(58, 118, depth / 7)) + "," +
+                    Math.round(lerp(44, 96, depth / 7)) + "," +
+                    Math.round(lerp(30, 70, depth / 7)) + ")";
+    g.lineWidth = wid; g.lineCap = "round";
+    g.beginPath();
+    g.moveTo(x, y);
+    g.quadraticCurveTo((x + nx) / 2 - Math.sin(a) * bow, (y + ny) / 2 + Math.cos(a) * bow, nx, ny);
+    g.stroke();
+    var kids = depth < 2 ? 3 : 2;
+    for (var k = 0; k < kids; k++) {
+      var na = a + (k - (kids - 1) / 2) * lerp(0.42, 0.86, rnd()) + (rnd() - 0.5) * 0.22;
+      limb(nx, ny, na, len * lerp(0.66, 0.82, rnd()), wid * 0.62, depth + 1);
+    }
+  }
+  limb(baseX, baseY, -Math.PI / 2, treeH * 0.25, M.small ? 10 : 14, 0);
+
+  leaves = [];
+  var n = M.small ? 320 : 620;
+  for (var i = 0; i < n; i++) {
+    var tip = treeTips[(rnd() * treeTips.length) | 0];
+    var ang = rnd() * 6.283, spread = lerp(4, 30, rnd());
+    leaves.push({
+      x: tip.x + Math.cos(ang) * spread,
+      y: tip.y + Math.sin(ang) * spread * 0.82 - 4,
+      sz: lerp(2.6, 5.4, rnd()) * (M.small ? 0.85 : 1),
+      gi: (rnd() * GREENS.length) | 0,
+      ai: (rnd() * AUTUMN.length) | 0,
+      bi: (rnd() * BLOSSOM.length) | 0,
+      sway: rnd(), ph: rnd() * 6.283, tilt: rnd() * 6.283,
+      keep: rnd()
+    });
+  }
+}
+
+function buildGrass() {
+  grassKey = world.prev * 100 + world.season * 10 + Math.round(world.mix * 2);
+  grassLoss = Math.round(greenLoss * 4) / 4;
+  grassW = Math.max(360, Math.ceil(M.W));
+  grassFrames = [];
+  var win = sw(3), aut = sw(2), spr = sw(0);
+  var bare = grassLoss;
+  for (var f = 0; f < 3; f++) {
+    var c = document.createElement("canvas");
+    c.width = grassW; c.height = 24;
+    var g = c.getContext("2d");
+    g.lineCap = "round";
+    var rnd = mulberry(9182 + f * 0);
+    var tufts = Math.round(grassW / 9 * (1 - bare * 0.62));
+    for (var i = 0; i < tufts; i++) {
+      var gx = rnd() * grassW, ph = rnd() * 6.283;
+      var blades = 3 + (rnd() * 3 | 0);
+      for (var b = 0; b < blades; b++) {
+        var bx = gx + (rnd() - 0.5) * 6;
+        var hgt = (5 + rnd() * 10) * (1 - bare * 0.5);
+        var lean = Math.sin(f / 3 * 6.283 + ph + b * 0.9) * (1.8 + hgt * 0.15);
+        var u = rnd();
+        var r = Math.round(lerp(lerp(74, 148, u * 0.5), 170, aut * 0.55 + win * 0.72 + bare * 0.5));
+        var gg = Math.round(lerp(lerp(106, 138, u), 152, win * 0.75) * (1 - bare * 0.28));
+        var bb = Math.round(lerp(lerp(52, 70, u * 0.4), 132, win * 0.85));
+        g.strokeStyle = "rgba(" + r + "," + gg + "," + bb + ",.86)";
+        g.lineWidth = 1.25 - hgt * 0.028;
+        g.beginPath();
+        g.moveTo(bx, 23);
+        g.bezierCurveTo(bx + lean * 0.15, 23 - hgt * 0.45,
+                        bx + lean * 0.6, 23 - hgt * 0.85,
+                        bx + lean + (rnd() - 0.5) * 3, 23 - hgt);
+        g.stroke();
+      }
+      if (rnd() < 0.09 * Math.max(0, 1 - win * 1.4) * (1 - aut * 0.5) * (1 - bare)) {
+        var fx = gx + 2, fy = 23 - 8 - rnd() * 4;
+        g.strokeStyle = "rgba(88,118,60,.8)"; g.lineWidth = 0.9;
+        g.beginPath(); g.moveTo(fx, 23); g.lineTo(fx, fy + 2); g.stroke();
+        g.fillStyle = rnd() < 0.5 ? "rgba(246,242,230,.95)" : "rgba(232,196,90,.95)";
+        for (var pe = 0; pe < 5; pe++) {
+          var pa = pe * 1.257 + f;
+          g.beginPath();
+          g.ellipse(fx + Math.cos(pa) * 2, fy + Math.sin(pa) * 2, 1.4, 0.85, pa, 0, 6.283);
+          g.fill();
+        }
+        g.fillStyle = spr > 0.4 ? "rgba(240,170,60,.9)" : "rgba(120,90,40,.9)";
+        g.beginPath(); g.arc(fx, fy, 1.1, 0, 6.283); g.fill();
+      }
+    }
+    grassFrames.push(c);
+  }
+}
+
+function buildFarVillage() {
+  var rnd = mulberry(4711);
+  farVillage = [];
+  for (var i = 0; i < 6; i++) {
+    farVillage.push({ u: 0.05 + i * 0.165 + (rnd() - 0.5) * 0.05, w: 16 + rnd() * 14, h: 12 + rnd() * 12, lit: rnd() });
+  }
+}
+
+function layout() {
+  var a = document.querySelector(anchorSel);
+  var top = a ? a.getBoundingClientRect().top : M.H * 0.7;
+  M.GY = clamp(top - 10 - groundLift, M.H * 0.34, M.H * 0.84);
+  M.CX = M.W * 0.5;
+  M.DX = M.small ? Math.min(66, M.W * 0.19) : Math.min(140, M.W * 0.15);
+}
+
+function resize() {
+  M.DPR = Math.min(2, window.devicePixelRatio || 1);
+  M.W = window.innerWidth; M.H = window.innerHeight;
+  M.small = M.W < 700;
+  cv.width = Math.round(M.W * M.DPR); cv.height = Math.round(M.H * M.DPR);
+  cv.style.width = M.W + "px"; cv.style.height = M.H + "px";
+  ctx.setTransform(M.DPR, 0, 0, M.DPR, 0, 0);
+  layout();
+  buildTree(); buildGrass(); buildFarVillage();
+  if (onResize) onResize();
+  frameOnce();
+}
+
+/* ---------- painting ---------- */
+
+function shadow(x, w, a) {
+  ctx.save();
+  ctx.translate(x, M.GY + 1);
+  ctx.scale(1, 0.2);
+  var g = ctx.createRadialGradient(0, 0, 0, 0, 0, w);
+  g.addColorStop(0, "rgba(20,14,8," + a + ")");
+  g.addColorStop(1, "rgba(20,14,8,0)");
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.arc(0, 0, w, 0, 6.283); ctx.fill();
+  ctx.restore();
+}
+
+function skyPair() {
+  var d = world.dayT;
+  var day = seasonBlend(SKY_DAY, "top"), dayB = seasonBlend(SKY_DAY, "bot");
+  var dusk = seasonBlend(SKY_DUSK, "top"), duskB = seasonBlend(SKY_DUSK, "bot");
+  var night = seasonBlend(SKY_NIGHT, "top"), nightB = seasonBlend(SKY_NIGHT, "bot");
+  var top, bot;
+  if (d < 0.6) { var u = smooth(d / 0.6); top = mix(day, dusk, u); bot = mix(dayB, duskB, u); }
+  else { var v = smooth((d - 0.6) / 0.4); top = mix(dusk, night, v); bot = mix(duskB, nightB, v); }
+  return { top: top, bot: bot, night: clamp((d - 0.55) / 0.35, 0, 1) };
+}
+
+function drawSky(t) {
+  var W = M.W, H = M.H, GY = M.GY, small = M.small;
+  var sk = skyPair();
+  var g = ctx.createLinearGradient(0, 0, 0, GY + 40);
+  g.addColorStop(0, rgb(sk.top));
+  g.addColorStop(1, rgb(sk.bot));
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  if (sk.night > 0.08) {
+    var rnd = mulberry(3311);
+    ctx.save();
+    for (var i = 0; i < (small ? 46 : 90); i++) {
+      var sx = rnd() * W, sy = rnd() * GY * 0.72;
+      var tw = 0.45 + Math.sin(t * (0.8 + rnd() * 1.6) + i) * 0.35;
+      ctx.fillStyle = "rgba(236,232,216," + (sk.night * tw * 0.8) + ")";
+      ctx.fillRect(sx, sy, 1.5, 1.5);
+    }
+    ctx.restore();
+  }
+
+  var sunU = world.dayT;
+  var arcX = W * (0.24 + sunU * 0.6);
+  var arcY = GY * (0.26 + Math.pow(clamp((sunU - 0.1) / 0.8, 0, 1), 1.7) * 0.56);
+  var sunA = 1 - clamp((sunU - 0.55) / 0.28, 0, 1);
+  if (sunA > 0.02) {
+    var warm = mix([250, 240, 212], [244, 168, 96], smooth(clamp((sunU - 0.25) / 0.4, 0, 1)));
+    var hg = ctx.createRadialGradient(arcX, arcY, 0, arcX, arcY, GY * 0.5);
+    hg.addColorStop(0, rgb(warm, 0.3 * sunA));
+    hg.addColorStop(1, rgb(warm, 0));
+    ctx.fillStyle = hg;
+    ctx.fillRect(arcX - GY * 0.5, arcY - GY * 0.5, GY, GY);
+    ctx.fillStyle = rgb(warm, 0.95 * sunA);
+    ctx.beginPath(); ctx.arc(arcX, arcY, small ? 13 : 17, 0, 6.283); ctx.fill();
+  }
+  if (sk.night > 0.2) {
+    var mx = W * 0.78, my = GY * 0.2;
+    ctx.fillStyle = "rgba(238,236,222," + (0.9 * sk.night) + ")";
+    ctx.beginPath(); ctx.arc(mx, my, small ? 11 : 14, 0, 6.283); ctx.fill();
+    ctx.fillStyle = rgb(sk.top, 0.85 * sk.night);
+    ctx.beginPath(); ctx.arc(mx + 5, my - 4, small ? 10 : 13, 0, 6.283); ctx.fill();
+  }
+
+  if (sk.night < 0.6 && sw(3) < 0.7) {
+    var bn = small ? 3 : 5;
+    ctx.strokeStyle = "rgba(70,60,48," + (0.45 * (1 - sk.night)) + ")";
+    ctx.lineWidth = 1.2;
+    for (var bi = 0; bi < bn; bi++) {
+      var ba = t * (0.16 + bi * 0.03) + bi * 2.1;
+      var brr = (small ? 26 : 44) + bi * (small ? 7 : 11);
+      var bx2 = W * 0.68 + Math.cos(ba) * brr;
+      var by2 = GY * 0.34 + Math.sin(ba) * brr * 0.4 - bi * 7;
+      var bf = reduced ? 1.4 : Math.sin(t * 5 + bi * 2.4) * 2.2;
+      ctx.beginPath();
+      ctx.moveTo(bx2 - 5, by2);
+      ctx.quadraticCurveTo(bx2 - 2.5, by2 - 3 - bf, bx2, by2);
+      ctx.quadraticCurveTo(bx2 + 2.5, by2 - 3 - bf, bx2 + 5, by2);
+      ctx.stroke();
+    }
+  }
+
+  var cloudA = 0.5 * (1 - sk.night * 0.7);
+  if (cloudA > 0.02) {
+    var cl = [[0.09, 0.16, 1.15, 13], [0.42, 0.10, 0.85, 9], [0.72, 0.22, 1.0, 17]];
+    for (var c = 0; c < 3; c++) {
+      var cx = ((t * cl[c][3] * 0.35 + cl[c][0] * (W + 400)) % (W + 400)) - 200;
+      var cy = GY * cl[c][1];
+      var s = cl[c][2] * (small ? 0.7 : 1);
+      ctx.fillStyle = "rgba(248,245,236," + (cloudA * 0.62) + ")";
+      for (var p = 0; p < 5; p++) {
+        ctx.beginPath();
+        ctx.ellipse(cx + p * 26 * s, cy + Math.sin(p * 1.7) * 5 * s,
+                    (26 - Math.abs(p - 2) * 6) * s, (13 - Math.abs(p - 2) * 2.4) * s, 0, 0, 6.283);
+        ctx.fill();
+      }
+    }
+  }
+}
+
+function hill(y, amp, freq, ph, col) {
+  ctx.fillStyle = col;
+  ctx.beginPath();
+  ctx.moveTo(-20, M.H);
+  for (var x = -20; x <= M.W + 20; x += 10) {
+    ctx.lineTo(x, y + Math.sin(x * freq * 6.28 + ph) * amp * 0.4 + Math.sin(x * freq * 17 + ph * 1.7) * amp * 0.2);
+  }
+  ctx.lineTo(M.W + 20, M.H);
+  ctx.closePath(); ctx.fill();
+}
+
+function drawLand(t, opts) {
+  opts = opts || {};
+  var W = M.W, H = M.H, GY = M.GY, small = M.small;
+  var sk = skyPair();
+  var hz = seasonBlend(HAZE);
+  hz = mix(hz, [40, 44, 58], sk.night * 0.75);
+
+  hill(GY - (small ? 42 : 66), small ? 16 : 26, 0.0011, 8, rgb(hz, 0.34));
+
+  if (opts.village !== false && showVillage) {
+    for (var i = 0; i < farVillage.length; i++) {
+      var v = farVillage[i];
+      var vx = v.u * W, vy = GY - (small ? 18 : 27), vw = v.w * (small ? 0.4 : 0.58), vh = v.h * (small ? 0.4 : 0.58);
+      ctx.fillStyle = rgb(mix(hz, [52, 42, 30], 0.82), 0.9);
+      ctx.fillRect(vx, vy - vh, vw, vh);
+      ctx.beginPath();
+      ctx.moveTo(vx - 3, vy - vh); ctx.lineTo(vx + vw / 2, vy - vh - vh * 0.5); ctx.lineTo(vx + vw + 3, vy - vh);
+      ctx.closePath(); ctx.fill();
+      if (sk.night > 0.25 && v.lit > 0.3) {
+        ctx.fillStyle = "rgba(240,196,110," + (0.75 * sk.night) + ")";
+        ctx.fillRect(vx + vw * 0.35, vy - vh * 0.6, 2.2, 2.2);
+      }
+    }
+  }
+  hill(GY - (small ? 16 : 26), small ? 10 : 15, 0.0017, 40, rgb(hz, 0.62));
+
+  var fog = ctx.createLinearGradient(0, GY - (small ? 60 : 92), 0, GY);
+  fog.addColorStop(0, rgb(hz, 0));
+  fog.addColorStop(1, rgb(hz, 0.3));
+  ctx.fillStyle = fog;
+  ctx.fillRect(0, GY - (small ? 60 : 92), W, small ? 60 : 92);
+
+  var soil = ctx.createLinearGradient(0, GY, 0, H);
+  var s0 = mix([64, 52, 36], [26, 24, 38], sk.night * 0.7);
+  var s1 = mix([44, 33, 21], [16, 16, 28], sk.night * 0.7);
+  soil.addColorStop(0, rgb(s0));
+  soil.addColorStop(1, rgb(s1));
+  ctx.fillStyle = soil;
+  ctx.fillRect(0, GY, W, H - GY);
+
+  var want = world.prev * 100 + world.season * 10 + Math.round(world.mix * 2);
+  if (grassKey !== want || grassW < W || grassLoss !== Math.round(greenLoss * 4) / 4) buildGrass();
+  var ph = reduced ? 0 : (Math.sin(t * 0.9) * 0.5 + 0.5);
+  var f0 = Math.floor(ph * 3) % 3, f1 = (f0 + 1) % 3, u = (ph * 3) % 1;
+  ctx.save();
+  ctx.globalAlpha = 1;
+  ctx.drawImage(grassFrames[f0], 0, GY - 22, grassW, 24);
+  ctx.globalAlpha = u;
+  ctx.drawImage(grassFrames[f1], 0, GY - 22, grassW, 24);
+  ctx.globalAlpha = 1;
+  if (sk.night > 0.03) {
+    ctx.fillStyle = "rgba(22,25,42," + (0.4 * sk.night) + ")";
+    ctx.fillRect(0, GY - 22, W, H - GY + 22);
+  }
+  ctx.restore();
+}
+
+function drawHouse(t, ux) {
+  var W = M.W, GY = M.GY, small = M.small;
+  var sk = skyPair();
+  var s = small ? 0.76 : 1.05;
+  var hx = ux == null ? (small ? W * 0.17 : W * 0.145) : ux, hy = GY;
+  ctx.save();
+  ctx.translate(hx, hy);
+  ctx.scale(s, s);
+
+  var lit = Math.max(sk.night, sw(3) * 0.22);
+
+  if (sw(3) > 0.35 || sw(2) > 0.5 || sk.night > 0.25) {
+    for (var m = 0; m < 3; m++) {
+      var st = ((reduced ? 0.4 : t * 0.22) + m * 0.33) % 1;
+      ctx.fillStyle = "rgba(200,195,185," + (0.2 * (1 - st)) + ")";
+      ctx.beginPath();
+      ctx.arc(28 + Math.sin(st * 5 + m) * 6, -102 - st * 34, 4 + st * 7, 0, 6.283);
+      ctx.fill();
+    }
+  }
+
+  shadow(0, 60, 0.3 * (1 - sk.night * 0.5));
+
+  ctx.fillStyle = "#4a4038";
+  ctx.fillRect(-48, -7, 96, 7);
+  ctx.fillStyle = "rgba(120,110,96,.5)";
+  for (var f = 0; f < 6; f++) {
+    ctx.beginPath(); ctx.ellipse(-40 + f * 16, -3.5, 6.5, 2.6, 0, 0, 6.283); ctx.fill();
+  }
+
+  var wg = ctx.createLinearGradient(0, -72, 0, -7);
+  wg.addColorStop(0, "#67503a");
+  wg.addColorStop(1, "#523d29");
+  ctx.fillStyle = wg;
+  ctx.fillRect(-46, -72, 92, 65);
+  for (var pl = 1; pl < 6; pl++) {
+    var py = -72 + pl * 11;
+    ctx.strokeStyle = "rgba(30,20,12,.35)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(-46, py); ctx.lineTo(46, py); ctx.stroke();
+    ctx.strokeStyle = "rgba(180,150,110,.14)";
+    ctx.beginPath(); ctx.moveTo(-46, py + 1); ctx.lineTo(46, py + 1); ctx.stroke();
+  }
+  ctx.fillStyle = "#4a3826";
+  ctx.fillRect(-48, -73, 4, 66);
+  ctx.fillRect(44, -73, 4, 66);
+  var es = ctx.createLinearGradient(0, -72, 0, -58);
+  es.addColorStop(0, "rgba(15,10,6,.45)");
+  es.addColorStop(1, "rgba(15,10,6,0)");
+  ctx.fillStyle = es;
+  ctx.fillRect(-46, -72, 92, 14);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(-58, -68); ctx.lineTo(0, -112); ctx.lineTo(58, -68);
+  ctx.closePath();
+  var rg = ctx.createLinearGradient(0, -112, 0, -68);
+  rg.addColorStop(0, "#8a4a2c");
+  rg.addColorStop(1, "#66311c");
+  ctx.fillStyle = rg;
+  ctx.fill();
+  ctx.clip();
+  for (var row = 0; row < 6; row++) {
+    var ry = -70 - row * 7.5, off = row % 2 ? 4 : 0;
+    ctx.fillStyle = row % 2 ? "rgba(196,110,66,.2)" : "rgba(96,42,22,.24)";
+    ctx.beginPath();
+    for (var s2 = -8; s2 <= 8; s2++) ctx.arc(s2 * 8 + off, ry, 4.4, Math.PI, 0, true);
+    ctx.lineTo(66, ry + 7.5); ctx.lineTo(-66, ry + 7.5);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "rgba(30,12,6,.42)"; ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var s3 = -8; s3 <= 8; s3++) ctx.arc(s3 * 8 + off, ry, 4.4, Math.PI, 0, true);
+    ctx.stroke();
+  }
+  var snow = sw(3);
+  if (snow > 0.05) {
+    ctx.globalAlpha = snow;
+    var sg = ctx.createLinearGradient(0, -112, 0, -70);
+    sg.addColorStop(0, "rgba(236,238,236,.96)");
+    sg.addColorStop(1, "rgba(236,238,236,.34)");
+    ctx.fillStyle = sg;
+    ctx.beginPath();
+    ctx.moveTo(-58, -68); ctx.lineTo(0, -112); ctx.lineTo(58, -68); ctx.closePath(); ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
+  ctx.strokeStyle = snow > 0.5 ? "#d8dcd8" : "#3a1e10";
+  ctx.lineWidth = 3; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(-58, -70); ctx.lineTo(0, -113); ctx.lineTo(58, -70); ctx.stroke();
+
+  ctx.fillStyle = "#4a3826"; ctx.fillRect(22, -104, 12, 26);
+  ctx.fillStyle = "#33261a"; ctx.fillRect(20, -107, 16, 4);
+
+  ctx.fillStyle = sk.night > 0.25 ? "rgba(46,30,14,.98)" : "rgba(16,11,7,.96)";
+  ctx.fillRect(-16, -44, 22, 44);
+  ctx.strokeStyle = "#3a2b1c"; ctx.lineWidth = 2.4;
+  ctx.strokeRect(-17, -45, 24, 45);
+  var dg = ctx.createLinearGradient(-16, 0, 6, 0);
+  dg.addColorStop(0, "#46331f"); dg.addColorStop(1, "#33241a");
+  ctx.fillStyle = dg; ctx.fillRect(-16, -44, 22, 44);
+  ctx.strokeStyle = "rgba(18,12,7,.6)"; ctx.lineWidth = 1.4;
+  ctx.strokeRect(-12.5, -40, 15, 16);
+  ctx.strokeRect(-12.5, -20, 15, 16);
+  ctx.fillStyle = "#c9a05a";
+  ctx.beginPath(); ctx.arc(2.4, -21, 1.6, 0, 6.283); ctx.fill();
+  ctx.fillStyle = "#4a3826"; ctx.fillRect(-20, -1.5, 30, 3.5);
+
+  ctx.fillStyle = "#3a2b1c"; ctx.fillRect(14, -62, 21, 21);
+  if (lit > 0.22) {
+    var g2 = ctx.createRadialGradient(24.5, -51.5, 1, 24.5, -51.5, 12);
+    g2.addColorStop(0, "rgba(244,196,110," + (0.72 + lit * 0.22) + ")");
+    g2.addColorStop(1, "rgba(180,120,50," + (0.5 * lit) + ")");
+    ctx.fillStyle = g2;
+  } else ctx.fillStyle = "rgba(52,46,38,.95)";
+  ctx.fillRect(16, -60, 17, 17);
+  if (lit <= 0.22) {
+    ctx.strokeStyle = "rgba(235,230,215,.35)"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(18, -46); ctx.lineTo(30, -58); ctx.stroke();
+  }
+  ctx.strokeStyle = "#2c2014"; ctx.lineWidth = 1.6;
+  ctx.strokeRect(16, -60, 17, 17);
+  ctx.beginPath(); ctx.moveTo(16, -51.5); ctx.lineTo(33, -51.5);
+  ctx.moveTo(24.5, -60); ctx.lineTo(24.5, -43); ctx.stroke();
+  ctx.fillStyle = "#2c2014"; ctx.fillRect(14.5, -43, 20, 2.4);
+
+  if (lit > 0.35) {
+    var lg = ctx.createRadialGradient(24.5, -51.5, 2, 24.5, -51.5, 46);
+    lg.addColorStop(0, "rgba(232,176,84," + (0.24 * lit) + ")");
+    lg.addColorStop(1, "rgba(232,176,84,0)");
+    ctx.fillStyle = lg;
+    ctx.beginPath(); ctx.arc(24.5, -51.5, 46, 0, 6.283); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawTree(t, ux, scale) {
+  if (!treeCanvas) return;
+  var W = M.W, GY = M.GY, small = M.small;
+  var sk = skyPair();
+  var s = (small ? 0.74 : 0.98) * (scale || 1);
+  var tx = ux == null ? (small ? W * 0.82 : W * 0.83) : ux, ty = GY;
+  ctx.save();
+  ctx.translate(tx, ty);
+  ctx.scale(s, s);
+  shadow(0, treeW * 0.24, 0.26 * (1 - sk.night * 0.5));
+  ctx.drawImage(treeCanvas, -treeW / 2, -treeH);
+  var gust = reduced ? 0 : (0.5 + Math.sin(t * 0.5) * 0.5);
+  var win = sw(3), aut = sw(2), spr = sw(0);
+  for (var i = 0; i < leaves.length; i++) {
+    var L = leaves[i];
+    if (win > 0.5 && L.keep > 1 - (win - 0.5) * 1.6) continue;
+    var col = GREENS[L.gi];
+    if (aut > 0) col = mix(col, AUTUMN[L.ai], aut * 0.92);
+    if (spr > 0 && L.gi % 3 === 0) col = mix(col, BLOSSOM[L.bi], spr * 0.9);
+    if (win > 0) col = mix(col, FROST[0], win * 0.7);
+    if (sk.night > 0) col = mix(col, [30, 34, 46], sk.night * 0.62);
+    var sway = reduced ? 0 : Math.sin(t * 1.6 + L.ph) * (1.2 + L.sway * 5) * (0.4 + gust * 0.6);
+    ctx.save();
+    ctx.translate(-treeW / 2 + L.x + sway, -treeH + L.y);
+    ctx.rotate(L.tilt + sway * 0.03);
+    ctx.fillStyle = rgb(col);
+    ctx.beginPath();
+    ctx.moveTo(0, -L.sz);
+    ctx.quadraticCurveTo(L.sz * 0.7, -L.sz * 0.2, 0, L.sz);
+    ctx.quadraticCurveTo(-L.sz * 0.7, -L.sz * 0.2, 0, -L.sz);
+    ctx.fill();
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+function drawFence(t, ux) {
+  var GY = M.GY, small = M.small;
+  var sk = skyPair();
+  var n = 6;
+  var cx = ux == null ? M.CX : ux;
+  var bx = cx, by = GY + (small ? 22 : 34);
+  var tx = cx + (small ? 16 : 26), ty = GY - (small ? 34 : 54);
+  var pts = [];
+  for (var i = 0; i < n; i++) {
+    var u = i / (n - 1);
+    pts.push({ x: lerp(bx, tx, u), y: lerp(by, ty, u), h: lerp(small ? 34 : 52, small ? 13 : 20, u), w: lerp(4.4, 1.8, u) });
+  }
+  var dark = sk.night;
+  var post = mix([103, 80, 58], [34, 32, 44], dark * 0.7);
+  var rail = mix([120, 96, 68], [40, 38, 50], dark * 0.7);
+  var levels = [0.74, 0.5, 0.26];
+  for (var r = 0; r < levels.length; r++) {
+    ctx.fillStyle = rgb(rail, 0.95);
+    ctx.beginPath();
+    for (var j = 0; j < n; j++) {
+      var p = pts[j], th = lerp(4.2, 1.6, j / (n - 1));
+      var yy = p.y - p.h * levels[r];
+      if (j === 0) ctx.moveTo(p.x, yy - th / 2); else ctx.lineTo(p.x, yy - th / 2);
+    }
+    for (var j2 = n - 1; j2 >= 0; j2--) {
+      var p2 = pts[j2], th2 = lerp(4.2, 1.6, j2 / (n - 1));
+      ctx.lineTo(p2.x, p2.y - p2.h * levels[r] + th2 / 2);
+    }
+    ctx.closePath(); ctx.fill();
+  }
+  for (var k = 0; k < n; k++) {
+    var q = pts[k];
+    ctx.fillStyle = rgb(post, 0.98);
+    ctx.fillRect(q.x - q.w / 2, q.y - q.h, q.w, q.h);
+    ctx.fillStyle = "rgba(20,14,8,.32)";
+    ctx.fillRect(q.x - q.w / 2, q.y - q.h, q.w * 0.34, q.h);
+    ctx.fillStyle = rgb(mix(post, [180, 156, 120], 0.35), 0.95);
+    ctx.fillRect(q.x - q.w / 2, q.y - q.h, q.w, 1.4);
+  }
+  return pts[0];
+}
+
+/* ---------- the people ---------- */
+
+function drawFigure(x, y, t, o) {
+  var s = (o.scale || 1) * (M.small ? 1.6 : 2.05);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(s, s);
+  if (o.face === -1) ctx.scale(-1, 1);
+
+  var sk = skyPair();
+  var dim = sk.night * 0.55;
+  function dk(hex) {
+    var c = [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+    return rgb(mix(c, [30, 32, 44], dim));
+  }
+  var coat = dk(o.coat || "#27423a");
+  var trouser = dk("#2c2622");
+  var skin = dk(o.skin || "#c99a72");
+  var hair = dk(o.hair || "#241a12");
+  var armCol = o.sleeves === false ? skin : coat;
+
+  var walking = o.pose === "walk";
+  var step = walking ? Math.sin(t * 8) : 0;
+  var bounce = walking ? Math.abs(Math.cos(t * 8)) * 1.2 : 0;
+  ctx.translate(0, -bounce);
+
+  ctx.strokeStyle = trouser; ctx.lineWidth = 3; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(-2 + step * 3.4, -10 + Math.abs(step)); ctx.lineTo(-2 + step * 4.4, 0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(2 - step * 3.4, -10 + Math.abs(step)); ctx.lineTo(2 - step * 4.4, 0); ctx.stroke();
+  ctx.strokeStyle = dk("#17110c"); ctx.lineWidth = 2.2;
+  ctx.beginPath(); ctx.moveTo(-2 + step * 4.4, 0); ctx.lineTo(1.2 + step * 4.4, 0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(2 - step * 4.4, 0); ctx.lineTo(5.2 - step * 4.4, 0); ctx.stroke();
+
+  ctx.strokeStyle = coat; ctx.lineWidth = o.stout ? 6.2 : 5;
+  ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(0, -31); ctx.stroke();
+
+  ctx.strokeStyle = armCol; ctx.lineWidth = 2.6;
+  if (o.pose === "offer") {
+    var reach = o.reach == null ? 1 : o.reach;
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(-3, -24); ctx.lineTo(-3.5, -19); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(6 + reach * 4, -25); ctx.lineTo(10 + reach * 7, -22); ctx.stroke();
+  } else if (o.pose === "withhold") {
+    ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(-5, -24); ctx.lineTo(-2, -20); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(5, -24); ctx.lineTo(2, -20); ctx.stroke();
+  } else if (o.pose === "wave") {
+    var wa = reduced ? 0.2 : Math.sin(t * 7) * 0.5;
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(-4, -24); ctx.lineTo(-5, -20); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(6, -33); ctx.lineTo(9 + wa * 2, -39 + Math.abs(wa)); ctx.stroke();
+    ctx.fillStyle = skin;
+    ctx.beginPath(); ctx.arc(9.6 + wa * 2, -40 + Math.abs(wa), 1.7, 0, 6.283); ctx.fill();
+  } else if (o.pose === "hold") {
+    /* both hands out in front, holding something up */
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(4, -27); ctx.lineTo(6, -31); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(-4, -26); ctx.lineTo(-6, -30); ctx.stroke();
+  } else if (o.pose === "aim") {
+    /* a spear held level, the far arm forward */
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(5, -27); ctx.lineTo(9, -26); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -27); ctx.lineTo(3, -23); ctx.lineTo(6, -24); ctx.stroke();
+  } else if (o.pose === "sit") {
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(5, -26); ctx.lineTo(8, -24); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(-4, -25); ctx.lineTo(-2, -22); ctx.stroke();
+  } else {
+    var swing = step * 2.4;
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(-2 - swing, -24); ctx.lineTo(-2.5 - swing, -19); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -29); ctx.lineTo(2 + swing, -24); ctx.lineTo(2.5 + swing, -19); ctx.stroke();
+  }
+
+  if (o.scarf) {
+    ctx.strokeStyle = dk(o.scarf); ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(-3.4, -30.5); ctx.lineTo(3.4, -30.5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(2.4, -30); ctx.lineTo(3.4, -24); ctx.stroke();
+  }
+
+  ctx.save();
+  ctx.translate(0, -36);
+  ctx.fillStyle = skin;
+  ctx.beginPath(); ctx.arc(0, 0, 4.6, 0, 6.283); ctx.fill();
+  ctx.fillStyle = hair;
+  var hs = o.hairStyle || "curly";
+  if (hs === "curly") {
+    for (var c = 0; c < 7; c++) {
+      var ca = -3.0 + c * 0.44;
+      ctx.beginPath(); ctx.arc(Math.cos(ca) * 4.4, -0.8 + Math.sin(ca) * 4.4, 2.2, 0, 6.283); ctx.fill();
+    }
+  } else if (hs === "braid") {
+    ctx.beginPath(); ctx.arc(0, -0.8, 5, Math.PI, 0); ctx.fill();
+    ctx.fillRect(-5, -1.2, 10, 1.6);
+    ctx.strokeStyle = hair; ctx.lineWidth = 2.2; ctx.lineCap = "round";
+    var bw = reduced ? 0 : Math.sin(t * 1.4) * 1.2;
+    ctx.beginPath(); ctx.moveTo(-4.4, -0.4); ctx.quadraticCurveTo(-7 + bw, 4, -5.4 + bw, 9); ctx.stroke();
+  } else if (hs === "crop") {
+    ctx.beginPath(); ctx.arc(0, -1, 4.9, Math.PI * 1.02, -0.02); ctx.fill();
+    ctx.fillRect(-4.8, -1.4, 9.6, 1.4);
+  } else if (hs === "bun") {
+    ctx.beginPath(); ctx.arc(0, -1, 5, Math.PI, 0); ctx.fill();
+    ctx.fillRect(-5, -1.4, 10, 1.5);
+    ctx.beginPath(); ctx.arc(-5.4, -3.4, 2.6, 0, 6.283); ctx.fill();
+  } else if (hs === "cap") {
+    ctx.beginPath(); ctx.arc(0, -0.6, 5.1, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = dk(o.capCol || "#5b7d8a");
+    ctx.beginPath(); ctx.arc(0, -1.2, 5.2, Math.PI, 0); ctx.fill();
+    ctx.fillRect(-7.4, -1.6, 9, 1.5);
+  } else if (hs === "hat") {
+    ctx.beginPath(); ctx.arc(0, -0.6, 4.9, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = dk(o.capCol || "#6b5334");
+    ctx.fillRect(-8, -4.6, 16, 1.8);
+    ctx.fillRect(-4.2, -10, 8.4, 5.6);
+  }
+  ctx.strokeStyle = "rgba(60,34,20,.8)"; ctx.lineWidth = 0.7;
+  ctx.beginPath(); ctx.arc(0.6, 1, 1.8, 0.3, 2.0); ctx.stroke();
+  ctx.restore();
+
+  if (o.prop === "stick") {
+    ctx.strokeStyle = dk("#6b5334"); ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(-3, -19); ctx.lineTo(-6, 1); ctx.stroke();
+  } else if (o.prop === "spear") {
+    ctx.strokeStyle = dk("#6b5334"); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(9, -30); ctx.lineTo(11, 1); ctx.stroke();
+    ctx.fillStyle = dk("#6f6759");
+    ctx.beginPath(); ctx.moveTo(9, -30); ctx.lineTo(11.4, -36); ctx.lineTo(11.6, -29.6); ctx.closePath(); ctx.fill();
+  } else if (o.prop === "dog") {
+    ctx.save();
+    ctx.translate(-13, 0);
+    ctx.fillStyle = dk("#5a4a34");
+    ctx.beginPath(); ctx.ellipse(0, -5, 5.4, 3.2, 0, 0, 6.283); ctx.fill();
+    ctx.beginPath(); ctx.arc(5, -8.4, 2.8, 0, 6.283); ctx.fill();
+    ctx.strokeStyle = dk("#5a4a34"); ctx.lineWidth = 1.6; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(-3, -3); ctx.lineTo(-3.4, 0); ctx.moveTo(3, -3); ctx.lineTo(3.4, 0); ctx.stroke();
+    var tw = reduced ? 0 : Math.sin(t * 6) * 2.4;
+    ctx.beginPath(); ctx.moveTo(-5, -6); ctx.lineTo(-8, -9 + tw); ctx.stroke();
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+function drawBasket(x, y, sc, full, spill) {
+  var sk = skyPair();
+  var dim = sk.night * 0.5;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(sc, sc);
+  if (full) {
+    ctx.fillStyle = rgb(mix([224, 176, 84], [40, 40, 56], dim));
+    ctx.beginPath(); ctx.ellipse(0, -7, 8.4, 3.6, 0, 0, 6.283); ctx.fill();
+    ctx.fillStyle = rgb(mix([236, 196, 112], [46, 46, 62], dim));
+    ctx.beginPath(); ctx.ellipse(-2, -8.2, 4.2, 2, 0, 0, 6.283); ctx.fill();
+  }
+  ctx.fillStyle = rgb(mix([138, 98, 54], [34, 34, 48], dim));
+  ctx.beginPath();
+  ctx.moveTo(-9.5, -7); ctx.lineTo(9.5, -7); ctx.lineTo(6.5, 3); ctx.lineTo(-6.5, 3);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "rgba(40,26,12,.5)"; ctx.lineWidth = 0.9;
+  for (var i = 1; i < 3; i++) {
+    var yy = -7 + i * 3.2, sh = 9.5 - i * 1;
+    ctx.beginPath(); ctx.moveTo(-sh, yy); ctx.lineTo(sh, yy); ctx.stroke();
+  }
+  ctx.strokeStyle = rgb(mix([104, 74, 40], [30, 30, 44], dim)); ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.arc(0, -7, 7, Math.PI, 0); ctx.stroke();
+  if (spill) {
+    ctx.fillStyle = rgb(mix([224, 176, 84], [40, 40, 56], dim), 0.9);
+    for (var s = 0; s < 7; s++) {
+      ctx.beginPath();
+      ctx.arc(-14 + s * 4.6 + (s % 3) * 1.4, 3 + (s % 2) * 1.6, 1.2, 0, 6.283);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+/* a coin: one round of silver, seen flat or on its edge */
+function drawCoin(x, y, r, spin) {
+  var sk = skyPair();
+  var dim = sk.night * 0.5;
+  var w = spin == null ? 1 : Math.abs(Math.cos(spin));
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = rgb(mix([208, 200, 176], [70, 72, 88], dim));
+  ctx.beginPath(); ctx.ellipse(0, 0, Math.max(0.6, r * w), r, 0, 0, 6.283); ctx.fill();
+  ctx.strokeStyle = rgb(mix([120, 112, 90], [40, 42, 56], dim)); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.ellipse(0, 0, Math.max(0.6, r * w), r, 0, 0, 6.283); ctx.stroke();
+  if (w > 0.55) {
+    ctx.fillStyle = rgb(mix([150, 142, 118], [50, 52, 66], dim), 0.8);
+    ctx.beginPath(); ctx.ellipse(0, 0, r * w * 0.44, r * 0.44, 0, 0, 6.283); ctx.fill();
+  }
+  ctx.restore();
+}
+
+/* a slate held up with something chalked on it */
+function drawSlate(x, y, text, sc, tone) {
+  var sk = skyPair();
+  var dim = sk.night * 0.55;
+  sc = sc || 1;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(sc, sc);
+  var w = 26, h = 18;
+  ctx.fillStyle = rgb(mix([70, 62, 54], [30, 32, 44], dim));
+  ctx.fillRect(-w / 2 - 2, -h - 2, w + 4, h + 4);
+  ctx.fillStyle = rgb(mix(tone || [44, 46, 44], [22, 24, 34], dim));
+  ctx.fillRect(-w / 2, -h, w, h);
+  ctx.fillStyle = rgb(mix([236, 232, 218], [150, 150, 160], dim), 0.94);
+  ctx.font = "600 12px 'IBM Plex Mono', monospace";
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText(String(text), 0, -h / 2 + 0.5);
+  ctx.restore();
+}
+
+/* ---------- weather ---------- */
+
+var motes = [];
+function stepMotes(t, dt) {
+  var win = sw(3), spr = sw(0), aut = sw(2);
+  var want = reduced ? 0 : Math.round(win * (M.small ? 30 : 60) + spr * (M.small ? 12 : 22) + aut * (M.small ? 14 : 26));
+  while (motes.length < want) {
+    motes.push({ x: Math.random() * M.W, y: Math.random() * M.GY, vx: (Math.random() - 0.5) * 12,
+                 vy: 12 + Math.random() * 26, r: 1 + Math.random() * 2.2, ph: Math.random() * 6.28 });
+  }
+  while (motes.length > want) motes.pop();
+  for (var i = 0; i < motes.length; i++) {
+    var m = motes[i];
+    m.y += m.vy * dt;
+    m.x += (m.vx + Math.sin(t * 1.4 + m.ph) * 14) * dt;
+    if (m.y > M.GY - 2) { m.y = -6; m.x = Math.random() * M.W; }
+    if (m.x < -10) m.x = M.W + 8; else if (m.x > M.W + 10) m.x = -8;
+  }
+}
+function drawMotes() {
+  var win = sw(3), spr = sw(0), aut = sw(2);
+  var col = win > Math.max(spr, aut) ? [236, 240, 240] : spr > aut ? [238, 196, 214] : [196, 120, 52];
+  var sk = skyPair();
+  ctx.fillStyle = rgb(mix(col, [60, 62, 80], sk.night * 0.5), 0.7);
+  for (var i = 0; i < motes.length; i++) {
+    var m = motes[i];
+    ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, 6.283); ctx.fill();
+  }
+}
+
+/* ---------- the loop ---------- */
+
+var lastT = 0;
+function paint(t) {
+  ctx.setTransform(M.DPR, 0, 0, M.DPR, 0, 0);
+  drawSky(t);
+  drawLand(t);
+  if (drawGame) drawGame(t);
+  drawMotes();
+  var v = ctx.createRadialGradient(M.W / 2, M.GY * 0.55, M.GY * 0.4, M.W / 2, M.GY * 0.6, Math.max(M.W, M.H) * 0.8);
+  v.addColorStop(0, "rgba(0,0,0,0)");
+  v.addColorStop(1, "rgba(10,10,16,.26)");
+  ctx.fillStyle = v;
+  ctx.fillRect(0, 0, M.W, M.H);
+}
+function frameOnce() { paint(world.t); }
+function frame(now) {
+  var tt = now / 1000;
+  var dt = Math.min(0.05, tt - lastT || 0.016);
+  lastT = tt;
+  if (!reduced) world.t = tt;
+  if (world.mix < 1) world.mix = Math.min(1, world.mix + dt * (reduced ? 4 : 0.9));
+  world.dayT += (world.day - world.dayT) * (reduced ? 1 : Math.min(1, dt * 1.6));
+  stepMotes(world.t, dt);
+  paint(world.t);
+  requestAnimationFrame(frame);
+}
+
+/* ---------- the interface, in ordinary HTML ---------- */
+
+var ui = {
+  panel: null, live: null,
+  say: function (msg) { if (ui.live) ui.live.textContent = msg; },
+  top: function (title, when) {
+    var a = $("chLabel"), b = $("whenLabel");
+    if (a) a.textContent = title;
+    if (b) b.textContent = when;
+  },
+  clear: function () { while (ui.panel.firstChild) ui.panel.removeChild(ui.panel.firstChild); },
+  para: function (txt, cls) { var p = el("p", cls || null, txt); ui.panel.appendChild(p); return p; },
+  head: function (txt) { var h = el("h2", null, txt); ui.panel.appendChild(h); return h; },
+  sub: function (txt) { var h = el("h3", null, txt); ui.panel.appendChild(h); return h; },
+  kick: function (txt) { var k = el("p", "kicker", txt); ui.panel.appendChild(k); return k; },
+  list: function (items, cls) {
+    var u = el("ul", cls || null);
+    items.forEach(function (s) { u.appendChild(el("li", null, s)); });
+    ui.panel.appendChild(u);
+    return u;
+  },
+  actions: function () { var r = el("div", "row"); ui.panel.appendChild(r); return r; },
+  btn: function (row, label, key, fn, cls) {
+    var b = el("button", cls || null);
+    b.appendChild(document.createTextNode(label));
+    if (key) b.appendChild(el("span", "k", key));
+    b.addEventListener("click", function () { ui.acted = true; fn(); });
+    row.appendChild(b);
+    return b;
+  },
+  meter: function (label, u, value, good) {
+    var d = el("div", "meter");
+    d.appendChild(el("span", null, label));
+    var bar = el("div", "bar"), fill = el("i", good ? "good" : null);
+    fill.style.width = clamp(u, 0, 1) * 100 + "%";
+    bar.appendChild(fill);
+    d.appendChild(bar);
+    d.appendChild(el("span", "n", value));
+    ui.panel.appendChild(d);
+    return d;
+  },
+  glyphs: function (parts) {
+    var d = el("p", "glyphs");
+    parts.forEach(function (p) {
+      var s = el("span", p.cls || null, p.txt);
+      d.appendChild(s);
+    });
+    ui.panel.appendChild(d);
+    return d;
+  },
+  sources: function (items) {
+    var u = el("ul", "sources");
+    items.forEach(function (it) {
+      var li = el("li");
+      li.appendChild(el("b", null, it.what));
+      li.appendChild(document.createTextNode(" " + it.cite + " "));
+      var a = el("a", null, it.url);
+      a.href = it.url; a.rel = "noopener noreferrer";
+      li.appendChild(a);
+      if (it.tail) li.appendChild(document.createTextNode(" " + it.tail));
+      u.appendChild(li);
+    });
+    ui.panel.appendChild(u);
+    return u;
+  },
+  acted: false,
+  reading: {},
+  focusFirst: function (viewName) {
+    ui.panel.scrollTop = 0;
+    if (!ui.acted) return;
+    if (ui.reading[viewName]) { ui.panel.focus({ preventScroll: true }); return; }
+    var b = ui.panel.querySelector("button:not([disabled])");
+    if (b) b.focus({ preventScroll: true });
+  }
+};
+
+function store(key) {
+  return {
+    save: function (o) { try { localStorage.setItem(key, JSON.stringify(o)); } catch (e) {} },
+    load: function () {
+      try {
+        var raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    },
+    wipe: function () { try { localStorage.removeItem(key); } catch (e) {} }
+  };
+}
+
+function keys(fn) {
+  document.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var tag = (e.target && e.target.tagName) || "";
+    if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+    fn(String(e.key || "").toLowerCase(), e);
+  });
+}
+
+function start(opts) {
+  opts = opts || {};
+  cv = $("world"); ctx = cv.getContext("2d");
+  api.ctx = ctx;
+  ui.panel = $("panel"); ui.live = $("live");
+  anchorSel = opts.anchor || "#panel";
+  groundLift = opts.lift || 0;
+  drawGame = opts.draw || null;
+  onResize = opts.resize || null;
+  var rsz;
+  window.addEventListener("resize", function () {
+    clearTimeout(rsz);
+    rsz = setTimeout(resize, 120);
+  }, { passive: true });
+  /* the game gets its first screen before the first paint, so that the
+     panel it writes is what the ground line is measured against */
+  if (opts.ready) opts.ready();
+  resize();
+  requestAnimationFrame(frame);
+}
+
+var api = {
+  reduced: reduced, FAST: FAST,
+  $: $, el: el, clamp: clamp, lerp: lerp, smooth: smooth, rgb: rgb, mix: mix, mulberry: mulberry,
+  M: M, ctx: null, world: world, SEASONS: SEASON_NAMES,
+  sw: sw, sky: skyPair, shadow: shadow,
+  land: drawLand, house: drawHouse, tree: drawTree, fence: drawFence,
+  figure: drawFigure, basket: drawBasket, coin: drawCoin, slate: drawSlate,
+  hill: hill,
+  season: function (i, immediate) {
+    world.prev = world.season;
+    world.season = ((i % 4) + 4) % 4;
+    world.mix = (immediate || world.season === world.prev) ? 1 : 0;
+  },
+  daylight: function (v, immediate) {
+    world.day = clamp(v, 0, 1);
+    if (immediate) world.dayT = world.day;
+  },
+  green: function (v) { greenLoss = clamp(v, 0, 1); },
+  villages: function (v) { showVillage = !!v; },
+  lift: function (v) { groundLift = v || 0; layout(); },
+  layout: layout,
+  ui: ui, store: store, keys: keys, start: start
+};
+return api;
+})();
+</script>
+
+<script>
+(function () {
+"use strict";
+
+var el = KW.el, clamp = KW.clamp, lerp = KW.lerp, smooth = KW.smooth;
+
+/* ---- the page's own three languages ---- */
+window.PAGE_I18N = {"tr": {"pg-desc": "On madenî para, bir yabancı ve tek bir teklif. Bıraktığını alabilir ya da reddedebilir; reddetmek ikinize de pahalıya patlıyor. Hem bölen hem cevap veren olarak oyna, sonra kendi eşiğini yalnızca kendi çıkarını gözeten bir oyuncununkiyle yan yana gör.", "ul-h1": "Ültimatom", "ul-skip": "Seçimlere atla", "ul-restart": "Baştan başla", "ul-name": "Ültimatom Oyunu", "ul-when-market": "pazar günü, tek masa, on para", "ul-when-str": "{b} yabancıdan {a}.", "ul-when-off": "{b} tekliften {a}.", "ul-when-turn": "artık cevap veren sensin", "ul-when-nums": "kendi sayıların", "ul-when-arg": "savın kendisi, açıkça", "ul-top-split": "Sen bölüyorsun", "ul-top-turn": "Masa dönüyor", "ul-top-ans": "Sen cevaplıyorsun", "ul-n-0": "arabacı", "ul-n-1": "yüncü kadın", "ul-n-2": "tuzcu çocuk", "ul-n-3": "kantarcı kadın", "ul-n-4": "bir yabancı", "ul-note-0": "Yan vadiden gelmiş, acelesi var", "ul-note-1": "Sabahtan beri bu tezgâhta", "ul-note-2": "Genç ve ellerinle ne yaptığına bakıyor", "ul-note-3": "Pazarın kantarını o tutuyor", "ul-note-4": "Burada onu kimse tanımıyor", "ul-t-p1": "Hiç tanışmadığın ve bir daha karşılaşmayacağın biriyle aranıza, masaya on para konuyor. Nasıl bölüneceğini sen söylüyorsun. O evet ya da hayır diyor. Evet derse dediğin gibi bölünüyor. Hayır derse paralar kutuya geri dönüyor ve ikiniz de eve hiçbir şey götürmüyorsunuz.", "ul-t-p2": "Beş yabancı; sonra masa dönüyor ve cevap veren sen oluyorsun. İkisini de bitirene kadar hiçbir şey açıklanmıyor.", "ul-b-resume": "Kaldığın yerden devam et", "ul-b-sit": "Masaya otur", "ul-s-title": "Ültimatom. On para, tek teklif ve onu reddedebilecek bir yabancı.", "ul-purse-a": "Kesende ", "ul-purse-b": " para", "ul-o-kick": "Senin teklifin", "ul-o-h": "On para ve {n}", "ul-o-p1": "{note}. Sana tek kelime etmedi ve bu pazara bir daha gelmeyecek. On parayı senin kadar net görüyor.", "ul-o-keep": "sende kalıyor", "ul-o-get": "ona gidiyor", "ul-o-aria": "On paradan kaçını teklif ettiğin", "ul-b-put": "Teklifi masaya koy", "ul-b-less": "Bir eksik", "ul-b-more": "Bir fazla", "ul-s-offer": "Yabancı {n}: {w}. On paradan kaçını teklif edeceğini seç, sonra teklifi masaya koy.", "ul-or-kick-y": "Alındı", "ul-or-kick-n": "Reddedildi", "ul-or-h-y": "Aldı", "ul-or-h-n": "Hiç almamayı yeğledi", "ul-or-p-y": "{o} teklif ettin. {w} masaya baktı, {o} parayı alıp gitti; sen de keseye {m} koydun.", "ul-or-p-n": "{o} teklif ettin. {w} masaya baktı, hayır dedi ve paralar kutuya geri döndü. İkiniz de eve hiçbir şey götürmediniz ve o hayır derken bunu biliyordu.", "ul-b-turns": "Masa dönüyor", "ul-b-nextstr": "Sıradaki yabancı", "ul-s-or-y": "Alındı. Sende {m} kaldı.", "ul-s-or-n": "Reddedildi. Kimse bir şey almıyor.", "ul-p2-kick": "İkinci kısım", "ul-p2-h": "Şimdi paraları başkası tutuyor", "ul-p2-p1": "Altı yabancı daha; bu kez on para masanın onların tarafında. Nasıl bölüneceğini onlar söylüyor, sen evet ya da hayır diyorsun. Hayır, aynen önceki gibi ikinize de hiçbir şey kazandırmıyor.", "ul-p2-p2": "Onlar hakkında hiçbir şey ölçülmüyor. Oyunun izlediği sensin.", "ul-b-first": "İlk teklif", "ul-s-p2": "İkinci kısım. Artık cevap veren sensin.", "ul-a-kick": "Onun teklifi", "ul-a-h": "{w} sana {g} teklif ediyor", "ul-a-p": "On para. {k} kendinde tutuyor, {c} masanın üzerinden sana itiyor. Evet dersen senin. Hayır dersen kutu onu geri alıyor.", "ul-a-keep": "onda kalıyor", "ul-a-get": "sana geliyor", "ul-b-take": "Al", "ul-b-refuse": "Reddet", "ul-s-a": "{w} ondan {g} teklif ediyor. Al ya da reddet.", "ul-ar-h-y": "Aldın", "ul-ar-h-n": "Geri gönderdin", "ul-ar-p-y": "{c} aldın, {w} {k} tuttu. Kimse bu konuda bir şey söylemedi.", "ul-ar-p-n": "Hayır dedin. On para kutuya geri döndü. {w} eli boş gitti, sen de öyle; bunu yapmak kesenden {c} götürdü.", "ul-b-did": "Ne yaptın", "ul-b-nextoff": "Sıradaki teklif", "ul-s-ar-y": "Alındı.", "ul-s-ar-n": "Reddedildi. Kimse bir şey almıyor.", "ul-coin1": "{n} para", "ul-coinN": "{n} para", "ul-off1": "{n} teklifi", "ul-offN": "{n} teklifi", "ul-mi-kick": "Ne yaptın", "ul-mi-h": "Masanın senin tarafı, yazıya dökülmüş", "ul-mi-p1": "Bölen taraf olarak {list} teklif ettin. Bu, ondan ortalama {a} para eder; yani her yüzden {p}.", "ul-m-you": "Teklif ettiğin", "ul-m-selfish": "Yalnızca kendi çıkarını gözeten oyuncunun teklifi", "ul-of100": "100'de {x}", "ul-mi-none": "Cevap veren taraf olarak her teklifi aldın; masadaki en küçüğü bile. Bu tam olarak öz çıkar modelinin öngördüğü şey ve gerçek bir masada modelin sandığından daha nadirdir.", "ul-mi-ref1": "Cevap veren taraf olarak {c} geri çevirdin. Geri çevirdiğin en büyük şey {mx} idi{minpart}", "ul-mi-min": "; kabul ettiğin en küçük şey ise {mn} idi.", "ul-mi-dot": ".", "ul-mi-ref2": "{mx0} sayısını geri çevirmek kendi kesenden {mxc} götürdü. Karşılığında bir şey almadın ve yaptığını kimse görmedi. Bunu, öbür sayı o olduğu için yaptın.", "ul-mi-sub": "Öz çıkar modeli ne diyor", "ul-mi-p3": "Sondan başa doğru düşün. Cevap veren, bir şeyi hiçle karşılaştırır; o yüzden sıfırın üstündeki her şeyi alır. Bölen bunu bilir; o yüzden olabilecek en küçük miktarı teklif eder ve dokuzu tutar. Geriye doğru tümevarımdan sağ çıkan tek bölüşüm budur ve paradan başka hiçbir şeye değer vermeyen bir oyuncunun teorisinin öngördüğü de budur.", "ul-mi-p4": "Neredeyse hiç kimse böyle oynamıyor; büyük olasılıkla sen de öyle oynamadın.", "ul-b-real": "Gerçek masalarda gerçekte ne oluyor", "ul-s-mi": "Ortalama teklifin yüzde {p} idi; öz çıkarın öngördüğü ona karşılık.", "ul-e-kick": "Sonu", "ul-e-h": "Adalet yumuşaklık değildir", "ul-e-p1": "Bu oyun kırk yılı aşkın süredir laboratuvarlarda, birçok ülkede ve bozuk paradan birkaç aylık maaşa kadar uzanan meblağlarla oynatılıyor. 37 makaleyi ve 75 ayrı sonucu tutan bir meta analiz, bölen kişinin ortalama olarak her 100'den 40'ını teklif ettiğini ve tekliflerin yaklaşık 100'de 16'sının reddedildiğini buldu. Kese büyüdükçe teklif edilen pay biraz düşüyor; teklif yükseldikçe reddedilme olasılığı da düşüyor.", "ul-e-p2": "Bunun iki yarısı da önemli. Teklifler olabilecek en küçük miktarın yanına bile yaklaşmıyor ve retler gerçek: insanlar, hakaret saydıkları bir bölüşüme hayır deme hakkı için kendi ceplerinden ödüyor.", "ul-e-p3": "Tekliflerin yüksek olmasının sebebi ille de iyilik değil. Reddedilmeyi bekleyen ve para isteyen biri daha çok teklif eder; bu yüzden masanın bölen tarafında cömert davranışla hesapçı davranış dışarıdan tıpatıp aynı görünür. O yolla açıklanamayan şey retler, çünkü hesaplanacak bir şey kalmamıştır: oyunun son hamlesidir ve reddetmek para olarak kesinlikle daha kötüdür.", "ul-e-sub1": "Bu neden küçük bir nokta değil", "ul-e-l1": "Laboratuvarın dışındaki her pazarlıkta, az önce gösterdiğin gibi bir eşik vardır. Ücret görüşmeleri, bir boşanma, sözleşmeyi yeniden konuşan bir tedarikçi: bir tarafın kabul edeceği şey, alabileceği en iyi şeyden ibaret değildir.", "ul-e-l2": "İnsanların her pozitif miktarı alacağını varsayan bir model yanlış bölüşümü öngörür ve odadaki herkes için tamamen öngörülebilir olan masadan kalkışlara şaşırır.", "ul-e-l3": "Eşik sabit bir insan sabiti de değildir. Kesenin büyüklüğüyle, insanların kesenin nasıl oluştuğu hakkında bildikleriyle ve oyuncuların nereli olduğuyla oynar.", "ul-e-sub2": "Bunun göstermediği", "ul-e-m1": "Buradaki yabancılar, yazarın aralığa yayılsın diye seçtiği birer gizli sayı. Kimsenin ölçümü değiller ve yayımlanmış herhangi bir dağılımdan çekilmediler.", "ul-e-m2": "Kendi eşiğin altı cevaptan okundu. Altı, bir insanı ölçmek için fazlasıyla az ve gördüğün teklifler rastgele örneklenmedi, kenarı bulmak için seçildi.", "ul-e-m3": "Buradaki paralar para değil. Hiçbir şeyine oynamak bir haftalık maaşına oynamakla aynı şey değil; yayımlanmış çalışmalar meblağın davranışı değiştirdiğini, ama çoğu kişinin sandığından az değiştirdiğini buluyor.", "ul-e-m4": "Bir daha hiç karşılaşmayacağın bir yabancıyla tek el, saf durumdur. Gerçek pazarlığın çoğu tekrarlanır ve herkesin gözü önündedir; orada reddetmenin, bu oyunun bilerek dışarıda bıraktığı bir amacı daha vardır.", "ul-e-m5": "Her 100'den 40 ortalaması, ülkeler ve tasarımlar üzerinden bir ortalamadır. Pazarlık edeceğin bir sonraki kişi hakkında bir öngörü değildir.", "ul-e-src": "Kaynaklar", "ul-src1": "Deneysel kayıt.", "ul-src2": "İlk deney.", "ul-src3": "Denge ve geriye doğru tümevarım.", "ul-src-tail": "Okundu: 2026 08 21.", "ul-fam": "Ailenin geri kalanı; biri bir mera, biri bir yazı tura hakkında olan ikisi de dahil: ", "ul-fam-a": "bütün oyunlar burada", "ul-b-again": "Yeniden otur", "ul-s-end": "Son. İnsanlar ortalama her yüzden kırkını teklif ediyor ve tekliflerin yaklaşık yüzde on altısı reddediliyor.", "ul-k-return": "enter", "ul-k-start": "başla", "ul-k-go": "devam", "ul-k-again": "tekrar", "ul-k-enter": "enter", "ul-k-y": "y tuşu", "ul-k-n": "n tuşu", "pg-title": "Ültimatom"}, "de": {"pg-desc": "Zehn Münzen, eine fremde Person und ein einziges Angebot. Sie kann nehmen, was Sie ihr lassen, oder ablehnen, und Ablehnen kostet Sie beide. Spielen Sie als die Person, die teilt, und als die, die antwortet, und sehen Sie dann Ihre eigene Schwelle neben der einer rein eigennützigen Spielerin.", "ul-h1": "Das Ultimatum", "ul-skip": "Zu den Entscheidungen springen", "ul-restart": "Von vorn beginnen", "ul-name": "Das Ultimatumspiel", "ul-when-market": "Markttag, ein Tisch, zehn Münzen", "ul-when-str": "Fremder {a} von {b}", "ul-when-off": "Angebot {a} von {b}", "ul-when-turn": "jetzt sind Sie es, der antwortet", "ul-when-nums": "Ihre eigenen Zahlen", "ul-when-arg": "das Argument, schlicht gesagt", "ul-top-split": "Sie teilen", "ul-top-turn": "Der Tisch dreht sich", "ul-top-ans": "Sie antworten", "ul-n-0": "der Fuhrmann", "ul-n-1": "die Wollhändlerin", "ul-n-2": "der Salzjunge", "ul-n-3": "die Waagemeisterin", "ul-n-4": "ein Fremder", "ul-note-0": "Aus dem Nachbartal herüber, in Eile", "ul-note-1": "Sie steht seit dem Morgen an diesem Stand", "ul-note-2": "Jung, und er beobachtet, was Sie mit den Händen tun", "ul-note-3": "Sie führt die Waage des Markts", "ul-note-4": "Hier kennt ihn niemand", "ul-t-p1": "Zehn Münzen liegen auf dem Tisch zwischen Ihnen und jemandem, den Sie nie getroffen haben und nie wiedersehen werden. Sie sagen, wie sie geteilt werden. Er sagt ja oder nein. Sagt er ja, wird geteilt, wie Sie es gesagt haben. Sagt er nein, gehen die Münzen zurück in die Kiste, und keiner von Ihnen nimmt etwas mit nach Hause.", "ul-t-p2": "Fünf Fremde, dann dreht sich der Tisch, und Sie sind der, der antwortet. Nichts wird erklärt, bevor Sie beides getan haben.", "ul-b-resume": "Dort weitermachen, wo Sie aufgehört haben", "ul-b-sit": "Setzen Sie sich an den Tisch", "ul-s-title": "Das Ultimatum. Zehn Münzen, ein Angebot, und ein Fremder, der es ablehnen kann.", "ul-purse-a": "Ihr Beutel ", "ul-purse-b": " Münzen", "ul-o-kick": "Ihr Angebot", "ul-o-h": "Zehn Münzen und {n}", "ul-o-p1": "{note}. Bis jetzt kein Wort an Sie, und nach diesem Markttag sehen Sie einander nie wieder. Die zehn Münzen sind von drüben so deutlich zu sehen wie von Ihrer Seite.", "ul-o-keep": "Sie behalten", "ul-o-get": "der andere bekommt", "ul-o-aria": "Wie viele der zehn Münzen Sie anbieten", "ul-b-put": "Das Angebot auf den Tisch legen", "ul-b-less": "Eine weniger", "ul-b-more": "Eine mehr", "ul-s-offer": "Fremder {n}: {w}. Wählen Sie, wie viele der zehn Münzen Sie anbieten, und legen Sie das Angebot auf den Tisch.", "ul-or-kick-y": "Angenommen", "ul-or-kick-n": "Abgelehnt", "ul-or-h-y": "Angenommen", "ul-or-h-n": "Lieber nichts", "ul-or-p-y": "Sie boten {o}. {w} sah auf den Tisch, nahm die {o} und ging; Sie steckten {m} in Ihren Beutel.", "ul-or-p-n": "Sie boten {o}. {w} sah auf den Tisch und sagte nein; die Münzen gingen zurück in die Kiste. Keiner von Ihnen nahm etwas mit nach Hause, und Ihr Gegenüber wusste das, als es nein sagte.", "ul-b-turns": "Der Tisch dreht sich", "ul-b-nextstr": "Der nächste Fremde", "ul-s-or-y": "Angenommen. Sie behalten {m}.", "ul-s-or-n": "Abgelehnt. Niemand nimmt etwas.", "ul-p2-kick": "Teil zwei", "ul-p2-h": "Jetzt hält jemand anderes die Münzen", "ul-p2-p1": "Sechs weitere Fremde, und diesmal liegen die zehn Münzen auf ihrer Seite des Tisches. Sie sagen, wie geteilt wird, und Sie sagen ja oder nein. Nein ist für beide nichts wert, genau wie zuvor.", "ul-p2-p2": "Über sie wird nichts gemessen. Was das Spiel beobachtet, sind Sie.", "ul-b-first": "Das erste Angebot", "ul-s-p2": "Teil zwei. Jetzt antworten Sie.", "ul-a-kick": "Das Angebot", "ul-a-h": "{w} bietet Ihnen {g}", "ul-a-p": "Zehn Münzen. {k} bleiben drüben, {c} werden über den Tisch zu Ihnen geschoben. Sagen Sie ja, gehört es Ihnen. Sagen Sie nein, nimmt die Kiste alle zehn zurück.", "ul-a-keep": "der andere behält", "ul-a-get": "Sie bekommen", "ul-b-take": "Annehmen", "ul-b-refuse": "Ablehnen", "ul-s-a": "{w} bietet Ihnen {g} von zehn. Nehmen Sie an oder lehnen Sie ab.", "ul-ar-h-y": "Sie nahmen es", "ul-ar-h-n": "Sie schickten es zurück", "ul-ar-p-y": "Sie nahmen {c}, und {w} behielt {k}. Niemand verlor ein Wort darüber.", "ul-ar-p-n": "Sie sagten nein. Die zehn Münzen gingen zurück in die Kiste. {w} ging mit nichts, Sie auch, und es kostete Sie {c}, das zu tun.", "ul-b-did": "Was Sie getan haben", "ul-b-nextoff": "Das nächste Angebot", "ul-s-ar-y": "Angenommen.", "ul-s-ar-n": "Abgelehnt. Niemand nimmt etwas.", "ul-coin1": "{n} Münze", "ul-coinN": "{n} Münzen", "ul-off1": "{n} Angebot", "ul-offN": "{n} Angebote", "ul-mi-kick": "Was Sie getan haben", "ul-mi-h": "Ihre Seite des Tisches, aufgeschrieben", "ul-mi-p1": "Als der Teilende boten Sie {list}. Das ist im Schnitt {a} von zehn Münzen, also {p} von hundert.", "ul-m-you": "Was Sie boten", "ul-m-selfish": "Was ein rein eigennütziger Spieler bietet", "ul-of100": "{x} von 100", "ul-mi-none": "Als der Antwortende nahmen Sie jedes Angebot an, auch das kleinste auf dem Tisch. Genau das sagt das eigennützige Modell voraus, und an einem echten Tisch ist es seltener, als das Modell erwartet.", "ul-mi-ref1": "Als der Antwortende lehnten Sie {c} ab. Das Größte, das Sie ausschlugen, waren {mx}{minpart}", "ul-mi-min": "; das Kleinste, das Sie annahmen, war {mn}.", "ul-mi-dot": ".", "ul-mi-ref2": "{mx0} auszuschlagen kostete Sie {mxc} aus dem eigenen Beutel. Bezahlt wurden Sie dafür nicht, und niemand sah es. Sie taten es wegen der anderen Zahl.", "ul-mi-sub": "Was das eigennützige Modell sagt", "ul-mi-p3": "Rechnen Sie es von hinten. Wer antwortet, vergleicht etwas mit nichts, also nimmt er alles über null. Wer teilt, weiß das, also bietet er den kleinstmöglichen Betrag und behält neun. Das ist die einzige Teilung, die die Rückwärtsinduktion übersteht, und sie ist, was die Theorie eines Spielers vorhersagt, der nichts außer Münzen schätzt.", "ul-mi-p4": "Fast niemand spielt so, sehr wahrscheinlich auch Sie nicht.", "ul-b-real": "Was an echten Tischen wirklich geschieht", "ul-s-mi": "Ihr durchschnittliches Angebot war {p} von hundert, gegen die eigennützige Vorhersage von zehn.", "ul-e-kick": "Das Ende", "ul-e-h": "Fairness ist keine Weichheit", "ul-e-p1": "Dieses Spiel läuft seit über vierzig Jahren in Laboren, in vielen Ländern und um Einsätze von Kleingeld bis zu mehreren Monatslöhnen. Eine Metaanalyse von 37 Arbeiten mit 75 einzelnen Ergebnissen fand, dass die teilende Person im Durchschnitt 40 von 100 bietet und dass etwa 16 von 100 Angeboten abgelehnt werden. Der gebotene Anteil sinkt etwas, wenn der Topf größer ist, und die Chance einer Ablehnung sinkt, je höher das Angebot ist.", "ul-e-p2": "Beide Hälften davon zählen. Die Angebote sind nirgendwo in der Nähe des kleinstmöglichen Betrags, und die Ablehnungen sind echt: Menschen bezahlen aus eigenem Geld für das Recht, zu einer Teilung nein zu sagen, die sie für eine Beleidigung halten.", "ul-e-p3": "Der Grund für die hohen Angebote ist nicht unbedingt Güte. Wer eine Ablehnung erwartet und Münzen will, bietet mehr; großzügiges und berechnendes Verhalten sehen auf der teilenden Seite des Tisches von außen gleich aus. Was sich so nicht erklären lässt, sind die Ablehnungen, denn da bleibt nichts zu berechnen: Es ist der letzte Zug des Spiels, und ablehnen ist in Münzen strikt schlechter.", "ul-e-sub1": "Warum das kein kleiner Punkt ist", "ul-e-l1": "Jeder Handel außerhalb des Labors hat eine Schwelle wie die, die Sie gerade gezeigt haben. Lohnverhandlungen, eine Scheidung, ein Lieferant, der den Vertrag neu verhandelt: Was eine Seite akzeptiert, ist nicht einfach das Beste, was sie bekommen kann.", "ul-e-l2": "Ein Modell, das annimmt, Menschen nähmen jeden positiven Betrag, sagt die falsche Teilung voraus und ist überrascht von Abbrüchen, die für jeden im Raum völlig vorhersehbar waren.", "ul-e-l3": "Die Schwelle ist auch keine feste menschliche Konstante. Sie bewegt sich mit der Größe des Topfes, mit dem, was die Leute über seine Herkunft wissen, und damit, woher die Spieler kommen.", "ul-e-sub2": "Was das nicht zeigt", "ul-e-m1": "Die Fremden hier sind je eine verborgene Zahl, vom Autor gewählt, um die Spanne abzudecken. Sie sind keine Messungen von irgendwem und wurden aus keiner veröffentlichten Verteilung gezogen.", "ul-e-m2": "Ihre eigene Schwelle wurde aus sechs Antworten abgelesen. Sechs sind viel zu wenige, um einen Menschen zu messen, und die Angebote, die Sie sahen, wurden gewählt, um die Kante zu finden, nicht zufällig gezogen.", "ul-e-m3": "Die Münzen sind kein Geld. Um nichts zu spielen ist nicht dasselbe wie um einen Wochenlohn, und die veröffentlichte Literatur findet, dass Einsätze das Verhalten ändern, wenn auch weniger, als die meisten erwarten.", "ul-e-m4": "Eine Runde mit einem Fremden, den Sie nie wiedersehen, ist der reine Fall. Das meiste echte Verhandeln ist wiederholt und öffentlich; dort hat das Ablehnen einen weiteren Zweck, den dieses Spiel mit Absicht entfernt.", "ul-e-m5": "Der Durchschnitt von 40 je 100 ist ein Durchschnitt über Länder und Designs. Er ist keine Vorhersage über den nächsten Menschen, mit dem Sie verhandeln.", "ul-e-src": "Quellen", "ul-src1": "Die experimentelle Bilanz.", "ul-src2": "Das erste Experiment.", "ul-src3": "Gleichgewicht und Rückwärtsinduktion.", "ul-src-tail": "Gelesen: 2026 08 21.", "ul-fam": "Der Rest der Familie, darunter eines über eine Weide und eines über eine Münze: ", "ul-fam-a": "alle Spiele sind hier", "ul-b-again": "Setzen Sie sich wieder", "ul-s-end": "Das Ende. Im Durchschnitt bieten Menschen vierzig von hundert, und etwa sechzehn von hundert Angeboten werden abgelehnt.", "ul-k-return": "Enter", "ul-k-start": "Start", "ul-k-go": "weiter", "ul-k-again": "erneut", "ul-k-enter": "Enter", "ul-k-y": "Taste y", "ul-k-n": "Taste n", "pg-title": "Das Ultimatum"}};
+function T(k, en, v) {
+  var s = window.__t ? window.__t(k, en) : en;
+  if (v) for (var n in v) s = s.split("{" + n + "}").join(String(v[n]));
+  return s;
+}
+var NAME_KEY = { "the carter": "ul-n-0", "the wool seller": "ul-n-1",
+                 "the salt boy": "ul-n-2", "the weigher": "ul-n-3", "a stranger": "ul-n-4" };
+function pName(en) { return T(NAME_KEY[en] || "", en); }
+function coinsW(n) { return n === 1 ? T("ul-coin1", "{n} coin", {n: n}) : T("ul-coinN", "{n} coins", {n: n}); }
+function offersW(n) { return n === 1 ? T("ul-off1", "{n} offer", {n: n}) : T("ul-offN", "{n} offers", {n: n}); }
+
+var ui = KW.ui, ctx = null;
+var store = KW.store("kw.ultimatum.v1");
+
+/* ============================================================
+   1. the game itself
+   Ten coins. One of you says how they are split, the other says
+   yes or no, and no is worth nothing to either of you.
+   ============================================================ */
+
+var POT = 10;
+
+/* Every stranger has one number: the smallest share they will take.
+   A player who wanted coins and nothing else would have a one here. */
+var STRANGERS = [
+  { name: "the carter",      mao: 1, note: "in from the next valley, in a hurry",
+    fig: { coat: "#6b5334", hairStyle: "hat", capCol: "#4a3826", hair: "#3a2a18", stout: true } },
+  { name: "the wool seller", mao: 3, note: "she has been at this stall since morning",
+    fig: { coat: "#7a6a8a", hairStyle: "braid", hair: "#3a2a18", skin: "#c99a72" } },
+  { name: "the salt boy",    mao: 4, note: "young, and watching what you do with your hands",
+    fig: { coat: "#4a6b6b", hairStyle: "curly", hair: "#1f1710", skin: "#bd8f66" } },
+  { name: "the weigher",     mao: 5, note: "she keeps the scales for the market",
+    fig: { coat: "#40566e", hairStyle: "bun", hair: "#241a12", skin: "#d0a37c" } },
+  { name: "a stranger",      mao: 2, note: "nobody here knows him",
+    fig: { coat: "#5e7a6a", hairStyle: "cap", capCol: "#4d5a3a", hair: "#2a1c10" } }
+];
+
+/* The offers you are handed in the second half, and who hands them over.
+   They are spread across the range on purpose: what the game wants is
+   the point at which you start saying no. */
+var INCOMING = [
+  { from: "the wool seller", give: 5, fig: 1 },
+  { from: "the carter",      give: 2, fig: 0 },
+  { from: "the weigher",     give: 4, fig: 3 },
+  { from: "a stranger",      give: 1, fig: 4 },
+  { from: "the salt boy",    give: 3, fig: 2 },
+  { from: "the carter",      give: 0, fig: 0 }
+];
+
+/* ============================================================
+   2. state
+   ============================================================ */
+
+var G = {
+  view: "title", part: 1, round: 0, coins: 0,
+  offer: 5,
+  given: [],        /* what you offered, and whether it was taken */
+  taken: [],        /* what you were offered, and whether you took it */
+  last: null
+};
+
+var widgets = null;   /* the three nodes the slider writes into */
+var scene = { mode: "table", t0: -99, them: 0, mine: 5, theirs: 5, shown: false, refused: false, absent: true };
+
+function ease() { return KW.reduced ? 1 : clamp((KW.world.t - scene.t0) / 0.8, 0, 1); }
+
+function save() {
+  store.save({ view: G.view, part: G.part, round: G.round, coins: G.coins,
+               given: G.given, taken: G.taken });
+}
+
+/* ============================================================
+   3. the market table
+   ============================================================ */
+
+function drawTable(cx, gy, s) {
+  var sk = KW.sky();
+  var w = s * 92, h = s * 26;
+  ctx.save();
+  ctx.translate(cx, gy);
+  KW.shadow(0, w * 0.6, 0.26 * (1 - sk.night * 0.5));
+  var top = KW.mix([124, 98, 66], [42, 40, 52], sk.night * 0.7);
+  var leg = KW.mix([92, 72, 48], [34, 34, 46], sk.night * 0.7);
+  ctx.fillStyle = KW.rgb(leg);
+  ctx.fillRect(-w / 2 + s * 6, -h, s * 5, h);
+  ctx.fillRect(w / 2 - s * 11, -h, s * 5, h);
+  ctx.fillStyle = KW.rgb(top);
+  ctx.fillRect(-w / 2, -h - s * 6, w, s * 6);
+  ctx.fillStyle = "rgba(24,16,8,.28)";
+  ctx.fillRect(-w / 2, -h - s * 1.6, w, s * 1.6);
+  ctx.strokeStyle = "rgba(240,220,180,.14)"; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(-w / 2, -h - s * 5); ctx.lineTo(w / 2, -h - s * 5); ctx.stroke();
+  ctx.restore();
+  return { y: gy - h - s * 6, w: w };
+}
+
+function drawStack(x, y, n, s, fall) {
+  for (var i = 0; i < n; i++) {
+    var row = i % 5, col = (i / 5) | 0;
+    var cx = x + col * s * 11 - (n > 5 ? s * 5 : 0);
+    var cy = y - s * 3.4 - row * s * 3.4 + (fall ? fall * fall * 90 : 0);
+    KW.coin(cx, cy, s * 3.4, null);
+  }
+}
+
+function drawWorld(t) {
+  var M = KW.M;
+  KW.house(t, M.small ? M.W * 0.12 : M.W * 0.1);
+  KW.tree(t, M.small ? M.W * 0.92 : M.W * 0.9, 0.86);
+
+  var u = ease();
+  var px = M.CX - M.DX, nx = M.CX + M.DX;
+  var s = M.small ? 0.9 : 1.35;
+  var tbl = drawTable(M.CX, M.GY, s);
+
+  KW.shadow(px, 16, 0.24);
+  KW.figure(px, M.GY, t, {
+    coat: "#8a4a2c", hairStyle: "curly", hair: "#241a12", skin: "#c99a72",
+    face: 1, pose: scene.shown ? "offer" : "stand", reach: u
+  });
+
+  if (!scene.absent) {
+    var st = STRANGERS[scene.them] || STRANGERS[0];
+    KW.shadow(nx, 16, 0.24);
+    KW.figure(nx, M.GY, t, Object.assign({}, st.fig, {
+      face: -1, pose: scene.refused && u > 0.4 ? "withhold" : scene.shown ? "offer" : "stand", reach: u
+    }));
+  }
+
+  if (scene.shown) {
+    var fall = scene.refused ? clamp((u - 0.45) / 0.55, 0, 1) : 0;
+    drawStack(M.CX - tbl.w * 0.28, tbl.y, scene.mine, s, fall);
+    drawStack(M.CX + tbl.w * 0.2, tbl.y, scene.theirs, s, fall);
+  }
+}
+
+/* ============================================================
+   4. views
+   ============================================================ */
+
+var VIEWS = {};
+ui.reading = { title: 1, partTwo: 1, mirror: 1, ending: 1 };
+
+function view(name) {
+  G.view = name;
+  ui.clear();
+  ui.panel.className = ui.reading[name] ? "read" : "";
+  VIEWS[name]();
+  KW.layout();
+  ui.focusFirst(name);
+  save();
+}
+
+function purse() {
+  var d = el("div", "tally");
+  var a = el("span");
+  a.appendChild(document.createTextNode(T("ul-purse-a", "Your purse ")));
+  a.appendChild(el("b", null, String(G.coins)));
+  a.appendChild(document.createTextNode(T("ul-purse-b", " coins")));
+  d.appendChild(a);
+  ui.panel.appendChild(d);
+}
+
+VIEWS.title = function () {
+  scene.shown = false; scene.absent = true; scene.refused = false;
+  KW.season(1, true); KW.daylight(0.18, true);
+  KW.$("menuBtn").hidden = true;
+  ui.top(T("ul-name", "The Ultimatum"), T("ul-when-market", "market day, one table, ten coins"));
+  ui.head(T("ul-name", "The Ultimatum"));
+  ui.para(T("ul-t-p1", "Ten coins are put on the table between you and someone you have never met and will not meet again. You say how they are to be divided. They say yes or no. If they say yes it is divided the way you said. If they say no, the coins go back in the box and neither of you takes anything home."));
+  ui.para(T("ul-t-p2", "Five strangers, then the table turns around and you are the one answering. Nothing is explained until you have done both."));
+  var r = ui.actions();
+  var s = store.load();
+  if (s && (s.round > 0 || s.part > 1)) {
+    ui.btn(r, T("ul-b-resume", "Go on from where you stopped"), T("ul-k-return", "return"), function () { resume(s); }, "big");
+  }
+  ui.btn(r, T("ul-b-sit", "Sit down at the table"), T("ul-k-start", "start"), function () {
+    ui.acted = true;
+    G.part = 1; G.round = 0; G.coins = 0; G.given = []; G.taken = [];
+    KW.$("menuBtn").hidden = false;
+    beginOffer();
+  }, "big");
+  ui.say(T("ul-s-title", "The Ultimatum. Ten coins, one offer, and a stranger who can refuse it."));
+};
+
+function resume(s) {
+  ui.acted = true;
+  G.part = s.part || 1; G.round = s.round || 0; G.coins = s.coins || 0;
+  G.given = s.given || []; G.taken = s.taken || [];
+  KW.$("menuBtn").hidden = false;
+  if (G.part === 1) {
+    if (G.round >= STRANGERS.length) view("partTwo"); else beginOffer();
+  } else {
+    if (G.round >= INCOMING.length) view("mirror"); else beginAnswer();
+  }
+}
+
+/* ---- part one: you are the one who splits ---- */
+
+function beginOffer() {
+  scene.them = G.round; scene.absent = false; scene.shown = false; scene.refused = false;
+  scene.t0 = KW.world.t;
+  KW.season(1 + (G.round % 2), G.round === 0);
+  KW.daylight(0.15 + (G.round / STRANGERS.length) * 0.4);
+  view("offer");
+}
+
+VIEWS.offer = function () {
+  var st = STRANGERS[G.round];
+  ui.top(T("ul-top-split", "You split"), T("ul-when-str", "stranger {a} of {b}", {a: G.round + 1, b: STRANGERS.length}));
+  ui.kick(T("ul-o-kick", "Your offer"));
+  ui.head(T("ul-o-h", "Ten coins, and {n}", {n: pName(st.name)}));
+  ui.para(T("ul-o-p1", "{note}. They have not said a word to you and they will not be at this market again. They can see the ten coins as clearly as you can.", {note: T("ul-note-" + G.round, st.note.charAt(0).toUpperCase() + st.note.slice(1))}));
+
+  var wrap = el("div", "split");
+  var mine = el("div"), theirs = el("div", "them");
+  mine.appendChild(el("b", null, String(POT - G.offer)));
+  mine.appendChild(document.createTextNode(T("ul-o-keep", "you keep")));
+  theirs.appendChild(el("b", null, String(G.offer)));
+  theirs.appendChild(document.createTextNode(T("ul-o-get", "they get")));
+  wrap.appendChild(mine); wrap.appendChild(theirs);
+  ui.panel.appendChild(wrap);
+
+  var box = el("div", "slider");
+  var lab = el("label", "vh", T("ul-o-aria", "How many of the ten coins you offer"));
+  lab.setAttribute("for", "off");
+  var inp = el("input");
+  inp.type = "range"; inp.id = "off"; inp.min = 0; inp.max = POT; inp.step = 1;
+  inp.value = String(G.offer);
+  inp.setAttribute("aria-label", T("ul-o-aria", "How many of the ten coins you offer"));
+  inp.addEventListener("input", function () {
+    setOffer(parseInt(inp.value, 10) || 0);
+  });
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); ui.acted = true; propose(G.offer); }
+  });
+  widgets = { inp: inp, mine: mine, theirs: theirs };
+  box.appendChild(lab); box.appendChild(inp);
+  ui.panel.appendChild(box);
+
+  scene.mine = POT - G.offer; scene.theirs = G.offer;
+
+  var r = ui.actions();
+  ui.btn(r, T("ul-b-put", "Put the offer on the table"), T("ul-k-enter", "press enter"), function () { propose(G.offer); }, "big yes");
+  var r2 = ui.actions();
+  ui.btn(r2, T("ul-b-less", "One less"), null, function () { setOffer(G.offer - 1); }, "quiet");
+  ui.btn(r2, T("ul-b-more", "One more"), null, function () { setOffer(G.offer + 1); }, "quiet");
+  purse();
+  setTimeout(function () { if (ui.acted && G.view === "offer") inp.focus({ preventScroll: true }); }, 0);
+  ui.say(T("ul-s-offer", "Stranger {n}, {w}. Choose how many of the ten coins to offer, then put the offer on the table.", {n: G.round + 1, w: pName(st.name)}));
+};
+
+function setOffer(v) {
+  G.offer = clamp(v, 0, POT);
+  scene.mine = POT - G.offer; scene.theirs = G.offer;
+  if (widgets && G.view === "offer") {
+    widgets.inp.value = String(G.offer);
+    widgets.mine.firstChild.textContent = String(POT - G.offer);
+    widgets.theirs.firstChild.textContent = String(G.offer);
+  }
+}
+
+function propose(n) {
+  widgets = null;
+  var st = STRANGERS[G.round];
+  var taken = n >= st.mao;
+  G.coins += taken ? (POT - n) : 0;
+  G.given.push({ who: st.name, offered: n, taken: taken, mao: st.mao });
+  G.last = { who: st.name, offered: n, taken: taken, mine: POT - n };
+  scene.shown = true; scene.refused = !taken;
+  scene.mine = POT - n; scene.theirs = n;
+  scene.t0 = KW.world.t;
+  G.round++;
+  save();
+  view("offerResult");
+}
+
+VIEWS.offerResult = function () {
+  var r = G.last;
+  ui.top(T("ul-top-split", "You split"), T("ul-when-str", "stranger {a} of {b}", {a: G.round, b: STRANGERS.length}));
+  ui.kick(r.taken ? T("ul-or-kick-y", "Taken") : T("ul-or-kick-n", "Refused"));
+  ui.head(r.taken ? T("ul-or-h-y", "They took it") : T("ul-or-h-n", "They would rather have nothing"));
+  if (r.taken) {
+    ui.para(T("ul-or-p-y", "You offered {o}. {w} looked at the table, took the {o} and went, and you put {m} in your purse.",
+            {o: r.offered, w: cap(pName(r.who)), m: r.mine}), "say");
+  } else {
+    ui.para(T("ul-or-p-n", "You offered {o}. {w} looked at the table, said no, and the coins went back in the box. Neither of you took anything home, and they knew that when they said it.", {o: r.offered, w: cap(pName(r.who))}), "say");
+  }
+  purse();
+  var row = ui.actions();
+  if (G.round >= STRANGERS.length) {
+    ui.btn(row, T("ul-b-turns", "The table turns around"), T("ul-k-go", "go on"), function () { view("partTwo"); }, "big");
+  } else {
+    ui.btn(row, T("ul-b-nextstr", "The next stranger"), T("ul-k-go", "go on"), function () { beginOffer(); }, "big");
+  }
+  ui.say(r.taken ? T("ul-s-or-y", "Taken. You keep {m}.", {m: r.mine}) : T("ul-s-or-n", "Refused. Nobody takes anything."));
+};
+
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* ---- part two: you are the one who answers ---- */
+
+VIEWS.partTwo = function () {
+  scene.shown = false; scene.absent = true; scene.refused = false;
+  ui.top(T("ul-top-turn", "The table turns"), T("ul-when-turn", "now you are the one answering"));
+  ui.kick(T("ul-p2-kick", "Part two"));
+  ui.head(T("ul-p2-h", "Now somebody else holds the coins"));
+  ui.para(T("ul-p2-p1", "Six more strangers, and this time the ten coins are on their side of the table. They say how it is split and you say yes or no. No is worth nothing to either of you, exactly as before."));
+  ui.para(T("ul-p2-p2", "Nothing is being measured about them. What the game is watching is you."));
+  var r = ui.actions();
+  ui.btn(r, T("ul-b-first", "The first offer"), T("ul-k-go", "go on"), function () {
+    G.part = 2; G.round = 0;
+    beginAnswer();
+  }, "big");
+  ui.say(T("ul-s-p2", "Part two. Now you are the one answering."));
+};
+
+function beginAnswer() {
+  var inc = INCOMING[G.round];
+  scene.them = inc.fig; scene.absent = false; scene.shown = true; scene.refused = false;
+  scene.mine = inc.give; scene.theirs = POT - inc.give;
+  scene.t0 = KW.world.t;
+  KW.season(2 + (G.round % 2), G.round === 0);
+  KW.daylight(0.4 + (G.round / INCOMING.length) * 0.4);
+  view("answer");
+}
+
+VIEWS.answer = function () {
+  var inc = INCOMING[G.round];
+  ui.top(T("ul-top-ans", "You answer"), T("ul-when-off", "offer {a} of {b}", {a: G.round + 1, b: INCOMING.length}));
+  ui.kick(T("ul-a-kick", "Their offer"));
+  ui.head(T("ul-a-h", "{w} offers you {g}", {w: cap(pName(inc.from)), g: inc.give}));
+  ui.para(T("ul-a-p", "Ten coins. They keep {k} and push {c} across the table to you. Say yes and it is yours. Say no and the box takes all ten back.",
+          {k: POT - inc.give, c: coinsW(inc.give)}));
+
+  var wrap = el("div", "split");
+  var theirs = el("div"), mine = el("div", "them");
+  theirs.appendChild(el("b", null, String(POT - inc.give)));
+  theirs.appendChild(document.createTextNode(T("ul-a-keep", "they keep")));
+  mine.appendChild(el("b", null, String(inc.give)));
+  mine.appendChild(document.createTextNode(T("ul-a-get", "you get")));
+  wrap.appendChild(theirs); wrap.appendChild(mine);
+  ui.panel.appendChild(wrap);
+
+  var r = ui.actions();
+  ui.btn(r, T("ul-b-take", "Take it"), T("ul-k-y", "press y"), function () { answer(true); }, "big yes");
+  ui.btn(r, T("ul-b-refuse", "Refuse it"), T("ul-k-n", "press n"), function () { answer(false); }, "big no");
+  purse();
+  ui.say(T("ul-s-a", "{w} offers you {g} of ten. Take it or refuse it.", {w: cap(pName(inc.from)), g: inc.give}));
+};
+
+function answer(yes) {
+  var inc = INCOMING[G.round];
+  if (yes) G.coins += inc.give;
+  G.taken.push({ from: inc.from, give: inc.give, took: yes });
+  G.last = { from: inc.from, give: inc.give, took: yes };
+  scene.refused = !yes; scene.t0 = KW.world.t;
+  G.round++;
+  save();
+  view("answerResult");
+}
+
+VIEWS.answerResult = function () {
+  var r = G.last;
+  ui.top(T("ul-top-ans", "You answer"), T("ul-when-off", "offer {a} of {b}", {a: G.round, b: INCOMING.length}));
+  ui.kick(r.took ? T("ul-or-kick-y", "Taken") : T("ul-or-kick-n", "Refused"));
+  ui.head(r.took ? T("ul-ar-h-y", "You took it") : T("ul-ar-h-n", "You sent it back"));
+  ui.para(r.took
+    ? T("ul-ar-p-y", "You took the {c} and {w} kept {k}. Nobody said anything about it.",
+        {c: coinsW(r.give), w: pName(r.from), k: POT - r.give})
+    : T("ul-ar-p-n", "You said no. The ten coins went back in the box. {w} walked away with nothing, and so did you, and it cost you {c} to do it.",
+        {w: cap(pName(r.from)), c: coinsW(r.give)}), "say");
+  purse();
+  var row = ui.actions();
+  if (G.round >= INCOMING.length) {
+    ui.btn(row, T("ul-b-did", "What you did"), T("ul-k-go", "go on"), function () { view("mirror"); }, "big");
+  } else {
+    ui.btn(row, T("ul-b-nextoff", "The next offer"), T("ul-k-go", "go on"), function () { beginAnswer(); }, "big");
+  }
+  ui.say(r.took ? T("ul-s-ar-y", "Taken.") : T("ul-s-ar-n", "Refused. Nobody takes anything."));
+};
+
+/* ---- the mirror: your own threshold, beside the model's ---- */
+
+function thresholdWords() {
+  var refused = G.taken.filter(function (x) { return !x.took; });
+  var accepted = G.taken.filter(function (x) { return x.took; });
+  var maxRefused = refused.length ? Math.max.apply(null, refused.map(function (x) { return x.give; })) : -1;
+  var minAccepted = accepted.length ? Math.min.apply(null, accepted.map(function (x) { return x.give; })) : -1;
+  return { maxRefused: maxRefused, minAccepted: minAccepted,
+           refusedCount: refused.length, acceptedCount: accepted.length };
+}
+
+VIEWS.mirror = function () {
+  scene.shown = false; scene.absent = true;
+  KW.daylight(0.62);
+  var th = thresholdWords();
+  var offers = G.given.map(function (x) { return x.offered; });
+  var avg = offers.length ? offers.reduce(function (a, b) { return a + b; }, 0) / offers.length : 0;
+
+  ui.top(T("ul-name", "The Ultimatum"), T("ul-when-nums", "your own numbers"));
+  ui.kick(T("ul-mi-kick", "What you did"));
+  ui.head(T("ul-mi-h", "Your side of the table, written down"));
+
+  ui.para(T("ul-mi-p1", "As the one who split, you offered {list}. That is an average of {a} coins out of ten, which is {p} of every hundred.",
+          {list: offers.join(", "), a: Math.round(avg * 10) / 10, p: Math.round(avg * 10)}));
+
+  ui.meter(T("ul-m-you", "What you offered"), avg / POT, T("ul-of100", "{x} of 100", {x: Math.round(avg * 10)}), avg / POT >= 0.3);
+  ui.meter(T("ul-m-selfish", "What a purely self interested player offers"), 0.1, T("ul-of100", "{x} of 100", {x: 10}), false);
+
+  if (th.refusedCount === 0) {
+    ui.para(T("ul-mi-none", "As the one answering, you took every offer, including the smallest one on the table. That is exactly what the self interested model predicts, and it is rarer at a real table than the model expects."));
+  } else {
+    ui.para(T("ul-mi-ref1", "As the one answering, you refused {c}. The largest thing you turned down was {mx}{minpart}",
+            {c: offersW(th.refusedCount), mx: coinsW(th.maxRefused),
+             minpart: th.minAccepted >= 0 ? T("ul-mi-min", ", and the smallest thing you accepted was {mn}.", {mn: th.minAccepted}) : T("ul-mi-dot", ".")}));
+    ui.para(T("ul-mi-ref2", "Turning down {mx0} cost you {mxc} out of your own purse. You were not paid for it and nobody saw you do it. You did it because of what the other number was.",
+            {mx0: th.maxRefused, mxc: coinsW(th.maxRefused)}));
+  }
+
+  ui.sub(T("ul-mi-sub", "What the self interested model says"));
+  ui.para(T("ul-mi-p3", "Work it backwards. The person answering compares something with nothing, so they take anything above zero. The person splitting knows that, so they offer the smallest amount there is and keep nine. That is the only division that survives backward induction, and it is what the theory of a player who values nothing but coins predicts."));
+  ui.para(T("ul-mi-p4", "Almost nobody plays that way, including, most likely, you."));
+
+  var r = ui.actions();
+  ui.btn(r, T("ul-b-real", "What actually happens at real tables"), T("ul-k-go", "go on"), function () { view("ending"); }, "big");
+  ui.say(T("ul-s-mi", "Your average offer was {p} of a hundred, against the self interested prediction of ten.", {p: Math.round(avg * 10)}));
+};
+
+/* ============================================================
+   5. the ending
+   ============================================================ */
+
+VIEWS.ending = function () {
+  KW.season(2, true); KW.daylight(0.66);
+  ui.top(T("ul-name", "The Ultimatum"), T("ul-when-arg", "the argument, plainly"));
+  ui.kick(T("ul-e-kick", "The end of it"));
+  ui.head(T("ul-e-h", "Fairness is not softness"));
+
+  ui.para(T("ul-e-p1", "This game has been run in laboratories for more than forty years, in many countries and for stakes from small change to several months of wages. A meta analysis of 37 papers, holding 75 separate results, found that on average the person splitting offers 40 of every 100, and that about 16 of every 100 offers are refused. The share offered falls somewhat when the pot is larger, and the chance of refusal falls as the offer rises."));
+  ui.para(T("ul-e-p2", "Both halves of that matter. The offers are nowhere near the smallest possible amount, and the refusals are real: people pay, out of their own money, for the right to say no to a division they consider an insult."));
+  ui.para(T("ul-e-p3", "The reason the offers are high is not necessarily kindness. Someone who expects to be refused and wants coins will offer more, so generous behaviour and calculating behaviour look identical from the outside on the splitting side of the table. The refusals are what cannot be explained that way, because there is nothing left to calculate: it is the last move of the game and refusing is strictly worse in coins."));
+
+  ui.sub(T("ul-e-sub1", "Why this is not a small point"));
+  ui.list([
+    T("ul-e-l1", "Every bargain outside a laboratory has a threshold like the one you just showed. Wage talks, a divorce, a supplier renegotiating a contract: what one side will accept is not simply the best they can get."),
+    T("ul-e-l2", "A model that assumes people take any positive amount will predict the wrong split, and will be surprised by walkouts that were entirely predictable to anybody in the room."),
+    T("ul-e-l3", "The threshold is not a fixed human constant either. It moves with the size of the pot, with what people know about how the pot arose, and with where the players are from.")
+  ]);
+
+  ui.sub(T("ul-e-sub2", "What this does not show"));
+  ui.list([
+    T("ul-e-m1", "The strangers here are one hidden number each, chosen by the author to spread across the range. They are not measurements of anybody and they were not drawn from any published distribution."),
+    T("ul-e-m2", "Your own threshold was read off six answers. Six is far too few to measure a person, and the offers you saw were picked to find the edge rather than sampled at random."),
+    T("ul-e-m3", "The coins are not money. Playing for nothing is not the same as playing for a week of wages, and the published work finds that stakes change behaviour, though less than most people expect."),
+    T("ul-e-m4", "One round with a stranger you never meet again is the pure case. Most real bargaining is repeated and public, where refusing has a further purpose this game removes on purpose."),
+    T("ul-e-m5", "The average offer of 40 of every 100 is an average across countries and designs. It is not a prediction about the next person you bargain with.")
+  ]);
+
+  ui.sub(T("ul-e-src", "Sources"));
+  ui.sources([
+    { what: T("ul-src1", "The experimental record."),
+      cite: "Hessel Oosterbeek, Randolph Sloof and Gijs van de Kuilen, Cultural Differences in Ultimatum Game Experiments: Evidence from a Meta Analysis, Experimental Economics 7(2), 2004, pages 171 to 188. Working paper text.",
+      url: "https://econwpa.ub.uni-muenchen.de/econ-wp/exp/papers/0401/0401003.pdf",
+      tail: T("ul-src-tail", "Read 2026 08 21.") },
+    { what: T("ul-src2", "The first experiment."),
+      cite: "Werner Güth, Rolf Schmittberger and Bernd Schwarze, An experimental analysis of ultimatum bargaining, Journal of Economic Behavior and Organization 3(4), 1982, pages 367 to 388.",
+      url: "https://econpapers.repec.org/RePEc:eee:jeborg:v:3:y:1982:i:4:p:367-388",
+      tail: T("ul-src-tail", "Read 2026 08 21.") },
+    { what: T("ul-src3", "Equilibrium and backward induction."),
+      cite: "John F. Nash, Equilibrium Points in n Person Games, Proceedings of the National Academy of Sciences 36(1), 1950, pages 48 and 49.",
+      url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC1063129/",
+      tail: T("ul-src-tail", "Read 2026 08 21.") }
+  ]);
+
+  var p = el("p");
+  p.appendChild(document.createTextNode(T("ul-fam", "The rest of the family, including one about a pasture and one about a coin: ")));
+  var a = el("a", null, T("ul-fam-a", "all of the games are here"));
+  a.href = "../../game.html";
+  p.appendChild(a);
+  p.appendChild(document.createTextNode("."));
+  ui.panel.appendChild(p);
+
+  var r = ui.actions();
+  ui.btn(r, T("ul-b-again", "Sit down again"), T("ul-k-again", "again"), function () {
+    store.wipe();
+    G.part = 1; G.round = 0; G.coins = 0; G.given = []; G.taken = []; G.offer = 5;
+    beginOffer();
+  }, "big");
+  ui.say(T("ul-s-end", "The ending. On average people offer forty of every hundred, and about sixteen of every hundred offers are refused."));
+};
+
+/* ============================================================
+   6. keyboard, boot, and a hook for testing
+   ============================================================ */
+
+KW.keys(function (k, e) {
+  if (G.view === "offer") {
+    if (k === "enter") { e.preventDefault(); ui.acted = true; propose(G.offer); }
+    else if (k === "arrowleft") { setOffer(G.offer - 1); }
+    else if (k === "arrowright") { setOffer(G.offer + 1); }
+  } else if (G.view === "answer") {
+    if (k === "y") { ui.acted = true; answer(true); }
+    else if (k === "n") { ui.acted = true; answer(false); }
+  }
+});
+
+KW.$("menuBtn").addEventListener("click", function () {
+  ui.acted = true; G.last = null; view("title");
+});
+
+window.__G = {
+  state: G, pot: POT, strangers: STRANGERS, incoming: INCOMING,
+  view: function () { return G.view; },
+  offer: function (n) { ui.acted = true; if (G.view === "offer") propose(clamp(n, 0, POT)); },
+  answer: function (yes) { ui.acted = true; if (G.view === "answer") answer(!!yes); },
+  coins: function () { return G.coins; },
+  press: function (label) {
+    var bs = ui.panel.querySelectorAll("button");
+    for (var i = 0; i < bs.length; i++) {
+      if (bs[i].textContent.toLowerCase().indexOf(label.toLowerCase()) === 0) { bs[i].click(); return true; }
+    }
+    return false;
+  },
+  buttons: function () {
+    return Array.prototype.map.call(ui.panel.querySelectorAll("button"), function (b) { return b.textContent; });
+  }
+};
+
+document.addEventListener("langchange", function () {
+  if (ctx) view(G.view);
+});
+
+KW.start({
+  draw: drawWorld,
+  ready: function () { ctx = KW.ctx; view("title"); }
+});
+
+})();
+</script>
+
+<script>
+window.CHROME_I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Profil", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Atölye", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}"}, "de": {"kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Profil", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Werkstatt", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %"}};
+
+(function(){
+  "use strict";
+  var KEY = "lang", lang = "en";
+  function preferred(){
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    l = String(l).toLowerCase();
+    if (l.indexOf("de") === 0) return "de";
+    if (l.indexOf("tr") === 0) return "tr";
+    return "en";
+  }
+  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
+  /* One dictionary per language, rebuilt on every pass, so a page that
+     declares its own words later is still heard. */
+  function dict(l){
+    var out = {}, src = [window.CHROME_I18N, window.PAGE_I18N], i, k;
+    for (i = 0; i < src.length; i++){
+      if (src[i] && src[i][l]) for (k in src[i][l]) out[k] = src[i][l][k];
+    }
+    return out;
+  }
+  /* Three languages exist and nothing else is one. Asking the dictionary
+     whether it has a key called l was the test, and CHROME_I18N["constructor"]
+     is truthy, so a value planted in localStorage became window.__lang and
+     every number on the instrument threw. The generated pages were fixed and
+     these twenty were not; they are the same rule. */
+  var descBase = null;
+  function known(l){ return l === "en" || l === "tr" || l === "de"; }
+  function swap(sel, store, read, write){
+    document.querySelectorAll("[" + sel + "]").forEach(function(el){
+      var k = el.getAttribute(sel), id = sel + "|" + k;
+      if (!(id in store)) store[id] = read(el);
+      write(el, store[id], k);
+    });
+  }
+  function apply(l){
+    if (!known(l)) l = "en";
+    var d = dict(l), en = (l === "en");
+    swap("data-i", base,
+         function(el){ return el.innerHTML; },
+         function(el, b, k){ el.innerHTML = (en || d[k] === undefined) ? b : d[k]; });
+    swap("data-ia", baseA,
+         function(el){ return el.getAttribute("aria-label") || ""; },
+         function(el, b, k){ el.setAttribute("aria-label", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-it", baseT,
+         function(el){ return el.getAttribute("title") || ""; },
+         function(el, b, k){ el.setAttribute("title", (en || d[k] === undefined) ? b : d[k]); });
+    swap("data-ip", baseP,
+         function(el){ return el.getAttribute("placeholder") || ""; },
+         function(el, b, k){ el.setAttribute("placeholder", (en || d[k] === undefined) ? b : d[k]); });
+    document.documentElement.setAttribute("lang", l);
+    /* The description is invisible on the page and is exactly what a search
+       result and a link preview show, so it follows the language too. */
+    if (descBase === null) {
+      var dm0 = document.querySelector('meta[name="description"]');
+      descBase = dm0 ? dm0.getAttribute("content") : "";
+    }
+    var wantD = (!en && d["pg-desc"] !== undefined) ? d["pg-desc"] : descBase;
+    var dm1 = document.querySelector('meta[name="description"]');
+    if (dm1) dm1.setAttribute("content", wantD);
+    var om1 = document.querySelector('meta[property="og:description"]');
+    if (om1) om1.setAttribute("content", wantD);
+    /* The tab is part of the page. A page may name its own title through
+       pg-title; otherwise, where the title opens with the page's own heading,
+       that part follows the language. */
+    if (titleBase === null) titleBase = document.title;
+    if (!en && d["pg-title"] !== undefined) {
+      document.title = d["pg-title"];
+    } else if (en) {
+      document.title = titleBase;
+    } else {
+      var h1 = document.querySelector("h1[data-i]");
+      if (h1) {
+        var h1en = base["data-i|" + h1.getAttribute("data-i")];
+        if (h1en) {
+          var plain = String(h1en).replace(/<[^>]+>/g, "").trim();
+          if (plain && titleBase.indexOf(plain) === 0) {
+            document.title = h1.textContent.trim() + titleBase.slice(plain.length);
+          }
+        }
+      }
+    }
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+    });
+    var ot1 = document.querySelector('meta[property="og:title"]');
+    if (ot1) ot1.setAttribute("content", document.title);
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    window.__lang = l;
+    /* One lookup for a string a script draws itself rather than one the
+       browser is holding in an element. */
+    window.__t = function(k, fallback){
+      if (l === "en") return fallback;
+      return d[k] === undefined ? fallback : d[k];
+    };
+    try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+  });
+  window.__chrome = apply;
+  window.__lang = lang;
+  window.__t = function(k, fallback){ return fallback; };
+  window.__relang = function(){ apply(window.__lang || "en"); };
+  apply(lang);
+  /* A page that wants a whole viewport of height has to know how much of it
+     the bar has already taken, or it overhangs the fold by exactly that much
+     and clips whatever sits at its bottom. */
+  function barHeight(){
+    var b = document.querySelector(".bar");
+    document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
+  }
+  barHeight();
+  addEventListener("resize", barHeight);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
+  /* the nav is one scrolling line on a phone, so the page you are on can
+     start off past its right edge. Bring it into view without moving the
+     page. The generated pages do the same. */
+  try {
+    var cur = document.querySelector(".bar nav a[aria-current]");
+    if (cur && cur.parentNode.scrollWidth > cur.parentNode.clientWidth) {
+      cur.parentNode.scrollLeft = Math.max(0, cur.offsetLeft - 24);
+    }
+  } catch(e){}
+})();
+
+</script>
+
+</body>
+</html>
