@@ -500,7 +500,7 @@ var Pattern = (function () {
       p.push({ kind: "no suppression",
         text: "The hip measure (" + mm(hip) + ") is not larger than the waist (" + mm(waist) +
           "). A straight skirt block is shaped by the difference between them, so there " +
-          "is nothing here to shape. This is the wrong block for this body — a straight " +
+          "is nothing here to shape. This is the wrong block for this body; a straight " +
           "skirt cut from these numbers would hang from the waist with no fit at all." });
     }
     if (m.hipDepth >= m.length) {
@@ -1040,7 +1040,7 @@ function refresh() {
       "The panel on the right says which measurement is the problem.</div></div>";
     $("lede").textContent = "";
     ["k-waist", "k-hip", "k-seam", "k-dart"].forEach(function (i) { $(i).innerHTML = "&mdash;"; });
-    ["s-sup", "s-side", "s-bd", "s-fd", "s-pages"].forEach(function (i) { $(i).textContent = "—"; });
+    ["s-sup", "s-side", "s-bd", "s-fd", "s-pages"].forEach(function (i) { $(i).textContent = "·"; });
     $("verdict").innerHTML = problems.map(function (p) {
       return '<div class="note stop">' + esc(p.text) + "</div>";
     }).join("");
@@ -1071,7 +1071,7 @@ function refresh() {
   $("s-side").textContent = cm(s.side) + " cm";
   $("s-bd").textContent = back.darts.length + " x " + cm(back.darts[0].intake) + " cm";
   $("s-fd").textContent = front.darts.length + " x " + cm(front.darts[0].intake) + " cm";
-  $("s-pages").textContent = t ? t.pages.length : "—";
+  $("s-pages").textContent = t ? t.pages.length : "·";
   $("s-pages").className = "v" + (t ? "" : " stop");
 
   /* verdict */

@@ -377,8 +377,8 @@ input:focus { border-color: var(--scan); }
 <div class="status">
   <div class="m"><b id="s-codes">0</b><span>codes</span></div>
   <div class="m"><b id="s-sheets">0</b><span>sheets</span></div>
-  <div class="m"><b id="s-mod">–</b><span>narrowest bar</span></div>
-  <div class="m"><b id="s-widest">–</b><span>longest symbol</span></div>
+  <div class="m"><b id="s-mod">·</b><span>narrowest bar</span></div>
+  <div class="m"><b id="s-widest">·</b><span>longest symbol</span></div>
   <div class="demo" id="demoflag">showing an example run</div>
 </div>
 </div>
@@ -973,8 +973,8 @@ function drawProof(items) {
   var ok = it.mod >= MIN_MODULE_PT;
   $("verdict").className = "verdict " + (ok ? "ok" : "no");
   $("verdict").textContent = ok
-    ? "Scannable — narrowest bar " + mm.toFixed(3) + " mm"
-    : "Too dense to scan reliably — " + mm.toFixed(3) + " mm";
+    ? "Scannable, narrowest bar " + mm.toFixed(3) + " mm"
+    : "Too dense to scan reliably: " + mm.toFixed(3) + " mm";
   $("spec").innerHTML =
     "<dl>" +
     "<dt>Code</dt><dd>" + esc(it.text) + "</dd>" +
@@ -983,7 +983,7 @@ function drawProof(items) {
     "<dt>Floor</dt><dd>" + (MIN_MODULE_PT * 25.4 / 72).toFixed(3) + " mm</dd>" +
     "</dl>" +
     (ok ? "" : "<div style='margin-top:8px;color:var(--scan)'>Shorten the code, or " +
-      "move to a wider label. Nothing about the printer fixes this — the symbol " +
+      "move to a wider label. Nothing about the printer fixes this; the symbol " +
       "needs more room than the label has.</div>");
   $("of").textContent = (view.at + 1) + " of " + good.length;
 }
@@ -994,7 +994,7 @@ function checks(items) {
   var out = [];
   if (bad.length) {
     out.push('<div class="note stop"><b>' + bad.length + ' code' + (bad.length === 1 ? "" : "s") +
-      ' cannot be encoded.</b> Code 128 carries printable ASCII only — no accented ' +
+      ' cannot be encoded.</b> Code 128 carries printable ASCII only: no accented ' +
       'letters, no dashes that are not hyphen-minus. First one: <code>' +
       esc(bad[0].text.slice(0, 40)) + '</code>. These are skipped, not printed blank.</div>');
   }
@@ -1035,8 +1035,8 @@ function refresh(keepAt) {
   $("s-codes").textContent = good.length;
   $("s-sheets").textContent = good.length ? pages.length : 0;
   $("s-mod").textContent = mods.length
-    ? (Math.min.apply(null, mods) * 25.4 / 72).toFixed(3) + " mm" : "–";
-  $("s-widest").textContent = lens.length ? Math.max.apply(null, lens) + " mod" : "–";
+    ? (Math.min.apply(null, mods) * 25.4 / 72).toFixed(3) + " mm" : "·";
+  $("s-widest").textContent = lens.length ? Math.max.apply(null, lens) + " mod" : "·";
 
   if (view.mode === "list") {
     $("parsed").innerHTML = good.length

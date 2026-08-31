@@ -295,10 +295,10 @@ select:focus, input:focus { border-color: var(--key); }
       <h2>Sheet</h2>
       <div class="f"><label for="preset">Board</label>
         <select id="preset">
-          <option value="2440x1220">2440 × 1220 — 8 × 4 ft</option>
-          <option value="3050x1220">3050 × 1220 — 10 × 4 ft</option>
-          <option value="2500x1250">2500 × 1250 — metric</option>
-          <option value="2800x2070">2800 × 2070 — MFC</option>
+          <option value="2440x1220">2440 × 1220 · 8 × 4 ft</option>
+          <option value="3050x1220">3050 × 1220 · 10 × 4 ft</option>
+          <option value="2500x1250">2500 × 1250 · metric</option>
+          <option value="2800x2070">2800 × 2070 · MFC</option>
           <option value="custom">Custom</option>
         </select></div>
       <div class="f"><label for="sw">Size</label>
@@ -323,7 +323,7 @@ select:focus, input:focus { border-color: var(--key); }
       <h2>Parts</h2>
       <table class="parts" id="parts">
         <thead><tr><th>Part</th><th style="width:64px">W</th><th style="width:64px">L</th>
-          <th style="width:46px">No.</th><th style="width:34px" title="Has a grain — do not turn">Grain</th><th></th></tr></thead>
+          <th style="width:46px">No.</th><th style="width:34px" title="Has a grain, do not turn">Grain</th><th></th></tr></thead>
         <tbody id="partsBody"></tbody>
       </table>
       <div style="display:flex;gap:7px;margin-top:9px;flex-wrap:wrap">
@@ -718,7 +718,7 @@ function drawSheets(p, o) {
       p.oversized.map(function (x) {
         return esc(x.label) + " " + x.w + " × " + x.h + (x.grain ? " (grained, cannot be turned)" : "");
       }).filter(function (v, i, a) { return a.indexOf(v) === i; }).join("; ") +
-      '. Nothing is planned until that is settled — a cutting list that quietly ' +
+      '. Nothing is planned until that is settled; a cutting list that quietly ' +
       'drops a part is worse than one that stops.</div>';
     return;
   }
@@ -806,7 +806,7 @@ function refresh() {
   $("s-cost").textContent = n2(c.total);
 
   if (p.oversized && p.oversized.length) {
-    $("headline").innerHTML = '<div class="big"><b>—</b><span>sheets</span></div>' +
+    $("headline").innerHTML = '<div class="big"><b>·</b><span>sheets</span></div>' +
       '<div class="sub">Nothing planned while a part is bigger than the board.</div>';
     $("summary").innerHTML = ""; $("cutlist").innerHTML = "";
     return;
@@ -831,7 +831,7 @@ function refresh() {
     ["Offcut kept", n2(p.usableOffcutArea / 1e6) + " m²"],
     ["Truly wasted", n2(p.wasteArea / 1e6) + " m² · " + n1(p.trueWastePct) + "%"],
     ["Largest offcut", biggest ? Math.round(biggest.w) + " × " + Math.round(biggest.h) + " mm" : "none"],
-    ["Arrangement", p.strategy || "—"],
+    ["Arrangement", p.strategy || "·"],
     ["Board", n2(c.board)],
     ["Cutting", n2(c.cutting)],
     ["Edging " + n1(edgeM) + " m", n2(c.edge)]

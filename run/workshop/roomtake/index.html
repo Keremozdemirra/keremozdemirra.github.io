@@ -324,10 +324,10 @@ select:focus, input:focus { border-color: var(--key); }
       <div id="plankOpts">
         <div class="f"><label for="pattern">Laid</label>
           <select id="pattern" style="width:150px">
-            <option value="straight">Straight — 5% waste</option>
-            <option value="brick">Brick bond — 7%</option>
-            <option value="diagonal">Diagonal — 10%</option>
-            <option value="herringbone">Herringbone — 15%</option>
+            <option value="straight">Straight · 5% waste</option>
+            <option value="brick">Brick bond · 7%</option>
+            <option value="diagonal">Diagonal · 10%</option>
+            <option value="herringbone">Herringbone · 15%</option>
           </select></div>
         <div class="f"><label for="pw">Plank</label>
           <span class="in"><input type="number" id="pw" value="190" min="20" step="5"><span>×</span>
@@ -339,10 +339,10 @@ select:focus, input:focus { border-color: var(--key); }
       <div id="rollOpts" hidden>
         <div class="f"><label for="rollW">Roll width</label>
           <select id="rollW" style="width:150px">
-            <option value="3660">3.66 m — carpet</option>
-            <option value="4000">4.00 m — vinyl</option>
-            <option value="2000">2.00 m — vinyl</option>
-            <option value="5000">5.00 m — wide roll</option>
+            <option value="3660">3.66 m · carpet</option>
+            <option value="4000">4.00 m · vinyl</option>
+            <option value="2000">2.00 m · vinyl</option>
+            <option value="5000">5.00 m · wide roll</option>
           </select></div>
         <div class="f"><label for="repeat">Pattern repeat</label>
           <span class="in"><input type="number" id="repeat" value="0" min="0" step="10"><span>mm</span></span></div>
@@ -383,7 +383,7 @@ select:focus, input:focus { border-color: var(--key); }
       <ul class="rowlist" id="estimate"></ul>
       <div class="note"><b>This is a calculation to check, not a quantity to
       rely on.</b> Measure twice, allow for what the plan does not show, and
-      order against your own judgement — ordering short stops a job.</div>
+      order against your own judgement; ordering short stops a job.</div>
     </div>
   </div>
 </div>
@@ -391,10 +391,10 @@ select:focus, input:focus { border-color: var(--key); }
 <div class="status">
   <div class="m"><b id="s-area">0</b><span>m² net</span></div>
   <div class="m"><b id="s-perim">0</b><span>m perimeter</span></div>
-  <div class="m"><b id="s-order">–</b><span>to order</span></div>
+  <div class="m"><b id="s-order">·</b><span>to order</span></div>
   <div class="m"><b id="s-waste">0</b><span>% over</span></div>
   <div class="caveat">Straight walls and square corners. Curved walls and splays
-  are not handled — measure those as chords and add your own allowance.</div>
+  are not handled; measure those as chords and add your own allowance.</div>
 </div>
 </div>
 
@@ -779,7 +779,7 @@ function refresh() {
     ? "<b>The walk closes.</b> The measurements are consistent with each other."
     : "<b>Out by " + Math.round(rm.closureError) + " mm.</b> The walk does not come " +
       "back to where it started, so at least one length or direction is wrong. " +
-      "The gap is drawn in red on the plan. Fix it on site — this is much cheaper " +
+      "The gap is drawn in red on the plan. Fix it on site; this is much cheaper " +
       "to find now than on delivery day.";
 
   var net = Floor.netArea(rm) / 1e6;
@@ -795,7 +795,7 @@ function refresh() {
     });
     head = '<div class="big"><b>' + plan.packs + '</b><span>packs</span></div>' +
       '<div class="sub">' + n2(plan.ordered) + ' m² ordered against ' + n2(plan.netArea) +
-      ' m² of floor — ' + n2(plan.surplus) + ' m² spare.</div>';
+      ' m² of floor, ' + n2(plan.surplus) + ' m² spare.</div>';
     qty = [
       ["Floor area, net", n2(plan.netArea) + " m²"],
       ["Waste allowance", plan.wastePct + "% for " + plan.pattern],
@@ -816,7 +816,7 @@ function refresh() {
       layAcross: $("layDir").value === "length"
     });
     head = '<div class="big"><b>' + n2(plan.linearMm / 1000) + '</b><span>linear m</span></div>' +
-      '<div class="sub">off a ' + n2(plan.rollWidth / 1000) + ' m roll — ' +
+      '<div class="sub">off a ' + n2(plan.rollWidth / 1000) + ' m roll, ' +
       n2(plan.orderedArea) + ' m² ordered against ' + n2(plan.netArea) + ' m² of floor.</div>';
     qty = [
       ["Floor area, net", n2(plan.netArea) + " m²"],

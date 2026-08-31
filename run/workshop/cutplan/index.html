@@ -1141,7 +1141,7 @@ function stats() {
   $("s-passes").textContent = o.passes;
   $("s-time").textContent = fmtTime(m.time);
   $("s-ext").textContent = m.ext
-    ? Math.ceil(m.ext.w) + " x " + Math.ceil(m.ext.h) + " mm" : "—";
+    ? Math.ceil(m.ext.w) + " x " + Math.ceil(m.ext.h) + " mm" : "·";
 
   var over = m.ext && (m.ext.x < -0.01 || m.ext.y < -0.01 ||
                        m.ext.x + m.ext.w > b.w + 0.01 || m.ext.y + m.ext.h > b.h + 0.01);
@@ -1155,7 +1155,7 @@ function drawOrder() {
   if (!state.ordered || !state.ordered.length) {
     $("oplist").innerHTML = '<div style="font-size:12px;color:var(--ink-3);padding:4px">' +
       "Nothing loaded.</div>";
-    $("ordercap").textContent = "—";
+    $("ordercap").textContent = "·";
     return;
   }
   $("ordercap").textContent = state.ordered.length + " paths";
@@ -1371,7 +1371,7 @@ $("scrim").addEventListener("click", function (e) { if (e.target === this) this.
 $("preview").onclick = function () {
   if (!state.ordered) return;
   var t = build();
-  openModal("G-code — " + t.split("\n").length + " lines",
+  openModal("G-code, " + t.split("\n").length + " lines",
     "<pre>" + esc(t) + "</pre>");
 };
 $("help").onclick = function () {

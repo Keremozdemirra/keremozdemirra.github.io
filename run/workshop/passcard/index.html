@@ -795,7 +795,7 @@ var Badges = (function () {
       if (bad.length) {
         problems.push({ kind: "cannot be printed", who: p.name, chars: bad,
           text: "The badge for " + p.name + " contains " + bad.join(" ") +
-            ", which the built-in PDF fonts cannot write — Helvetica is limited to " +
+            ", which the built-in PDF fonts cannot write; Helvetica is limited to " +
             "Windows-1252, and Turkish s-cedilla, g-breve and dotted capital I are " +
             "outside it. The name is not transliterated: a badge somebody wears all " +
             "week should not spell their name wrong." });
@@ -805,7 +805,7 @@ var Badges = (function () {
         problems.push({ kind: "name too long", who: p.name,
           text: "“" + p.name + "” is " + (l.name.over / MM).toFixed(1) +
             " mm too wide for this card even at the smallest size it can carry. " +
-            "Shorten it, or use a larger stock — it will not be squeezed." });
+            "Shorten it, or use a larger stock; it will not be squeezed." });
       }
       if (p.role && !l.role.fits) {
         problems.push({ kind: "role too long", who: p.name,
@@ -836,7 +836,7 @@ var Badges = (function () {
         if (seen[key]) {
           problems.push({ kind: "indistinguishable", who: p.name,
             text: "Two badges for “" + p.name + "” would be identical. " +
-              "Whoever checks them at the gate cannot tell which is which — " +
+              "Whoever checks them at the gate cannot tell which is which: " +
               "give them different IDs." });
         }
         seen[key] = true;
@@ -987,7 +987,7 @@ var SAMPLE = [
 "Jonas Weber,Scaffolder,Höhenbau GmbH,HB-2210",
 "Aoife Ní Bhraonáin,Safety officer,Meridian Contracts,MC-0145",
 "Kwame Mensah,Plant operator,Meridian Contracts,MC-0146",
-"Rui Alves,Visitor,—,VIS-0009"
+"Rui Alves,Visitor,·,VIS-0009"
 ].join("\n");
 
 var state = { view: "card", at: 0, photos: {}, people: [], problems: [] };
@@ -1019,7 +1019,7 @@ function cardHtml(person, sizePx) {
     out.push('<div class="photo" style="left:' + mm(l.photo.x) + ";top:" + mm(l.photo.y) +
       ";width:" + mm(l.photo.w) + ";height:" + mm(l.photo.h) + '">' +
       (img ? '<img src="' + img.url + '" alt="">'
-           : "<span>no photo<br>" + esc(person.id || "—") + "</span>") + "</div>");
+           : "<span>no photo<br>" + esc(person.id || "·") + "</span>") + "</div>");
   }
 
   var y = l.pad + 1;
@@ -1116,7 +1116,7 @@ function refresh() {
   $("plist").innerHTML = r.people.map(function (p, i) {
     var mine = state.problems.filter(function (x) { return x.who === p.name; });
     return '<button data-i="' + i + '" data-cur="' + (i === state.at ? 1 : 0) + '">' +
-      '<span class="n">' + (i + 1) + "</span><span>" + esc(p.name || "—") + "</span>" +
+      '<span class="n">' + (i + 1) + "</span><span>" + esc(p.name || "·") + "</span>" +
       '<span class="tag ' + (mine.length ? "stop" : "ok") + '">' +
       (mine.length ? esc(mine[0].kind) : (state.photos[(p.id || "").toLowerCase()] ? "photo" : "")) +
       "</span></button>";

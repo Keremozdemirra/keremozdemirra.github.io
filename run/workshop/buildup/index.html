@@ -323,7 +323,7 @@ select:focus, input:focus { border-color: var(--key); }
       <p style="margin:0;font-size:12.6px;line-height:1.55;color:var(--ink-faint)">
       <b style="color:var(--ink-soft)">A calculation to check, not a
       certificate.</b> The conductivities listed are the range the published
-      tables give and are a starting point only — a submission is built on the
+      tables give and are a starting point only; a submission is built on the
       certificate for the actual product. Repeating thermal bridges at junctions,
       fixings and reveals are not included, and neither is a full interstitial
       condensation assessment. Nothing typed here leaves the page.</p>
@@ -347,7 +347,7 @@ select:focus, input:focus { border-color: var(--key); }
   <div class="rail right">
     <div class="grp">
       <h2>Result</h2>
-      <div class="headline"><b id="v-u">—</b><span id="v-usub">W/m²K</span></div>
+      <div class="headline"><b id="v-u">·</b><span id="v-usub">W/m²K</span></div>
       <ul class="rowlist" id="numbers"></ul>
     </div>
     <div class="grp">
@@ -362,10 +362,10 @@ select:focus, input:focus { border-color: var(--key); }
 </div>
 
 <div class="status">
-  <div class="m"><b id="s-u">—</b><span>U W/m²K</span></div>
-  <div class="m"><b id="s-r">—</b><span>R m²K/W</span></div>
-  <div class="m"><b id="s-thk">—</b><span>mm thick</span></div>
-  <div class="m"><b id="s-surf">—</b><span>°C inside face</span></div>
+  <div class="m"><b id="s-u">·</b><span>U W/m²K</span></div>
+  <div class="m"><b id="s-r">·</b><span>R m²K/W</span></div>
+  <div class="m"><b id="s-thk">·</b><span>mm thick</span></div>
+  <div class="m"><b id="s-surf">·</b><span>°C inside face</span></div>
   <div class="caveat">Bridging is handled by the combined method. Where the two
   limits part company by more than half, the method is past its range and the
   page says so.</div>
@@ -399,10 +399,10 @@ var UValue = (function () {
      is why a floor and a roof of the same build-up do not have the same
      U-value. */
   var SURFACE = {
-    wall:   { rsi: 0.13, rse: 0.04, label: "Wall — heat flowing horizontally" },
-    roof:   { rsi: 0.10, rse: 0.04, label: "Roof — heat flowing upwards" },
-    floor:  { rsi: 0.17, rse: 0.04, label: "Floor — heat flowing downwards" },
-    party:  { rsi: 0.13, rse: 0.13, label: "Internal wall — heated both sides" }
+    wall:   { rsi: 0.13, rse: 0.04, label: "Wall · heat flowing horizontally" },
+    roof:   { rsi: 0.10, rse: 0.04, label: "Roof · heat flowing upwards" },
+    floor:  { rsi: 0.17, rse: 0.04, label: "Floor · heat flowing downwards" },
+    party:  { rsi: 0.13, rse: 0.13, label: "Internal wall · heated both sides" }
   };
 
   /* Unventilated air cavities.
@@ -672,7 +672,7 @@ function drawLayers() {
           '" data-k="d" aria-label="Thickness in millimetres">' +
         '<button class="tiny" data-del="' + i + '" aria-label="Remove layer">×</button>' +
       '</div>' +
-      '<div class="lam">' + (m.cavity ? "cavity — enter its resistance, it does not grow with thickness"
+      '<div class="lam">' + (m.cavity ? "cavity: enter its resistance, it does not grow with thickness"
         : m.lambda + " W/mK · " + (l.d > 0 ? "R " + n3(l.d / 1000 / m.lambda) : "R 0")) + '</div>' +
       '<label class="brsw"><input type="checkbox" data-i="' + i + '" data-k="hasbr"' +
         (l.bridge ? " checked" : "") + '> Bridged by another material</label>' +
@@ -823,7 +823,7 @@ function refresh() {
       'The two limits are within ' + n2(r.spreadPct) + '% of each other, so averaging them means something.</span></div>'
     : '<div class="chk bad"><span class="dot"></span><span><b>Past the method\'s range.</b> ' +
       'The limits differ by ' + n2(r.spreadPct) + '%, which the standard says is too far for the ' +
-      'combined method. Something highly conductive runs through the build-up — steel, usually. ' +
+      'combined method. Something highly conductive runs through the build-up: steel, usually. ' +
       'This needs a numerical calculation, not this one.</span></div>');
 
   out.push(sc.condenses
@@ -838,7 +838,7 @@ function refresh() {
       n3(sc.fRsi) + '.</b> Comfortably above the 0.75 that guidance asks of a dwelling.</span></div>'
     : '<div class="chk note"><span class="dot"></span><span><b>Temperature factor ' +
       n3(sc.fRsi) + '.</b> Guidance for a dwelling asks for 0.75 or better. Check the current ' +
-      'edition of what applies to you — this is not a compliance check.</span></div>');
+      'edition of what applies to you; this is not a compliance check.</span></div>');
   $("checks").innerHTML = out.join("");
 
   $("perlayer").innerHTML = layers.map(function (l, i) {
