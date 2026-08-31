@@ -254,3 +254,147 @@ a:hover {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- 8. the exhibit ---------------------------------------------- */
+
+/* The layout was not broken, it was timid. Measured on a real desktop the
+   column is 1072px inside an 1184px wrap, which is fine; what made these read
+   as the old site was the hierarchy, and the hierarchy was upside down.
+
+   The section heading was 24px. The headings that label the answers were 11px,
+   the smallest type on the page, under body text at 17px. Everything whispered
+   at the same volume and the one thing a reader came for was the quietest
+   thing there.
+
+   A consulting exhibit does the opposite: the number is the largest object on
+   the page, the label above it is a small tracked mark, and the working is
+   underneath in a size you only read if you doubt the number. That is the
+   order set below. Nothing here moves an element; it is all weight and space,
+   which is why it can be applied to five differently shaped tools at once. */
+
+/* The section header becomes an exhibit header: the number hangs in the left
+   margin where the eye can run down it, and the heading gets the size it was
+   always meant to carry. */
+.k-sect { margin-top: clamp(3rem, 6vw, 5.5rem); }
+
+.k-sect > h2 {
+  position: relative;
+  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+  line-height: 1.12;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.k-sect > h2 > .k-num {
+  display: block;
+  margin-bottom: 0.55rem;
+}
+
+/* On a wide screen the number leaves the flow entirely and sits in the margin,
+   so the headings align on one edge all the way down the page. */
+@media (min-width: 1180px) {
+  .k-sect > h2 > .k-num {
+    position: absolute;
+    left: -3.25rem;
+    top: 0.55rem;
+    margin: 0;
+  }
+}
+
+/* A panel is a result, not a box. The border goes, a rule and air do the work,
+   and the label above it is a mark rather than a heading pretending to be one. */
+.k-panel {
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 1.4rem 0 0;
+  margin-top: 1.6rem;
+}
+
+.k-panel > h3,
+.k-panel > h4,
+.k-panel-h {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--faint);
+  margin: 0 0 0.9rem;
+}
+
+/* The working, and then the answer. Each step is quiet; the last line of a
+   chain is what the reader came for, so it is the one that is allowed to be
+   loud. */
+.k-steps > li {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.k-steps > li:last-child {
+  font-size: clamp(1.15rem, 1.9vw, 1.5rem);
+  line-height: 1.35;
+  color: var(--ink);
+  margin-top: 0.55rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A warning is a result too, and it was rendered at the same weight as a note
+   about rounding. It gets the one colour on the page that is not the accent. */
+.k-warn {
+  border-left: 2px solid var(--flag);
+  padding-left: 1rem;
+}
+
+.k-warn > .k-panel-h,
+.k-warn > h3 {
+  color: var(--flag);
+}
+
+/* Fields were 336px of cramped control. They get room, and the label above
+   them gets the same mark treatment as everything else that names a value. */
+.k-field > label,
+.k-lab {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.k-field input,
+.k-field select {
+  padding: 0.6rem 0.75rem;
+  font-size: 1rem;
+}
+
+/* The source note is the best thing on these pages and it was set as a wall of
+   mono narrower than the text above it. Same mono, more room, more leading. */
+.k-source {
+  max-width: 68ch;
+  padding: 0.15rem 0 0.15rem 1rem;
+}
+
+/* Tables carry figures, so the figures line up and the head is a mark. */
+.k-table,
+.k-sect table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.k-sect table td,
+.k-sect table th {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* a column of numbers reads down the right edge, not the left */
+.k-sect table td:not(:first-child),
+.k-sect table th:not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
