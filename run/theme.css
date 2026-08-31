@@ -20,6 +20,16 @@
 
 /* ---------- 1. tokens ---------- */
 
+/* These pages are built on kit.css, which names its colours as custom
+   properties, so redefining them after it loads brings the instruments, the
+   simulations, the essays and the written pages onto this site's palette
+   without touching a line of any tool's markup.
+
+   The seventeen workshop tools are NOT in this file and never were reskinned:
+   they carry their own systems, and in those a colour is not decoration. Red
+   and blue in an earthworks tool are cut and fill. That distinction is the
+   whole reason this file stops where it does. */
+
 :root {
   color-scheme: light dark;
 
@@ -47,8 +57,6 @@
   --good:       #2f6b45;
   --good-lit:   #eaf2ed;
 
-  /* body moves to the sans this site sets its prose in. The display face and
-     the mono are shared with the site already, so only this one changes. */
   --serif: "Instrument Sans", -apple-system, "Segoe UI", Helvetica, sans-serif;
   --reading: "Newsreader", Georgia, "Times New Roman", serif;
 
@@ -79,6 +87,13 @@
     --good:       #86c39a;
     --good-lit:   #16241c;
   }
+}
+
+/* The drop marker beside the kicker is an inline SVG with its old brown baked
+   into a fill attribute, so no token can reach it. */
+.k-crown svg path,
+.k-crown-no svg path {
+  fill: var(--accent);
 }
 
 /* ---------- 2. type ---------- */
@@ -134,19 +149,14 @@ hr,
   color: var(--faint);
 }
 
-/* The drop marker beside the kicker is an inline SVG with its brown baked into
-   a fill attribute, so it cannot be reached by a token. The attribute is
-   overridden here rather than edited in sixty one files. */
-.k-crown svg path,
-.k-crown-no svg path {
-  fill: var(--accent);
-}
-
 .k-panel {
   background: var(--panel);
   border: 1px solid var(--rule);
   border-radius: 10px;
 }
+
+.k-hint { color: var(--dim); }
+.k-warn { color: var(--flag); }
 
 .k-table th {
   font-family: var(--mono);
@@ -157,9 +167,6 @@ hr,
   font-weight: 400;
 }
 
-.k-hint { color: var(--dim); }
-.k-warn { color: var(--flag); }
-
 /* ---------- 4. controls ---------- */
 
 input, select, textarea, button {
@@ -169,16 +176,6 @@ input, select, textarea, button {
     border-color 0.18s ease,
     box-shadow 0.18s ease,
     background-color 0.18s ease;
-}
-
-input, select, textarea {
-  background: var(--field);
-  border: 1px solid var(--rule-firm);
-  color: var(--ink);
-}
-
-input:hover, select:hover, textarea:hover {
-  border-color: var(--rule-edge);
 }
 
 input:focus-visible,
@@ -199,6 +196,14 @@ input[type="range"] {
   accent-color: var(--accent);
 }
 
+input, select, textarea {
+  background: var(--field);
+  border: 1px solid var(--rule-firm);
+  color: var(--ink);
+}
+
+input:hover, select:hover, textarea:hover { border-color: var(--rule-edge); }
+
 button {
   cursor: pointer;
   border: 1px solid var(--rule-firm);
@@ -206,10 +211,7 @@ button {
   color: var(--ink);
 }
 
-button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
+button:hover { border-color: var(--accent); color: var(--accent); }
 
 button:active {
   transform: translateY(1px);
@@ -397,4 +399,76 @@ a:hover {
 .k-sect table th:not(:first-child) {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 9. the section rail ------------------------------------------ */
+
+/* Built by toc.js from the headings the page already has. It is only ever
+   created above 1400px, so this needs no breakpoint of its own; it does need
+   to disappear if the window is dragged narrower after it was built. */
+
+.k-toc {
+  position: fixed;
+  top: 50%;
+  left: clamp(1rem, calc((100vw - 1184px) / 2 - 13rem), 4rem);
+  transform: translateY(-50%);
+  z-index: 20;
+  max-height: 76vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.k-toc ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.k-toc a {
+  display: grid;
+  grid-template-columns: 1.6rem 1fr;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  max-width: 11rem;
+  text-decoration: none;
+  color: var(--faint);
+  transition: color 0.25s ease, opacity 0.25s ease;
+  opacity: 0.55;
+}
+
+.k-toc a:hover { opacity: 1; color: var(--ink-soft); }
+
+.k-toc a[aria-current="true"] {
+  opacity: 1;
+  color: var(--ink);
+}
+
+.k-toc-n {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.k-toc-l {
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+/* The rail sits in the left margin, which only exists on a wide window. Below
+   that the page keeps its own scroll and the rail goes away rather than
+   overlapping the text it is meant to index. */
+@media (max-width: 1399px) {
+  .k-toc { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-toc a { transition: none; }
+}
+
+/* Anchored jumps land under nothing, and land softly. */
+html { scroll-behavior: smooth; scroll-padding-top: 2rem; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
