@@ -12660,11 +12660,18 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
        Padding the pattern moves the boundary a unit into the gap, so a stroke
        that has not started yet has no cap to paint. */
     var PAD = 1;
+    var lit = [];
     strokes.forEach(function (p, i) {
       var span = lens[i] + PAD;
       p.style.transition = "none";
       p.style.strokeDasharray = span + " " + span;
       p.style.strokeDashoffset = span;
+      /* And the stroke is not painted at all until it is its turn. The padding
+         above moves the boundary, but a boundary can still be landed on, and a
+         round cap landing on one paints a dot the width of the pen. Not
+         painting is the only version of this with nothing left to get wrong. */
+      p.style.opacity = "0";
+      lit.push(false);
     });
 
     var seen = 0, last = null;
@@ -12681,6 +12688,8 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         var t = (seen - starts[i]) / dur;
         t = t < 0 ? 0 : t > 1 ? 1 : t;
         strokes[i].style.strokeDashoffset = ((lens[i] + PAD) * (1 - t)).toFixed(2);
+        var on = t > 0;
+        if (on !== lit[i]) { strokes[i].style.opacity = on ? "1" : "0"; lit[i] = on; }
       }
       if (seen < END) requestAnimationFrame(frame);
       else svg2.classList.add("done");
