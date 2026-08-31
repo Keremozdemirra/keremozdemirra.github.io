@@ -523,7 +523,7 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
     </div>
     <div>
       <h2 id="wr-h" data-i="f-h">Write directly</h2>
-      <form id="wForm" class="wform">
+      <form id="wForm" action="#" class="wform">
         <p class="vh" aria-hidden="true"><label>website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></p>
         <div class="frow"><label for="fName" data-i="f-name">Name</label><input id="fName" name="name" type="text" required autocomplete="name"></div>
         <div class="frow"><label for="fEmail" data-i="f-email">Email</label><input id="fEmail" name="email" type="email" required autocomplete="email"></div>
@@ -782,7 +782,11 @@ window.I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yen
   "use strict";
   var sec = document.getElementById("writeSection");
   if (!sec) return;
-  sec.style.display = "";
+  /* The reveal used to happen here, before the submit guard below was bound.
+     If anything between the two ever threw, the reader was left with a visible
+     form that had no preventDefault and no action, and submitting it would put
+     their name, address and message into the query string. It happens at the
+     foot of this block now, once everything is wired. */
   var form = document.getElementById("wForm");
   var ok = document.getElementById("fOk"), copied = document.getElementById("fCopied");
   var toolong = document.getElementById("fLong");
@@ -855,6 +859,10 @@ window.I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yen
     ta.remove();
     if (okCopy) done();
   }
+
+  /* Everything above is bound. Safe for this to exist now. */
+  sec.style.display = "";
+
 })();
 
 </script>
