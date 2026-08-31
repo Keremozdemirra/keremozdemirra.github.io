@@ -1,0 +1,256 @@
+/* ============================================================
+   theme.css
+   One skin over the preserved edition, so it reads as this site.
+
+   The instruments were built on a warm paper palette with a brown accent and
+   Newsreader for body text. The site they now live inside is cool, near black
+   by default, and sets its prose in Instrument Sans. Two houses, one address.
+
+   This file does not touch a single tool's logic or markup. kit.css already
+   names its colours as custom properties, and it happens to use most of the
+   same names this site does, so redefining the tokens after it loads re-skins
+   every one of the sixty one pages at once. What is left is typography and a
+   handful of components whose treatment belonged to the old world.
+
+   The reference point for the instruments is the way a consulting firm sets a
+   quantitative exhibit: one accent and no more, rules thin enough to organise
+   without drawing attention, numbers in a tabular face so columns line up, and
+   enough air that the figure is the loudest thing on the page.
+   ============================================================ */
+
+/* ---------- 1. tokens ---------- */
+
+:root {
+  color-scheme: light dark;
+
+  --paper:      #fcfcfb;
+  --paper-sunk: #f4f5f7;
+  --panel:      #f8f9fa;
+  --field:      #ffffff;
+
+  --ink:        #16171a;
+  --ink-soft:   #5b5f66;
+  --dim:        #6b7078;
+  --faint:      #787e86;
+
+  --rule:       #dcdde0;
+  --rule-firm:  #c3c6cb;
+  --rule-edge:  #9aa0a8;
+
+  --accent:     #1f4f8f;
+  --accent-lit: #eef2f8;
+
+  /* a warning still has to read as a warning, so it keeps its own hue; it is
+     pulled toward the blue so it sits in the same light as everything else */
+  --flag:       #a63a26;
+  --flag-lit:   #fbeeec;
+  --good:       #2f6b45;
+  --good-lit:   #eaf2ed;
+
+  /* body moves to the sans this site sets its prose in. The display face and
+     the mono are shared with the site already, so only this one changes. */
+  --serif: "Instrument Sans", -apple-system, "Segoe UI", Helvetica, sans-serif;
+  --reading: "Newsreader", Georgia, "Times New Roman", serif;
+
+  --edge: clamp(1.15rem, 5vw, 3.5rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:      #111214;
+    --paper-sunk: #0c0d0f;
+    --panel:      #16181c;
+    --field:      #191c21;
+
+    --ink:        #e9eaec;
+    --ink-soft:   #9aa0a8;
+    --dim:        #878d95;
+    --faint:      #767c84;
+
+    --rule:       #292b30;
+    --rule-firm:  #3a3e45;
+    --rule-edge:  #4e535a;
+
+    --accent:     #7aa7e0;
+    --accent-lit: #1b2330;
+
+    --flag:       #e8907c;
+    --flag-lit:   #2a1a17;
+    --good:       #86c39a;
+    --good-lit:   #16241c;
+  }
+}
+
+/* ---------- 2. type ---------- */
+
+body {
+  font-family: var(--serif);
+  font-size: clamp(0.98rem, 0.95rem + 0.15vw, 1.05rem);
+  line-height: 1.62;
+  letter-spacing: -0.005em;
+}
+
+/* The essays and the notes are for reading rather than operating, so they keep
+   a serif. An instrument is operated, and a sans is easier to scan under a
+   number you are checking. */
+.prose p,
+.essay p,
+article p {
+  font-family: var(--reading);
+  font-size: 1.06em;
+  line-height: 1.68;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+h1 { line-height: 1.06; }
+
+/* Every number on these pages is meant to be compared with another number, so
+   all of them are tabular and none of them shift width as they change. */
+input, output, td, th, .num, .fig, [class*="num"], [class*="val"] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 3. rules and sections ---------- */
+
+hr,
+.rule {
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+/* The section number was a warm brown serif sitting on the heading's baseline.
+   It becomes a quiet mono tick: the heading is the thing, the number only says
+   where you are. */
+.k-num {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  color: var(--faint);
+}
+
+/* The drop marker beside the kicker is an inline SVG with its brown baked into
+   a fill attribute, so it cannot be reached by a token. The attribute is
+   overridden here rather than edited in sixty one files. */
+.k-crown svg path,
+.k-crown-no svg path {
+  fill: var(--accent);
+}
+
+.k-panel {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+
+.k-table th {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  font-weight: 400;
+}
+
+.k-hint { color: var(--dim); }
+.k-warn { color: var(--flag); }
+
+/* ---------- 4. controls ---------- */
+
+input, select, textarea, button {
+  font-family: inherit;
+  border-radius: 6px;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+}
+
+input, select, textarea {
+  background: var(--field);
+  border: 1px solid var(--rule-firm);
+  color: var(--ink);
+}
+
+input:hover, select:hover, textarea:hover {
+  border-color: var(--rule-edge);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-color: var(--accent);
+}
+
+/* A slider is the one control on these pages people actually play with, so it
+   is worth the few lines that make it feel like something. */
+input[type="range"] {
+  border: 0;
+  background: transparent;
+  accent-color: var(--accent);
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid var(--rule-firm);
+  background: var(--panel);
+  color: var(--ink);
+}
+
+button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* ---------- 5. links ---------- */
+
+a {
+  color: inherit;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: from-font;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  transition: text-decoration-color 0.18s ease, color 0.18s ease;
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ---------- 6. the source blocks ---------- */
+
+/* Every published figure on these pages carries its source, which is the best
+   thing about them and was also the heaviest: a wall of monospace under each
+   field. It keeps the mono, because that is the mark of a citation here, but
+   it steps back a size and hangs off a rule instead of filling a panel. */
+.k-source,
+.k-note {
+  border-left: 2px solid var(--rule);
+  padding-left: 0.9rem;
+  background: none;
+  color: var(--dim);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+/* ---------- 7. motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
