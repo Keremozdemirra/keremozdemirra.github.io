@@ -12590,28 +12590,89 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
   }
 
   /* the name: a signature, actually signed. Every stroke is drawn at pen
-     speed, in order, and the umlaut dots land last like a flourish. */
+     speed, in the order a hand would make them, and the dots land last.
+
+     This used one path element per letter, which looked right and was not. An
+     SVG dash pattern restarts at every subpath, so a single dashoffset on the
+     m revealed all six of its strokes at once: the letter did not get written,
+     it arrived. The effect was worst at the end of the name, where the last
+     three letters carry fourteen strokes between them and landed as blocks.
+
+     So each subpath becomes its own element and the pen is in one place at a
+     time. The schedule is read from one clock in one loop rather than from a
+     CSS transition per element, and it counts only the time the page was
+     actually visible. A signature scheduled while the tab is in the background
+     is a signature that is already finished when the reader first looks at it,
+     which is the same failure the name on the front page had to be protected
+     from. */
   (function sign() {
     var svg2 = document.getElementById("sig");
     if (!svg2) return;
-    var strokes = [].slice.call(svg2.querySelectorAll(".sg"));
+    var glyphs = [].slice.call(svg2.querySelectorAll(".sg"));
+    if (!glyphs.length) return;
     if (reduced) { svg2.classList.add("done"); return; }
-    var SPEED = 150;                     // hershey units per second, unhurried
-    var delay = 0.45;
-    strokes.forEach(function (pth) {
-      var L2 = pth.getTotalLength();
-      pth.style.strokeDasharray = L2 + " " + L2;
-      pth.style.strokeDashoffset = L2;
-      var dur = Math.max(0.09, L2 / SPEED);
-      pth.style.transition = "stroke-dashoffset " + dur.toFixed(3) + "s linear " + delay.toFixed(3) + "s";
-      delay += dur * 0.92;               // strokes overlap a touch, like a real hand
-    });
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        strokes.forEach(function (pth) { pth.style.strokeDashoffset = "0"; });
+
+    var TITTLE = 8;            /* shorter than any real stroke in this hand */
+    var strokes = [];
+    glyphs.forEach(function (g) {
+      var d = g.getAttribute("d") || "";
+      var tr = g.getAttribute("transform");
+      var made = [];
+      d.split(/(?=M)/).forEach(function (sub) {
+        sub = sub.trim();
+        if (!sub) return;
+        var p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        p.setAttribute("class", "sg");
+        p.setAttribute("d", sub);
+        if (tr) p.setAttribute("transform", tr);
+        g.parentNode.insertBefore(p, g);
+        made.push(p);
       });
+      if (!made.length) return;
+      g.parentNode.removeChild(g);
+      /* the tittle of an i is written after its stem, never before it */
+      var body = [], dots = [];
+      made.forEach(function (p) {
+        (p.getTotalLength() < TITTLE ? dots : body).push(p);
+      });
+      strokes = strokes.concat(body, dots);
     });
-    setTimeout(function () { svg2.classList.add("done"); }, (delay + 0.35) * 1000);
+    if (!strokes.length) return;
+
+    var SPEED = 150;                   /* hershey units per second, unhurried */
+    var lens = strokes.map(function (p) { return p.getTotalLength(); });
+    var starts = [], acc = 0.45;
+    lens.forEach(function (L) {
+      starts.push(acc);
+      acc += Math.max(0.06, L / SPEED) * 0.94;   /* a touch of overlap, like a hand */
+    });
+    var END = acc + 0.3;
+
+    strokes.forEach(function (p, i) {
+      p.style.transition = "none";
+      p.style.strokeDasharray = lens[i] + " " + lens[i];
+      p.style.strokeDashoffset = lens[i];
+    });
+
+    var seen = 0, last = null;
+    function frame(now) {
+      if (document.visibilityState === "visible") {
+        /* clamped, so a frame the browser sat on does not skip a letter */
+        if (last !== null) seen += Math.min(0.05, (now - last) / 1000);
+        last = now;
+      } else {
+        last = null;
+      }
+      for (var i = 0; i < strokes.length; i++) {
+        var dur = Math.max(0.06, lens[i] / SPEED);
+        var t = (seen - starts[i]) / dur;
+        t = t < 0 ? 0 : t > 1 ? 1 : t;
+        strokes[i].style.strokeDashoffset = (lens[i] * (1 - t)).toFixed(2);
+      }
+      if (seen < END) requestAnimationFrame(frame);
+      else svg2.classList.add("done");
+    }
+    requestAnimationFrame(frame);
   })();
 
   function placeHint() {
