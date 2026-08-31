@@ -12648,10 +12648,23 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
     });
     var END = acc + 0.3;
 
+    /* One unit of slack in the pattern, and it is not cosmetic.
+
+       A hidden stroke is one whose dash offset equals its own length, so the
+       visible run is exactly zero. With a round cap, a zero length run is not
+       nothing: it is a dot the width of the pen. Splitting the name into forty
+       five strokes turned that into forty five dots sitting in the air waiting
+       to be written over, which is what was appearing to the right of the part
+       already signed.
+
+       Padding the pattern moves the boundary a unit into the gap, so a stroke
+       that has not started yet has no cap to paint. */
+    var PAD = 1;
     strokes.forEach(function (p, i) {
+      var span = lens[i] + PAD;
       p.style.transition = "none";
-      p.style.strokeDasharray = lens[i] + " " + lens[i];
-      p.style.strokeDashoffset = lens[i];
+      p.style.strokeDasharray = span + " " + span;
+      p.style.strokeDashoffset = span;
     });
 
     var seen = 0, last = null;
@@ -12667,7 +12680,7 @@ body.atFooter .edgeNav,body.overlayOpen .edgeNav{
         var dur = Math.max(0.06, lens[i] / SPEED);
         var t = (seen - starts[i]) / dur;
         t = t < 0 ? 0 : t > 1 ? 1 : t;
-        strokes[i].style.strokeDashoffset = (lens[i] * (1 - t)).toFixed(2);
+        strokes[i].style.strokeDashoffset = ((lens[i] + PAD) * (1 - t)).toFixed(2);
       }
       if (seen < END) requestAnimationFrame(frame);
       else svg2.classList.add("done");
