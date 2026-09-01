@@ -580,7 +580,7 @@ window.I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yen
       el.setAttribute(name, window.__t(k, baseA[id]));
     });
   }
-  function apply(l){
+  function apply(l, chosen){
     if (!knownLang(l)) l = "en";
     window.__lang = l;
     var dict = (window.I18N && knownLang(l) && window.I18N[l]) || {};
@@ -634,11 +634,17 @@ window.I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yen
       var f = a.getAttribute("data-cv-" + l) || a.getAttribute("data-cv");
       a.setAttribute("href", f); a.setAttribute("download", f);
     });
-    try { localStorage.setItem("lang", l); } catch(e){}
+    /* Only when a reader picks one. This used to write on every load,
+       including the first, from the browser's own language setting, so the
+       privacy page's "which of the three languages you chose" was not true
+       here and something was being stored on a visitor's machine without any
+       act of theirs to rest it on. Detection still runs on every load; it
+       simply leaves nothing behind unless it was asked to. */
+    if (chosen) { try { localStorage.setItem("lang", l); } catch(e){} }
     try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch(e){}
   }
   document.querySelectorAll(".langs button").forEach(function(b){
-    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang"), true); });
   });
   apply(lang);
   /* A page that wants a whole viewport of height has to know how much of it
