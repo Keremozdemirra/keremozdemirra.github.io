@@ -477,3 +477,106 @@ html { scroll-behavior: smooth; scroll-padding-top: 2rem; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+/* ---------- 10. the eight names the first pass did not share -------------
+
+   Everything above rests on one assumption: that kit.css names its colours the
+   way this site does. Mostly it does, and eight names it does not were left
+   sitting at their old values. Every one of them is visible, and together they
+   are why an instrument embedded in a case page still read as the previous
+   edition: the cream ground under every rig, the brown that draws the terminal
+   value in the valuation and every bar in the abatement curve, the brown thumb
+   on every slider, the warm near black in the split, and the warm rule under
+   every table.
+
+   Aliased to the tokens above rather than given values of their own, so the
+   dark scheme is inherited instead of copied and there is one place to change
+   a colour.
+
+   Scope is unchanged and was checked, not assumed: all twenty six pages that
+   define these names load this file, and not one of the seventeen workshop
+   tools does. A colour is not decoration in those, and this file still stops
+   before them. */
+
+:root {
+  --fg:          var(--ink);
+  --line:        var(--rule);
+  --paper2:      var(--paper-sunk);
+  --raised:      var(--panel);
+  /* The bars, the legend swatches and the terminal value share this one. */
+  --accent-text: var(--accent);
+  --amber:       var(--accent);
+  /* Only ever used as the text laid on --amber, so it is the ground. */
+  --petrol:      var(--paper);
+  --danger:      var(--flag);
+}
+
+/* --petrol was doing two jobs: the text on a solid button and that button's
+   hover ground. One token cannot be both a foreground and a background, and
+   the hover text was reaching for --chalk, which nothing in these pages ever
+   defines, so it fell through to whatever it inherited. Written out instead. */
+.btn-solid {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+}
+
+.btn-solid:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+/* The reading grey, baked into sixteen selectors across twenty pages rather
+   than named, so no token could reach it. */
+.opening + .after,
+.opening-after,
+.tl p,
+.feature p,
+.col-lead,
+.repo p,
+.c-help,
+.note-x,
+.gb-body,
+.gcard p,
+.honest p,
+.built p,
+.soon .item p,
+.specs > .spread > p,
+.srcs .cite,
+.verdict .v-why,
+.macc-read pre {
+  color: var(--ink-soft);
+}
+
+::selection {
+  background: var(--accent-lit);
+  color: var(--ink);
+}
+
+html {
+  scrollbar-color: var(--rule-firm) var(--paper);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rule-firm);
+  border-color: var(--paper);
+}
+
+::-webkit-scrollbar-thumb:hover { background: var(--rule-edge); }
+
+/* These pages open by fading a full screen veil away, and the veil is the old
+   edition's near black. On paper that is a dark flash on every load, and
+   inside a framed instrument on a case page it is a black rectangle before the
+   tool arrives. Paper coloured, the fade still runs and there is nothing to
+   see, which is the point of it. */
+body::after,
+#fadeout {
+  background: var(--paper);
+}
+
+/* A leaf drifts down these pages now and then. It belongs to the hand drawn
+   film, which is a different address with a different world; here it is a
+   stray mark crossing a valuation, and inside a preview frame it is a stray
+   mark crossing a valuation at a quarter scale. */
+.leaf-mark { display: none; }
