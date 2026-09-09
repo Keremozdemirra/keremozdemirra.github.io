@@ -256,9 +256,45 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
   #p-order { display: none; }
   .machine .hide-s { display: none; }
 }
+/* The grid had no column track, so the single column took the machine bar's
+   min-content width of 478 and stretched the document with it at a 390
+   viewport. minmax(0, 1fr) holds the track to the viewport; min-width: 0 lets
+   the bar shrink inside it. Measured 2026-09-08: 478 to 390, desktop unchanged. */
+.app { grid-template-columns: minmax(0, 1fr); }
+.machine { min-width: 0; }
+
 @media (max-width: 620px) {
-  .panel { position: static; width: auto; margin: 0 12px 10px; }
+  /* position: static drops the z-index with it, so the panel fell behind the
+     absolutely positioned bed that fills the stage. A tap in its lower rows
+     landed on an SVG label of the drawing. relative restores the stacking the
+     z-index above already asked for. */
+  .panel { position: relative; width: auto; margin: 0 12px 10px; }
   .stage { overflow: auto; }
+
+  /* The palette floats over the bed on desktop, where the bed owns the pane.
+     Here the panels flow through the same box, so a floating rail covers them:
+     it joins the flow as a horizontal strip above them, at touch size. */
+  .tools {
+    /* relative, so the strip joins the flow and still keeps the z-index that
+       holds it above the bed. static would drop the z-index and the bed would
+       swallow every button, which is the same defect as the panel above. */
+    position: relative; flex-direction: row; flex-wrap: wrap;
+    margin: 12px 12px 10px; width: max-content; max-width: calc(100% - 24px);
+  }
+  .tools button { width: 44px; height: 44px; border-bottom: 0;
+    border-right: var(--w-narrow) solid var(--ink); }
+  .tools button:last-child { border-right: 0; }
+  .tools .rule { height: auto; width: var(--w-wide); }
+
+  /* Eight controls do not fit 390px in one row. The brand and the export button
+     hold the first line; the file controls take the second. */
+  .app { grid-template-rows: auto minmax(0, 1fr) 44px; }
+  .machine { flex-wrap: wrap; padding: 8px 12px; row-gap: 8px; }
+  .machine .spacer, .machine .sep { display: none; }
+  .machine > .logo { order: 1; }
+  .machine > button.beam { order: 2; margin-left: auto; }
+  .machine > button.flat, .machine > .srcname, .machine > input { order: 3; }
+  .machine > .srcname { max-width: none; flex: 1 1 auto; min-width: 0; }
 }
 </style>
 
@@ -369,7 +405,7 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
     <div class="panel" id="p-order" data-open="1">
       <h2 data-panel="p-order">
         <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
-        Cut order <em id="ordercap">&mdash;</em>
+        Cut order <em id="ordercap">-</em>
       </h2>
       <div class="body">
         <div class="oplist" id="oplist"></div>
@@ -380,7 +416,7 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
       <div class="card">
         <h3>Drop an SVG on the bed</h3>
         <p>Anything with paths, rectangles, circles or polygons in it. Text has to be
-          converted to outlines first &mdash; a laser cannot cut a font.
+          converted to outlines first. A laser cannot cut a font.
           Nothing is uploaded; the file is read here and stays here.</p>
         <div class="row">
           <button class="beam" id="e-open">Choose a file</button>
@@ -399,7 +435,7 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
     <div class="stat"><span class="k">Travel</span><span class="v" id="s-travel">0</span></div>
     <div class="stat"><span class="k">Passes</span><span class="v" id="s-passes">0</span></div>
     <div class="stat"><span class="k">Est. time</span><span class="v" id="s-time">0</span></div>
-    <div class="stat"><span class="k">Extent</span><span class="v" id="s-ext">&mdash;</span></div>
+    <div class="stat"><span class="k">Extent</span><span class="v" id="s-ext">-</span></div>
     <div class="stat spacer"></div>
     <div class="stat" style="border:0;padding-right:0">
       <button class="flat" id="preview">Preview G-code</button>
@@ -1140,7 +1176,7 @@ function stats() {
   $("s-passes").textContent = o.passes;
   $("s-time").textContent = fmtTime(m.time);
   $("s-ext").textContent = m.ext
-    ? Math.ceil(m.ext.w) + " x " + Math.ceil(m.ext.h) + " mm" : "—";
+    ? Math.ceil(m.ext.w) + " x " + Math.ceil(m.ext.h) + " mm" : "-";
 
   var over = m.ext && (m.ext.x < -0.01 || m.ext.y < -0.01 ||
                        m.ext.x + m.ext.w > b.w + 0.01 || m.ext.y + m.ext.h > b.h + 0.01);
@@ -1154,7 +1190,7 @@ function drawOrder() {
   if (!state.ordered || !state.ordered.length) {
     $("oplist").innerHTML = '<div style="font-size:12px;color:var(--ink-3);padding:4px">' +
       "Nothing loaded.</div>";
-    $("ordercap").textContent = "—";
+    $("ordercap").textContent = "-";
     return;
   }
   $("ordercap").textContent = state.ordered.length + " paths";
@@ -1370,7 +1406,7 @@ $("scrim").addEventListener("click", function (e) { if (e.target === this) this.
 $("preview").onclick = function () {
   if (!state.ordered) return;
   var t = build();
-  openModal("G-code — " + t.split("\n").length + " lines",
+  openModal("G-code, " + t.split("\n").length + " lines",
     "<pre>" + esc(t) + "</pre>");
 };
 $("help").onclick = function () {

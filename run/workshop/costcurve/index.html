@@ -289,6 +289,18 @@ td.pays { color: var(--pays); }
   .topnav { padding: 0 16px; gap: 14px; }
   .topnav .where { display: none; }
 }
+
+/* Brand, two links and two buttons need 447px in one row. Squeezed into 390 the
+   flex items shrank past their text: "My licence" rendered 39px wide and clipped,
+   and the bar still pushed the document to 430. The brand takes the first line
+   and the four controls the second. Measured 2026-09-08: 430 to 390, nothing
+   clipped, desktop untouched. */
+@media (max-width: 620px) {
+  .topnav { flex-wrap: wrap; height: auto; padding: 9px 14px; row-gap: 9px; column-gap: 12px; }
+  .topnav .sp { display: none; }
+  .topnav > .brand { flex: 1 0 100%; }
+  .topnav > .lnk, .topnav > .btn { flex: 0 0 auto; }
+}
 </style>
 
 <nav class="topnav">

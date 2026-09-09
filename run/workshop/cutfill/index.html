@@ -243,7 +243,14 @@ table.lv th { font: 500 10.5px var(--mono); color: var(--ink-faint); padding: 2p
   .rail.right { width: 100%; border-left: none; border-top: 1px solid var(--rule); order: 9; }
 }
 @media (max-width: 860px) {
-  .body { flex-direction: column; }
+  /* A wrapping column flex container sizes each line to its widest item, so the
+     400px level table and the 435px sheet made every rail 455 wide and took the
+     document with them. One column needs no wrapping; without it the rails
+     stretch to the viewport and the two scroll containers below do their job.
+     Measured 2026-09-08: 455 to 390, the table scrolling inside .levels and the
+     sheets inside .ground. */
+  .body { flex-direction: column; flex-wrap: nowrap; min-width: 0; }
+  .rail, .rail.right, .ground { min-width: 0; }
   .rail, .rail.right { width: auto; border-right: none; border-bottom: 1px solid var(--rule); }
   .bar { height: auto; padding: 10px 13px; flex-wrap: wrap; gap: 9px; }
   .ground { padding: 14px 10px 26px; }
@@ -333,8 +340,8 @@ table.lv th { font: 500 10.5px var(--mono); color: var(--ink-faint); padding: 2p
       <h3>Cut and fill</h3>
       <svg id="map" role="img" aria-label="Site map coloured by cut and fill"></svg>
       <div class="legend" style="margin-top:10px">
-        <span><i style="background:var(--cut);opacity:.55"></i>Cut — soil out</span>
-        <span><i style="background:var(--fill);opacity:.55"></i>Fill — soil in</span>
+        <span><i style="background:var(--cut);opacity:.55"></i>Cut, soil out</span>
+        <span><i style="background:var(--fill);opacity:.55"></i>Fill, soil in</span>
         <span><i style="background:var(--balance)"></i>Where they meet</span>
       </div>
     </div>
@@ -357,7 +364,7 @@ table.lv th { font: 500 10.5px var(--mono); color: var(--ink-faint); padding: 2p
     <div class="grp">
       <h2>On the road</h2>
       <ul class="rowlist" id="haul"></ul>
-      <div class="note"><b>A calculation to check, not a quantity to rely on.</b>
+      <div class="note"><b>Check this figure before you order from it.</b>
       The number goes into a tender and being wrong costs money. Take a section,
       work it by hand, and satisfy yourself before it is priced.</div>
     </div>
@@ -367,10 +374,10 @@ table.lv th { font: 500 10.5px var(--mono); color: var(--ink-faint); padding: 2p
 <div class="status">
   <div class="m"><b id="s-area">0</b><span>m² site</span></div>
   <div class="m"><b id="s-net">0</b><span>m³ net</span></div>
-  <div class="m"><b id="s-bal">–</b><span>balance level</span></div>
+  <div class="m"><b id="s-bal">-</b><span>balance level</span></div>
   <div class="m"><b id="s-loads">0</b><span>loads</span></div>
   <div class="caveat">Volumes between two surfaces on a regular grid. Batters,
-  benching and topsoil strip are not included — add them separately.</div>
+  benching and topsoil strip are not included. Add them separately.</div>
 </div>
 </div>
 
@@ -887,7 +894,7 @@ $("copy").addEventListener("click", function () {
     "Surplus to cart " + n2(d.haul.surplusLoose) + " m3 loose, " + d.haul.loadsOut + " loads",
     "Import " + n2(d.haul.deficit) + " m3, " + d.haul.loadsIn + " loads", "",
     "Check section: cut " + n2(d.sec.cutArea) + " m2, fill " + n2(d.sec.fillArea) + " m2", "",
-    "A calculation to check, not a quantity to rely on."];
+    "Check this figure before you order from it."];
   if (navigator.clipboard) navigator.clipboard.writeText(L.join("\n"));
   var b = $("copy"), was = b.textContent;
   b.textContent = "Copied"; setTimeout(function () { b.textContent = was; }, 1300);

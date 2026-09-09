@@ -422,10 +422,10 @@ svg.draft .squaretext { fill: #b23a1c; font-size: 10px; }
     <div class="group">
       <h2>What it will measure</h2>
       <div class="readout">
-        <div><dt>Finished waist</dt><b id="k-waist">&mdash;</b></div>
-        <div><dt>Finished hip</dt><b id="k-hip">&mdash;</b></div>
-        <div><dt>Side seam</dt><b id="k-seam">&mdash;</b></div>
-        <div><dt>Dart intake</dt><b id="k-dart">&mdash;</b></div>
+        <div><dt>Finished waist</dt><b id="k-waist">-</b></div>
+        <div><dt>Finished hip</dt><b id="k-hip">-</b></div>
+        <div><dt>Side seam</dt><b id="k-seam">-</b></div>
+        <div><dt>Dart intake</dt><b id="k-dart">-</b></div>
       </div>
     </div>
     <div class="group">
@@ -499,7 +499,7 @@ var Pattern = (function () {
       p.push({ kind: "no suppression",
         text: "The hip measure (" + mm(hip) + ") is not larger than the waist (" + mm(waist) +
           "). A straight skirt block is shaped by the difference between them, so there " +
-          "is nothing here to shape. This is the wrong block for this body — a straight " +
+          "is nothing here to shape. This is the wrong block for this body. A straight " +
           "skirt cut from these numbers would hang from the waist with no fit at all." });
     }
     if (m.hipDepth >= m.length) {
@@ -907,7 +907,7 @@ function draftSvg(m, lay, width) {
     out.push('<text class="big" x="8" y="26">' + (name === "back" ? "Back" : "Front") +
       "</text>");
     out.push('<text class="dim" x="8" y="42">centre ' + (name === "back" ? "back" : "front") +
-      " &mdash; place on fold</text>");
+      ", place on fold</text>");
     out.push("</g>");
   });
 
@@ -1038,8 +1038,8 @@ function refresh() {
       "A pattern drawn from an impossible set of numbers still looks like a pattern. " +
       "The panel on the right says which measurement is the problem.</div></div>";
     $("lede").textContent = "";
-    ["k-waist", "k-hip", "k-seam", "k-dart"].forEach(function (i) { $(i).innerHTML = "&mdash;"; });
-    ["s-sup", "s-side", "s-bd", "s-fd", "s-pages"].forEach(function (i) { $(i).textContent = "—"; });
+    ["k-waist", "k-hip", "k-seam", "k-dart"].forEach(function (i) { $(i).innerHTML = "-"; });
+    ["s-sup", "s-side", "s-bd", "s-fd", "s-pages"].forEach(function (i) { $(i).textContent = "-"; });
     $("verdict").innerHTML = problems.map(function (p) {
       return '<div class="note stop">' + esc(p.text) + "</div>";
     }).join("");
@@ -1070,14 +1070,14 @@ function refresh() {
   $("s-side").textContent = cm(s.side) + " cm";
   $("s-bd").textContent = back.darts.length + " x " + cm(back.darts[0].intake) + " cm";
   $("s-fd").textContent = front.darts.length + " x " + cm(front.darts[0].intake) + " cm";
-  $("s-pages").textContent = t ? t.pages.length : "—";
+  $("s-pages").textContent = t ? t.pages.length : "-";
   $("s-pages").className = "v" + (t ? "" : " stop");
 
   /* verdict */
   var v = [];
   v.push('<div class="note stop"><b>Print at 100%, with scaling off.</b> Then measure the ' +
     "red square on any page. If it is not 10.0 cm across, nothing else on the sheet is " +
-    "the size it says it is &mdash; and a skirt cut from it will be out by the same " +
+    "the size it says it is, and a skirt cut from it will be out by the same " +
     "percentage all the way round.</div>");
   if (t) {
     v.push('<div class="note ok">' + t.pages.length + " page" +
