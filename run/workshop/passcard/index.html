@@ -1,21 +1,7 @@
 <!doctype html>
 <html lang="en">
 <title>Passcard</title>
-<meta name="description" content="Names, roles and photographs onto badge stock, the photographs matched by ID and never leaving the tab. Refuses every name the card cannot carry.">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Kerem Özdemir">
-<meta property="og:title" content="Passcard">
-<meta property="og:description" content="Names, roles and photographs onto badge stock, the photographs matched by ID and never leaving the tab. Refuses every name the card cannot carry.">
-<meta property="og:url" content="https://keremozdemir.de/run/workshop/passcard/">
-<meta property="og:image" content="https://keremozdemir.de/og.png">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://keremozdemir.de/run/workshop/passcard/">
-<script type="application/ld+json">
-[{"@context":"https://schema.org","@type":"Person","@id":"https://keremozdemir.de#person","name":"Kerem Özdemir","alternateName":"Kerem Ozdemir","url":"https://keremozdemir.de/","sameAs":["https://orcid.org/0009-0007-4674-0521","https://github.com/Keremozdemirra","https://www.linkedin.com/in/kerem-özdemir-8bb02b229/"]},{"@context":"https://schema.org","@type":"WebSite","@id":"https://keremozdemir.de#website","name":"Kerem Özdemir","url":"https://keremozdemir.de/","inLanguage":"en","publisher":{"@id":"https://keremozdemir.de#person"}}]
-</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Passcard","url":"https://keremozdemir.de/run/workshop/passcard/index.html","isPartOf":{"@id":"https://keremozdemir.de#website"},"author":{"@id":"https://keremozdemir.de#person"},"inLanguage":"en","applicationCategory":"BusinessApplication","operatingSystem":"Any browser","isAccessibleForFree":true,"browserRequirements":"Runs entirely in the browser. No account, no server.","description":"Names, roles and photographs onto ID cards, refusing every name the card cannot carry."}</script>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 /* Fonts served from this file, not from Google. A hotlinked
@@ -411,13 +397,13 @@ button.ghost:active { transform: scale(.97); transition: transform 140ms var(--e
   <div class="rail">
     <div class="group">
       <h2>People <em id="pstat">&mdash;</em></h2>
-      <label class="f" for="people">Name, role, organisation, ID: one per line, in that order.</label>
+      <label class="f" for="people">Name, role, organisation, ID &mdash; one per line, in that order.</label>
       <textarea id="people" spellcheck="false" aria-label="People"></textarea>
     </div>
 
     <div class="group">
       <h2>Photographs <em id="fstat">none</em></h2>
-      <label class="f">Drop JPEGs named after the ID. <b>AC-0142.jpg</b> lands on the
+      <label class="f">Drop JPEGs named after the ID &mdash; <b>AC-0142.jpg</b> lands on the
         badge whose ID is AC-0142. They stay in this tab.</label>
       <div class="drop" id="drop" role="button" tabindex="0">
         <b>Drop photographs here</b>
@@ -430,15 +416,15 @@ button.ghost:active { transform: scale(.97); transition: transform 140ms var(--e
       <h2>Stock</h2>
       <label class="f" for="stock">The card the badges are printed on.</label>
       <select id="stock">
-        <option value="insert-4x3" selected>4 &times; 3 in insert, 6 to a sheet</option>
-        <option value="insert-3x4">3 &times; 4 in portrait, 4 to a sheet</option>
-        <option value="cr80">CR80 card, 10 to a sheet</option>
+        <option value="insert-4x3" selected>4 &times; 3 in insert &mdash; 6 to a sheet</option>
+        <option value="insert-3x4">3 &times; 4 in portrait &mdash; 4 to a sheet</option>
+        <option value="cr80">CR80 card &mdash; 10 to a sheet</option>
       </select>
       <label class="f" for="dpi" style="margin-top:10px">Printer resolution, for the barcode check.</label>
       <select id="dpi">
-        <option value="300" selected>300 dpi, office laser</option>
+        <option value="300" selected>300 dpi &mdash; office laser</option>
         <option value="600">600 dpi</option>
-        <option value="1200">1200 dpi, card printer</option>
+        <option value="1200">1200 dpi &mdash; card printer</option>
       </select>
       <button class="go" id="go">Save the sheet</button>
     </div>
@@ -808,7 +794,7 @@ var Badges = (function () {
       if (bad.length) {
         problems.push({ kind: "cannot be printed", who: p.name, chars: bad,
           text: "The badge for " + p.name + " contains " + bad.join(" ") +
-            ", which the built-in PDF fonts cannot write; Helvetica is limited to " +
+            ", which the built-in PDF fonts cannot write — Helvetica is limited to " +
             "Windows-1252, and Turkish s-cedilla, g-breve and dotted capital I are " +
             "outside it. The name is not transliterated: a badge somebody wears all " +
             "week should not spell their name wrong." });
@@ -818,7 +804,7 @@ var Badges = (function () {
         problems.push({ kind: "name too long", who: p.name,
           text: "“" + p.name + "” is " + (l.name.over / MM).toFixed(1) +
             " mm too wide for this card even at the smallest size it can carry. " +
-            "Shorten it, or use a larger stock; it will not be squeezed." });
+            "Shorten it, or use a larger stock — it will not be squeezed." });
       }
       if (p.role && !l.role.fits) {
         problems.push({ kind: "role too long", who: p.name,
@@ -849,7 +835,7 @@ var Badges = (function () {
         if (seen[key]) {
           problems.push({ kind: "indistinguishable", who: p.name,
             text: "Two badges for “" + p.name + "” would be identical. " +
-              "Whoever checks them at the gate cannot tell which is which: " +
+              "Whoever checks them at the gate cannot tell which is which — " +
               "give them different IDs." });
         }
         seen[key] = true;
@@ -1000,7 +986,7 @@ var SAMPLE = [
 "Jonas Weber,Scaffolder,Höhenbau GmbH,HB-2210",
 "Aoife Ní Bhraonáin,Safety officer,Meridian Contracts,MC-0145",
 "Kwame Mensah,Plant operator,Meridian Contracts,MC-0146",
-"Rui Alves,Visitor,·,VIS-0009"
+"Rui Alves,Visitor,—,VIS-0009"
 ].join("\n");
 
 var state = { view: "card", at: 0, photos: {}, people: [], problems: [] };
@@ -1032,7 +1018,7 @@ function cardHtml(person, sizePx) {
     out.push('<div class="photo" style="left:' + mm(l.photo.x) + ";top:" + mm(l.photo.y) +
       ";width:" + mm(l.photo.w) + ";height:" + mm(l.photo.h) + '">' +
       (img ? '<img src="' + img.url + '" alt="">'
-           : "<span>no photo<br>" + esc(person.id || "·") + "</span>") + "</div>");
+           : "<span>no photo<br>" + esc(person.id || "—") + "</span>") + "</div>");
   }
 
   var y = l.pad + 1;
@@ -1129,7 +1115,7 @@ function refresh() {
   $("plist").innerHTML = r.people.map(function (p, i) {
     var mine = state.problems.filter(function (x) { return x.who === p.name; });
     return '<button data-i="' + i + '" data-cur="' + (i === state.at ? 1 : 0) + '">' +
-      '<span class="n">' + (i + 1) + "</span><span>" + esc(p.name || "·") + "</span>" +
+      '<span class="n">' + (i + 1) + "</span><span>" + esc(p.name || "—") + "</span>" +
       '<span class="tag ' + (mine.length ? "stop" : "ok") + '">' +
       (mine.length ? esc(mine[0].kind) : (state.photos[(p.id || "").toLowerCase()] ? "photo" : "")) +
       "</span></button>";
@@ -1383,7 +1369,7 @@ $("people").value = SAMPLE;
 refresh();
 </script>
 
-<!-- A tool published under this site can be reached from a search
+<!-- A tool published under keremozdemir.de can be reached from a search
      result with no path back to whoever wrote it. This is that path. It
      sits at the end of the document rather than fixed to the corner: these
      tools fill the window, and anything pinned there covers the last line
@@ -1401,8 +1387,5 @@ refresh();
 .ko-home:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 @media print{.ko-home{display:none}}
 </style>
-<a class="ko-home" href="/">Kerem Özdemir</a>
-
-<footer style="margin:4rem auto 0;padding:1.25rem 1.5rem;max-width:74rem;border-top:1px solid currentColor;opacity:.45;font:400 .72rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em"><p style="margin:0 0 .6rem">A working result to check against your own process, not a certified one.</p>
-<a href="/impressum/" style="color:inherit">Impressum</a><span aria-hidden="true"> · </span><a href="/privacy/" style="color:inherit">Privacy</a><span aria-hidden="true"> · </span><a href="/" style="color:inherit">keremozdemir.de</a></footer>
+<a class="ko-home" href="../">Kerem Özdemir</a>
 </html>

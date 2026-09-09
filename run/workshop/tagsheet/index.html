@@ -1,22 +1,8 @@
 <!doctype html>
 <html lang="en">
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tagsheet</title>
-<meta name="description" content="Sequential Code 128 labels on Avery 5160 geometry, with the encoder and the check digit verified against known answers and the PDF written in the browser.">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Kerem Özdemir">
-<meta property="og:title" content="Tagsheet">
-<meta property="og:description" content="Sequential Code 128 labels on Avery 5160 geometry, with the encoder and the check digit verified against known answers and the PDF written in the browser.">
-<meta property="og:url" content="https://keremozdemir.de/run/workshop/tagsheet/">
-<meta property="og:image" content="https://keremozdemir.de/og.png">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://keremozdemir.de/run/workshop/tagsheet/">
-<script type="application/ld+json">
-[{"@context":"https://schema.org","@type":"Person","@id":"https://keremozdemir.de#person","name":"Kerem Özdemir","alternateName":"Kerem Ozdemir","url":"https://keremozdemir.de/","sameAs":["https://orcid.org/0009-0007-4674-0521","https://github.com/Keremozdemirra","https://www.linkedin.com/in/kerem-özdemir-8bb02b229/"]},{"@context":"https://schema.org","@type":"WebSite","@id":"https://keremozdemir.de#website","name":"Kerem Özdemir","url":"https://keremozdemir.de/","inLanguage":"en","publisher":{"@id":"https://keremozdemir.de#person"}}]
-</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Tagsheet","url":"https://keremozdemir.de/run/workshop/tagsheet/index.html","isPartOf":{"@id":"https://keremozdemir.de#website"},"author":{"@id":"https://keremozdemir.de#person"},"inLanguage":"en","applicationCategory":"BusinessApplication","operatingSystem":"Any browser","isAccessibleForFree":true,"browserRequirements":"Runs entirely in the browser. No account, no server.","description":"Sequential Code 128 barcode labels, with a check that they will actually scan at the size printed."}</script>
 <style>
 /* Fonts served from this file, not from Google. A hotlinked
    font sends the visitor's IP to a third party on every load; nothing
@@ -306,7 +292,7 @@ input:focus { border-color: var(--scan); }
       <rect x="18.8" y="5" width="1" height="14" fill="currentColor"/>
       <rect x="2" y="11.2" width="20" height="1.6" rx=".8" fill="var(--scan)"/>
     </svg>
-    <h1 style="font:inherit;margin:0;display:inline"><b>Tagsheet</b></h1><span>Code 128 · 3 × 10 · US Letter</span>
+    <b>Tagsheet</b><span>Code 128 · 3 × 10 · US Letter</span>
   </div>
   <div class="grow"></div>
   <div class="src"><span>Source</span><b id="caption">example run</b></div>
@@ -390,8 +376,8 @@ input:focus { border-color: var(--scan); }
 <div class="status">
   <div class="m"><b id="s-codes">0</b><span>codes</span></div>
   <div class="m"><b id="s-sheets">0</b><span>sheets</span></div>
-  <div class="m"><b id="s-mod">·</b><span>narrowest bar</span></div>
-  <div class="m"><b id="s-widest">·</b><span>longest symbol</span></div>
+  <div class="m"><b id="s-mod">–</b><span>narrowest bar</span></div>
+  <div class="m"><b id="s-widest">–</b><span>longest symbol</span></div>
   <div class="demo" id="demoflag">showing an example run</div>
 </div>
 </div>
@@ -986,8 +972,8 @@ function drawProof(items) {
   var ok = it.mod >= MIN_MODULE_PT;
   $("verdict").className = "verdict " + (ok ? "ok" : "no");
   $("verdict").textContent = ok
-    ? "Scannable, narrowest bar " + mm.toFixed(3) + " mm"
-    : "Too dense to scan reliably: " + mm.toFixed(3) + " mm";
+    ? "Scannable — narrowest bar " + mm.toFixed(3) + " mm"
+    : "Too dense to scan reliably — " + mm.toFixed(3) + " mm";
   $("spec").innerHTML =
     "<dl>" +
     "<dt>Code</dt><dd>" + esc(it.text) + "</dd>" +
@@ -996,7 +982,7 @@ function drawProof(items) {
     "<dt>Floor</dt><dd>" + (MIN_MODULE_PT * 25.4 / 72).toFixed(3) + " mm</dd>" +
     "</dl>" +
     (ok ? "" : "<div style='margin-top:8px;color:var(--scan)'>Shorten the code, or " +
-      "move to a wider label. Nothing about the printer fixes this; the symbol " +
+      "move to a wider label. Nothing about the printer fixes this — the symbol " +
       "needs more room than the label has.</div>");
   $("of").textContent = (view.at + 1) + " of " + good.length;
 }
@@ -1007,7 +993,7 @@ function checks(items) {
   var out = [];
   if (bad.length) {
     out.push('<div class="note stop"><b>' + bad.length + ' code' + (bad.length === 1 ? "" : "s") +
-      ' cannot be encoded.</b> Code 128 carries printable ASCII only: no accented ' +
+      ' cannot be encoded.</b> Code 128 carries printable ASCII only — no accented ' +
       'letters, no dashes that are not hyphen-minus. First one: <code>' +
       esc(bad[0].text.slice(0, 40)) + '</code>. These are skipped, not printed blank.</div>');
   }
@@ -1048,8 +1034,8 @@ function refresh(keepAt) {
   $("s-codes").textContent = good.length;
   $("s-sheets").textContent = good.length ? pages.length : 0;
   $("s-mod").textContent = mods.length
-    ? (Math.min.apply(null, mods) * 25.4 / 72).toFixed(3) + " mm" : "·";
-  $("s-widest").textContent = lens.length ? Math.max.apply(null, lens) + " mod" : "·";
+    ? (Math.min.apply(null, mods) * 25.4 / 72).toFixed(3) + " mm" : "–";
+  $("s-widest").textContent = lens.length ? Math.max.apply(null, lens) + " mod" : "–";
 
   if (view.mode === "list") {
     $("parsed").innerHTML = good.length
@@ -1137,7 +1123,7 @@ setMode("list");
 
 </script>
 
-<!-- A tool published under this site can be reached from a search
+<!-- A tool published under keremozdemir.de can be reached from a search
      result with no path back to whoever wrote it. This is that path. It
      sits at the end of the document rather than fixed to the corner: these
      tools fill the window, and anything pinned there covers the last line
@@ -1155,7 +1141,5 @@ setMode("list");
 .ko-home:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 @media print{.ko-home{display:none}}
 </style>
-<a class="ko-home" href="/">Kerem Özdemir</a>
-
-<footer style="margin:4rem auto 0;padding:1.25rem 1.5rem;max-width:74rem;border-top:1px solid currentColor;opacity:.45;font:400 .72rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em"><a href="/impressum/" style="color:inherit">Impressum</a><span aria-hidden="true"> · </span><a href="/privacy/" style="color:inherit">Privacy</a><span aria-hidden="true"> · </span><a href="/" style="color:inherit">keremozdemir.de</a></footer>
+<a class="ko-home" href="../">Kerem Özdemir</a>
 </html>

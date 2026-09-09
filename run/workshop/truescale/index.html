@@ -1,21 +1,7 @@
 <!doctype html>
 <html lang="en">
 <title>Truescale</title>
-<meta name="description" content="Four measurements in, a skirt block drafted to that body and tiled onto A4. Ease, seam allowance and dart intake all stated rather than assumed.">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Kerem Özdemir">
-<meta property="og:title" content="Truescale">
-<meta property="og:description" content="Four measurements in, a skirt block drafted to that body and tiled onto A4. Ease, seam allowance and dart intake all stated rather than assumed.">
-<meta property="og:url" content="https://keremozdemir.de/run/workshop/truescale/">
-<meta property="og:image" content="https://keremozdemir.de/og.png">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://keremozdemir.de/run/workshop/truescale/">
-<script type="application/ld+json">
-[{"@context":"https://schema.org","@type":"Person","@id":"https://keremozdemir.de#person","name":"Kerem Özdemir","alternateName":"Kerem Ozdemir","url":"https://keremozdemir.de/","sameAs":["https://orcid.org/0009-0007-4674-0521","https://github.com/Keremozdemirra","https://www.linkedin.com/in/kerem-özdemir-8bb02b229/"]},{"@context":"https://schema.org","@type":"WebSite","@id":"https://keremozdemir.de#website","name":"Kerem Özdemir","url":"https://keremozdemir.de/","inLanguage":"en","publisher":{"@id":"https://keremozdemir.de#person"}}]
-</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Truescale","url":"https://keremozdemir.de/run/workshop/truescale/index.html","isPartOf":{"@id":"https://keremozdemir.de#website"},"author":{"@id":"https://keremozdemir.de#person"},"inLanguage":"en","applicationCategory":"BusinessApplication","operatingSystem":"Any browser","isAccessibleForFree":true,"browserRequirements":"Runs entirely in the browser. No account, no server.","description":"Four measurements in, a skirt block drafted to that body and tiled onto A4."}</script>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 /* Fonts served from this file, not from Google. A hotlinked
@@ -513,7 +499,7 @@ var Pattern = (function () {
       p.push({ kind: "no suppression",
         text: "The hip measure (" + mm(hip) + ") is not larger than the waist (" + mm(waist) +
           "). A straight skirt block is shaped by the difference between them, so there " +
-          "is nothing here to shape. This is the wrong block for this body; a straight " +
+          "is nothing here to shape. This is the wrong block for this body — a straight " +
           "skirt cut from these numbers would hang from the waist with no fit at all." });
     }
     if (m.hipDepth >= m.length) {
@@ -921,7 +907,7 @@ function draftSvg(m, lay, width) {
     out.push('<text class="big" x="8" y="26">' + (name === "back" ? "Back" : "Front") +
       "</text>");
     out.push('<text class="dim" x="8" y="42">centre ' + (name === "back" ? "back" : "front") +
-      ", place on fold</text>");
+      " &mdash; place on fold</text>");
     out.push("</g>");
   });
 
@@ -1053,7 +1039,7 @@ function refresh() {
       "The panel on the right says which measurement is the problem.</div></div>";
     $("lede").textContent = "";
     ["k-waist", "k-hip", "k-seam", "k-dart"].forEach(function (i) { $(i).innerHTML = "&mdash;"; });
-    ["s-sup", "s-side", "s-bd", "s-fd", "s-pages"].forEach(function (i) { $(i).textContent = "·"; });
+    ["s-sup", "s-side", "s-bd", "s-fd", "s-pages"].forEach(function (i) { $(i).textContent = "—"; });
     $("verdict").innerHTML = problems.map(function (p) {
       return '<div class="note stop">' + esc(p.text) + "</div>";
     }).join("");
@@ -1084,14 +1070,14 @@ function refresh() {
   $("s-side").textContent = cm(s.side) + " cm";
   $("s-bd").textContent = back.darts.length + " x " + cm(back.darts[0].intake) + " cm";
   $("s-fd").textContent = front.darts.length + " x " + cm(front.darts[0].intake) + " cm";
-  $("s-pages").textContent = t ? t.pages.length : "·";
+  $("s-pages").textContent = t ? t.pages.length : "—";
   $("s-pages").className = "v" + (t ? "" : " stop");
 
   /* verdict */
   var v = [];
   v.push('<div class="note stop"><b>Print at 100%, with scaling off.</b> Then measure the ' +
     "red square on any page. If it is not 10.0 cm across, nothing else on the sheet is " +
-    "the size it says it is, and a skirt cut from it will be out by the same " +
+    "the size it says it is &mdash; and a skirt cut from it will be out by the same " +
     "percentage all the way round.</div>");
   if (t) {
     v.push('<div class="note ok">' + t.pages.length + " page" +
@@ -1190,7 +1176,7 @@ addEventListener("resize", function () { clearTimeout(reflow); reflow = setTimeo
 refresh();
 </script>
 
-<!-- A tool published under this site can be reached from a search
+<!-- A tool published under keremozdemir.de can be reached from a search
      result with no path back to whoever wrote it. This is that path. It
      sits at the end of the document rather than fixed to the corner: these
      tools fill the window, and anything pinned there covers the last line
@@ -1208,8 +1194,5 @@ refresh();
 .ko-home:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 @media print{.ko-home{display:none}}
 </style>
-<a class="ko-home" href="/">Kerem Özdemir</a>
-
-<footer style="margin:4rem auto 0;padding:1.25rem 1.5rem;max-width:74rem;border-top:1px solid currentColor;opacity:.45;font:400 .72rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em"><p style="margin:0 0 .6rem">A working result to check against your own process, not a certified one.</p>
-<a href="/impressum/" style="color:inherit">Impressum</a><span aria-hidden="true"> · </span><a href="/privacy/" style="color:inherit">Privacy</a><span aria-hidden="true"> · </span><a href="/" style="color:inherit">keremozdemir.de</a></footer>
+<a class="ko-home" href="../">Kerem Özdemir</a>
 </html>

@@ -9,21 +9,21 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 
 <title>Who actually pays a tax</title>
-<meta name="description" content="An explorable essay on tax incidence. Drag the curves, set a tax, and watch the burden split. Who hands the money to the state turns out not to matter.">
+<meta name="description" content="An explorable essay on tax incidence. Drag the supply and demand curves, set a tax, and watch the burden split between buyer and seller. Who hands the money to the state turns out not to matter. Elasticity decides.">
 <meta name="author" content="Kerem Özdemir">
 <meta name="color-scheme" content="light">
 <link rel="stylesheet" href="../../../fonts/fonts.css">
-<link rel="canonical" href="https://keremozdemir.de/run/tools/economics/tax/">
+<link rel="canonical" href="https://keremozdemir.de/tools/economics/tax/">
 <meta property="og:title" content="Who actually pays a tax">
-<meta property="og:description" content="An explorable essay on tax incidence. Drag the curves, set a tax, and watch the burden split. Who hands the money to the state turns out not to matter.">
+<meta property="og:description" content="An explorable essay on tax incidence. Drag the supply and demand curves, set a tax, and watch the burden split between buyer and seller. Who hands the money to the state turns out not to matter. Elasticity decides.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns="http://www.w3.org/2000/svg"%20viewBox="0%200%2032%2032"%3E%3Crect%20width="32"%20height="32"%20rx="7"%20fill="%231f4f8f"/%3E%3Cpath%20d="M11.3%207.4%20V24.6"%20stroke="%23fcfcfb"%20stroke-width="3.9"/%3E%3Cpath%20d="M12.4%2016.6%20L21.9%207.6"%20stroke="%23fcfcfb"%20stroke-width="2.9"/%3E%3Cpath%20d="M12.4%2015.4%20L22.4%2024.6"%20stroke="%23fcfcfb"%20stroke-width="3.3"/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico" sizes="any">
 <style>
 /* ============================================================
    kit.css
-   House visual system for the open instruments at this site
+   House visual system for the open instruments at keremozdemir.de
    Paper palette, Fraunces display, Newsreader body, IBM Plex Mono
    for every number. No framework, no build step.
 
@@ -70,7 +70,7 @@
 }
 
 /* The instruments used to flip to a dark palette with the system.  They
-   sit inside this site now, whose paper is light and whose top bar
+   sit inside keremozdemir.de now, whose paper is light and whose top bar
    and footer are painted from the site's own tokens, so a page that went
    dark underneath a light bar would only look broken.  One palette. */
 
@@ -269,6 +269,16 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-steps li:last-child { border-bottom: 0; }
 .k-steps .k-op { color: var(--dim); }
 .k-steps .k-res { color: var(--ink); font-weight: 500; text-align: right; white-space: nowrap; }
+
+/* nowrap keeps a short result on one line, which is what most of these are.
+   A worked step that prints its formula is the exception: pathway's
+   "r' = (E_now - E_target) / ..." needed 473px in a 311px cell, and the page
+   scrolled sideways at 390 because the cell could not break. Below the phone
+   breakpoint the result wraps instead; the desktop line stays intact. */
+@media (max-width: 480px) {
+  .k-steps .k-res { white-space: normal; overflow-wrap: anywhere; text-align: left; }
+  .k-steps li { flex-wrap: wrap; }
+}
 .k-steps li.k-step-final { border-top: 1px solid var(--rule-firm); border-bottom: 0; margin-top: 0.3rem; padding-top: 0.5rem; }
 .k-steps li.k-step-final .k-res { color: var(--accent); font-size: 0.92rem; }
 
@@ -909,12 +919,6 @@ footer a:hover{color:var(--fg)}
 
 
 </style>
-  <link rel="stylesheet" href="/run/theme.css">
-
-<script type="application/ld+json">
-[{"@context":"https://schema.org","@type":"Person","@id":"https://keremozdemir.de#person","name":"Kerem Özdemir","alternateName":"Kerem Ozdemir","url":"https://keremozdemir.de/","sameAs":["https://orcid.org/0009-0007-4674-0521","https://github.com/Keremozdemirra","https://www.linkedin.com/in/kerem-özdemir-8bb02b229/"]},{"@context":"https://schema.org","@type":"WebSite","@id":"https://keremozdemir.de#website","name":"Kerem Özdemir","url":"https://keremozdemir.de/","inLanguage":"en","publisher":{"@id":"https://keremozdemir.de#person"}}]
-</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Who actually pays a tax","url":"https://keremozdemir.de/run/tools/economics/tax/index.html","isPartOf":{"@id":"https://keremozdemir.de#website"},"author":{"@id":"https://keremozdemir.de#person"},"inLanguage":"en","description":"An explorable essay on tax incidence. Drag the supply and demand curves, set a tax, and watch the burden split between buyer and seller. Who hands the money to the state turns out not to matter. Elasticity decides.","applicationCategory":"BusinessApplication","operatingSystem":"Any browser","isAccessibleForFree":true,"browserRequirements":"Runs entirely in the browser. No account, no server."}</script>
 </head>
 <body>
 
@@ -922,7 +926,16 @@ footer a:hover{color:var(--fg)}
 
 <div class="k-shell">
 
-<main class="k-main" id="essay">
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="../../../index.html">Kerem Özdemir</a>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../workshop/" data-i="nav-w">Workshop</a><a href="../../../tools.html" data-i="nav-t">Tools</a><a href="../../../simea/" data-i="nav-s">Simulations</a><a href="../../../tools/economics/" aria-current="page" data-i="nav-e">Economics</a><a href="../../../game.html" data-i="nav-g">Game Theory</a><a href="../../../projects.html" data-i="nav-j">Projects</a><a href="../../../profile.html" data-i="nav-p">Profile</a><a href="../../../notes.html" data-i="nav-n">Notes</a><a href="../../../contact.html" data-i="nav-c">Contact</a></nav>
+    <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
+  </div>
+</header>
+
+
+  <main class="k-main" id="essay">
     <div class="k-wrap">
 
       <div class="k-lede k-crown">
@@ -1120,7 +1133,7 @@ footer a:hover{color:var(--fg)}
             <span class="ex-next-d" data-i="xn-d-lemons2">What happens to a market when one side knows something the other does not.
             Run it and watch the good cars leave.</span>
           </a>
-          <a href="/run/tools/economics/">
+          <a href="../index.html">
             <span class="ex-next-k" data-i="xn-k-back">Back</span>
             <span class="ex-next-t" data-i="xn-t-all4">All four essays</span>
             <span class="ex-next-d" data-i="xn-d-all4">Explorable Economics: models you run rather than conclusions you are
@@ -1142,18 +1155,29 @@ footer a:hover{color:var(--fg)}
       <p class="k-fine" data-i="tx-028">
         Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no network
         call after the fonts have loaded. Part of
-        <a href="/run/tools/economics/">Explorable Economics</a>, built by
-        <a href="/">Kerem Özdemir</a>.
+        <a href="../index.html">Explorable Economics</a>, built by
+        <a href="../../../index.html">Kerem Özdemir</a>.
       </p>
     </div>
   </aside>
+
+<footer class="site-foot"><div class="wrap">
+  <span>© 2026 Kerem Özdemir</span>
+  <span class="foot-links">
+    <a href="../../../sources.html" data-i="nav-src">Sources</a>
+    <a href="../../../impressum.html" data-i="nav-imp">Impressum</a>
+    <a href="../../../datenschutz.html" data-i="nav-dsg">Privacy</a>
+    <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
+  </span>
+</div></footer>
+
 
 </div>
 
 <script>
 /* ============================================================
    kit.js
-   Shared behaviour for the open instruments at this site
+   Shared behaviour for the open instruments at keremozdemir.de
    No dependencies. No network calls. Safe to inline.
 
    Kit.el        small DOM builder
@@ -2371,7 +2395,7 @@ function sweepI18n() {
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Profil", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Atölye", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel tur, bir model hakkında bir sayfa yerine bir köy ve bir çit üzerine bir oyun olarak önünüze konuyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. O sürgüyü seçmek teknik değil, ahlaki bir karardır.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin dağılımını ayarlayın ve bir ikinci el araba piyasasının tur tur nasıl dağıldığını izleyin.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: elinize tutuşturulan sonuçlar değil, kendiniz çalıştırdığınız modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükleyin, bir vergi koyun ve vergiyi kimin sırtlanacağına kanunun karar vermediğini görün.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştırın, kazananları çoğaltın ve gelecek uzunken neyin ayakta kaldığını görün.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur? Çalıştırın ve iyi arabaların piyasadan çekilişini izleyin.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğiniz modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında çalışan bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler; bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini çökertiyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış ve karşı olgusal bir çalıştırmayla canlı karşılaştırılan üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşıcılığı sabit tutup altındaki ağın biçimini değiştirin. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu çalıştırmanın bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sisteminiz azaltılmış hareket istiyor, bu yüzden bu model hiç canlandırılmıyor. İlerlet düğmesi modeli {n} adım ilerletip sonucu bir kez çizer. Adım düğmesi tek bir adım attırır.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım attırır, <kbd>R<\/kbd> sıfırlar. Aşağıdaki bütün kontroller standart birer sürgü, radyo grubu ya da düğmedir.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/><\/svg><i>Dört denemeden birincisi<\/i>"}, "de": {"kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Profil", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Werkstatt", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Die Schaltfläche Vor bewegt es um {n} Schritte und zeichnet das Ergebnis einmal, die Schaltfläche Schritt um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/><\/svg><i>Essay eins von vier<\/i>"}};
+window.CHROME_I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Profil", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyun Teorisi", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Atölye", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/><\/svg><i>Dört denemeden birincisi<\/i>"}, "de": {"kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Profil", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spieltheorie", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Werkstatt", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "crown": "<svg width=\"16\" height=\"22\" viewBox=\"0 0 18 26\" aria-hidden=\"true\"><path d=\"M9 1 Q16 9 9 25 Q2 9 9 1Z\" fill=\"#b06a24\" opacity=\".85\"/><path d=\"M9 4 L9 22\" stroke=\"rgba(0,0,0,.25)\" stroke-width=\".8\"/><\/svg><i>Essay eins von vier<\/i>"}};
 
 (function(){
   "use strict";
@@ -2500,6 +2524,6 @@ window.CHROME_I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdile
 })();
 
 </script>
-  <footer style="margin:4rem auto 0;padding:1.25rem 1.5rem;max-width:74rem;border-top:1px solid currentColor;opacity:.45;font:400 .72rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em"><a href="/impressum/" style="color:inherit">Impressum</a><span aria-hidden="true"> · </span><a href="/privacy/" style="color:inherit">Privacy</a><span aria-hidden="true"> · </span><a href="/" style="color:inherit">keremozdemir.de</a></footer>
+
 </body>
 </html>
