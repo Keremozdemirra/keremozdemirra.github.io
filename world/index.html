@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'sha256-hkzRjflwL67QuBNHfcX51SOxPQzPEfwGduwXdxJWLPQ='; frame-src 'self' https://keremozdemir.de; connect-src 'self' https://keremozdemir.de; form-action 'self'; base-uri 'self'; object-src 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kerem Özdemir</title>
+<meta name="description" content="A white world with seven doors. Each door opens one part of the site: work, cases, notes, about, life, CV, contact.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+@font-face { font-family: 'Instrument Sans'; font-style: normal; font-weight: 400 500; font-display: swap;
+  src: url('fonts/instrumentsans-pxiTypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr0She1ZuWi3hKpA.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Instrument Sans'; font-style: normal; font-weight: 400 500; font-display: swap;
+  src: url('fonts/instrumentsans-pxiTypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr0SZe1ZuWi3g.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+:root { --paper: #f3f2ee; --ink: #1c1b18; --ink-soft: #6b6862; --accent: #8a1f1f; --rule: #dcd9d2; }
+html, body { margin: 0; height: 100%; background: var(--paper); color: var(--ink);
+  font: 15px/1.5 'Instrument Sans', system-ui, sans-serif; overflow: hidden; }
+#stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+.hud { position: fixed; left: 24px; top: 20px; max-width: 26rem; pointer-events: none; }
+.hud h1 { margin: 0; font-size: 14px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); }
+/* The hint: a quiet caption card, like a museum label. */
+.hud p { position: fixed; left: 24px; bottom: 52px; margin: 0; padding: 10px 14px; font-size: 13px; letter-spacing: 0.01em; min-height: 1.5em; max-width: 30rem;
+  background: rgba(255,255,255,0.72); color: var(--ink); border-left: 2px solid var(--accent); backdrop-filter: blur(6px); }
+.hud p strong { font-weight: 600; }
+#labels { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.label { position: absolute; left: 0; top: 0; font-size: 15px; font-weight: 500; white-space: nowrap; will-change: transform; }
+#list { position: fixed; left: 24px; bottom: 12px; margin: 0; font-size: 13px; display: flex; flex-wrap: wrap; align-items: center; gap: 0 14px; }
+#list a, #list button { display: inline-flex; align-items: center; min-height: 44px; }
+#list button { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
+#list button:hover { text-decoration: underline; }
+#list .legal { color: var(--ink-soft); }
+#live { position: absolute; left: -9999px; }
+/* Letterbox bars for the second the camera passes through a door. */
+#bars::before, #bars::after { content: ''; position: fixed; left: 0; right: 0; height: 0; background: var(--ink); transition: height .5s ease; pointer-events: none; }
+#bars::before { top: 0; } #bars::after { bottom: 0; }
+body.letterbox #bars::before, body.letterbox #bars::after { height: 9vh; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+/* A faint vignette gives the void an edge without a render pass. */
+#vignette { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 62%, rgba(22,23,26,0.10) 100%); }
+/* The page opens inside the world, in a frame; the world waits behind it. */
+#overlay { position: fixed; inset: 6vh 8vw; background: var(--paper); border: 1px solid var(--rule); box-shadow: 0 30px 80px rgba(22,23,26,0.25); display: flex; flex-direction: column; z-index: 5;
+  opacity: 0; transform: translateY(18px) scale(0.985); transition: opacity .32s ease, transform .5s cubic-bezier(.2,.8,.2,1); pointer-events: none; }
+#overlay.open { opacity: 1; transform: none; pointer-events: auto; }
+#overlay[hidden] { display: none; }
+/* The hint re-enters each time its text changes. */
+.hud p { transition: opacity .25s ease, transform .35s cubic-bezier(.2,.8,.2,1); }
+.hud p.swap { opacity: 0; transform: translateY(6px); transition: none; }
+@media (prefers-reduced-motion: reduce) { #overlay, .hud p { transition: none; } }
+#overlay-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-bottom: 1px solid var(--rule); font-size: 13px; }
+#overlay-bar button { font: inherit; color: var(--accent); background: none; border: 0; cursor: pointer; }
+#page { flex: 1; border: 0; width: 100%; }
+#veil { position: fixed; inset: 0; background: #f3f2ee; opacity: 1; pointer-events: none; transition: opacity .6s ease; }
+#veil.on { opacity: 1; pointer-events: auto; }
+#veil.off { opacity: 0; }
+
+/* The same seven links as plain HTML: crawlers, screen readers, and anyone without WebGL get this. */
+#doors { position: fixed; left: -9999px; top: 0; }
+body.flat #stage, body.flat #list, body.flat .hud p, body.flat #veil, body.flat #labels { display: none; }
+body.flat #doors { position: static; padding: 4.5rem 24px 24px; }
+#doors ol { list-style: none; margin: 0; padding: 0; max-width: 26rem; }
+#doors li { border-top: 1px solid var(--rule); padding: 0; }
+#doors li a { display: inline-flex; align-items: center; min-height: 44px; }
+#doors li:last-child { border-bottom: 1px solid var(--rule); }
+#doors a { display: block; font-size: 17px; }
+</style>
+</head>
+<body>
+<canvas id="stage" tabindex="0" aria-label="A white world. Walk through a door to open a page."></canvas>
+<noscript><p style="position:fixed;left:24px;top:64px;max-width:26rem">This page needs JavaScript. <a href="https://keremozdemir.de/">Open the site directly.</a></p></noscript>
+
+<header class="hud">
+  <h1>Kerem Özdemir</h1>
+  <p id="hint">Loading the world.</p>
+</header>
+
+<nav id="doors" aria-label="Pages">
+  <ol>
+    <li><a href="https://keremozdemir.de/work/">Work</a></li>
+    <li><a href="https://keremozdemir.de/cases/">Cases</a></li>
+    <li><a href="https://keremozdemir.de/notes/">Notes</a></li>
+    <li><a href="https://keremozdemir.de/about/">About</a></li>
+    <li><a href="https://keremozdemir.de/life/">Life</a></li>
+    <li><a href="https://keremozdemir.de/cv/">CV</a></li>
+    <li><a href="https://keremozdemir.de/contact/">Contact</a></li>
+  </ol>
+</nav>
+
+<div id="labels" aria-hidden="true"></div>
+<p id="list"><a href="https://keremozdemir.de/" id="showList">Open the site without 3D</a><button id="mute" type="button">Sound on</button><a href="https://keremozdemir.de/impressum/" class="legal">Impressum</a><a href="https://keremozdemir.de/privacy/" class="legal">Privacy</a></p>
+<p id="live" aria-live="polite"></p>
+<div id="bars" aria-hidden="true"></div>
+<div id="overlay" hidden>
+  <div id="overlay-bar"><span id="overlay-title">Page</span><button id="close" type="button">Close (Esc)</button></div>
+  <iframe id="page" title="Page" src="about:blank"></iframe>
+</div>
+<div id="vignette" aria-hidden="true"></div>
+<div id="veil" aria-hidden="true"></div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "./vendor/three/three.module.js",
+  "three/addons/": "./vendor/three/addons/"
+} }
+</script>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
