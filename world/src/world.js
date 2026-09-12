@@ -53,10 +53,10 @@ export function createWorld(scene, { doors = [] } = {}) {
   // times over, outside the doors, every letter turned to face the start.
   const nameReady = nameLetters(root).then(({ glyph }) => {
     // Three copies, each centred in its own third of the circle, so the gaps between them are equal.
-    const size = 3.0, text = 'KEREM ÖZDEMİR', runs = 3;
+    const size = 2.1, text = 'KEREM ÖZDEMİR', runs = 3;
     const parts = [...text].map((ch) => glyph(ch, size));
     const width = parts.reduce((a, p) => a + p.advance, 0);
-    const r = DOOR_R + 7.5;
+    const r = DOOR_R + 9;
     for (let k = 0; k < runs; k++) {
       const centre = angleOf('about') + k * (Math.PI * 2 / runs);
       let arc = -width / 2;

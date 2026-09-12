@@ -36,7 +36,7 @@ const hint = document.getElementById('hint');
 // Every change of the hint's text re-enters it with a small rise; the same
 // text written again is not a change.
 let hintText = hint.textContent;
-function setHint(text) { if (text === hintText) return; hintText = text; setHint(text); hint.classList.add('swap'); void hint.offsetWidth; hint.classList.remove('swap'); }
+function setHint(text) { if (text === hintText) return; hintText = text; hint.textContent = text; hint.classList.add('swap'); void hint.offsetWidth; hint.classList.remove('swap'); }
 const live = document.getElementById('live');
 const veil = document.getElementById('veil');
 const isTouch = matchMedia('(pointer: coarse)').matches;

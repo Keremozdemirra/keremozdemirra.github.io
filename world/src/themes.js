@@ -350,7 +350,7 @@ const cases = {
     const rnd = seeded(43), solids = ctx.solids, pick = [];
     const floor = pbr('concrete_floor_worn_001', { repeat: 1, roughness: 0.9 });
     const wall = pbr('grey_plaster', { repeat: 1, roughness: 1, color: 0xb9bcb6 });
-    shell(g, { w: 12, d: 11, h: 3.6, floor, wall, ceiling: new THREE.MeshStandardMaterial({ color: 0x4a4d50, roughness: 1 }), doorW: 1.2, doorH: 2.4, solids });
+    shell(g, { w: 12, d: 11, h: 3.6, floor, wall, ceiling: new THREE.MeshStandardMaterial({ color: 0x8a8d90, roughness: 1 }), doorW: 1.2, doorH: 2.4, solids });
     // Two steel desks pushed together, the case files laid out on them.
     const d1 = await put(g, 'metal_office_desk', -0.8, 3.2, 0, 1, solids), d2 = await put(g, 'metal_office_desk', 0.8, 3.2, 0, 1, solids);
     const top = d1 ? new THREE.Box3().setFromObject(d1).max.y : 0.76;
