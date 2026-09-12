@@ -359,7 +359,8 @@ const cases = {
     const rnd = seeded(43), solids = ctx.solids, pick = [];
     const floor = pbr('concrete_floor_worn_001', { repeat: 1, roughness: 0.9 });
     const wall = pbr('grey_plaster', { repeat: 1, roughness: 1, color: 0xb9bcb6 });
-    shell(g, { w: 12, d: 11, h: 3.6, floor, wall, ceiling: new THREE.MeshStandardMaterial({ color: 0x8a8d90, roughness: 1 }), doorW: 1.2, doorH: 2.4, solids });
+    shell(g, { w: 9, d: 9, h: 3.4, floor, wall, ceiling: new THREE.MeshStandardMaterial({ color: 0x8a8d90, roughness: 1 }), doorW: 1.2, doorH: 2.4, solids });
+    trim(g, { w: 9, d: 9, h: 3.4, color: 0x2a2c2e });
     // Two steel desks pushed together, the case files laid out on them.
     const d1 = await put(g, 'metal_office_desk', -0.8, 3.2, 0, 1, solids), d2 = await put(g, 'metal_office_desk', 0.8, 3.2, 0, 1, solids);
     const top = d1 ? new THREE.Box3().setFromObject(d1).max.y : 0.76;
@@ -374,26 +375,26 @@ const cases = {
     const nb = await put(g, 'binder_notebook', 1.9, 3.6, -0.3, 1); if (nb) nb.position.y = top;
     const cb = await put(g, 'clipboard', 2.1, 2.9, 0.2, 1); if (cb) cb.position.y = top;
     // The investigation wall: every case pinned up with its picture, red thread between them.
-    const board = corkBoard(6.4, 2.4); board.position.set(0, 1.9, 7.32); board.rotation.y = Math.PI; g.add(board);
+    const board = corkBoard(6.4, 2.4); board.position.set(0, 1.9, 5.47); board.rotation.y = Math.PI; g.add(board);
     const thread = new THREE.MeshStandardMaterial({ color: 0xb3261e, roughness: 0.7 });
     const pins = [];
     items.forEach((it, i) => {
       const fr = P.frame(it.image || 'og/cases.png', it.title, i, { w: 0.62, h: 0.33, border: 0.012, color: 0xf2efe8 });
       const px = -2.3 + (i % 4) * 1.53 + (rnd() - 0.5) * 0.3, py = 0.62 - Math.floor(i / 4) * 1.15 + (rnd() - 0.5) * 0.25;
-      fr.position.set(px, 1.9 + py, 7.27); fr.rotation.y = Math.PI; fr.rotation.z = (rnd() - 0.5) * 0.14; fr.scale.setScalar(0.9 + rnd() * 0.25); g.add(fr); pins.push(fr.position.clone());
+      fr.position.set(px, 1.9 + py, 5.42); fr.rotation.y = Math.PI; fr.rotation.z = (rnd() - 0.5) * 0.14; fr.scale.setScalar(0.9 + rnd() * 0.25); g.add(fr); pins.push(fr.position.clone());
     });
     for (let i = 1; i < pins.length; i++) { const a = pins[i - 1], b = pins[i]; const len = a.distanceTo(b); const t = mesh(new THREE.CylinderGeometry(0.003, 0.003, len, 6), thread, 0, 0, 0); t.position.lerpVectors(a, b, 0.5); t.position.z -= 0.03; t.lookAt(b); t.rotateX(Math.PI / 2); g.add(t); }
-    for (const x of [-2.2, 2.2]) g.add(warm(x, 3.2, 6.2, 1.0, 0xfff4e0, 6));
+    for (const x of [-2.2, 2.2]) g.add(warm(x, 3.0, 4.4, 1.0, 0xfff4e0, 6));
     // Archive shelves down both sides with boxes; the projector on the left.
     const card = new THREE.MeshStandardMaterial({ color: 0xb59a6a, roughness: 1 });
-    for (const [x, z, yaw] of [[-5.5, 1.5, Math.PI / 2], [-5.5, 4.0, Math.PI / 2], [5.5, 1.5, -Math.PI / 2], [5.5, 4.0, -Math.PI / 2]]) await put(g, 'steel_frame_shelves_03', x, z, yaw, 1, solids);
+    for (const [x, z, yaw] of [[-4.0, 1.0, Math.PI / 2], [-4.0, 3.4, Math.PI / 2], [4.0, 1.0, -Math.PI / 2], [4.0, 3.4, -Math.PI / 2]]) await put(g, 'steel_frame_shelves_03', x, z, yaw, 1, solids);
     // Archive boxes stacked on the floor beside the shelves, where they cannot cut through a plank.
-    for (const [x, z] of [[-4.6, 0.2], [4.6, 0.2], [-4.6, 5.4], [4.6, 5.4]]) for (let i = 0; i < 3; i++) g.add(box(0.42, 0.26, 0.34, card, x + (rnd() - 0.5) * 0.06, 0.13 + i * 0.27, z + (rnd() - 0.5) * 0.06));
-    const scr = await put(g, 'projector_screen', -5.4, 6.2, Math.PI / 2, 1, solids);
-    await put(g, 'side_table_01', -3.6, 6.2, 0, 1, solids);
-    const pj = await put(g, 'filmstrip_projector_8mm', -3.6, 6.2, Math.PI / 2, 1); if (pj) pj.position.y = 0.58;
+    for (const [x, z] of [[-3.2, -0.6], [3.2, -0.6], [-3.2, 4.7], [3.2, 4.7]]) for (let i = 0; i < 3; i++) g.add(box(0.42, 0.26, 0.34, card, x + (rnd() - 0.5) * 0.06, 0.13 + i * 0.27, z + (rnd() - 0.5) * 0.06));
+    const scr = await put(g, 'projector_screen', -3.95, 4.7, Math.PI / 2, 1, solids);
+    await put(g, 'side_table_01', -2.3, 4.7, 0, 1, solids);
+    const pj = await put(g, 'filmstrip_projector_8mm', -2.3, 4.7, Math.PI / 2, 1); if (pj) pj.position.y = 0.58;
     // Cold tubes overhead.
-    for (const z of [2.2, 4.2, 6.2]) { g.add(box(1.4, 0.06, 0.24, new THREE.MeshStandardMaterial({ color: 0xd8dadd, metalness: 0.5, roughness: 0.5 }), 0, 3.57, z)); const tube = box(1.2, 0.03, 0.07, new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xe8f0ff, emissiveIntensity: 1.5 }), 0, 3.53, z); g.add(tube); g.add(warm(0, 3.3, z, 1.5, 0xdfe9ff, 14)); }
+    for (const z of [0.6, 2.4, 4.2]) { g.add(box(1.4, 0.06, 0.24, new THREE.MeshStandardMaterial({ color: 0xd8dadd, metalness: 0.5, roughness: 0.5 }), 0, 3.37, z)); const tube = box(1.2, 0.03, 0.07, new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xe8f0ff, emissiveIntensity: 1.5 }), 0, 3.33, z); g.add(tube); g.add(warm(0, 3.1, z, 1.5, 0xdfe9ff, 14)); }
     return { pickables: pick, ambient: 0x2b2e31, env: 0.25 };
   },
 };
@@ -465,7 +466,7 @@ const notes = {
     g.add(warm(0, 2.6, 2.4, 0.5, 0xfff1dc, 8));
     // The rest of the cabin: a bed in the corner, a rocking chair, the clock, a rug.
     const bed = await put(g, 'old_bed_frame', -2.4, 2.6, Math.PI / 2, 1, solids);
-    if (bed) { const bb = new THREE.Box3().setFromObject(bed); const blanket = box(Math.max(0.9, bb.max.x - bb.min.x - 0.2), 0.14, Math.max(1.6, bb.max.z - bb.min.z - 0.3), new THREE.MeshStandardMaterial({ color: 0x6b3f3a, roughness: 1 }), -2.4, bb.max.y * 0.55, 2.6); g.add(blanket); const pillow = box(0.5, 0.12, 0.35, new THREE.MeshStandardMaterial({ color: 0xefe9dc, roughness: 1 }), -2.4, bb.max.y * 0.55 + 0.1, 3.3); g.add(pillow); }
+    if (bed) { const bb = new THREE.Box3().setFromObject(bed); const blanket = box(Math.max(0.9, bb.max.x - bb.min.x - 0.2), 0.14, Math.max(1.6, bb.max.z - bb.min.z - 0.3), new THREE.MeshStandardMaterial({ color: 0x6b3f3a, roughness: 1 }), -2.4, Math.min(bb.max.y * 0.55, 0.46), 2.6); g.add(blanket); const pillow = box(0.5, 0.12, 0.35, new THREE.MeshStandardMaterial({ color: 0xefe9dc, roughness: 1 }), -2.4, Math.min(bb.max.y * 0.55, 0.46) + 0.1, 3.3); g.add(pillow); }
     await put(g, 'Rockingchair_01', -2.4, -0.8, 0.8, 1, solids);
     await put(g, 'wall_clock', -3.72, 2.0, Math.PI / 2, 1); g.children[g.children.length - 1].position.y = 2.0;
     await put(g, 'potted_plant_02', 3.0, -0.6, 0, 0.6, solids);
@@ -500,7 +501,8 @@ const about = {
     if (!opts.inRoom) facade(g, { doorW: W, doorH: H, h: 4.0, jamb: 0.3, lintel: 0.4, mat: marble, top: marble });
     if (!opts.inRoom) {
       // A stepped architrave and a cornice, the way a gallery marks its door.
-      for (const s of [-1, 1]) g.add(box(0.16, H + 0.4, 0.2, marble, s * (W / 2 + 0.38), (H + 0.4) / 2, -0.1));
+      const pilaster = marble.clone(); pilaster.color.set(0xc9c3b6);
+      for (const s of [-1, 1]) g.add(box(0.18, H + 0.4, 0.34, pilaster, s * (W / 2 + 0.38), (H + 0.4) / 2, -0.02));
       g.add(box(W + 1.1, 0.22, 0.3, marble, 0, H + 0.51, -0.1));
     }
     const leaves = [-1, 1].map((side) => {
@@ -641,7 +643,7 @@ const cv = {
     const frost = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.7, roughness: 0.6 });
     const W = 1.2, H = 2.3;
     threshold(g, { w: W, h: H, frameMat: alu, inner: 0xe9eaec, jamb: 0.06, lintel: 0.08, glow: 0xffffff, shell: new THREE.MeshStandardMaterial({ color: 0x3a3d42, metalness: 0.6, roughness: 0.5 }), inRoom: opts.inRoom });
-    if (!opts.inRoom) { facade(g, { doorW: W, doorH: H, h: 3.2, jamb: 0.06, lintel: 0.08, mat: frost, depth: 0.05, z: 0.0 }); for (const x of [-2.6, -0.66, 0.66, 2.6]) g.add(box(0.08, 3.3, 0.12, alu, x, 1.65, 0)); g.add(box(5.3, 0.1, 0.5, alu, 0, 3.25, 0.1)); }
+    if (!opts.inRoom) { facade(g, { doorW: W, doorH: H, h: 3.2, jamb: 0.06, lintel: 0.08, mat: frost, depth: 0.22, z: 0.0 }); for (const x of [-2.6, -0.66, 0.66, 2.6]) g.add(box(0.08, 3.3, 0.12, alu, x, 1.65, 0)); g.add(box(5.3, 0.1, 0.5, alu, 0, 3.25, 0.1)); }
     const leaf = new THREE.Group();
     leaf.add(box(W - 0.02, H, 0.012, glass, 0, H / 2, 0));
     leaf.add(box(W - 0.02, 0.5, 0.014, frost, 0, 1.25, 0));
@@ -683,12 +685,15 @@ const cv = {
       c.font = `500 34px ${P.FONT}`; c.textAlign = 'left'; c.textBaseline = 'middle';
       [['Education', 160], ['Analysis and tools', 300], ['Case studies', 440], ['Now: open to ESG roles', 580]].forEach(([t, y]) => { c.beginPath(); c.arc(90, y, 9, 0, Math.PI * 2); c.fill(); c.fillText(t, 130, y); });
     });
-    if (cb) { const b = new THREE.Box3().setFromObject(cb); const tlm = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 0.75), new THREE.MeshStandardMaterial({ map: tl, transparent: true, roughness: 1 })); tlm.position.set(2.9 - Math.cos(0.25) * 0.05, (b.min.y + b.max.y) / 2 + 0.12, 3.0 - Math.sin(0.25) * 0.05); tlm.rotation.y = -Math.PI / 2 + 0.25; g.add(tlm); }
+    if (cb) { const b = new THREE.Box3().setFromObject(cb); const tlm = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 0.75), new THREE.MeshStandardMaterial({ map: tl, transparent: true, roughness: 1 })); const off = (b.max.x - b.min.x) * 0.5 - 0.02; tlm.position.set(2.9 - Math.cos(0.25) * off, (b.min.y + b.max.y) / 2 + 0.12, 3.0 + Math.sin(0.25) * off); tlm.rotation.set(0, -Math.PI / 2 + 0.25, 0); tlm.rotateX(-0.14); g.add(tlm); }
     const dip = P.frame(it.image, 'CV', 5, { w: 0.9, h: 0.47, border: 0.03, color: 0x2b2622 }); dip.position.set(-W / 2 + 0.03, 1.8, 0.4); dip.rotation.y = Math.PI / 2; g.add(dip);
     await put(g, 'steel_frame_shelves_03', -2.8, D - 3.5 - 0.45, 0, 1, solids);
     const card = new THREE.MeshStandardMaterial({ color: 0xd9d4c8, roughness: 1 });
     for (let i = 0; i < 6; i++) g.add(box(0.08, 0.3, 0.26, card, -3.6 + i * 0.13, 0.19, D - 3.5 - 0.45));
     await put(g, 'potted_plant_04', 3.4, 0.4, 0, 1, solids);
+    // The waiting corner by the door, so the run of floor from the door to the desk has something in it.
+    await put(g, 'ArmChair_01', 3.0, -2.0, -Math.PI / 2 - 0.35, 1, solids);
+    await put(g, 'side_table_01', 3.1, -0.9, 0, 1, solids);
     for (const z of [0.8, 3.2]) { g.add(box(1.5, 0.06, 0.26, new THREE.MeshStandardMaterial({ color: 0xe3e5e8, metalness: 0.4, roughness: 0.5 }), 0, H - 0.03, z)); const tube = box(1.3, 0.03, 0.09, new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.2 }), 0, H - 0.07, z); g.add(tube); g.add(warm(0, H - 0.3, z, 0.9, 0xffffff, 9)); }
     // A window with blinds on the left wall, daylight in stripes.
     const blind = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xf2f5fa, emissiveIntensity: 0.8 });

@@ -9,7 +9,9 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const TEX = 'assets/textures';
 const MOD = 'assets/models';
 const manager = new THREE.LoadingManager();
-const texLoader = new THREE.TextureLoader();
+const texLoader = new THREE.TextureLoader(manager);
+// The hub's loading line reads the manager's count, so the wait has a number on it.
+export function onProgress(cb) { manager.onProgress = (url, loaded, total) => cb(loaded, total); manager.onLoad = () => cb(1, 1); }
 const gltfLoader = new GLTFLoader(manager);
 const cache = new Map();
 
@@ -53,7 +55,10 @@ export function model(name) {
       if (m.map) m.map.anisotropy = 4;
       // Glass: transmission needs a pass this renderer does not run, and comes out black.
       if (m.transmission > 0 || (m.transparent && m.opacity < 0.95 && !m.alphaMap) || /glass|chimney|bulb/i.test(o.name) || /glass/i.test(m.name || '')) {
-        const glass = new THREE.MeshPhysicalMaterial({ color: 0xdfe9ee, roughness: 0.08, metalness: 0, transparent: true, opacity: 0.28, depthWrite: false, clearcoat: 1, side: THREE.DoubleSide });
+        // A mirror's glass is a mirror: the studio environment reflected, not a window's translucency.
+        const glass = /mirror/i.test(name)
+          ? new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.04, envMapIntensity: 1.2 })
+          : new THREE.MeshPhysicalMaterial({ color: 0xdfe9ee, roughness: 0.08, metalness: 0, transparent: true, opacity: 0.28, depthWrite: false, clearcoat: 1, side: THREE.DoubleSide });
         o.material = glass; o.castShadow = false;
       }
     });

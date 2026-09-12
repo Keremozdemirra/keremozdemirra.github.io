@@ -6,6 +6,7 @@ import { createDoors } from './doors.js';
 import { createWorld } from './world.js';
 import { createAudio } from './audio.js';
 import { createRooms } from './rooms.js';
+import { onProgress } from './assets.js';
 
 // Prototype: links are absolute so the world can be served from anywhere.
 // When this becomes the site's home page, BASE becomes ''.
@@ -131,6 +132,8 @@ fetch(`${BASE}/work/`).then((r) => r.text()).then(async (html) => {
 const player = new THREE.Group();
 scene.add(player);
 let character = null, introStarted = false;
+// While the world loads, the line carries the count; written directly, since a rising number is one change, not many.
+onProgress((loaded, total) => { if (introStarted) return; const text = total > 1 ? `Loading the world, ${Math.min(loaded, total)} of ${total}.` : 'Loading the world.'; hintText = text; hint.textContent = text; });
 (async () => {
   const spec = CHARACTERS[CHARACTER];
   try {
