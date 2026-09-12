@@ -112,6 +112,11 @@ function flat(reason) {
   if (document.body.classList.contains('embed')) return;
   location.replace(SITE);
 }
+// The world is made for a keyboard, a mouse and a screen with room in it. On a phone it runs, and it
+// runs badly enough that the first impression is the wrong one, so a phone is sent to the games page,
+// which says so and holds the way in for later.
+const onPhone = matchMedia('(pointer: coarse)').matches && Math.min(innerWidth, innerHeight) < 900;
+if (onPhone && !document.body.classList.contains('embed')) location.replace(SITE + 'games/');
 let renderer;
 try { renderer = createRenderer(canvas); } catch (err) { flat(err); throw err; }
 canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); flat('context lost'); });
