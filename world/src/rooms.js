@@ -38,6 +38,8 @@ export function createRooms(scene, { hubVisible, time, lights, audio = null }) {
     if (!(url.startsWith(SITE) || url.startsWith('/'))) return;
     if (closing) { clearTimeout(closing); closing = null; }
     frame.src = url; overlay.hidden = false; document.body.classList.add('reading');
+    // The bar names what was taken, so the page that slides up is not a stranger.
+    const bar = document.getElementById('overlay-title'); if (bar) bar.textContent = item.title || 'Page';
     requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('open')));
   }
   function closeOverlay() {

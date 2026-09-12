@@ -51,15 +51,15 @@ const STRINGS = {
     putBackKeys: 'Esc puts it back.', putBackTouch: 'Close the page to put it back.', nothing: 'Nothing to take here. Walk up to an object.',
     tab: (n) => `${n}: Enter walks there.`, soundOn: 'Sound on', soundOff: 'Sound off', closeKeys: 'Close (Esc)', closeTouch: 'Close' },
   de: { walkTouch: 'Links ziehen zum Gehen, rechts zum Umsehen. Jede Tür ist ein Raum.', walkKeys: 'WASD zum Gehen, ziehen zum Umsehen. Jede Tür ist ein Raum.',
-    enter: (n) => `Durchgehen öffnet ${n}.`, readKeys: 'E liest zuerst.', readTouch: 'Auf die Tür tippen, um zuerst zu lesen.',
-    entering: (n) => `${n} wird betreten…`, back: 'Die Tür hinter dir führt zurück.', takeKeys: (t) => `E nimmt ${t}.`, takeTouch: (t) => `Auf ${t} tippen, um es zu nehmen.`,
+    enter: (n) => `Durchgehen öffnet ${n}.`, readKeys: 'Erst lesen: E.', readTouch: 'Auf die Tür tippen, um zuerst zu lesen.',
+    entering: (n) => `Du betrittst ${n}…`, back: 'Die Tür hinter dir führt zurück.', takeKeys: (t) => `E nimmt ${t}.`, takeTouch: (t) => `Auf ${t} tippen, um es zu nehmen.`,
     putBackKeys: 'Esc legt es zurück.', putBackTouch: 'Seite schließen, um es zurückzulegen.', nothing: 'Hier ist nichts zu nehmen. Geh zu einem Gegenstand.',
-    tab: (n) => `${n}: Enter geht hin.`, soundOn: 'Ton an', soundOff: 'Ton aus', closeKeys: 'Schließen (Esc)', closeTouch: 'Schließen' },
+    tab: (n) => `${n}: Enter führt dich hin.`, soundOn: 'Ton an', soundOff: 'Ton aus', closeKeys: 'Schließen (Esc)', closeTouch: 'Schließen' },
   tr: { walkTouch: 'Yürümek için solda, bakmak için sağda sürükle. Her kapı bir oda.', walkKeys: 'Yürümek için WASD, bakmak için sürükle. Her kapı bir oda.',
-    enter: (n) => `${n} için kapıdan geç.`, readKeys: 'E önce tanıtır.', readTouch: 'Önce okumak için kapıya dokun.',
-    entering: (n) => `${n} açılıyor…`, back: 'Arkandaki kapı geri götürür.', takeKeys: (t) => `E ${t} alır.`, takeTouch: (t) => `Almak için ${t} nesnesine dokun.`,
+    enter: (n) => `Kapıdan geçince ${n} açılır.`, readKeys: 'Önce okumak için E.', readTouch: 'Önce okumak için kapıya dokun.',
+    entering: (n) => `${n} açılıyor…`, back: 'Arkandaki kapı geri götürür.', takeKeys: (t) => `E ile ${t} alınır.`, takeTouch: (t) => `Almak için ${t} nesnesine dokun.`,
     putBackKeys: 'Esc yerine koyar.', putBackTouch: 'Sayfayı kapatınca yerine döner.', nothing: 'Burada alınacak bir şey yok. Bir nesneye yaklaş.',
-    tab: (n) => `${n}: Enter oraya yürütür.`, soundOn: 'Ses açık', soundOff: 'Ses kapalı', closeKeys: 'Kapat (Esc)', closeTouch: 'Kapat' },
+    tab: (n) => `${n}: Enter oraya götürür.`, soundOn: 'Ses açık', soundOff: 'Ses kapalı', closeKeys: 'Kapat (Esc)', closeTouch: 'Kapat' },
 }[LANG];
 const WALK_HINT = isTouch ? STRINGS.walkTouch : STRINGS.walkKeys;
 
