@@ -225,9 +225,8 @@ const work = {
   async path(g, { rnd }) {
     g.add(strip('wood_floor_deck', 2.4, PATH_FROM + 0.3, DOOR_R - APRON_D));
     apron(g, 'wood_floor_deck');
-    // A bench against the library wall, a stack of returned books beside it.
-    await put(g, 'painted_wooden_bench', -1.9, DOOR_R - 0.55, 0, 1, this.solids);
-    for (let i = 0; i < 6; i++) { const b = P.book(['Method', 'Tables', 'Notes', 'Index', 'Atlas', 'Ledger'][i], i + 9); b.rotation.set(Math.PI / 2, 0, (rnd() - 0.5) * 0.25); b.position.set(1.7 + (rnd() - 0.5) * 0.04, 0.02 + i * 0.034, DOOR_R - 0.6); g.add(b); }
+    // A bench against the library wall.
+    await put(g, 'painted_wooden_bench', -1.75, DOOR_R - 0.55, Math.PI, 1, this.solids);
   },
   door(g, opts = {}) {
     const wood = pbr('dark_wood', { repeat: [1, 2], roughness: 0.55 });
@@ -244,7 +243,7 @@ const work = {
       // Transom: a small window over the door, and the sign on brass rods.
       g.add(box(W, 0.35, 0.04, new THREE.MeshPhysicalMaterial({ color: 0xdfe8ee, transparent: true, opacity: 0.35, roughness: 0.1 }), 0, H + 0.34, 0.02));
       g.add(box(W + 0.24, 0.16, 0.2, wood, 0, H + 0.6, 0.02));
-      const sign = P.signboard('Work', 'The library', 'brass', { w: 2.0, h: 0.5 }); sign.position.set(0, H + 1.0, -0.14); g.add(sign);
+      const sign = P.signboard('Work', 'The library', 'brass', { w: 2.0, h: 0.5 }); sign.position.set(0, H + 0.5, -0.14); g.add(sign);
       for (const s of [-1, 1]) g.add(mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.32, 8), brass, s * 0.85, H + 0.9, -0.14));
     }
     return { width: W, set(o) { leaves[0].rotation.y = -o * 1.5; leaves[1].rotation.y = o * 1.5; } };
@@ -331,7 +330,7 @@ const cases = {
     g.add(strip('concrete_floor_worn_001', 2.4, PATH_FROM + 0.3, DOOR_R - APRON_D, { color: 0xc8c8c4 }));
     apron(g, 'concrete_floor_worn_001', { color: 0xc8c8c4 });
     // A filing cabinet against the concrete, archive boxes stacked beside the door.
-    await put(g, 'drawer_cabinet', -1.75, DOOR_R - 0.5, 0, 1, this.solids);
+    await put(g, 'drawer_cabinet', -1.75, DOOR_R - 0.5, Math.PI, 1, this.solids);
     const card = new THREE.MeshStandardMaterial({ color: 0xb59a6a, roughness: 1 });
     for (let i = 0; i < 3; i++) g.add(box(0.42, 0.26, 0.34, card, 1.7 + (rnd() - 0.5) * 0.04, 0.13 + i * 0.27, DOOR_R - 0.5 + (rnd() - 0.5) * 0.04));
   },
@@ -408,7 +407,7 @@ const notes = {
     g.add(strip('wood_planks_grey', 2.2, PATH_FROM + 0.3, DOOR_R - APRON_D));
     apron(g, 'wood_planks_grey');
     // A chair and a basket on the porch, against the cabin wall.
-    await put(g, 'painted_wooden_chair_01', -1.7, DOOR_R - 0.6, 0.25, 1, this.solids);
+    await put(g, 'painted_wooden_chair_01', -1.7, DOOR_R - 0.6, Math.PI + 0.25, 1, this.solids);
     await put(g, 'wicker_basket_01', 1.6, DOOR_R - 0.6, 0.5, 1, this.solids);
   },
   door(g, opts = {}) {
@@ -487,7 +486,7 @@ const about = {
     apron(g, 'marble_01', { roughness: 0.35 });
     // Two plinths against the marble wall, a bust and a bronze on them.
     const plinthMat = new THREE.MeshStandardMaterial({ color: 0xe6e3dc, roughness: 0.6 });
-    for (const [x, name, yaw] of [[-1.85, 'marble_bust_01', 0.35], [1.85, 'horse_statue_01', -0.35]]) {
+    for (const [x, name, yaw] of [[-1.85, 'marble_bust_01', Math.PI + 0.35], [1.85, 'horse_statue_01', Math.PI - 0.35]]) {
       const pl = box(0.6, 1.1, 0.6, plinthMat, x, 0.55, DOOR_R - 0.55); g.add(pl); solidBox(this.solids, pl);
       const m = await put(g, name, x, DOOR_R - 0.55, yaw, name === 'marble_bust_01' ? 1.5 : 2.1); if (m) m.position.y = 1.1;
     }
@@ -550,7 +549,7 @@ const life = {
     apron(g, 'aerial_grass_rock', { color: 0xd8dccc });
     createGrass(g, { count: 1100, rnd, time, place: (i) => (i < 400 ? { x: (rnd() - 0.5) * 3.0, z: PATH_FROM + 0.6 + rnd() * (DOOR_R - PATH_FROM - 4.2) } : { x: (rnd() - 0.5) * 5.0, z: DOOR_R - 3.6 + rnd() * 3.3 }) });
     // Along the garden wall: a planter, ferns, a few mossy stones.
-    await put(g, 'planter_box_01', -1.9, DOOR_R - 0.6, 0.15, 1, this.solids);
+    await put(g, 'planter_box_01', -1.9, DOOR_R - 0.6, Math.PI + 0.15, 1, this.solids);
     await instances(g, 'fern_02', 10, () => ({ x: (rnd() < 0.5 ? -1 : 1) * (1.5 + rnd() * 0.9), z: DOOR_R - 1.4 + rnd() * 0.9 }), { scale: [0.8, 1.3], rnd, wind: 0.03 });
     await instances(g, 'rock_moss_set_01', 5, () => ({ x: 1.6 + (rnd() - 0.5) * 0.9, z: DOOR_R - 0.9 + (rnd() - 0.5) * 0.5 }), { scale: [0.25, 0.45], rnd, sink: 0.2, shadow: true });
   },
@@ -634,7 +633,7 @@ const cv = {
     g.add(strip('laminate_floor_02', 2.4, PATH_FROM + 0.3, DOOR_R - APRON_D, { roughness: 0.5 }));
     apron(g, 'laminate_floor_02', { roughness: 0.5 });
     // A waiting chair and a plant against the glass.
-    await put(g, 'modern_arm_chair_01', -1.8, DOOR_R - 0.75, 0.35, 1, this.solids);
+    await put(g, 'modern_arm_chair_01', -1.8, DOOR_R - 0.75, Math.PI + 0.35, 1, this.solids);
     await put(g, 'potted_plant_04', 1.9, DOOR_R - 0.6, 0, 1, this.solids);
   },
   door(g, opts = {}) {
@@ -713,8 +712,10 @@ const contact = {
     g.add(strip('cobblestone_floor_08', 2.4, PATH_FROM + 0.3, DOOR_R - APRON_D));
     apron(g, 'cobblestone_floor_08');
     // Street furniture at the house front: a lamp post at the corner, the bin by the door.
-    await put(g, 'street_lamp_02', 2.35, DOOR_R - 1.1, 0, 1, this.solids); g.add(warm(2.35, 3.3, DOOR_R - 1.1, 0.8, 0xfff0d0, 7));
-    await putPart(g, 'metal_trash_can', (o) => /rust/i.test(o.name), -1.8, DOOR_R - 0.6, 0.3, 1, this.solids);
+    // A wall lantern: its bracket goes into the brick beside the door at head height, not on the ground.
+    const lamp = await put(g, 'street_lamp_02', 1.6, DOOR_R - 0.3, Math.PI / 2, 1); if (lamp) lamp.position.y = 1.85;
+    g.add(warm(1.6, 2.7, DOOR_R - 0.7, 0.8, 0xfff0d0, 7));
+    await putPart(g, 'metal_trash_can', (o) => /rust/i.test(o.name), -1.8, DOOR_R - 0.6, Math.PI + 0.3, 1, this.solids);
   },
   door(g, opts = {}) {
     const paint = new THREE.MeshStandardMaterial({ color: 0x7a1f1f, roughness: 0.45 });

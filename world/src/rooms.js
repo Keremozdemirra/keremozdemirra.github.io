@@ -81,7 +81,7 @@ export function createRooms(scene, { hubVisible, time, lights, audio = null }) {
     room = await building; building = null;
     // The room's own air: its ambient colour as fog and sky, thicker indoors.
     hubFog.color = scene.fog.color.clone(); hubFog.density = scene.fog.density; hubFog.background = scene.background;
-    scene.fog.color.set(room.ambient); scene.fog.density = room.outdoors ? 0.02 : 0.05; scene.background = new THREE.Color(room.ambient);
+    scene.fog.color.set(room.ambient); scene.fog.density = room.outdoors ? 0.008 : 0.02; scene.background = new THREE.Color(room.ambient);
     // Indoors the studio light stays outside: the room's own lamps do the work.
     if (lights && !room.outdoors) { hubFog.env = scene.environmentIntensity; hubFog.sun = lights.sun.intensity; hubFog.fill = lights.fill.intensity; scene.environmentIntensity = room.env ?? 0.3; lights.sun.intensity = 0.9; lights.fill.intensity = room.env ? room.env * 0.9 : 0.25; }
     wasInFront = true;

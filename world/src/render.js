@@ -41,7 +41,8 @@ export function createEnvironment(renderer, scene) {
   pmrem.dispose();
   scene.environmentIntensity = 0.85;
   scene.background = new THREE.Color(PAPER);
-  scene.fog = new THREE.FogExp2(PAPER, 0.02);
+  // Thin: the far doors and the ring of letters stay legible; the sky dome and the pool carry the studio's depth.
+  scene.fog = new THREE.FogExp2(PAPER, 0.007);
   // A dome, cooler toward the zenith, so the white has a faint horizon in it.
   const sky = new THREE.Mesh(new THREE.SphereGeometry(140, 32, 16), new THREE.ShaderMaterial({
     side: THREE.BackSide, depthWrite: false, fog: false,
