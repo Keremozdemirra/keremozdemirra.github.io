@@ -8,7 +8,7 @@ import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { THEMES, angleOf, DOOR_R, PATH_FROM } from './themes.js';
 import { tick, pbr, model } from './assets.js';
 
-const FONT_URL = 'vendor/three/addons/helvetiker_bold.typeface.json';
+const FONT_URL = 'vendor/three/addons/fraunces_ring.typeface.json';
 function seeded(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
 
 // The name as standing letters: two lines of matte plaster behind the About

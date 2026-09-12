@@ -307,7 +307,8 @@ const work = {
     rest(await put(g, 'vintage_oil_lamp', -0.78, 3.45, 0, 1), top);
     rest(await put(g, 'vintage_oil_lamp', 0.78, 3.45, 0, 1), top);
     g.add(warm(-1.9, top + 0.5, 3.4, 1.4, 0xffc67a, 7), warm(1.9, top + 0.5, 3.4, 1.4, 0xffc67a, 7));
-    await put(g, 'lantern_chandelier_01', 0, 3.4, 0, 1); g.children[g.children.length - 1].position.y = 2.7;
+    // The handle put() returns is the only safe way to move what it placed: when the model fails to load, the last child is whatever came before it.
+    const chandelier = await put(g, 'lantern_chandelier_01', 0, 3.4, 0, 1); if (chandelier) chandelier.position.y = 2.7;
     g.add(mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.5, 8), new THREE.MeshStandardMaterial({ color: 0x3a2a1a, metalness: 0.7, roughness: 0.5 }), 0, 3.35, 3.4));
     g.add(warm(0, 2.5, 3.4, 1.2, 0xffd9a8, 10));
     // A little of the lamplight reaches the beams, so the ceiling reads as dark wood rather than as nothing.
@@ -461,7 +462,7 @@ const notes = {
       const nt = P.note(it.title, it.date, it.line, i, { w: 0.5, h: 0.36 });
       pickable(nt, it, g, -1.3 + i * 1.1, 1.85, 3.8, Math.PI, 0, (rnd() - 0.5) * 0.08); pick.push(nt);
     });
-    const cards = [['Work', 'Thirty seven tools, each one open in a browser.'], ['Cases', 'Eight case studies: the question each tool answers.'], ['Life', 'What happens outside the work.'], ['CV', 'One page: education, work, tools.'], ['Contact', 'Write to Kerem.']];
+    const cards = [['Work', 'Thirty seven pieces, every one of them open in a browser.'], ['Cases', 'Eight case studies: the question each tool answers.'], ['Life', 'What happens outside the work.'], ['CV', 'One page: education, work, tools.'], ['Contact', 'Write to Kerem.']];
     cards.forEach(([t, l], i) => { const c = P.note(t, '', l, 40 + i, { w: 0.3, h: 0.2 }); c.position.set(-1.9 + i * 0.78, 1.05, 3.8); c.rotation.y = Math.PI; c.rotation.z = (rnd() - 0.5) * 0.16; g.add(c); });
     [['og/about.png', 0.95, 1.9], ['og/cases.png', 1.45, 1.35]].forEach(([img, x, y], k) => { const fr = P.frame(img, null, 30 + k, { w: 0.34, h: 0.19, border: 0.008, color: 0xf6f3ee }); fr.position.set(x, y, 3.8); fr.rotation.y = Math.PI; fr.rotation.z = (rnd() - 0.5) * 0.2; g.add(fr); });
     g.add(warm(0, 2.6, 2.4, 0.5, 0xfff1dc, 8));
@@ -469,7 +470,7 @@ const notes = {
     const bed = await put(g, 'old_bed_frame', -2.4, 2.6, Math.PI / 2, 1, solids);
     if (bed) { const bb = new THREE.Box3().setFromObject(bed); const blanket = box(Math.max(0.9, bb.max.x - bb.min.x - 0.2), 0.14, Math.max(1.6, bb.max.z - bb.min.z - 0.3), new THREE.MeshStandardMaterial({ color: 0x6b3f3a, roughness: 1 }), -2.4, Math.min(bb.max.y * 0.55, 0.46), 2.6); g.add(blanket); const pillow = box(0.5, 0.12, 0.35, new THREE.MeshStandardMaterial({ color: 0xefe9dc, roughness: 1 }), -2.4, Math.min(bb.max.y * 0.55, 0.46) + 0.1, 3.3); g.add(pillow); }
     await put(g, 'Rockingchair_01', -2.4, -0.8, 0.8, 1, solids);
-    await put(g, 'wall_clock', -3.72, 2.0, Math.PI / 2, 1); g.children[g.children.length - 1].position.y = 2.0;
+    const clock = await put(g, 'wall_clock', -3.72, 2.0, Math.PI / 2, 1); if (clock) clock.position.y = 2.0;
     await put(g, 'potted_plant_02', 3.0, -0.6, 0, 0.6, solids);
     await put(g, 'wicker_basket_01', 0.9, 3.3, 0.4, 1, solids);
     const rugTex = P.canvasTexture(512, 768, (c, W, H) => { c.fillStyle = '#7a5c48'; c.fillRect(0, 0, W, H); c.strokeStyle = '#d9c9a8'; c.lineWidth = 10; c.strokeRect(30, 30, W - 60, H - 60); for (let y = 90; y < H - 60; y += 60) { c.fillStyle = y % 120 ? '#8f6e56' : '#6b4f3e'; c.fillRect(60, y, W - 120, 22); } });
@@ -677,7 +678,7 @@ const cv = {
     g.add(warm(-0.7, top + 0.6, 2.5, 1.1, 0xffe8cc, 6));
     const stp = await put(g, 'vintage_stapler', 0.95, 2.1, 0.5, 1); rest(stp, top);
     await put(g, 'modern_arm_chair_01', 0, 3.4, Math.PI, 1, solids);
-    await put(g, 'wall_clock', 0, D - 3.5 - 0.16, Math.PI, 1); g.children[g.children.length - 1].position.y = 2.35;
+    const clock = await put(g, 'wall_clock', 0, D - 3.5 - 0.16, Math.PI, 1); if (clock) clock.position.y = 2.35;
     // The timeline on a chalkboard against the right wall, the diploma framed on the left.
     const cb = await put(g, 'standing_chalkboard_01', 2.9, 3.0, -Math.PI / 2 + 0.25, 1, solids);
     const tl = P.canvasTexture(1024, 768, (c, W_, H_) => {
@@ -766,10 +767,10 @@ const contact = {
       pickable(e, { ...it, title: to }, g, -0.6 + i * 0.42, top + 0.004 + i * 0.005, 4.22 + (rnd() - 0.5) * 0.1, (rnd() - 0.5) * 0.5);
       pick.push(e);
     });
-    await put(g, 'ornate_mirror_01', 0, 4.47, Math.PI, 1); g.children[g.children.length - 1].position.y = 1.9;
+    const mirror = await put(g, 'ornate_mirror_01', 0, 4.47, Math.PI, 1); if (mirror) mirror.position.y = 1.9;
     const lamp = await put(g, 'vintage_oil_lamp', 0.6, 4.38, 0, 1); rest(lamp, top);
     g.add(warm(0.6, top + 0.5, 4.2, 1.1, 0xffc67a, 6));
-    await put(g, 'vintage_telephone_wall_clock', -3.44, 2.4, Math.PI / 2, 1); g.children[g.children.length - 1].position.y = 1.7;
+    const clock = await put(g, 'vintage_telephone_wall_clock', -3.44, 2.4, Math.PI / 2, 1); if (clock) clock.position.y = 1.7;
     await putPart(g, 'vintage_suitcase', (o) => /_01_/.test(o.name), -2.6, 1.2, 0.6, 1, solids);
     await put(g, 'wicker_basket_01', 2.6, 1.0, 0, 1, solids);
     await put(g, 'painted_wooden_chair_01', -2.5, 3.6, 1.2, 1, solids);

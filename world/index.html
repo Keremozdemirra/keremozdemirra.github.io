@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'sha256-hkzRjflwL67QuBNHfcX51SOxPQzPEfwGduwXdxJWLPQ='; frame-src 'self' https://keremozdemir.de; connect-src 'self' https://keremozdemir.de; form-action 'self'; base-uri 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'sha256-bgMiZ5XudRc3ON+iOP7TJVjZSb2mE636fa8zgcfI2dE='; frame-src 'self' https://keremozdemir.de; connect-src 'self' https://keremozdemir.de; form-action 'self'; base-uri 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kerem Özdemir</title>
 <meta name="description" content="A white world with seven doors. Each door opens one part of the site: work, cases, notes, about, life, CV, contact.">
@@ -21,21 +21,27 @@
 <meta name="twitter:image" content="https://keremozdemir.de/og.png">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
-@font-face { font-family: 'Instrument Sans'; font-style: normal; font-weight: 400 500; font-display: swap;
-  src: url('fonts/instrumentsans-pxiTypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr0She1ZuWi3hKpA.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 300 700; font-display: swap;
+  src: url('fonts/fraunces-6NU78FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0KxC9TeP2Xz5c.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('fonts/ibmplexmono--F63fjptAgt5VM-kVkqdyU8n1i8q131nj-o.woff2') format('woff2'); }
 @font-face { font-family: 'Instrument Sans'; font-style: normal; font-weight: 400 500; font-display: swap;
   src: url('fonts/instrumentsans-pxiTypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr0SZe1ZuWi3g.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Instrument Sans'; font-style: normal; font-weight: 400 500; font-display: swap;
+  src: url('fonts/instrumentsans-pxiTypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr0She1ZuWi3hKpA.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 
-:root { --paper: #f3f2ee; --ink: #1c1b18; --ink-soft: #6b6862; --accent: #8a1f1f; --rule: #dcd9d2; }
+:root { --paper: #fcfcfb; --ink: #16171a; --ink-soft: #5b5f66; --accent: #1f4f8f; --rule: #dcdde0; --mark: #eef2f8; }
 html, body { margin: 0; height: 100%; background: var(--paper); color: var(--ink);
   font: 15px/1.5 'Instrument Sans', system-ui, sans-serif; overflow: hidden; }
-#stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+#stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+/* The canvas is the first tab stop, so the first Tab has to show something. Only for keyboard focus: a click focuses it too, and a ring around the whole viewport on every click would be noise. */
+#stage:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
 .hud { position: fixed; left: 24px; top: 20px; max-width: 26rem; pointer-events: none; }
-.hud h1 { margin: 0; font-size: 14px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); }
+.hud h1 { margin: 0; font-family: Fraunces, Georgia, serif; font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 32; font-size: 17px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--ink); }
 /* How much of the world has been seen: seven rooms, counted like a game's levels. */
-.hud #progress { position: static; margin: 6px 0 0; padding: 0; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft, #6b6a66); background: none; border: 0; box-shadow: none; min-height: 0; max-width: none; }
+.hud #progress { position: static; margin: 6px 0 0; padding: 0; font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft, #6b6a66); background: none; border: 0; box-shadow: none; min-height: 0; max-width: none; }
 /* The hint: a quiet caption card, like a museum label. */
 .hud p { position: fixed; left: 24px; bottom: 62px; margin: 0; padding: 10px 14px; font-size: 13px; letter-spacing: 0.01em; min-height: 1.5em; max-width: 30rem;
   background: rgba(255,255,255,0.72); color: var(--ink); border-left: 2px solid var(--accent); backdrop-filter: blur(6px); }
@@ -77,6 +83,8 @@ a:hover { text-decoration: underline; }
 
 /* The same seven links as plain HTML: crawlers, screen readers, and anyone without WebGL get this. */
 #doors { position: fixed; left: -9999px; top: 0; }
+/* Past the seventh door, Tab lands on these seven links. Parked off screen they were seven invisible stops, so the list comes in under the name while it holds focus; z-index keeps the door labels from drawing across it, and the height cap lets it scroll inside the short embedded frame. In flat mode the list is the page and stays as it is. */
+body:not(.flat) #doors:focus-within { left: 24px; top: 76px; max-height: calc(100vh - 76px); overflow-y: auto; box-sizing: border-box; padding: 8px 14px; background: rgba(255,255,255,.85); border-left: 2px solid var(--accent); z-index: 1; }
 body.flat #stage, body.flat #list, body.flat .hud p, body.flat #veil, body.flat #labels { display: none; }
 body.embed #list .legal { display: none; }
 body.flat #doors { position: static; padding: 4.5rem 24px 24px; }
@@ -88,7 +96,7 @@ body.flat #doors { position: static; padding: 4.5rem 24px 24px; }
 </style>
 </head>
 <body>
-<canvas id="stage" tabindex="0" aria-label="A white world. Walk through a door to open a page."></canvas>
+<canvas id="stage" tabindex="0" role="application" aria-label="A white world. Walk through a door to open a page."></canvas>
 <noscript><p style="position:fixed;left:24px;top:64px;max-width:26rem">This page needs JavaScript. <a href="https://keremozdemir.de/">Open the site directly.</a></p></noscript>
 
 <header class="hud">
@@ -113,7 +121,7 @@ body.flat #doors { position: static; padding: 4.5rem 24px 24px; }
 <p id="list"><a href="https://keremozdemir.de/" id="showList">Open the site without 3D</a><button id="mute" type="button">Sound on</button><a href="https://keremozdemir.de/impressum/" class="legal">Impressum</a><a href="https://keremozdemir.de/privacy/" class="legal">Privacy</a></p>
 <p id="live" aria-live="polite"></p>
 <div id="bars" aria-hidden="true"></div>
-<div id="overlay" hidden>
+<div id="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="overlay-title">
   <div id="overlay-bar"><span id="overlay-title">Page</span><button id="close" type="button">Close (Esc)</button></div>
   <iframe id="page" title="Page" src="about:blank"></iframe>
 </div>
@@ -122,7 +130,7 @@ body.flat #doors { position: static; padding: 4.5rem 24px 24px; }
 
 <script type="importmap">
 { "imports": {
-  "three": "./vendor/three/three.module.js",
+  "three": "./vendor/three/three.module.min.js",
   "three/addons/": "./vendor/three/addons/"
 } }
 </script>

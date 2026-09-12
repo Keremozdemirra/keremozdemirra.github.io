@@ -8,7 +8,7 @@ import * as THREE from 'three';
 // Kept for modules that still tag glowing meshes; nothing blooms in the studio.
 export const BLOOM = 1;
 
-export const PAPER = 0xf3f2ee;
+export const PAPER = 0xf6f6f4;
 const SUN_OFFSET = new THREE.Vector3(9, 14, 7); // high, from the front right, so faces read and shadows fall short and soft
 
 export function createRenderer(canvas) {

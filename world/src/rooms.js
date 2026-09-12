@@ -32,24 +32,53 @@ export function createRooms(scene, { hubVisible, time, lights, audio = null }) {
 
   // The page opens in a frame that slides up; only the site's own addresses are allowed in it.
   const SITE = 'https://keremozdemir.de/';
-  let closing = null;
+  let closing = null, opening = null;
+  // While the page is up, the world behind it is inert: Tab then reaches the Close button and
+  // the framed page and nothing else, and it cannot land on the door links that sit off screen.
+  const behind = () => [document.getElementById('stage'), document.querySelector('.hud'), document.getElementById('list'), document.getElementById('doors')].filter(Boolean);
   function open(item) {
     const url = String(item.url || '');
     if (!(url.startsWith(SITE) || url.startsWith('/'))) return;
+    // Inside the front page's frame a page must replace the whole page, as the legal links
+    // already do; a site nested inside a small box is no way to read it.
+    if (document.body.classList.contains('embed')) { top.location.assign(url); return; }
     if (closing) { clearTimeout(closing); closing = null; }
     frame.src = url; overlay.hidden = false; document.body.classList.add('reading');
     // The bar names what was taken, so the page that slides up is not a stranger.
     const bar = document.getElementById('overlay-title'); if (bar) bar.textContent = item.title || 'Page';
+    for (const el of behind()) el.inert = true;
+    closeBtn.focus();
     requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('open')));
   }
   function closeOverlay() {
     if (overlay.hidden) return;
     overlay.classList.remove('open'); document.body.classList.remove('reading');
+    for (const el of behind()) el.inert = false;
+    // Focus goes back to the world, so the next key moves the visitor rather than starting from the top of the page.
+    const stage = document.getElementById('stage'); if (stage) stage.focus({ preventScroll: true });
     closing = setTimeout(() => { overlay.hidden = true; frame.src = 'about:blank'; closing = null; }, 380);
     if (held) { holdDir = -1; if (audio) audio.tick(); }
   }
   closeBtn.addEventListener('click', closeOverlay);
-  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !overlay.hidden) closeOverlay(); });
+  // Keystrokes with focus inside the framed page never reach this window. The world and the
+  // pages share an origin in production, so the key is listened for inside the frame as well;
+  // each load is a new document, so the listener is attached again on every one.
+  frame.addEventListener('load', () => {
+    try {
+      frame.contentWindow.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        // The page's own Escape (its search palette, say) runs on the same event and claims the
+        // key with preventDefault; deciding after the dispatch lets it close first, and alone.
+        setTimeout(() => { if (!e.defaultPrevented) closeOverlay(); }, 0);
+      });
+    } catch (err) { /* another origin, as in local development: the Close button remains */ }
+  });
+  addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!overlay.hidden) closeOverlay();
+    // The hint promises Esc from the moment the object is taken, so Esc during the rise puts it back before the page opens.
+    else if (held && holdDir > 0) { clearTimeout(opening); opening = null; holdDir = -1; if (audio) audio.tick(); }
+  });
 
   // Taking an object: it rises to a spot in front of the eye, turns to face
   // the visitor, and the page opens once it has arrived.
@@ -57,7 +86,7 @@ export function createRooms(scene, { hubVisible, time, lights, audio = null }) {
     if (held || !obj) return;
     held = obj; hold = 0; holdDir = 1;
     if (audio) audio.pickup();
-    setTimeout(() => { if (held === obj) open(obj.userData.item); }, 650);
+    opening = setTimeout(() => { opening = null; if (held === obj) open(obj.userData.item); }, 650);
   }
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   function tap(e, camera) {

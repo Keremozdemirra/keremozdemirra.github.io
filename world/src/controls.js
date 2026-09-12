@@ -18,8 +18,15 @@ const PITCH_MIN = 0.08;
 const PITCH_MAX = 0.62; // a steep view from above turned the world into a scatter of boxes
 const ORBIT_YAW_SENS = 0.006; // rad per px dragged
 const ORBIT_PITCH_SENS = 0.004; // rad per px dragged
+// A thumb has the right half of the screen, 195px on a 390px phone, where a
+// mouse has the whole window: at the mouse rate one full stroke turned 67
+// degrees and facing the door behind you took three. At these a stroke turns
+// 123 degrees and a half turn is one and a half strokes.
+const TOUCH_YAW_SENS = 0.011; // rad per px swiped
+const TOUCH_PITCH_SENS = 0.007; // rad per px swiped
 const ZOOM_SENS = 0.01; // distance per wheel deltaY unit
 const AUTO_FOLLOW_TAU = 2.5; // seconds, how slowly the camera settles behind the player
+const TURN_FOLLOW_TAU = 1.0; // seconds, the camera swinging round behind a walk that began toward it
 
 export function createControls({ canvas, camera }) {
   const pressed = new Set();
@@ -35,6 +42,20 @@ export function createControls({ canvas, camera }) {
   const dragPointers = new Map();
 
   const forward = new THREE.Vector3(), right = new THREE.Vector3(), wish = new THREE.Vector3(), toGoal = new THREE.Vector3();
+  // The camera's frame this instant, and whether the frame the walk is read
+  // against is held from the start of the current key or joystick gesture.
+  const camForward = new THREE.Vector3(), camRight = new THREE.Vector3();
+  let latched = false;
+  // Entering or leaving a room moves the player and the camera in one step,
+  // and the camera only looks at its new target a frame later. A held key
+  // across that step would keep walking in the old room's frame, so the
+  // frame is read live again for the two frames that follow such a jump.
+  const lastPos = new THREE.Vector3(0, Infinity, 0);
+  let settle = 0;
+  // Set once a walk begins toward the camera, and kept for that gesture, so
+  // the swing round behind is not abandoned at the side, where forwardness
+  // passes through zero and the strafe gate below would otherwise stop it.
+  let turning = false;
   const result = { wish, run: false };
 
   const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2(), groundHit = new THREE.Vector3();
@@ -107,8 +128,9 @@ export function createControls({ canvas, camera }) {
     }
     const dx = e.clientX - p.lastX;
     const dy = e.clientY - p.lastY;
-    orbit.yaw -= dx * ORBIT_YAW_SENS;
-    orbit.pitch = THREE.MathUtils.clamp(orbit.pitch - dy * ORBIT_PITCH_SENS, PITCH_MIN, PITCH_MAX);
+    const touch = e.pointerType === 'touch';
+    orbit.yaw -= dx * (touch ? TOUCH_YAW_SENS : ORBIT_YAW_SENS);
+    orbit.pitch = THREE.MathUtils.clamp(orbit.pitch - dy * (touch ? TOUCH_PITCH_SENS : ORBIT_PITCH_SENS), PITCH_MIN, PITCH_MAX);
     p.lastX = e.clientX;
     p.lastY = e.clientY;
   }
@@ -130,6 +152,14 @@ export function createControls({ canvas, camera }) {
   }
 
   function onWheel(e) {
+    // The wheel is the world's only while the world is the focused document,
+    // which is always so in full screen and true in the frame on the home page
+    // only after the reader has clicked into it. Inside that frame it is taken
+    // only while a pointer is held on the canvas: the frame covers most of the
+    // viewport, and with the wheel swallowed the page under the cursor stopped
+    // scrolling the moment the demo started, until the cursor left the box.
+    if (!document.hasFocus()) return;
+    if (document.body.classList.contains('embed') && dragPointers.size === 0) return;
     e.preventDefault();
     orbit.distance = THREE.MathUtils.clamp(orbit.distance + e.deltaY * ZOOM_SENS, DIST_MIN, DIST_MAX);
   }
@@ -144,10 +174,26 @@ export function createControls({ canvas, camera }) {
   canvas.addEventListener('wheel', onWheel, { passive: false });
 
   function update(dt, playerPosition) {
-    camera.getWorldDirection(forward);
-    forward.y = 0;
-    if (forward.lengthSq() < 1e-8) forward.set(0, 0, 1); else forward.normalize();
-    right.set(-forward.z, 0, forward.x);
+    camera.getWorldDirection(camForward);
+    camForward.y = 0;
+    if (camForward.lengthSq() < 1e-8) camForward.set(0, 0, 1); else camForward.normalize();
+    camRight.set(-camForward.z, 0, camForward.x);
+
+    // A key or joystick gesture reads the camera when it begins, and again
+    // only while the reader is turning the camera by hand. It does not read
+    // the camera while the camera moves on its own: with the live frame, a
+    // walk toward the lens re-aimed itself every frame the follow swung
+    // round, and the character curved instead of reaching the door.
+    let moving = false;
+    for (const k of MOVE_KEYS) if (pressed.has(k)) { moving = true; break; }
+    const joyMag = joystickPointerId === -1 ? 0 : Math.hypot(joystickDX, joystickDY);
+    if (joyMag > JOY_DEAD) moving = true;
+    // No run covers a metre in one frame; a jump that far is a room entered or left.
+    if (lastPos.distanceToSquared(playerPosition) > 1) { settle = 2; turning = false; }
+    lastPos.copy(playerPosition);
+    if (!moving || !latched || anyOrbitDragging() || settle > 0) { forward.copy(camForward); right.copy(camRight); }
+    if (settle > 0) settle--;
+    latched = moving;
 
     wish.set(0, 0, 0);
     let run = false;
@@ -162,14 +208,13 @@ export function createControls({ canvas, camera }) {
       if (wish.lengthSq() > 1e-8) wish.normalize();
       run = pressed.has('shift');
     } else if (joystickPointerId !== -1) {
-      const mag = Math.hypot(joystickDX, joystickDY);
-      if (mag > JOY_DEAD) {
+      if (joyMag > JOY_DEAD) {
         clearGoal();
-        const strength = Math.min(1, (mag - JOY_DEAD) / (JOY_FULL - JOY_DEAD));
-        const fwdAmount = (-joystickDY / mag) * strength;
-        const rightAmount = (joystickDX / mag) * strength;
+        const strength = Math.min(1, (joyMag - JOY_DEAD) / (JOY_FULL - JOY_DEAD));
+        const fwdAmount = (-joystickDY / joyMag) * strength;
+        const rightAmount = (joystickDX / joyMag) * strength;
         wish.copy(forward).multiplyScalar(fwdAmount).addScaledVector(right, rightAmount);
-        run = mag > JOY_RUN;
+        run = joyMag > JOY_RUN;
       }
     } else if (hasGoal) {
       toGoal.copy(goal).sub(playerPosition);
@@ -184,14 +229,27 @@ export function createControls({ canvas, camera }) {
     if (wish.lengthSq() > 1) wish.normalize();
 
     if (orbit.autoFollow && !anyOrbitDragging() && wish.lengthSq() > 1e-6) {
-      // Follow only when the player moves roughly away from the camera. With
+      // Follow when the player moves roughly away from the camera, and swing
+      // round when the player moves roughly toward it. Not on a strafe: with
       // a fast follow on every direction, holding a strafe key spun the
       // character in a tight circle: the camera swung behind the new heading,
       // which re-aimed the strafe, which swung the camera again.
+      //
+      // The swing exists for leaving a room. The way out is behind the
+      // camera, and in a room the camera cannot back away from a character
+      // walking at it, so the body grew until it filled the frame, passed
+      // beside the lens and the view spun half a turn in a fifth of a second.
+      // The walk direction is held for the gesture above, so the swing cannot
+      // re-aim it; with the shorter time constant the camera is most of the
+      // way behind before the door is reached.
       const targetYaw = Math.atan2(wish.x, wish.z) + Math.PI;
       const diff = Math.atan2(Math.sin(targetYaw - orbit.yaw), Math.cos(targetYaw - orbit.yaw));
       const forwardness = Math.cos(diff);
-      if (forwardness > 0.3) orbit.yaw += diff * forwardness * (1 - Math.exp(-dt / AUTO_FOLLOW_TAU));
+      if (forwardness < -0.3) turning = true;
+      if (turning) orbit.yaw += diff * (1 - Math.exp(-dt / TURN_FOLLOW_TAU));
+      else if (forwardness > 0.3) orbit.yaw += diff * forwardness * (1 - Math.exp(-dt / AUTO_FOLLOW_TAU));
+    } else {
+      turning = false;
     }
 
     result.run = run;
