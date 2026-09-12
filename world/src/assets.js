@@ -1,6 +1,6 @@
-// Scanned CC0 assets from Poly Haven, loaded by the browser at runtime. The
-// CDN answers with an open CORS header, so nothing is stored in this repo.
-// Every asset is fetched once and shared.
+// Scanned CC0 assets from Poly Haven, downloaded once and vendored under
+// assets/ beside the scene, so every request the world makes stays on this
+// origin. Every asset is fetched once and shared.
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';

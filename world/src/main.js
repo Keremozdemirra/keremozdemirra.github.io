@@ -33,8 +33,10 @@ const WALK = 1.6, RUN = 4.2, ACCEL = 7, TURN = 10, BODY_RADIUS = 0.24;
 
 const canvas = document.getElementById('stage');
 const hint = document.getElementById('hint');
-// Every change of the hint's text re-enters it with a small rise.
-new MutationObserver(() => { hint.classList.add('swap'); void hint.offsetWidth; hint.classList.remove('swap'); }).observe(hint, { childList: true, characterData: true, subtree: true });
+// Every change of the hint's text re-enters it with a small rise; the same
+// text written again is not a change.
+let hintText = hint.textContent;
+function setHint(text) { if (text === hintText) return; hintText = text; setHint(text); hint.classList.add('swap'); void hint.offsetWidth; hint.classList.remove('swap'); }
 const live = document.getElementById('live');
 const veil = document.getElementById('veil');
 const isTouch = matchMedia('(pointer: coarse)').matches;
@@ -141,7 +143,7 @@ let character = null, introStarted = false;
     player.add(fallbackFigure());
   }
   await world.ready.catch(() => {});
-  veil.classList.add('off'); hint.textContent = WALK_HINT;
+  veil.classList.add('off'); setHint(WALK_HINT);
   introStarted = true;
 })();
 // The mannequin wears the world's own materials: ceramic body, graphite joints.
@@ -172,10 +174,10 @@ setMuteLabel();
 muteBtn.addEventListener('click', () => { audio.unlock(); audio.setMuted(!audio.muted); setMuteLabel(); });
 addEventListener('keydown', (e) => {
   const k = e.key.toLowerCase();
-  if (k === 'e' && mode === 'hub' && nearDoor) { hint.textContent = nearDoor.summary; readUntil = clock.elapsedTime + 5; }
+  if (k === 'e' && mode === 'hub' && nearDoor) { setHint(nearDoor.summary); readUntil = clock.elapsedTime + 5; }
   if (k === 'e' && mode === 'room' && nearPanel) rooms.take(nearPanel);
   if (k === 'm') { audio.setMuted(!audio.muted); setMuteLabel(); }
-  if (k === 'tab') { e.preventDefault(); focusDoor = (focusDoor + (e.shiftKey ? DOORS.length - 1 : 1)) % DOORS.length; const d = doors.doors[focusDoor]; hint.textContent = `${d.name}: Enter walks there.`; readUntil = clock.elapsedTime + 4; live.textContent = d.name; }
+  if (k === 'tab') { e.preventDefault(); focusDoor = (focusDoor + (e.shiftKey ? DOORS.length - 1 : 1)) % DOORS.length; const d = doors.doors[focusDoor]; setHint(`${d.name}: Enter walks there.`); readUntil = clock.elapsedTime + 4; live.textContent = d.name; }
   if (k === 'enter' && focusDoor >= 0) { const d = doors.doors[focusDoor]; controls.setGoal(d.group.position.clone().addScaledVector(d.dir, -1.5)); }
 });
 
@@ -199,7 +201,7 @@ function enter(door) {
   leaving = true; leaveDoor = door;
   visited.add(door.slug); store.set('world.visited', [...visited]);
   world.lightLetter(LETTER_OF_DOOR[door.slug]);
-  hint.textContent = `Entering ${door.name}…`;
+  setHint(`Entering ${door.name}…`);
   document.body.classList.add('letterbox');
   // The camera passes through the door; behind it the room builds while the veil is up.
   setTimeout(() => { veil.classList.remove('off'); veil.classList.add('on'); }, 550);
@@ -211,7 +213,7 @@ function enter(door) {
     camera.position.set(0, 1.9, -3.0);
     document.body.classList.remove('letterbox');
     veil.classList.remove('on'); veil.classList.add('off');
-    hint.textContent = `${door.name}. ${door.hint} The door behind you leads back.`;
+    setHint(`${door.name}. ${door.hint} The door behind you leads back.`);
     readUntil = clock.elapsedTime + 6;
   }, 1000);
 }
@@ -317,12 +319,12 @@ function frame() {
     nearDoor = res.near;
     if (nearDoor !== lastNear) { lastNear = nearDoor; live.textContent = nearDoor ? `${nearDoor.name} door ahead` : ''; if (nearDoor && !prefetched.has(nearDoor.slug)) { prefetched.add(nearDoor.slug); rooms.prefetch([nearDoor.slug]); } }
     audio.update(nearDoor ? player.position.distanceTo(nearDoor.group.position) : 99, 0);
-    if (!leaving && character && t > readUntil) hint.textContent = nearDoor ? (DE ? `Durchgehen öffnet ${nearDoor.name}. E liest zuerst.` : `Walk through to enter ${nearDoor.name}. E reads it first.`) : WALK_HINT;
+    if (!leaving && character && t > readUntil) setHint(nearDoor ? (DE ? `Durchgehen öffnet ${nearDoor.name}. E liest zuerst.` : `Walk through to enter ${nearDoor.name}. E reads it first.`) : WALK_HINT);
   } else {
     const r = rooms.update(dt, player.position, camera);
     nearPanel = r.panel;
     if (r.back && !rooms.held) leaveRoom();
-    if (!leaving && t > readUntil) hint.textContent = rooms.held ? 'Esc puts it back.' : nearPanel ? `E takes ${nearPanel.userData.item.title}.` : `${r.hint} The door behind you leads back.`;
+    if (!leaving && t > readUntil) setHint(rooms.held ? 'Esc puts it back.' : nearPanel ? `E takes ${nearPanel.userData.item.title}.` : `${r.hint} The door behind you leads back.`);
     audio.update(99, 0);
   }
 
