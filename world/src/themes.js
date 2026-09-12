@@ -60,7 +60,7 @@ function strip(name, width, from, to, opts = {}) {
   const mat = ground(name, width, len, { ...opts, extra: { transparent: true, alphaMap: fadeAlpha(), depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 } });
   // The texture starts at the far end so its tiling continues straight into the apron.
   const m = new THREE.Mesh(new THREE.PlaneGeometry(width, len, 1, 8), mat);
-  m.rotation.x = -Math.PI / 2; m.position.set(0, 0.016, from + len / 2); m.receiveShadow = true;
+  m.rotation.x = -Math.PI / 2; m.position.set(0, 0.016, from + len / 2); m.receiveShadow = true; m.renderOrder = 1;
   return m;
 }
 // A ground patch fades out along its two long edges and at its near end, so
@@ -87,7 +87,7 @@ function pathMaterial(name, repeat, opts = {}) { return ground(name, 2.4, 7, opt
 // objects stand in an arrangement that makes sense: nothing floats in the void.
 function apron(g, matName, opts = {}) {
   const m = ground(matName, APRON_W, APRON_D, { ...opts, extra: { transparent: true, alphaMap: fadeAlpha({ side: 0.16, near: 0.2 }), depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 } });
-  const a = new THREE.Mesh(new THREE.PlaneGeometry(APRON_W, APRON_D - 0.1), m); a.rotation.x = -Math.PI / 2; a.position.set(0, 0.012, DOOR_R - APRON_D + (APRON_D - 0.1) / 2); a.receiveShadow = true; g.add(a);
+  const a = new THREE.Mesh(new THREE.PlaneGeometry(APRON_W, APRON_D - 0.1), m); a.rotation.x = -Math.PI / 2; a.position.set(0, 0.012, DOOR_R - APRON_D + (APRON_D - 0.1) / 2); a.receiveShadow = true; a.renderOrder = 1; g.add(a);
   return a;
 }
 // A façade around the door: the door belongs to a wall of its theme's material,

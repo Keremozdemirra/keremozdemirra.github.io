@@ -90,6 +90,10 @@ export function createFloor(scene) {
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ color: PAPER, roughness: 1 }));
   const pool = new THREE.Mesh(new THREE.CircleGeometry(60, 64), new THREE.MeshStandardMaterial({ map: tex, roughness: 1, transparent: true, depthWrite: false }));
   pool.rotation.x = -Math.PI / 2; pool.position.y = -0.006; pool.receiveShadow = true; scene.add(pool);
+  // The pool is transparent and writes no depth, and its centre is the origin, so at eye level it sorted
+  // nearer than the path strips and painted over them: every path vanished from the ground view. It
+  // draws before every other transparent thing, whatever the camera's distance.
+  pool.renderOrder = -10;
   floor.name = 'floor'; floor.rotation.x = -Math.PI / 2; floor.position.y = -0.012; floor.receiveShadow = true;
   scene.add(floor);
   return floor;
