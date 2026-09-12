@@ -187,7 +187,7 @@ export function signboard(name, sub, style = 'painted', { w = 1.8, h = 0.5 } = {
     brass:    { bg: '#b9975b', fg: '#241b0e', sub: '#4a3a1e', border: '#7a6236', grainAmt: 0.14, weight: 700, metal: 0.8, rough: 0.35 },
     stencil:  { bg: '#3d4247', fg: '#e8e2d2', sub: '#c9c2b0', border: '#20242a', grainAmt: 0.25, weight: 800, metal: 0.6, rough: 0.6 },
     painted:  { bg: '#e4d9c2', fg: '#2b241c', sub: '#5a4e3c', border: '#8a7a5a', grainAmt: 0.16, weight: 700, metal: 0, rough: 0.85 },
-    engraved: { bg: '#e9e6df', fg: '#3a3733', sub: '#6a6660', border: '#c9c5bc', grainAmt: 0.05, weight: 500, metal: 0, rough: 0.4 },
+    engraved: { bg: '#e9e6df', fg: '#3a3733', sub: '#4a453d', border: '#c9c5bc', grainAmt: 0.05, weight: 500, metal: 0, rough: 0.4 },
     iron:     { bg: '#1f2123', fg: '#d8d3c8', sub: '#a39d90', border: '#0e0f10', grainAmt: 0.2, weight: 700, metal: 0.7, rough: 0.55 },
     backlit:  { bg: '#f6f7f8', fg: '#1d2024', sub: '#5c636b', border: '#c8ccd0', grainAmt: 0.0, weight: 600, metal: 0, rough: 0.3, glow: true },
     enamel:   { bg: '#1f3f6e', fg: '#f4f1e8', sub: '#d6dbe4', border: '#f4f1e8', grainAmt: 0.06, weight: 700, metal: 0.2, rough: 0.3 },

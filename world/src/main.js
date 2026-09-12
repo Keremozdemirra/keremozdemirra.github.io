@@ -163,6 +163,10 @@ function fallbackFigure() {
 
 // Visited doors light letters of the name, quietly, across visits.
 const visited = new Set(store.get('world.visited', []));
+// The count under the name: rooms seen, out of seven, so the world reads as a game with an end.
+const progress = document.getElementById('progress');
+function showProgress() { if (!progress) return; const n = visited.size; progress.textContent = n === 0 ? `${DOORS.length} rooms` : n >= DOORS.length ? `All ${DOORS.length} rooms seen` : `${n} of ${DOORS.length} rooms`; }
+showProgress();
 const LETTER_OF_DOOR = { work: 0, cases: 1, notes: 2, about: 3, life: 4, cv: 6, contact: 7 };
 world.ready.then(() => { for (const slug of visited) world.lightLetter(LETTER_OF_DOOR[slug]); });
 
@@ -199,7 +203,7 @@ camera.position.copy(introFrom);
 function enter(door) {
   if (leaving) return;
   leaving = true; leaveDoor = door;
-  visited.add(door.slug); store.set('world.visited', [...visited]);
+  visited.add(door.slug); store.set('world.visited', [...visited]); showProgress();
   world.lightLetter(LETTER_OF_DOOR[door.slug]);
   setHint(`Entering ${door.name}…`);
   document.body.classList.add('letterbox');

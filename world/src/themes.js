@@ -54,6 +54,8 @@ function ground(name, w, d, opts = {}) {
   return pbr(name, { repeat: [w / t, d / t], roughness: 1, ...opts });
 }
 function strip(name, width, from, to, opts = {}) {
+  // The strip runs 0.8 m on into the apron, so the apron's near edge is under it rather than a seam beside it.
+  to += 0.8;
   const len = to - from;
   const mat = ground(name, width, len, { ...opts, extra: { transparent: true, alphaMap: fadeAlpha(), depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 } });
   // The texture starts at the far end so its tiling continues straight into the apron.
@@ -61,13 +63,18 @@ function strip(name, width, from, to, opts = {}) {
   m.rotation.x = -Math.PI / 2; m.position.set(0, 0.016, from + len / 2); m.receiveShadow = true;
   return m;
 }
-// Fade only at the plaza end and along the two long edges; the far end meets the apron flush.
-function fadeAlpha(edge = 0.7, start = 0.1) {
+// A ground patch fades out along its two long edges and at its near end, so
+// it lies on the white floor like a runner rather than a cut rectangle; the
+// far end stays flush, where a strip runs on into its apron and the apron
+// meets the façade. `side` is the width of the edge fade as a fraction of the
+// patch's half width, `near` the length of the near fade as a fraction.
+function fadeAlpha({ side = 0.3, near = 0.14 } = {}) {
   return P.canvasTexture(64, 256, (g, W, H) => {
     const img = g.createImageData(W, H);
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-      const u = Math.abs(x / (W - 1) - 0.5) * 2, v = 1 - y / (H - 1);   // v runs from the plaza (0) to the door (1)
-      const e = Math.max(0, 1 - Math.pow(u, 6) * edge);
+      const u = Math.abs(x / (W - 1) - 0.5) * 2, v = 1 - y / (H - 1);   // canvas top is the near end
+      const s = Math.min(1, (1 - u) / side), n = near > 0 ? Math.min(1, v / near) : 1;
+      const e = s * s * (3 - 2 * s) * n * n * (3 - 2 * n);
       const i = (y * W + x) * 4; img.data[i] = img.data[i + 1] = img.data[i + 2] = 255; img.data[i + 3] = Math.max(0, Math.min(1, e)) * 255;
     }
     g.putImageData(img, 0, 0);
@@ -79,7 +86,7 @@ function pathMaterial(name, repeat, opts = {}) { return ground(name, 2.4, 7, opt
 // The path widens into an apron in front of the door, where the theme's
 // objects stand in an arrangement that makes sense: nothing floats in the void.
 function apron(g, matName, opts = {}) {
-  const m = ground(matName, APRON_W, APRON_D, { ...opts, extra: { polygonOffset: true, polygonOffsetFactor: -1 } });
+  const m = ground(matName, APRON_W, APRON_D, { ...opts, extra: { transparent: true, alphaMap: fadeAlpha({ side: 0.16, near: 0.2 }), depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 } });
   const a = new THREE.Mesh(new THREE.PlaneGeometry(APRON_W, APRON_D - 0.1), m); a.rotation.x = -Math.PI / 2; a.position.set(0, 0.012, DOOR_R - APRON_D + (APRON_D - 0.1) / 2); a.receiveShadow = true; g.add(a);
   return a;
 }
@@ -302,6 +309,8 @@ const work = {
     await put(g, 'lantern_chandelier_01', 0, 3.4, 0, 1); g.children[g.children.length - 1].position.y = 2.7;
     g.add(mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.5, 8), new THREE.MeshStandardMaterial({ color: 0x3a2a1a, metalness: 0.7, roughness: 0.5 }), 0, 3.35, 3.4));
     g.add(warm(0, 2.5, 3.4, 1.2, 0xffd9a8, 10));
+    // A little of the lamplight reaches the beams, so the ceiling reads as dark wood rather than as nothing.
+    g.add(warm(0, 3.3, 3.4, 1.0, 0xffe6c0, 14));
     await put(g, 'ArmChair_01', -3.6, 0.6, 0.7, 1, solids);
     await put(g, 'side_table_01', -2.6, 0.2, 0, 1, solids);
     const ladder = await put(g, 'wooden_ladder', 4.55, 2.1, Math.PI / 2, 1, solids); if (ladder) ladder.rotation.z = 0.0;
@@ -360,7 +369,7 @@ const cases = {
       pickable(f, it, g, x, top + 0.012 + (i % 4) * 0.004, z, (rnd() - 0.5) * 0.25);
       pick.push(f);
     });
-    const lamp = await put(g, 'desk_lamp_arm_01', -1.9, 3.5, 0.6, 1); if (lamp) lamp.position.y = top;
+    const lamp = await put(g, 'desk_lamp_arm_01', -1.3, 3.3, 0.6, 1); if (lamp) lamp.position.y = top;
     g.add(warm(-1.6, top + 0.6, 3.3, 1.3, 0xffe0b0, 6));
     const nb = await put(g, 'binder_notebook', 1.9, 3.6, -0.3, 1); if (nb) nb.position.y = top;
     const cb = await put(g, 'clipboard', 2.1, 2.9, 0.2, 1); if (cb) cb.position.y = top;
@@ -384,7 +393,7 @@ const cases = {
     await put(g, 'side_table_01', -3.6, 6.2, 0, 1, solids);
     const pj = await put(g, 'filmstrip_projector_8mm', -3.6, 6.2, Math.PI / 2, 1); if (pj) pj.position.y = 0.58;
     // Cold tubes overhead.
-    for (const z of [2.2, 6.2]) { g.add(box(1.4, 0.06, 0.24, new THREE.MeshStandardMaterial({ color: 0xd8dadd, metalness: 0.5, roughness: 0.5 }), 0, 3.57, z)); const tube = box(1.2, 0.03, 0.07, new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xe8f0ff, emissiveIntensity: 1.5 }), 0, 3.53, z); g.add(tube); g.add(warm(0, 3.3, z, 0.8, 0xdfe9ff, 9)); }
+    for (const z of [2.2, 4.2, 6.2]) { g.add(box(1.4, 0.06, 0.24, new THREE.MeshStandardMaterial({ color: 0xd8dadd, metalness: 0.5, roughness: 0.5 }), 0, 3.57, z)); const tube = box(1.2, 0.03, 0.07, new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xe8f0ff, emissiveIntensity: 1.5 }), 0, 3.53, z); g.add(tube); g.add(warm(0, 3.3, z, 1.5, 0xdfe9ff, 14)); }
     return { pickables: pick, ambient: 0x2b2e31, env: 0.25 };
   },
 };
@@ -453,7 +462,7 @@ const notes = {
     const cards = [['Work', 'Thirty seven tools, each one open in a browser.'], ['Cases', 'Eight case studies: the question each tool answers.'], ['Life', 'What happens outside the work.'], ['CV', 'One page: education, work, tools.'], ['Contact', 'Write to Kerem.']];
     cards.forEach(([t, l], i) => { const c = P.note(t, '', l, 40 + i, { w: 0.3, h: 0.2 }); c.position.set(-1.9 + i * 0.78, 1.05, 3.8); c.rotation.y = Math.PI; c.rotation.z = (rnd() - 0.5) * 0.16; g.add(c); });
     [['og/about.png', 0.95, 1.9], ['og/cases.png', 1.45, 1.35]].forEach(([img, x, y], k) => { const fr = P.frame(img, null, 30 + k, { w: 0.34, h: 0.19, border: 0.008, color: 0xf6f3ee }); fr.position.set(x, y, 3.8); fr.rotation.y = Math.PI; fr.rotation.z = (rnd() - 0.5) * 0.2; g.add(fr); });
-    g.add(warm(0, 2.6, 2.6, 1.0, 0xfff1dc, 8));
+    g.add(warm(0, 2.6, 2.4, 0.5, 0xfff1dc, 8));
     // The rest of the cabin: a bed in the corner, a rocking chair, the clock, a rug.
     const bed = await put(g, 'old_bed_frame', -2.4, 2.6, Math.PI / 2, 1, solids);
     if (bed) { const bb = new THREE.Box3().setFromObject(bed); const blanket = box(Math.max(0.9, bb.max.x - bb.min.x - 0.2), 0.14, Math.max(1.6, bb.max.z - bb.min.z - 0.3), new THREE.MeshStandardMaterial({ color: 0x6b3f3a, roughness: 1 }), -2.4, bb.max.y * 0.55, 2.6); g.add(blanket); const pillow = box(0.5, 0.12, 0.35, new THREE.MeshStandardMaterial({ color: 0xefe9dc, roughness: 1 }), -2.4, bb.max.y * 0.55 + 0.1, 3.3); g.add(pillow); }
@@ -559,7 +568,7 @@ const life = {
       instances(g, 'nettle_plant', 16, () => ({ x: (hedgeRnd() - 0.5) * (W + 1.0), z: 0.6 + hedgeRnd() * 1.0 }), { scale: [1.3, 2.0], rnd: hedgeRnd, wind: 0.02, shadow: false });
     }
     const arch = mesh(new THREE.TorusGeometry(W / 2 + 0.5, 0.03, 8, 32, Math.PI), iron, 0, 2.5, 0); g.add(arch);
-    if (!opts.inRoom) { const sign = P.signboard('Life', 'The garden', 'iron', { w: 1.7, h: 0.42 }); sign.position.set(0, 2.62, -0.05); g.add(sign); }
+    if (!opts.inRoom) { const sign = P.signboard('Life', 'The garden', 'painted', { w: 1.7, h: 0.42 }); sign.position.set(0, 2.62, -0.05); g.add(sign); }
     const leaves = [-1, 1].map((side) => {
       const leaf = new THREE.Group(); const lw = W / 2 - 0.02;
       for (let i = 0; i <= 6; i++) { const x = -lw / 2 + (lw / 6) * i; const h = H - 0.15 * Math.abs(i - 3); leaf.add(mesh(new THREE.CylinderGeometry(0.014, 0.014, h, 8), iron, x, h / 2, 0)); leaf.add(mesh(new THREE.ConeGeometry(0.03, 0.09, 8), iron, x, h + 0.04, 0)); }
@@ -665,7 +674,7 @@ const cv = {
     g.add(warm(-0.7, top + 0.6, 2.5, 1.1, 0xffe8cc, 6));
     const stp = await put(g, 'vintage_stapler', 0.95, 2.1, 0.5, 1); if (stp) stp.position.y = top;
     await put(g, 'modern_arm_chair_01', 0, 3.4, Math.PI, 1, solids);
-    await put(g, 'wall_clock', 0, D - 3.5 - 0.16, 0, 1); g.children[g.children.length - 1].position.y = 2.35;
+    await put(g, 'wall_clock', 0, D - 3.5 - 0.16, Math.PI, 1); g.children[g.children.length - 1].position.y = 2.35;
     // The timeline on a chalkboard against the right wall, the diploma framed on the left.
     const cb = await put(g, 'standing_chalkboard_01', 2.9, 3.0, -Math.PI / 2 + 0.25, 1, solids);
     const tl = P.canvasTexture(1024, 768, (c, W_, H_) => {
