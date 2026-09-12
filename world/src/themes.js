@@ -210,7 +210,7 @@ function shelfBooks(count, width, y, z, rnd) {
   }
   im.count = n; im.castShadow = true; im.receiveShadow = true; return im;
 }
-function pickable(obj, item, g, x, y, z, ry = 0, rx = 0, rz = 0, pullDir = null, pullAmount = 0.03) {
+function pickable(obj, item, g, x, y, z, ry = 0, rx = 0, rz = 0, pullDir = null, pullAmount = 0.09) {
   obj.position.set(x, y, z); obj.rotation.set(rx, ry, rz); g.add(obj);
   obj.userData.item = item; obj.userData.home = { p: obj.position.clone(), q: obj.quaternion.clone() };
   if (pullDir) obj.userData.pullDir = pullDir; obj.userData.pullAmount = pullAmount;

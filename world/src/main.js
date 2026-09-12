@@ -41,10 +41,27 @@ function setHint(text) { if (text === hintText) return; hintText = text; hint.te
 const live = document.getElementById('live');
 const veil = document.getElementById('veil');
 const isTouch = matchMedia('(pointer: coarse)').matches;
-const DE = (navigator.language || '').toLowerCase().startsWith('de');
-const WALK_HINT = isTouch
-  ? (DE ? 'Links ziehen zum Gehen, rechts zum Umsehen. Jede Tür ist ein Raum.' : 'Drag on the left to walk, on the right to look. Every door is a room.')
-  : (DE ? 'WASD zum Gehen, ziehen zum Umsehen. Jede Tür ist ein Raum.' : 'WASD to walk, drag to look. Every door is a room.');
+const LANG = /^de/i.test(navigator.language || '') ? 'de' : /^tr/i.test(navigator.language || '') ? 'tr' : 'en';
+const DE = LANG === 'de';
+// The guide line in the site's three languages, keyboard and touch wording apart.
+const STRINGS = {
+  en: { walkTouch: 'Drag on the left to walk, on the right to look. Every door is a room.', walkKeys: 'WASD to walk, drag to look. Every door is a room.',
+    enter: (n) => `Walk through to enter ${n}.`, readKeys: 'E reads it first.', readTouch: 'Tap the door to read about it first.',
+    entering: (n) => `Entering ${n}…`, back: 'The door behind you leads back.', takeKeys: (t) => `E takes ${t}.`, takeTouch: (t) => `Tap ${t} to take it.`,
+    putBackKeys: 'Esc puts it back.', putBackTouch: 'Close the page to put it back.', nothing: 'Nothing to take here. Walk up to an object.',
+    tab: (n) => `${n}: Enter walks there.`, soundOn: 'Sound on', soundOff: 'Sound off', closeKeys: 'Close (Esc)', closeTouch: 'Close' },
+  de: { walkTouch: 'Links ziehen zum Gehen, rechts zum Umsehen. Jede Tür ist ein Raum.', walkKeys: 'WASD zum Gehen, ziehen zum Umsehen. Jede Tür ist ein Raum.',
+    enter: (n) => `Durchgehen öffnet ${n}.`, readKeys: 'E liest zuerst.', readTouch: 'Auf die Tür tippen, um zuerst zu lesen.',
+    entering: (n) => `${n} wird betreten…`, back: 'Die Tür hinter dir führt zurück.', takeKeys: (t) => `E nimmt ${t}.`, takeTouch: (t) => `Auf ${t} tippen, um es zu nehmen.`,
+    putBackKeys: 'Esc legt es zurück.', putBackTouch: 'Seite schließen, um es zurückzulegen.', nothing: 'Hier ist nichts zu nehmen. Geh zu einem Gegenstand.',
+    tab: (n) => `${n}: Enter geht hin.`, soundOn: 'Ton an', soundOff: 'Ton aus', closeKeys: 'Schließen (Esc)', closeTouch: 'Schließen' },
+  tr: { walkTouch: 'Yürümek için solda, bakmak için sağda sürükle. Her kapı bir oda.', walkKeys: 'Yürümek için WASD, bakmak için sürükle. Her kapı bir oda.',
+    enter: (n) => `${n} için kapıdan geç.`, readKeys: 'E önce tanıtır.', readTouch: 'Önce okumak için kapıya dokun.',
+    entering: (n) => `${n} açılıyor…`, back: 'Arkandaki kapı geri götürür.', takeKeys: (t) => `E ${t} alır.`, takeTouch: (t) => `Almak için ${t} nesnesine dokun.`,
+    putBackKeys: 'Esc yerine koyar.', putBackTouch: 'Sayfayı kapatınca yerine döner.', nothing: 'Burada alınacak bir şey yok. Bir nesneye yaklaş.',
+    tab: (n) => `${n}: Enter oraya yürütür.`, soundOn: 'Ses açık', soundOff: 'Ses kapalı', closeKeys: 'Kapat (Esc)', closeTouch: 'Kapat' },
+}[LANG];
+const WALK_HINT = isTouch ? STRINGS.walkTouch : STRINGS.walkKeys;
 
 // Without WebGL the visitor goes straight to the site itself; the world is
 // the front door, and a front door that cannot open should not be a wall.
@@ -77,7 +94,15 @@ const audio = createAudio();
 const rooms = createRooms(scene, { hubVisible: (on) => hubObjects.forEach((o) => { o.visible = on; }), time: world.time, lights, audio });
 let mode = 'hub';
 addEventListener('pointerdown', () => audio.unlock());
-canvas.addEventListener('pointerup', (e) => { if (mode === 'room' && rooms.tap(e, camera)) controls.clearGoal(); });
+const doorRay = new THREE.Raycaster(), doorNdc = new THREE.Vector2();
+canvas.addEventListener('pointerup', (e) => {
+  if (mode === 'room' && rooms.tap(e, camera)) { controls.clearGoal(); return; }
+  if (mode === 'hub' && isTouch && !leaving && e.pointerType === 'touch') {
+    doorNdc.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); doorRay.setFromCamera(doorNdc, camera);
+    const hit = doorRay.intersectObjects(doors.doors.map((d) => d.group), true)[0];
+    if (hit && hit.distance < 9) { let o = hit.object; const d = doors.doors.find((x) => { let p = o; while (p) { if (p === x.group) return true; p = p.parent; } return false; }); if (d) { setHint(d.summary); readUntil = clock.elapsedTime + 5; controls.clearGoal(); } }
+  }
+});
 addEventListener('keydown', () => audio.unlock());
 // Live tuning handle for the browser console during development.
 window.__world = { renderer, scene, camera, lights, floor, post, doors, controls, world, audio, rooms, get items() { return ITEMS; }, get player() { return player; } };
@@ -176,15 +201,22 @@ world.ready.then(() => { for (const slug of visited) world.lightLetter(LETTER_OF
 // ---- Keys beyond movement: E reads a door, M mutes, Tab and Enter walk to a door ----
 let focusDoor = -1, readUntil = 0;
 const muteBtn = document.getElementById('mute');
-const setMuteLabel = () => { muteBtn.textContent = audio.muted ? (DE ? 'Ton aus' : 'Sound off') : (DE ? 'Ton an' : 'Sound on'); };
+const setMuteLabel = () => { muteBtn.textContent = audio.muted ? STRINGS.soundOff : STRINGS.soundOn; };
+document.getElementById('close').textContent = isTouch ? STRINGS.closeTouch : STRINGS.closeKeys;
 setMuteLabel();
 muteBtn.addEventListener('click', () => { audio.unlock(); audio.setMuted(!audio.muted); setMuteLabel(); });
 addEventListener('keydown', (e) => {
   const k = e.key.toLowerCase();
   if (k === 'e' && mode === 'hub' && nearDoor) { setHint(nearDoor.summary); readUntil = clock.elapsedTime + 5; }
+  else if (k === 'e' && !leaving && ((mode === 'hub' && !nearDoor) || (mode === 'room' && !nearPanel && !rooms.held))) { setHint(STRINGS.nothing); readUntil = clock.elapsedTime + 2.5; audio.refuse(); }
   if (k === 'e' && mode === 'room' && nearPanel) rooms.take(nearPanel);
   if (k === 'm') { audio.setMuted(!audio.muted); setMuteLabel(); }
-  if (k === 'tab') { e.preventDefault(); focusDoor = (focusDoor + (e.shiftKey ? DOORS.length - 1 : 1)) % DOORS.length; const d = doors.doors[focusDoor]; setHint(`${d.name}: Enter walks there.`); readUntil = clock.elapsedTime + 4; live.textContent = d.name; }
+  if (k === 'tab' && document.activeElement === canvas && mode === 'hub') {
+    // Tab walks the doors while the world holds the keyboard; past either end it lets the browser carry focus on to the links.
+    const next = focusDoor + (e.shiftKey ? -1 : 1);
+    if (next >= 0 && next < DOORS.length) { e.preventDefault(); focusDoor = next; const d = doors.doors[focusDoor]; setHint(STRINGS.tab(d.name)); readUntil = clock.elapsedTime + 4; live.textContent = d.name; }
+    else focusDoor = -1;
+  }
   if (k === 'enter' && focusDoor >= 0) { const d = doors.doors[focusDoor]; controls.setGoal(d.group.position.clone().addScaledVector(d.dir, -1.5)); }
 });
 
@@ -208,7 +240,7 @@ function enter(door) {
   leaving = true; leaveDoor = door;
   visited.add(door.slug); store.set('world.visited', [...visited]); showProgress();
   world.lightLetter(LETTER_OF_DOOR[door.slug]);
-  setHint(`Entering ${door.name}…`);
+  setHint(STRINGS.entering(door.name));
   document.body.classList.add('letterbox');
   // The camera passes through the door; behind it the room builds while the veil is up.
   setTimeout(() => { veil.classList.remove('off'); veil.classList.add('on'); }, 550);
@@ -220,7 +252,7 @@ function enter(door) {
     camera.position.set(0, 1.9, -3.0);
     document.body.classList.remove('letterbox');
     veil.classList.remove('on'); veil.classList.add('off');
-    setHint(`${door.name}. ${door.hint} The door behind you leads back.`);
+    setHint(`${door.name}. ${door.hint} ${STRINGS.back}`);
     readUntil = clock.elapsedTime + 6;
   }, 1000);
 }
@@ -302,7 +334,7 @@ function frame() {
     camera.position.lerp(flyTo, 1 - Math.exp(-dt * 3.5));
     look.copy(leaveDoor.group.position).addScaledVector(leaveDoor.dir, 4).setY(1.3);
   } else if (intro > 0) {
-    if (introStarted) intro = Math.max(0, intro - dt / 5.5);
+    if (introStarted) intro = Math.max(0, intro - dt / (wish.lengthSq() > 1e-4 ? 1.4 : 5.5));
     const k = 1 - Math.pow(intro, 2.2);
     camera.position.lerpVectors(introFrom, camGoal, k);
     look.copy(player.position); look.y += 1.5; look.lerp(introLook, 1 - k);
@@ -326,12 +358,12 @@ function frame() {
     nearDoor = res.near;
     if (nearDoor !== lastNear) { lastNear = nearDoor; live.textContent = nearDoor ? `${nearDoor.name} door ahead` : ''; if (nearDoor && !prefetched.has(nearDoor.slug)) { prefetched.add(nearDoor.slug); rooms.prefetch([nearDoor.slug]); } }
     audio.update(nearDoor ? player.position.distanceTo(nearDoor.group.position) : 99, 0);
-    if (!leaving && character && t > readUntil) setHint(nearDoor ? (DE ? `Durchgehen öffnet ${nearDoor.name}. E liest zuerst.` : `Walk through to enter ${nearDoor.name}. E reads it first.`) : WALK_HINT);
+    if (!leaving && character && t > readUntil) setHint(nearDoor ? `${STRINGS.enter(nearDoor.name)} ${isTouch ? STRINGS.readTouch : STRINGS.readKeys}` : WALK_HINT);
   } else {
     const r = rooms.update(dt, player.position, camera);
     nearPanel = r.panel;
     if (r.back && !rooms.held) leaveRoom();
-    if (!leaving && t > readUntil) setHint(rooms.held ? 'Esc puts it back.' : nearPanel ? `E takes ${nearPanel.userData.item.title}.` : `${r.hint} The door behind you leads back.`);
+    if (!leaving && t > readUntil) setHint(rooms.held ? (isTouch ? STRINGS.putBackTouch : STRINGS.putBackKeys) : nearPanel ? (isTouch ? STRINGS.takeTouch : STRINGS.takeKeys)(nearPanel.userData.item.title) : `${r.hint} ${STRINGS.back}`);
     audio.update(99, 0);
   }
 

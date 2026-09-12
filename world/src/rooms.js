@@ -142,7 +142,7 @@ export function createRooms(scene, { hubVisible, time, lights, audio = null }) {
     for (const p of room.pickables) {
       if (p === held) continue;
       const want = p === near ? 1 : 0; p.userData.pull = (p.userData.pull || 0) + (want - (p.userData.pull || 0)) * Math.min(1, dt / 0.18);
-      const home = p.userData.home; p.position.copy(home.p).addScaledVector(p.userData.pullDir || UP_PULL, smooth(p.userData.pull) * (p.userData.pullAmount || 0.03));
+      const home = p.userData.home; p.position.copy(home.p).addScaledVector(p.userData.pullDir || UP_PULL, smooth(p.userData.pull) * (p.userData.pullAmount || 0.09));
     }
     return { panel: near, back, hint: current.theme.hint };
   }
