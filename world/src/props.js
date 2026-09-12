@@ -197,7 +197,7 @@ export function signboard(name, sub, style = 'painted', { w = 1.8, h = 0.5 } = {
     g.strokeStyle = S.border; g.lineWidth = 10; g.strokeRect(18, 18, W - 36, H - 36);
     g.fillStyle = S.fg; g.textAlign = 'center'; g.textBaseline = 'middle';
     g.font = `${S.weight} ${Math.round(H * 0.46)}px ${FONT}`; g.fillText(name.toUpperCase(), W / 2, H * (sub ? 0.4 : 0.52));
-    if (sub) { g.fillStyle = S.sub; g.font = `400 ${Math.round(H * 0.19)}px ${FONT}`; g.fillText(sub.toUpperCase().split('').join(' '), W / 2, H * 0.76); }
+    if (sub) { g.fillStyle = S.sub; g.font = `500 ${Math.round(H * 0.24)}px ${FONT}`; g.fillText(sub.toUpperCase().split('').join(' '), W / 2, H * 0.77); }
   });
   const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: S.rough, metalness: S.metal, emissive: S.glow ? 0xffffff : 0x000000, emissiveMap: S.glow ? tex : null, emissiveIntensity: S.glow ? 0.9 : 0 });
   // The lettered face is -z: a door's approach side, so the sign reads on the way in.

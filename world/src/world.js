@@ -46,7 +46,7 @@ export function createWorld(scene, { doors = [] } = {}) {
   plaza.rotation.x = -Math.PI / 2; plaza.position.y = 0.006; plaza.receiveShadow = true; root.add(plaza);
   const ring = new THREE.Mesh(new THREE.RingGeometry(PATH_FROM - 0.35, PATH_FROM - 0.2, 96), new THREE.MeshStandardMaterial({ color: 0x8f8a80, roughness: 0.6 }));
   ring.rotation.x = -Math.PI / 2; ring.position.y = 0.012; root.add(ring);
-  const kerb = new THREE.Mesh(new THREE.RingGeometry(PATH_FROM + 0.2, PATH_FROM + 0.32, 96), new THREE.MeshStandardMaterial({ color: 0xcfcbc2, roughness: 0.7 }));
+  const kerb = new THREE.Mesh(new THREE.RingGeometry(PATH_FROM + 0.2, PATH_FROM + 0.4, 96), new THREE.MeshStandardMaterial({ color: 0xb8ae9f, roughness: 0.7 }));
   kerb.rotation.x = -Math.PI / 2; kerb.position.y = 0.01; root.add(kerb);
 
   // The name runs around the whole hub as a ring of standing letters, three

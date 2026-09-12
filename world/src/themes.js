@@ -98,7 +98,7 @@ function facade(g, { w = 5.2, h = 3.6, doorW, doorH, jamb = 0.12, lintel = 0.16,
   piece(side, h, -(doorW / 2 + jamb + side / 2), h / 2);
   piece(side, h, (doorW / 2 + jamb + side / 2), h / 2);
   piece(doorW + jamb * 2, h - doorH - lintel, 0, doorH + lintel + (h - doorH - lintel) / 2);
-  if (top) { const c = box(w + 0.3, 0.14, depth + 0.3, top, 0, h + 0.07, z); g.add(c); }
+  if (top) { const c = box(w + 0.5, 0.22, depth + 0.5, top, 0, h + 0.11, z); g.add(c); }
 }
 
 // ---- Door frames and leaves ----
@@ -427,7 +427,7 @@ const notes = {
     if (!opts.inRoom) {
       // A painted board under a little shingle roof.
       const sign = P.signboard('Notes', 'The cabin', 'painted', { w: 1.7, h: 0.48 }); sign.position.set(0, H + 0.62, -0.16); g.add(sign);
-      const roof = box(2.1, 0.06, 0.7, planks, 0, H + 1.0, -0.3); roof.rotation.x = 0.35; g.add(roof);
+      const roof = box(5.5, 0.06, 0.9, planks, 0, H + 1.0, -0.3); roof.rotation.x = 0.35; g.add(roof);
       for (const dx of [-0.7, 0.7]) g.add(box(0.06, 0.5, 0.06, planks, dx, H + 0.62, -0.38));
     }
     const pivot = hinged(g, leaf, -1, W);
@@ -489,7 +489,7 @@ const about = {
     const plinthMat = new THREE.MeshStandardMaterial({ color: 0xe6e3dc, roughness: 0.6 });
     for (const [x, name, yaw] of [[-1.85, 'marble_bust_01', 0.35], [1.85, 'horse_statue_01', -0.35]]) {
       const pl = box(0.6, 1.1, 0.6, plinthMat, x, 0.55, DOOR_R - 0.55); g.add(pl); solidBox(this.solids, pl);
-      const m = await put(g, name, x, DOOR_R - 0.55, yaw, name === 'marble_bust_01' ? 1.5 : 1.25); if (m) m.position.y = 1.1;
+      const m = await put(g, name, x, DOOR_R - 0.55, yaw, name === 'marble_bust_01' ? 1.5 : 2.1); if (m) m.position.y = 1.1;
     }
   },
   door(g, opts = {}) {
@@ -640,7 +640,7 @@ const cv = {
   door(g, opts = {}) {
     const alu = new THREE.MeshStandardMaterial({ color: 0x3a3d42, metalness: 0.7, roughness: 0.4 });
     const glass = new THREE.MeshPhysicalMaterial({ color: 0xdfe8ee, transparent: true, opacity: 0.32, roughness: 0.05, metalness: 0, transmission: 0 });
-    const frost = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.7, roughness: 0.6 });
+    const frost = new THREE.MeshPhysicalMaterial({ color: 0xd3d9dc, transparent: true, opacity: 0.9, roughness: 0.35, metalness: 0.05 });
     const W = 1.2, H = 2.3;
     threshold(g, { w: W, h: H, frameMat: alu, inner: 0xe9eaec, jamb: 0.06, lintel: 0.08, glow: 0xffffff, shell: new THREE.MeshStandardMaterial({ color: 0x3a3d42, metalness: 0.6, roughness: 0.5 }), inRoom: opts.inRoom });
     if (!opts.inRoom) { facade(g, { doorW: W, doorH: H, h: 3.2, jamb: 0.06, lintel: 0.08, mat: frost, depth: 0.22, z: 0.0 }); for (const x of [-2.6, -0.66, 0.66, 2.6]) g.add(box(0.08, 3.3, 0.12, alu, x, 1.65, 0)); g.add(box(5.3, 0.1, 0.5, alu, 0, 3.25, 0.1)); }
@@ -649,7 +649,7 @@ const cv = {
     leaf.add(box(W - 0.02, 0.5, 0.014, frost, 0, 1.25, 0));
     for (const y of [0.02, H - 0.02]) leaf.add(box(W - 0.02, 0.04, 0.05, alu, 0, y, 0));
     for (const x of [-(W / 2 - 0.02), W / 2 - 0.02]) leaf.add(box(0.04, H, 0.05, alu, x, H / 2, 0));
-    leaf.add(handle(alu, -0.35, 1.05, -0.05, { long: true }));
+    leaf.add(handle(alu, 0.35, 1.05, -0.05, { long: true }));
     const st = P.stencil('K. ÖZDEMİR', 0.5, 0.08, { color: '#2a2c30', size: 110, worn: 0, weight: 500 }); st.position.set(0, 1.35, -0.012); st.rotation.y = Math.PI; leaf.add(st);
     if (!opts.inRoom) {
       const sign = P.signboard('CV', 'The office', 'backlit', { w: 1.6, h: 0.42 }); sign.position.set(0, H + 0.42, -0.1); g.add(sign);
@@ -722,11 +722,11 @@ const contact = {
     const brick = pbr('red_brick_03', { repeat: [1, 2], roughness: 1 });
     const W = 1.2, H = 2.2;
     threshold(g, { w: W, h: H, frameMat: new THREE.MeshStandardMaterial({ color: 0xf1efe9, roughness: 0.6 }), inner: 0x2a2320, glow: 0xffc27a, shell: brick, inRoom: opts.inRoom });
-    if (!opts.inRoom) facade(g, { doorW: W, doorH: H, h: 3.6, mat: brick, top: new THREE.MeshStandardMaterial({ color: 0xe9e4d8, roughness: 0.8 }) });
+    if (!opts.inRoom) facade(g, { doorW: W, doorH: H, h: 3.6, mat: brick, top: new THREE.MeshStandardMaterial({ color: 0xb7ada0, roughness: 0.8 }) });
     // Brick reveals either side and a fanlight above.
     g.add(box(W + 0.24, 0.42, 0.04, new THREE.MeshPhysicalMaterial({ color: 0xe6eef2, transparent: true, opacity: 0.35, roughness: 0.1 }), 0, H + 0.38, 0.02));
     const leaf = panelledLeaf(W - 0.02, H, 0.06, paint, { rows: 3, cols: 2 });
-    leaf.add(handle(brass, -0.32, 1.05, -0.06));
+    leaf.add(handle(brass, 0.32, 1.05, -0.06));
     leaf.add(box(0.26, 0.05, 0.02, brass, 0, 1.0, -0.04));     // letter slot
     leaf.add(mesh(new THREE.TorusGeometry(0.05, 0.01, 8, 24), brass, 0, 1.55, -0.05)); // knocker
     const num = P.plate('7', { w: 0.1, h: 0.13, bg: '#b08d57', fg: '#2a2115', size: 90 }); num.position.set(0.28, 1.85, -0.04); num.rotation.y = Math.PI; leaf.add(num);
