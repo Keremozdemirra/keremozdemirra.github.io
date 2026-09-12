@@ -669,7 +669,15 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
      the bar takes a full width of its own underneath */
   .wf-row{grid-template-columns:minmax(0,1fr) auto;gap:.2rem .7rem;padding:.5rem 0}
   .wf-track{grid-column:1 / -1;order:3;margin-top:.15rem}
-  .seg-row{grid-template-columns:minmax(0,1fr) 4.8rem 4.8rem}
+  /* Three columns at 342px, inside the case embed, gave each input 60px of
+     text for a six-digit output at the 16px the phone rule sets, and the
+     last digits were cut; widening the inputs squeezed the label to three
+     lines. So the label takes a line of its own and the two values share
+     the next, each about 140px wide. The header row keeps its shape: its
+     first span is empty and takes no height. */
+  .seg-row{grid-template-columns:1fr 1fr}
+  .seg-row span:first-child{grid-column:1 / -1}
+  .seg-row input{padding:.42rem .3rem}
   .ms-row{grid-template-columns:minmax(0,1fr) 5.6rem}
   .ms-gap{grid-template-columns:1fr;gap:1rem}
   .solve{font-size:.68rem}
