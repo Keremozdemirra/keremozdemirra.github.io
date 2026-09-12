@@ -6,7 +6,7 @@ const SCALE = [0, 2, 4, 7, 9, 11, 12]; // one major scale; each door owns a degr
 
 export function createAudio() {
   let ctx = null, master = null, hum = null, humGain = null, humFilter = null, droneOsc = null, droneGain = null;
-  let muted = false;
+  let muted = false, stepCount = 0;
   try { muted = localStorage.getItem('world.muted') === '1'; } catch (e) { /* storage blocked: sound stays on */ }
 
   let gesture = false;
@@ -18,13 +18,13 @@ export function createAudio() {
     if (!AC) return;
     ctx = new AC();
     master = ctx.createGain(); master.gain.value = muted ? 0 : 0.8; master.connect(ctx.destination);
-    // The room tone: two low sines a fifth apart under a low pass, barely there.
-    humFilter = ctx.createBiquadFilter(); humFilter.type = 'lowpass'; humFilter.frequency.value = 220;
-    humGain = ctx.createGain(); humGain.gain.value = 0.035;
-    hum = [ctx.createOscillator(), ctx.createOscillator()];
-    hum[0].frequency.value = 55; hum[1].frequency.value = 82.5; hum[1].detune.value = 4;
-    hum.forEach((o) => { o.connect(humFilter); o.start(); });
-    humFilter.connect(humGain); humGain.connect(master);
+    // The room tone: filtered noise, the sound of a large quiet room, with no pitch to notice.
+    const seconds = 4, n = ctx.sampleRate * seconds, buf = ctx.createBuffer(2, n, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); let b0 = 0, b1 = 0, b2 = 0; for (let i = 0; i < n; i++) { const w = Math.random() * 2 - 1; b0 = 0.99765 * b0 + w * 0.0990460; b1 = 0.96300 * b1 + w * 0.2965164; b2 = 0.57000 * b2 + w * 1.0526913; d[i] = (b0 + b1 + b2 + w * 0.1848) * 0.08; } }
+    hum = ctx.createBufferSource(); hum.buffer = buf; hum.loop = true;
+    humFilter = ctx.createBiquadFilter(); humFilter.type = 'lowpass'; humFilter.frequency.value = 380; humFilter.Q.value = 0.4;
+    humGain = ctx.createGain(); humGain.gain.value = 0.05;
+    hum.connect(humFilter); humFilter.connect(humGain); humGain.connect(master); hum.start();
     droneOsc = ctx.createOscillator(); droneOsc.type = 'triangle'; droneOsc.frequency.value = 140;
     droneGain = ctx.createGain(); droneGain.gain.value = 0.0; droneOsc.connect(droneGain); droneGain.connect(master); droneOsc.start();
   }
@@ -64,9 +64,14 @@ export function createAudio() {
       voice(root * Math.pow(2, SCALE[index % SCALE.length] / 12) * 2, 'triangle', t + 0.18, 0.7, 0.08, pan);
       buzz(18);
     },
+    // A step is a soft thump and a short tap, each a little different from the last, alternating sides.
     footstep(onPad, pan = 0) {
       if (!ready()) return;
-      noise(ctx.currentTime, 0.045, onPad ? 0.14 : 0.07, 'bandpass', onPad ? 1400 : 900, pan);
+      const t = ctx.currentTime, side = (stepCount++ % 2 ? 1 : -1) * 0.25 + pan, vary = 0.92 + Math.random() * 0.16;
+      const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(95 * vary, t); o.frequency.exponentialRampToValueAtTime(48, t + 0.09);
+      const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.11, t + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+      const p = panner(side); o.connect(g); if (p) { g.connect(p); p.connect(master); } else g.connect(master); o.start(t); o.stop(t + 0.15);
+      noise(t, 0.03, onPad ? 0.045 : 0.03, 'bandpass', (onPad ? 1900 : 1200) * vary, side);
     },
     chord(pan = 0) {
       if (!ready()) return;
@@ -88,13 +93,11 @@ export function createAudio() {
       const t = ctx.currentTime; voice(880, 'sine', t, 0.25, 0.08); voice(1320, 'sine', t + 0.08, 0.35, 0.08);
     },
     // Called every frame: proximity lifts the hum, the drone's speed sets its pitch.
+    // Called every frame: near a door the room opens up a little, nothing else moves.
     update(nearDist, droneSpeed) {
       if (!ctx) return;
       const lift = Math.max(0, 1 - nearDist / 3.6);
-      hum[0].frequency.setTargetAtTime(55 * (1 + 0.5 * lift), ctx.currentTime, 0.1);
-      hum[1].frequency.setTargetAtTime(82.5 * (1 + 0.5 * lift), ctx.currentTime, 0.1);
-      humFilter.frequency.setTargetAtTime(220 + 500 * lift, ctx.currentTime, 0.1);
-      droneOsc.frequency.setTargetAtTime(120 + droneSpeed * 40, ctx.currentTime, 0.2);
+      humFilter.frequency.setTargetAtTime(380 + 320 * lift, ctx.currentTime, 0.25);
       droneGain.gain.setTargetAtTime(droneSpeed > 0 ? 0.012 : 0, ctx.currentTime, 0.3);
     },
   };

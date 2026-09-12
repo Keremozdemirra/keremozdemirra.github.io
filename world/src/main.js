@@ -41,6 +41,9 @@ function setHint(text) { if (text === hintText) return; hintText = text; hint.te
 const live = document.getElementById('live');
 const veil = document.getElementById('veil');
 const isTouch = matchMedia('(pointer: coarse)').matches;
+// Inside the front page's frame the legal links are the page's own, and any link out of the
+// world must replace the whole page rather than load the site inside the frame.
+if (new URLSearchParams(location.search).has('embed')) { document.body.classList.add('embed'); for (const a of document.querySelectorAll('#list a')) a.target = '_top'; }
 const LANG = /^de/i.test(navigator.language || '') ? 'de' : /^tr/i.test(navigator.language || '') ? 'tr' : 'en';
 const DE = LANG === 'de';
 // The guide line in the site's three languages, keyboard and touch wording apart.
@@ -49,17 +52,23 @@ const STRINGS = {
     enter: (n) => `Walk through to enter ${n}.`, readKeys: 'E reads it first.', readTouch: 'Tap the door to read about it first.',
     entering: (n) => `Entering ${n}…`, back: 'The door behind you leads back.', takeKeys: (t) => `E takes ${t}.`, takeTouch: (t) => `Tap ${t} to take it.`,
     putBackKeys: 'Esc puts it back.', putBackTouch: 'Close the page to put it back.', nothing: 'Nothing to take here. Walk up to an object.',
-    tab: (n) => `${n}: Enter walks there.`, soundOn: 'Sound on', soundOff: 'Sound off', closeKeys: 'Close (Esc)', closeTouch: 'Close' },
+    tab: (n) => `${n}: Enter walks there.`, soundOn: 'Sound on', soundOff: 'Sound off', closeKeys: 'Close (Esc)', closeTouch: 'Close',
+    loading: (n, t) => `Loading the world, ${n} of ${t}.`, loadingPlain: 'Loading the world.', roomsNone: (t) => `${t} rooms`, roomsSome: (n, t) => `${n} of ${t} rooms`, roomsAll: (t) => `All ${t} rooms seen`,
+    names: { work: 'Work', cases: 'Cases', notes: 'Notes', about: 'About', life: 'Life', cv: 'CV', contact: 'Contact' } },
   de: { walkTouch: 'Links ziehen zum Gehen, rechts zum Umsehen. Jede Tür ist ein Raum.', walkKeys: 'WASD zum Gehen, ziehen zum Umsehen. Jede Tür ist ein Raum.',
     enter: (n) => `Durchgehen öffnet ${n}.`, readKeys: 'Erst lesen: E.', readTouch: 'Auf die Tür tippen, um zuerst zu lesen.',
     entering: (n) => `Du betrittst ${n}…`, back: 'Die Tür hinter dir führt zurück.', takeKeys: (t) => `E nimmt ${t}.`, takeTouch: (t) => `Auf ${t} tippen, um es zu nehmen.`,
     putBackKeys: 'Esc legt es zurück.', putBackTouch: 'Seite schließen, um es zurückzulegen.', nothing: 'Hier ist nichts zu nehmen. Geh zu einem Gegenstand.',
-    tab: (n) => `${n}: Enter führt dich hin.`, soundOn: 'Ton an', soundOff: 'Ton aus', closeKeys: 'Schließen (Esc)', closeTouch: 'Schließen' },
+    tab: (n) => `${n}: Enter führt dich hin.`, soundOn: 'Ton an', soundOff: 'Ton aus', closeKeys: 'Schließen (Esc)', closeTouch: 'Schließen',
+    loading: (n, t) => `Die Welt lädt, ${n} von ${t}.`, loadingPlain: 'Die Welt lädt.', roomsNone: (t) => `${t} Räume`, roomsSome: (n, t) => `${n} von ${t} Räumen`, roomsAll: (t) => `Alle ${t} Räume gesehen`,
+    names: { work: 'Arbeiten', cases: 'Fallstudien', notes: 'Notizen', about: 'Über mich', life: 'Leben', cv: 'Lebenslauf', contact: 'Kontakt' } },
   tr: { walkTouch: 'Yürümek için solda, bakmak için sağda sürükle. Her kapı bir oda.', walkKeys: 'Yürümek için WASD, bakmak için sürükle. Her kapı bir oda.',
     enter: (n) => `Kapıdan geçince ${n} açılır.`, readKeys: 'Önce okumak için E.', readTouch: 'Önce okumak için kapıya dokun.',
     entering: (n) => `${n} açılıyor…`, back: 'Arkandaki kapı geri götürür.', takeKeys: (t) => `E ile ${t} alınır.`, takeTouch: (t) => `Almak için ${t} nesnesine dokun.`,
     putBackKeys: 'Esc yerine koyar.', putBackTouch: 'Sayfayı kapatınca yerine döner.', nothing: 'Burada alınacak bir şey yok. Bir nesneye yaklaş.',
-    tab: (n) => `${n}: Enter oraya götürür.`, soundOn: 'Ses açık', soundOff: 'Ses kapalı', closeKeys: 'Kapat (Esc)', closeTouch: 'Kapat' },
+    tab: (n) => `${n}: Enter oraya götürür.`, soundOn: 'Ses açık', soundOff: 'Ses kapalı', closeKeys: 'Kapat (Esc)', closeTouch: 'Kapat',
+    loading: (n, t) => `Dünya yükleniyor, ${t} dosyadan ${n}.`, loadingPlain: 'Dünya yükleniyor.', roomsNone: (t) => `${t} oda`, roomsSome: (n, t) => `${t} odadan ${n} görüldü`, roomsAll: (t) => `${t} odanın hepsi görüldü`,
+    names: { work: 'Çalışmalar', cases: 'Vaka çalışmaları', notes: 'Notlar', about: 'Hakkımda', life: 'Hayat', cv: 'CV', contact: 'İletişim' } },
 }[LANG];
 const WALK_HINT = isTouch ? STRINGS.walkTouch : STRINGS.walkKeys;
 
@@ -158,7 +167,7 @@ const player = new THREE.Group();
 scene.add(player);
 let character = null, introStarted = false;
 // While the world loads, the line carries the count; written directly, since a rising number is one change, not many.
-onProgress((loaded, total) => { if (introStarted) return; const text = total > 1 ? `Loading the world, ${Math.min(loaded, total)} of ${total}.` : 'Loading the world.'; hintText = text; hint.textContent = text; });
+onProgress((loaded, total) => { if (introStarted) return; const text = total > 1 ? STRINGS.loading(Math.min(loaded, total), total) : STRINGS.loadingPlain; hintText = text; hint.textContent = text; });
 (async () => {
   const spec = CHARACTERS[CHARACTER];
   try {
@@ -193,7 +202,7 @@ function fallbackFigure() {
 const visited = new Set(store.get('world.visited', []));
 // The count under the name: rooms seen, out of seven, so the world reads as a game with an end.
 const progress = document.getElementById('progress');
-function showProgress() { if (!progress) return; const n = visited.size; progress.textContent = n === 0 ? `${DOORS.length} rooms` : n >= DOORS.length ? `All ${DOORS.length} rooms seen` : `${n} of ${DOORS.length} rooms`; }
+function showProgress() { if (!progress) return; const n = visited.size, t = DOORS.length; progress.textContent = n === 0 ? STRINGS.roomsNone(t) : n >= t ? STRINGS.roomsAll(t) : STRINGS.roomsSome(n, t); }
 showProgress();
 const LETTER_OF_DOOR = { work: 0, cases: 1, notes: 2, about: 3, life: 4, cv: 6, contact: 7 };
 world.ready.then(() => { for (const slug of visited) world.lightLetter(LETTER_OF_DOOR[slug]); });
@@ -214,7 +223,7 @@ addEventListener('keydown', (e) => {
   if (k === 'tab' && document.activeElement === canvas && mode === 'hub') {
     // Tab walks the doors while the world holds the keyboard; past either end it lets the browser carry focus on to the links.
     const next = focusDoor + (e.shiftKey ? -1 : 1);
-    if (next >= 0 && next < DOORS.length) { e.preventDefault(); focusDoor = next; const d = doors.doors[focusDoor]; setHint(STRINGS.tab(d.name)); readUntil = clock.elapsedTime + 4; live.textContent = d.name; }
+    if (next >= 0 && next < DOORS.length) { e.preventDefault(); focusDoor = next; const d = doors.doors[focusDoor]; setHint(STRINGS.tab(STRINGS.names[d.slug] || d.name)); readUntil = clock.elapsedTime + 4; live.textContent = d.name; }
     else focusDoor = -1;
   }
   if (k === 'enter' && focusDoor >= 0) { const d = doors.doors[focusDoor]; controls.setGoal(d.group.position.clone().addScaledVector(d.dir, -1.5)); }
@@ -240,7 +249,7 @@ function enter(door) {
   leaving = true; leaveDoor = door;
   visited.add(door.slug); store.set('world.visited', [...visited]); showProgress();
   world.lightLetter(LETTER_OF_DOOR[door.slug]);
-  setHint(STRINGS.entering(door.name));
+  setHint(STRINGS.entering(STRINGS.names[door.slug] || door.name));
   document.body.classList.add('letterbox');
   // The camera passes through the door; behind it the room builds while the veil is up.
   setTimeout(() => { veil.classList.remove('off'); veil.classList.add('on'); }, 550);
@@ -252,7 +261,7 @@ function enter(door) {
     camera.position.set(0, 1.9, -3.0);
     document.body.classList.remove('letterbox');
     veil.classList.remove('on'); veil.classList.add('off');
-    setHint(`${door.name}. ${door.hint} ${STRINGS.back}`);
+    setHint(`${STRINGS.names[door.slug] || door.name}. ${door.hint} ${STRINGS.back}`);
     readUntil = clock.elapsedTime + 6;
   }, 1000);
 }
@@ -291,6 +300,7 @@ function blocked(point) {
 }
 
 function frame() {
+  followCanvas();
   const dt = Math.min(clock.getDelta(), 0.05);
   const t = clock.elapsedTime;
   const { wish, run } = controls.update(dt, player.position);
@@ -358,7 +368,7 @@ function frame() {
     nearDoor = res.near;
     if (nearDoor !== lastNear) { lastNear = nearDoor; live.textContent = nearDoor ? `${nearDoor.name} door ahead` : ''; if (nearDoor && !prefetched.has(nearDoor.slug)) { prefetched.add(nearDoor.slug); rooms.prefetch([nearDoor.slug]); } }
     audio.update(nearDoor ? player.position.distanceTo(nearDoor.group.position) : 99, 0);
-    if (!leaving && character && t > readUntil) setHint(nearDoor ? `${STRINGS.enter(nearDoor.name)} ${isTouch ? STRINGS.readTouch : STRINGS.readKeys}` : WALK_HINT);
+    if (!leaving && character && t > readUntil) setHint(nearDoor ? `${STRINGS.enter(STRINGS.names[nearDoor.slug] || nearDoor.name)} ${isTouch ? STRINGS.readTouch : STRINGS.readKeys}` : WALK_HINT);
   } else {
     const r = rooms.update(dt, player.position, camera);
     nearPanel = r.panel;
@@ -378,5 +388,10 @@ function resize() {
   post.resize(innerWidth, innerHeight);
 }
 addEventListener('resize', resize);
+// Full screen, a rotated phone and a zoomed window do not always send resize in time, so the
+// canvas is also measured every frame and the buffer follows its box whenever the two disagree.
+for (const ev of ['fullscreenchange', 'webkitfullscreenchange', 'orientationchange']) document.addEventListener(ev, () => setTimeout(resize, 50));
+if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(document.documentElement);
+function followCanvas() { const w = canvas.clientWidth, h = canvas.clientHeight; if (w && h && (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio()))) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); post.resize(w, h); } }
 resize();
 frame();

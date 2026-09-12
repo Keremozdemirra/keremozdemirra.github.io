@@ -23,6 +23,8 @@ const box = (w, h, d, mat, x, y, z) => mesh(new THREE.BoxGeometry(w, h, d), mat,
 function tile(geo, su, sv) { const uv = geo.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * su, uv.getY(i) * sv); return geo; }
 function solidBox(list, obj, shrink = 0) { obj.updateMatrixWorld(true); const b = new THREE.Box3().setFromObject(obj); b.expandByScalar(-shrink); list.push(b); return b; }
 function place(g, m, x, z, yaw = 0, s = 1) { m.position.set(x, 0, z); m.rotation.y = yaw; m.scale.setScalar(s); g.add(m); return m; }
+// Rest an object on a surface: its lowest point lands on y, whatever the model's origin.
+function rest(obj, y) { if (!obj) return; const bb = new THREE.Box3().setFromObject(obj); obj.position.y += y - bb.min.y; }
 async function put(g, name, x, z, yaw = 0, s = 1, solids = null, shrink = 0.08) {
   const src = await model(name); if (!src) return null;
   const m = src.clone(); place(g, m, x, z, yaw, s);
@@ -299,11 +301,11 @@ const work = {
       });
     });
     // The long reading table in the middle, with a few volumes left open.
-    const table = await put(g, 'painted_wooden_table', 0, 3.4, Math.PI / 2, 0.85, solids);
+    const table = await put(g, 'painted_wooden_table', 0, 3.4, 0, 0.85, solids);
     const tb = table ? new THREE.Box3().setFromObject(table) : null; const top = tb ? tb.max.y : 0.75;
-    for (let i = 0; i < 3; i++) { const b = P.book(['Ledger', 'Atlas', 'Index'][i], i + 20); b.rotation.set(Math.PI / 2, 0, (rnd() - 0.5) * 0.5); b.position.set(-0.6 + i * 0.6, top + 0.02, 3.4 + (rnd() - 0.5) * 0.4); g.add(b); }
-    await put(g, 'vintage_oil_lamp', -1.9, 3.4, 0, 1); g.children[g.children.length - 1].position.y = top;
-    await put(g, 'vintage_oil_lamp', 1.9, 3.4, 0, 1); g.children[g.children.length - 1].position.y = top;
+    for (let i = 0; i < 3; i++) { const b = P.book(['Ledger', 'Atlas', 'Index'][i], i + 20); b.rotation.set(Math.PI / 2, 0, (rnd() - 0.5) * 0.5); b.position.set(-0.4 + i * 0.4, top + 0.02, 3.35 + (rnd() - 0.5) * 0.2); g.add(b); }
+    rest(await put(g, 'vintage_oil_lamp', -0.78, 3.45, 0, 1), top);
+    rest(await put(g, 'vintage_oil_lamp', 0.78, 3.45, 0, 1), top);
     g.add(warm(-1.9, top + 0.5, 3.4, 1.4, 0xffc67a, 7), warm(1.9, top + 0.5, 3.4, 1.4, 0xffc67a, 7));
     await put(g, 'lantern_chandelier_01', 0, 3.4, 0, 1); g.children[g.children.length - 1].position.y = 2.7;
     g.add(mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.5, 8), new THREE.MeshStandardMaterial({ color: 0x3a2a1a, metalness: 0.7, roughness: 0.5 }), 0, 3.35, 3.4));
@@ -369,10 +371,10 @@ const cases = {
       pickable(f, it, g, x, top + 0.012 + (i % 4) * 0.004, z, (rnd() - 0.5) * 0.25);
       pick.push(f);
     });
-    const lamp = await put(g, 'desk_lamp_arm_01', -1.3, 3.3, 0.6, 1); if (lamp) lamp.position.y = top;
+    const lamp = await put(g, 'desk_lamp_arm_01', -1.3, 3.3, 0.6, 1); rest(lamp, top);
     g.add(warm(-1.6, top + 0.6, 3.3, 1.3, 0xffe0b0, 6));
-    const nb = await put(g, 'binder_notebook', 1.9, 3.6, -0.3, 1); if (nb) nb.position.y = top;
-    const cb = await put(g, 'clipboard', 2.1, 2.9, 0.2, 1); if (cb) cb.position.y = top;
+    const nb = await put(g, 'binder_notebook', 1.35, 3.5, -0.3, 1); rest(nb, top);
+    const cb = await put(g, 'clipboard', 1.45, 2.95, 0.2, 1); rest(cb, top);
     // The investigation wall: every case pinned up with its picture, red thread between them.
     const board = corkBoard(6.4, 2.4); board.position.set(0, 1.9, 5.47); board.rotation.y = Math.PI; g.add(board);
     const thread = new THREE.MeshStandardMaterial({ color: 0xb3261e, roughness: 0.7 });
@@ -446,12 +448,12 @@ const notes = {
     const day = new THREE.PointLight(0xeef2ff, 1.5, 9, 1.4); day.position.set(3.0, 1.9, 2.4); g.add(day);
     const desk = await put(g, 'WoodenTable_01', 2.75, 2.4, Math.PI / 2, 1, solids);
     const top = desk ? new THREE.Box3().setFromObject(desk).max.y : 0.75;
-    const lamp = await put(g, 'desk_lamp_arm_01', 2.95, 3.1, -2.2, 1); if (lamp) lamp.position.y = top;
+    const lamp = await put(g, 'desk_lamp_arm_01', 2.9, 3.05, -2.2, 1); rest(lamp, top);
     g.add(warm(2.7, top + 0.55, 2.9, 0.9, 0xffe0b0, 5));
-    const np = await put(g, 'office_notepads', 2.55, 2.0, 0.3, 1); if (np) np.position.y = top;
-    const st = await put(g, 'stationery_supplies', 3.0, 1.7, 0.2, 1); if (st) st.position.y = top;
-    const ck = await put(g, 'alarm_clock_01', 3.15, 3.0, -1.2, 1); if (ck) ck.position.y = top;
-    const pc = await put(g, 'postcard_set_01', 2.4, 2.75, 0.4, 1); if (pc) pc.position.y = top;
+    const np = await put(g, 'office_notepads', 2.7, 2.0, 0.3, 1); rest(np, top);
+    const st = await put(g, 'stationery_supplies', 2.85, 1.7, 0.2, 1); rest(st, top);
+    const ck = await put(g, 'alarm_clock_01', 2.6, 3.1, -1.2, 1); rest(ck, top);
+    const pc = await put(g, 'postcard_set_01', 2.62, 2.6, 0.4, 1); rest(pc, top);
     await put(g, 'painted_wooden_chair_01', 2.0, 2.4, -Math.PI / 2, 1, solids);
     // The board on the back wall: the notes, the section cards, a few pictures.
     const board = corkBoard(4.0, 1.7); board.position.set(-0.4, 1.6, 3.83); board.rotation.y = Math.PI; g.add(board);
@@ -670,10 +672,10 @@ const cv = {
     const it = items[0] || { title: 'CV', url: 'https://keremozdemir.de/cv/', image: 'og/cv.png' };
     const sh = P.sheet([['KEREM ÖZDEMİR', 46, 700], ['ESG and climate finance analyst, Germany', 24, 400], ['Education, work, tools: one page.', 24, 400], ['Pick up to read the full CV.', 22, 300]], 0);
     pickable(sh, it, g, -0.25, top + 0.006, 2.15, -0.15); pick.push(sh);
-    const lp = await put(g, 'classic_laptop', 0.55, 2.55, Math.PI, 1); if (lp) lp.position.y = top;
-    const lamp = await put(g, 'desk_lamp_arm_01', -0.95, 2.7, 0.8, 1); if (lamp) lamp.position.y = top;
+    const lp = await put(g, 'classic_laptop', 0.55, 2.55, Math.PI, 1); rest(lp, top);
+    const lamp = await put(g, 'desk_lamp_arm_01', -0.95, 2.7, 0.8, 1); rest(lamp, top);
     g.add(warm(-0.7, top + 0.6, 2.5, 1.1, 0xffe8cc, 6));
-    const stp = await put(g, 'vintage_stapler', 0.95, 2.1, 0.5, 1); if (stp) stp.position.y = top;
+    const stp = await put(g, 'vintage_stapler', 0.95, 2.1, 0.5, 1); rest(stp, top);
     await put(g, 'modern_arm_chair_01', 0, 3.4, Math.PI, 1, solids);
     await put(g, 'wall_clock', 0, D - 3.5 - 0.16, Math.PI, 1); g.children[g.children.length - 1].position.y = 2.35;
     // The timeline on a chalkboard against the right wall, the diploma framed on the left.
@@ -712,9 +714,19 @@ const contact = {
     g.add(strip('cobblestone_floor_08', 2.4, PATH_FROM + 0.3, DOOR_R - APRON_D));
     apron(g, 'cobblestone_floor_08');
     // Street furniture at the house front: a lamp post at the corner, the bin by the door.
-    // A wall lantern: its bracket goes into the brick beside the door at head height, not on the ground.
-    const lamp = await put(g, 'street_lamp_02', 1.6, DOOR_R - 0.3, Math.PI / 2, 1); if (lamp) lamp.position.y = 1.85;
-    g.add(warm(1.6, 2.7, DOOR_R - 0.7, 0.8, 0xfff0d0, 7));
+    // A wall lantern beside the door, built here so its bracket is in the brick and nothing else:
+    // an iron arm out of the wall face, a glazed box hanging from its end, a small roof on it.
+    const iron = new THREE.MeshStandardMaterial({ color: 0x1b1b1b, metalness: 0.7, roughness: 0.5 });
+    const glass = new THREE.MeshStandardMaterial({ color: 0xfff1cc, emissive: 0xffd28a, emissiveIntensity: 1.4, roughness: 0.3, transparent: true, opacity: 0.85 });
+    const face = DOOR_R - 0.05, lx = 1.55, ly = 2.35;
+    g.add(box(0.05, 0.05, 0.34, iron, lx, ly + 0.2, face - 0.17));        // the arm, from the wall out
+    g.add(box(0.12, 0.16, 0.03, iron, lx, ly + 0.2, face - 0.01));         // the plate on the brick
+    g.add(box(0.04, 0.32, 0.04, iron, lx, ly + 0.04, face - 0.34));        // the hanger down from the arm's end
+    g.add(box(0.2, 0.28, 0.2, glass, lx, ly - 0.24, face - 0.34));         // the glazed box
+    for (const [dx, dz] of [[-0.1, -0.1], [0.1, -0.1], [-0.1, 0.1], [0.1, 0.1]]) g.add(box(0.02, 0.3, 0.02, iron, lx + dx, ly - 0.24, face - 0.34 + dz)); // its corner rails
+    g.add(box(0.26, 0.03, 0.26, iron, lx, ly - 0.09, face - 0.34));        // the roof
+    g.add(box(0.24, 0.03, 0.24, iron, lx, ly - 0.39, face - 0.34));        // the floor
+    g.add(warm(lx, ly - 0.24, face - 0.5, 0.9, 0xffd9a0, 7));
     await putPart(g, 'metal_trash_can', (o) => /rust/i.test(o.name), -1.8, DOOR_R - 0.6, Math.PI + 0.3, 1, this.solids);
   },
   door(g, opts = {}) {
@@ -751,18 +763,18 @@ const contact = {
     const it = items[0] || { title: 'Contact', url: 'https://keremozdemir.de/contact/', image: 'og/contact.png' };
     [['Write to Kerem', 'kozdemir3523@gmail.com'], ['Say hello', 'from anywhere'], ['A question about a tool', 'or a case']].forEach(([to, from], i) => {
       const e = P.envelope(to, from, i);
-      pickable(e, { ...it, title: to }, g, -0.5 + i * 0.5, top + 0.004 + i * 0.005, 4.2 + (rnd() - 0.5) * 0.1, (rnd() - 0.5) * 0.5);
+      pickable(e, { ...it, title: to }, g, -0.6 + i * 0.42, top + 0.004 + i * 0.005, 4.22 + (rnd() - 0.5) * 0.1, (rnd() - 0.5) * 0.5);
       pick.push(e);
     });
     await put(g, 'ornate_mirror_01', 0, 4.47, Math.PI, 1); g.children[g.children.length - 1].position.y = 1.9;
-    const lamp = await put(g, 'vintage_oil_lamp', 1.0, 4.3, 0, 1); if (lamp) lamp.position.y = top;
-    g.add(warm(1.0, top + 0.5, 4.2, 1.1, 0xffc67a, 6));
+    const lamp = await put(g, 'vintage_oil_lamp', 0.6, 4.38, 0, 1); rest(lamp, top);
+    g.add(warm(0.6, top + 0.5, 4.2, 1.1, 0xffc67a, 6));
     await put(g, 'vintage_telephone_wall_clock', -3.44, 2.4, Math.PI / 2, 1); g.children[g.children.length - 1].position.y = 1.7;
     await putPart(g, 'vintage_suitcase', (o) => /_01_/.test(o.name), -2.6, 1.2, 0.6, 1, solids);
     await put(g, 'wicker_basket_01', 2.6, 1.0, 0, 1, solids);
     await put(g, 'painted_wooden_chair_01', -2.5, 3.6, 1.2, 1, solids);
     await put(g, 'potted_plant_02', 2.6, 3.6, 0, 1, solids);
-    const vr = await put(g, 'vintage_radio_transceiver', 2.6, 1.0, -0.6, 1); if (vr) vr.position.y = 0.5;
+    const vr = await put(g, 'vintage_radio_transceiver', 2.6, 1.0, -0.6, 1); rest(vr, 0.12);
     g.add(warm(0, 2.9, 2.0, 1.0, 0xffe6cc, 9));
     const mail = P.plate('kozdemir3523@gmail.com', { w: 0.5, h: 0.07, bg: '#f4f0e6', fg: '#2a2c30', metal: false, size: 44 }); mail.position.set(0, 0.95, 4.02); mail.rotation.x = -0.3; g.add(mail);
     trim(g, { w: 7, d: 8, h: 3.2, color: 0x4a3f36 });

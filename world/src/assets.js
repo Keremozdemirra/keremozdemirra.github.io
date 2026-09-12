@@ -54,7 +54,7 @@ export function model(name) {
       const m = o.material; if (!m) return;
       if (m.map) m.map.anisotropy = 4;
       // Glass: transmission needs a pass this renderer does not run, and comes out black.
-      if (m.transmission > 0 || (m.transparent && m.opacity < 0.95 && !m.alphaMap) || /glass|chimney|bulb/i.test(o.name) || /glass/i.test(m.name || '')) {
+      if (m.transmission > 0 || (m.transparent && m.opacity < 0.95 && !m.alphaMap) || /glass|chimney|bulb/i.test(o.name) || /glass/i.test(m.name || '') || (/mirror/i.test(name) && /glass|mirror/i.test(o.name + ' ' + (m.name || '')))) {
         // A mirror's glass is a mirror: the studio environment reflected, not a window's translucency.
         const glass = /mirror/i.test(name)
           ? new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.04, envMapIntensity: 1.2 })
