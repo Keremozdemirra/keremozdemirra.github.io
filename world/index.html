@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'sha256-bgMiZ5XudRc3ON+iOP7TJVjZSb2mE636fa8zgcfI2dE='; frame-src 'self' https://keremozdemir.de; connect-src 'self' https://keremozdemir.de; form-action 'self'; base-uri 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kerem Özdemir</title>
+<!-- The tab and the search result said only the name, which is what the front page is
+     called, so in a list of results the world and the front page read as one page. -->
+<title>Kerem Özdemir, the walkable edition</title>
 <meta name="description" content="A white world with seven doors. Each door opens one part of the site: work, cases, notes, about, life, CV, contact.">
 <link rel="canonical" href="https://keremozdemir.de/world/">
 <meta property="og:type" content="website">
@@ -14,11 +16,14 @@
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Kerem Özdemir, the card the site shares.">
+<!-- The same file the site falls back to elsewhere, so it is described the same way it
+     is described in src/lib/meta.ts. Two names for one picture is one of them wrong. -->
+<meta property="og:image:alt" content="Kerem Özdemir. Sustainability and economics, Munich.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Kerem Özdemir, the walkable edition">
 <meta name="twitter:description" content="A white world with seven doors. Each door opens one part of the site: work, cases, notes, about, life, CV, contact.">
 <meta name="twitter:image" content="https://keremozdemir.de/og.png">
+<meta name="twitter:image:alt" content="Kerem Özdemir. Sustainability and economics, Munich.">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
 @font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 300 700; font-display: swap;
@@ -97,7 +102,9 @@ body.flat #doors { position: static; padding: 4.5rem 24px 24px; }
 </head>
 <body>
 <canvas id="stage" tabindex="0" role="application" aria-label="A white world. Walk through a door to open a page."></canvas>
-<noscript><p style="position:fixed;left:24px;top:64px;max-width:26rem">This page needs JavaScript. <a href="https://keremozdemir.de/">Open the site directly.</a></p></noscript>
+<!-- The one line no script ever reaches, so it is the one that stays English and says so:
+     everything else here is written again in the reader's language once main.js runs. -->
+<noscript><p lang="en" style="position:fixed;left:24px;top:64px;max-width:26rem">This page needs JavaScript. <a href="https://keremozdemir.de/">Open the site directly.</a></p></noscript>
 
 <header class="hud">
   <h1>Kerem Özdemir</h1>
@@ -118,7 +125,7 @@ body.flat #doors { position: static; padding: 4.5rem 24px 24px; }
 </nav>
 
 <div id="labels" aria-hidden="true"></div>
-<p id="list"><a href="https://keremozdemir.de/" id="showList">Open the site without 3D</a><button id="mute" type="button">Sound on</button><a href="https://keremozdemir.de/impressum/" class="legal">Impressum</a><a href="https://keremozdemir.de/privacy/" class="legal">Privacy</a></p>
+<p id="list"><a href="https://keremozdemir.de/" id="showList">Open the site without 3D</a><button id="mute" type="button">Mute</button><a href="https://keremozdemir.de/impressum/" class="legal">Impressum</a><a href="https://keremozdemir.de/privacy/" class="legal">Privacy</a></p>
 <p id="live" aria-live="polite"></p>
 <div id="bars" aria-hidden="true"></div>
 <div id="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="overlay-title">
@@ -134,6 +141,40 @@ body.flat #doors { position: static; padding: 4.5rem 24px 24px; }
   "three/addons/": "./vendor/three/addons/"
 } }
 </script>
+<!-- The whole graph, named. A module runs only once everything it imports has arrived,
+     and the browser learns what that is one level at a time: main.js, then three and the
+     eight modules beside it, then the core and the loaders, then the two under those.
+     Four round trips before the first line executes, and the character and the ring font
+     start only after that. Named here, the nineteen files are asked for at once.
+
+     After the import map, because the browser may follow a preloaded module's own
+     imports, and those are written as bare specifiers the map has to resolve.
+
+     FBXLoader is deliberately absent: character.js imports it inside a branch the xbot
+     mannequin never takes, so preloading it would fetch a file this page never runs. -->
+<link rel="modulepreload" href="src/assets.js">
+<link rel="modulepreload" href="src/audio.js">
+<link rel="modulepreload" href="src/character.js">
+<link rel="modulepreload" href="src/controls.js">
+<link rel="modulepreload" href="src/doors.js">
+<link rel="modulepreload" href="src/grass.js">
+<link rel="modulepreload" href="src/props.js">
+<link rel="modulepreload" href="src/render.js">
+<link rel="modulepreload" href="src/rooms.js">
+<link rel="modulepreload" href="src/themes.js">
+<link rel="modulepreload" href="src/world.js">
+<link rel="modulepreload" href="vendor/three/three.module.min.js">
+<link rel="modulepreload" href="vendor/three/three.core.min.js">
+<link rel="modulepreload" href="vendor/three/addons/geometries/TextGeometry.js">
+<link rel="modulepreload" href="vendor/three/addons/loaders/FontLoader.js">
+<link rel="modulepreload" href="vendor/three/addons/loaders/GLTFLoader.js">
+<link rel="modulepreload" href="vendor/three/addons/utils/BufferGeometryUtils.js">
+<link rel="modulepreload" href="vendor/three/addons/utils/SkeletonUtils.js">
+<!-- The two the first frame waits on. Both are read by three's FileLoader, which fetches
+     same origin with credentials, so crossorigin here is what makes the preload match
+     the request rather than run beside it. -->
+<link rel="preload" as="fetch" crossorigin href="vendor/three/Xbot.glb">
+<link rel="preload" as="fetch" crossorigin href="vendor/three/addons/fraunces_ring.typeface.json">
 <script type="module" src="src/main.js"></script>
 </body>
 </html>

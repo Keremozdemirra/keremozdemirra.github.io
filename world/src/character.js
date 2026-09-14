@@ -3,7 +3,6 @@
 // asked. Doors, render and main own everything else.
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { retargetClip } from 'three/addons/utils/SkeletonUtils.js';
 // Mixamo's Walk/Run clips move the root at roughly these speeds; dividing
 // the requested ground speed by these keeps feet from sliding.
@@ -27,6 +26,10 @@ function findClip(clips, keyword) {
 // "without skin" animation FBX files load fine here too, just with no mesh.
 async function loadSource(url) {
   if (url.toLowerCase().endsWith('.fbx')) {
+    // Imported here rather than at the top of the file: the FBX loader pulls
+    // fflate and the two NURBS modules with it, 209,692 bytes of source that
+    // every visit was parsing for a character that ships as a GLB.
+    const { FBXLoader } = await import('three/addons/loaders/FBXLoader.js');
     const fbx = await new FBXLoader().loadAsync(url);
     return { root: fbx, clips: fbx.animations || [] };
   }

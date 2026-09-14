@@ -39,7 +39,13 @@ const hint = document.getElementById('hint');
 // Every change of the hint's text re-enters it with a small rise; the same
 // text written again is not a change.
 let hintText = hint.textContent;
-function setHint(text) { if (text === hintText) return; hintText = text; hint.textContent = text; hint.classList.add('swap'); void hint.offsetWidth; hint.classList.remove('swap'); }
+// Every instruction the world gives is written here, and the card it is written on is
+// not a live region, so a reader who cannot see it was told nothing: not what a door
+// holds, not what is within reach, not that there is nothing to take. The line goes to
+// the live region as well. The standing walk hint does not: it is the resting state,
+// and announcing it every time the reader steps away from a door is noise, so it clears
+// the region instead.
+function setHint(text) { if (text === hintText) return; hintText = text; hint.textContent = text; hint.classList.add('swap'); void hint.offsetWidth; hint.classList.remove('swap'); live.textContent = text === WALK_HINT ? '' : text; }
 const live = document.getElementById('live');
 const veil = document.getElementById('veil');
 const isTouch = matchMedia('(pointer: coarse)').matches;
@@ -64,8 +70,14 @@ const STRINGS = {
     enter: (n) => `Walk through to enter ${n}.`, readKeys: 'E reads it first.', readTouch: 'Tap the door to read about it first.',
     entering: (n) => `Entering ${n}…`, back: 'The door behind you leads back.', takeKeys: (t) => `E takes ${t}.`, takeTouch: (t) => `Tap ${t} to take it.`,
     putBackKeys: 'Esc puts it back.', putBackTouch: 'Close the page to put it back.', nothing: 'Nothing to take here. Walk up to an object.',
-    tab: (n) => `${n}: Enter walks there.`, soundOn: 'Sound on', soundOff: 'Sound off', closeKeys: 'Close (Esc)', closeTouch: 'Close',
+    // The sound button names what pressing it does. Named for its state it read
+    // "Sound on" over a control that turns the sound off, which is the reverse.
+    tab: (n) => `${n}: Enter walks there.`, mute: 'Mute', unmute: 'Unmute', closeKeys: 'Close (Esc)', closeTouch: 'Close',
     loading: (n, t) => `Loading the world, ${n} of ${t}.`, loadingPlain: 'Loading the world.', roomsNone: (t) => `${t} rooms`, roomsSome: (n, t) => `${n} of ${t} rooms`, roomsAll: (t) => `All ${t} rooms seen`,
+    // The chrome around the scene: the canvas, the page list, the way out and the
+    // reading dialog. Left in English they were the one part of a Turkish or German
+    // world a screen reader read out in the wrong language.
+    canvasLabel: 'A white world. Walk through a door to open a page.', pagesLabel: 'Pages', page: 'Page', noThreeD: 'Open the site without 3D', privacy: 'Privacy',
     names: { work: 'Work', cases: 'Cases', notes: 'Notes', about: 'About', life: 'Life', cv: 'CV', contact: 'Contact' },
     // Read off what each page says about itself. No counts on the Work door: the shelf is
     // filled from the site and grows with it.
@@ -76,30 +88,60 @@ const STRINGS = {
       life: 'Photographs on the line. Unpeg one.', cv: 'The CV on the desk. Pick it up.', contact: 'Letters on the hall table. Take one.' } },
   de: { walkTouch: 'Links ziehen zum Gehen, rechts zum Umsehen. Jede Tür ist ein Raum.', walkKeys: 'WASD zum Gehen, Ziehen zum Umsehen. Jede Tür ist ein Raum.',
     enter: (n) => `Durchgehen öffnet ${n}.`, readKeys: 'Erst lesen: E.', readTouch: 'Auf die Tür tippen, um erst zu lesen, was dahinter liegt.',
-    entering: (n) => `Du betrittst ${n}…`, back: 'Die Tür hinter dir führt zurück.', takeKeys: (t) => `E nimmt ${t}.`, takeTouch: (t) => `Auf ${t} tippen, um es zu nehmen.`,
-    putBackKeys: 'Esc legt es zurück.', putBackTouch: 'Seite schließen, um es zurückzulegen.', nothing: 'Hier ist nichts zu nehmen. Geh näher an einen Gegenstand.',
-    tab: (n) => `${n}: Enter führt dich hin.`, soundOn: 'Ton an', soundOff: 'Ton aus', closeKeys: 'Schließen (Esc)', closeTouch: 'Schließen',
+    // Sie, not du. The site says Sie on every page the doors open, and a world that
+    // says du hands the reader over to a stranger the moment a page appears.
+    entering: (n) => `Sie betreten ${n}…`, back: 'Die Tür hinter Ihnen führt zurück.', takeKeys: (t) => `E nimmt ${t}.`, takeTouch: (t) => `Auf ${t} tippen, um es zu nehmen.`,
+    putBackKeys: 'Esc legt es zurück.', putBackTouch: 'Seite schließen, um es zurückzulegen.', nothing: 'Hier ist nichts zu nehmen. Gehen Sie näher an einen Gegenstand.',
+    tab: (n) => `${n}: Enter führt Sie hin.`, mute: 'Stummschalten', unmute: 'Ton einschalten', closeKeys: 'Schließen (Esc)', closeTouch: 'Schließen',
     loading: (n, t) => `Die Welt lädt, ${n} von ${t}.`, loadingPlain: 'Die Welt lädt.', roomsNone: (t) => `${t} Räume`, roomsSome: (n, t) => `${n} von ${t} Räumen`, roomsAll: (t) => `Alle ${t} Räume gesehen`,
+    canvasLabel: 'Eine weiße Welt. Gehen Sie durch eine Tür, um eine Seite zu öffnen.', pagesLabel: 'Seiten', page: 'Seite', noThreeD: 'Die Seite ohne 3D öffnen', privacy: 'Datenschutz',
     names: { work: 'Arbeiten', cases: 'Fallstudien', notes: 'Notizen', about: 'Über mich', life: 'Leben', cv: 'Lebenslauf', contact: 'Kontakt' },
     summaries: { work: 'Die Werkzeuge, jedes ein Buch, nach Kategorie ins Regal gestellt, jedes läuft im Browser.', cases: 'Acht Fallstudien: die Frage, für die jedes Werkzeug gebaut wurde.',
       notes: 'Zwei Notizen: der Agent als Entscheidungssubjekt, und warum Determinismus keine Prognose verschafft.', about: 'Sieben Stationen, zwei laufende Studiengänge, dazu die Sprachen und der Aufenthaltstitel, die den Rahmen der Arbeit setzen.',
-      life: 'Ein handgezeichnetes Spiel über ein Jahr im Leben eines Baumes, Strich für Strich gezeichnet.', cv: 'Derselbe Werdegang auf einer Seite: Stationen, Ausbildung, Zertifikate, Mitgliedschaften.', contact: 'Schreib Kerem.' },
-    hints: { work: 'Jedes Werkzeug ist ein Buch. Nimm eines.', cases: 'Acht Fallakten auf den Tischen. Öffne eine.', notes: 'Notizen an der Pinnwand. Nimm eine ab.', about: 'Ein Porträt, eine Seite. Nimm es von der Wand.',
-      life: 'Fotos an der Leine. Löse eines.', cv: 'Der Lebenslauf auf dem Tisch. Heb ihn auf.', contact: 'Briefe auf dem Flurtisch. Nimm einen.' } },
-  tr: { walkTouch: 'Yürümek için solda, bakmak için sağda sürükle. Her kapı bir oda.', walkKeys: 'Yürümek için WASD, bakmak için sürükle. Her kapı bir oda.',
-    enter: (n) => `Kapıdan geçince ${n} açılır.`, readKeys: 'Önce okumak için E.', readTouch: 'Önce okumak için kapıya dokun.',
-    entering: (n) => `${n} açılıyor…`, back: 'Arkandaki kapı geri götürür.', takeKeys: (t) => `E ile ${t} alınır.`, takeTouch: (t) => `Almak için ${t} nesnesine dokun.`,
-    putBackKeys: 'Esc yerine koyar.', putBackTouch: 'Sayfayı kapatınca yerine döner.', nothing: 'Burada alınacak bir şey yok. Bir nesneye yaklaş.',
-    tab: (n) => `${n}: Enter oraya götürür.`, soundOn: 'Ses açık', soundOff: 'Ses kapalı', closeKeys: 'Kapat (Esc)', closeTouch: 'Kapat',
+      life: 'Ein handgezeichnetes Spiel über ein Jahr im Leben eines Baumes, Strich für Strich gezeichnet.', cv: 'Derselbe Werdegang auf einer Seite: Stationen, Ausbildung, Zertifikate, Mitgliedschaften.', contact: 'Schreiben Sie Kerem.' },
+    hints: { work: 'Jedes Werkzeug ist ein Buch. Nehmen Sie eines.', cases: 'Acht Fallakten auf den Tischen. Öffnen Sie eine.', notes: 'Notizen an der Pinnwand. Nehmen Sie eine ab.', about: 'Ein Porträt, eine Seite. Nehmen Sie es von der Wand.',
+      life: 'Fotos an der Leine. Lösen Sie eines.', cv: 'Der Lebenslauf auf dem Tisch. Heben Sie ihn auf.', contact: 'Briefe auf dem Flurtisch. Nehmen Sie einen.' } },
+  // Siz, not sen. Every sentence the site addresses the reader with is formal, and
+  // the page that opens behind a door goes on addressing them that way.
+  tr: { walkTouch: 'Yürümek için solda, bakmak için sağda sürükleyin. Her kapı bir oda.', walkKeys: 'Yürümek için WASD, bakmak için sürükleyin. Her kapı bir oda.',
+    enter: (n) => `Kapıdan geçince ${n} açılır.`, readKeys: 'Önce okumak için E.', readTouch: 'Önce okumak için kapıya dokunun.',
+    entering: (n) => `${n} açılıyor…`, back: 'Arkanızdaki kapı geri götürür.', takeKeys: (t) => `E ile ${t} alınır.`, takeTouch: (t) => `${t} almak için dokunun.`,
+    putBackKeys: 'Esc yerine koyar.', putBackTouch: 'Sayfayı kapatınca yerine döner.', nothing: 'Burada alınacak bir şey yok. Bir nesneye yaklaşın.',
+    tab: (n) => `${n}: Enter oraya götürür.`, mute: 'Sesi kapat', unmute: 'Sesi aç', closeKeys: 'Kapat (Esc)', closeTouch: 'Kapat',
     loading: (n, t) => `Dünya yükleniyor, ${t} dosyadan ${n}.`, loadingPlain: 'Dünya yükleniyor.', roomsNone: (t) => `${t} oda`, roomsSome: (n, t) => `${t} odadan ${n} görüldü`, roomsAll: (t) => `${t} odanın hepsi görüldü`,
+    canvasLabel: 'Beyaz bir dünya. Bir sayfa açmak için kapıdan geçin.', pagesLabel: 'Sayfalar', page: 'Sayfa', noThreeD: 'Siteyi 3D olmadan aç', privacy: 'Gizlilik',
     names: { work: 'Çalışmalar', cases: 'Vaka çalışmaları', notes: 'Notlar', about: 'Hakkımda', life: 'Hayat', cv: 'CV', contact: 'İletişim' },
     summaries: { work: 'Araçlar, her biri bir kitap, kategoriye göre rafta, hepsi tarayıcıda açılıyor.', cases: 'Sekiz vaka çalışması: her aracın yanıtlamak için yapıldığı soru.',
       notes: 'İki not: karar öznesi olarak etmen, ve determinizmin neden öngörü getirmediği.', about: 'Yedi görev, devam eden iki lisans, ve işi çerçeveleyen diller ile oturma izni.',
-      life: 'Bir ağacın bir yılını anlatan, çizgi çizgi elle çizilmiş bir oyun.', cv: 'Aynı kayıt tek sayfada: görevler, eğitim, sertifikalar, üyelikler.', contact: 'Kerem\'e yaz.' },
-    hints: { work: 'Her araç bir kitap. Birini al.', cases: 'Masalarda sekiz vaka dosyası. Birini aç.', notes: 'Panoya iğnelenmiş notlar. Birini indir.', about: 'Bir portre, bir sayfa. Duvardan al.',
-      life: 'İpte fotoğraflar. Birinin mandalını çöz.', cv: 'Masadaki CV. Eline al.', contact: 'Hol masasında mektuplar. Birini al.' } },
+      life: 'Bir ağacın bir yılını anlatan, çizgi çizgi elle çizilmiş bir oyun.', cv: 'Aynı kayıt tek sayfada: görevler, eğitim, sertifikalar, üyelikler.', contact: 'Kerem\'e yazın.' },
+    hints: { work: 'Her araç bir kitap. Birini alın.', cases: 'Masalarda sekiz vaka dosyası. Birini açın.', notes: 'Panoya iğnelenmiş notlar. Birini indirin.', about: 'Bir portre, bir sayfa. Duvardan alın.',
+      life: 'İpte fotoğraflar. Birinin mandalını çözün.', cv: 'Masadaki CV. Elinize alın.', contact: 'Hol masasında mektuplar. Birini alın.' } },
 }[LANG];
 const WALK_HINT = isTouch ? STRINGS.walkTouch : STRINGS.walkKeys;
+// The reader's own tree. /tr and /de carry the same pages with their titles written
+// in that language, so every link and every shelf in the world reads from there.
+const L = LANG === 'en' ? '' : `/${LANG}`;
+const ROOT = `${SITE}${LANG === 'en' ? '' : LANG + '/'}`;
+// One HTML file serves three languages, so the words it ships are English. Everything
+// in it that names a control is written again here in the chosen one; left alone, a
+// Turkish reader was handed the canvas, the page list and the reading dialog in English.
+canvas.setAttribute('aria-label', STRINGS.canvasLabel);
+document.getElementById('doors').setAttribute('aria-label', STRINGS.pagesLabel);
+for (const a of document.querySelectorAll('#doors a')) {
+  const d = DOORS.find((x) => a.getAttribute('href') === BASE + x.path);
+  if (!d) continue;
+  a.textContent = STRINGS.names[d.slug];
+  a.href = `${BASE}${L}${d.path}`;
+}
+const showList = document.getElementById('showList');
+showList.textContent = STRINGS.noThreeD;
+showList.href = ROOT;
+// Impressum keeps its name in all three: it is what the page is called.
+const legal = document.querySelectorAll('#list .legal');
+if (legal[0]) legal[0].href = `${ROOT}impressum/`;
+if (legal[1]) { legal[1].href = `${ROOT}privacy/`; legal[1].textContent = STRINGS.privacy; }
+document.getElementById('overlay-title').textContent = STRINGS.page;
+document.getElementById('page').title = STRINGS.page;
 
 // Without WebGL the visitor goes straight to the site itself; the world is
 // the front door, and a front door that cannot open should not be a wall.
@@ -163,50 +205,74 @@ addEventListener('keydown', () => audio.unlock());
 // Live tuning handle for the browser console during development.
 window.__world = { renderer, scene, camera, lights, floor, post, doors, controls, world, audio, rooms, get items() { return ITEMS; }, get player() { return player; } };
 
-// What each room holds. The feed and the work page give the real items; the
-// static lists below stand in until they arrive, and stay if the fetch fails.
+// What each room holds. The site's own pages give the real items; the static
+// lists below stand in until they arrive, and stay if the fetch fails. Every
+// address is the reader's own tree, so the page that opens behind a door is in
+// the language the door was named in.
 const ITEMS = {
   work: [
-    { title: 'ESG and finance instruments', url: `${BASE}/work/instruments/` }, { title: 'Tools for a single job', url: `${BASE}/work/workshop/` },
-    { title: 'Agent based simulations', url: `${BASE}/work/simulations/` }, { title: 'Economics you can play with', url: `${BASE}/work/essays/` }, { title: 'Game theory', url: `${BASE}/work/games/` },
+    { title: 'ESG and finance instruments', url: `${BASE}${L}/work/instruments/` }, { title: 'Tools for a single job', url: `${BASE}${L}/work/workshop/` },
+    { title: 'Agent based simulations', url: `${BASE}${L}/work/simulations/` }, { title: 'Economics you can play with', url: `${BASE}${L}/work/essays/` }, { title: 'Game theory', url: `${BASE}${L}/work/games/` },
   ],
   cases: [], notes: [],
-  about: [{ title: 'About', url: `${BASE}/about/`, image: 'og/about.png' }],
-  life: [{ title: 'Life', url: `${BASE}/life/`, image: 'og/life.png' }],
-  cv: [{ title: 'CV', url: `${BASE}/cv/`, image: 'og/cv.png' }],
-  contact: [{ title: 'Contact', url: `${BASE}/contact/`, image: 'og/contact.png' }],
+  about: [{ title: STRINGS.names.about, url: `${BASE}${L}/about/`, image: 'og/about.png' }],
+  life: [{ title: STRINGS.names.life, url: `${BASE}${L}/life/`, image: 'og/life.png' }],
+  cv: [{ title: STRINGS.names.cv, url: `${BASE}${L}/cv/`, image: 'og/cv.png' }],
+  contact: [{ title: STRINGS.names.contact, url: `${BASE}${L}/contact/`, image: 'og/contact.png' }],
 };
-fetch(`${BASE}/feed.xml`).then((r) => r.text()).then((xml) => {
-  const doc = new DOMParser().parseFromString(xml, 'application/xml');
-  const items = [...doc.querySelectorAll('item')].map((it) => ({
-    title: it.querySelector('title')?.textContent || '', url: it.querySelector('link')?.textContent || '',
-    line: (it.querySelector('description')?.textContent || '').slice(0, 90), date: (it.querySelector('pubDate')?.textContent || '').slice(5, 16),
-  }));
-  const withImage = (i) => { const m = i.url.match(/\/(cases|notes)\/([^/]+)\//); return m ? { ...i, image: `og/${m[1]}-${m[2]}.png` } : i; };
-  const cases = items.filter((i) => i.url.includes('/cases/')).map(withImage), notes = items.filter((i) => i.url.includes('/notes/')).map(withImage);
-  if (cases.length) ITEMS.cases = cases;
-  if (notes.length) ITEMS.notes = notes;
-}).catch((err) => console.warn('feed unavailable', err));
+// A shelf is filled when its door is first approached, not at boot. Eight requests
+// and 85 kB went out before the visitor had walked anywhere, and all of it was
+// thrown away by everyone who never opened Work or Cases.
+const shelf = {};
+function fill(slug) {
+  if (slug === 'work') return shelf.work || (shelf.work = fillWork());
+  if (slug === 'cases' || slug === 'notes') return shelf[slug] || (shelf[slug] = fillIndex(slug));
+  return null;
+}
+// The cases and the notes are read off their own index page rather than out of the
+// feed: the feed is written once, in English, and a room whose door says Vaka
+// çalışmaları must not be full of English spines.
+function fillIndex(slug) {
+  return fetch(`${BASE}${L}/${slug}/`).then((r) => r.text()).then((html) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const rows = [...doc.querySelectorAll(`a.index-row[href^="${L}/${slug}/"]`)].map((a) => {
+      const href = a.getAttribute('href');
+      // The picture is drawn once per page, under its English slug, whatever the
+      // language of the words on it.
+      const name = (href.match(/\/([^/]+)\/$/) || [])[1];
+      return {
+        title: (a.querySelector('.index-row-title') || a).textContent.trim().slice(0, 60),
+        line: (a.querySelector('.index-row-sub') || { textContent: '' }).textContent.trim().slice(0, 110),
+        url: BASE + href, image: name ? `og/${slug}-${name}.png` : undefined,
+      };
+    });
+    if (rows.length) ITEMS[slug] = rows;
+  }).catch((err) => console.warn(`${slug} index unavailable`, err));
+}
 // The work section is five categories, each a page of tools; every tool becomes a book.
-fetch(`${BASE}/work/`).then((r) => r.text()).then(async (html) => {
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  const cats = [...doc.querySelectorAll('a[href^="/work/"]')].map((a) => ({ href: a.getAttribute('href'), name: (a.querySelector('.index-row-title, .font-serif, h2, h3, strong') || a).textContent.replace(/^\d+\s*/, '').trim().slice(0, 40) }));
-  const seen = new Set(); const list = cats.filter((c) => { if (seen.has(c.href) || !c.name) return false; seen.add(c.href); return true; });
-  const tools = [];
-  await Promise.all(list.map(async (c) => {
-    try {
-      const page = new DOMParser().parseFromString(await (await fetch(BASE + c.href)).text(), 'text/html');
-      const found = [...page.querySelectorAll('a[href^="/run/"]')].map((a) => ({
-        title: (a.querySelector('.font-serif') || a).textContent.trim().slice(0, 40),
-        line: (a.querySelector('p, span[style*="ink-soft"]') || { textContent: '' }).textContent.trim().slice(0, 110),
-        url: BASE + a.getAttribute('href'), cat: c.name, catHref: c.href,
-      }));
-      c.tools = found;
-    } catch (err) { c.tools = []; }
-  }));
-  for (const c of list) for (const t of c.tools || []) if (!tools.some((x) => x.url === t.url)) tools.push(t);
-  if (tools.length) ITEMS.work = tools;
-}).catch((err) => console.warn('work page unavailable', err));
+function fillWork() {
+  return fetch(`${BASE}${L}/work/`).then((r) => r.text()).then(async (html) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const cats = [...doc.querySelectorAll(`a[href^="${L}/work/"]`)].map((a) => ({ href: a.getAttribute('href'), name: (a.querySelector('.index-row-title, .font-serif, h2, h3, strong') || a).textContent.replace(/^\d+\s*/, '').trim().slice(0, 40) }));
+    const seen = new Set(); const list = cats.filter((c) => { if (seen.has(c.href) || !c.name) return false; seen.add(c.href); return true; });
+    const tools = [];
+    await Promise.all(list.map(async (c) => {
+      try {
+        const page = new DOMParser().parseFromString(await (await fetch(BASE + c.href)).text(), 'text/html');
+        // The tools themselves are the previous edition and keep their own address in
+        // all three languages, so this one selector holds whatever tree it came from.
+        const found = [...page.querySelectorAll('a[href^="/run/"]')].map((a) => ({
+          title: (a.querySelector('.font-serif') || a).textContent.trim().slice(0, 40),
+          line: (a.querySelector('p, span[style*="ink-soft"]') || { textContent: '' }).textContent.trim().slice(0, 110),
+          url: BASE + a.getAttribute('href'), cat: c.name, catHref: c.href,
+        }));
+        c.tools = found;
+      } catch (err) { c.tools = []; }
+    }));
+    for (const c of list) for (const t of c.tools || []) if (!tools.some((x) => x.url === t.url)) tools.push(t);
+    if (tools.length) ITEMS.work = tools;
+  }).catch((err) => console.warn('work page unavailable', err));
+}
 
 // The player is a group the character model is parented to, so movement and
 // facing stay independent of how any particular model was authored.
@@ -257,11 +323,18 @@ world.ready.then(() => { for (const slug of visited) world.lightLetter(LETTER_OF
 // ---- Keys beyond movement: E reads a door, M mutes, Tab and Enter walk to a door ----
 let focusDoor = -1, readUntil = 0;
 const muteBtn = document.getElementById('mute');
-const setMuteLabel = () => { muteBtn.textContent = audio.muted ? STRINGS.soundOff : STRINGS.soundOn; };
+// The button says what pressing it does. Named for its state it read "Sound on" over
+// a control that turns the sound off, which is the opposite of what it promises.
+const setMuteLabel = () => { muteBtn.textContent = audio.muted ? STRINGS.unmute : STRINGS.mute; };
 document.getElementById('close').textContent = isTouch ? STRINGS.closeTouch : STRINGS.closeKeys;
 setMuteLabel();
 muteBtn.addEventListener('click', () => { audio.unlock(); audio.setMuted(!audio.muted); setMuteLabel(); });
 addEventListener('keydown', (e) => {
+  // A letter acts on the world, and the world is the canvas. These ran wherever focus
+  // was, so a reader on the Impressum link or the sound button muted a scene they had
+  // left, and a screen reader in browse mode sent every letter here.
+  const el = document.activeElement;
+  if (el && el !== canvas && el !== document.body) return;
   const k = e.key.toLowerCase();
   if (k === 'e' && mode === 'hub' && nearDoor) { setHint(STRINGS.summaries[nearDoor.slug]); readUntil = clock.elapsedTime + 5; }
   else if (k === 'e' && !leaving && ((mode === 'hub' && !nearDoor) || (mode === 'room' && !nearPanel && !rooms.held))) { setHint(STRINGS.nothing); readUntil = clock.elapsedTime + 2.5; audio.refuse(); }
@@ -270,7 +343,9 @@ addEventListener('keydown', (e) => {
   if (k === 'tab' && document.activeElement === canvas && mode === 'hub') {
     // Tab walks the doors while the world holds the keyboard; past either end it lets the browser carry focus on to the links.
     const next = focusDoor + (e.shiftKey ? -1 : 1);
-    if (next >= 0 && next < DOORS.length) { e.preventDefault(); focusDoor = next; const d = doors.doors[focusDoor]; setHint(STRINGS.tab(STRINGS.names[d.slug] || d.name)); readUntil = clock.elapsedTime + 4; live.textContent = STRINGS.names[d.slug] || d.name; }
+    // Tab is the other way to a door, and the shelf behind it is filled from the site
+    // on approach; a reader who never walks near one would arrive at an empty room.
+    if (next >= 0 && next < DOORS.length) { e.preventDefault(); focusDoor = next; const d = doors.doors[focusDoor]; fill(d.slug); setHint(STRINGS.tab(STRINGS.names[d.slug] || d.name)); readUntil = clock.elapsedTime + 4; live.textContent = STRINGS.names[d.slug] || d.name; }
     else focusDoor = -1;
   }
   if (k === 'enter' && focusDoor >= 0 && mode === 'hub' && !leaving) { const d = doors.doors[focusDoor]; controls.setGoal(d.group.position.clone().addScaledVector(d.dir, -1.5)); }
@@ -303,10 +378,18 @@ function enter(door) {
   visited.add(door.slug); store.set('world.visited', [...visited]); showProgress();
   world.lightLetter(LETTER_OF_DOOR[door.slug]);
   setHint(STRINGS.entering(STRINGS.names[door.slug] || door.name));
-  document.body.classList.add('letterbox');
+  fill(door.slug);
+  // A reader who asked for reduced motion gets a cut: no bars closing over the frame,
+  // no camera flying through the doorway, only the veil and then the room. The flight
+  // itself is skipped in frame(); this is the rest of the same move.
+  if (!reducedMotion) document.body.classList.add('letterbox');
   // The camera passes through the door; behind it the room builds while the veil is up.
-  setTimeout(() => { veil.classList.remove('off'); veil.classList.add('on'); }, 550);
+  setTimeout(() => { veil.classList.remove('off'); veil.classList.add('on'); }, reducedMotion ? 0 : 550);
   setTimeout(async () => {
+    // The shelf is filled from the site as the door is approached. If it is still in
+    // flight the room waits a moment for it rather than opening with the stand-in
+    // list, and gives up rather than waiting on a slow network.
+    await Promise.race([shelf[door.slug] || Promise.resolve(), new Promise((r) => setTimeout(r, 1200))]);
     await rooms.enter(door, ITEMS[door.slug] || []);
     controls.clearGoal();
     mode = 'room'; leaving = false; leaveDoor = null;
@@ -316,7 +399,7 @@ function enter(door) {
     veil.classList.remove('on'); veil.classList.add('off');
     setHint(`${STRINGS.names[door.slug] || door.name}. ${STRINGS.hints[door.slug] || door.hint} ${STRINGS.back}`);
     readUntil = clock.elapsedTime + 6;
-  }, 1000);
+  }, reducedMotion ? 340 : 1000);
 }
 function leaveRoom() {
   const door = rooms.current; if (!door || leaving) return;
@@ -357,6 +440,14 @@ function blocked(point) {
   for (const box of world.obstacles) if (box.distanceToPoint(point) < BODY_RADIUS) return true;
   return doors.slabBlocks(point);
 }
+
+// The loop runs while somebody can see it. Inside the games page's frame it went on
+// drawing the plaza, shadow map and all, for the rest of the visit after the reader had
+// scrolled past it, and in a background tab it drew for nobody at all.
+let queued = false, visible = true, readTick = 0;
+function queue() { if (queued) return; queued = true; requestAnimationFrame(frame); }
+if (window.IntersectionObserver) new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) queue(); }).observe(canvas);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && visible) queue(); });
 
 function frame() {
   followCanvas();
@@ -402,7 +493,7 @@ function frame() {
   // out of solids, so the camera never fights between a wall and its goal.
   if (mode === 'room' && rooms.bounds) camGoal.clamp(rooms.bounds.min, rooms.bounds.max);
   unclip(camGoal);
-  if (leaving && leaveDoor) {
+  if (leaving && leaveDoor && !reducedMotion) {
     flyTo.copy(leaveDoor.group.position).addScaledVector(leaveDoor.dir, -0.7).setY(1.6);
     camera.position.lerp(flyTo, 1 - Math.exp(-dt * 3.5));
     look.copy(leaveDoor.group.position).addScaledVector(leaveDoor.dir, 4).setY(1.3);
@@ -433,7 +524,7 @@ function frame() {
     if (res.opened) { camRight.setFromMatrixColumn(camera.matrixWorld, 0); toDoor.copy(res.opened.group.position).sub(camera.position); audio.door(doors.doors.indexOf(res.opened), THREE.MathUtils.clamp(toDoor.dot(camRight) / 6, -1, 1)); }
     if (res.wrongWay) audio.refuse();
     nearDoor = res.near;
-    if (nearDoor !== lastNear) { lastNear = nearDoor; live.textContent = nearDoor ? STRINGS.names[nearDoor.slug] || nearDoor.name : ''; if (nearDoor && !prefetched.has(nearDoor.slug)) { prefetched.add(nearDoor.slug); rooms.prefetch([nearDoor.slug]); } }
+    if (nearDoor !== lastNear) { lastNear = nearDoor; live.textContent = nearDoor ? STRINGS.names[nearDoor.slug] || nearDoor.name : ''; if (nearDoor && !prefetched.has(nearDoor.slug)) { prefetched.add(nearDoor.slug); rooms.prefetch([nearDoor.slug]); fill(nearDoor.slug); } }
     audio.update(nearDoor ? player.position.distanceTo(nearDoor.group.position) : 99, 0);
     if (!leaving && character && t > readUntil) setHint(nearDoor ? `${STRINGS.enter(STRINGS.names[nearDoor.slug] || nearDoor.name)} ${isTouch ? STRINGS.readTouch : STRINGS.readKeys}` : WALK_HINT);
   } else {
@@ -444,8 +535,11 @@ function frame() {
     audio.update(99, 0);
   }
 
-  post.render(dt);
-  requestAnimationFrame(frame);
+  // While a page is open over the world only the strip around the overlay is visible,
+  // so the scene is drawn every fourth frame rather than every one.
+  if (!reading || readTick++ % 4 === 0) post.render(dt);
+  queued = false;
+  if (visible && !document.hidden) queue();
 }
 
 function resize() {
@@ -463,4 +557,4 @@ if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(document.d
 // 1.5 disagreed by one pixel forever and the buffer was reallocated every frame.
 function followCanvas() { const w = canvas.clientWidth, h = canvas.clientHeight; if (w && h && (canvas.width !== Math.floor(w * renderer.getPixelRatio()) || canvas.height !== Math.floor(h * renderer.getPixelRatio()))) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); post.resize(w, h); } }
 resize();
-frame();
+queue();
