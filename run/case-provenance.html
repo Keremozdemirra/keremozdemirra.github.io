@@ -29,7 +29,7 @@
 <!-- One icon, one URL. These pages used to inline a data-URI of the old rune
      mark, so 23 of them each carried their own copy and Search Console kept
      showing the retired icon. The root file is the current K. -->
-<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.ico?v=3" sizes="any">
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <link rel="alternate" type="application/rss+xml" title="Notes" href="feed.xml">
 <meta name="twitter:card" content="summary_large_image">
@@ -527,7 +527,7 @@ dl.case-dl .item .v{flex:1 1 55%;text-align:right;font-family:var(--text);font-s
 <main class="wrap">
 
 <div class="crown">
-  <span class="no"><svg width="16" height="22" viewBox="0 0 18 26" aria-hidden="true"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="#1f4f8f" opacity=".85"/><path d="M9 4 L9 22" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg></span>
+  <span class="no"></span>
   <nav class="crumb" aria-label="Breadcrumb" data-ia="c-crumb-a"><a href="tools.html" data-i="nav-t">Tools</a><span aria-hidden="true">/</span><span aria-current="page">provenance</span></nav>
   <h1 class="tool">provenance</h1>
   <p class="lede" data-i="cpv-sub">A figure that carries its source, and keeps carrying it through the arithmetic.</p>
@@ -770,62 +770,9 @@ window.I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yen
     });
   });
 
-  /* the world continues here: now and then a leaf drifts by, and once in a
-     while something small walks across a rule line. Never louder than that. */
-  var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function oneLeaf(){
-    if(still || document.hidden) return;
-    var leaf = document.createElement("div");
-    leaf.className = "leaf-mark";
-    var hue = ["#1f4f8f","#1f4f8f","#1f4f8f"][Math.floor(Math.random()*3)];
-    leaf.innerHTML = '<svg width="16" height="23" viewBox="0 0 18 26"><path d="M9 1 Q16 9 9 25 Q2 9 9 1Z" fill="'+hue+'" opacity=".85"/><path d="M9 3 L9 23" stroke="rgba(0,0,0,.25)" stroke-width=".8"/></svg>';
-    document.body.appendChild(leaf);
-    var x = 8 + Math.random() * 80, t0 = null, dur = 8000 + Math.random() * 5000;
-    function fall(ts){
-      if(!t0) t0 = ts;
-      var p = (ts - t0) / dur;
-      if(p >= 1){ leaf.remove(); return; }
-      leaf.style.left = "calc(" + x + "vw + " + (Math.sin(p * 8) * 44) + "px)";
-      leaf.style.top = (p * 108) + "vh";
-      leaf.style.transform = "rotate(" + (p * 460) + "deg)";
-      leaf.style.opacity = p > .85 ? (1 - p) / .15 : 1;
-      requestAnimationFrame(fall);
-    }
-    requestAnimationFrame(fall);
-  }
-  if(!still){
-    setTimeout(oneLeaf, 1500);
-    setInterval(oneLeaf, 21000 + Math.random() * 9000);
-  }
-
-  /* the ladybird: crosses one section rule, once, slowly */
-  function ladybird(){
-    if(still || document.hidden) return;
-    var rules = document.querySelectorAll("main>section + section");
-    if(!rules.length) return;
-    var host = rules[Math.floor(Math.random() * rules.length)];
-    var bug = document.createElement("div");
-    bug.setAttribute("aria-hidden","true");
-    bug.style.cssText = "position:absolute;width:9px;height:7px;margin-top:-4px;pointer-events:none;z-index:4;";
-    bug.innerHTML = '<svg width="9" height="7" viewBox="0 0 9 7"><ellipse cx="5" cy="3.5" rx="3.6" ry="3" fill="#8a3b1e"/><circle cx="1.6" cy="3.5" r="1.4" fill="#16171a"/><line x1="5" y1="1" x2="5" y2="6" stroke="#16171a" stroke-width=".5"/><circle cx="4" cy="2.6" r=".5" fill="#16171a"/><circle cx="6.2" cy="4.2" r=".5" fill="#16171a"/></svg>';
-    host.style.position = "relative";
-    host.appendChild(bug);
-    var dir = Math.random() < .5 ? 1 : -1, t0 = null, dur = 26000;
-    if(dir < 0) bug.firstChild.style.transform = "scaleX(-1)";
-    function walk(ts){
-      if(!t0) t0 = ts;
-      var p = (ts - t0) / dur;
-      if(p >= 1){ bug.remove(); return; }
-      var wob = Math.sin(p * 90) * 0.6;
-      var xx = dir > 0 ? p * 100 : 100 - p * 100;
-      bug.style.left = xx + "%";
-      bug.style.top = wob + "px";
-      bug.style.opacity = p < .05 ? p / .05 : p > .95 ? (1 - p) / .05 : .8;
-      requestAnimationFrame(walk);
-    }
-    requestAnimationFrame(walk);
-  }
-  if(!still) setTimeout(ladybird, 9000 + Math.random() * 14000);
+  /* Nothing drifts across the page any more: the leaf and the ladybird of
+     the previous edition were the one thing a reader noticed before the
+     work, and Kerem asked for them gone. */
 })();
 
 

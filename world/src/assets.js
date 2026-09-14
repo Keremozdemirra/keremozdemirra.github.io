@@ -11,7 +11,10 @@ const MOD = 'assets/models';
 const manager = new THREE.LoadingManager();
 const texLoader = new THREE.TextureLoader(manager);
 // The hub's loading line reads the manager's count, so the wait has a number on it.
-export function onProgress(cb) { manager.onProgress = (url, loaded, total) => cb(loaded, total); manager.onLoad = () => cb(1, 1); }
+// onLoad is the wrong hook for it: the manager calls onLoad right after the last onProgress,
+// and again every time the queue drains between path builders, so the count was wiped by a
+// line carrying none at the moment it read the last file.
+export function onProgress(cb) { manager.onProgress = (url, loaded, total) => cb(loaded, total); }
 const gltfLoader = new GLTFLoader(manager);
 const cache = new Map();
 

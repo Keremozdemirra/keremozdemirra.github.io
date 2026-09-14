@@ -83,5 +83,5 @@ export function createWorld(scene, { doors = [] } = {}) {
   const ready = Promise.all([nameReady, ...paths]).then(() => ({ ok: true }));
 
   function update(dt, pos, t) { time.value = t; tick(t); }
-  return { update, obstacles, ready, time, lightLetter() {}, setNight() {}, letters: () => [], drones: [{ userData: { speed: 0 } }], collectedCount: () => 0 };
+  return { update, obstacles, ready, time };
 }

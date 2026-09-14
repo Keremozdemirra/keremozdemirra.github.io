@@ -43,7 +43,7 @@ export function createRooms(scene, { hubVisible, time, lights, audio = null }) {
     // already do; a site nested inside a small box is no way to read it.
     if (document.body.classList.contains('embed')) { top.location.assign(url); return; }
     if (closing) { clearTimeout(closing); closing = null; }
-    frame.src = url; overlay.hidden = false; document.body.classList.add('reading');
+    frame.src = url; overlay.hidden = false;
     // The bar names what was taken, so the page that slides up is not a stranger.
     const bar = document.getElementById('overlay-title'); if (bar) bar.textContent = item.title || 'Page';
     for (const el of behind()) el.inert = true;
@@ -52,7 +52,7 @@ export function createRooms(scene, { hubVisible, time, lights, audio = null }) {
   }
   function closeOverlay() {
     if (overlay.hidden) return;
-    overlay.classList.remove('open'); document.body.classList.remove('reading');
+    overlay.classList.remove('open');
     for (const el of behind()) el.inert = false;
     // Focus goes back to the world, so the next key moves the visitor rather than starting from the top of the page.
     const stage = document.getElementById('stage'); if (stage) stage.focus({ preventScroll: true });

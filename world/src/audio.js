@@ -5,7 +5,7 @@
 const SCALE = [0, 2, 4, 7, 9, 11, 12]; // one major scale; each door owns a degree
 
 export function createAudio() {
-  let ctx = null, master = null, hum = null, humGain = null, humFilter = null, droneOsc = null, droneGain = null;
+  let ctx = null, master = null, hum = null, humGain = null, humFilter = null;
   let muted = false, stepCount = 0;
   try { muted = localStorage.getItem('world.muted') === '1'; } catch (e) { /* storage blocked: sound stays on */ }
 
@@ -25,8 +25,6 @@ export function createAudio() {
     humFilter = ctx.createBiquadFilter(); humFilter.type = 'lowpass'; humFilter.frequency.value = 380; humFilter.Q.value = 0.4;
     humGain = ctx.createGain(); humGain.gain.value = 0.05;
     hum.connect(humFilter); humFilter.connect(humGain); humGain.connect(master); hum.start();
-    droneOsc = ctx.createOscillator(); droneOsc.type = 'triangle'; droneOsc.frequency.value = 140;
-    droneGain = ctx.createGain(); droneGain.gain.value = 0.0; droneOsc.connect(droneGain); droneGain.connect(master); droneOsc.start();
   }
   function setMuted(m) {
     muted = m;
@@ -92,13 +90,11 @@ export function createAudio() {
       if (!ready()) return;
       const t = ctx.currentTime; voice(880, 'sine', t, 0.25, 0.08); voice(1320, 'sine', t + 0.08, 0.35, 0.08);
     },
-    // Called every frame: proximity lifts the hum, the drone's speed sets its pitch.
     // Called every frame: near a door the room opens up a little, nothing else moves.
-    update(nearDist, droneSpeed) {
+    update(nearDist) {
       if (!ctx) return;
       const lift = Math.max(0, 1 - nearDist / 3.6);
       humFilter.frequency.setTargetAtTime(380 + 320 * lift, ctx.currentTime, 0.25);
-      droneGain.gain.setTargetAtTime(droneSpeed > 0 ? 0.012 : 0, ctx.currentTime, 0.3);
     },
   };
 }

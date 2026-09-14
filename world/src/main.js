@@ -7,6 +7,7 @@ import { createWorld } from './world.js';
 import { createAudio } from './audio.js';
 import { createRooms } from './rooms.js';
 import { onProgress } from './assets.js';
+import { PATH_FROM } from './themes.js';
 
 // Prototype: links are absolute so the world can be served from anywhere.
 // When this becomes the site's home page, BASE becomes ''.
@@ -152,13 +153,15 @@ function flat(reason) {
   // Inside the front page's frame the site is already around the world, so the frame keeps
   // its plain list of doors; only the full screen edition leaves for the site.
   if (document.body.classList.contains('embed')) return;
-  location.replace(SITE);
+  // The way out keeps the tree the language above resolved, so a German visitor whose browser
+  // cannot draw the world lands on the German home page.
+  location.replace(ROOT);
 }
 // The world is made for a keyboard, a mouse and a screen with room in it. On a phone it runs, and it
 // runs badly enough that the first impression is the wrong one, so a phone is sent to the games page,
 // which says so and holds the way in for later.
 const onPhone = matchMedia('(pointer: coarse)').matches && Math.min(innerWidth, innerHeight) < 900;
-if (onPhone && !document.body.classList.contains('embed')) location.replace(SITE + 'games/');
+if (onPhone && !document.body.classList.contains('embed')) location.replace(ROOT + 'games/');
 let renderer;
 try { renderer = createRenderer(canvas); } catch (err) { flat(err); throw err; }
 canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); flat('context lost'); });
@@ -278,7 +281,9 @@ function fillWork() {
 // facing stay independent of how any particular model was authored.
 const player = new THREE.Group();
 scene.add(player);
-let character = null, introStarted = false;
+// Whether a body stands in the plaza at all, by either path: the hub's hint line waited on
+// `character`, which the fallback figure leaves null for the rest of the visit.
+let character = null, introStarted = false, figureLoaded = false;
 // While the world loads, the line carries the count; written directly, since a rising number is one change, not many.
 onProgress((loaded, total) => { if (introStarted) return; const text = total > 1 ? STRINGS.loading(Math.min(loaded, total), total) : STRINGS.loadingPlain; hintText = text; hint.textContent = text; });
 (async () => {
@@ -292,6 +297,7 @@ onProgress((loaded, total) => { if (introStarted) return; const text = total > 1
     console.error(`character ${spec.modelUrl} unavailable`, err.message || err);
     player.add(fallbackFigure());
   }
+  figureLoaded = true;
   await world.ready.catch(() => {});
   veil.classList.add('off'); setHint(WALK_HINT);
   introStarted = true;
@@ -311,14 +317,12 @@ function fallbackFigure() {
   return g;
 }
 
-// Visited doors light letters of the name, quietly, across visits.
+// Which rooms have been seen, kept across visits.
 const visited = new Set(store.get('world.visited', []));
 // The count under the name: rooms seen, out of seven, so the world reads as a game with an end.
 const progress = document.getElementById('progress');
 function showProgress() { if (!progress) return; const n = visited.size, t = DOORS.length; progress.textContent = n === 0 ? STRINGS.roomsNone(t) : n >= t ? STRINGS.roomsAll(t) : STRINGS.roomsSome(n, t); }
 showProgress();
-const LETTER_OF_DOOR = { work: 0, cases: 1, notes: 2, about: 3, life: 4, cv: 6, contact: 7 };
-world.ready.then(() => { for (const slug of visited) world.lightLetter(LETTER_OF_DOOR[slug]); });
 
 // ---- Keys beyond movement: E reads a door, M mutes, Tab and Enter walk to a door ----
 let focusDoor = -1, readUntil = 0;
@@ -345,7 +349,7 @@ addEventListener('keydown', (e) => {
     const next = focusDoor + (e.shiftKey ? -1 : 1);
     // Tab is the other way to a door, and the shelf behind it is filled from the site
     // on approach; a reader who never walks near one would arrive at an empty room.
-    if (next >= 0 && next < DOORS.length) { e.preventDefault(); focusDoor = next; const d = doors.doors[focusDoor]; fill(d.slug); setHint(STRINGS.tab(STRINGS.names[d.slug] || d.name)); readUntil = clock.elapsedTime + 4; live.textContent = STRINGS.names[d.slug] || d.name; }
+    if (next >= 0 && next < DOORS.length) { e.preventDefault(); focusDoor = next; const d = doors.doors[focusDoor]; fill(d.slug); setHint(STRINGS.tab(STRINGS.names[d.slug] || d.name)); readUntil = clock.elapsedTime + 4; }
     else focusDoor = -1;
   }
   if (k === 'enter' && focusDoor >= 0 && mode === 'hub' && !leaving) { const d = doors.doors[focusDoor]; controls.setGoal(d.group.position.clone().addScaledVector(d.dir, -1.5)); }
@@ -376,7 +380,6 @@ function enter(door) {
   // The Tab focus belongs to the plaza; carried into the room it would send Enter at the wall.
   focusDoor = -1;
   visited.add(door.slug); store.set('world.visited', [...visited]); showProgress();
-  world.lightLetter(LETTER_OF_DOOR[door.slug]);
   setHint(STRINGS.entering(STRINGS.names[door.slug] || door.name));
   fill(door.slug);
   // A reader who asked for reduced motion gets a cut: no bars closing over the frame,
@@ -391,10 +394,16 @@ function enter(door) {
     // list, and gives up rather than waiting on a slow network.
     await Promise.race([shelf[door.slug] || Promise.resolve(), new Promise((r) => setTimeout(r, 1200))]);
     await rooms.enter(door, ITEMS[door.slug] || []);
+    // Under the reveal. The door chime sounded while the leaf was still opening and the
+    // visitor was metres away, so the arrival itself had nothing.
+    audio.chord(0);
     controls.clearGoal();
     mode = 'room'; leaving = false; leaveDoor = null;
-    player.position.set(0, 0, 0.8); heading = 0; controls.orbit.yaw = Math.PI; controls.orbit.distance = 4.0;
-    camera.position.set(0, 1.9, -3.0);
+    // The pitch belongs with the yaw and the distance. Left at the plaza's 0.22 the orbit goal
+    // sat 0.87 m off the floor, so the camera fell a metre to hip height as the veil cleared and
+    // then looked up at the shelves from below the waist.
+    player.position.set(0, 0, 0.8); heading = 0; controls.orbit.yaw = Math.PI; controls.orbit.pitch = 0.38; controls.orbit.distance = 4.0;
+    camera.position.set(-0.55, 1.5, -2.9);
     document.body.classList.remove('letterbox');
     veil.classList.remove('on'); veil.classList.add('off');
     setHint(`${STRINGS.names[door.slug] || door.name}. ${STRINGS.hints[door.slug] || door.hint} ${STRINGS.back}`);
@@ -406,7 +415,7 @@ function leaveRoom() {
   leaving = true;
   veil.classList.remove('off'); veil.classList.add('on');
   setTimeout(() => {
-    rooms.leave(); controls.clearGoal(); mode = 'hub'; leaving = false; controls.orbit.distance = 5.2;
+    rooms.leave(); controls.clearGoal(); mode = 'hub'; leaving = false; controls.orbit.distance = 5.2; controls.orbit.pitch = 0.22;
     player.position.copy(door.group.position).addScaledVector(door.dir, -2.2); heading = Math.atan2(-door.dir.x, -door.dir.z);
     // Just in front of the door on the plaza side, over the visitor's shoulder; the orbit eases
     // it back to its distance as they walk away. Behind the door it sat inside the vestibule.
@@ -421,17 +430,29 @@ const solids = [...doors.obstacles];
 // short of the first wall or piece of furniture it would otherwise enter.
 const eye = new THREE.Vector3(), camDir = new THREE.Vector3(), probe = new THREE.Vector3();
 const camRight = new THREE.Vector3(), toDoor = new THREE.Vector3();
+function camBlocked(point) {
+  for (const b of mode === 'room' ? rooms.solids : solids) if (b.containsPoint(point)) return true;
+  if (mode === 'hub') {
+    for (const b of world.obstacles) if (b.containsPoint(point)) return true;
+    // The leaf counts whether open or shut: a camera past it looks at the back of a door
+    // that then swings through the lens as it opens.
+    for (const door of doors.doors) if (door.leafBox.containsPoint(point)) return true;
+  }
+  return false;
+}
 function unclip(cam) {
-  const list = mode === 'room' ? rooms.solids : solids;
   eye.copy(player.position); eye.y += 1.4;
   camDir.copy(cam).sub(eye); const len = camDir.length(); if (len < 0.4) return; camDir.divideScalar(len);
   for (let d = 0.5; d < len; d += 0.12) {
     probe.copy(eye).addScaledVector(camDir, d);
-    for (const b of list) if (b.containsPoint(probe)) { cam.copy(eye).addScaledVector(camDir, Math.max(0.45, d - 0.25)); return; }
-    if (mode === 'hub') for (const b of world.obstacles) if (b.containsPoint(probe)) { cam.copy(eye).addScaledVector(camDir, Math.max(0.45, d - 0.25)); return; }
-    // The leaf counts whether open or shut: a camera past it looks at the back of a door
-    // that then swings through the lens as it opens.
-    if (mode === 'hub') for (const door of doors.doors) if (door.leafBox.containsPoint(probe)) { cam.copy(eye).addScaledVector(camDir, Math.max(0.45, d - 0.25)); return; }
+    if (!camBlocked(probe)) continue;
+    // The wall lies somewhere inside the last step, and the camera was placed as though it
+    // were at the end of it, so sliding along a wall moved the lens in 0.12 m jumps. Three
+    // halvings bring that to 0.015 m, under the follow's own easing.
+    let lo = d - 0.12, hi = d;
+    for (let i = 0; i < 3; i++) { const mid = (lo + hi) / 2; probe.copy(eye).addScaledVector(camDir, mid); if (camBlocked(probe)) hi = mid; else lo = mid; }
+    cam.copy(eye).addScaledVector(camDir, Math.max(0.45, hi - 0.25));
+    return;
   }
 }
 function blocked(point) {
@@ -453,10 +474,16 @@ function frame() {
   followCanvas();
   const dt = Math.min(clock.getDelta(), 0.05);
   const t = clock.elapsedTime;
-  const { wish, run } = controls.update(dt, player.position);
-
   const reading = !document.getElementById('overlay').hidden;
-  const targetSpeed = leaving || reading ? 0 : wish.length() * (run ? RUN : WALK);
+  // While a page is open over the world, or the camera is flying through a door, the keys
+  // belong to the page. The controls read the window on their own, so an arrow pressed to
+  // scroll the page built a walk, and the auto-follow swung the orbit under the overlay:
+  // the band of world around it turned, and closing the page left the camera elsewhere.
+  const frozen = leaving || reading;
+  const heldYaw = controls.orbit.yaw;
+  const { wish, run } = controls.update(dt, player.position);
+  if (frozen) { controls.orbit.yaw = heldYaw; wish.set(0, 0, 0); }
+  const targetSpeed = frozen ? 0 : wish.length() * (run ? RUN : WALK);
   speed += (targetSpeed - speed) * Math.min(1, dt * ACCEL);
   if (wish.lengthSq() > 1e-4) {
     const want = Math.atan2(wish.x, wish.z);
@@ -479,7 +506,10 @@ function frame() {
   player.rotation.y = heading;
   const stride = STRIDE_WALK + (STRIDE_RUN - STRIDE_WALK) * THREE.MathUtils.clamp((bodySpeed - WALK) / (RUN - WALK), 0, 1);
   stepClock += dt * (bodySpeed > 0.2 ? bodySpeed / stride : 0);
-  if (stepClock > 1) { stepClock = 0; audio.footstep(true, 0); }
+  // The overshoot carries into the next stride; zeroed, a 30 fps device threw away part of
+  // every step and the cadence ran slow. The stone plaza takes the bright tap, the seven
+  // paths and the room floors the softer one, which nothing had ever played.
+  if (stepClock > 1) { stepClock -= 1; audio.footstep(mode === 'hub' && player.position.length() < PATH_FROM + 0.4, 0); }
   if (character) character.update(dt, bodySpeed, window.__world.facing);
 
   // Camera: the orbit the controls own; a flythrough while leaving.
@@ -503,7 +533,9 @@ function frame() {
     // camera is never already at full speed as the veil clears.
     const p = 1 - intro; const k = p * p * (3 - 2 * p);
     camera.position.lerpVectors(introFrom, camGoal, k);
-    look.copy(player.position); look.y += 1.5; look.lerp(introLook, 1 - k);
+    // The shoulder offset belongs here too: without it the last frame of the sweep moved the
+    // look target sideways in one step, and the descent finished on a whip.
+    look.copy(player.position).add(shoulder); look.y += 1.5; look.lerp(introLook, 1 - k);
   } else {
     camera.position.lerp(camGoal, 1 - Math.exp(-dt * 6));
     if (mode === 'room' && rooms.bounds) camera.position.clamp(rooms.bounds.min, rooms.bounds.max);
@@ -526,7 +558,7 @@ function frame() {
     nearDoor = res.near;
     if (nearDoor !== lastNear) { lastNear = nearDoor; live.textContent = nearDoor ? STRINGS.names[nearDoor.slug] || nearDoor.name : ''; if (nearDoor && !prefetched.has(nearDoor.slug)) { prefetched.add(nearDoor.slug); rooms.prefetch([nearDoor.slug]); fill(nearDoor.slug); } }
     audio.update(nearDoor ? player.position.distanceTo(nearDoor.group.position) : 99, 0);
-    if (!leaving && character && t > readUntil) setHint(nearDoor ? `${STRINGS.enter(STRINGS.names[nearDoor.slug] || nearDoor.name)} ${isTouch ? STRINGS.readTouch : STRINGS.readKeys}` : WALK_HINT);
+    if (!leaving && figureLoaded && t > readUntil) setHint(nearDoor ? `${STRINGS.enter(STRINGS.names[nearDoor.slug] || nearDoor.name)} ${isTouch ? STRINGS.readTouch : STRINGS.readKeys}` : WALK_HINT);
   } else {
     const r = rooms.update(dt, player.position, camera);
     nearPanel = r.panel;
@@ -542,11 +574,16 @@ function frame() {
   if (visible && !document.hidden) queue();
 }
 
+// post.resize is the same setSize with the same arguments, and the resize event and the
+// observer both report one viewport change, so dragging a window edge reallocated and
+// cleared the drawing buffer four times a tick. Once, and only when the size moved.
+let lastW = 0, lastH = 0;
 function resize() {
+  if (innerWidth === lastW && innerHeight === lastH) return;
+  lastW = innerWidth; lastH = innerHeight;
   renderer.setSize(innerWidth, innerHeight, false);
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
-  post.resize(innerWidth, innerHeight);
 }
 addEventListener('resize', resize);
 // Full screen, a rotated phone and a zoomed window do not always send resize in time, so the

@@ -22,12 +22,12 @@ export function createDoors(scene, DOORS) {
     const back = new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(0, 1.5, 1.9), new THREE.Vector3(api.width + 1.2, 3, 0.4)); back.applyMatrix4(g.matrixWorld); obstacles.push(back);
     for (const s of [-1, 1]) { const wing = new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(s * (api.width / 2 + 0.5 + 1.1), 1.5, 0.15), new THREE.Vector3(2.2, 3.6, 0.5)); wing.applyMatrix4(g.matrixWorld); obstacles.push(wing); }
     const leafBox = new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(0, 1.2, 0), new THREE.Vector3(api.width, 2.4, 0.3)); leafBox.applyMatrix4(g.matrixWorld);
-    return { name: d.name, slug: d.slug, path: d.path, summary: d.summary, hint: theme.hint, theme, group: g, api, leafBox, open: 0, used: false, wasInFront: true, wasOpen: false, flash: 0, angle: a, dir: new THREE.Vector3(Math.sin(a), 0, Math.cos(a)) };
+    return { name: d.name, slug: d.slug, path: d.path, summary: d.summary, hint: theme.hint, theme, group: g, api, leafBox, open: 0, used: false, wasInFront: true, wasOpen: false, angle: a, dir: new THREE.Vector3(Math.sin(a), 0, Math.cos(a)) };
   });
 
   const local = new THREE.Vector3();
   function update(dt, playerPosition) {
-    let near = null, crossed = null, opened = null, wrongWay = null;
+    let near = null, crossed = null, opened = null;
     for (const door of doors) {
       local.copy(playerPosition); door.group.worldToLocal(local);
       const dist = Math.hypot(local.x, local.z);
@@ -40,10 +40,9 @@ export function createDoors(scene, DOORS) {
       if (dist < 4) near = door;
       const inFront = local.z < 0;
       if (!door.used && door.wasInFront && !inFront && Math.abs(local.x) < door.api.width / 2 + 0.1 && Math.abs(local.z) < 1.0) { door.used = true; crossed = door; }
-      if (door.flash > 0) door.flash = Math.max(0, door.flash - dt);
       door.wasInFront = inFront;
     }
-    return { near, crossed, opened, wrongWay };
+    return { near, crossed, opened };
   }
   // Near an open door, nudge the visitor onto the centre line so a narrow
   // doorway never needs pixel perfect steering.
