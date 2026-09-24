@@ -78,38 +78,49 @@ a{text-underline-offset:.18em;text-decoration-thickness:from-font}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 a{color:inherit}
 a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
-.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+.wrap{max-width:74rem;margin:0 auto;padding:0 1.5rem}
+@media (min-width:640px){.wrap{padding:0 2.5rem}}
 
-/* ---------- top bar ---------- */
-.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:color-mix(in srgb,var(--paper) 86%,transparent);
-  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
-.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;letter-spacing:.01em;
-  border-bottom:0;color:var(--fg)}
-.bar nav:not(.langs){margin-left:auto}
-.bar nav{display:flex;gap:clamp(.55rem,1.5vw,1.1rem);align-items:center;flex-wrap:wrap;
-  justify-content:flex-end;row-gap:.15rem}
-.bar nav a{font-size:.82rem;letter-spacing:.015em;white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:500;
-  padding:.3rem 0;border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
+/* ---------- top bar ----------
+   The site's own bar, measured off it on 2026-09-24: 70 px, the name in the
+   serif, the sections in the mono face in capitals, the languages as one
+   pill. These pages read as a second site until then. Inside a frame on
+   the site (a case study running its instrument) the bar and the footer are
+   not drawn at all: the page around the frame already has both. */
+.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:var(--paper);border-bottom:1px solid var(--line)}
+.in-frame .bar,.in-frame .site-foot{display:none}
+.bar .wrap{display:flex;align-items:center;gap:2rem;height:70px}
+.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;
+  border-bottom:0;color:var(--fg);white-space:nowrap}
+.bar nav:not(.langs){margin:0 auto}
+.bar nav{display:flex;gap:1.75rem;align-items:center}
+.bar nav a{font-family:var(--mono);font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;
+  white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:400;padding:.25rem 0;
+  border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
 .bar nav a:hover{color:var(--fg)}
 .bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
-/* clear of the last nav name by more than the names are clear of each
-   other, so the languages read as their own control and not as a tenth
-   link in the row */
-.langs{display:flex;gap:.1rem;margin-left:clamp(1rem,2.2vw,1.8rem)}
-.langs button{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;padding:.3em .45em;
-  border:0;background:none;color:var(--dim);cursor:pointer;border-radius:2px}
+.langs{display:inline-flex;align-items:center;padding:2px;border-radius:999px;
+  box-shadow:inset 0 0 0 1px var(--line)}
+.langs button{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;width:36px;height:33px;
+  border:0;border-radius:999px;background:none;color:var(--dim);cursor:pointer;
+  transition:background-color .2s var(--ease),color .2s var(--ease)}
 .langs button:hover{color:var(--fg)}
-.langs button[aria-pressed="true"]{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.langs button[aria-pressed="true"]{background:var(--fg);color:var(--paper)}
 
-/* ---------- footer ---------- */
-footer{border-top:1px solid var(--line);margin-top:clamp(2rem,6vh,4rem);
-  background:none;font-family:var(--sans);line-height:1.6}
-footer .foot-links{display:flex;gap:clamp(.9rem,2.4vw,1.6rem);align-items:center;flex-wrap:wrap}
-footer .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:1.1rem;padding-bottom:1.4rem;
-  font-size:.74rem;color:var(--dim)}
-footer a{text-decoration:none;color:var(--dim);border-bottom:0}
-footer a:hover{color:var(--fg)}
+/* ---------- footer, the site's own ---------- */
+.site-foot{border-top:1px solid var(--line);margin-top:clamp(2.5rem,6vh,4rem);font-family:var(--sans)}
+.site-foot .foot-main{display:flex;flex-wrap:wrap;gap:1.5rem 2rem;justify-content:space-between;
+  align-items:baseline;padding-top:3rem;padding-bottom:3rem}
+.site-foot .foot-id{color:var(--dim)}
+.site-foot .foot-mono{font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;line-height:1.7}
+.site-foot .foot-note{margin-top:.5rem;max-width:38ch;font-size:.875rem;line-height:1.55}
+.site-foot .foot-links{display:flex;flex-wrap:wrap;gap:.75rem 1.75rem;list-style:none;font-size:.95rem}
+.site-foot .foot-links a{display:inline-flex;align-items:center;padding:.375rem 0;color:var(--fg)}
+.site-foot .foot-marks{border-top:1px solid var(--line)}
+.site-foot .foot-marks ul{display:flex;align-items:center;justify-content:center;gap:2.25rem;
+  list-style:none;padding-top:1.5rem;padding-bottom:1.5rem}
+.site-foot .foot-marks a{display:inline-flex;color:var(--dim);transition:color .18s var(--ease)}
+.site-foot .foot-marks a:hover{color:var(--fg)}
 
 /* ---------- a leaf, falling once ---------- */
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
@@ -117,52 +128,31 @@ footer a:hover{color:var(--fg)}
 
 /* ---------- the bar and the footer, narrowed ---------- */
 @media (max-width:640px){
-  /* the bar gives the pages a line of their own instead of crowding them */
-  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:.7rem;row-gap:.1rem;
-    padding-top:.5rem;padding-bottom:.15rem}
-  .bar .home{white-space:nowrap;font-size:1rem}
-  .bar nav{order:3;flex:1 0 100%;margin-top:.05rem;flex-wrap:nowrap;
-    justify-content:flex-start;gap:clamp(.7rem,3.4vw,1.2rem);
-    overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+  /* the name and the languages share the first line, the sections scroll on
+     the second, the way the site's pages are read with a thumb */
+  .bar .wrap{flex-wrap:wrap;height:auto;gap:0 .7rem;padding-top:.7rem;padding-bottom:.2rem;position:relative}
+  .bar .home{font-size:1rem;line-height:33px}
+  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0;flex-wrap:nowrap;justify-content:flex-start;
+    gap:1.25rem;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
     scrollbar-width:none;
-    /* the last name fades rather than being cut, which is what says there
-       is more of it to the right */
+    /* the last name fades rather than being cut, which says there is more */
     -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
     mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
     padding-right:2.2rem}
   .bar nav::-webkit-scrollbar{display:none}
-  .bar nav a{font-size:.8rem;padding:.55rem 0;flex:0 0 auto}
-  /* the name of the page you are on is brought into view on load, so a
-     reader arriving deep in the site is not looking at a row that starts
-     somewhere else */
+  .bar nav a{font-size:.72rem;padding:.6rem 0;flex:0 0 auto}
   .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
-  /* the three languages take the right end of the name's own line: a third
-     row of bar would eat a fifth of the screen */
-  .bar .wrap{position:relative}
-  .langs{position:absolute;top:.1rem;right:clamp(1.2rem,5vw,3rem);margin:0;gap:.15rem}
-  .langs button{font-size:.7rem;padding:.2em .4em}
-  footer .wrap{gap:1rem;flex-wrap:wrap;padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+  .langs{position:absolute;top:.7rem;right:1.5rem}
+  .langs button{width:34px;height:31px}
+  .site-foot .foot-marks ul{gap:1.5rem}
 }
 
-/* nine nav names on a narrow phone: the row takes a second and a third
-   line rather than push the page sideways, and the words are set tighter
-   so that most phones only need two */
-@media (max-width:430px){
-  .bar nav{gap:.3rem .5rem}
-  .bar nav a{font-size:.74rem;letter-spacing:.005em;padding:.42rem 0}
-}
-
-/* a finger, not a cursor: every control a thumb has to find is at least a
-   thumb wide, in either orientation */
+/* a finger, not a cursor: every control a thumb has to find is a thumb wide */
 @media (pointer:coarse){
   .bar .home{display:inline-flex;align-items:center;min-height:44px}
-  .bar nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;
-    justify-content:center;padding:.3rem .3rem}
-  .langs{gap:.05rem}
-  .langs button{min-width:44px;min-height:44px;padding:.3em .35em;
-    display:inline-flex;align-items:center;justify-content:center}
-  footer .wrap a{min-width:44px;min-height:44px;display:inline-flex;
-    align-items:center;justify-content:flex-end}
+  .bar nav a{min-height:44px;display:inline-flex;align-items:center}
+  .langs button{min-width:44px;min-height:44px}
+  .site-foot .foot-links a,.site-foot .foot-marks a{min-width:44px;min-height:44px;justify-content:center}
 }
 
 /* ---------- page head ---------- */
@@ -486,10 +476,11 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 </style>
 </head>
 <body>
+<script>if(window.self!==window.top)document.documentElement.classList.add("in-frame")</script>
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../work/" data-i="nav-w">Work</a><a href="../games/" data-i="nav-g">Games</a><a href="../cases/" data-i="nav-k">Case studies</a><a href="../notes/" data-i="nav-n">Notes</a><a href="../about/" data-i="nav-p">About</a><a href="../contact/" data-i="nav-c">Contact</a></nav>
+    <nav aria-label="Site" data-ia="a-site"><a href="../work/" data-i="nav-w">Portfolio</a><a href="../games/" data-i="nav-g">Games</a><a href="../cases/" data-i="nav-k">Case studies</a><a href="../notes/" data-i="nav-n">Notes</a><a href="../about/" data-i="nav-p">About</a><a href="../contact/" data-i="nav-c">Contact</a></nav>
     <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
   </div>
 </header>
@@ -534,17 +525,32 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 </section>
 
 </main>
-<footer class="site-foot"><div class="wrap">
-  <span>© 2026 Kerem Özdemir</span>
-  <span class="foot-links">
-    <a href="sources.html" data-i="nav-src">Sources</a>
-    <a href="impressum.html" data-i="nav-imp">Impressum</a>
-    <a href="datenschutz.html" data-i="nav-dsg">Privacy</a>
-    <a href="https://github.com/Keremozdemirra" rel="noopener noreferrer">GitHub</a>
-  </span>
-</div></footer>
+<footer class="site-foot">
+  <div class="wrap foot-main">
+    <div class="foot-id">
+      <p class="foot-mono">© 2026 Kerem Özdemir · <span data-i="foot-city">Munich</span></p>
+      <p class="foot-note" data-i="foot-note">No cookies, no analytics, no third party request.</p>
+    </div>
+    <ul class="foot-links">
+      <li><a href="../games/" data-i="nav-g">Games</a></li>
+      <li><a href="../cv/" data-i="foot-cv">CV</a></li>
+      <li><a href="../colophon/" data-i="foot-col">Colophon</a></li>
+      <li><a href="../changelog/" data-i="foot-chg">Changelog</a></li>
+      <li><a href="../sources/" data-i="nav-src">Sources</a></li>
+      <li><a href="../impressum/">Impressum</a></li>
+      <li><a href="../privacy/" data-i="nav-dsg">Privacy</a></li>
+    </ul>
+  </div>
+  <div class="foot-marks"><ul class="wrap">
+    <li><a href="https://github.com/Keremozdemirra" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></li>
+    <li><a href="https://www.linkedin.com/in/keremozdemir23" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
+    <li><a href="https://x.com/kerem_oozdemir" target="_blank" rel="noopener noreferrer" title="X" aria-label="X"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a></li>
+    <li><a href="https://orcid.org/0009-0007-4674-0521" target="_blank" rel="noopener noreferrer" title="ORCID" aria-label="ORCID"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg></a></li>
+    <li><a href="mailto:kozdemir3523@gmail.com" title="Email" aria-label="Email"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M2.5 4h19A1.5 1.5 0 0 1 23 5.5v.9l-11 6.9L1 6.4v-.9A1.5 1.5 0 0 1 2.5 4zM1 8.7l11 6.9 11-6.9v9.8a1.5 1.5 0 0 1-1.5 1.5h-19A1.5 1.5 0 0 1 1 18.5z"/></svg></a></li>
+  </ul></div>
+</footer>
 <script>
-window.I18N = {"tr": {"kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Çalışmalar", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-k": "Vaka çalışmaları", "im-h1": "Künye", "im-lede": "Bu sitenin arkasında kim var ve içindekilerden kim sorumlu.", "pg-desc": "Bu sitenin arkasında kim var, ona cevap veren adres ve burada yazılanlardan kimin sorumlu olduğu.", "im-h-a": "§ 5 DDG uyarınca bilgiler", "im-contact": "İletişim: <a href=\"mailto:kozdemir3523@gmail.com\">kozdemir3523@gmail.com<\/a>. Her mesaj okunur ve bir gün içinde yanıtlanır. Burada telefon numarası yok, çünkü okurun yazara başka bir yoldan hızlıca ulaşabildiği durumda kanun numara istemiyor.", "im-h-b": "İçerikten sorumlu", "im-resp": "Buradaki denemeler, notlar ve yazılan her şey bana ait; sorumlusu da benim.", "im-h-c": "Tüketici uyuşmazlıklarının çözümü", "im-vsbg": "Bir tüketici hakem heyeti önündeki uyuşmazlık çözüm sürecine katılmakla yükümlü değilim ve katılmaya da istekli değilim.", "im-h-d": "İçerik ve bağlantılar", "im-liab": "Burada yazılanlar özenle yazıldı ve tavsiye değildir. Sitedeki araçlar yazdığınız şeyi hesaplar ve tuttukları her yayımlanmış rakamın kaynağını basar; bir vergi danışmanının, bir avukatın ya da bir mali müşavirin yerini tutmazlar ve her birinin üstünde bu yazar.", "im-links": "Bağlantılar bu siteden çıkıp benim denetlemediğim, yazmadığım sayfalara gider. Her birini koyduğum anda kontrol ettim. Aradan geçen zamanda biri olmaması gereken bir şeye dönüştüyse bana yazın, kaldırılır.", "im-h-e": "Telif", "im-copy": "Aksi yazmadıkça bu sitedeki her şey bana ait. Araçların arkasındaki kod GitHub'da herkese açık ve her deponun kendi lisansı geçerli. Yazı tipleri Fraunces, Newsreader, Instrument Sans ve IBM Plex Mono; hepsi SIL Open Font License altında ve lisans metni fonts klasöründe onlarla birlikte duruyor.", "im-lang": "Bu sayfa bir çeviridir. Bağlayıcı olan Almanca metindir."}, "de": {"kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Arbeiten", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-k": "Fallstudien", "im-h1": "Impressum", "im-lede": "Wer hinter dieser Seite steht und wer für ihren Inhalt einsteht.", "pg-desc": "Wer hinter dieser Seite steht, unter welcher Anschrift sie erreichbar ist und wer für den Inhalt verantwortlich ist.", "im-h-a": "Angaben gemäß § 5 DDG", "im-contact": "Kontakt: <a href=\"mailto:kozdemir3523@gmail.com\">kozdemir3523@gmail.com<\/a>. Jede Nachricht wird gelesen und innerhalb eines Tages beantwortet. Eine Telefonnummer steht hier nicht, weil das Gesetz keine verlangt, wo Leserinnen und Leser den Betreiber auf anderem Weg schnell erreichen können.", "im-h-b": "Verantwortlich für den Inhalt", "im-resp": "Die Essays, die Notizen und alles andere hier Geschriebene stammen von mir, und ich bin dafür verantwortlich.", "im-h-c": "Verbraucherstreitbeilegung", "im-vsbg": "Ich bin weder verpflichtet noch bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.", "im-h-d": "Inhalt und Links", "im-liab": "Was hier steht, ist mit Sorgfalt geschrieben und ist keine Beratung. Die Werkzeuge auf dieser Seite rechnen mit dem, was Sie eingeben, und drucken zu jeder veröffentlichten Zahl deren Quelle; sie ersetzen weder eine Steuerberaterin noch einen Anwalt noch eine Wirtschaftsprüferin, und auf jedem einzelnen steht das auch.", "im-links": "Links führen von dieser Seite fort auf Seiten, die ich weder betreibe noch geschrieben habe. Jeden habe ich geprüft, als ich ihn gesetzt habe. Ist einer davon inzwischen etwas geworden, das er nicht sein sollte, schreiben Sie mir und er verschwindet.", "im-h-e": "Urheberrecht", "im-copy": "Alles auf dieser Seite ist meins, sofern nichts anderes dabeisteht. Der Code hinter den Werkzeugen liegt offen auf GitHub, unter der im jeweiligen Repository genannten Lizenz. Die Schriften sind Fraunces, Newsreader, Instrument Sans und IBM Plex Mono, alle unter der SIL Open Font License, deren Lizenztext im Ordner fonts mitliegt.", "im-lang": "Maßgeblich ist diese deutsche Fassung."}};
+window.I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-k": "Vaka çalışmaları", "im-h1": "Künye", "im-lede": "Bu sitenin arkasında kim var ve içindekilerden kim sorumlu.", "pg-desc": "Bu sitenin arkasında kim var, ona cevap veren adres ve burada yazılanlardan kimin sorumlu olduğu.", "im-h-a": "§ 5 DDG uyarınca bilgiler", "im-contact": "İletişim: <a href=\"mailto:kozdemir3523@gmail.com\">kozdemir3523@gmail.com<\/a>. Her mesaj okunur ve bir gün içinde yanıtlanır. Burada telefon numarası yok, çünkü okurun yazara başka bir yoldan hızlıca ulaşabildiği durumda kanun numara istemiyor.", "im-h-b": "İçerikten sorumlu", "im-resp": "Buradaki denemeler, notlar ve yazılan her şey bana ait; sorumlusu da benim.", "im-h-c": "Tüketici uyuşmazlıklarının çözümü", "im-vsbg": "Bir tüketici hakem heyeti önündeki uyuşmazlık çözüm sürecine katılmakla yükümlü değilim ve katılmaya da istekli değilim.", "im-h-d": "İçerik ve bağlantılar", "im-liab": "Burada yazılanlar özenle yazıldı ve tavsiye değildir. Sitedeki araçlar yazdığınız şeyi hesaplar ve tuttukları her yayımlanmış rakamın kaynağını basar; bir vergi danışmanının, bir avukatın ya da bir mali müşavirin yerini tutmazlar ve her birinin üstünde bu yazar.", "im-links": "Bağlantılar bu siteden çıkıp benim denetlemediğim, yazmadığım sayfalara gider. Her birini koyduğum anda kontrol ettim. Aradan geçen zamanda biri olmaması gereken bir şeye dönüştüyse bana yazın, kaldırılır.", "im-h-e": "Telif", "im-copy": "Aksi yazmadıkça bu sitedeki her şey bana ait. Araçların arkasındaki kod GitHub'da herkese açık ve her deponun kendi lisansı geçerli. Yazı tipleri Fraunces, Newsreader, Instrument Sans ve IBM Plex Mono; hepsi SIL Open Font License altında ve lisans metni fonts klasöründe onlarla birlikte duruyor.", "im-lang": "Bu sayfa bir çeviridir. Bağlayıcı olan Almanca metindir."}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-k": "Fallstudien", "im-h1": "Impressum", "im-lede": "Wer hinter dieser Seite steht und wer für ihren Inhalt einsteht.", "pg-desc": "Wer hinter dieser Seite steht, unter welcher Anschrift sie erreichbar ist und wer für den Inhalt verantwortlich ist.", "im-h-a": "Angaben gemäß § 5 DDG", "im-contact": "Kontakt: <a href=\"mailto:kozdemir3523@gmail.com\">kozdemir3523@gmail.com<\/a>. Jede Nachricht wird gelesen und innerhalb eines Tages beantwortet. Eine Telefonnummer steht hier nicht, weil das Gesetz keine verlangt, wo Leserinnen und Leser den Betreiber auf anderem Weg schnell erreichen können.", "im-h-b": "Verantwortlich für den Inhalt", "im-resp": "Die Essays, die Notizen und alles andere hier Geschriebene stammen von mir, und ich bin dafür verantwortlich.", "im-h-c": "Verbraucherstreitbeilegung", "im-vsbg": "Ich bin weder verpflichtet noch bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.", "im-h-d": "Inhalt und Links", "im-liab": "Was hier steht, ist mit Sorgfalt geschrieben und ist keine Beratung. Die Werkzeuge auf dieser Seite rechnen mit dem, was Sie eingeben, und drucken zu jeder veröffentlichten Zahl deren Quelle; sie ersetzen weder eine Steuerberaterin noch einen Anwalt noch eine Wirtschaftsprüferin, und auf jedem einzelnen steht das auch.", "im-links": "Links führen von dieser Seite fort auf Seiten, die ich weder betreibe noch geschrieben habe. Jeden habe ich geprüft, als ich ihn gesetzt habe. Ist einer davon inzwischen etwas geworden, das er nicht sein sollte, schreiben Sie mir und er verschwindet.", "im-h-e": "Urheberrecht", "im-copy": "Alles auf dieser Seite ist meins, sofern nichts anderes dabeisteht. Der Code hinter den Werkzeugen liegt offen auf GitHub, unter der im jeweiligen Repository genannten Lizenz. Die Schriften sind Fraunces, Newsreader, Instrument Sans und IBM Plex Mono, alle unter der SIL Open Font License, deren Lizenztext im Ordner fonts mitliegt.", "im-lang": "Maßgeblich ist diese deutsche Fassung."}};
 
 (function(){
   "use strict";
