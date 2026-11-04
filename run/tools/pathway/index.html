@@ -8,14 +8,16 @@
      nothing you type leaves the page into something the browser enforces. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 
-<title>Emissions reduction pathway calculator, free. Kerem Özdemir</title>
-<meta name="description" content="A reduction target is one number. The path to it decides whether you make it, and how much carbon reaches the atmosphere on the way. Draws the trajectory, measures where you are against it, and says what the annual cut has to be from here. Runs entirely in the browser.">
+<title>Emissions pathway: the annual cut your target still needs. Kerem Özdemir</title>
+<meta name="description" content="Draws the path to a reduction target, measures where you stand against it, and says what the annual cut has to be from here. Runs in your browser.">
 <meta name="author" content="Kerem Özdemir">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="../../fonts/fonts.css">
+<script>(function(){var d=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")})})()</script>
 <link rel="canonical" href="https://keremozdemir.de/run/tools/pathway/">
-<meta property="og:title" content="Emissions reduction pathway calculator, free. Kerem Özdemir">
-<meta property="og:description" content="A reduction target is one number. The path to it decides whether you make it, and how much carbon reaches the atmosphere on the way. Draws the trajectory, measures where you are against it, and says what the annual cut has to be from here. Runs entirely in the browser.">
+<meta property="og:url" content="https://keremozdemir.de/run/tools/pathway/">
+<meta property="og:title" content="Emissions pathway: the annual cut your target still needs. Kerem Özdemir">
+<meta property="og:description" content="Draws the path to a reduction target, measures where you stand against it, and says what the annual cut has to be from here. Runs in your browser.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -69,10 +71,59 @@
   --edge:    clamp(1.1rem, 5vw, 3.25rem);
 }
 
-/* The instruments used to flip to a dark palette with the system.  They
-   sit inside keremozdemir.de now, whose paper is light and whose top bar
-   and footer are painted from the site's own tokens, so a page that went
-   dark underneath a light bar would only look broken.  One palette. */
+/* The dark palette. It follows the system, and data-theme on the root
+   overrides the system both ways: the head script sets it from ?theme= in
+   the address (a case study framing the instrument passes the site's own
+   theme) or from the theme the reader chose on the site. The values are the
+   site's dark tokens (src/app/globals.css), so a framed instrument and the
+   page around it share one ground. Measured 2026-11-04: ink 15.6:1, dim
+   7.1:1 on the paper and 6.4:1 on a field, accent 5.6:1 on a field, flag
+   6.8:1 on its tint, a control's edge 3.8:1 against the field. The bar and
+   the footer flip with the page (pagegen.py), so nothing is left light
+   above or below it. The kit's selectors are written twice because a media
+   query and an attribute cannot share one prelude. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #111214;
+    --paper-sunk: #161719;
+    --panel:      #18191c;
+    --field:      #1c1d21;
+    --ink:        #e9eaec;
+    --ink-soft:   #c3c7cd;
+    --dim:        #9aa0a8;
+    --faint:      #9aa0a8;
+    --rule:       #292b30;
+    --rule-firm:  #3a3d43;
+    --rule-edge:  #737882;
+    --accent:     #f5694b;
+    --accent-lit: #2a2d33;
+    --flag:       #f08a6a;
+    --flag-lit:   #2a1a15;
+    --good:       #8cc084;
+    --good-lit:   #17221a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:      #111214;
+  --paper-sunk: #161719;
+  --panel:      #18191c;
+  --field:      #1c1d21;
+  --ink:        #e9eaec;
+  --ink-soft:   #c3c7cd;
+  --dim:        #9aa0a8;
+  --faint:      #9aa0a8;
+  --rule:       #292b30;
+  --rule-firm:  #3a3d43;
+  --rule-edge:  #737882;
+  --accent:     #f5694b;
+  --accent-lit: #2a2d33;
+  --flag:       #f08a6a;
+  --flag-lit:   #2a1a15;
+  --good:       #8cc084;
+  --good-lit:   #17221a;
+  color-scheme: dark;
+}
 
 /* ---------- 2. reset and page ---------- */
 
@@ -119,7 +170,7 @@ a:hover { border-bottom-color: var(--accent); }
 .k-skip {
   position: absolute; left: -9999px; top: 0; z-index: 50;
   background: var(--ink); color: var(--paper); border: 0;
-  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.875rem;
 }
 .k-skip:focus { left: 0.5rem; top: 0.5rem; }
 
@@ -151,8 +202,8 @@ a:hover { border-bottom-color: var(--accent); }
   margin-bottom: 1.1rem;
 }
 .k-sect > h2 .k-num {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
-  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
+  color: var(--faint); vertical-align: 0.4em; margin-right: 0.65rem;
 }
 .k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
 
@@ -166,13 +217,17 @@ a:hover { border-bottom-color: var(--accent); }
 .k-row.k-row-tight { gap: 0.55rem 0.9rem; }
 
 .k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+/* A label is read before the field is touched, so it is set at the size of
+   the text around it: 14px in the sans, sentence case as written. It used to
+   be 11px mono capitals, which was the smallest type on the page on the line
+   a reader needs first. */
 .k-field > label, .k-lab {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500;
+  letter-spacing: 0; color: var(--dim); line-height: 1.35;
 }
 .k-field .k-hint {
-  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
-  line-height: 1.45; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="text"], input[type="number"], input[type="search"], select, textarea {
@@ -209,8 +264,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   display: inline-flex; align-items: center; gap: 0.5rem;
   background: transparent; color: var(--ink);
   border: 1px solid var(--rule-firm); border-radius: 0;
-  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
-  letter-spacing: 0.13em; text-transform: uppercase;
+  font-family: var(--mono); font-weight: 500; font-size: 0.78rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.62rem 0.95rem; cursor: pointer;
   transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
 }
@@ -219,8 +274,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
 .k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .k-btn-key { color: #f7f5ee; }
+/* on the dark ground the accent is light, so the label on it goes dark */
+:root[data-theme="dark"] .k-btn-key { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .k-btn-key { color: var(--paper); }
+}
 .k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.75rem; padding: 0.45rem 0.7rem; }
 
 .k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
 
@@ -233,8 +293,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-panel + .k-panel { margin-top: var(--gap); }
 .k-panel > h3, .k-panel-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.75rem;
 }
 .k-panel-sunk { background: var(--paper-sunk); }
@@ -251,15 +311,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
 
 .k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
-.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dt { font-family: var(--serif); font-size: 0.875rem; color: var(--dim); min-width: 0; }
 .k-kv dd {
-  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  margin: 0; font-family: var(--mono); font-size: 0.875rem;
   font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
 }
 .k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
 
 /* arithmetic trace: every step printed */
-.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.875rem; line-height: 1.7; }
 .k-steps li {
   display: grid; grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.2rem 1rem; padding: 0.3rem 0;
@@ -285,18 +345,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 /* ---------- 6. source line ---------- */
 
 .k-source {
-  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; align-items: baseline;
   margin-top: 0.7rem; padding-top: 0.55rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
 }
 .k-source::before {
-  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  content: "source"; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); flex: none;
 }
 .k-source.k-source-bare::before { content: none; }
-.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all;
+  display: inline-block; padding-block: 0.15rem; }
+@media (pointer: coarse) {
+  .k-source a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; }
+}
 .k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .k-source .k-checked { color: var(--faint); white-space: nowrap; }
 
@@ -316,8 +381,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
 
 .k-tag {
-  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  display: inline-block; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
   white-space: nowrap;
 }
@@ -333,22 +398,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   font-size: 0.92rem;
 }
 .k-ask li > b {
-  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
-  padding-top: 0.22rem;
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.15rem;
 }
 
 /* ---------- 8. tables ---------- */
 
 .k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.875rem; }
 .k-table th, .k-table td {
   text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
   border-bottom: 1px solid var(--rule); vertical-align: top;
 }
 .k-table th {
-  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
-  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  font-family: var(--serif); font-weight: 500; font-size: 0.875rem;
+  letter-spacing: 0; color: var(--dim);
   border-bottom-color: var(--rule-firm); white-space: nowrap;
 }
 .k-table td.k-n, .k-table th.k-n {
@@ -356,7 +422,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   text-align: right; padding-right: 0; white-space: nowrap;
 }
 .k-table tbody tr:last-child td { border-bottom: 0; }
-.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell { font-family: var(--serif); font-size: 0.875rem; line-height: 1.55; color: var(--dim); }
 .k-table .k-src-cell a { word-break: break-all; }
 
 /* ---------- 9. timeline ---------- */
@@ -369,13 +435,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-time li:first-child { border-top: 0; padding-top: 0; }
 .k-time .k-when {
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.03em;
   color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
 }
 .k-time .k-what { font-size: 0.96rem; color: var(--ink); }
 .k-time .k-what small {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+  display: block; font-family: var(--serif); font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.55;
 }
 .k-time li.k-past .k-when { color: var(--faint); }
 .k-time li.k-past .k-what { color: var(--dim); }
@@ -394,8 +460,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-endnote .k-wrap { display: grid; gap: 1.1rem; }
 .k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
 .k-endnote .k-fine {
-  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-size: 0.875rem; line-height: 1.6; color: var(--faint);
 }
 .k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
 .k-endnote a:hover { color: var(--accent); }
@@ -405,7 +470,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-toast {
   position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
   background: var(--ink); color: var(--paper);
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
   opacity: 0; pointer-events: none;
   transition: opacity 0.18s ease;
@@ -459,7 +524,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 
 .tp-legend {
   display: flex; flex-wrap: wrap; gap: 0.3rem 1.2rem; margin-top: 0.7rem;
-  font-family: var(--mono); font-size: 0.67rem; letter-spacing: 0.02em; color: var(--dim);
+  font-size: 0.875rem; color: var(--dim);
 }
 .tp-legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
 .tp-legend i { width: 1.5rem; height: 0; border-top: 2.5px solid var(--accent); display: inline-block; }
@@ -473,7 +538,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 
 .tp-actuals { display: grid; gap: 0.4rem; margin-top: 0.8rem; }
 .tp-act-row { display: grid; grid-template-columns: 6rem minmax(0, 1fr) auto; gap: 0.6rem; align-items: center; }
-.tp-act-row input { font-size: 0.8rem; padding: 0.42rem 0.5rem; }
+.tp-act-row input { font-size: 0.875rem; padding: 0.42rem 0.5rem; }
 
 @media (max-width: 30rem) {
   .tp-act-row { grid-template-columns: 5rem minmax(0, 1fr) auto; }
@@ -493,6 +558,9 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .bar,footer.site-foot{color:var(--fg)}
 footer.site-foot{background:var(--paper)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar,:root:not([data-theme="light"]) footer.site-foot,:root:not([data-theme="light"]) .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}}
+:root[data-theme="dark"] .bar,:root[data-theme="dark"] footer.site-foot,:root[data-theme="dark"] .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}
+
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
 .wrap{max-width:74rem;margin:0 auto;padding:0 1.5rem}
@@ -507,6 +575,7 @@ footer.site-foot{background:var(--paper)}
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:var(--paper);border-bottom:1px solid var(--line)}
 .in-frame .bar,.in-frame .site-foot{display:none}
 .bar .wrap{display:flex;align-items:center;gap:2rem;height:70px}
+.bar .home,.langs{flex:none}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;
   border-bottom:0;color:var(--fg);white-space:nowrap}
 .bar nav:not(.langs){margin:0 auto}
@@ -542,6 +611,33 @@ footer.site-foot{background:var(--paper)}
 /* ---------- a leaf, falling once ---------- */
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar between a phone and a laptop ----------
+   One row needs 1,027 px in German with a touch screen (measured 2026-11-04:
+   the name, six sections, the three languages and the gaps), so from 641 to
+   1,080 px the bar takes two rows the way a phone does: the name and the
+   languages on the first, the sections on the second, which scrolls in place
+   if a long word still does not fit. Below that the switcher sat 130 px past
+   the right edge at 768 and could not be reached. */
+@media (min-width:641px) and (max-width:1080px){
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:1rem;row-gap:0;padding-top:.75rem;padding-bottom:.2rem}
+  .bar .home{line-height:33px}
+  .langs{margin-left:auto}
+  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0 -6px;padding:4px 6px;justify-content:flex-start;
+    gap:1.4rem;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+  .bar nav:not(.langs)::-webkit-scrollbar{display:none}
+  .bar nav a{padding:.45rem 0;flex:0 0 auto}
+}
+
+/* ---------- inside a case study's frame ----------
+   The page around the frame already has the title and the argument, so the
+   frame opens on the instrument: the heading and the standfirst are kept
+   for a screen reader and taken off the screen. A scaled preview is left
+   as it is, because its picture is the page's first screen. */
+.framed-tool .k-lede{position:absolute!important;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.framed-tool .k-main{padding-top:clamp(.9rem,3vw,1.4rem)}
+.framed-tool .k-lede + .k-sect{margin-top:0}
 
 /* ---------- the bar and the footer, narrowed ---------- */
 @media (max-width:640px){
@@ -624,11 +720,10 @@ footer.site-foot{background:var(--paper)}
 
 <div class="k-shell">
 
-<script>if(window.self!==window.top)document.documentElement.classList.add("in-frame")</script>
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../../">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../cases/" data-i="nav-k">Case studies</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
     <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
   </div>
 </header>
@@ -733,10 +828,10 @@ footer.site-foot{background:var(--paper)}
 
         <div class="k-panel">
           <h3 data-i="tp-056">The one constant on this page</h3>
-          <div class="k-kv">
+          <dl class="k-kv">
             <dt data-i="tp-057">Minimum linear annual reduction, near term Scope 1 and 2, 1.5°C</dt>
             <dd>4.2%</dd>
-          </div>
+          </dl>
           <p class="k-source" data-i="tp-058" data-verbatim>
             <span>Science Based Targets initiative, Absolute Contraction Approach. The binding text is the SBTi Corporate Near-Term Criteria, version 5.3.1, April 2026</span>
             <a href="https://sciencebasedtargets.org/news/understand-science-based-targets-methods-climate-action" target="_blank" rel="noreferrer noopener">sciencebasedtargets.org</a>
@@ -908,6 +1003,16 @@ var Kit = (function () {
     return new TextDecoder().decode(bytes);
   }
 
+  /* The query without ?theme=, which a case study adds when it frames the
+     instrument. A link copied inside the frame would otherwise open dark or
+     light for whoever it is sent to, whatever they chose themselves. */
+  function query() {
+    var q = (location.search || "").replace(/^\?/, "").split("&").filter(function (p) {
+      return p && p.indexOf("theme=") !== 0;
+    }).join("&");
+    return q ? "?" + q : "";
+  }
+
   var state = {
     /* Serialise the object into the location hash without adding a history entry. */
     write: function (obj) {
@@ -915,7 +1020,7 @@ var Kit = (function () {
       try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
       if (h.length > 8000) return "";
       try {
-        history.replaceState(null, "", location.pathname + location.search + h);
+        history.replaceState(null, "", location.pathname + query() + h);
       } catch (e) {
         location.hash = h;
       }
@@ -928,7 +1033,7 @@ var Kit = (function () {
       try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
     },
     clear: function () {
-      try { history.replaceState(null, "", location.pathname + location.search); }
+      try { history.replaceState(null, "", location.pathname + query()); }
       catch (e) { location.hash = ""; }
     }
   };
@@ -1031,6 +1136,71 @@ var Kit = (function () {
     return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
   }
 
+  /* ---------- a region that scrolls sideways ---------- */
+
+  /* A wide table on a phone scrolls inside its box, and a box that scrolls is
+     a control: a keyboard has to be able to reach it to scroll it, and a
+     screen reader has to hear what it is. It takes a tab stop only while it
+     overflows, so the same table at desktop width adds none. The name is the
+     heading of the panel it sits in, by reference, so it follows the language
+     when the reader switches. Measured 2026-11-04: axe found 17 such boxes
+     across seven instrument pages at 390px, none of them reachable. */
+  var reachSel = ".k-scroll, .k-panel > pre, [data-k-scroll]";
+  var reachN = 0;
+  /* A box can start to overflow with no change to the DOM at all: the faces
+     arrive after the first layout and widen every table. Each box and its
+     table are watched for a change of size, so the check runs again then. */
+  var reachSeen = typeof WeakSet === "function" ? new WeakSet() : null;
+  var reachRO = typeof ResizeObserver === "function" ? new ResizeObserver(function () { reachSoon(); }) : null;
+  function reach() {
+    qsa(reachSel).forEach(function (box) {
+      if (reachRO && reachSeen && !reachSeen.has(box)) {
+        reachSeen.add(box);
+        reachRO.observe(box);
+        if (box.firstElementChild) reachRO.observe(box.firstElementChild);
+      }
+      var over = box.scrollWidth > box.clientWidth + 1;
+      var mine = box.getAttribute("data-k-reach") === "1";
+      if (over && !box.hasAttribute("tabindex")) {
+        box.setAttribute("tabindex", "0");
+        box.setAttribute("data-k-reach", "1");
+        mine = true;
+      } else if (!over && mine) {
+        box.removeAttribute("tabindex");
+        box.removeAttribute("role");
+        box.removeAttribute("aria-labelledby");
+        box.removeAttribute("aria-label");
+        box.removeAttribute("data-k-reach");
+        return;
+      }
+      if (!mine) return;
+      box.setAttribute("role", "region");
+      if (box.hasAttribute("aria-labelledby") || box.hasAttribute("aria-label")) return;
+      var panel = box.closest(".k-panel, .k-sect, section, figure");
+      var head = panel && panel.querySelector("h2, h3, h4, .k-panel-h, figcaption");
+      if (head) {
+        if (!head.id) head.id = "k-reach-" + (++reachN);
+        box.setAttribute("aria-labelledby", head.id);
+      } else {
+        box.setAttribute("aria-label", window.__t ? window.__t("kit-scroll", "Table, scrolls sideways") : "Table, scrolls sideways");
+      }
+    });
+  }
+  var reachQueued = false;
+  function reachSoon() {
+    if (reachQueued) return;
+    reachQueued = true;
+    (window.requestAnimationFrame || setTimeout)(function () { reachQueued = false; reach(); });
+  }
+  if (typeof MutationObserver === "function") {
+    new MutationObserver(reachSoon).observe(document.documentElement, { childList: true, subtree: true });
+  }
+  addEventListener("resize", reachSoon);
+  addEventListener("load", reachSoon);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(reachSoon);
+  if (document.readyState !== "loading") reachSoon();
+  else document.addEventListener("DOMContentLoaded", reachSoon);
+
   return {
     el: el, qs: qs, qsa: qsa, clear: clear,
     num: num, money: money, pct: pct, toNum: toNum,
@@ -1058,7 +1228,7 @@ var Kit = (function () {
 (function () {
   "use strict";
 
-  window.PAGE_I18N = {"de": {"pg-desc": "Ein Reduktionsziel ist eine einzige Zahl. Der Weg dorthin entscheidet, ob Sie es erreichen und wie viel Kohlenstoff unterwegs in die Atmosphäre gelangt. Zeichnet den Pfad, misst Ihren tatsächlichen Stand daran und nennt die jährliche Minderung, die von hier an nötig ist. Läuft vollständig im Browser.", "tp-001": "Ein Ziel ist eine Zahl. Der Weg dorthin ist das ganze Argument.", "tp-002": "Zwei Unternehmen können dieselbe Zahl für dasselbe Jahr versprechen und dabei sehr unterschiedliche Mengen Kohlenstoff in die Atmosphäre bringen, denn die Atmosphäre reagiert auf die Fläche unter dem Pfad und nicht auf dessen Endpunkt.", "tp-003": "<span class=\"k-num\">01</span>Der Pfad", "tp-004": "Geben Sie ein Basisjahr und die Emissionen dieses Jahres ein, das Zieljahr und die jährliche Rate; die voreingestellte Rate ist die Untergrenze, die die Science Based Targets initiative für ein kurzfristiges Scope-1- und Scope-2-Ziel im Einklang mit 1,5°C setzt, eine Voreinstellung und keine Regel.", "tp-005": "<span class=\"k-num\">02</span>Linear gegen exponentiell", "tp-006": "<span class=\"k-num\">03</span>Wo Sie tatsächlich stehen", "tp-007": "<span class=\"k-num\">04</span>Methode, und was diese Seite nicht sagen kann", "tp-010": "Emissionen im Basisjahr", "tp-011": "In der Einheit, die Sie führen; sie wird durchgereicht und nie umgerechnet.", "tp-012": "Basisjahr", "tp-013": "Zieljahr", "tp-014": "Jährliche Rate, Prozent", "tp-015": "Vom Basisjahr, jedes Jahr.", "tp-016": "Form", "tp-017": "Absolute Kontraktion", "tp-018": "Intensitätskonvergenz", "tp-019": "Wachstum der Aktivität, Prozent pro Jahr", "tp-020": "Ihre eigene Prognose für die Größe, auf die sich die Intensität bezieht.", "tp-021": "Einheit", "tp-022": "Pfad zeichnen", "tp-023": "Beispiel laden", "tp-024": "Tabelle kopieren", "tp-030": "Ein linearer Pfad nimmt jedes Jahr einen festen Anteil des Basisjahres weg; ein exponentieller Pfad nimmt einen festen Anteil des Vorjahres weg, die Minderung wird also jedes Jahr kleiner, während der Prozentsatz in der Überschrift gleich bleibt. Das sind nicht dieselben Zusagen, und der Abstand zwischen ihnen ist größer, als die Formulierung vermuten lässt.", "tp-040": "Geben Sie ein, was Sie in den Jahren seit dem Basisjahr emittiert haben; leere Jahre bleiben leer und werden nicht interpoliert.", "tp-041": "Am Pfad messen", "tp-050": "Die Arithmetik, ausgeschrieben", "tp-051": "Absolute Kontraktion, eine Gerade ab dem Basisjahr", "tp-052": "Exponentiell, dieselbe Rate auf das Vorjahr angewandt", "tp-053": "Intensitätskonvergenz, eine Gerade unter der Intensität", "tp-054": "Kumuliertes Budget, die Fläche unter dem Pfad statt dessen Endpunkt", "tp-055": "Erforderliche Rate ab hier, um das Ziel noch zu erreichen", "tp-056": "Die einzige Konstante auf dieser Seite", "tp-057": "Minimale lineare jährliche Reduktion, kurzfristig Scope 1 und 2, 1,5°C", "tp-059": "Die Rate ist eine Untergrenze für ein Basisjahr 2020; die Kriterien passen sie für spätere Basisjahre nach oben an und setzen für Scope 3 eine eigene, niedrigere Rate, beides wendet diese Seite nicht an. Ersetzen Sie 4,2 Prozent durch die Rate, mit der Ihr eigenes Ziel validiert wurde, und lesen Sie die Kriterien statt dieser Seite.", "tp-060": "Was diese Seite nicht weiß", "tp-061": "Ob Ihr Ziel jemals validiert wurde, von irgendwem", "tp-062": "Was in Ihrer Bilanz steht, auf welcher Grenze sie gezogen wurde, oder ob das Basisjahr seither neu berechnet wurde", "tp-063": "Ob die Minderung echt ist oder das Ergebnis von Verkäufen, Umklassifizierungen oder Zukäufen", "tp-064": "Irgendetwas über Entnahmen, Kompensation oder Neutralisierung; nichts davon kommt in dieser Arithmetik vor", "tp-065": "Ob ein linearer Pfad die richtige Form für Ihre Branche ist. Das beantwortet die sektorale Leitlinie und nicht diese Seite", "tp-066": "Die Methode dahinter: die Fallstudie zum Zielpfad", "tp-070": "<strong>Jede Zahl hier ist Arithmetik auf Werten, die Sie geliefert haben, und das Eingangsbeispiel ist erfunden:</strong> das Unternehmen gibt es nicht, und nichts davon ist ein Vergleichswert, ein Ziel, eine Validierung, eine Offenlegung oder eine Beratung.", "tp-071": "Läuft vollständig in Ihrem Browser: nichts, was Sie eingeben, verlässt diese Seite, und nach dem Laden der Schriften gibt es keine Netzwerkaufrufe, sodass es offline funktioniert. Gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>, Student an der TUM und der Universität Istanbul, als persönliches Projekt, weder mit einer der beiden Universitäten verbunden noch von ihnen unterstützt.", "tp-100": "Der Pfad", "tp-101": "Emissionen im Zieljahr", "tp-102": "Gesamtminderung gegenüber dem Basisjahr", "tp-103": "Kumuliertes Budget über den ganzen Pfad", "tp-104": "Zwei Pfade können auf derselben Zahl enden und sich hier unterscheiden, und dies ist die Größe, auf die die Atmosphäre reagiert.", "tp-105": "Die Kurve", "tp-106": "Der Emissionspfad vom Basisjahr bis zum Zieljahr.", "tp-107": "Pfad", "tp-110": "Jahr", "tp-111": "Pfad", "tp-112": "Gegenüber dem Basisjahr", "tp-113": "Jahr für Jahr", "tp-120": "Zeichnen Sie in Abschnitt eins einen Pfad, dann füllt sich dieser Bereich.", "tp-121": "Dieselbe Rate, zweimal gesagt", "tp-122": "Linear, Anteil des Basisjahres", "tp-123": "Exponentiell, Anteil des Basisjahres", "tp-124": "Der Abstand dazwischen", "tp-125": "Prozentpunkte", "tp-126": "Über {n} Jahre bei {r} landet der lineare Pfad bei {a} des Basisjahres und der exponentielle bei {b}. Der exponentielle Pfad ist jedes einzelne Jahr leichter, weil die Minderung jedes Jahres von einer kleineren Zahl genommen wird als im Jahr davor.", "tp-127": "Beide Pfade zusammen gezeichnet", "tp-128": "Ein linearer und ein exponentieller Pfad bei derselben Rate.", "tp-129": "Linear", "tp-130": "Exponentiell", "tp-131": "Und kumuliert betrachtet", "tp-132": "Budget unter dem linearen Pfad", "tp-133": "Budget unter dem exponentiellen Pfad", "tp-134": "Zusätzlicher Kohlenstoff unter dem exponentiellen Pfad", "tp-140": "Geben Sie mindestens ein tatsächliches Jahr ein, bevor hier etwas gemessen werden kann.", "tp-141": "Tatsächlich", "tp-142": "Abstand", "tp-143": "Stand", "tp-144": "zurück", "tp-145": "auf Kurs oder voraus", "tp-146": "Gegen den Pfad", "tp-147": "Die Arithmetik der Verzögerung", "tp-148": "Das letzte eingegebene Jahr ist das Zieljahr, es bleibt also keine Zeit, über die eine Rate berechnet werden könnte.", "tp-149": "Zum Stand {y} liegen Sie bereits auf oder unter dem Ziel; die Arithmetik verlangt nichts weiter, was nicht dasselbe ist, wie dass nichts weiter lohnend wäre.", "tp-150": "des heutigen Niveaus, jedes Jahr, ab hier", "tp-151": "Erreicht gegenüber dem Basisjahr, zum Stand {y}", "tp-152": "Was der Pfad im selben Jahr verlangte", "tp-153": "Verbleibende Jahre bis zum Ziel", "tp-154": "Ab hier erforderlich, gegen die von Ihnen gesetzte Rate", "tp-155": "Die erforderliche Minderung ist von {a} auf {b} gestiegen, und dieser Anstieg ist der Preis der Verzögerung, unsichtbar für jeden, der nur das Zieljahr verfolgt.", "tp-156": "Kumuliert über die von Ihnen eingegebenen Jahre", "tp-157": "Was der Pfad zuließ", "tp-158": "Was tatsächlich emittiert wurde", "tp-159": "Überschreitung gegenüber dem Budget", "tp-160": "Ein Unternehmen, das seine Emissionen nach vorne verlagert und am Ende hart kürzt, kann sein Zieljahr genau treffen und trotzdem mehr Kohlenstoff verbraucht haben, als der Pfad zuließ.", "tp-161": "Die kumulierte Größe braucht aufeinanderfolgende Jahre; füllen Sie die Lücken, dann erscheint sie.", "tp-e1": "Geben Sie die Emissionen des Basisjahres als Zahl größer als null ein.", "tp-e2": "Geben Sie ein Basisjahr und ein Zieljahr ein.", "tp-e3": "Das Zieljahr muss nach dem Basisjahr liegen.", "tp-e4": "Das ist länger, als diese Seite zeichnet; bleiben Sie unter achtzig Jahren.", "tp-e5": "Geben Sie eine jährliche Rate größer als null ein.", "tp-skip": "Zum Instrument springen", "pg-title": "Rechner für Emissionsminderungspfade, kostenlos. Kerem Özdemir"}, "tr": {"pg-desc": "Bir azaltım hedefi tek bir sayıdır. Ona giden yol, hedefi tutturup tutturmadığınızı ve yolda atmosfere ne kadar karbon gittiğini belirler. Patikayı çizer, gerçekte nerede olduğunuzu ona karşı ölçer ve buradan itibaren yıllık kesintinin ne olması gerektiğini basar. Tamamı tarayıcıda çalışır.", "tp-001": "Hedef tek bir sayı. Asıl mesele ona giden yol.", "tp-002": "İki şirket aynı yıl için aynı sayıya söz verip yolda atmosfere çok farklı miktarda karbon bırakabilir, çünkü atmosfer patikanın altında kalan alana tepki verir, bitiş noktasına değil.", "tp-003": "<span class=\"k-num\">01</span>Patika", "tp-004": "Bir taban yılı ve o yıl ne kadar saldığınızı, hedefin düştüğü yılı ve yıllık oranı girin; varsayılan oran, Science Based Targets initiative'in 1,5°C ile uyumlu yakın vadeli Kapsam 1 ve 2 hedefi için koyduğu taban, bir kural değil bir varsayılan.", "tp-005": "<span class=\"k-num\">02</span>Doğrusala karşı bileşik", "tp-006": "<span class=\"k-num\">03</span>Gerçekte neredesiniz", "tp-007": "<span class=\"k-num\">04</span>Yöntem ve bu sayfanın söyleyemedikleri", "tp-010": "Taban yılı emisyonu", "tp-011": "Hangi birimi tutuyorsanız o birimde; baştan sona taşınır, hiç dönüştürülmez.", "tp-012": "Taban yılı", "tp-013": "Hedef yılı", "tp-014": "Yıllık oran, yüzde", "tp-015": "Her yıl, taban yılının üzerinden.", "tp-016": "Şekil", "tp-017": "Mutlak daralma", "tp-018": "Yoğunluk yakınsaması", "tp-019": "Faaliyet büyümesi, yılda yüzde", "tp-020": "Yoğunluğun ölçüldüğü şey için kendi tahmininiz.", "tp-021": "Birim", "tp-022": "Patikayı çizin", "tp-023": "Örnek yükleyin", "tp-024": "Tabloyu kopyalayın", "tp-030": "Doğrusal bir patika her yıl taban yılının sabit bir payını siler; bileşik bir patika geçen yılın sabit bir payını siler, yani başlıktaki yüzde aynı kalırken kesinti her yıl küçülür. Bunlar aynı taahhüt değil ve aradaki fark, ifadenin düşündürdüğünden geniş.", "tp-040": "Taban yılından bu yana ne saldığınızı girin; boş bıraktığınız yıllar ara değerle doldurulmaz, boş kalır.", "tp-041": "Patikaya karşı ölçün", "tp-050": "Aritmetik, açık açık yazılmış", "tp-051": "Mutlak daralma, taban yılından çıkan düz bir çizgi", "tp-052": "Bileşik, aynı başlık oranının geçen yıla uygulanması", "tp-053": "Yoğunluk yakınsaması, yoğunluğun altındaki düz çizgi", "tp-054": "Kümülatif bütçe, bitiş noktası değil patikanın altındaki alan", "tp-055": "Buradan itibaren gereken oran, hedefe yine de inebilmek için", "tp-056": "Bu sayfadaki tek sabit", "tp-057": "Asgari doğrusal yıllık azaltım, yakın vadeli Kapsam 1 ve 2, 1,5°C", "tp-059": "Bu oran 2020 taban yılı için bir taban değeri; ölçütler sonraki taban yılları için oranı yukarı çekiyor ve Kapsam 3 için ayrı, daha düşük bir oran koyuyor, bu sayfa ikisini de uygulamıyor. Yüzde 4,2'yi kendi hedefinizin doğrulandığı oranla değiştirin ve bu sayfayı değil ölçütleri okuyun.", "tp-060": "Bu sayfanın bilmediği şeyler", "tp-061": "Hedefinizin herhangi biri tarafından doğrulanıp doğrulanmadığı", "tp-062": "Envanterinizin içinde ne olduğu, hangi sınır üzerinden çizildiği ya da taban yılının o günden beri yeniden hesaplanıp hesaplanmadığı", "tp-063": "Azaltımın gerçek mi olduğu, yoksa elden çıkarmanın, yeniden sınıflandırmanın ya da bir şey satın almanın sonucu mu olduğu", "tp-064": "Uzaklaştırma, denkleştirme ya da nötrleme hakkında hiçbir şey; bu aritmetiğin hiçbir yerinde geçmiyorlar", "tp-065": "Doğrusal bir patikanın sizin sektörünüz için doğru şekil olup olmadığı; bunu sektörel rehber cevaplıyor, bu sayfa değil", "tp-066": "Arkasındaki yöntem: hedef patikası vaka çalışması", "tp-070": "<strong>Bu sayfadaki her sayı sizin verdiğiniz rakamlar üzerinde yapılan aritmetiktir ve açılıştaki örnek uydurmadır:</strong> o şirket yok, ve bunların hiçbiri bir kıyas değeri, bir hedef, bir doğrulama, bir beyan ya da tavsiye değil.", "tp-071": "Tamamen tarayıcınızda çalışır: yazdığınız hiçbir şey bu sayfadan çıkmaz, yazı tipleri yüklendikten sonra ağ isteği yok, sayfa önbelleğe alındıktan sonra çevrimdışı da çalışır. Yapan <a href=\"../../index.html\">Kerem Özdemir</a>, TUM ve İstanbul Üniversitesi öğrencisi; kişisel bir proje, iki üniversiteyle de bağlantılı değil ve onlar tarafından desteklenmiyor.", "tp-100": "Patika", "tp-101": "Hedef yılı emisyonu", "tp-102": "Taban yılına karşı toplam azaltım", "tp-103": "Patikanın tamamı boyunca kümülatif bütçe", "tp-104": "İki patika aynı sayıda bitip burada ayrışabilir; atmosferin tepki verdiği rakam budur.", "tp-105": "Yörünge", "tp-106": "Taban yılından hedef yılına emisyon patikası.", "tp-107": "Patika", "tp-110": "Yıl", "tp-111": "Patika", "tp-112": "Taban yılına karşı", "tp-113": "Yıl yıl", "tp-120": "Birinci bölümde bir patika çizin, burası dolsun.", "tp-121": "Aynı oran, iki farklı ifade", "tp-122": "Doğrusal, taban yılının payı", "tp-123": "Bileşik, taban yılının payı", "tp-124": "Aralarındaki fark", "tp-125": "yüzde puan", "tp-126": "{n} yıl boyunca {r} oranıyla, doğrusal patika taban yılının {a} düzeyine, bileşik patika ise {b} düzeyine iniyor. Bileşik patika her yıl daha kolay, çünkü her yılın kesintisi bir öncekinden küçük bir sayının üzerinden alınıyor.", "tp-127": "İki patika birlikte", "tp-128": "Aynı başlık oranıyla doğrusal ve bileşik patikalar.", "tp-129": "Doğrusal", "tp-130": "Bileşik", "tp-131": "Kümülatif olarak", "tp-132": "Doğrusal patikanın bütçesi", "tp-133": "Bileşik patikanın bütçesi", "tp-134": "Bileşik patikada fazladan çıkan karbon", "tp-140": "Bunun bir şey ölçebilmesi için en az bir gerçekleşen yıl girin.", "tp-141": "Gerçekleşen", "tp-142": "Fark", "tp-143": "Durum", "tp-144": "geride", "tp-145": "patikada ya da önde", "tp-146": "Patikaya karşı", "tp-147": "Gecikmenin aritmetiği", "tp-148": "Girdiğiniz son yıl hedef yılı, yani üzerinden oran hesaplanacak zaman kalmamış.", "tp-149": "{y} itibarıyla hedefin altındasınız ya da tam üzerindesiniz; aritmetik başka bir şey istemiyor, bu da yapılacak başka bir şey olmadığı anlamına gelmiyor.", "tp-150": "bugünkü seviyenin, her yıl, buradan itibaren", "tp-151": "{y} itibarıyla taban yılına karşı gerçekleşen", "tp-152": "Patikanın aynı yıl için istediği", "tp-153": "Hedefe kalan yıl", "tp-154": "Buradan itibaren gereken, sizin belirlediğiniz orana karşı", "tp-155": "Gereken kesinti {a} düzeyinden {b} düzeyine çıktı; bu artış gecikmenin bedeli ve yalnızca hedef yılını takip eden birine görünmüyor.", "tp-156": "Girdiğiniz yıllar boyunca kümülatif", "tp-157": "Patikanın izin verdiği", "tp-158": "Gerçekte salınan", "tp-159": "Bütçeye karşı aşım", "tp-160": "Emisyonunu başa yükleyip sonda sert kesen bir şirket hedef yılını tam tutturup yine de patikanın izin verdiğinden fazla karbon harcamış olabilir.", "tp-161": "Kümülatif rakam ardışık yıllar istiyor; boşlukları doldurun, görünecek.", "tp-e1": "Taban yılı emisyonunu sıfırdan büyük bir sayı olarak girin.", "tp-e2": "Bir taban yılı ve bir hedef yılı girin.", "tp-e3": "Hedef yılı, taban yılından sonra gelmeli.", "tp-e4": "Bu, bu sayfanın çizdiğinden uzun; seksen yılın altında tutun.", "tp-e5": "Sıfırdan büyük bir yıllık oran girin.", "tp-skip": "Araca geçin", "pg-title": "Emisyon azaltım patikası hesaplayıcı, ücretsiz. Kerem Özdemir"}};
+  window.PAGE_I18N = {"de": {"pg-desc": "Zeichnet den Pfad zu einem Minderungsziel, misst Ihren Stand daran und nennt die jährliche Minderung, die von hier an nötig ist. Läuft im Browser.", "tp-001": "Ein Ziel ist eine Zahl. Der Weg dorthin ist das ganze Argument.", "tp-002": "Zwei Unternehmen können dieselbe Zahl für dasselbe Jahr versprechen und dabei sehr unterschiedliche Mengen Kohlenstoff in die Atmosphäre bringen, denn die Atmosphäre reagiert auf die Fläche unter dem Pfad und nicht auf dessen Endpunkt.", "tp-003": "<span class=\"k-num\">01</span>Der Pfad", "tp-004": "Geben Sie ein Basisjahr und die Emissionen dieses Jahres ein, das Zieljahr und die jährliche Rate; die voreingestellte Rate ist die Untergrenze, die die Science Based Targets initiative für ein kurzfristiges Scope-1- und Scope-2-Ziel im Einklang mit 1,5°C setzt, eine Voreinstellung und keine Regel.", "tp-005": "<span class=\"k-num\">02</span>Linear gegen exponentiell", "tp-006": "<span class=\"k-num\">03</span>Wo Sie tatsächlich stehen", "tp-007": "<span class=\"k-num\">04</span>Methode, und was diese Seite nicht sagen kann", "tp-010": "Emissionen im Basisjahr", "tp-011": "In der Einheit, die Sie führen; sie wird durchgereicht und nie umgerechnet.", "tp-012": "Basisjahr", "tp-013": "Zieljahr", "tp-014": "Jährliche Rate, Prozent", "tp-015": "Vom Basisjahr, jedes Jahr.", "tp-016": "Form", "tp-017": "Absolute Kontraktion", "tp-018": "Intensitätskonvergenz", "tp-019": "Wachstum der Aktivität, Prozent pro Jahr", "tp-020": "Ihre eigene Prognose für die Größe, auf die sich die Intensität bezieht.", "tp-021": "Einheit", "tp-022": "Pfad zeichnen", "tp-023": "Beispiel laden", "tp-024": "Tabelle kopieren", "tp-030": "Ein linearer Pfad nimmt jedes Jahr einen festen Anteil des Basisjahres weg; ein exponentieller Pfad nimmt einen festen Anteil des Vorjahres weg, die Minderung wird also jedes Jahr kleiner, während der Prozentsatz in der Überschrift gleich bleibt. Das sind nicht dieselben Zusagen, und der Abstand zwischen ihnen ist größer, als die Formulierung vermuten lässt.", "tp-040": "Geben Sie ein, was Sie in den Jahren seit dem Basisjahr emittiert haben; leere Jahre bleiben leer und werden nicht interpoliert.", "tp-041": "Am Pfad messen", "tp-050": "Die Arithmetik, ausgeschrieben", "tp-051": "Absolute Kontraktion, eine Gerade ab dem Basisjahr", "tp-052": "Exponentiell, dieselbe Rate auf das Vorjahr angewandt", "tp-053": "Intensitätskonvergenz, eine Gerade unter der Intensität", "tp-054": "Kumuliertes Budget, die Fläche unter dem Pfad statt dessen Endpunkt", "tp-055": "Erforderliche Rate ab hier, um das Ziel noch zu erreichen", "tp-056": "Die einzige Konstante auf dieser Seite", "tp-057": "Minimale lineare jährliche Reduktion, kurzfristig Scope 1 und 2, 1,5°C", "tp-059": "Die Rate ist eine Untergrenze für ein Basisjahr 2020; die Kriterien passen sie für spätere Basisjahre nach oben an und setzen für Scope 3 eine eigene, niedrigere Rate, beides wendet diese Seite nicht an. Ersetzen Sie 4,2 Prozent durch die Rate, mit der Ihr eigenes Ziel validiert wurde, und lesen Sie die Kriterien statt dieser Seite.", "tp-060": "Was diese Seite nicht weiß", "tp-061": "Ob Ihr Ziel jemals validiert wurde, von irgendwem", "tp-062": "Was in Ihrer Bilanz steht, auf welcher Grenze sie gezogen wurde, oder ob das Basisjahr seither neu berechnet wurde", "tp-063": "Ob die Minderung echt ist oder das Ergebnis von Verkäufen, Umklassifizierungen oder Zukäufen", "tp-064": "Irgendetwas über Entnahmen, Kompensation oder Neutralisierung; nichts davon kommt in dieser Arithmetik vor", "tp-065": "Ob ein linearer Pfad die richtige Form für Ihre Branche ist. Das beantwortet die sektorale Leitlinie und nicht diese Seite", "tp-066": "Die Methode dahinter: die Fallstudie zum Zielpfad", "tp-070": "<strong>Jede Zahl hier ist Arithmetik auf Werten, die Sie geliefert haben, und das Eingangsbeispiel ist erfunden:</strong> das Unternehmen gibt es nicht, und nichts davon ist ein Vergleichswert, ein Ziel, eine Validierung, eine Offenlegung oder eine Beratung.", "tp-071": "Läuft vollständig in Ihrem Browser: nichts, was Sie eingeben, verlässt diese Seite, und nach dem Laden der Schriften gibt es keine Netzwerkaufrufe, sodass es offline funktioniert. Gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>, Student an der TUM und der Universität Istanbul, als persönliches Projekt, weder mit einer der beiden Universitäten verbunden noch von ihnen unterstützt.", "tp-100": "Der Pfad", "tp-101": "Emissionen im Zieljahr", "tp-102": "Gesamtminderung gegenüber dem Basisjahr", "tp-103": "Kumuliertes Budget über den ganzen Pfad", "tp-104": "Zwei Pfade können auf derselben Zahl enden und sich hier unterscheiden, und dies ist die Größe, auf die die Atmosphäre reagiert.", "tp-105": "Die Kurve", "tp-106": "Der Emissionspfad vom Basisjahr bis zum Zieljahr.", "tp-107": "Pfad", "tp-110": "Jahr", "tp-111": "Pfad", "tp-112": "Gegenüber dem Basisjahr", "tp-113": "Jahr für Jahr", "tp-120": "Zeichnen Sie in Abschnitt eins einen Pfad, dann füllt sich dieser Bereich.", "tp-121": "Dieselbe Rate, zweimal gesagt", "tp-122": "Linear, Anteil des Basisjahres", "tp-123": "Exponentiell, Anteil des Basisjahres", "tp-124": "Der Abstand dazwischen", "tp-125": "Prozentpunkte", "tp-126": "Über {n} Jahre bei {r} landet der lineare Pfad bei {a} des Basisjahres und der exponentielle bei {b}. Der exponentielle Pfad ist jedes einzelne Jahr leichter, weil die Minderung jedes Jahres von einer kleineren Zahl genommen wird als im Jahr davor.", "tp-127": "Beide Pfade zusammen gezeichnet", "tp-128": "Ein linearer und ein exponentieller Pfad bei derselben Rate.", "tp-129": "Linear", "tp-130": "Exponentiell", "tp-131": "Und kumuliert betrachtet", "tp-132": "Budget unter dem linearen Pfad", "tp-133": "Budget unter dem exponentiellen Pfad", "tp-134": "Zusätzlicher Kohlenstoff unter dem exponentiellen Pfad", "tp-140": "Geben Sie mindestens ein tatsächliches Jahr ein, bevor hier etwas gemessen werden kann.", "tp-141": "Tatsächlich", "tp-142": "Abstand", "tp-143": "Stand", "tp-144": "zurück", "tp-145": "auf Kurs oder voraus", "tp-146": "Gegen den Pfad", "tp-147": "Die Arithmetik der Verzögerung", "tp-148": "Das letzte eingegebene Jahr ist das Zieljahr, es bleibt also keine Zeit, über die eine Rate berechnet werden könnte.", "tp-149": "Zum Stand {y} liegen Sie bereits auf oder unter dem Ziel; die Arithmetik verlangt nichts weiter, was nicht dasselbe ist, wie dass nichts weiter lohnend wäre.", "tp-150": "des heutigen Niveaus, jedes Jahr, ab hier", "tp-151": "Erreicht gegenüber dem Basisjahr, zum Stand {y}", "tp-152": "Was der Pfad im selben Jahr verlangte", "tp-153": "Verbleibende Jahre bis zum Ziel", "tp-154": "Ab hier erforderlich, gegen die von Ihnen gesetzte Rate", "tp-155": "Die erforderliche Minderung ist von {a} auf {b} gestiegen, und dieser Anstieg ist der Preis der Verzögerung, unsichtbar für jeden, der nur das Zieljahr verfolgt.", "tp-156": "Kumuliert über die von Ihnen eingegebenen Jahre", "tp-157": "Was der Pfad zuließ", "tp-158": "Was tatsächlich emittiert wurde", "tp-159": "Überschreitung gegenüber dem Budget", "tp-160": "Ein Unternehmen, das seine Emissionen nach vorne verlagert und am Ende hart kürzt, kann sein Zieljahr genau treffen und trotzdem mehr Kohlenstoff verbraucht haben, als der Pfad zuließ.", "tp-161": "Die kumulierte Größe braucht aufeinanderfolgende Jahre; füllen Sie die Lücken, dann erscheint sie.", "tp-e1": "Geben Sie die Emissionen des Basisjahres als Zahl größer als null ein.", "tp-e2": "Geben Sie ein Basisjahr und ein Zieljahr ein.", "tp-e3": "Das Zieljahr muss nach dem Basisjahr liegen.", "tp-e4": "Das ist länger, als diese Seite zeichnet; bleiben Sie unter achtzig Jahren.", "tp-e5": "Geben Sie eine jährliche Rate größer als null ein.", "tp-skip": "Zum Instrument springen", "pg-title": "Emissionspfad: die jährliche Minderung, die Ihr Ziel noch verlangt. Kerem Özdemir"}, "tr": {"pg-desc": "Bir azaltım hedefine giden patikayı çizer, bugün nerede durduğunuzu ölçer ve buradan itibaren yıllık kesintinin ne olması gerektiğini söyler.", "tp-001": "Hedef tek bir sayı. Asıl mesele ona giden yol.", "tp-002": "İki şirket aynı yıl için aynı sayıya söz verip yolda atmosfere çok farklı miktarda karbon bırakabilir, çünkü atmosfer patikanın altında kalan alana tepki verir, bitiş noktasına değil.", "tp-003": "<span class=\"k-num\">01</span>Patika", "tp-004": "Bir taban yılı ve o yıl ne kadar saldığınızı, hedefin düştüğü yılı ve yıllık oranı girin; varsayılan oran, Science Based Targets initiative'in 1,5°C ile uyumlu yakın vadeli Kapsam 1 ve 2 hedefi için koyduğu taban, bir kural değil bir varsayılan.", "tp-005": "<span class=\"k-num\">02</span>Doğrusala karşı bileşik", "tp-006": "<span class=\"k-num\">03</span>Gerçekte neredesiniz", "tp-007": "<span class=\"k-num\">04</span>Yöntem ve bu sayfanın söyleyemedikleri", "tp-010": "Taban yılı emisyonu", "tp-011": "Hangi birimi tutuyorsanız o birimde; baştan sona taşınır, hiç dönüştürülmez.", "tp-012": "Taban yılı", "tp-013": "Hedef yılı", "tp-014": "Yıllık oran, yüzde", "tp-015": "Her yıl, taban yılının üzerinden.", "tp-016": "Şekil", "tp-017": "Mutlak daralma", "tp-018": "Yoğunluk yakınsaması", "tp-019": "Faaliyet büyümesi, yılda yüzde", "tp-020": "Yoğunluğun ölçüldüğü şey için kendi tahmininiz.", "tp-021": "Birim", "tp-022": "Patikayı çizin", "tp-023": "Örnek yükleyin", "tp-024": "Tabloyu kopyalayın", "tp-030": "Doğrusal bir patika her yıl taban yılının sabit bir payını siler; bileşik bir patika geçen yılın sabit bir payını siler, yani başlıktaki yüzde aynı kalırken kesinti her yıl küçülür. Bunlar aynı taahhüt değil ve aradaki fark, ifadenin düşündürdüğünden geniş.", "tp-040": "Taban yılından bu yana ne saldığınızı girin; boş bıraktığınız yıllar ara değerle doldurulmaz, boş kalır.", "tp-041": "Patikaya karşı ölçün", "tp-050": "Aritmetik, açık açık yazılmış", "tp-051": "Mutlak daralma, taban yılından çıkan düz bir çizgi", "tp-052": "Bileşik, aynı başlık oranının geçen yıla uygulanması", "tp-053": "Yoğunluk yakınsaması, yoğunluğun altındaki düz çizgi", "tp-054": "Kümülatif bütçe, bitiş noktası değil patikanın altındaki alan", "tp-055": "Buradan itibaren gereken oran, hedefe yine de inebilmek için", "tp-056": "Bu sayfadaki tek sabit", "tp-057": "Asgari doğrusal yıllık azaltım, yakın vadeli Kapsam 1 ve 2, 1,5°C", "tp-059": "Bu oran 2020 taban yılı için bir taban değeri; ölçütler sonraki taban yılları için oranı yukarı çekiyor ve Kapsam 3 için ayrı, daha düşük bir oran koyuyor, bu sayfa ikisini de uygulamıyor. Yüzde 4,2'yi kendi hedefinizin doğrulandığı oranla değiştirin ve bu sayfayı değil ölçütleri okuyun.", "tp-060": "Bu sayfanın bilmediği şeyler", "tp-061": "Hedefinizin herhangi biri tarafından doğrulanıp doğrulanmadığı", "tp-062": "Envanterinizin içinde ne olduğu, hangi sınır üzerinden çizildiği ya da taban yılının o günden beri yeniden hesaplanıp hesaplanmadığı", "tp-063": "Azaltımın gerçek mi olduğu, yoksa elden çıkarmanın, yeniden sınıflandırmanın ya da bir şey satın almanın sonucu mu olduğu", "tp-064": "Uzaklaştırma, denkleştirme ya da nötrleme hakkında hiçbir şey; bu aritmetiğin hiçbir yerinde geçmiyorlar", "tp-065": "Doğrusal bir patikanın sizin sektörünüz için doğru şekil olup olmadığı; bunu sektörel rehber cevaplıyor, bu sayfa değil", "tp-066": "Arkasındaki yöntem: hedef patikası vaka çalışması", "tp-070": "<strong>Bu sayfadaki her sayı sizin verdiğiniz rakamlar üzerinde yapılan aritmetiktir ve açılıştaki örnek uydurmadır:</strong> o şirket yok, ve bunların hiçbiri bir kıyas değeri, bir hedef, bir doğrulama, bir beyan ya da tavsiye değil.", "tp-071": "Tamamen tarayıcınızda çalışır: yazdığınız hiçbir şey bu sayfadan çıkmaz, yazı tipleri yüklendikten sonra ağ isteği yok, sayfa önbelleğe alındıktan sonra çevrimdışı da çalışır. Yapan <a href=\"../../index.html\">Kerem Özdemir</a>, TUM ve İstanbul Üniversitesi öğrencisi; kişisel bir proje, iki üniversiteyle de bağlantılı değil ve onlar tarafından desteklenmiyor.", "tp-100": "Patika", "tp-101": "Hedef yılı emisyonu", "tp-102": "Taban yılına karşı toplam azaltım", "tp-103": "Patikanın tamamı boyunca kümülatif bütçe", "tp-104": "İki patika aynı sayıda bitip burada ayrışabilir; atmosferin tepki verdiği rakam budur.", "tp-105": "Yörünge", "tp-106": "Taban yılından hedef yılına emisyon patikası.", "tp-107": "Patika", "tp-110": "Yıl", "tp-111": "Patika", "tp-112": "Taban yılına karşı", "tp-113": "Yıl yıl", "tp-120": "Birinci bölümde bir patika çizin, burası dolsun.", "tp-121": "Aynı oran, iki farklı ifade", "tp-122": "Doğrusal, taban yılının payı", "tp-123": "Bileşik, taban yılının payı", "tp-124": "Aralarındaki fark", "tp-125": "yüzde puan", "tp-126": "{n} yıl boyunca {r} oranıyla, doğrusal patika taban yılının {a} düzeyine, bileşik patika ise {b} düzeyine iniyor. Bileşik patika her yıl daha kolay, çünkü her yılın kesintisi bir öncekinden küçük bir sayının üzerinden alınıyor.", "tp-127": "İki patika birlikte", "tp-128": "Aynı başlık oranıyla doğrusal ve bileşik patikalar.", "tp-129": "Doğrusal", "tp-130": "Bileşik", "tp-131": "Kümülatif olarak", "tp-132": "Doğrusal patikanın bütçesi", "tp-133": "Bileşik patikanın bütçesi", "tp-134": "Bileşik patikada fazladan çıkan karbon", "tp-140": "Bunun bir şey ölçebilmesi için en az bir gerçekleşen yıl girin.", "tp-141": "Gerçekleşen", "tp-142": "Fark", "tp-143": "Durum", "tp-144": "geride", "tp-145": "patikada ya da önde", "tp-146": "Patikaya karşı", "tp-147": "Gecikmenin aritmetiği", "tp-148": "Girdiğiniz son yıl hedef yılı, yani üzerinden oran hesaplanacak zaman kalmamış.", "tp-149": "{y} itibarıyla hedefin altındasınız ya da tam üzerindesiniz; aritmetik başka bir şey istemiyor, bu da yapılacak başka bir şey olmadığı anlamına gelmiyor.", "tp-150": "bugünkü seviyenin, her yıl, buradan itibaren", "tp-151": "{y} itibarıyla taban yılına karşı gerçekleşen", "tp-152": "Patikanın aynı yıl için istediği", "tp-153": "Hedefe kalan yıl", "tp-154": "Buradan itibaren gereken, sizin belirlediğiniz orana karşı", "tp-155": "Gereken kesinti {a} düzeyinden {b} düzeyine çıktı; bu artış gecikmenin bedeli ve yalnızca hedef yılını takip eden birine görünmüyor.", "tp-156": "Girdiğiniz yıllar boyunca kümülatif", "tp-157": "Patikanın izin verdiği", "tp-158": "Gerçekte salınan", "tp-159": "Bütçeye karşı aşım", "tp-160": "Emisyonunu başa yükleyip sonda sert kesen bir şirket hedef yılını tam tutturup yine de patikanın izin verdiğinden fazla karbon harcamış olabilir.", "tp-161": "Kümülatif rakam ardışık yıllar istiyor; boşlukları doldurun, görünecek.", "tp-e1": "Taban yılı emisyonunu sıfırdan büyük bir sayı olarak girin.", "tp-e2": "Bir taban yılı ve bir hedef yılı girin.", "tp-e3": "Hedef yılı, taban yılından sonra gelmeli.", "tp-e4": "Bu, bu sayfanın çizdiğinden uzun; seksen yılın altında tutun.", "tp-e5": "Sıfırdan büyük bir yıllık oran girin.", "tp-skip": "Araca geçin", "pg-title": "Emisyon patikası: hedefin hâlâ istediği yıllık kesinti. Kerem Özdemir"}};
 
   function T(k, en, v) {
     var out = window.__t ? window.__t(k, en) : en;
@@ -1543,8 +1713,7 @@ var Kit = (function () {
 })();
 </script>
 <script>
-window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-k": "Vaka çalışmaları", "crown": "<i>Araç · hedefler ve patikalar<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte",
-"nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-k": "Fallstudien", "crown": "<i>Instrument · Ziele und Pfade<\/i>"}};
+window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler", "crown": "<i>Araç · hedefler ve patikalar<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen", "crown": "<i>Instrument · Ziele und Pfade<\/i>"}};
 
 (function(){
   "use strict";

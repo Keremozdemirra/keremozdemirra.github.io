@@ -8,14 +8,16 @@
      nothing you type leaves the page into something the browser enforces. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 
-<title>Why the future is cheap</title>
-<meta name="description" content="An explorable essay on discounting. Move the rate and watch a fixed benefit in a distant year lose almost all of its present value. The same climate damage is a catastrophe at one rate and a rounding error at another, and choosing the rate is an ethical act.">
+<title>Why the future is cheap, an essay on discounting. Kerem Özdemir</title>
+<meta name="description" content="Move the discount rate and watch a distant benefit lose its present value. One climate damage is a catastrophe at one rate and a rounding error at another.">
 <meta name="author" content="Kerem Özdemir">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="../../../fonts/fonts.css">
+<script>(function(){var d=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")})})()</script>
 <link rel="canonical" href="https://keremozdemir.de/run/tools/economics/discounting/">
-<meta property="og:title" content="Why the future is cheap">
-<meta property="og:description" content="An explorable essay on discounting. Move the rate and watch a fixed benefit in a distant year lose almost all of its present value. The same climate damage is a catastrophe at one rate and a rounding error at another, and choosing the rate is an ethical act.">
+<meta property="og:url" content="https://keremozdemir.de/run/tools/economics/discounting/">
+<meta property="og:title" content="Why the future is cheap, an essay on discounting. Kerem Özdemir">
+<meta property="og:description" content="Move the discount rate and watch a distant benefit lose its present value. One climate damage is a catastrophe at one rate and a rounding error at another.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -69,10 +71,59 @@
   --edge:    clamp(1.1rem, 5vw, 3.25rem);
 }
 
-/* The instruments used to flip to a dark palette with the system.  They
-   sit inside keremozdemir.de now, whose paper is light and whose top bar
-   and footer are painted from the site's own tokens, so a page that went
-   dark underneath a light bar would only look broken.  One palette. */
+/* The dark palette. It follows the system, and data-theme on the root
+   overrides the system both ways: the head script sets it from ?theme= in
+   the address (a case study framing the instrument passes the site's own
+   theme) or from the theme the reader chose on the site. The values are the
+   site's dark tokens (src/app/globals.css), so a framed instrument and the
+   page around it share one ground. Measured 2026-11-04: ink 15.6:1, dim
+   7.1:1 on the paper and 6.4:1 on a field, accent 5.6:1 on a field, flag
+   6.8:1 on its tint, a control's edge 3.8:1 against the field. The bar and
+   the footer flip with the page (pagegen.py), so nothing is left light
+   above or below it. The kit's selectors are written twice because a media
+   query and an attribute cannot share one prelude. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #111214;
+    --paper-sunk: #161719;
+    --panel:      #18191c;
+    --field:      #1c1d21;
+    --ink:        #e9eaec;
+    --ink-soft:   #c3c7cd;
+    --dim:        #9aa0a8;
+    --faint:      #9aa0a8;
+    --rule:       #292b30;
+    --rule-firm:  #3a3d43;
+    --rule-edge:  #737882;
+    --accent:     #f5694b;
+    --accent-lit: #2a2d33;
+    --flag:       #f08a6a;
+    --flag-lit:   #2a1a15;
+    --good:       #8cc084;
+    --good-lit:   #17221a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:      #111214;
+  --paper-sunk: #161719;
+  --panel:      #18191c;
+  --field:      #1c1d21;
+  --ink:        #e9eaec;
+  --ink-soft:   #c3c7cd;
+  --dim:        #9aa0a8;
+  --faint:      #9aa0a8;
+  --rule:       #292b30;
+  --rule-firm:  #3a3d43;
+  --rule-edge:  #737882;
+  --accent:     #f5694b;
+  --accent-lit: #2a2d33;
+  --flag:       #f08a6a;
+  --flag-lit:   #2a1a15;
+  --good:       #8cc084;
+  --good-lit:   #17221a;
+  color-scheme: dark;
+}
 
 /* ---------- 2. reset and page ---------- */
 
@@ -119,7 +170,7 @@ a:hover { border-bottom-color: var(--accent); }
 .k-skip {
   position: absolute; left: -9999px; top: 0; z-index: 50;
   background: var(--ink); color: var(--paper); border: 0;
-  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.875rem;
 }
 .k-skip:focus { left: 0.5rem; top: 0.5rem; }
 
@@ -151,8 +202,8 @@ a:hover { border-bottom-color: var(--accent); }
   margin-bottom: 1.1rem;
 }
 .k-sect > h2 .k-num {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
-  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
+  color: var(--faint); vertical-align: 0.4em; margin-right: 0.65rem;
 }
 .k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
 
@@ -166,13 +217,17 @@ a:hover { border-bottom-color: var(--accent); }
 .k-row.k-row-tight { gap: 0.55rem 0.9rem; }
 
 .k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+/* A label is read before the field is touched, so it is set at the size of
+   the text around it: 14px in the sans, sentence case as written. It used to
+   be 11px mono capitals, which was the smallest type on the page on the line
+   a reader needs first. */
 .k-field > label, .k-lab {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500;
+  letter-spacing: 0; color: var(--dim); line-height: 1.35;
 }
 .k-field .k-hint {
-  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
-  line-height: 1.45; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="text"], input[type="number"], input[type="search"], select, textarea {
@@ -209,8 +264,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   display: inline-flex; align-items: center; gap: 0.5rem;
   background: transparent; color: var(--ink);
   border: 1px solid var(--rule-firm); border-radius: 0;
-  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
-  letter-spacing: 0.13em; text-transform: uppercase;
+  font-family: var(--mono); font-weight: 500; font-size: 0.78rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.62rem 0.95rem; cursor: pointer;
   transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
 }
@@ -219,8 +274,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
 .k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .k-btn-key { color: #f7f5ee; }
+/* on the dark ground the accent is light, so the label on it goes dark */
+:root[data-theme="dark"] .k-btn-key { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .k-btn-key { color: var(--paper); }
+}
 .k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.75rem; padding: 0.45rem 0.7rem; }
 
 .k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
 
@@ -233,8 +293,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-panel + .k-panel { margin-top: var(--gap); }
 .k-panel > h3, .k-panel-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.75rem;
 }
 .k-panel-sunk { background: var(--paper-sunk); }
@@ -251,15 +311,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
 
 .k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
-.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dt { font-family: var(--serif); font-size: 0.875rem; color: var(--dim); min-width: 0; }
 .k-kv dd {
-  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  margin: 0; font-family: var(--mono); font-size: 0.875rem;
   font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
 }
 .k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
 
 /* arithmetic trace: every step printed */
-.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.875rem; line-height: 1.7; }
 .k-steps li {
   display: grid; grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.2rem 1rem; padding: 0.3rem 0;
@@ -285,18 +345,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 /* ---------- 6. source line ---------- */
 
 .k-source {
-  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; align-items: baseline;
   margin-top: 0.7rem; padding-top: 0.55rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
 }
 .k-source::before {
-  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  content: "source"; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); flex: none;
 }
 .k-source.k-source-bare::before { content: none; }
-.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all;
+  display: inline-block; padding-block: 0.15rem; }
+@media (pointer: coarse) {
+  .k-source a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; }
+}
 .k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .k-source .k-checked { color: var(--faint); white-space: nowrap; }
 
@@ -316,8 +381,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
 
 .k-tag {
-  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  display: inline-block; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
   white-space: nowrap;
 }
@@ -333,22 +398,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   font-size: 0.92rem;
 }
 .k-ask li > b {
-  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
-  padding-top: 0.22rem;
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.15rem;
 }
 
 /* ---------- 8. tables ---------- */
 
 .k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.875rem; }
 .k-table th, .k-table td {
   text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
   border-bottom: 1px solid var(--rule); vertical-align: top;
 }
 .k-table th {
-  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
-  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  font-family: var(--serif); font-weight: 500; font-size: 0.875rem;
+  letter-spacing: 0; color: var(--dim);
   border-bottom-color: var(--rule-firm); white-space: nowrap;
 }
 .k-table td.k-n, .k-table th.k-n {
@@ -356,7 +422,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   text-align: right; padding-right: 0; white-space: nowrap;
 }
 .k-table tbody tr:last-child td { border-bottom: 0; }
-.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell { font-family: var(--serif); font-size: 0.875rem; line-height: 1.55; color: var(--dim); }
 .k-table .k-src-cell a { word-break: break-all; }
 
 /* ---------- 9. timeline ---------- */
@@ -369,13 +435,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-time li:first-child { border-top: 0; padding-top: 0; }
 .k-time .k-when {
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.03em;
   color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
 }
 .k-time .k-what { font-size: 0.96rem; color: var(--ink); }
 .k-time .k-what small {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+  display: block; font-family: var(--serif); font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.55;
 }
 .k-time li.k-past .k-when { color: var(--faint); }
 .k-time li.k-past .k-what { color: var(--dim); }
@@ -394,8 +460,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-endnote .k-wrap { display: grid; gap: 1.1rem; }
 .k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
 .k-endnote .k-fine {
-  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-size: 0.875rem; line-height: 1.6; color: var(--faint);
 }
 .k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
 .k-endnote a:hover { color: var(--accent); }
@@ -405,7 +470,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-toast {
   position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
   background: var(--ink); color: var(--paper);
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
   opacity: 0; pointer-events: none;
   transition: opacity 0.18s ease;
@@ -477,7 +542,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   border-bottom: 1px solid var(--rule-firm);
 }
 .ex-body > h2 .k-num {
-  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
 }
 .ex-body > h3 {
@@ -512,15 +577,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 
 /* a formula set on its own line, in words rather than symbols */
 .ex-formula {
-  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.7;
   color: var(--ink); background: var(--panel);
   border-left: 2px solid var(--accent);
   padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
   max-width: 40rem; overflow-wrap: break-word;
 }
 .ex-formula small {
-  display: block; font-size: 0.66rem; color: var(--faint);
-  margin-top: 0.35rem; letter-spacing: 0.02em;
+  display: block; font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  margin-top: 0.35rem; line-height: 1.55;
 }
 
 /* ---------- the model figure, wider than the prose ---------- */
@@ -534,8 +599,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-model > figcaption,
 .ex-model-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.85rem;
   display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
 }
@@ -566,18 +631,18 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500; letter-spacing: 0;
+  color: var(--dim); line-height: 1.4;
   display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
 }
 .ex-ctrl .ex-val {
-  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  font-family: var(--mono); font-size: 0.875rem; letter-spacing: 0;
   text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
   font-weight: 500;
 }
 .ex-ctrl .k-hint {
-  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
-  line-height: 1.5; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="range"] {
@@ -608,7 +673,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
 .ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
 .ex-seg-row > label {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em;
   padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
   border: 1px solid var(--rule-firm); margin-left: -1px;
   background: var(--field); line-height: 1.3; white-space: nowrap;
@@ -628,7 +693,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 
 .ex-check {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   color: var(--dim); cursor: pointer;
 }
 .ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
@@ -643,8 +708,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-read > div { min-width: 0; }
 .ex-read dt, .ex-read .ex-read-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; letter-spacing: 0;
+  color: var(--faint); line-height: 1.35;
   margin: 0 0 0.15rem;
 }
 .ex-read dd, .ex-read .ex-read-v {
@@ -653,8 +718,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
 }
 .ex-read .ex-read-v small {
-  display: block; font-size: 0.63rem; font-weight: 400;
-  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+  display: block; font-family: var(--serif); font-size: 0.875rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0; margin-top: 0.15rem;
 }
 .ex-read-hot .ex-read-v { color: var(--accent); }
 .ex-read-flag .ex-read-v { color: var(--flag); }
@@ -662,13 +727,13 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-sum {
   margin-top: 0.9rem; padding-top: 0.7rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
-  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--dim); max-width: none;
 }
 .ex-sum b { color: var(--ink-soft); font-weight: 500; }
 .ex-sum::before {
-  content: "reading"; display: block;
-  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  content: "reading"; display: block; font-family: var(--mono);
+  font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); margin-bottom: 0.3rem;
 }
 
@@ -689,8 +754,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-key {
   display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
   margin-top: 0.7rem;
-  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
-  letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--dim);
 }
 .ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
 .ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
@@ -717,9 +781,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
 .ex-cites .ex-cite-w {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
-  line-height: 1.65;
+  display: block; font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.55;
 }
 .ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
 .ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
@@ -742,11 +806,11 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-next a:hover { border-color: var(--accent); background: var(--field); }
 .ex-next a:hover .ex-next-t { color: var(--accent); }
 .ex-next .ex-next-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--faint);
 }
 .ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
-.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+.ex-next .ex-next-d { font-size: 0.9rem; color: var(--dim); line-height: 1.5; }
 
 /* ---------- mobile ---------- */
 
@@ -763,7 +827,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 /* ---------- essay four ---------- */
 
 .dc-ramsey {
-  font-family: var(--mono); font-size: 0.85rem; line-height: 1.9;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.9;
   color: var(--ink); background: var(--paper-sunk);
   border: 1px solid var(--rule-firm);
   padding: 0.8rem 0.9rem; margin: 1rem 0 0;
@@ -776,7 +840,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .dc-positions td b { color: var(--accent); font-weight: 500; }
 .dc-positions .k-n { min-width: 5rem; }
 
-.dc-note { font-family: var(--mono); font-size: 0.68rem; color: var(--faint); line-height: 1.7; }
+.dc-note { font-size: 0.875rem; color: var(--faint); line-height: 1.55; }
 
 /* ---------- the site's clothes, worn by an instrument ---------- */
 .bar,footer.site-foot,.leaf-mark{
@@ -792,6 +856,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .bar,footer.site-foot{color:var(--fg)}
 footer.site-foot{background:var(--paper)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar,:root:not([data-theme="light"]) footer.site-foot,:root:not([data-theme="light"]) .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}}
+:root[data-theme="dark"] .bar,:root[data-theme="dark"] footer.site-foot,:root[data-theme="dark"] .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}
+
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
 .wrap{max-width:74rem;margin:0 auto;padding:0 1.5rem}
@@ -806,6 +873,7 @@ footer.site-foot{background:var(--paper)}
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:var(--paper);border-bottom:1px solid var(--line)}
 .in-frame .bar,.in-frame .site-foot{display:none}
 .bar .wrap{display:flex;align-items:center;gap:2rem;height:70px}
+.bar .home,.langs{flex:none}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;
   border-bottom:0;color:var(--fg);white-space:nowrap}
 .bar nav:not(.langs){margin:0 auto}
@@ -841,6 +909,33 @@ footer.site-foot{background:var(--paper)}
 /* ---------- a leaf, falling once ---------- */
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar between a phone and a laptop ----------
+   One row needs 1,027 px in German with a touch screen (measured 2026-11-04:
+   the name, six sections, the three languages and the gaps), so from 641 to
+   1,080 px the bar takes two rows the way a phone does: the name and the
+   languages on the first, the sections on the second, which scrolls in place
+   if a long word still does not fit. Below that the switcher sat 130 px past
+   the right edge at 768 and could not be reached. */
+@media (min-width:641px) and (max-width:1080px){
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:1rem;row-gap:0;padding-top:.75rem;padding-bottom:.2rem}
+  .bar .home{line-height:33px}
+  .langs{margin-left:auto}
+  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0 -6px;padding:4px 6px;justify-content:flex-start;
+    gap:1.4rem;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+  .bar nav:not(.langs)::-webkit-scrollbar{display:none}
+  .bar nav a{padding:.45rem 0;flex:0 0 auto}
+}
+
+/* ---------- inside a case study's frame ----------
+   The page around the frame already has the title and the argument, so the
+   frame opens on the instrument: the heading and the standfirst are kept
+   for a screen reader and taken off the screen. A scaled preview is left
+   as it is, because its picture is the page's first screen. */
+.framed-tool .k-lede{position:absolute!important;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.framed-tool .k-main{padding-top:clamp(.9rem,3vw,1.4rem)}
+.framed-tool .k-lede + .k-sect{margin-top:0}
 
 /* ---------- the bar and the footer, narrowed ---------- */
 @media (max-width:640px){
@@ -923,11 +1018,10 @@ footer.site-foot{background:var(--paper)}
 
 <div class="k-shell">
 
-<script>if(window.self!==window.top)document.documentElement.classList.add("in-frame")</script>
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../../../">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../../../products/" data-i="nav-pd">Products</a><a href="../../../../projects/" data-i="nav-j">Projects</a><a href="../../../../games/" data-i="nav-g">Games</a><a href="../../../../cases/" data-i="nav-k">Case studies</a><a href="../../../../about/" data-i="nav-p">About</a><a href="../../../../contact/" data-i="nav-c">Contact</a></nav>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../../products/" data-i="nav-pd">Products</a><a href="../../../../projects/" data-i="nav-j">Projects</a><a href="../../../../games/" data-i="nav-g">Games</a><a href="../../../../discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../../about/" data-i="nav-p">About</a><a href="../../../../contact/" data-i="nav-c">Contact</a></nav>
     <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
   </div>
 </header>
@@ -1005,7 +1099,7 @@ footer.site-foot{background:var(--paper)}
             <caption class="k-vh" data-i="dc-045">Discount rate parameters used by Stern and by Nordhaus</caption>
             <thead>
               <tr>
-                <th scope="col"></th>
+                <th scope="col"><span class="k-vh" data-i="dc-pos-h">Estimate</span></th>
                 <th scope="col" class="k-n" data-i="dc-049">Pure time preference</th>
                 <th scope="col" class="k-n" data-i="dc-050">Elasticity</th>
                 <th scope="col" class="k-n" data-i="dc-051">Growth</th>
@@ -1316,6 +1410,16 @@ var Kit = (function () {
     return new TextDecoder().decode(bytes);
   }
 
+  /* The query without ?theme=, which a case study adds when it frames the
+     instrument. A link copied inside the frame would otherwise open dark or
+     light for whoever it is sent to, whatever they chose themselves. */
+  function query() {
+    var q = (location.search || "").replace(/^\?/, "").split("&").filter(function (p) {
+      return p && p.indexOf("theme=") !== 0;
+    }).join("&");
+    return q ? "?" + q : "";
+  }
+
   var state = {
     /* Serialise the object into the location hash without adding a history entry. */
     write: function (obj) {
@@ -1323,7 +1427,7 @@ var Kit = (function () {
       try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
       if (h.length > 8000) return "";
       try {
-        history.replaceState(null, "", location.pathname + location.search + h);
+        history.replaceState(null, "", location.pathname + query() + h);
       } catch (e) {
         location.hash = h;
       }
@@ -1336,7 +1440,7 @@ var Kit = (function () {
       try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
     },
     clear: function () {
-      try { history.replaceState(null, "", location.pathname + location.search); }
+      try { history.replaceState(null, "", location.pathname + query()); }
       catch (e) { location.hash = ""; }
     }
   };
@@ -1438,6 +1542,71 @@ var Kit = (function () {
     }
     return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
   }
+
+  /* ---------- a region that scrolls sideways ---------- */
+
+  /* A wide table on a phone scrolls inside its box, and a box that scrolls is
+     a control: a keyboard has to be able to reach it to scroll it, and a
+     screen reader has to hear what it is. It takes a tab stop only while it
+     overflows, so the same table at desktop width adds none. The name is the
+     heading of the panel it sits in, by reference, so it follows the language
+     when the reader switches. Measured 2026-11-04: axe found 17 such boxes
+     across seven instrument pages at 390px, none of them reachable. */
+  var reachSel = ".k-scroll, .k-panel > pre, [data-k-scroll]";
+  var reachN = 0;
+  /* A box can start to overflow with no change to the DOM at all: the faces
+     arrive after the first layout and widen every table. Each box and its
+     table are watched for a change of size, so the check runs again then. */
+  var reachSeen = typeof WeakSet === "function" ? new WeakSet() : null;
+  var reachRO = typeof ResizeObserver === "function" ? new ResizeObserver(function () { reachSoon(); }) : null;
+  function reach() {
+    qsa(reachSel).forEach(function (box) {
+      if (reachRO && reachSeen && !reachSeen.has(box)) {
+        reachSeen.add(box);
+        reachRO.observe(box);
+        if (box.firstElementChild) reachRO.observe(box.firstElementChild);
+      }
+      var over = box.scrollWidth > box.clientWidth + 1;
+      var mine = box.getAttribute("data-k-reach") === "1";
+      if (over && !box.hasAttribute("tabindex")) {
+        box.setAttribute("tabindex", "0");
+        box.setAttribute("data-k-reach", "1");
+        mine = true;
+      } else if (!over && mine) {
+        box.removeAttribute("tabindex");
+        box.removeAttribute("role");
+        box.removeAttribute("aria-labelledby");
+        box.removeAttribute("aria-label");
+        box.removeAttribute("data-k-reach");
+        return;
+      }
+      if (!mine) return;
+      box.setAttribute("role", "region");
+      if (box.hasAttribute("aria-labelledby") || box.hasAttribute("aria-label")) return;
+      var panel = box.closest(".k-panel, .k-sect, section, figure");
+      var head = panel && panel.querySelector("h2, h3, h4, .k-panel-h, figcaption");
+      if (head) {
+        if (!head.id) head.id = "k-reach-" + (++reachN);
+        box.setAttribute("aria-labelledby", head.id);
+      } else {
+        box.setAttribute("aria-label", window.__t ? window.__t("kit-scroll", "Table, scrolls sideways") : "Table, scrolls sideways");
+      }
+    });
+  }
+  var reachQueued = false;
+  function reachSoon() {
+    if (reachQueued) return;
+    reachQueued = true;
+    (window.requestAnimationFrame || setTimeout)(function () { reachQueued = false; reach(); });
+  }
+  if (typeof MutationObserver === "function") {
+    new MutationObserver(reachSoon).observe(document.documentElement, { childList: true, subtree: true });
+  }
+  addEventListener("resize", reachSoon);
+  addEventListener("load", reachSoon);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(reachSoon);
+  if (document.readyState !== "loading") reachSoon();
+  else document.addEventListener("DOMContentLoaded", reachSoon);
 
   return {
     el: el, qs: qs, qsa: qsa, clear: clear,
@@ -1787,7 +1956,7 @@ var Ex = (function () {
 })();
 
 /* ---- the page's own three languages ---- */
-window.PAGE_I18N = {"tr": {"pg-desc": "İskonto üzerine keşfedilebilir bir deneme. Oranı oynat ve uzak bir yıldaki sabit bir faydanın bugünkü değerinin neredeyse tamamını yitirişini izleyin. Aynı iklim hasarı bir oranda felaket, başka bir oranda yuvarlama hatası; oranı seçmek etik bir edim.", "dc-noadv": "Bunlar düşünmek için araçlar, tavsiye değil; bu sayfadaki hiçbir sayı ölçülmüş değil.", "dc-srtp": "toplumsal zaman tercihi oranı olarak tahmin ediliyor, üç yılda bir güncelleniyor", "dc-kskip": "Denemeye atla", "dc-001": "Gelecek neden ucuz", "dc-002": "<span class=\"k-num\">01</span>Yüz euro, sonra", "dc-003": "<span class=\"k-num\">02</span>Formül etik bir beyandır", "dc-004": "<span class=\"k-num\">03</span>Aynı zarar, iki cevap", "dc-005": "<span class=\"k-num\">04</span>Stern ve Nordhaus, yan yana", "dc-006": "<span class=\"k-num\">05</span>Aynı aritmetik, takım elbiseyle", "dc-007": "<span class=\"k-num\">06</span>Modelin durduğu yer", "dc-008": "<span class=\"k-num\">07</span>Kaynaklar", "dc-009": "Her görüş ne diyor", "dc-010": "Varsayımlar ve sınırlar", "dc-011": "Bir asır sonraki bir felaket için bugün para harcamaya değip değmeyeceğine tek bir sayı karar veriyor; o sayı ölçülmüyor, seçiliyor ve makul insanlar farklı seçiyor.", "dc-012": "Sonra olan her şey şimdi daha az değerlidir; bu ahlaki bir iddia değil, pozitif faizin anlamıdır: bugün yüz euro ile bir yıl sonra yüz euro arasında seçim yapacaksanız ilki daha iyidir, çünkü yıl dolmadan yüzden fazlasına dönüştürülebilir. Bunu yeterince ileri taşıyın, aritmetik sert bir şey yapar.", "dc-013": "Oranı oynatın ve eğrinin eksene yapışmasını izleyin.", "dc-014": "Standart kuruluş Ramsey kuralıdır; oranı üç büyüklükten kurar ve yukarıdaki üç sürgünün tek bir sürgü yerine ayrı durmasının sebebi budur.", "dc-015": "iskonto oranı = saf zaman tercihi + (esneklik x büyüme oranı) <small data-i=\"dc-056\">İkinci terim tartışmasız. Birincisi değil.</small>", "dc-016": "İkinci terim zenginlik hakkında bir ifadedir: gelecekteki insanlar daha zenginse fazladan bir euro onlar için bugünkü birine ifade ettiğinden azını ifade eder, dolayısıyla onlara düşen bir fayda daha az sayılır. Esneklik, zenginleştikçe bir euronun değerinin ne kadar hızlı düştüğüdür. Bunların ikisi de, en azından ilkesel olarak, ampirik sorulardır ve bu konudaki anlaşmazlık sıradan bir anlaşmazlıktır.", "dc-017": "Saf zaman tercihi, bir insanın refahını yalnızca daha sonra gerçekleştiği için iskonto etme oranıdır; daha zengin olacağı için ya da o zamana kadar dünya bitebileceği için değil. Bunu yüzde ikiye ayarladığınızda, yüz yıl sonra yaşayan bir insanın bugün yaşayan bir insanın yaklaşık sekizde biri kadar saydığını söylemiş olursunuz ve bunu yüksek sesle değil, bir hesap tablosunda söylemiş olursunuz.", "dc-018": "Bunu çözecek bir ölçüm yok: bu, henüz var olmayan bir yabancıya ne kadar borçlu olunduğuna dair bir tutumdur ve teknik görünen bir sayı üreten bir denkleme girer. İskontonun bütün zorluğu budur: etik erken girer, üç yüz yıllık bileşik büyümeyle çarpılır ve öbür uçtan aritmetik kılığında çıkar.", "dc-019": "Diyelim ki önlem alınmamış bir iklim, belli bir noktadan sonra her yıl sabit büyüklükte bir zarar üretiyor, sonsuza kadar. Bunu önlemek için bugün harcanması rasyonel olan en yüksek tutar, o zararın bugünkü değeridir.", "dc-020": "O çubuklar arasında fiziksel dünyada hiçbir şey değişmedi: zarar aynı zarar. Değişen şey, hiçbir deneyin çözemeyeceği bir parametre ve sorunun harekete değip değmediğinin cevabı bir büyüklük mertebesi kaydı. Goulder ve Williams bunu temiz bir aritmetik örnekle anlatıyor: yüz yıl sonraki belirli bir tüketim kaybı, yüzde 4,3 iskonto oranında yüzde 1,4 oranındakinden yaklaşık on yedi kat küçüktür. Bu iki oran, örnek olsun diye uydurulmuş sayılar değil, iki görüşün ta kendisi.", "dc-021": "Anlaşmazlığa iki isim yapışmış durumda. Hangisinin doğru olduğunu söylemeyeceğim, çünkü bu anlaşmazlık söylenerek çözülen cinsten değil.", "dc-022": "İki görüş aynı esnekliği ve aynı varsayılan büyümeyi paylaşıyor, yani aralarındaki bütün fark ilk sütun; tablodaki her rakamın kaynağı yedinci bölümde.", "dc-023": "<span class=\"ex-em\">Stern</span>, saf zaman tercihini sıfıra çok yakın alır, ve geriye kalan küçük payı, ilgimiz üzerinde daha düşük bir hak iddiası olarak değil, gelecek kuşağın hiç olmama ihtimali olarak okur. Sav şu: her kuşak eşit sayar, ve bir insanı daha sonra doğduğu için iskonto etmek, betimleme olarak ne olursa olsun, etik olarak savunulabilir değildir. Sonucu düşük bir oran, uzak zarar için büyük bir bugünkü değer, ve şimdi ciddi harcama yapma gerekçesidir.", "dc-024": "<span class=\"ex-em\">Nordhaus</span>, parametrelerin insanların ve piyasaların fiilen yaptığıyla terbiye edilmesi gerektiği görüşünde. Reel faiz oranları ve tasarruf oranları, toplumların bugünü geleceğe karşı gerçekte nasıl takas ettiğini gösterir, ve gözlenen davranışla çelişen parametreler üzerine kurulu bir analiz, kimsenin kabul etmeyeceği bir tasarruf düzeyi önerir. Stern Raporu üzerine yazdığı incelemede, raporun sonuçlarının sıfıra yakın iskonto oranına belirleyici biçimde bağlı olduğunu ve piyasa faiz oranlarıyla tutarlı varsayımlar altında ayakta kalmayacağını savunuyor. Sonucu daha yüksek bir oran, uzak zarar için daha küçük bir bugünkü değer, ve daha kademeli hareket etme gerekçesidir.", "dc-025": "İkisi de tutarlı ve hiçbiri aritmetik hata yapmıyor; daha iyi veri de bu anlaşmazlığı çözmeyecek, çünkü soru ampirik değil.", "dc-026": "Aynı sorun her indirgenmiş nakit akışının tam ortasında durur; orada daha iyi giyinir ve daha az sorgulanır. Bir değerleme birkaç yılı açıkça öngörür, sonrasındaki her şeyi tek bir nihai değere indirger ve hepsini iskonto eder. Nihai değer, yukarıdaki uzak zararla aynı nesnedir: geleceğin uzun kuyruğu, birinin seçtiği bir oranla tek bir rakama çökertilmiş.", "dc-027": "Sıradan ayarlarda, bir şirketin değeri denen şeyin çoğu nihai değerde durur: öngörünün hiç öngörülmemiş kısmı, tek bir hücreye yazılan bir sonsuzluk varsayımı. Nihai büyüme oranını yarım puan oynatın ve değerlemenin ne kadarının onunla birlikte oynadığını görün.", "dc-028": "Bu iş için yaptığım alet, analist masası, her koşuda o payı ve onu üreten aritmetiği basar: <a href=\"../../analyst/index.html\">burada</a>, ardındaki akıl yürütme de <a href=\"../../../case-dcf-lab.html\" rel=\"noreferrer noopener\">dcf lab vaka incelemesi</a> olarak yazılı. Kendisinin ne kadarının nihai değer olduğunu söylemeyen bir değerleme, ne olduğunu söylemiyordur.", "dc-029": "<strong>Bu bir öğretim modeli, değerleme değil.</strong> Zararlar, nakit akışları ve ufuklar, iskonto oranının etkisi görünsün diye seçilmiş birimlerdir; Stern ve Nordhaus'a atfedilen parametrelerin kaynağı yedinci bölümde ve onların görüşü olarak aktarılmıştır.", "dc-030": "Tamamen tarayıcınızda çalışır: burada yaptığınız hiçbir şey sayfadan çıkmaz, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">Explorable Economics</a> bölümünün parçası; yapan <a href=\"../../../index.html\">Kerem Özdemir</a>.", "dc-031": "<b>Sabit bir oran</b>Buradaki her hesap, her yıla uygulanan tek bir oran kullanıyor. Ciddi literatürün büyük kısmı, gelecekteki büyümeye dair belirsizlik yüzünden oranın ufukla birlikte düşmesi gerektiğini savunuyor, ve tablodaki 2023 tarihli Amerika Birleşik Devletleri düzenleyici rehberi tam olarak bunu yapıyor. Düşen bir oran, uzak zararın ağırlığını hatırı sayılır ölçüde artırır, ve bu sayfa onu modellemiyor.", "dc-032": "<b>Kesinlik</b>Zarar kesin olarak ve bilinen bir miktarda geliyor. Gerçekte hem büyüklük hem zamanlama derinden belirsiz, ve harekete geçme gerekçesinin büyük kısmı merkezi tahmine değil, o dağılımın kuyruğuna dayanıyor. Bu sayfada hiçbir şey olasılık taşımıyor.", "dc-033": "<b>Tek bir tüketim malı</b>Ramsey kuralı, miktarı büyüyen tek bir mal varsayar. Kaybedilenin bir kısmının, bir kıyı şeridinin ya da bir türün, fazladan büyümenin satın aldığı hiçbir şeyle ikame edilemeyeceği ihtimalini ifade edecek bir yolu yoktur. Bazı zararlar daha zengin olmakla telafi edilemiyorsa, bütün çerçeve onları olduğundan az gösterir.", "dc-034": "<b>Zarar düz bir akış</b>Gerçek iklim zararı ne düzdür ne de tek bir tarihte başlar. İkinci şekildeki akış, oranın etkisi görünsün diye seçilmiş bir biçimdir, hiçbir şeyin tahmini değildir.", "dc-035": "<b>Sayılar, tahminler değil</b>Yüz euro, yılda yüzlük zarar ve üçüncü şekildeki nakit akışları okunaklılık için seçilmiş birimlerdir. Ölçüm değildirler, ve bu sayfada üretilen hiçbir rakamın gerçek bir değerlemede yeri yoktur.", "dc-036": "<b>İki görüş, alanın tamamı değil</b>Adı geçen iki görüş en çok atıf alan ikisi; aralarında ve ötelerinde, Stern'inkinden düşük ve Nordhaus'unkinden yüksek oranlar için savlar dahil geniş bir literatür var, dolayısıyla tablo saygın görüşlerin aralığı olarak okunmamalı.", "dc-042": "Şekil bir <span class=\"ex-model-sub\">gelecekteki bir yıldaki sabit bir tutarın bugünkü değeri</span>", "dc-043": "Şekil iki <span class=\"ex-model-sub\">bir zarar, dört oran</span>", "dc-044": "Şekil üç <span class=\"ex-model-sub\">bir değerlemenin ne kadarı kimsenin öngörmediği kısım</span>", "dc-045": "Stern'in ve Nordhaus'un kullandığı iskonto oranı parametreleri", "dc-046": "Stern parametrelerini kurun", "dc-047": "Nordhaus parametrelerini kurun", "dc-048": "Bağlantıyı kopyalayın", "dc-049": "Saf zaman tercihi", "dc-050": "Esneklik", "dc-051": "Büyüme", "dc-052": "İskonto oranı", "dc-055": "Amerika Birleşik Devletleri düzenleyici rehberi, 2023", "dc-037": "Tablodaki parametreler. Stern: saf zaman tercihi yüzde 0,1, marjinal faydanın esnekliği 1,0, büyüme yüzde 1,3, bu da yüzde 1,40 tüketim iskonto oranı veriyor. Nordhaus: saf zaman tercihi yüzde 3,0, aynı esneklik ve aynı büyüme, bu da yüzde 4,30 veriyor. Aynı makale, yüz yıl sonraki belirli bir tüketim kaybının yüzde 4,3 oranında yüzde 1,4 oranındakinden on yedi kat küçük olduğunu belirtiyor. <span class=\"ex-cite-w\">Lawrence H. Goulder and Roberton C. Williams III, <span class=\"ex-cite-t\">The Choice of Discount Rate for Climate Change Policy Evaluation</span>, NBER Working Paper 18301, 2012. <a href=\"https://www.nber.org/system/files/working_papers/w18301/w18301.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">nber.org/system/files/working_papers/w18301/w18301.pdf</a> Kontrol tarihi: 2026 08 21.</span>", "dc-038": "Aynı iki rakam: Stern için yüzde 1,4, yani yüzde 1,3 verimlilik büyümesi artı yok oluş riski için yüzde 0,1, ve Nordhaus için yüzde 4,3. Anlaşmazlık teknik değil, etik olarak çerçeveleniyor. <span class=\"ex-cite-w\">The CORE Econ Project, <span class=\"ex-cite-t\">The Economy</span>, microeconomics, section 9.5, Discounting, external effects, and the future of the planet. <a href=\"https://books.core-econ.org/the-economy/microeconomics/09-lenders-borrowers-05-discounting-external-effects.html\" target=\"_blank\" rel=\"noreferrer noopener\">books.core-econ.org</a> Kontrol tarihi: 2026 08 21.</span>", "dc-039": "Stern Raporu'nun kendi parametreleri: yılda yüzde 0,1 saf zaman tercihi oranı, gerekçesi yok oluş riski, ve marjinal faydanın esnekliği bir. <span class=\"ex-cite-w\">House of Commons Library, <span class=\"ex-cite-t\">The Stern Review and the discount rate</span>, Standard Note SN/EP/4739. <a href=\"https://researchbriefings.files.parliament.uk/documents/SN04739/SN04739.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">researchbriefings.files.parliament.uk/documents/SN04739/SN04739.pdf</a> Kontrol tarihi: 2026 08 21.</span>", "dc-040": "Nordhaus'un itirazını kendi ifadesiyle: Stern Raporu'nun sonuçları, belirli bir fayda fonksiyonuyla birleşen sıfıra yakın bir zaman iskonto oranı varsayımına belirleyici biçimde bağlıdır, ve piyasa reel faiz oranlarıyla tasarruf oranlarına uygun varsayımlar konduğunda ayakta kalmaz. <span class=\"ex-cite-w\">William D. Nordhaus, <span class=\"ex-cite-t\">A Review of the Stern Review on the Economics of Climate Change</span>, Journal of Economic Literature, volume 45, number 3, 2007, pages 686 to 702. <a href=\"https://www.aeaweb.org/articles?id=10.1257/jel.45.3.686\" target=\"_blank\" rel=\"noreferrer noopener\">aeaweb.org/articles?id=10.1257/jel.45.3.686</a> Kontrol tarihi: 2026 08 21.</span>", "dc-041": "Düzenleyici rakam: Circular A-4 belgesinin Kasım 2023 revizyonu, yakın vadeli analiz için yüzde 2,0 reel sosyal zaman tercihi oranını benimsiyor, üç yılda bir güncelliyor, ve uzun ufuklar için 2164 ile 2172 yılları arasında yüzde 1,1 seviyesine inen bir düşen oran cetveli veriyor. <span class=\"ex-cite-w\">Office of Management and Budget, <span class=\"ex-cite-t\">Circular No. A-4 discount rate history and appendix</span>, 9 November 2023. <a href=\"https://www.whitehouse.gov/wp-content/uploads/2023/11/CircularA-4DiscountHistory.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">whitehouse.gov/wp-content/uploads/2023/11/CircularA-4DiscountHistory.pdf</a> Kontrol tarihi: 2026 08 21.</span>", "dc-pct": "%{v}", "dc-eur": "{v} EUR", "dc-yrs": "{v} yıl", "dc-bn": "{v} milyar", "dc-sl-delta": "Saf zaman tercihi", "dc-sl-delta-h": "Bir insanın daha sonra geldiği için ne kadar az saydığı. Etik parametre bu.", "dc-sl-eta": "Marjinal faydanın esnekliği", "dc-sl-eta-h": "İnsanlar zenginleştikçe fazladan bir euronun değerini ne kadar hızlı yitirdiği.", "dc-sl-growth": "Tüketim büyümesi", "dc-sl-growth-h": "Her yılın bir öncekinden ne kadar zengin olduğu varsayılıyor.", "dc-sl-year": "Fiyatlanacak yıl", "dc-sl-year-h": "Eğri üzerinde işaretlenen ufuk.", "dc-sl-start": "Zararın başladığı yıl", "dc-sl-start-h": "Yılda 100 milyarlık zarar bu yıldan 300. yıla kadar sürüyor.", "dc-sl-fyears": "Açıkça öngörülen yıllar", "dc-sl-fyears-h": "Model, pes edip nihai değera geçmeden önce ne kadar ileriyi öngörüyor.", "dc-sl-wacc": "Sermaye maliyeti", "dc-sl-wacc-h": "Nakit akışlarının iskonto edildiği oran.", "dc-sl-tg": "Nihai büyüme", "dc-sl-tg-h": "Öngörü bittikten sonra sonsuza kadar varsayılan büyüme. Sermaye maliyetinin altında kalmalı.", "dc-fmt-year": "{v}. yıl", "dc-rd-r": "İskonto oranı", "dc-rd-v": "O yıldaki 100 EUR", "dc-rd-half": "Değerin yarılanma süresi", "dc-rd-gone": "Yüzde birin altına inme süresi", "dc-rd-st": "Stern oranıyla", "dc-rd-you": "Sizin oranınla", "dc-rd-nd": "Nordhaus oranıyla", "dc-rd-ratio": "Stern bölü Nordhaus", "dc-rd-share": "Nihai değerin taşıdığı pay", "dc-rd-pvf": "Açık yıllar", "dc-rd-pvt": "Nihai değer", "dc-rd-tot": "Toplam değer", "dc-sub-r": "saf zaman tercihi artı esneklik çarpı büyüme", "dc-sub-v": "EUR, {y}. yıldaki 100 EUR üzerinden", "dc-sub-years": "yıl", "dc-sub-zero": "oran sıfır", "dc-sub-from": "yıl sonra", "dc-sub-bn": "milyar EUR", "dc-sub-ratio": "Stern oranında daha büyük", "dc-sub-share": "toplam değerin içinde", "dc-sub-noshare": "büyüme iskonto oranının üstünde", "dc-sub-pvf": "öngörünün bugünkü değeri", "dc-sub-pvt": "nihai değerin bugünkü değeri", "dc-sub-tot": "firma değeri", "dc-never": "asla", "dc-times": "{n} kat", "dc-nodef": "tanımsız", "dc-noanswer": "cevap yok", "dc-none": "yok", "dc-bar-stern": "Stern, %1,4", "dc-bar-omb": "Düzenleyici rehber, %2,0", "dc-bar-you": "Sizin oranın, %{r}", "dc-bar-nord": "Nordhaus, %4,3", "dc-ax-worth": "bugünkü değer, EUR", "dc-ax-years": "yıl sonra", "dc-cap2": "bütün zarar akışının bugünkü değeri, bugünün parasıyla milyar EUR", "dc-cap3": "her öngörü yılının ve onlardan sonraki her şeyin kattığı bugünkü değer", "dc-after": "sonrası", "dc-yn": "y{n}", "dc-nofinite": "nihai büyüme sermaye maliyetine eşit ya da onun üstünde, o yüzden sonlu bir cevap yok", "dc-lb-year": "{y}. yıl: {v} EUR", "dc-lb-rate": "{name} %{r}", "dc-key-you": "sizin oranın", "dc-key-stern": "Stern, yüzde 1,4", "dc-key-nord": "Nordhaus, yüzde 4,3", "dc-eq": "iskonto oranı = ", "dc-sum1": "Gelecekteki bir yılda teslim edilen 100 EUR tutarın bugünkü değeri, şimdiden {h}. yıla kadar. Saf zaman tercihi yüzde {d}, esneklik {e} ve büyüme yüzde {g} iken iskonto oranı yüzde {r} oluyor. {y}. yıldaki yüz euro bugün {v} EUR ediyor. Stern oranı yüzde 1,4 ile {vs} EUR, Nordhaus oranı yüzde 4,3 ile {vn} EUR ederdi.", "dc-sum2": "{s}. yıldan {h}. yıla kadar her yıl {d} milyar EUR zararın bugünkü değeri, dört oranla fiyatlanmış: {list}.", "dc-sum2-item": "{name}, {pv} milyar", "dc-sum3": "İlk yılda 100 olan ve yüzde {g} büyüyen bir nakit akışı, yüzde {w} ile {n} açık yıl artı bir nihai değer üzerinden iskonto edildi. Açık yıllar bugün {pvf} ediyor, nihai değer {pvt}, yani nihai değer {tot} toplamının yüzde {share} kadarını taşıyor.", "dc-sum3-no": "Yüzde {g} nihai büyüme, yüzde {w} sermaye maliyetine eşit ya da onun üstünde, o yüzden nihai değerin sonlu bir değeri yok ve model bir sayı basmayı reddediyor.", "dc-s1-a": "{r} oranında, {y}. yılda gelen yüz euro bugün {v} ediyor. ", "dc-s1-half": "Değerin yarılanma süresi {h}, yani bundan yaklaşık {g} sonrası, üzerinde yazan değerin yüzde birinden azını ediyor ve hesaptan fiilen siliniyor.", "dc-s1-zero": "Oran sıfırken hiçbir şey iskonto edilmiyor: üç yüzüncü yıldaki bir euro, bugünkü bir euro kadar sayıyor.", "dc-s1-b": "Aynı yüz euro o yıl için Stern oranıyla {vs}, Nordhaus oranıyla {vn} ediyor, arada {k} kat fark var. İkisi de aritmetikte yanılmıyor.", "dc-s2-a": "{s}. yıldan itibaren her yıl {d} milyar euroluk zarar, Stern oranıyla bugün {st}, Nordhaus oranıyla {nd} ediyor. İklim konusunda anlaşan, esneklik konusunda anlaşan ve büyüme konusunda anlaşan, yalnızca daha sonra doğan bir insanın ne kadar saydığı konusunda ayrılan iki görüş arasında {k} kat fark.", "dc-s2-b-stern": "Sizin parametrelerin bunu {you} seviyesine koyuyor, yani tartışmanın Stern ucunda. ", "dc-s2-b-nord": "Sizin parametrelerin bunu {you} seviyesine koyuyor, yani tartışmanın Nordhaus ucunda. ", "dc-s2-b-mid": "Sizin parametrelerin bunu {you} seviyesine koyuyor, yani iki adlandırılmış görüşün arasında. ", "dc-s2-c": "Saf zaman tercihi sürgüsünü bir puan yukarı it ve tek bir fiziksel varsayıma dokunmadan sorunun ne kadarını yok ettiğini izleyin.", "dc-s3-no": "Nihai büyüme sermaye maliyetine eşit ya da onun üstünde, yani nihai değer sonsuz ve basılacak bir cevap yok; burada sessizce bir sayı döndüren bir değerleme aritmetik yapmıyordur.", "dc-s3": "Toplam değerin {share} kadarı nihai değerde duruyor: kimsenin öngörmediği yıllar, tek bir hücreye yazılan bir büyüme oranıyla tek bir rakama indirgenmiş. Kalan {rest} payı, açıkça öngörülen {n} yıl taşıyor.", "pg-title": "Gelecek neden ucuz"}, "de": {"pg-desc": "Ein erkundbares Essay über Diskontierung. Bewegen Sie den Satz und sehen Sie zu, wie ein fester Nutzen in einem fernen Jahr fast seinen gesamten Barwert verliert. Derselbe Klimaschaden ist bei einem Satz eine Katastrophe und bei einem anderen ein Rundungsfehler, und den Satz zu wählen ist ein ethischer Akt.", "dc-noadv": "Das sind Werkzeuge zum Nachdenken, keine Beratung, und keine Zahl auf dieser Seite wurde gemessen.", "dc-srtp": "geschätzt als soziale Zeitpräferenzrate, alle drei Jahre aktualisiert", "dc-kskip": "Zum Essay springen", "dc-001": "Warum die Zukunft billig ist", "dc-002": "<span class=\"k-num\">01</span>Hundert Euro, später", "dc-003": "<span class=\"k-num\">02</span>Die Formel ist eine ethische Aussage", "dc-004": "<span class=\"k-num\">03</span>Derselbe Schaden, zwei Antworten", "dc-005": "<span class=\"k-num\">04</span>Stern und Nordhaus, nebeneinander", "dc-006": "<span class=\"k-num\">05</span>Dieselbe Arithmetik im Anzug", "dc-007": "<span class=\"k-num\">06</span>Wo das Modell aufhört", "dc-008": "<span class=\"k-num\">07</span>Quellen", "dc-009": "Was jede Position vertritt", "dc-010": "Annahmen und Grenzen", "dc-011": "Eine einzige Zahl entscheidet, ob es sich lohnt, heute Geld für eine Katastrophe in hundert Jahren auszugeben; sie wird gewählt statt gemessen, und vernünftige Menschen wählen sie unterschiedlich.", "dc-012": "Alles, was später geschieht, ist heute weniger wert, was die Bedeutung eines positiven Zinssatzes ist und keine moralische Behauptung: Vor die Wahl zwischen hundert Euro heute und hundert Euro in einem Jahr gestellt, ist das Erste besser, weil daraus bis zum Jahresende mehr als hundert werden kann. Führen Sie das weit genug fort, und die Arithmetik tut etwas Gewaltsames.", "dc-013": "Verschieben Sie den Satz und sehen Sie zu, wie die Kurve gegen die Achse fällt.", "dc-014": "Die übliche Konstruktion ist die Ramsey-Regel; sie setzt den Satz aus drei Größen zusammen, und darum sind die drei Regler oben getrennt statt einer.", "dc-015": "Diskontsatz = reine Zeitpräferenz + (Elastizität x Wachstumsrate) <small data-i=\"dc-056\">Der zweite Term ist unstrittig. Der erste nicht.</small>", "dc-016": "Der zweite Term ist eine Aussage über Wohlstand: Sind die Menschen in der Zukunft reicher, bedeutet ihnen ein zusätzlicher Euro weniger als jemandem heute, und ein Nutzen, der bei ihnen anfällt, zählt entsprechend weniger. Die Elastizität gibt an, wie schnell der Wert eines Euro sinkt, wenn man reicher wird. Beides sind, jedenfalls im Prinzip, empirische Fragen, und Uneinigkeit darüber ist gewöhnliche Uneinigkeit.", "dc-017": "Reine Zeitpräferenz ist der Satz, mit dem Sie das Wohlergehen eines Menschen allein deshalb abzinsen, weil es später eintritt, nicht weil er reicher sein wird und nicht weil die Welt bis dahin untergehen könnte. Setzen Sie ihn auf zwei Prozent, und Sie haben gesagt, dass ein Mensch, der in hundert Jahren lebt, etwa ein Achtel eines heute lebenden Menschen zählt, und Sie haben es in einer Tabelle gesagt statt laut.", "dc-018": "Keine Messung entscheidet das: Es ist eine Haltung dazu, was man einem Fremden schuldet, den es noch nicht gibt, und sie geht in eine Gleichung ein, die dann eine technisch aussehende Zahl ausgibt. Genau darin liegt die Schwierigkeit des Diskontierens: Die Ethik tritt früh ein, wird mit dreihundert Jahren Zinseszins multipliziert und kommt am anderen Ende als Arithmetik heraus.", "dc-019": "Nehmen Sie an, ein ungebremstes Klima erzeugt von einem bestimmten Zeitpunkt an in jedem Jahr einen Schaden gleicher Höhe, für immer. Der höchste Betrag, den heute auszugeben rational wäre, um ihn zu verhindern, ist der Barwert dieses Schadens.", "dc-020": "Zwischen diesen Balken hat sich an der physischen Welt nichts geändert: Der Schaden ist derselbe Schaden. Geändert hat sich ein Parameter, den kein Experiment entscheiden kann, und die Antwort darauf, ob das Problem Handeln wert ist, hat sich um eine Größenordnung verschoben. Goulder und Williams zeigen das an einem sauberen Rechenbeispiel: Ein bestimmter Konsumverlust in hundert Jahren ist bei einem Diskontsatz von 4,3 Prozent etwa siebzehnmal kleiner als bei einem von 1,4 Prozent. Diese beiden Sätze sind die beiden Positionen und keine für die Illustration erfundenen Zahlen.", "dc-021": "An der Uneinigkeit hängen zwei Namen. Ich werde Ihnen nicht sagen, wer recht hat, denn diese Uneinigkeit ist nicht die Art, die sich durch Ansage klären lässt.", "dc-022": "Die beiden Positionen teilen dieselbe Elastizität und dasselbe angenommene Wachstum, der gesamte Abstand zwischen ihnen ist also die erste Spalte; die Quellen für jede Zahl in der Tabelle stehen in Abschnitt sieben.", "dc-023": "<span class=\"ex-em\">Stern</span> setzt die reine Zeitpräferenz sehr nahe null an und liest den kleinen Rest als die Wahrscheinlichkeit, dass es überhaupt keine künftige Generation gibt, nicht als geringeren Anspruch auf unsere Rücksicht. Das Argument lautet: Jede Generation zählt gleich, und einen Menschen abzuzinsen, weil er später geboren wird, ist als Ethik nicht haltbar, was immer es als Beschreibung sein mag. Die Folge ist ein niedriger Satz, ein hoher Barwert für fernen Schaden, und ein Argument dafür, jetzt erheblich auszugeben.", "dc-024": "<span class=\"ex-em\">Nordhaus</span> vertritt die Position, dass die Parameter durch das diszipliniert werden sollten, was Menschen und Märkte tatsächlich tun. Reale Zinssätze und Sparquoten zeigen, wie Gesellschaften die Gegenwart gegen die Zukunft wirklich abwägen, und eine Analyse auf Parametern, die dem beobachteten Verhalten widersprechen, empfiehlt eine Sparquote, die niemand akzeptieren würde. In seiner Besprechung des Stern-Reviews argumentiert er, dessen Schlussfolgerungen hingen entscheidend am nahezu null gesetzten Diskontsatz und hielten Annahmen, die mit Marktzinsen vereinbar sind, nicht stand. Die Folge ist ein höherer Satz, ein kleinerer Barwert für fernen Schaden, und ein Argument für ein allmählicheres Vorgehen.", "dc-025": "Beides ist in sich stimmig, keiner von beiden macht einen Rechenfehler, und keine noch so guten Daten lösen die Uneinigkeit auf, denn die Frage ist nicht empirisch.", "dc-026": "Dasselbe Problem sitzt im Zentrum jeder Discounted-Cash-Flow-Rechnung, wo es besser gekleidet ist und weniger geprüft wird. Eine Bewertung prognostiziert einige Jahre ausdrücklich, presst alles danach in einen einzigen Endwert und zinst das Ganze ab. Der Endwert ist dasselbe Objekt wie der ferne Schaden oben: ein langer Schwanz von Zukunft, von einem Satz, den jemand gewählt hat, auf eine Zahl zusammengedrückt.", "dc-027": "Bei gewöhnlichen Einstellungen steckt das meiste dessen, was ein Unternehmen angeblich wert ist, im Endwert: der Teil der Prognose, der nie prognostiziert wurde, eine in eine Zelle getippte Ewigkeitsannahme. Verschieben Sie die ewige Wachstumsrate um einen halben Punkt und sehen Sie, wie viel der Bewertung mitgeht.", "dc-028": "Der Analyst Desk, den ich für diese Arbeit gebaut habe, druckt bei jedem Lauf diesen Anteil aus, zusammen mit der Arithmetik dahinter: <a href=\"../../analyst/index.html\">er steht hier</a>, und die Überlegung dahinter ist als <a href=\"../../../case-dcf-lab.html\" rel=\"noreferrer noopener\">DCF-Lab-Fallstudie</a> aufgeschrieben. Eine Bewertung, die Ihnen nicht sagt, wie viel von ihr Endwert ist, sagt Ihnen nicht, was sie ist.", "dc-029": "<strong>Das ist ein Lehrmodell, keine Bewertung.</strong> Die Schäden, Zahlungsströme und Horizonte sind Einheiten, die so gewählt sind, dass die Wirkung des Diskontsatzes sichtbar wird, und die Stern und Nordhaus zugeschriebenen Parameter sind in Abschnitt sieben belegt und als deren Positionen wiedergegeben.", "dc-030": "Läuft vollständig in Ihrem Browser: nichts, was Sie hier tun, verlässt die Seite, und nach dem Laden der Schriften gibt es keine Netzwerkaufrufe. Teil von <a href=\"../index.html\">Explorable Economics</a>, gebaut von <a href=\"../../../index.html\">Kerem Özdemir</a>.", "dc-031": "<b>Ein konstanter Satz</b>Jede Rechnung hier verwendet einen Satz, der auf jedes Jahr angewendet wird. Ein großer Teil der ernsthaften Literatur argumentiert, der Satz solle mit dem Horizont sinken, wegen der Unsicherheit über künftiges Wachstum, und die US-Regulierungsvorgabe von 2023 in der Tabelle tut genau das. Ein sinkender Satz erhöht das Gewicht fernen Schadens erheblich, und diese Seite bildet ihn nicht ab.", "dc-032": "<b>Sicherheit</b>Der Schaden tritt mit Sicherheit und in bekannter Höhe ein. Tatsächlich sind Höhe und Zeitpunkt zutiefst unsicher, und ein großer Teil des Arguments fürs Handeln stützt sich auf den Rand dieser Verteilung, nicht auf den Zentralwert. Nichts auf dieser Seite trägt eine Wahrscheinlichkeit.", "dc-033": "<b>Ein einziges Konsumgut</b>Die Ramsey-Regel unterstellt ein einziges Gut, dessen Menge wächst. Sie kann nicht ausdrücken, dass manches Verlorene, eine Küste oder eine Art, durch nichts ersetzbar ist, was das zusätzliche Wachstum kauft. Lassen sich manche Schäden nicht dadurch ausgleichen, dass man reicher wird, unterschätzt der ganze Rahmen sie.", "dc-034": "<b>Der Schaden ist ein flacher Strom</b>Realer Klimaschaden ist weder flach noch beginnt er an einem einzigen Datum. Der Strom in Abbildung zwei ist eine Form, die gewählt wurde, damit die Wirkung des Satzes sichtbar wird, keine Schätzung von irgendetwas.", "dc-035": "<b>Zahlen, keine Schätzungen</b>Die hundert Euro, der Schaden von hundert pro Jahr und die Zahlungsströme in Abbildung drei sind Einheiten, die der Lesbarkeit wegen gewählt wurden. Sie sind keine Messungen, und keine auf dieser Seite erzeugte Zahl gehört in eine echte Bewertung.", "dc-036": "<b>Zwei Positionen, nicht das Feld</b>Die beiden genannten Positionen sind die meistzitierten, und zwischen ihnen und über sie hinaus gibt es eine breite Literatur, auch Argumente für Sätze unter dem von Stern und über dem von Nordhaus, weshalb die Tabelle nicht als Bandbreite seriöser Meinungen gelesen werden sollte.", "dc-042": "Abbildung eins <span class=\"ex-model-sub\">was eine feste Summe in einem künftigen Jahr heute wert ist</span>", "dc-043": "Abbildung zwei <span class=\"ex-model-sub\">ein Schaden, vier Sätze</span>", "dc-044": "Abbildung drei <span class=\"ex-model-sub\">wie viel einer Bewertung der Teil ist, den niemand prognostiziert hat</span>", "dc-045": "Diskontsatzparameter, die Stern und Nordhaus verwenden", "dc-046": "Stern-Parameter setzen", "dc-047": "Nordhaus-Parameter setzen", "dc-048": "Link kopieren", "dc-049": "Reine Zeitpräferenz", "dc-050": "Elastizität", "dc-051": "Wachstum", "dc-052": "Diskontsatz", "dc-055": "US-Regulierungsvorgabe, 2023", "dc-037": "Die Parameter in der Tabelle. Stern: reine Zeitpräferenz 0,1 Prozent, Elastizität des Grenznutzens 1,0, Wachstum 1,3 Prozent, ergibt einen Konsumdiskontsatz von 1,40 Prozent. Nordhaus: reine Zeitpräferenz 3,0 Prozent, dieselbe Elastizität und dasselbe Wachstum, ergibt 4,30 Prozent. Dieselbe Arbeit hält fest, dass ein bestimmter Konsumverlust in hundert Jahren bei 4,3 Prozent siebzehnmal kleiner ist als bei 1,4 Prozent. <span class=\"ex-cite-w\">Lawrence H. Goulder and Roberton C. Williams III, <span class=\"ex-cite-t\">The Choice of Discount Rate for Climate Change Policy Evaluation</span>, NBER Working Paper 18301, 2012. <a href=\"https://www.nber.org/system/files/working_papers/w18301/w18301.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">nber.org/system/files/working_papers/w18301/w18301.pdf</a> Geprüft: 2026 08 21.</span>", "dc-038": "Dieselben zwei Zahlen: 1,4 Prozent für Stern, aus 1,3 Prozent Produktivitätswachstum plus 0,1 Prozent für das Risiko des Aussterbens, und 4,3 Prozent für Nordhaus, mit der Einordnung der Uneinigkeit als ethisch statt technisch. <span class=\"ex-cite-w\">The CORE Econ Project, <span class=\"ex-cite-t\">The Economy</span>, microeconomics, section 9.5, Discounting, external effects, and the future of the planet. <a href=\"https://books.core-econ.org/the-economy/microeconomics/09-lenders-borrowers-05-discounting-external-effects.html\" target=\"_blank\" rel=\"noreferrer noopener\">books.core-econ.org</a> Geprüft: 2026 08 21.</span>", "dc-039": "Die eigenen Parameter des Stern-Reviews: eine reine Zeitpräferenzrate von 0,1 Prozent pro Jahr, begründet mit dem Risiko des Aussterbens, und eine Elastizität des Grenznutzens von eins. <span class=\"ex-cite-w\">House of Commons Library, <span class=\"ex-cite-t\">The Stern Review and the discount rate</span>, Standard Note SN/EP/4739. <a href=\"https://researchbriefings.files.parliament.uk/documents/SN04739/SN04739.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">researchbriefings.files.parliament.uk/documents/SN04739/SN04739.pdf</a> Geprüft: 2026 08 21.</span>", "dc-040": "Nordhaus' eigene Formulierung seines Einwands: Die Schlussfolgerungen des Stern-Reviews hingen entscheidend an der Annahme eines nahezu null gesetzten Zeitdiskontsatzes in Verbindung mit einer bestimmten Nutzenfunktion und hielten dem Ersetzen durch Annahmen, die mit realen Marktzinsen und Sparquoten vereinbar sind, nicht stand. <span class=\"ex-cite-w\">William D. Nordhaus, <span class=\"ex-cite-t\">A Review of the Stern Review on the Economics of Climate Change</span>, Journal of Economic Literature, volume 45, number 3, 2007, pages 686 to 702. <a href=\"https://www.aeaweb.org/articles?id=10.1257/jel.45.3.686\" target=\"_blank\" rel=\"noreferrer noopener\">aeaweb.org/articles?id=10.1257/jel.45.3.686</a> Geprüft: 2026 08 21.</span>", "dc-041": "Die regulatorische Zahl: Die Revision von Circular A-4 vom November 2023 legt für kurzfristige Analysen eine reale gesellschaftliche Zeitpräferenzrate von 2,0 Prozent fest, alle drei Jahre aktualisiert, mit einem Plan sinkender Sätze für lange Horizonte, der für die Jahre 2164 bis 2172 auf 1,1 Prozent fällt. <span class=\"ex-cite-w\">Office of Management and Budget, <span class=\"ex-cite-t\">Circular No. A-4 discount rate history and appendix</span>, 9 November 2023. <a href=\"https://www.whitehouse.gov/wp-content/uploads/2023/11/CircularA-4DiscountHistory.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">whitehouse.gov/wp-content/uploads/2023/11/CircularA-4DiscountHistory.pdf</a> Geprüft: 2026 08 21.</span>", "dc-pct": "{v} %", "dc-eur": "{v} EUR", "dc-yrs": "{v} Jahre", "dc-bn": "{v} Milliarden", "dc-sl-delta": "Reine Zeitpräferenz", "dc-sl-delta-h": "Wie viel weniger ein Mensch zählt, weil er später kommt. Das ist der ethische Parameter.", "dc-sl-eta": "Elastizität des Grenznutzens", "dc-sl-eta-h": "Wie schnell ein zusätzlicher Euro an Wert verliert, wenn die Menschen reicher werden.", "dc-sl-growth": "Konsumwachstum", "dc-sl-growth-h": "Um wie viel reicher jedes Jahr gegenüber dem vorigen angenommen wird.", "dc-sl-year": "Zu bepreisendes Jahr", "dc-sl-year-h": "Der auf der Kurve markierte Horizont.", "dc-sl-start": "Schaden beginnt im Jahr", "dc-sl-start-h": "Ein Schaden von 100 Milliarden pro Jahr läuft von diesem Jahr bis Jahr 300.", "dc-sl-fyears": "Explizite Prognosejahre", "dc-sl-fyears-h": "Wie weit das Modell prognostiziert, bevor es aufgibt und eine ewige Rente ansetzt.", "dc-sl-wacc": "Kapitalkosten", "dc-sl-wacc-h": "Der Satz, mit dem die Zahlungsströme abgezinst werden.", "dc-sl-tg": "Ewiges Wachstum", "dc-sl-tg-h": "Wachstum, das nach dem Ende der Prognose für immer angenommen wird. Es muss unter den Kapitalkosten bleiben.", "dc-fmt-year": "Jahr {v}", "dc-rd-r": "Diskontsatz", "dc-rd-v": "100 EUR in jenem Jahr", "dc-rd-half": "Wert halbiert sich alle", "dc-rd-gone": "Unter ein Prozent nach", "dc-rd-st": "Zum Stern-Satz", "dc-rd-you": "Zu Ihrem Satz", "dc-rd-nd": "Zum Nordhaus-Satz", "dc-rd-ratio": "Stern zu Nordhaus", "dc-rd-share": "Vom Endwert getragen", "dc-rd-pvf": "Explizite Jahre", "dc-rd-pvt": "Endwert", "dc-rd-tot": "Gesamtwert", "dc-sub-r": "reine Zeitpräferenz plus Elastizität mal Wachstum", "dc-sub-v": "EUR, von 100 im Jahr {y}", "dc-sub-years": "Jahre", "dc-sub-zero": "der Satz ist null", "dc-sub-from": "Jahre ab heute", "dc-sub-bn": "Milliarden EUR", "dc-sub-ratio": "größer zum Stern-Satz", "dc-sub-share": "des Gesamtwerts", "dc-sub-noshare": "Wachstum liegt über dem Diskontsatz", "dc-sub-pvf": "Barwert der Prognose", "dc-sub-pvt": "Barwert des Endwerts", "dc-sub-tot": "Unternehmenswert", "dc-never": "nie", "dc-times": "{n} mal", "dc-nodef": "nicht definiert", "dc-noanswer": "keine Antwort", "dc-none": "keine", "dc-bar-stern": "Stern, 1,4 %", "dc-bar-omb": "Regulierungsvorgabe, 2,0 %", "dc-bar-you": "Ihr Satz, {r} %", "dc-bar-nord": "Nordhaus, 4,3 %", "dc-ax-worth": "heutiger Wert, EUR", "dc-ax-years": "Jahre ab heute", "dc-cap2": "Barwert des gesamten Schadensstroms, in Milliarden EUR heutigen Geldes", "dc-cap3": "Barwert, den jedes Prognosejahr und alles danach beisteuert", "dc-after": "danach", "dc-yn": "J{n}", "dc-nofinite": "das ewige Wachstum liegt auf oder über den Kapitalkosten, es gibt also keine endliche Antwort", "dc-lb-year": "Jahr {y}: {v} EUR", "dc-lb-rate": "{name} {r} %", "dc-key-you": "Ihr Satz", "dc-key-stern": "Stern, 1,4 Prozent", "dc-key-nord": "Nordhaus, 4,3 Prozent", "dc-eq": "Diskontsatz = ", "dc-sum1": "Der Barwert von 100 EUR, die in einem künftigen Jahr anfallen, von heute bis Jahr {h}. Bei einer reinen Zeitpräferenz von {d} Prozent, einer Elastizität von {e} und einem Wachstum von {g} Prozent beträgt der Diskontsatz {r} Prozent. Hundert EUR im Jahr {y} sind heute {v} EUR wert. Zum Stern-Satz von 1,4 Prozent wären es {vs} EUR und zum Nordhaus-Satz von 4,3 Prozent {vn} EUR.", "dc-sum2": "Der Barwert eines Schadens von {d} Milliarden EUR in jedem Jahr von Jahr {s} bis Jahr {h}, bepreist mit vier Sätzen: {list}.", "dc-sum2-item": "{name}, {pv} Milliarden", "dc-sum3": "Ein Zahlungsstrom von 100 im ersten Jahr, der mit {g} Prozent wächst, abgezinst mit {w} Prozent über {n} explizite Jahre plus einen Endwert. Die expliziten Jahre sind heute {pvf} wert und der Endwert {pvt}, der Endwert trägt also {share} Prozent der Gesamtsumme von {tot}.", "dc-sum3-no": "Ein ewiges Wachstum von {g} Prozent liegt auf oder über den Kapitalkosten von {w} Prozent, der Endwert hat also keinen endlichen Wert und das Modell weigert sich, einen auszugeben.", "dc-s1-a": "Bei {r} sind hundert Euro, die im Jahr {y} anfallen, heute {v} wert. ", "dc-s1-half": "Der Wert halbiert sich alle {h}, alles jenseits von etwa {g} ab heute ist also weniger als ein Prozent seines Nennwerts wert und verschwindet praktisch aus der Rechnung.", "dc-s1-zero": "Bei einem Satz von null wird überhaupt nichts abgezinst: Ein Euro im Jahr dreihundert zählt genauso viel wie ein Euro heute.", "dc-s1-b": "Dieselben hundert Euro in jenem Jahr sind zum Stern-Satz {vs} und zum Nordhaus-Satz {vn} wert, ein Faktor von {k}. Keiner von beiden irrt sich in der Arithmetik.", "dc-s2-a": "Ein Schaden von {d} Milliarden Euro in jedem Jahr ab Jahr {s} ist heute zum Stern-Satz {st} und zum Nordhaus-Satz {nd} wert. Das ist ein Faktor von {k} zwischen zwei Positionen, die sich über das Klima einig sind, über die Elastizität einig sind und über das Wachstum einig sind, und sich nur darüber uneinig sind, wie viel ein später geborener Mensch zählt.", "dc-s2-b-stern": "Ihre eigenen Parameter setzen ihn auf {you}, das ist am Stern-Ende der Debatte. ", "dc-s2-b-nord": "Ihre eigenen Parameter setzen ihn auf {you}, das ist am Nordhaus-Ende des Arguments. ", "dc-s2-b-mid": "Ihre eigenen Parameter setzen ihn auf {you}, das liegt zwischen den beiden benannten Positionen. ", "dc-s2-c": "Schieben Sie den Regler für die reine Zeitpräferenz um einen Punkt nach oben und sehen Sie zu, wie viel des Problems Sie gerade zum Verschwinden gebracht haben, ohne eine einzige physische Annahme anzurühren.", "dc-s3-no": "Das ewige Wachstum liegt auf oder über den Kapitalkosten, der Endwert ist also unendlich und es gibt keine Antwort auszugeben; eine Bewertung, die hier stillschweigend eine Zahl zurückgibt, rechnet nicht.", "dc-s3": "Vom Gesamtwert sitzen {share} im Endwert: die Jahre, die niemand prognostiziert hat, von einer in eine Zelle getippten Wachstumsrate auf eine Zahl reduziert. Die {n} expliziten Jahre tragen die restlichen {rest}.", "pg-title": "Warum die Zukunft billig ist"}};
+window.PAGE_I18N = {"tr": {"dc-pos-h": "Tahmin", "pg-desc": "İskonto oranını oynatın, uzak bir faydanın bugünkü değerini yitirişini izleyin. Aynı iklim hasarı bir oranda felaket, başka bir oranda yuvarlama hatası.", "dc-noadv": "Bunlar düşünmek için araçlar, tavsiye değil; bu sayfadaki hiçbir sayı ölçülmüş değil.", "dc-srtp": "toplumsal zaman tercihi oranı olarak tahmin ediliyor, üç yılda bir güncelleniyor", "dc-kskip": "Denemeye atla", "dc-001": "Gelecek neden ucuz", "dc-002": "<span class=\"k-num\">01</span>Yüz euro, sonra", "dc-003": "<span class=\"k-num\">02</span>Formül etik bir beyandır", "dc-004": "<span class=\"k-num\">03</span>Aynı zarar, iki cevap", "dc-005": "<span class=\"k-num\">04</span>Stern ve Nordhaus, yan yana", "dc-006": "<span class=\"k-num\">05</span>Aynı aritmetik, takım elbiseyle", "dc-007": "<span class=\"k-num\">06</span>Modelin durduğu yer", "dc-008": "<span class=\"k-num\">07</span>Kaynaklar", "dc-009": "Her görüş ne diyor", "dc-010": "Varsayımlar ve sınırlar", "dc-011": "Bir asır sonraki bir felaket için bugün para harcamaya değip değmeyeceğine tek bir sayı karar veriyor; o sayı ölçülmüyor, seçiliyor ve makul insanlar farklı seçiyor.", "dc-012": "Sonra olan her şey şimdi daha az değerlidir; bu ahlaki bir iddia değil, pozitif faizin anlamıdır: bugün yüz euro ile bir yıl sonra yüz euro arasında seçim yapacaksanız ilki daha iyidir, çünkü yıl dolmadan yüzden fazlasına dönüştürülebilir. Bunu yeterince ileri taşıyın, aritmetik sert bir şey yapar.", "dc-013": "Oranı oynatın ve eğrinin eksene yapışmasını izleyin.", "dc-014": "Standart kuruluş Ramsey kuralıdır; oranı üç büyüklükten kurar ve yukarıdaki üç sürgünün tek bir sürgü yerine ayrı durmasının sebebi budur.", "dc-015": "iskonto oranı = saf zaman tercihi + (esneklik x büyüme oranı) <small data-i=\"dc-056\">İkinci terim tartışmasız. Birincisi değil.</small>", "dc-016": "İkinci terim zenginlik hakkında bir ifadedir: gelecekteki insanlar daha zenginse fazladan bir euro onlar için bugünkü birine ifade ettiğinden azını ifade eder, dolayısıyla onlara düşen bir fayda daha az sayılır. Esneklik, zenginleştikçe bir euronun değerinin ne kadar hızlı düştüğüdür. Bunların ikisi de, en azından ilkesel olarak, ampirik sorulardır ve bu konudaki anlaşmazlık sıradan bir anlaşmazlıktır.", "dc-017": "Saf zaman tercihi, bir insanın refahını yalnızca daha sonra gerçekleştiği için iskonto etme oranıdır; daha zengin olacağı için ya da o zamana kadar dünya bitebileceği için değil. Bunu yüzde ikiye ayarladığınızda, yüz yıl sonra yaşayan bir insanın bugün yaşayan bir insanın yaklaşık sekizde biri kadar saydığını söylemiş olursunuz ve bunu yüksek sesle değil, bir hesap tablosunda söylemiş olursunuz.", "dc-018": "Bunu çözecek bir ölçüm yok: bu, henüz var olmayan bir yabancıya ne kadar borçlu olunduğuna dair bir tutumdur ve teknik görünen bir sayı üreten bir denkleme girer. İskontonun bütün zorluğu budur: etik erken girer, üç yüz yıllık bileşik büyümeyle çarpılır ve öbür uçtan aritmetik kılığında çıkar.", "dc-019": "Diyelim ki önlem alınmamış bir iklim, belli bir noktadan sonra her yıl sabit büyüklükte bir zarar üretiyor, sonsuza kadar. Bunu önlemek için bugün harcanması rasyonel olan en yüksek tutar, o zararın bugünkü değeridir.", "dc-020": "O çubuklar arasında fiziksel dünyada hiçbir şey değişmedi: zarar aynı zarar. Değişen şey, hiçbir deneyin çözemeyeceği bir parametre ve sorunun harekete değip değmediğinin cevabı bir büyüklük mertebesi kaydı. Goulder ve Williams bunu temiz bir aritmetik örnekle anlatıyor: yüz yıl sonraki belirli bir tüketim kaybı, yüzde 4,3 iskonto oranında yüzde 1,4 oranındakinden yaklaşık on yedi kat küçüktür. Bu iki oran, örnek olsun diye uydurulmuş sayılar değil, iki görüşün ta kendisi.", "dc-021": "Anlaşmazlığa iki isim yapışmış durumda. Hangisinin doğru olduğunu söylemeyeceğim, çünkü bu anlaşmazlık söylenerek çözülen cinsten değil.", "dc-022": "İki görüş aynı esnekliği ve aynı varsayılan büyümeyi paylaşıyor, yani aralarındaki bütün fark ilk sütun; tablodaki her rakamın kaynağı yedinci bölümde.", "dc-023": "<span class=\"ex-em\">Stern</span>, saf zaman tercihini sıfıra çok yakın alır, ve geriye kalan küçük payı, ilgimiz üzerinde daha düşük bir hak iddiası olarak değil, gelecek kuşağın hiç olmama ihtimali olarak okur. Sav şu: her kuşak eşit sayar, ve bir insanı daha sonra doğduğu için iskonto etmek, betimleme olarak ne olursa olsun, etik olarak savunulabilir değildir. Sonucu düşük bir oran, uzak zarar için büyük bir bugünkü değer, ve şimdi ciddi harcama yapma gerekçesidir.", "dc-024": "<span class=\"ex-em\">Nordhaus</span>, parametrelerin insanların ve piyasaların fiilen yaptığıyla terbiye edilmesi gerektiği görüşünde. Reel faiz oranları ve tasarruf oranları, toplumların bugünü geleceğe karşı gerçekte nasıl takas ettiğini gösterir, ve gözlenen davranışla çelişen parametreler üzerine kurulu bir analiz, kimsenin kabul etmeyeceği bir tasarruf düzeyi önerir. Stern Raporu üzerine yazdığı incelemede, raporun sonuçlarının sıfıra yakın iskonto oranına belirleyici biçimde bağlı olduğunu ve piyasa faiz oranlarıyla tutarlı varsayımlar altında ayakta kalmayacağını savunuyor. Sonucu daha yüksek bir oran, uzak zarar için daha küçük bir bugünkü değer, ve daha kademeli hareket etme gerekçesidir.", "dc-025": "İkisi de tutarlı ve hiçbiri aritmetik hata yapmıyor; daha iyi veri de bu anlaşmazlığı çözmeyecek, çünkü soru ampirik değil.", "dc-026": "Aynı sorun her indirgenmiş nakit akışının tam ortasında durur; orada daha iyi giyinir ve daha az sorgulanır. Bir değerleme birkaç yılı açıkça öngörür, sonrasındaki her şeyi tek bir nihai değere indirger ve hepsini iskonto eder. Nihai değer, yukarıdaki uzak zararla aynı nesnedir: geleceğin uzun kuyruğu, birinin seçtiği bir oranla tek bir rakama çökertilmiş.", "dc-027": "Sıradan ayarlarda, bir şirketin değeri denen şeyin çoğu nihai değerde durur: öngörünün hiç öngörülmemiş kısmı, tek bir hücreye yazılan bir sonsuzluk varsayımı. Nihai büyüme oranını yarım puan oynatın ve değerlemenin ne kadarının onunla birlikte oynadığını görün.", "dc-028": "Bu iş için yaptığım alet, analist masası, her koşuda o payı ve onu üreten aritmetiği basar: <a href=\"../../analyst/index.html\">burada</a>, ardındaki akıl yürütme de <a href=\"../../../case-dcf-lab.html\" rel=\"noreferrer noopener\">dcf lab vaka incelemesi</a> olarak yazılı. Kendisinin ne kadarının nihai değer olduğunu söylemeyen bir değerleme, ne olduğunu söylemiyordur.", "dc-029": "<strong>Bu bir öğretim modeli, değerleme değil.</strong> Zararlar, nakit akışları ve ufuklar, iskonto oranının etkisi görünsün diye seçilmiş birimlerdir; Stern ve Nordhaus'a atfedilen parametrelerin kaynağı yedinci bölümde ve onların görüşü olarak aktarılmıştır.", "dc-030": "Tamamen tarayıcınızda çalışır: burada yaptığınız hiçbir şey sayfadan çıkmaz, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">Explorable Economics</a> bölümünün parçası; yapan <a href=\"../../../index.html\">Kerem Özdemir</a>.", "dc-031": "<b>Sabit bir oran</b>Buradaki her hesap, her yıla uygulanan tek bir oran kullanıyor. Ciddi literatürün büyük kısmı, gelecekteki büyümeye dair belirsizlik yüzünden oranın ufukla birlikte düşmesi gerektiğini savunuyor, ve tablodaki 2023 tarihli Amerika Birleşik Devletleri düzenleyici rehberi tam olarak bunu yapıyor. Düşen bir oran, uzak zararın ağırlığını hatırı sayılır ölçüde artırır, ve bu sayfa onu modellemiyor.", "dc-032": "<b>Kesinlik</b>Zarar kesin olarak ve bilinen bir miktarda geliyor. Gerçekte hem büyüklük hem zamanlama derinden belirsiz, ve harekete geçme gerekçesinin büyük kısmı merkezi tahmine değil, o dağılımın kuyruğuna dayanıyor. Bu sayfada hiçbir şey olasılık taşımıyor.", "dc-033": "<b>Tek bir tüketim malı</b>Ramsey kuralı, miktarı büyüyen tek bir mal varsayar. Kaybedilenin bir kısmının, bir kıyı şeridinin ya da bir türün, fazladan büyümenin satın aldığı hiçbir şeyle ikame edilemeyeceği ihtimalini ifade edecek bir yolu yoktur. Bazı zararlar daha zengin olmakla telafi edilemiyorsa, bütün çerçeve onları olduğundan az gösterir.", "dc-034": "<b>Zarar düz bir akış</b>Gerçek iklim zararı ne düzdür ne de tek bir tarihte başlar. İkinci şekildeki akış, oranın etkisi görünsün diye seçilmiş bir biçimdir, hiçbir şeyin tahmini değildir.", "dc-035": "<b>Sayılar, tahminler değil</b>Yüz euro, yılda yüzlük zarar ve üçüncü şekildeki nakit akışları okunaklılık için seçilmiş birimlerdir. Ölçüm değildirler, ve bu sayfada üretilen hiçbir rakamın gerçek bir değerlemede yeri yoktur.", "dc-036": "<b>İki görüş, alanın tamamı değil</b>Adı geçen iki görüş en çok atıf alan ikisi; aralarında ve ötelerinde, Stern'inkinden düşük ve Nordhaus'unkinden yüksek oranlar için savlar dahil geniş bir literatür var, dolayısıyla tablo saygın görüşlerin aralığı olarak okunmamalı.", "dc-042": "Şekil bir <span class=\"ex-model-sub\">gelecekteki bir yıldaki sabit bir tutarın bugünkü değeri</span>", "dc-043": "Şekil iki <span class=\"ex-model-sub\">bir zarar, dört oran</span>", "dc-044": "Şekil üç <span class=\"ex-model-sub\">bir değerlemenin ne kadarı kimsenin öngörmediği kısım</span>", "dc-045": "Stern'in ve Nordhaus'un kullandığı iskonto oranı parametreleri", "dc-046": "Stern parametrelerini kurun", "dc-047": "Nordhaus parametrelerini kurun", "dc-048": "Bağlantıyı kopyalayın", "dc-049": "Saf zaman tercihi", "dc-050": "Esneklik", "dc-051": "Büyüme", "dc-052": "İskonto oranı", "dc-055": "Amerika Birleşik Devletleri düzenleyici rehberi, 2023", "dc-037": "Tablodaki parametreler. Stern: saf zaman tercihi yüzde 0,1, marjinal faydanın esnekliği 1,0, büyüme yüzde 1,3, bu da yüzde 1,40 tüketim iskonto oranı veriyor. Nordhaus: saf zaman tercihi yüzde 3,0, aynı esneklik ve aynı büyüme, bu da yüzde 4,30 veriyor. Aynı makale, yüz yıl sonraki belirli bir tüketim kaybının yüzde 4,3 oranında yüzde 1,4 oranındakinden on yedi kat küçük olduğunu belirtiyor. <span class=\"ex-cite-w\">Lawrence H. Goulder and Roberton C. Williams III, <span class=\"ex-cite-t\">The Choice of Discount Rate for Climate Change Policy Evaluation</span>, NBER Working Paper 18301, 2012. <a href=\"https://www.nber.org/system/files/working_papers/w18301/w18301.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">nber.org/system/files/working_papers/w18301/w18301.pdf</a> Kontrol tarihi: 2026 08 21.</span>", "dc-038": "Aynı iki rakam: Stern için yüzde 1,4, yani yüzde 1,3 verimlilik büyümesi artı yok oluş riski için yüzde 0,1, ve Nordhaus için yüzde 4,3. Anlaşmazlık etik bir mesele olarak çerçeveleniyor. <span class=\"ex-cite-w\">The CORE Econ Project, <span class=\"ex-cite-t\">The Economy</span>, microeconomics, section 9.5, Discounting, external effects, and the future of the planet. <a href=\"https://books.core-econ.org/the-economy/microeconomics/09-lenders-borrowers-05-discounting-external-effects.html\" target=\"_blank\" rel=\"noreferrer noopener\">books.core-econ.org</a> Kontrol tarihi: 2026 08 21.</span>", "dc-039": "Stern Raporu'nun kendi parametreleri: yılda yüzde 0,1 saf zaman tercihi oranı, gerekçesi yok oluş riski, ve marjinal faydanın esnekliği bir. <span class=\"ex-cite-w\">House of Commons Library, <span class=\"ex-cite-t\">The Stern Review and the discount rate</span>, Standard Note SN/EP/4739. <a href=\"https://researchbriefings.files.parliament.uk/documents/SN04739/SN04739.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">researchbriefings.files.parliament.uk/documents/SN04739/SN04739.pdf</a> Kontrol tarihi: 2026 08 21.</span>", "dc-040": "Nordhaus'un itirazını kendi ifadesiyle: Stern Raporu'nun sonuçları, belirli bir fayda fonksiyonuyla birleşen sıfıra yakın bir zaman iskonto oranı varsayımına belirleyici biçimde bağlıdır, ve piyasa reel faiz oranlarıyla tasarruf oranlarına uygun varsayımlar konduğunda ayakta kalmaz. <span class=\"ex-cite-w\">William D. Nordhaus, <span class=\"ex-cite-t\">A Review of the Stern Review on the Economics of Climate Change</span>, Journal of Economic Literature, volume 45, number 3, 2007, pages 686 to 702. <a href=\"https://www.aeaweb.org/articles?id=10.1257/jel.45.3.686\" target=\"_blank\" rel=\"noreferrer noopener\">aeaweb.org/articles?id=10.1257/jel.45.3.686</a> Kontrol tarihi: 2026 08 21.</span>", "dc-041": "Düzenleyici rakam: Circular A-4 belgesinin Kasım 2023 revizyonu, yakın vadeli analiz için yüzde 2,0 reel sosyal zaman tercihi oranını benimsiyor, üç yılda bir güncelliyor, ve uzun ufuklar için 2164 ile 2172 yılları arasında yüzde 1,1 seviyesine inen bir düşen oran cetveli veriyor. <span class=\"ex-cite-w\">Office of Management and Budget, <span class=\"ex-cite-t\">Circular No. A-4 discount rate history and appendix</span>, 9 November 2023. <a href=\"https://www.whitehouse.gov/wp-content/uploads/2023/11/CircularA-4DiscountHistory.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">whitehouse.gov/wp-content/uploads/2023/11/CircularA-4DiscountHistory.pdf</a> Kontrol tarihi: 2026 08 21.</span>", "dc-pct": "%{v}", "dc-eur": "{v} EUR", "dc-yrs": "{v} yıl", "dc-bn": "{v} milyar", "dc-sl-delta": "Saf zaman tercihi", "dc-sl-delta-h": "Bir insanın daha sonra geldiği için ne kadar az saydığı. Etik parametre bu.", "dc-sl-eta": "Marjinal faydanın esnekliği", "dc-sl-eta-h": "İnsanlar zenginleştikçe fazladan bir euronun değerini ne kadar hızlı yitirdiği.", "dc-sl-growth": "Tüketim büyümesi", "dc-sl-growth-h": "Her yılın bir öncekinden ne kadar zengin olduğu varsayılıyor.", "dc-sl-year": "Fiyatlanacak yıl", "dc-sl-year-h": "Eğri üzerinde işaretlenen ufuk.", "dc-sl-start": "Zararın başladığı yıl", "dc-sl-start-h": "Yılda 100 milyarlık zarar bu yıldan 300. yıla kadar sürüyor.", "dc-sl-fyears": "Açıkça öngörülen yıllar", "dc-sl-fyears-h": "Model, pes edip nihai değera geçmeden önce ne kadar ileriyi öngörüyor.", "dc-sl-wacc": "Sermaye maliyeti", "dc-sl-wacc-h": "Nakit akışlarının iskonto edildiği oran.", "dc-sl-tg": "Nihai büyüme", "dc-sl-tg-h": "Öngörü bittikten sonra sonsuza kadar varsayılan büyüme. Sermaye maliyetinin altında kalmalı.", "dc-fmt-year": "{v}. yıl", "dc-rd-r": "İskonto oranı", "dc-rd-v": "O yıldaki 100 EUR", "dc-rd-half": "Değerin yarılanma süresi", "dc-rd-gone": "Yüzde birin altına inme süresi", "dc-rd-st": "Stern oranıyla", "dc-rd-you": "Sizin oranınla", "dc-rd-nd": "Nordhaus oranıyla", "dc-rd-ratio": "Stern bölü Nordhaus", "dc-rd-share": "Nihai değerin taşıdığı pay", "dc-rd-pvf": "Açık yıllar", "dc-rd-pvt": "Nihai değer", "dc-rd-tot": "Toplam değer", "dc-sub-r": "saf zaman tercihi artı esneklik çarpı büyüme", "dc-sub-v": "EUR, {y}. yıldaki 100 EUR üzerinden", "dc-sub-years": "yıl", "dc-sub-zero": "oran sıfır", "dc-sub-from": "yıl sonra", "dc-sub-bn": "milyar EUR", "dc-sub-ratio": "Stern oranında daha büyük", "dc-sub-share": "toplam değerin içinde", "dc-sub-noshare": "büyüme iskonto oranının üstünde", "dc-sub-pvf": "öngörünün bugünkü değeri", "dc-sub-pvt": "nihai değerin bugünkü değeri", "dc-sub-tot": "firma değeri", "dc-never": "asla", "dc-times": "{n} kat", "dc-nodef": "tanımsız", "dc-noanswer": "cevap yok", "dc-none": "yok", "dc-bar-stern": "Stern, %1,4", "dc-bar-omb": "Düzenleyici rehber, %2,0", "dc-bar-you": "Sizin oranın, %{r}", "dc-bar-nord": "Nordhaus, %4,3", "dc-ax-worth": "bugünkü değer, EUR", "dc-ax-years": "yıl sonra", "dc-cap2": "bütün zarar akışının bugünkü değeri, bugünün parasıyla milyar EUR", "dc-cap3": "her öngörü yılının ve onlardan sonraki her şeyin kattığı bugünkü değer", "dc-after": "sonrası", "dc-yn": "y{n}", "dc-nofinite": "nihai büyüme sermaye maliyetine eşit ya da onun üstünde, o yüzden sonlu bir cevap yok", "dc-lb-year": "{y}. yıl: {v} EUR", "dc-lb-rate": "{name} %{r}", "dc-key-you": "sizin oranın", "dc-key-stern": "Stern, yüzde 1,4", "dc-key-nord": "Nordhaus, yüzde 4,3", "dc-eq": "iskonto oranı = ", "dc-sum1": "Gelecekteki bir yılda teslim edilen 100 EUR tutarın bugünkü değeri, şimdiden {h}. yıla kadar. Saf zaman tercihi yüzde {d}, esneklik {e} ve büyüme yüzde {g} iken iskonto oranı yüzde {r} oluyor. {y}. yıldaki yüz euro bugün {v} EUR ediyor. Stern oranı yüzde 1,4 ile {vs} EUR, Nordhaus oranı yüzde 4,3 ile {vn} EUR ederdi.", "dc-sum2": "{s}. yıldan {h}. yıla kadar her yıl {d} milyar EUR zararın bugünkü değeri, dört oranla fiyatlanmış: {list}.", "dc-sum2-item": "{name}, {pv} milyar", "dc-sum3": "İlk yılda 100 olan ve yüzde {g} büyüyen bir nakit akışı, yüzde {w} ile {n} açık yıl artı bir nihai değer üzerinden iskonto edildi. Açık yıllar bugün {pvf} ediyor, nihai değer {pvt}, yani nihai değer {tot} toplamının yüzde {share} kadarını taşıyor.", "dc-sum3-no": "Yüzde {g} nihai büyüme, yüzde {w} sermaye maliyetine eşit ya da onun üstünde, o yüzden nihai değerin sonlu bir değeri yok ve model bir sayı basmayı reddediyor.", "dc-s1-a": "{r} oranında, {y}. yılda gelen yüz euro bugün {v} ediyor. ", "dc-s1-half": "Değerin yarılanma süresi {h}, yani bundan yaklaşık {g} sonrası, üzerinde yazan değerin yüzde birinden azını ediyor ve hesaptan fiilen siliniyor.", "dc-s1-zero": "Oran sıfırken hiçbir şey iskonto edilmiyor: üç yüzüncü yıldaki bir euro, bugünkü bir euro kadar sayıyor.", "dc-s1-b": "Aynı yüz euro o yıl için Stern oranıyla {vs}, Nordhaus oranıyla {vn} ediyor, arada {k} kat fark var. İkisi de aritmetikte yanılmıyor.", "dc-s2-a": "{s}. yıldan itibaren her yıl {d} milyar euroluk zarar, Stern oranıyla bugün {st}, Nordhaus oranıyla {nd} ediyor. İklim konusunda anlaşan, esneklik konusunda anlaşan ve büyüme konusunda anlaşan, yalnızca daha sonra doğan bir insanın ne kadar saydığı konusunda ayrılan iki görüş arasında {k} kat fark.", "dc-s2-b-stern": "Sizin parametrelerin bunu {you} seviyesine koyuyor, yani tartışmanın Stern ucunda. ", "dc-s2-b-nord": "Sizin parametrelerin bunu {you} seviyesine koyuyor, yani tartışmanın Nordhaus ucunda. ", "dc-s2-b-mid": "Sizin parametrelerin bunu {you} seviyesine koyuyor, yani iki adlandırılmış görüşün arasında. ", "dc-s2-c": "Saf zaman tercihi sürgüsünü bir puan yukarı it ve tek bir fiziksel varsayıma dokunmadan sorunun ne kadarını yok ettiğini izleyin.", "dc-s3-no": "Nihai büyüme sermaye maliyetine eşit ya da onun üstünde, yani nihai değer sonsuz ve basılacak bir cevap yok; burada sessizce bir sayı döndüren bir değerleme aritmetik yapmıyordur.", "dc-s3": "Toplam değerin {share} kadarı nihai değerde duruyor: kimsenin öngörmediği yıllar, tek bir hücreye yazılan bir büyüme oranıyla tek bir rakama indirgenmiş. Kalan {rest} payı, açıkça öngörülen {n} yıl taşıyor.", "pg-title": "Gelecek neden ucuz, iskonto üzerine bir deneme. Kerem Özdemir"}, "de": {"dc-pos-h": "Schätzung", "pg-desc": "Bewegen Sie den Diskontsatz und sehen Sie einen fernen Nutzen seinen Barwert verlieren. Derselbe Klimaschaden ist einmal Katastrophe, einmal Rundungsfehler.", "dc-noadv": "Das sind Werkzeuge zum Nachdenken, keine Beratung, und keine Zahl auf dieser Seite wurde gemessen.", "dc-srtp": "geschätzt als soziale Zeitpräferenzrate, alle drei Jahre aktualisiert", "dc-kskip": "Zum Essay springen", "dc-001": "Warum die Zukunft billig ist", "dc-002": "<span class=\"k-num\">01</span>Hundert Euro, später", "dc-003": "<span class=\"k-num\">02</span>Die Formel ist eine ethische Aussage", "dc-004": "<span class=\"k-num\">03</span>Derselbe Schaden, zwei Antworten", "dc-005": "<span class=\"k-num\">04</span>Stern und Nordhaus, nebeneinander", "dc-006": "<span class=\"k-num\">05</span>Dieselbe Arithmetik im Anzug", "dc-007": "<span class=\"k-num\">06</span>Wo das Modell aufhört", "dc-008": "<span class=\"k-num\">07</span>Quellen", "dc-009": "Was jede Position vertritt", "dc-010": "Annahmen und Grenzen", "dc-011": "Eine einzige Zahl entscheidet, ob es sich lohnt, heute Geld für eine Katastrophe in hundert Jahren auszugeben; sie wird gewählt statt gemessen, und vernünftige Menschen wählen sie unterschiedlich.", "dc-012": "Alles, was später geschieht, ist heute weniger wert, was die Bedeutung eines positiven Zinssatzes ist und keine moralische Behauptung: Vor die Wahl zwischen hundert Euro heute und hundert Euro in einem Jahr gestellt, ist das Erste besser, weil daraus bis zum Jahresende mehr als hundert werden kann. Führen Sie das weit genug fort, und die Arithmetik tut etwas Gewaltsames.", "dc-013": "Verschieben Sie den Satz und sehen Sie zu, wie die Kurve gegen die Achse fällt.", "dc-014": "Die übliche Konstruktion ist die Ramsey-Regel; sie setzt den Satz aus drei Größen zusammen, und darum sind die drei Regler oben getrennt statt einer.", "dc-015": "Diskontsatz = reine Zeitpräferenz + (Elastizität x Wachstumsrate) <small data-i=\"dc-056\">Der zweite Term ist unstrittig. Der erste nicht.</small>", "dc-016": "Der zweite Term ist eine Aussage über Wohlstand: Sind die Menschen in der Zukunft reicher, bedeutet ihnen ein zusätzlicher Euro weniger als jemandem heute, und ein Nutzen, der bei ihnen anfällt, zählt entsprechend weniger. Die Elastizität gibt an, wie schnell der Wert eines Euro sinkt, wenn man reicher wird. Beides sind, jedenfalls im Prinzip, empirische Fragen, und Uneinigkeit darüber ist gewöhnliche Uneinigkeit.", "dc-017": "Reine Zeitpräferenz ist der Satz, mit dem Sie das Wohlergehen eines Menschen allein deshalb abzinsen, weil es später eintritt, nicht weil er reicher sein wird und nicht weil die Welt bis dahin untergehen könnte. Setzen Sie ihn auf zwei Prozent, und Sie haben gesagt, dass ein Mensch, der in hundert Jahren lebt, etwa ein Achtel eines heute lebenden Menschen zählt, und Sie haben es in einer Tabelle gesagt statt laut.", "dc-018": "Keine Messung entscheidet das: Es ist eine Haltung dazu, was man einem Fremden schuldet, den es noch nicht gibt, und sie geht in eine Gleichung ein, die dann eine technisch aussehende Zahl ausgibt. Genau darin liegt die Schwierigkeit des Diskontierens: Die Ethik tritt früh ein, wird mit dreihundert Jahren Zinseszins multipliziert und kommt am anderen Ende als Arithmetik heraus.", "dc-019": "Nehmen Sie an, ein ungebremstes Klima erzeugt von einem bestimmten Zeitpunkt an in jedem Jahr einen Schaden gleicher Höhe, für immer. Der höchste Betrag, den heute auszugeben rational wäre, um ihn zu verhindern, ist der Barwert dieses Schadens.", "dc-020": "Zwischen diesen Balken hat sich an der physischen Welt nichts geändert: Der Schaden ist derselbe Schaden. Geändert hat sich ein Parameter, den kein Experiment entscheiden kann, und die Antwort darauf, ob das Problem Handeln wert ist, hat sich um eine Größenordnung verschoben. Goulder und Williams zeigen das an einem sauberen Rechenbeispiel: Ein bestimmter Konsumverlust in hundert Jahren ist bei einem Diskontsatz von 4,3 Prozent etwa siebzehnmal kleiner als bei einem von 1,4 Prozent. Diese beiden Sätze sind die beiden Positionen und keine für die Illustration erfundenen Zahlen.", "dc-021": "An der Uneinigkeit hängen zwei Namen. Ich werde Ihnen nicht sagen, wer recht hat, denn diese Uneinigkeit ist nicht die Art, die sich durch Ansage klären lässt.", "dc-022": "Die beiden Positionen teilen dieselbe Elastizität und dasselbe angenommene Wachstum, der gesamte Abstand zwischen ihnen ist also die erste Spalte; die Quellen für jede Zahl in der Tabelle stehen in Abschnitt sieben.", "dc-023": "<span class=\"ex-em\">Stern</span> setzt die reine Zeitpräferenz sehr nahe null an und liest den kleinen Rest als die Wahrscheinlichkeit, dass es überhaupt keine künftige Generation gibt, nicht als geringeren Anspruch auf unsere Rücksicht. Das Argument lautet: Jede Generation zählt gleich, und einen Menschen abzuzinsen, weil er später geboren wird, ist als Ethik nicht haltbar, was immer es als Beschreibung sein mag. Die Folge ist ein niedriger Satz, ein hoher Barwert für fernen Schaden, und ein Argument dafür, jetzt erheblich auszugeben.", "dc-024": "<span class=\"ex-em\">Nordhaus</span> vertritt die Position, dass die Parameter durch das diszipliniert werden sollten, was Menschen und Märkte tatsächlich tun. Reale Zinssätze und Sparquoten zeigen, wie Gesellschaften die Gegenwart gegen die Zukunft wirklich abwägen, und eine Analyse auf Parametern, die dem beobachteten Verhalten widersprechen, empfiehlt eine Sparquote, die niemand akzeptieren würde. In seiner Besprechung des Stern-Reviews argumentiert er, dessen Schlussfolgerungen hingen entscheidend am nahezu null gesetzten Diskontsatz und hielten Annahmen, die mit Marktzinsen vereinbar sind, nicht stand. Die Folge ist ein höherer Satz, ein kleinerer Barwert für fernen Schaden, und ein Argument für ein allmählicheres Vorgehen.", "dc-025": "Beides ist in sich stimmig, keiner von beiden macht einen Rechenfehler, und keine noch so guten Daten lösen die Uneinigkeit auf, denn die Frage ist nicht empirisch.", "dc-026": "Dasselbe Problem sitzt im Zentrum jeder Discounted-Cash-Flow-Rechnung, wo es besser gekleidet ist und weniger geprüft wird. Eine Bewertung prognostiziert einige Jahre ausdrücklich, presst alles danach in einen einzigen Endwert und zinst das Ganze ab. Der Endwert ist dasselbe Objekt wie der ferne Schaden oben: ein langer Schwanz von Zukunft, von einem Satz, den jemand gewählt hat, auf eine Zahl zusammengedrückt.", "dc-027": "Bei gewöhnlichen Einstellungen steckt das meiste dessen, was ein Unternehmen angeblich wert ist, im Endwert: der Teil der Prognose, der nie prognostiziert wurde, eine in eine Zelle getippte Ewigkeitsannahme. Verschieben Sie die ewige Wachstumsrate um einen halben Punkt und sehen Sie, wie viel der Bewertung mitgeht.", "dc-028": "Der Analyst Desk, den ich für diese Arbeit gebaut habe, druckt bei jedem Lauf diesen Anteil aus, zusammen mit der Arithmetik dahinter: <a href=\"../../analyst/index.html\">er steht hier</a>, und die Überlegung dahinter ist als <a href=\"../../../case-dcf-lab.html\" rel=\"noreferrer noopener\">DCF-Lab-Fallstudie</a> aufgeschrieben. Eine Bewertung, die Ihnen nicht sagt, wie viel von ihr Endwert ist, sagt Ihnen nicht, was sie ist.", "dc-029": "<strong>Das ist ein Lehrmodell, keine Bewertung.</strong> Die Schäden, Zahlungsströme und Horizonte sind Einheiten, die so gewählt sind, dass die Wirkung des Diskontsatzes sichtbar wird, und die Stern und Nordhaus zugeschriebenen Parameter sind in Abschnitt sieben belegt und als deren Positionen wiedergegeben.", "dc-030": "Läuft vollständig in Ihrem Browser: nichts, was Sie hier tun, verlässt die Seite, und nach dem Laden der Schriften gibt es keine Netzwerkaufrufe. Teil von <a href=\"../index.html\">Explorable Economics</a>, gebaut von <a href=\"../../../index.html\">Kerem Özdemir</a>.", "dc-031": "<b>Ein konstanter Satz</b>Jede Rechnung hier verwendet einen Satz, der auf jedes Jahr angewendet wird. Ein großer Teil der ernsthaften Literatur argumentiert, der Satz solle mit dem Horizont sinken, wegen der Unsicherheit über künftiges Wachstum, und die US-Regulierungsvorgabe von 2023 in der Tabelle tut genau das. Ein sinkender Satz erhöht das Gewicht fernen Schadens erheblich, und diese Seite bildet ihn nicht ab.", "dc-032": "<b>Sicherheit</b>Der Schaden tritt mit Sicherheit und in bekannter Höhe ein. Tatsächlich sind Höhe und Zeitpunkt zutiefst unsicher, und ein großer Teil des Arguments fürs Handeln stützt sich auf den Rand dieser Verteilung, nicht auf den Zentralwert. Nichts auf dieser Seite trägt eine Wahrscheinlichkeit.", "dc-033": "<b>Ein einziges Konsumgut</b>Die Ramsey-Regel unterstellt ein einziges Gut, dessen Menge wächst. Sie kann nicht ausdrücken, dass manches Verlorene, eine Küste oder eine Art, durch nichts ersetzbar ist, was das zusätzliche Wachstum kauft. Lassen sich manche Schäden nicht dadurch ausgleichen, dass man reicher wird, unterschätzt der ganze Rahmen sie.", "dc-034": "<b>Der Schaden ist ein flacher Strom</b>Realer Klimaschaden ist weder flach noch beginnt er an einem einzigen Datum. Der Strom in Abbildung zwei ist eine Form, die gewählt wurde, damit die Wirkung des Satzes sichtbar wird, keine Schätzung von irgendetwas.", "dc-035": "<b>Zahlen, keine Schätzungen</b>Die hundert Euro, der Schaden von hundert pro Jahr und die Zahlungsströme in Abbildung drei sind Einheiten, die der Lesbarkeit wegen gewählt wurden. Sie sind keine Messungen, und keine auf dieser Seite erzeugte Zahl gehört in eine echte Bewertung.", "dc-036": "<b>Zwei Positionen, nicht das Feld</b>Die beiden genannten Positionen sind die meistzitierten, und zwischen ihnen und über sie hinaus gibt es eine breite Literatur, auch Argumente für Sätze unter dem von Stern und über dem von Nordhaus, weshalb die Tabelle nicht als Bandbreite seriöser Meinungen gelesen werden sollte.", "dc-042": "Abbildung eins <span class=\"ex-model-sub\">was eine feste Summe in einem künftigen Jahr heute wert ist</span>", "dc-043": "Abbildung zwei <span class=\"ex-model-sub\">ein Schaden, vier Sätze</span>", "dc-044": "Abbildung drei <span class=\"ex-model-sub\">wie viel einer Bewertung der Teil ist, den niemand prognostiziert hat</span>", "dc-045": "Diskontsatzparameter, die Stern und Nordhaus verwenden", "dc-046": "Stern-Parameter setzen", "dc-047": "Nordhaus-Parameter setzen", "dc-048": "Link kopieren", "dc-049": "Reine Zeitpräferenz", "dc-050": "Elastizität", "dc-051": "Wachstum", "dc-052": "Diskontsatz", "dc-055": "US-Regulierungsvorgabe, 2023", "dc-037": "Die Parameter in der Tabelle. Stern: reine Zeitpräferenz 0,1 Prozent, Elastizität des Grenznutzens 1,0, Wachstum 1,3 Prozent, ergibt einen Konsumdiskontsatz von 1,40 Prozent. Nordhaus: reine Zeitpräferenz 3,0 Prozent, dieselbe Elastizität und dasselbe Wachstum, ergibt 4,30 Prozent. Dieselbe Arbeit hält fest, dass ein bestimmter Konsumverlust in hundert Jahren bei 4,3 Prozent siebzehnmal kleiner ist als bei 1,4 Prozent. <span class=\"ex-cite-w\">Lawrence H. Goulder and Roberton C. Williams III, <span class=\"ex-cite-t\">The Choice of Discount Rate for Climate Change Policy Evaluation</span>, NBER Working Paper 18301, 2012. <a href=\"https://www.nber.org/system/files/working_papers/w18301/w18301.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">nber.org/system/files/working_papers/w18301/w18301.pdf</a> Geprüft: 2026 08 21.</span>", "dc-038": "Dieselben zwei Zahlen: 1,4 Prozent für Stern, aus 1,3 Prozent Produktivitätswachstum plus 0,1 Prozent für das Risiko des Aussterbens, und 4,3 Prozent für Nordhaus, mit der Einordnung der Uneinigkeit als ethisch statt technisch. <span class=\"ex-cite-w\">The CORE Econ Project, <span class=\"ex-cite-t\">The Economy</span>, microeconomics, section 9.5, Discounting, external effects, and the future of the planet. <a href=\"https://books.core-econ.org/the-economy/microeconomics/09-lenders-borrowers-05-discounting-external-effects.html\" target=\"_blank\" rel=\"noreferrer noopener\">books.core-econ.org</a> Geprüft: 2026 08 21.</span>", "dc-039": "Die eigenen Parameter des Stern-Reviews: eine reine Zeitpräferenzrate von 0,1 Prozent pro Jahr, begründet mit dem Risiko des Aussterbens, und eine Elastizität des Grenznutzens von eins. <span class=\"ex-cite-w\">House of Commons Library, <span class=\"ex-cite-t\">The Stern Review and the discount rate</span>, Standard Note SN/EP/4739. <a href=\"https://researchbriefings.files.parliament.uk/documents/SN04739/SN04739.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">researchbriefings.files.parliament.uk/documents/SN04739/SN04739.pdf</a> Geprüft: 2026 08 21.</span>", "dc-040": "Nordhaus' eigene Formulierung seines Einwands: Die Schlussfolgerungen des Stern-Reviews hingen entscheidend an der Annahme eines nahezu null gesetzten Zeitdiskontsatzes in Verbindung mit einer bestimmten Nutzenfunktion und hielten dem Ersetzen durch Annahmen, die mit realen Marktzinsen und Sparquoten vereinbar sind, nicht stand. <span class=\"ex-cite-w\">William D. Nordhaus, <span class=\"ex-cite-t\">A Review of the Stern Review on the Economics of Climate Change</span>, Journal of Economic Literature, volume 45, number 3, 2007, pages 686 to 702. <a href=\"https://www.aeaweb.org/articles?id=10.1257/jel.45.3.686\" target=\"_blank\" rel=\"noreferrer noopener\">aeaweb.org/articles?id=10.1257/jel.45.3.686</a> Geprüft: 2026 08 21.</span>", "dc-041": "Die regulatorische Zahl: Die Revision von Circular A-4 vom November 2023 legt für kurzfristige Analysen eine reale gesellschaftliche Zeitpräferenzrate von 2,0 Prozent fest, alle drei Jahre aktualisiert, mit einem Plan sinkender Sätze für lange Horizonte, der für die Jahre 2164 bis 2172 auf 1,1 Prozent fällt. <span class=\"ex-cite-w\">Office of Management and Budget, <span class=\"ex-cite-t\">Circular No. A-4 discount rate history and appendix</span>, 9 November 2023. <a href=\"https://www.whitehouse.gov/wp-content/uploads/2023/11/CircularA-4DiscountHistory.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">whitehouse.gov/wp-content/uploads/2023/11/CircularA-4DiscountHistory.pdf</a> Geprüft: 2026 08 21.</span>", "dc-pct": "{v} %", "dc-eur": "{v} EUR", "dc-yrs": "{v} Jahre", "dc-bn": "{v} Milliarden", "dc-sl-delta": "Reine Zeitpräferenz", "dc-sl-delta-h": "Wie viel weniger ein Mensch zählt, weil er später kommt. Das ist der ethische Parameter.", "dc-sl-eta": "Elastizität des Grenznutzens", "dc-sl-eta-h": "Wie schnell ein zusätzlicher Euro an Wert verliert, wenn die Menschen reicher werden.", "dc-sl-growth": "Konsumwachstum", "dc-sl-growth-h": "Um wie viel reicher jedes Jahr gegenüber dem vorigen angenommen wird.", "dc-sl-year": "Zu bepreisendes Jahr", "dc-sl-year-h": "Der auf der Kurve markierte Horizont.", "dc-sl-start": "Schaden beginnt im Jahr", "dc-sl-start-h": "Ein Schaden von 100 Milliarden pro Jahr läuft von diesem Jahr bis Jahr 300.", "dc-sl-fyears": "Explizite Prognosejahre", "dc-sl-fyears-h": "Wie weit das Modell prognostiziert, bevor es aufgibt und eine ewige Rente ansetzt.", "dc-sl-wacc": "Kapitalkosten", "dc-sl-wacc-h": "Der Satz, mit dem die Zahlungsströme abgezinst werden.", "dc-sl-tg": "Ewiges Wachstum", "dc-sl-tg-h": "Wachstum, das nach dem Ende der Prognose für immer angenommen wird. Es muss unter den Kapitalkosten bleiben.", "dc-fmt-year": "Jahr {v}", "dc-rd-r": "Diskontsatz", "dc-rd-v": "100 EUR in jenem Jahr", "dc-rd-half": "Wert halbiert sich alle", "dc-rd-gone": "Unter ein Prozent nach", "dc-rd-st": "Zum Stern-Satz", "dc-rd-you": "Zu Ihrem Satz", "dc-rd-nd": "Zum Nordhaus-Satz", "dc-rd-ratio": "Stern zu Nordhaus", "dc-rd-share": "Vom Endwert getragen", "dc-rd-pvf": "Explizite Jahre", "dc-rd-pvt": "Endwert", "dc-rd-tot": "Gesamtwert", "dc-sub-r": "reine Zeitpräferenz plus Elastizität mal Wachstum", "dc-sub-v": "EUR, von 100 im Jahr {y}", "dc-sub-years": "Jahre", "dc-sub-zero": "der Satz ist null", "dc-sub-from": "Jahre ab heute", "dc-sub-bn": "Milliarden EUR", "dc-sub-ratio": "größer zum Stern-Satz", "dc-sub-share": "des Gesamtwerts", "dc-sub-noshare": "Wachstum liegt über dem Diskontsatz", "dc-sub-pvf": "Barwert der Prognose", "dc-sub-pvt": "Barwert des Endwerts", "dc-sub-tot": "Unternehmenswert", "dc-never": "nie", "dc-times": "{n} mal", "dc-nodef": "nicht definiert", "dc-noanswer": "keine Antwort", "dc-none": "keine", "dc-bar-stern": "Stern, 1,4 %", "dc-bar-omb": "Regulierungsvorgabe, 2,0 %", "dc-bar-you": "Ihr Satz, {r} %", "dc-bar-nord": "Nordhaus, 4,3 %", "dc-ax-worth": "heutiger Wert, EUR", "dc-ax-years": "Jahre ab heute", "dc-cap2": "Barwert des gesamten Schadensstroms, in Milliarden EUR heutigen Geldes", "dc-cap3": "Barwert, den jedes Prognosejahr und alles danach beisteuert", "dc-after": "danach", "dc-yn": "J{n}", "dc-nofinite": "das ewige Wachstum liegt auf oder über den Kapitalkosten, es gibt also keine endliche Antwort", "dc-lb-year": "Jahr {y}: {v} EUR", "dc-lb-rate": "{name} {r} %", "dc-key-you": "Ihr Satz", "dc-key-stern": "Stern, 1,4 Prozent", "dc-key-nord": "Nordhaus, 4,3 Prozent", "dc-eq": "Diskontsatz = ", "dc-sum1": "Der Barwert von 100 EUR, die in einem künftigen Jahr anfallen, von heute bis Jahr {h}. Bei einer reinen Zeitpräferenz von {d} Prozent, einer Elastizität von {e} und einem Wachstum von {g} Prozent beträgt der Diskontsatz {r} Prozent. Hundert EUR im Jahr {y} sind heute {v} EUR wert. Zum Stern-Satz von 1,4 Prozent wären es {vs} EUR und zum Nordhaus-Satz von 4,3 Prozent {vn} EUR.", "dc-sum2": "Der Barwert eines Schadens von {d} Milliarden EUR in jedem Jahr von Jahr {s} bis Jahr {h}, bepreist mit vier Sätzen: {list}.", "dc-sum2-item": "{name}, {pv} Milliarden", "dc-sum3": "Ein Zahlungsstrom von 100 im ersten Jahr, der mit {g} Prozent wächst, abgezinst mit {w} Prozent über {n} explizite Jahre plus einen Endwert. Die expliziten Jahre sind heute {pvf} wert und der Endwert {pvt}, der Endwert trägt also {share} Prozent der Gesamtsumme von {tot}.", "dc-sum3-no": "Ein ewiges Wachstum von {g} Prozent liegt auf oder über den Kapitalkosten von {w} Prozent, der Endwert hat also keinen endlichen Wert und das Modell weigert sich, einen auszugeben.", "dc-s1-a": "Bei {r} sind hundert Euro, die im Jahr {y} anfallen, heute {v} wert. ", "dc-s1-half": "Der Wert halbiert sich alle {h}, alles jenseits von etwa {g} ab heute ist also weniger als ein Prozent seines Nennwerts wert und verschwindet praktisch aus der Rechnung.", "dc-s1-zero": "Bei einem Satz von null wird überhaupt nichts abgezinst: Ein Euro im Jahr dreihundert zählt genauso viel wie ein Euro heute.", "dc-s1-b": "Dieselben hundert Euro in jenem Jahr sind zum Stern-Satz {vs} und zum Nordhaus-Satz {vn} wert, ein Faktor von {k}. Keiner von beiden irrt sich in der Arithmetik.", "dc-s2-a": "Ein Schaden von {d} Milliarden Euro in jedem Jahr ab Jahr {s} ist heute zum Stern-Satz {st} und zum Nordhaus-Satz {nd} wert. Das ist ein Faktor von {k} zwischen zwei Positionen, die sich über das Klima einig sind, über die Elastizität einig sind und über das Wachstum einig sind, und sich nur darüber uneinig sind, wie viel ein später geborener Mensch zählt.", "dc-s2-b-stern": "Ihre eigenen Parameter setzen ihn auf {you}, das ist am Stern-Ende der Debatte. ", "dc-s2-b-nord": "Ihre eigenen Parameter setzen ihn auf {you}, das ist am Nordhaus-Ende des Arguments. ", "dc-s2-b-mid": "Ihre eigenen Parameter setzen ihn auf {you}, das liegt zwischen den beiden benannten Positionen. ", "dc-s2-c": "Schieben Sie den Regler für die reine Zeitpräferenz um einen Punkt nach oben und sehen Sie zu, wie viel des Problems Sie gerade zum Verschwinden gebracht haben, ohne eine einzige physische Annahme anzurühren.", "dc-s3-no": "Das ewige Wachstum liegt auf oder über den Kapitalkosten, der Endwert ist also unendlich und es gibt keine Antwort auszugeben; eine Bewertung, die hier stillschweigend eine Zahl zurückgibt, rechnet nicht.", "dc-s3": "Vom Gesamtwert sitzen {share} im Endwert: die Jahre, die niemand prognostiziert hat, von einer in eine Zelle getippten Wachstumsrate auf eine Zahl reduziert. Die {n} expliziten Jahre tragen die restlichen {rest}.", "pg-title": "Warum die Zukunft billig ist, ein Essay über Diskontierung. Kerem Özdemir"}};
 function T(k, en, v) {
   var out = window.__t ? window.__t(k, en) : en;
   if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
@@ -2440,8 +2609,7 @@ function sweepI18n() {
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-k": "Vaka çalışmaları", "crown": "<i>İktisat<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte",
-"nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-k": "Fallstudien", "crown": "<i>Volkswirtschaftslehre<\/i>"}};
+window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler", "crown": "<i>İktisat<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen", "crown": "<i>Volkswirtschaftslehre<\/i>"}};
 
 (function(){
   "use strict";

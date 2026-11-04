@@ -1,10 +1,17 @@
 <!doctype html>
 <html lang="en">
-<title>Cuecheck</title>
+<title>Cuecheck, a subtitle file checker. Kerem Özdemir</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="https://keremozdemir.de/run/workshop/cuecheck/">
 <meta name="description" content="Check a subtitle file against the spec the client sent, fix what is mechanical, and leave the rest to a translator. Runs in your browser, uploads nothing.">
+<meta property="og:title" content="Cuecheck, a subtitle file checker. Kerem Özdemir">
+<meta property="og:description" content="Check a subtitle file against the spec the client sent, fix what is mechanical, and leave the rest to a translator. Runs in your browser, uploads nothing.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://keremozdemir.de/run/workshop/cuecheck/">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>.ws-vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}.ws-main{display:contents}[role="region"][tabindex="0"]:focus-visible{outline:2px solid currentColor;outline-offset:-2px}</style>
 <style>
 /* Fonts served from this file, not from Google. A hotlinked
    font sends the visitor's IP to a third party on every load; nothing
@@ -45,9 +52,9 @@
 
 :root {
   --before: #e6e8e6; --after: #ffffff; --frame: #22262a;
-  --ink: #1a1d20; --ink-2: #545a5f; --ink-3: #868d92;
+  --ink: #1a1d20; --ink-2: #545a5f; --ink-3: #5e6569;
   --rule: #d7dad7; --rule-2: #a8aeab;
-  --brand: #1f5c66; --fail: #ab2f26; --warn: #8f6416; --fixed: #2b6b45;
+  --brand: #1f5c66; --fail: #ab2f26; --warn: #855d14; --fixed: #2b6b45;
   --ui: "Public Sans", "Helvetica Neue", Arial, sans-serif;
   --tc: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --display: "Newsreader", Georgia, serif;
@@ -134,7 +141,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .spec .f input:hover { border-color: var(--rule-2); background: var(--after); }
 .spec .f input:focus { border-color: var(--brand); background: var(--after); }
-.spec .said { padding: 9px 16px; font-size: 13px; color: var(--ink-2); flex: 1; display: flex; align-items: center; min-width: 220px; }
+.spec .said { padding: 9px 16px; font-size: 14px; color: var(--ink-2); flex: 1; display: flex; align-items: center; min-width: 220px; }
 
 /* ── the split ─────────────────────────────────────────────────────────── */
 
@@ -146,7 +153,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .heads .b { background: var(--after); }
 .heads .s { background: var(--frame); }
 .heads .cap { font: 600 10px/1.4 var(--ui); letter-spacing: .15em; text-transform: uppercase; color: var(--ink-3); }
-.heads .sub { font: 400 12px/1.5 var(--ui); color: var(--ink-3); margin-top: 2px; }
+.heads .sub { font: 400 14px/1.5 var(--ui); color: var(--ink-3); margin-top: 2px; }
 .heads .b .cap { color: var(--fixed); }
 
 .panes { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 46px minmax(0, 1fr); }
@@ -172,7 +179,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .cue.sel { background: rgb(31 92 102 / .07); }
 .cue .why { margin-top: 7px; display: flex; flex-direction: column; gap: 3px; }
 .cue .why span {
-  font: 400 12px/1.45 var(--ui); padding-left: 12px; position: relative; color: var(--ink-2);
+  font: 400 14px/1.45 var(--ui); padding-left: 12px; position: relative; color: var(--ink-2);
 }
 .cue .why span::before {
   content: ""; position: absolute; left: 0; top: .5em; width: 5px; height: 5px; border-radius: 50%;
@@ -197,7 +204,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .strip {
   height: 44px; background: var(--before); border-top: 1px solid var(--rule-2);
   display: flex; align-items: center; gap: 14px; padding: 0 18px;
-  font-size: 13.5px; color: var(--ink-2);
+  font-size: 14px; color: var(--ink-2);
 }
 .strip .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--fixed); flex: none; }
 .strip.bad .dot { background: var(--fail); }
@@ -213,7 +220,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .drop:hover, .drop.hot { background: var(--after); }
 .drop b { font: 600 13px/1.3 var(--ui); }
-.drop span { font-size: 11.5px; color: var(--ink-3); }
+.drop span { font-size: 14px; color: var(--ink-3); }
 
 .empty { padding: 40px 24px; color: var(--ink-3); font-size: 15px; max-width: 46ch; }
 
@@ -231,6 +238,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 </style>
 
+<main class="ws-main">
+<h1 class="ws-vh">Cuecheck, a subtitle file checker</h1>
 <div class="bar">
   <a class="brand" href="../"><b>Cuecheck</b></a>
   <span class="fname tc" id="fname">sample.srt</span>
@@ -271,9 +280,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     <div class="b"><div class="cap">After the pass</div><div class="sub" id="head-b">re-wrapped, un-overlapped, lengthened</div></div>
   </div>
   <div class="panes">
-    <div class="side a" id="pane-a"></div>
+    <div class="side a" id="pane-a" tabindex="0" role="region" aria-label="As delivered"></div>
     <div class="spine"><div class="inner" id="spine"></div></div>
-    <div class="side b" id="pane-b"></div>
+    <div class="side b" id="pane-b" tabindex="0" role="region" aria-label="After the pass"></div>
   </div>
 </div>
 
@@ -289,7 +298,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   </span>
 </div>
 
-<input type="file" id="file" accept=".srt,.vtt,text/vtt,text/plain" style="position:absolute;left:-9999px" aria-hidden="true">
+</main>
+<input type="file" id="file" accept=".srt,.vtt,text/vtt,text/plain" style="position:absolute;left:-9999px" aria-hidden="true" tabindex="-1">
 
 <script>
 /* ENGINE:BEGIN — injected from engine.js by build.py; do not edit here. */

@@ -1,10 +1,17 @@
 <!doctype html>
 <html lang="en">
-<title>Cutplan</title>
+<title>Cutplan, SVG to G-code for a laser cutter. Kerem Özdemir</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="https://keremozdemir.de/run/workshop/cutplan/">
 <meta name="description" content="An SVG into GRBL G-code for a laser, with the inside shapes cut before the outline that would drop the part.">
+<meta property="og:title" content="Cutplan, SVG to G-code for a laser cutter. Kerem Özdemir">
+<meta property="og:description" content="An SVG into GRBL G-code for a laser, with the inside shapes cut before the outline that would drop the part.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://keremozdemir.de/run/workshop/cutplan/">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>.ws-vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}.ws-main{display:contents}[role="region"][tabindex="0"]:focus-visible{outline:2px solid currentColor;outline-offset:-2px}</style>
 <style>
 /* Fonts served from this file, not from Google. A hotlinked
    font sends the visitor's IP to a third party on every load; nothing
@@ -34,7 +41,7 @@
   --panel:   #fbfcf9;
   --ink:     #14171a;
   --ink-2:   #4e5457;
-  --ink-3:   #868c88;
+  --ink-3:   #656a67;
   --rule:    #c6cac3;
   --rule-2:  #a4aaa3;
   --cut:     #b4302a;
@@ -196,7 +203,7 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
 }
 .empty.over .card { border-color: var(--cut); border-style: solid; background: var(--cut-w); }
 .empty h3 { margin: 0 0 8px; font: 700 19px/1.2 Archivo, sans-serif; font-stretch: 88%; text-transform: uppercase; }
-.empty p { margin: 0 0 16px; font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+.empty p { margin: 0 0 16px; font-size: 14px; color: var(--ink-2); line-height: 1.55; }
 .empty .row { display: flex; gap: 8px; justify-content: center; }
 
 /* ── job strip ─────────────────────────────────────────────────────────── */
@@ -222,7 +229,7 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
   pointer-events: auto; align-self: flex-start; max-width: min(560px, 90%);
   background: var(--panel); border: var(--w-narrow) solid var(--rule);
   border-left: var(--w-extra) solid var(--ink);
-  padding: 9px 13px; font-size: 12.5px; color: var(--ink-2);
+  padding: 9px 13px; font-size: 14px; color: var(--ink-2);
 }
 .flag.stop { border-left-color: var(--cut); }
 .flag.ok { border-left-color: var(--ink); }
@@ -241,11 +248,11 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
 .modal .in { padding: 14px; }
 .modal pre {
   margin: 0; padding: 12px; background: var(--paper); border: var(--w-narrow) solid var(--rule);
-  font: 400 11.5px/1.55 "B612 Mono", ui-monospace, monospace; color: var(--ink-2);
+  font: 400 14px/1.55 "B612 Mono", ui-monospace, monospace; color: var(--ink-2);
   max-height: 46dvh; overflow: auto; white-space: pre;
 }
 .keys { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 22px; }
-.keys div { display: flex; align-items: baseline; gap: 10px; font-size: 13px; color: var(--ink-2); }
+.keys div { display: flex; align-items: baseline; gap: 10px; font-size: 14px; color: var(--ink-2); }
 .keys kbd {
   font: 700 11px/1 "B612 Mono", ui-monospace, monospace; background: var(--paper);
   border: var(--w-narrow) solid var(--rule-2); padding: 4px 6px; color: var(--ink);
@@ -302,7 +309,8 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
 
 
 
-<div class="app">
+<div class="app" role="main">
+<h1 class="ws-vh">Cutplan, SVG to G-code for a laser cutter</h1>
   <!-- ── machine bar ─────────────────────────────────────────────────── -->
   <div class="machine">
     <a class="logo" href="../" title="Cutplan">
@@ -322,9 +330,9 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
 
     <div class="field hide-s">
       <label for="bedw">Bed</label>
-      <input type="number" id="bedw" value="600" min="10" max="3000" step="10">
+      <input type="number" id="bedw" value="600" min="10" max="3000" step="10" aria-label="Bed width in mm">
       <span style="color:var(--ink-3)">&times;</span>
-      <input type="number" id="bedh" value="400" min="10" max="3000" step="10">
+      <input type="number" id="bedh" value="400" min="10" max="3000" step="10" aria-label="Bed height in mm">
       <label>mm</label>
     </div>
     <div class="field hide-s">
@@ -381,7 +389,7 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
       </h2>
       <div class="body">
         <div class="matline">
-          <select id="preset">
+          <select id="preset" aria-label="Material preset">
             <option value="ply3">3 mm birch ply</option>
             <option value="ply6">6 mm birch ply</option>
             <option value="acr3">3 mm acrylic</option>
@@ -410,7 +418,7 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
         Cut order <em id="ordercap">-</em>
       </h2>
       <div class="body">
-        <div class="oplist" id="oplist"></div>
+        <div class="oplist" id="oplist" tabindex="0" role="region" aria-label="Cut order"></div>
       </div>
     </div>
 

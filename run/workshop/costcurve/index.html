@@ -1,10 +1,17 @@
 <!doctype html>
 <html lang="en">
-<title>Costcurve</title>
+<title>Costcurve, a marginal abatement cost curve. Kerem Özdemir</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="https://keremozdemir.de/run/workshop/costcurve/">
 <meta name="description" content="A marginal abatement cost curve that will not abate more carbon than you emit. Runs in your browser, uploads nothing.">
+<meta property="og:title" content="Costcurve, a marginal abatement cost curve. Kerem Özdemir">
+<meta property="og:description" content="A marginal abatement cost curve that will not abate more carbon than you emit. Runs in your browser, uploads nothing.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://keremozdemir.de/run/workshop/costcurve/">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>.ws-vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}.ws-main{display:contents}[role="region"][tabindex="0"]:focus-visible{outline:2px solid currentColor;outline-offset:-2px}</style>
 <style>
 /* Fonts served from this file, not from Google. A hotlinked
    font sends the visitor's IP to a third party on every load; nothing
@@ -46,7 +53,7 @@
 
 :root {
   --paper: #ffffff; --leaf: #f4f5f3;
-  --ink: #10151a; --ink-2: #4a5560; --ink-3: #79838d;
+  --ink: #10151a; --ink-2: #4a5560; --ink-3: #636c75;
   --rule: #dcdfdb; --rule-2: #b9bfb9;
   --band: #0d2f2a; --pays: #1c6b58; --spend: #39424b;
   --flag: #a2451c; --flag-bg: #fbf1ea;
@@ -93,7 +100,7 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visib
   color: var(--paper); background: var(--band); padding: 4px 5px 3px; border-radius: 2px;
 }
 .topnav .where {
-  font: 400 13px/1 var(--sans); color: var(--ink-3); letter-spacing: .05em;
+  font: 400 14px/1 var(--sans); color: var(--ink-3); letter-spacing: .05em;
   text-transform: uppercase; padding-left: 24px; border-left: 1px solid var(--rule);
 }
 .topnav .sp { flex: 1; }
@@ -144,7 +151,7 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visib
 .rail a.filled .dot { background: var(--band); }
 .rail a.problem .dot { background: var(--flag); }
 .rail .after { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--rule); }
-.rail .after p { font: 400 12.5px/1.6 var(--sans); color: var(--ink-3); margin: 0; }
+.rail .after p { font: 400 14px/1.6 var(--sans); color: var(--ink-3); margin: 0; }
 
 .doc { padding: 44px 34px 90px; min-width: 0; }
 .masthead { border-bottom: 2px solid var(--band); padding-bottom: 26px; margin-bottom: 8px; max-width: 74ch; }
@@ -155,7 +162,7 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visib
 .masthead p { font-size: 19.5px; line-height: 1.55; color: var(--ink-2); max-width: 62ch; margin: 12px 0 0; }
 .masthead .meta {
   display: flex; gap: 26px; flex-wrap: wrap; margin-top: 20px;
-  font: 400 12.5px/1.5 var(--sans); color: var(--ink-3);
+  font: 400 14px/1.5 var(--sans); color: var(--ink-3);
 }
 .masthead .meta b { color: var(--ink-2); font-weight: 600; }
 
@@ -165,7 +172,7 @@ section:last-of-type { border-bottom: 0; }
 .block > .main { min-width: 0; }
 .block > .side { display: flex; flex-direction: column; gap: 17px; }
 .mg {
-  font: 400 13px/1.6 var(--sans); color: var(--ink-3);
+  font: 400 14px/1.6 var(--sans); color: var(--ink-3);
   padding-top: 4px; border-top: 1px solid var(--rule);
 }
 .mg:empty { display: none; }
@@ -189,7 +196,7 @@ section:last-of-type { border-bottom: 0; }
 .entry .bar .sp { flex: 1; }
 .entry textarea {
   display: block; width: 100%; border: 0; background: var(--paper); resize: vertical;
-  font: 400 13px/1.75 var(--mono); color: var(--ink); padding: 14px 16px; min-height: 168px;
+  font: 400 14px/1.75 var(--mono); color: var(--ink); padding: 14px 16px; min-height: 168px;
   border-radius: 0 0 3px 3px;
 }
 .entry textarea:focus { outline: 2px solid var(--band); outline-offset: -2px; }
@@ -197,14 +204,14 @@ section:last-of-type { border-bottom: 0; }
 .stat { border-top: 1px solid var(--rule); padding: 11px 0 0; }
 .stat .k { font: 600 10.5px/1.5 var(--sans); letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3); }
 .stat b { display: block; font: 400 25px/1.15 var(--mono); letter-spacing: -.02em; margin-top: 5px; }
-.stat .u { font: 400 12.5px/1.5 var(--sans); color: var(--ink-3); }
+.stat .u { font: 400 14px/1.5 var(--sans); color: var(--ink-3); }
 .stat.bad b { color: var(--flag); }
 
 /* ── figures ───────────────────────────────────────────────────────────── */
 
 figure { margin: 0; }
 figcaption {
-  font: 400 13px/1.6 var(--sans); color: var(--ink-2);
+  font: 400 14px/1.6 var(--sans); color: var(--ink-2);
   border-top: 1px solid var(--rule-2); padding-top: 9px; margin-top: 12px; max-width: 74ch;
 }
 figcaption b { font-weight: 600; color: var(--ink); }
@@ -219,7 +226,7 @@ figcaption b { font-weight: 600; color: var(--ink); }
 .tick { font: 400 10px/1 var(--mono); fill: var(--ink-3); }
 .axname { font: 600 10px/1 var(--sans); fill: var(--ink-2); letter-spacing: .1em; text-transform: uppercase; }
 
-.legend { display: flex; gap: 20px; flex-wrap: wrap; margin: 14px 0 0; font: 400 13px/1.5 var(--sans); color: var(--ink-2); }
+.legend { display: flex; gap: 20px; flex-wrap: wrap; margin: 14px 0 0; font: 400 14px/1.5 var(--sans); color: var(--ink-2); }
 .legend span { display: inline-flex; align-items: center; gap: 7px; }
 .legend i { width: 13px; height: 13px; border-radius: 2px; display: inline-block; }
 
@@ -238,8 +245,8 @@ figcaption b { font-weight: 600; color: var(--ink); }
 .scroll { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 15.5px; }
 th, td { text-align: left; padding: 8px 14px 8px 0; border-bottom: 1px solid var(--rule); vertical-align: baseline; }
-thead th { font: 600 10.5px/1.4 var(--sans); letter-spacing: .11em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--ink); }
-td.n, th.n { text-align: right; font-family: var(--mono); font-size: 13.5px; padding-right: 0; }
+thead th { font: 600 14px/1.4 var(--sans); letter-spacing: .11em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--ink); }
+td.n, th.n { text-align: right; font-family: var(--mono); font-size: 14px; padding-right: 0; }
 tbody tr.sel { background: var(--leaf); }
 tbody tr { cursor: pointer; }
 td .ref {
@@ -258,7 +265,7 @@ td.pays { color: var(--pays); }
   scroll-margin-top: 76px;
 }
 .notes .fn:last-child { border-bottom: 1px solid var(--rule); }
-.notes .fn .m { font: 400 12px/1.6 var(--mono); color: var(--flag); }
+.notes .fn .m { font: 400 14px/1.6 var(--mono); color: var(--flag); }
 .notes .fn b { color: var(--ink); font-weight: 600; }
 .clean { border: 1px solid var(--rule); border-left: 2px solid var(--pays); border-radius: 3px; padding: 15px 18px; color: var(--ink-2); font-size: 16px; max-width: 74ch; }
 
@@ -272,7 +279,7 @@ td.pays { color: var(--pays); }
 .verdict { border-left: 2px solid var(--band); padding-left: 18px; max-width: 74ch; font-size: 16.5px; }
 .verdict.short { border-left-color: var(--flag); }
 .verdict b { font-weight: 600; }
-.verdict .list { font: 400 13.5px/1.7 var(--sans); color: var(--ink-2); margin-top: 10px; }
+.verdict .list { font: 400 14px/1.7 var(--sans); color: var(--ink-2); margin-top: 10px; }
 
 @media (max-width: 1180px) {
   .block { grid-template-columns: 1fr; }
@@ -439,7 +446,7 @@ td.pays { color: var(--pays); }
             programme.</p>
 
           <figure>
-            <div class="plot"><svg id="curve" viewBox="0 0 900 430" role="img" aria-label="Marginal abatement cost curve"></svg></div>
+            <div class="plot"><svg id="curve" viewBox="0 0 900 430" role="group" aria-label="Marginal abatement cost curve"></svg></div>
             <figcaption id="cap1"><b>Figure 1.</b> Marginal abatement cost curve.</figcaption>
           </figure>
 
@@ -489,7 +496,7 @@ td.pays { color: var(--pays); }
           <div class="scroll">
             <table id="order">
               <thead><tr>
-                <th style="width:26px"></th><th>Measure</th><th>Stream</th>
+                <th style="width:26px"><span class="ws-vh">Order</span></th><th>Measure</th><th>Stream</th>
                 <th class="n">Claimed</th><th class="n">Delivered</th>
                 <th class="n">Annual cost</th><th class="n">EUR/t quoted</th><th class="n">EUR/t delivered</th>
               </tr></thead>

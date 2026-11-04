@@ -8,14 +8,16 @@
      nothing you type leaves the page into something the browser enforces. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 
-<title>The pile</title>
-<meta name="description" content="A sandpile driven one grain at a time. It organises itself to the edge of stability, where the next grain may do nothing at all or may bring down a quarter of the pile. Watch the avalanche size distribution build up on a log log plot while you drop grains.">
+<title>The pile, a sandpile at the edge of stability. Kerem Özdemir</title>
+<meta name="description" content="A sandpile fed one grain at a time settles at the edge of stability, where the next grain moves nothing or a quarter of the pile. Avalanche sizes plotted live.">
 <meta name="author" content="Kerem Özdemir">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="../../fonts/fonts.css">
+<script>(function(){var d=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")})})()</script>
 <link rel="canonical" href="https://keremozdemir.de/run/simea/pile/">
-<meta property="og:title" content="The pile">
-<meta property="og:description" content="A sandpile driven one grain at a time. It organises itself to the edge of stability, where the next grain may do nothing at all or may bring down a quarter of the pile. Watch the avalanche size distribution build up on a log log plot while you drop grains.">
+<meta property="og:url" content="https://keremozdemir.de/run/simea/pile/">
+<meta property="og:title" content="The pile, a sandpile at the edge of stability. Kerem Özdemir">
+<meta property="og:description" content="A sandpile fed one grain at a time settles at the edge of stability, where the next grain moves nothing or a quarter of the pile. Avalanche sizes plotted live.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -69,10 +71,59 @@
   --edge:    clamp(1.1rem, 5vw, 3.25rem);
 }
 
-/* The instruments used to flip to a dark palette with the system.  They
-   sit inside keremozdemir.de now, whose paper is light and whose top bar
-   and footer are painted from the site's own tokens, so a page that went
-   dark underneath a light bar would only look broken.  One palette. */
+/* The dark palette. It follows the system, and data-theme on the root
+   overrides the system both ways: the head script sets it from ?theme= in
+   the address (a case study framing the instrument passes the site's own
+   theme) or from the theme the reader chose on the site. The values are the
+   site's dark tokens (src/app/globals.css), so a framed instrument and the
+   page around it share one ground. Measured 2026-11-04: ink 15.6:1, dim
+   7.1:1 on the paper and 6.4:1 on a field, accent 5.6:1 on a field, flag
+   6.8:1 on its tint, a control's edge 3.8:1 against the field. The bar and
+   the footer flip with the page (pagegen.py), so nothing is left light
+   above or below it. The kit's selectors are written twice because a media
+   query and an attribute cannot share one prelude. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #111214;
+    --paper-sunk: #161719;
+    --panel:      #18191c;
+    --field:      #1c1d21;
+    --ink:        #e9eaec;
+    --ink-soft:   #c3c7cd;
+    --dim:        #9aa0a8;
+    --faint:      #9aa0a8;
+    --rule:       #292b30;
+    --rule-firm:  #3a3d43;
+    --rule-edge:  #737882;
+    --accent:     #f5694b;
+    --accent-lit: #2a2d33;
+    --flag:       #f08a6a;
+    --flag-lit:   #2a1a15;
+    --good:       #8cc084;
+    --good-lit:   #17221a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:      #111214;
+  --paper-sunk: #161719;
+  --panel:      #18191c;
+  --field:      #1c1d21;
+  --ink:        #e9eaec;
+  --ink-soft:   #c3c7cd;
+  --dim:        #9aa0a8;
+  --faint:      #9aa0a8;
+  --rule:       #292b30;
+  --rule-firm:  #3a3d43;
+  --rule-edge:  #737882;
+  --accent:     #f5694b;
+  --accent-lit: #2a2d33;
+  --flag:       #f08a6a;
+  --flag-lit:   #2a1a15;
+  --good:       #8cc084;
+  --good-lit:   #17221a;
+  color-scheme: dark;
+}
 
 /* ---------- 2. reset and page ---------- */
 
@@ -119,7 +170,7 @@ a:hover { border-bottom-color: var(--accent); }
 .k-skip {
   position: absolute; left: -9999px; top: 0; z-index: 50;
   background: var(--ink); color: var(--paper); border: 0;
-  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.875rem;
 }
 .k-skip:focus { left: 0.5rem; top: 0.5rem; }
 
@@ -151,8 +202,8 @@ a:hover { border-bottom-color: var(--accent); }
   margin-bottom: 1.1rem;
 }
 .k-sect > h2 .k-num {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
-  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
+  color: var(--faint); vertical-align: 0.4em; margin-right: 0.65rem;
 }
 .k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
 
@@ -166,13 +217,17 @@ a:hover { border-bottom-color: var(--accent); }
 .k-row.k-row-tight { gap: 0.55rem 0.9rem; }
 
 .k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+/* A label is read before the field is touched, so it is set at the size of
+   the text around it: 14px in the sans, sentence case as written. It used to
+   be 11px mono capitals, which was the smallest type on the page on the line
+   a reader needs first. */
 .k-field > label, .k-lab {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500;
+  letter-spacing: 0; color: var(--dim); line-height: 1.35;
 }
 .k-field .k-hint {
-  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
-  line-height: 1.45; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="text"], input[type="number"], input[type="search"], select, textarea {
@@ -209,8 +264,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   display: inline-flex; align-items: center; gap: 0.5rem;
   background: transparent; color: var(--ink);
   border: 1px solid var(--rule-firm); border-radius: 0;
-  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
-  letter-spacing: 0.13em; text-transform: uppercase;
+  font-family: var(--mono); font-weight: 500; font-size: 0.78rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.62rem 0.95rem; cursor: pointer;
   transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
 }
@@ -219,8 +274,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
 .k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .k-btn-key { color: #f7f5ee; }
+/* on the dark ground the accent is light, so the label on it goes dark */
+:root[data-theme="dark"] .k-btn-key { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .k-btn-key { color: var(--paper); }
+}
 .k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.75rem; padding: 0.45rem 0.7rem; }
 
 .k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
 
@@ -233,8 +293,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-panel + .k-panel { margin-top: var(--gap); }
 .k-panel > h3, .k-panel-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.75rem;
 }
 .k-panel-sunk { background: var(--paper-sunk); }
@@ -251,15 +311,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
 
 .k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
-.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dt { font-family: var(--serif); font-size: 0.875rem; color: var(--dim); min-width: 0; }
 .k-kv dd {
-  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  margin: 0; font-family: var(--mono); font-size: 0.875rem;
   font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
 }
 .k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
 
 /* arithmetic trace: every step printed */
-.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.875rem; line-height: 1.7; }
 .k-steps li {
   display: grid; grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.2rem 1rem; padding: 0.3rem 0;
@@ -285,18 +345,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 /* ---------- 6. source line ---------- */
 
 .k-source {
-  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; align-items: baseline;
   margin-top: 0.7rem; padding-top: 0.55rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
 }
 .k-source::before {
-  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  content: "source"; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); flex: none;
 }
 .k-source.k-source-bare::before { content: none; }
-.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all;
+  display: inline-block; padding-block: 0.15rem; }
+@media (pointer: coarse) {
+  .k-source a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; }
+}
 .k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .k-source .k-checked { color: var(--faint); white-space: nowrap; }
 
@@ -316,8 +381,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
 
 .k-tag {
-  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  display: inline-block; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
   white-space: nowrap;
 }
@@ -333,22 +398,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   font-size: 0.92rem;
 }
 .k-ask li > b {
-  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
-  padding-top: 0.22rem;
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.15rem;
 }
 
 /* ---------- 8. tables ---------- */
 
 .k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.875rem; }
 .k-table th, .k-table td {
   text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
   border-bottom: 1px solid var(--rule); vertical-align: top;
 }
 .k-table th {
-  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
-  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  font-family: var(--serif); font-weight: 500; font-size: 0.875rem;
+  letter-spacing: 0; color: var(--dim);
   border-bottom-color: var(--rule-firm); white-space: nowrap;
 }
 .k-table td.k-n, .k-table th.k-n {
@@ -356,7 +422,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   text-align: right; padding-right: 0; white-space: nowrap;
 }
 .k-table tbody tr:last-child td { border-bottom: 0; }
-.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell { font-family: var(--serif); font-size: 0.875rem; line-height: 1.55; color: var(--dim); }
 .k-table .k-src-cell a { word-break: break-all; }
 
 /* ---------- 9. timeline ---------- */
@@ -369,13 +435,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-time li:first-child { border-top: 0; padding-top: 0; }
 .k-time .k-when {
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.03em;
   color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
 }
 .k-time .k-what { font-size: 0.96rem; color: var(--ink); }
 .k-time .k-what small {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+  display: block; font-family: var(--serif); font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.55;
 }
 .k-time li.k-past .k-when { color: var(--faint); }
 .k-time li.k-past .k-what { color: var(--dim); }
@@ -394,8 +460,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-endnote .k-wrap { display: grid; gap: 1.1rem; }
 .k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
 .k-endnote .k-fine {
-  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-size: 0.875rem; line-height: 1.6; color: var(--faint);
 }
 .k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
 .k-endnote a:hover { color: var(--accent); }
@@ -405,7 +470,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-toast {
   position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
   background: var(--ink); color: var(--paper);
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
   opacity: 0; pointer-events: none;
   transition: opacity 0.18s ease;
@@ -477,7 +542,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   border-bottom: 1px solid var(--rule-firm);
 }
 .ex-body > h2 .k-num {
-  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
 }
 .ex-body > h3 {
@@ -512,15 +577,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 
 /* a formula set on its own line, in words rather than symbols */
 .ex-formula {
-  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.7;
   color: var(--ink); background: var(--panel);
   border-left: 2px solid var(--accent);
   padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
   max-width: 40rem; overflow-wrap: break-word;
 }
 .ex-formula small {
-  display: block; font-size: 0.66rem; color: var(--faint);
-  margin-top: 0.35rem; letter-spacing: 0.02em;
+  display: block; font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  margin-top: 0.35rem; line-height: 1.55;
 }
 
 /* ---------- the model figure, wider than the prose ---------- */
@@ -534,8 +599,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-model > figcaption,
 .ex-model-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.85rem;
   display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
 }
@@ -566,18 +631,18 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500; letter-spacing: 0;
+  color: var(--dim); line-height: 1.4;
   display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
 }
 .ex-ctrl .ex-val {
-  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  font-family: var(--mono); font-size: 0.875rem; letter-spacing: 0;
   text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
   font-weight: 500;
 }
 .ex-ctrl .k-hint {
-  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
-  line-height: 1.5; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="range"] {
@@ -608,7 +673,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
 .ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
 .ex-seg-row > label {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em;
   padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
   border: 1px solid var(--rule-firm); margin-left: -1px;
   background: var(--field); line-height: 1.3; white-space: nowrap;
@@ -628,7 +693,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 
 .ex-check {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   color: var(--dim); cursor: pointer;
 }
 .ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
@@ -643,8 +708,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-read > div { min-width: 0; }
 .ex-read dt, .ex-read .ex-read-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; letter-spacing: 0;
+  color: var(--faint); line-height: 1.35;
   margin: 0 0 0.15rem;
 }
 .ex-read dd, .ex-read .ex-read-v {
@@ -653,8 +718,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
 }
 .ex-read .ex-read-v small {
-  display: block; font-size: 0.63rem; font-weight: 400;
-  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+  display: block; font-family: var(--serif); font-size: 0.875rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0; margin-top: 0.15rem;
 }
 .ex-read-hot .ex-read-v { color: var(--accent); }
 .ex-read-flag .ex-read-v { color: var(--flag); }
@@ -662,13 +727,13 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-sum {
   margin-top: 0.9rem; padding-top: 0.7rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
-  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--dim); max-width: none;
 }
 .ex-sum b { color: var(--ink-soft); font-weight: 500; }
 .ex-sum::before {
-  content: "reading"; display: block;
-  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  content: "reading"; display: block; font-family: var(--mono);
+  font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); margin-bottom: 0.3rem;
 }
 
@@ -689,8 +754,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-key {
   display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
   margin-top: 0.7rem;
-  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
-  letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--dim);
 }
 .ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
 .ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
@@ -717,9 +781,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
 .ex-cites .ex-cite-w {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
-  line-height: 1.65;
+  display: block; font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.55;
 }
 .ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
 .ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
@@ -742,11 +806,11 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-next a:hover { border-color: var(--accent); background: var(--field); }
 .ex-next a:hover .ex-next-t { color: var(--accent); }
 .ex-next .ex-next-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--faint);
 }
 .ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
-.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+.ex-next .ex-next-d { font-size: 0.9rem; color: var(--dim); line-height: 1.5; }
 
 /* ---------- mobile ---------- */
 
@@ -785,7 +849,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .sm-canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .sm-canvas-lab {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--faint);
   margin: 0.55rem 0 0.25rem;
 }
@@ -798,27 +862,31 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   border-top: 1px solid var(--rule);
 }
 .sm-bar .sm-clock {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.04em;
   color: var(--faint); font-variant-numeric: tabular-nums;
   margin-left: auto; text-align: right;
 }
 .sm-btn-run[data-on="1"] { background: var(--accent); border-color: var(--accent); color: #f7f5ee; }
+:root[data-theme="dark"] .sm-btn-run[data-on="1"] { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .sm-btn-run[data-on="1"] { color: var(--paper); }
+}
 .sm-btn-run[data-on="1"]:hover { background: var(--ink); border-color: var(--ink); }
 
 .sm-keys {
-  font-family: var(--mono); font-size: 0.63rem; line-height: 1.65;
-  color: var(--faint); letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
   margin: 0.6rem 0 0;
 }
 .sm-keys kbd {
-  font-family: var(--mono); font-size: 0.63rem;
+  font-family: var(--mono); font-size: 0.8rem;
   border: 1px solid var(--rule-firm); border-radius: 2px;
   padding: 0.05em 0.3em; color: var(--dim);
 }
 
 .sm-still {
-  font-family: var(--mono); font-size: 0.63rem; line-height: 1.6;
-  color: var(--accent); letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.55;
+  color: var(--accent);
   margin: 0.55rem 0 0;
 }
 
@@ -832,13 +900,13 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   padding: 0.8rem 0.95rem;
 }
 .sm-construct h3 {
-  font-family: var(--mono); font-weight: 500; font-size: 0.66rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.4rem;
 }
 .sm-construct p { font-size: 0.95rem; margin-bottom: 0.5em; max-width: none; }
 .sm-construct .sm-eq {
-  font-family: var(--mono); font-size: 0.76rem; line-height: 1.65;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.6;
   color: var(--ink); background: var(--field);
   border: 1px solid var(--rule);
   padding: 0.5rem 0.6rem; margin: 0 0 0.45em;
@@ -846,8 +914,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   white-space: pre-wrap; overflow-wrap: break-word;
 }
 .sm-construct .sm-honest {
-  font-family: var(--mono); font-size: 0.65rem; line-height: 1.7;
-  color: var(--faint); letter-spacing: 0.02em; margin: 0; max-width: none;
+  font-size: 0.875rem; line-height: 1.55;
+  color: var(--faint); margin: 0; max-width: none;
 }
 .sm-construct .sm-live {
   font-family: var(--mono); font-weight: 500; font-size: 1.02rem;
@@ -871,14 +939,14 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .sm-card:hover { border-color: var(--accent); background: var(--field); }
 .sm-card:hover .sm-card-t { color: var(--accent); }
 .sm-card-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--faint);
 }
 .sm-card-t { font-family: var(--display); font-size: 1.2rem; letter-spacing: -0.02em; }
 .sm-card-d { font-size: 0.92rem; color: var(--dim); line-height: 1.5; }
 .sm-card-w {
-  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
-  letter-spacing: 0.02em; line-height: 1.6; margin-top: 0.15rem;
+  font-size: 0.875rem; color: var(--faint);
+  line-height: 1.5; margin-top: 0.15rem;
 }
 .sm-card canvas {
   display: block; width: 100%; height: auto;
@@ -917,6 +985,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .bar,footer.site-foot{color:var(--fg)}
 footer.site-foot{background:var(--paper)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar,:root:not([data-theme="light"]) footer.site-foot,:root:not([data-theme="light"]) .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}}
+:root[data-theme="dark"] .bar,:root[data-theme="dark"] footer.site-foot,:root[data-theme="dark"] .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}
+
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
 .wrap{max-width:74rem;margin:0 auto;padding:0 1.5rem}
@@ -931,6 +1002,7 @@ footer.site-foot{background:var(--paper)}
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:var(--paper);border-bottom:1px solid var(--line)}
 .in-frame .bar,.in-frame .site-foot{display:none}
 .bar .wrap{display:flex;align-items:center;gap:2rem;height:70px}
+.bar .home,.langs{flex:none}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;
   border-bottom:0;color:var(--fg);white-space:nowrap}
 .bar nav:not(.langs){margin:0 auto}
@@ -966,6 +1038,33 @@ footer.site-foot{background:var(--paper)}
 /* ---------- a leaf, falling once ---------- */
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar between a phone and a laptop ----------
+   One row needs 1,027 px in German with a touch screen (measured 2026-11-04:
+   the name, six sections, the three languages and the gaps), so from 641 to
+   1,080 px the bar takes two rows the way a phone does: the name and the
+   languages on the first, the sections on the second, which scrolls in place
+   if a long word still does not fit. Below that the switcher sat 130 px past
+   the right edge at 768 and could not be reached. */
+@media (min-width:641px) and (max-width:1080px){
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:1rem;row-gap:0;padding-top:.75rem;padding-bottom:.2rem}
+  .bar .home{line-height:33px}
+  .langs{margin-left:auto}
+  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0 -6px;padding:4px 6px;justify-content:flex-start;
+    gap:1.4rem;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+  .bar nav:not(.langs)::-webkit-scrollbar{display:none}
+  .bar nav a{padding:.45rem 0;flex:0 0 auto}
+}
+
+/* ---------- inside a case study's frame ----------
+   The page around the frame already has the title and the argument, so the
+   frame opens on the instrument: the heading and the standfirst are kept
+   for a screen reader and taken off the screen. A scaled preview is left
+   as it is, because its picture is the page's first screen. */
+.framed-tool .k-lede{position:absolute!important;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.framed-tool .k-main{padding-top:clamp(.9rem,3vw,1.4rem)}
+.framed-tool .k-lede + .k-sect{margin-top:0}
 
 /* ---------- the bar and the footer, narrowed ---------- */
 @media (max-width:640px){
@@ -1048,11 +1147,10 @@ footer.site-foot{background:var(--paper)}
 
 <div class="k-shell">
 
-<script>if(window.self!==window.top)document.documentElement.classList.add("in-frame")</script>
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../../">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../cases/" data-i="nav-k">Case studies</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
     <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
   </div>
 </header>
@@ -1322,6 +1420,16 @@ var Kit = (function () {
     return new TextDecoder().decode(bytes);
   }
 
+  /* The query without ?theme=, which a case study adds when it frames the
+     instrument. A link copied inside the frame would otherwise open dark or
+     light for whoever it is sent to, whatever they chose themselves. */
+  function query() {
+    var q = (location.search || "").replace(/^\?/, "").split("&").filter(function (p) {
+      return p && p.indexOf("theme=") !== 0;
+    }).join("&");
+    return q ? "?" + q : "";
+  }
+
   var state = {
     /* Serialise the object into the location hash without adding a history entry. */
     write: function (obj) {
@@ -1329,7 +1437,7 @@ var Kit = (function () {
       try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
       if (h.length > 8000) return "";
       try {
-        history.replaceState(null, "", location.pathname + location.search + h);
+        history.replaceState(null, "", location.pathname + query() + h);
       } catch (e) {
         location.hash = h;
       }
@@ -1342,7 +1450,7 @@ var Kit = (function () {
       try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
     },
     clear: function () {
-      try { history.replaceState(null, "", location.pathname + location.search); }
+      try { history.replaceState(null, "", location.pathname + query()); }
       catch (e) { location.hash = ""; }
     }
   };
@@ -1444,6 +1552,71 @@ var Kit = (function () {
     }
     return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
   }
+
+  /* ---------- a region that scrolls sideways ---------- */
+
+  /* A wide table on a phone scrolls inside its box, and a box that scrolls is
+     a control: a keyboard has to be able to reach it to scroll it, and a
+     screen reader has to hear what it is. It takes a tab stop only while it
+     overflows, so the same table at desktop width adds none. The name is the
+     heading of the panel it sits in, by reference, so it follows the language
+     when the reader switches. Measured 2026-11-04: axe found 17 such boxes
+     across seven instrument pages at 390px, none of them reachable. */
+  var reachSel = ".k-scroll, .k-panel > pre, [data-k-scroll]";
+  var reachN = 0;
+  /* A box can start to overflow with no change to the DOM at all: the faces
+     arrive after the first layout and widen every table. Each box and its
+     table are watched for a change of size, so the check runs again then. */
+  var reachSeen = typeof WeakSet === "function" ? new WeakSet() : null;
+  var reachRO = typeof ResizeObserver === "function" ? new ResizeObserver(function () { reachSoon(); }) : null;
+  function reach() {
+    qsa(reachSel).forEach(function (box) {
+      if (reachRO && reachSeen && !reachSeen.has(box)) {
+        reachSeen.add(box);
+        reachRO.observe(box);
+        if (box.firstElementChild) reachRO.observe(box.firstElementChild);
+      }
+      var over = box.scrollWidth > box.clientWidth + 1;
+      var mine = box.getAttribute("data-k-reach") === "1";
+      if (over && !box.hasAttribute("tabindex")) {
+        box.setAttribute("tabindex", "0");
+        box.setAttribute("data-k-reach", "1");
+        mine = true;
+      } else if (!over && mine) {
+        box.removeAttribute("tabindex");
+        box.removeAttribute("role");
+        box.removeAttribute("aria-labelledby");
+        box.removeAttribute("aria-label");
+        box.removeAttribute("data-k-reach");
+        return;
+      }
+      if (!mine) return;
+      box.setAttribute("role", "region");
+      if (box.hasAttribute("aria-labelledby") || box.hasAttribute("aria-label")) return;
+      var panel = box.closest(".k-panel, .k-sect, section, figure");
+      var head = panel && panel.querySelector("h2, h3, h4, .k-panel-h, figcaption");
+      if (head) {
+        if (!head.id) head.id = "k-reach-" + (++reachN);
+        box.setAttribute("aria-labelledby", head.id);
+      } else {
+        box.setAttribute("aria-label", window.__t ? window.__t("kit-scroll", "Table, scrolls sideways") : "Table, scrolls sideways");
+      }
+    });
+  }
+  var reachQueued = false;
+  function reachSoon() {
+    if (reachQueued) return;
+    reachQueued = true;
+    (window.requestAnimationFrame || setTimeout)(function () { reachQueued = false; reach(); });
+  }
+  if (typeof MutationObserver === "function") {
+    new MutationObserver(reachSoon).observe(document.documentElement, { childList: true, subtree: true });
+  }
+  addEventListener("resize", reachSoon);
+  addEventListener("load", reachSoon);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(reachSoon);
+  if (document.readyState !== "loading") reachSoon();
+  else document.addEventListener("DOMContentLoaded", reachSoon);
 
   return {
     el: el, qs: qs, qsa: qsa, clear: clear,
@@ -2225,7 +2398,7 @@ var Sim = (function () {
 })();
 
 /* ---- the page's own three languages ---- */
-window.PAGE_I18N = {"tr": {"pg-desc": "Teker teker tane bırakılan bir kum yığını. Kendinizi kararlılığın eşiğine örgütlüyor; orada bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor. Siz tane bırakırken çığ büyüklüğü dağılımının log log grafikte kuruluşunu izleyin.", "pl-001": "Yığın", "pl-002": "<span class=\"k-num\">01</span>Masa ve kayıt", "pl-003": "<span class=\"k-num\">02</span>Düz çizgi ne demek", "pl-004": "<span class=\"k-num\">03</span>Hiçbir şey ayarlanmıyor", "pl-005": "<span class=\"k-num\">04</span>Bu neden SIMEA'ya ait", "pl-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "pl-007": "<span class=\"k-num\">06</span>Kaynak", "pl-008": "Varsayımlar ve sınırlar", "pl-009": "Bir masaya teker teker bırakılan taneler. Kimse ayar yapmıyor, kimse onu belirli bir durumda tutmuyor. Kendi kararlılığının kenarına yürüyor ve orada kalıyor; bir sonraki tane ya hiçbir şey yapmıyor ya yığının çeyreğini indiriyor ve ne kadar izlerseniz izleyin hangisinin geleceğini söyleyemiyorsunuz.", "pl-010": "Bakın, Tang ve Wiesenfeld bunu 1987'de hâlâ iş gören bir iddiayla yayımladı: çok parçalı ve yavaş sürülen bir sistem, kimse bir parametreyi ayarlamadan kendi kendinize kritik bir noktaya gidiyor ve oraya vardığında davranışının karakteristik bir boyutu kalmıyor.", "pl-011": "Her biri birkaç tane tutan hücrelerden bir ızgara. Bir hücreye bir tane bırakın. Bir hücrede dört ya da daha çok tane birikirse devriliyor: dört komşusunun her birine bir tane. Bir devrilme komşuyu kendi sınırının üstüne itebilir, böylece tek bir tane masayı boydan boya geçen bir zincir başlatabilir. Kenardan düşen taneler gidiyor.", "pl-012": "Hepsi bu. Ayarlanacak bir parametre yok, ve asıl mesele de bu.", "pl-013": "Solda yığın; her hücre tuttuğu tane sayısına göre gölgeli, son çığda devrilen hücreler işaretli. Sağda bugüne kadarki her çığ, boyuta göre sıralı, iki ekseni de logaritmik bir grafikte. Karakteristik boyutu olan bir dağılım bir tümsek gösterirdi. Güç yasası düz bir çizgi gösteriyor.", "pl-014": "Yığın", "pl-015": "Çığ büyüklükleri, iki eksen de logaritmik", "pl-016": "Log log grafikte düz bir çizgi, belli boyuttaki çığ sayısının o boyutun sabit bir kuvvetiyle düştüğünü söylüyor: sıklığı yarıya indirmek, hangi boyuttan başlarsanız başlayın, boyutu sabit bir katsayıyla çarpmak demek. Tipik bir çığ yok ve bir sonrakinin ortalama boyutu, dağılımın işe yarar biçimde yanıtlamadığı bir soru.", "pl-017": "s büyüklüğündeki çığların sayısı ∝ s üzeri eksi τ <small data-i=\"pl-034\">Grafiğin altında basılan üs, logaritmik olarak kutulanmış sayımlara en küçük kareler yöntemiyle uyduruluyor; yalnızca uydurmaya değecek kadar çığ içeren kutular üzerinden. Küçük bir masada kaba bir tahmin, ve τ'nun ölçümü olarak değil çizginin düz olduğunun göstergesi olarak okunmalı.</small>", "pl-018": "Küçük çığlar hemen ve muazzam sayıda geliyor. Büyükler seyrek geliyor ve gördüğünüz en büyüğü sürekli aşılıyor. Burada masanın boyutundan başka gerçek bir en büyük yok; daha büyük bir masada en büyük olay yalnızca daha büyük olurdu.", "pl-019": "Hücre başına ortalama tane sayısını izleyin. Yığın dolarken tırmanıyor, sonra yerinde kalıyor. O andan sonra yığına ne yaparsanız yap aşağı yukarı aynı yüksekliğe dönüyor: giren taneleri kenardan düşenler dengeliyor ve dengeyi çığların kendisi tutuyor.", "pl-020": "Deyimdeki örgütlenmiş sözcüğüne iş yaptıran bu. Yığını kritiklikte kimse tutmuyor. Taneleri daha hızlı ekleyin, hâlâ orada. Boş masadan başlayın, oraya yürüyor; aşırı yüklü masadan başlayın, oraya çöküyor. Kritik durum dinamiğin gittiği yer; etkinin kimsenin yönetmediği sistemlerde ortaya çıkması bu yüzden.", "pl-021": "İki sebep, ve önemsediğim ikincisi.", "pl-022": "Birincisi öngörü. Böyle bir durumda bir sonraki olayın boyutu öngörülemez ve bunun bilgisizlikle ilgisi yok: dağılım burada tam olarak biliniyor, çünkü onu ben yazdım, ve bir koşu boyunca oranları veriyor, bir sonraki tane hakkında hiçbir şey vermiyor. Öngörülemezliğin bir kısmı sistemin özelliği ve her aracın elinden kurtuluyor; neyin öngörülebildiğini konuşmak isteyen bir araştırma ikisini ayırt edebilmeli.", "pl-023": "İkincisi sorumluluk. Büyük bir çığı başlatan tane, hiçbir şey başlatmayan binlercesinden ayırt edilemez. Sıradan bir taneydi; fark bütünüyle yığının çoktan vardığı durumda. Bir felaketten önceki son hareketi arayan her inceleme bunu yapıyor ve yığın, son hareketin masum, sonucun yine de devasa olabileceğinin bildiğim en temiz gösterimi.", "pl-024": "<strong>Bu bir öğretim modeli, ölçüm değil.</strong> Bu sayfadaki her sayı ya sizin ayarladığınız ya da bu modelin sizin ayarladığından ürettiği bir sayı. Burada ne kum ne piyasa ne de gerçek bir sistem tarif ediliyor.", "pl-025": "Tamamen tarayıcında çalışır. Burada yaptığınız hiçbir şey sayfadan çıkmaz. Sunucu yok, analitik yok, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Özdemir</a>.", "pl-026": "<b>Bu kum değil</b>Gerçek tanecikli yığınlar bu modelden daha dağınık davranıyor; nedeni modelin temsil edemediği eylemsizlik ve sürtünme. İsim bir resim ve kum hakkında hiçbir şey söylemiyor.", "pl-027": "<b>Masa küçük</b>Buradaki her güç yasası ızgarada kesiliyor; grafiğin sağ ucunun aşağı kıvrılması bu yüzden. Bu boyda bir masada birkaç bin çığdan uydurulan üs kaba bir işaret.", "pl-028": "<b>Geçici dönem dahil</b>Her çığ kaydediliyor, yığın kritik duruma varmadan öncekiler de. Grafiği ciddiye almadan önce sıfırlayın ve birkaç bin tane bırakın.", "pl-029": "<b>Sürüş tepkiden ayrı</b>Her çığ, bir sonraki tane düşmeden önce sonuna kadar koşuyor. Gevşeyebildiğinden hızlı sürülen bir sistem farklı davranırdı.", "pl-030": "<b>Güç yasasını görmek kolay, kanıtlamak zor</b>Log log grafikte düz bir parça tek başına zayıf kanıt ve istatistik yazını göz kararı uydurmalara acımasız. Bu sayfa bir tane üreten mekanizmayı gösteriyor; bir tane saptama yöntemi değil.", "pl-031": "<b>Benzetme bulgu değil</b>Öngörü ve sorumluluk paragrafları benzetmeyle kurulmuş argümanlar. Bu model piyasalar, kurumlar ya da felaketler hakkında hiçbir şey kanıtlamıyor ve bu sayfadan hiçbir sayı onlar hakkında bir iddiaya girmez.", "pl-033": "Şekil bir <span class=\"ex-model-sub\">tane bırakın ve kaydın dolmasını izleyin</span>", "pl-skip": "Simülasyona geçin", "pl-run": "Tane bırakın", "pl-plot-empty": "Çığ büyüklükleri dağılımı hâlâ boş.", "pl-plot-empty2": "Çığ büyüklükleri dağılımı hâlâ boş: şimdiye kadar yalnızca {n} çığ kaydedildi.", "pl-plot-none": "henüz yeterli çığ yok", "pl-ax-size": "çığın büyüklüğü", "pl-ax-often": "ne sıklıkta", "pl-slope": "eğim {s}, yani τ yaklaşık {t}", "pl-plot": "Çığ büyüklüklerinin, iki ekseni de logaritmik bir grafikteki dağılımı; {d} taneden gelen {n} çığ üzerinden. Noktalar eğimi {s} olan düz bir çizgiye yakın düşüyor, ki bu yaklaşık {t} üslü bir kuvvet yasası. Şimdiye kadarki en büyük çığ {big} hücre devirdi.", "pl-sum": "{n} x {n} bir masa, hücre başına ortalama {mh} tane tutuyor; {d} tane {where} bırakıldıktan ve {av} çığdan sonra. Son tane {last} devirdi, ve şimdiye kadarki en büyük çığ {big} devirdi.", "pl-where-centre": "ortaya", "pl-where-random": "rastgele", "pl-cells": "{n} hücre", "pl-s0": "Masa boş. Tane bırakın ve ortalama yüksekliğin tırmanmasını, sonra tırmanmayı bırakmasını, ve sağdaki kaydın düzelmeye başlamasını izleyin.", "pl-s1": "{d} sonra yığın {mh} tutuyor{tail}", "pl-s1-filling": " ve hâlâ doluyor. Kenarlardan henüz tanelerin geldiği hıza yakın bir şey düşmüyor, yani sağdaki kayıt kritik dağılım değil.", "pl-s1-critical": ", ve orada kalıyor. Buradan sonra gelen taneler kenarlardan gidenlerle dengeleniyor, ve dengeyi onu ayarlayan bir şey değil, çığların kendisi koruyor.", "pl-s2": "Son tane {last} devirdi{none} Şimdiye kadarki en büyüğü {big} devirdi{share} Onu başlatan tane diğer her taneyle aynıydı.", "pl-s2-none": ": indi ve hiçbir şey olmadı.", "pl-s2-some": ".", "pl-s2-over": ", ki bu masadaki hücre sayısından fazla devirme, çünkü bir hücre tek bir çığda kendi sınırını birden fazla kez aşabiliyor.", "pl-s2-share": ", ki bu masadaki hücrelerin yüzde {p} kadarı.", "pl-grains": "{n} tane", "pl-per-cell": "hücre başına {n}", "pl-sl-n": "Masa boyu", "pl-sl-n-h": "Daha büyük bir masa kritik durumuna daha geç ulaşıyor ve daha büyük çığlar tutuyor.", "pl-fmt-n": "{v} x {v}", "pl-sg-w": "Tanenin düştüğü yer", "pl-sg-w-h": "Yalnızca ortaya bırakmak klasik deseni daha yavaş kuruyor.", "pl-opt-random": "herhangi bir yere", "pl-opt-centre": "ortaya", "pl-sl-r": "Çalışırken kare başına tane", "pl-sl-r-h": "Sürücünün ne hızla çalıştığı. Fiziği değil, yalnızca bekleyişi değiştiriyor.", "pl-rd-drops": "Bırakılan tane", "pl-rd-av": "Çığ", "pl-rd-last": "Son çığ", "pl-rd-big": "Şimdiye kadarki en büyük", "pl-rd-mh": "Hücre başına tane", "pl-rd-tau": "Uydurulan üs", "pl-sub-nothing": "{n} tane hiçbir şey yapmadı", "pl-sub-toppled": "hücre devrildi", "pl-sub-big": "hücre devrildi, bazıları birden fazla kez", "pl-sub-mh": "ortalama yükseklik", "pl-notyet": "henüz yok", "pl-sub-bins": "{n} kutudan", "pl-sub-keep": "bırakmaya devam et", "pl-key-empty": "boş", "pl-key-two": "iki tane", "pl-key-three": "üç tane", "pl-key-topple": "az önce devrildi", "pl-share": "Bağlantı kopyalandı. Bu kadar tane bırakılmış hâliyle açılıyor.", "pl-032": "Modeli ve kendiliğinden örgütlenen kritiklik fikrini tanıtan makale: uzamsal serbestlik dereceleri olan dinamik sistemler doğal olarak kendiliğinden örgütlenen kritik bir duruma evriliyor; yazarlar bunu titreşim gürültüsüne ve fraktal yapıların kökenine bağlıyor. <span class=\"ex-cite-w\">Per Bakın, Chao Tang and Kurt Wiesenfeld, <span class=\"ex-cite-t\">Self-organized\n            criticality: An explanation of the 1/f noise</span>, Physical Review Letters 59(4), 27 July\n            1987, page 381.\n            <a href=\"https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381\" target=\"_blank\" rel=\"noreferrer noopener\">journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "pg-title": "Yığın", "pl-034": "Grafiğin altındaki üs, logaritmik kutulanmış sayımlara, uydurmaya yetecek kadar çığ içeren kutular üzerinden en küçük karelerle uyduruluyor. Küçük bir masada çizginin düz olduğunu söylüyor; τ'nun bir ölçümü değil."}, "de": {"pg-desc": "Ein Sandhaufen, Korn für Korn beschickt. Er organisiert sich selbst an die Kante der Stabilität, wo das nächste Korn gar nichts bewirken oder ein Viertel des Haufens zum Einsturz bringen kann. Sehen Sie zu, wie sich die Verteilung der Lawinengrößen im Log-Log-Diagramm aufbaut, während Sie Körner fallen lassen.", "pl-001": "Der Haufen", "pl-002": "<span class=\"k-num\">01</span>Der Tisch und das Protokoll", "pl-003": "<span class=\"k-num\">02</span>Was die Gerade bedeutet", "pl-004": "<span class=\"k-num\">03</span>Es wird nichts eingestellt", "pl-005": "<span class=\"k-num\">04</span>Warum das zu SIMEA gehört", "pl-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "pl-007": "<span class=\"k-num\">06</span>Quelle", "pl-008": "Annahmen und Grenzen", "pl-009": "Körner, eines nach dem anderen auf einen Tisch fallen gelassen. Nichts stimmt es ab, und niemand hält es in einem bestimmten Zustand. Es wandert an den Rand seiner eigenen Stabilität und bleibt dort, wo das nächste Korn nichts tun oder ein Viertel des Haufens abtragen kann, und kein Zusehen verrät, welches von beidem.", "pl-010": "Bak, Tang und Wiesenfeld veröffentlichten dies 1987 mit einer Behauptung, die noch immer trägt: ein System aus vielen Teilen mit langsamem Antrieb bewegt sich von selbst zu einem kritischen Punkt, ohne dass jemand einen Parameter einstellt, und dort hat sein Verhalten keine charakteristische Größe mehr.", "pl-011": "Ein Gitter aus Zellen, jede mit ein paar Körnern. Lass ein Korn auf eine Zelle fallen. Hält eine Zelle je vier oder mehr, kippt sie: ein Korn an jeden ihrer vier Nachbarn. Ein Kippen kann einen Nachbarn über seine eigene Grenze stoßen, sodass ein Korn eine Kette über den ganzen Tisch auslösen kann. Körner, die über den Rand fallen, sind weg.", "pl-012": "Das ist alles. Es gibt keinen Parameter einzustellen, und genau darum geht es.", "pl-013": "Links der Haufen, schattiert nach der Zahl der Körner in jeder Zelle, mit den Zellen markiert, die in der letzten Lawine gekippt sind. Rechts jede Lawine bisher, nach Größe sortiert, auf einem Diagramm mit zwei logarithmischen Achsen. Eine Verteilung mit charakteristischer Größe zeigte einen Buckel. Ein Potenzgesetz zeigt eine gerade Linie.", "pl-014": "Der Haufen", "pl-015": "Lawinengrößen, beide Achsen logarithmisch", "pl-016": "Eine gerade Linie im Log-log-Diagramm sagt, dass die Zahl der Lawinen einer Größe mit einer festen Potenz dieser Größe fällt: die Häufigkeit zu halbieren heißt, die Größe mit einem konstanten Faktor zu multiplizieren, egal wo man beginnt. Es gibt keine typische Lawine, und die mittlere Größe der nächsten ist eine Frage, die die Verteilung nicht brauchbar beantwortet.", "pl-017": "Zahl der Lawinen der Größe s ∝ s hoch minus τ <small data-i=\"pl-034\">Der unter dem Diagramm gedruckte Exponent wird durch kleinste Quadrate an die logarithmisch gebinnten Zählungen angepasst, über die Bins, die genug Lawinen enthalten, um eine Anpassung zu lohnen. Es ist eine grobe Schätzung auf einem kleinen Tisch und sollte als Hinweis darauf gelesen werden, dass die Linie gerade ist, und nicht als Messung von τ.</small>", "pl-018": "Die kleinen Lawinen kommen sofort und in riesiger Zahl. Die großen kommen selten, und die größte bisher wird immer wieder überholt. Es gibt hier kein wahres Maximum außer der Tischgröße, und auf einem größeren Tisch wäre das größte Ereignis einfach größer.", "pl-019": "Beobachte die mittlere Zahl der Körner je Zelle. Sie steigt, während der Haufen sich füllt, dann bleibt sie stehen. Von da an kehrt der Haufen, was immer man mit ihm tut, zu etwa derselben Höhe zurück: die eingehenden Körner werden von den über den Rand fallenden ausgeglichen, und die Lawinen selbst halten das Gleichgewicht.", "pl-020": "Das ist es, was dem Wort organisiert Arbeit gibt. Niemand hält den Haufen in der Kritikalität. Füge Körner schneller hinzu, er ist noch da. Beginne mit einem leeren Tisch, er wandert hin; beginne mit einem überladenen, er fällt darauf zurück. Der kritische Zustand ist, wohin die Dynamik geht, und darum taucht der Effekt in Systemen auf, die niemand verwaltet.", "pl-021": "Zwei Gründe, und der zweite ist der, der mir wichtig ist.", "pl-022": "Das erste ist die Vorhersage. In einem solchen Zustand ist die Größe des nächsten Ereignisses nicht vorhersagbar, und Unkenntnis hat damit nichts zu tun: die Verteilung ist hier genau bekannt, denn ich habe sie geschrieben, und sie nennt die Chancen über einen Lauf und nichts über das nächste Korn. Manche Unvorhersagbarkeit ist eine Eigenschaft des Systems und überlebt jedes Instrument, und ein Forschungsvorhaben darüber, was sich vorhersagen lässt, muss beides auseinanderhalten.", "pl-023": "Das zweite ist Verantwortung. Das Korn, das eine große Lawine auslöst, ist von den Tausenden nicht zu unterscheiden, die nichts auslösten. Es war ein gewöhnliches Korn; der Unterschied liegt ganz im Zustand, den der Haufen schon erreicht hatte. Jede Untersuchung, die nach der letzten Handlung vor einem Unglück sucht, tut genau das, und der Haufen ist die sauberste mir bekannte Vorführung, dass die letzte Handlung unschuldig und das Ergebnis trotzdem gewaltig sein kann.", "pl-024": "<strong>Das ist ein Lehrmodell, keine Messung.</strong> Jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die dieses Modell daraus erzeugt hat. Nichts hier beschreibt Sand, Märkte oder irgendein reales System.", "pl-025": "Läuft vollständig in Ihrem Browser. Nichts, was Sie hier tun, verlässt die Seite. Kein Server, keine Analyse, kein Netzwerkaufruf, nachdem die Schriften geladen sind. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>.", "pl-026": "<b>Es ist kein Sand</b>Echte Schüttgut-Haufen verhalten sich weniger sauber als dieses Modell, aus Gründen von Trägheit und Reibung, die es nicht darstellen kann. Der Name ist ein Bild und sagt nichts über Sand.", "pl-027": "<b>Der Tisch ist klein</b>Jedes Potenzgesetz hier wird vom Gitter abgeschnitten, weshalb das rechte Ende des Diagramms nach unten biegt. Ein Exponent aus ein paar tausend Lawinen auf einem Tisch dieser Größe ist ein grober Hinweis.", "pl-028": "<b>Die Einschwingphase ist enthalten</b>Jede Lawine wird aufgezeichnet, auch die von vor dem Erreichen des kritischen Zustands. Drücke Zurücksetzen und lass ein paar tausend Körner fallen, bevor du das Diagramm ernst nimmst.", "pl-029": "<b>Antrieb und Antwort sind getrennt</b>Jede Lawine läuft zu Ende, bevor das nächste Korn fällt. Ein System, das schneller angetrieben wird, als es sich entspannen kann, verhielte sich anders.", "pl-030": "<b>Potenzgesetze sind leicht zu sehen und schwer zu belegen</b>Ein gerades Stück im Log-log-Diagramm ist für sich schwache Evidenz, und die statistische Literatur ist zu Augenmaß-Anpassungen nicht freundlich. Diese Seite zeigt einen Mechanismus, der eines erzeugt; eine Methode, eines nachzuweisen, ist sie nicht.", "pl-031": "<b>Eine Analogie ist kein Befund</b>Die Absätze zu Vorhersage und Verantwortung sind Argumente per Analogie. Dieses Modell belegt nichts über Märkte, Institutionen oder Unglücke, und keine Zahl von dieser Seite gehört in eine Behauptung darüber.", "pl-033": "Abbildung eins <span class=\"ex-model-sub\">Körner fallen lassen und zusehen, wie sich das Protokoll füllt</span>", "pl-skip": "Zur Simulation springen", "pl-run": "Körner fallen lassen", "pl-plot-empty": "Die Verteilung der Lawinengrößen ist noch leer.", "pl-plot-empty2": "Die Verteilung der Lawinengrößen ist noch leer: Bisher wurden nur {n} Lawinen protokolliert.", "pl-plot-none": "noch nicht genug Lawinen", "pl-ax-size": "Größe der Lawine", "pl-ax-often": "wie oft", "pl-slope": "Steigung {s}, τ ist also etwa {t}", "pl-plot": "Die Verteilung der Lawinengrößen auf einem Diagramm mit zwei logarithmischen Achsen, über {n} Lawinen aus {d} Körnern. Die Punkte liegen nahe an einer Geraden der Steigung {s}, was ein Potenzgesetz mit einem Exponenten von etwa {t} ist. Die größte Lawine bisher hat {big} Zellen gekippt.", "pl-sum": "Ein Tisch von {n} mal {n} hält im Mittel {mh} Körner je Zelle, nach {d} Körnern, die {where} gefallen sind, und {av} Lawinen. Das letzte Korn hat {last} gekippt, und die größte Lawine bisher hat {big} gekippt.", "pl-where-centre": "auf die Mitte", "pl-where-random": "zufällig", "pl-cells": "{n} Zellen", "pl-s0": "Der Tisch ist leer. Lassen Sie Körner fallen und sehen Sie zu, wie die mittlere Höhe klettert, dann aufhört zu klettern, und wie sich das Protokoll rechts zu begradigen beginnt.", "pl-s1": "Nach {d} hält der Haufen {mh}{tail}", "pl-s1-filling": " und füllt sich noch. Über die Kanten fällt noch nichts annähernd so schnell, wie Körner ankommen, das Protokoll rechts ist also nicht die kritische Verteilung.", "pl-s1-critical": ", und dort bleibt er. Von hier an werden ankommende Körner durch Körner ausgeglichen, die über die Kanten gehen, und das Gleichgewicht halten die Lawinen selbst und nicht irgendetwas, das es einstellt.", "pl-s2": "Das letzte Korn hat {last} gekippt{none} Die größte bisher hat {big} gekippt{share} Das Korn, das sie auslöste, war wie jedes andere Korn.", "pl-s2-none": ": Es landete und es geschah überhaupt nichts.", "pl-s2-some": ".", "pl-s2-over": ", was mehr Kippvorgänge sind, als es Zellen auf dem Tisch gibt, denn eine Zelle kann in einer einzigen Lawine mehr als einmal über ihr Limit gehen.", "pl-s2-share": ", was {p} Prozent der Zellen auf dem Tisch sind.", "pl-grains": "{n} Körnern", "pl-per-cell": "{n} je Zelle", "pl-sl-n": "Tischgröße", "pl-sl-n-h": "Ein größerer Tisch braucht länger bis zu seinem kritischen Zustand und hält größere Lawinen.", "pl-fmt-n": "{v} mal {v}", "pl-sg-w": "Wo das Korn landet", "pl-sg-w-h": "Nur auf die Mitte fallen zu lassen baut das klassische Muster langsamer auf.", "pl-opt-random": "irgendwo", "pl-opt-centre": "die Mitte", "pl-sl-r": "Körner je Bild im Lauf", "pl-sl-r-h": "Wie schnell der Antrieb läuft. Es ändert nicht die Physik, nur das Warten.", "pl-rd-drops": "Gefallene Körner", "pl-rd-av": "Lawinen", "pl-rd-last": "Letzte Lawine", "pl-rd-big": "Größte bisher", "pl-rd-mh": "Körner je Zelle", "pl-rd-tau": "Angepasster Exponent", "pl-sub-nothing": "{n} Körner bewirkten nichts", "pl-sub-toppled": "Zellen gekippt", "pl-sub-big": "Zellen gekippt, manche mehr als einmal", "pl-sub-mh": "mittlere Höhe", "pl-notyet": "noch nicht", "pl-sub-bins": "aus {n} Bins", "pl-sub-keep": "weiter fallen lassen", "pl-key-empty": "leer", "pl-key-two": "zwei Körner", "pl-key-three": "drei Körner", "pl-key-topple": "gerade gekippt", "pl-share": "Link kopiert. Er öffnet mit so vielen gefallenen Körnern.", "pl-032": "Die Arbeit, die das Modell und die Idee der selbstorganisierten Kritikalität einführte: Dynamische Systeme mit räumlichen Freiheitsgraden entwickeln sich von selbst in einen selbstorganisierten kritischen Zustand, den die Autoren mit Flimmerrauschen und mit dem Ursprung fraktaler Strukturen verbinden. <span class=\"ex-cite-w\">Per Bak, Chao Tang and Kurt Wiesenfeld, <span class=\"ex-cite-t\">Self-organized\n            criticality: An explanation of the 1/f noise</span>, Physical Review Letters 59(4), 27 July\n            1987, page 381.\n            <a href=\"https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381\" target=\"_blank\" rel=\"noreferrer noopener\">journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381</a>\n            Geprüft: 2026 08 22.</span>\n          ", "pg-title": "Der Haufen", "pl-034": "Der Exponent unter dem Diagramm ist per kleinster Quadrate an die logarithmisch gebinnten Zählungen angepasst, über die Bins mit genug Lawinen. Auf einem kleinen Tisch sagt er, dass die Linie gerade ist; eine Messung von τ ist er nicht."}};
+window.PAGE_I18N = {"tr": {"pg-desc": "Teker teker beslenen bir kum yığını kararlılığın eşiğine yerleşir; sonraki tane hiçbir şeyi ya da yığının dörtte birini kaydırır. Çığ boyları canlı çiziliyor.", "pl-001": "Yığın", "pl-002": "<span class=\"k-num\">01</span>Masa ve kayıt", "pl-003": "<span class=\"k-num\">02</span>Düz çizgi ne demek", "pl-004": "<span class=\"k-num\">03</span>Hiçbir şey ayarlanmıyor", "pl-005": "<span class=\"k-num\">04</span>Bu neden SIMEA'ya ait", "pl-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "pl-007": "<span class=\"k-num\">06</span>Kaynak", "pl-008": "Varsayımlar ve sınırlar", "pl-009": "Bir masaya teker teker bırakılan taneler. Kimse ayar yapmıyor, kimse onu belirli bir durumda tutmuyor. Kendi kararlılığının kenarına yürüyor ve orada kalıyor; bir sonraki tane ya hiçbir şey yapmıyor ya yığının çeyreğini indiriyor ve ne kadar izlerseniz izleyin hangisinin geleceğini söyleyemiyorsunuz.", "pl-010": "Bakın, Tang ve Wiesenfeld bunu 1987'de hâlâ iş gören bir iddiayla yayımladı: çok parçalı ve yavaş sürülen bir sistem, kimse bir parametreyi ayarlamadan kendi kendinize kritik bir noktaya gidiyor ve oraya vardığında davranışının karakteristik bir boyutu kalmıyor.", "pl-011": "Her biri birkaç tane tutan hücrelerden bir ızgara. Bir hücreye bir tane bırakın. Bir hücrede dört ya da daha çok tane birikirse devriliyor: dört komşusunun her birine bir tane. Bir devrilme komşuyu kendi sınırının üstüne itebilir, böylece tek bir tane masayı boydan boya geçen bir zincir başlatabilir. Kenardan düşen taneler gidiyor.", "pl-012": "Hepsi bu. Ayarlanacak bir parametre yok, ve asıl mesele de bu.", "pl-013": "Solda yığın; her hücre tuttuğu tane sayısına göre gölgeli, son çığda devrilen hücreler işaretli. Sağda bugüne kadarki her çığ, boyuta göre sıralı, iki ekseni de logaritmik bir grafikte. Karakteristik boyutu olan bir dağılım bir tümsek gösterirdi. Güç yasası düz bir çizgi gösteriyor.", "pl-014": "Yığın", "pl-015": "Çığ büyüklükleri, iki eksen de logaritmik", "pl-016": "Log log grafikte düz bir çizgi, belli boyuttaki çığ sayısının o boyutun sabit bir kuvvetiyle düştüğünü söylüyor: sıklığı yarıya indirmek, hangi boyuttan başlarsanız başlayın, boyutu sabit bir katsayıyla çarpmak demek. Tipik bir çığ yok ve bir sonrakinin ortalama boyutu, dağılımın işe yarar biçimde yanıtlamadığı bir soru.", "pl-017": "s büyüklüğündeki çığların sayısı ∝ s üzeri eksi τ <small data-i=\"pl-034\">Grafiğin altında basılan üs, logaritmik olarak kutulanmış sayımlara en küçük kareler yöntemiyle uyduruluyor; yalnızca uydurmaya değecek kadar çığ içeren kutular üzerinden. Küçük bir masada kaba bir tahmin, ve τ'nun ölçümü olarak değil çizginin düz olduğunun göstergesi olarak okunmalı.</small>", "pl-018": "Küçük çığlar hemen ve muazzam sayıda geliyor. Büyükler seyrek geliyor ve gördüğünüz en büyüğü sürekli aşılıyor. Burada masanın boyutundan başka gerçek bir en büyük yok; daha büyük bir masada en büyük olay yalnızca daha büyük olurdu.", "pl-019": "Hücre başına ortalama tane sayısını izleyin. Yığın dolarken tırmanıyor, sonra yerinde kalıyor. O andan sonra yığına ne yaparsanız yap aşağı yukarı aynı yüksekliğe dönüyor: giren taneleri kenardan düşenler dengeliyor ve dengeyi çığların kendisi tutuyor.", "pl-020": "Deyimdeki örgütlenmiş sözcüğüne iş yaptıran bu. Yığını kritiklikte kimse tutmuyor. Taneleri daha hızlı ekleyin, hâlâ orada. Boş masadan başlayın, oraya yürüyor; aşırı yüklü masadan başlayın, oraya çöküyor. Kritik durum dinamiğin gittiği yer; etkinin kimsenin yönetmediği sistemlerde ortaya çıkması bu yüzden.", "pl-021": "İki sebep, ve önemsediğim ikincisi.", "pl-022": "Birincisi öngörü. Böyle bir durumda bir sonraki olayın boyutu öngörülemez ve bunun bilgisizlikle ilgisi yok: dağılım burada tam olarak biliniyor, çünkü onu ben yazdım, ve bir koşu boyunca oranları veriyor, bir sonraki tane hakkında hiçbir şey vermiyor. Öngörülemezliğin bir kısmı sistemin özelliği ve her aracın elinden kurtuluyor; neyin öngörülebildiğini konuşmak isteyen bir araştırma ikisini ayırt edebilmeli.", "pl-023": "İkincisi sorumluluk. Büyük bir çığı başlatan tane, hiçbir şey başlatmayan binlercesinden ayırt edilemez. Sıradan bir taneydi; fark bütünüyle yığının çoktan vardığı durumda. Bir felaketten önceki son hareketi arayan her inceleme bunu yapıyor ve yığın, son hareketin masum, sonucun yine de devasa olabileceğinin bildiğim en temiz gösterimi.", "pl-024": "<strong>Bu bir öğretim modeli, ölçüm değil.</strong> Bu sayfadaki her sayı ya sizin ayarladığınız ya da bu modelin sizin ayarladığından ürettiği bir sayı. Burada ne kum ne piyasa ne de gerçek bir sistem tarif ediliyor.", "pl-025": "Tamamen tarayıcında çalışır. Burada yaptığınız hiçbir şey sayfadan çıkmaz. Sunucu yok, analitik yok, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Özdemir</a>.", "pl-026": "<b>Bu kum değil</b>Gerçek tanecikli yığınlar bu modelden daha dağınık davranıyor; nedeni modelin temsil edemediği eylemsizlik ve sürtünme. İsim bir resim ve kum hakkında hiçbir şey söylemiyor.", "pl-027": "<b>Masa küçük</b>Buradaki her güç yasası ızgarada kesiliyor; grafiğin sağ ucunun aşağı kıvrılması bu yüzden. Bu boyda bir masada birkaç bin çığdan uydurulan üs kaba bir işaret.", "pl-028": "<b>Geçici dönem dahil</b>Her çığ kaydediliyor, yığın kritik duruma varmadan öncekiler de. Grafiği ciddiye almadan önce sıfırlayın ve birkaç bin tane bırakın.", "pl-029": "<b>Sürüş tepkiden ayrı</b>Her çığ, bir sonraki tane düşmeden önce sonuna kadar koşuyor. Gevşeyebildiğinden hızlı sürülen bir sistem farklı davranırdı.", "pl-030": "<b>Güç yasasını görmek kolay, kanıtlamak zor</b>Log log grafikte düz bir parça tek başına zayıf kanıt ve istatistik yazını göz kararı uydurmalara acımasız. Bu sayfa bir tane üreten mekanizmayı gösteriyor; bir tane saptama yöntemi değil.", "pl-031": "<b>Benzetme bulgu değil</b>Öngörü ve sorumluluk paragrafları benzetmeyle kurulmuş argümanlar. Bu model piyasalar, kurumlar ya da felaketler hakkında hiçbir şey kanıtlamıyor ve bu sayfadan hiçbir sayı onlar hakkında bir iddiaya girmez.", "pl-033": "Şekil bir <span class=\"ex-model-sub\">tane bırakın ve kaydın dolmasını izleyin</span>", "pl-skip": "Simülasyona geçin", "pl-run": "Tane bırakın", "pl-plot-empty": "Çığ büyüklükleri dağılımı hâlâ boş.", "pl-plot-empty2": "Çığ büyüklükleri dağılımı hâlâ boş: şimdiye kadar yalnızca {n} çığ kaydedildi.", "pl-plot-none": "henüz yeterli çığ yok", "pl-ax-size": "çığın büyüklüğü", "pl-ax-often": "ne sıklıkta", "pl-slope": "eğim {s}, yani τ yaklaşık {t}", "pl-plot": "Çığ büyüklüklerinin, iki ekseni de logaritmik bir grafikteki dağılımı; {d} taneden gelen {n} çığ üzerinden. Noktalar eğimi {s} olan düz bir çizgiye yakın düşüyor, ki bu yaklaşık {t} üslü bir kuvvet yasası. Şimdiye kadarki en büyük çığ {big} hücre devirdi.", "pl-sum": "{n} x {n} bir masa, hücre başına ortalama {mh} tane tutuyor; {d} tane {where} bırakıldıktan ve {av} çığdan sonra. Son tane {last} devirdi, ve şimdiye kadarki en büyük çığ {big} devirdi.", "pl-where-centre": "ortaya", "pl-where-random": "rastgele", "pl-cells": "{n} hücre", "pl-s0": "Masa boş. Tane bırakın ve ortalama yüksekliğin tırmanmasını, sonra tırmanmayı bırakmasını, ve sağdaki kaydın düzelmeye başlamasını izleyin.", "pl-s1": "{d} sonra yığın {mh} tutuyor{tail}", "pl-s1-filling": " ve hâlâ doluyor. Kenarlardan henüz tanelerin geldiği hıza yakın bir şey düşmüyor, yani sağdaki kayıt kritik dağılım değil.", "pl-s1-critical": ", ve orada kalıyor. Buradan sonra gelen taneler kenarlardan gidenlerle dengeleniyor, ve dengeyi onu ayarlayan bir şey değil, çığların kendisi koruyor.", "pl-s2": "Son tane {last} devirdi{none} Şimdiye kadarki en büyüğü {big} devirdi{share} Onu başlatan tane diğer her taneyle aynıydı.", "pl-s2-none": ": indi ve hiçbir şey olmadı.", "pl-s2-some": ".", "pl-s2-over": ", ki bu masadaki hücre sayısından fazla devirme, çünkü bir hücre tek bir çığda kendi sınırını birden fazla kez aşabiliyor.", "pl-s2-share": ", ki bu masadaki hücrelerin yüzde {p} kadarı.", "pl-grains": "{n} tane", "pl-per-cell": "hücre başına {n}", "pl-sl-n": "Masa boyu", "pl-sl-n-h": "Daha büyük bir masa kritik durumuna daha geç ulaşıyor ve daha büyük çığlar tutuyor.", "pl-fmt-n": "{v} x {v}", "pl-sg-w": "Tanenin düştüğü yer", "pl-sg-w-h": "Yalnızca ortaya bırakmak klasik deseni daha yavaş kuruyor.", "pl-opt-random": "herhangi bir yere", "pl-opt-centre": "ortaya", "pl-sl-r": "Çalışırken kare başına tane", "pl-sl-r-h": "Sürücünün ne hızla çalıştığı. Fiziği değil, yalnızca bekleyişi değiştiriyor.", "pl-rd-drops": "Bırakılan tane", "pl-rd-av": "Çığ", "pl-rd-last": "Son çığ", "pl-rd-big": "Şimdiye kadarki en büyük", "pl-rd-mh": "Hücre başına tane", "pl-rd-tau": "Uydurulan üs", "pl-sub-nothing": "{n} tane hiçbir şey yapmadı", "pl-sub-toppled": "hücre devrildi", "pl-sub-big": "hücre devrildi, bazıları birden fazla kez", "pl-sub-mh": "ortalama yükseklik", "pl-notyet": "henüz yok", "pl-sub-bins": "{n} kutudan", "pl-sub-keep": "bırakmaya devam et", "pl-key-empty": "boş", "pl-key-two": "iki tane", "pl-key-three": "üç tane", "pl-key-topple": "az önce devrildi", "pl-share": "Bağlantı kopyalandı. Bu kadar tane bırakılmış hâliyle açılıyor.", "pl-032": "Modeli ve kendiliğinden örgütlenen kritiklik fikrini tanıtan makale: uzamsal serbestlik dereceleri olan dinamik sistemler doğal olarak kendiliğinden örgütlenen kritik bir duruma evriliyor; yazarlar bunu titreşim gürültüsüne ve fraktal yapıların kökenine bağlıyor. <span class=\"ex-cite-w\">Per Bakın, Chao Tang and Kurt Wiesenfeld, <span class=\"ex-cite-t\">Self-organized\n            criticality: An explanation of the 1/f noise</span>, Physical Review Letters 59(4), 27 July\n            1987, page 381.\n            <a href=\"https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381\" target=\"_blank\" rel=\"noreferrer noopener\">journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "pg-title": "Yığın, kararlılığın eşiğindeki bir kum yığını. Kerem Özdemir", "pl-034": "Grafiğin altındaki üs, logaritmik kutulanmış sayımlara, uydurmaya yetecek kadar çığ içeren kutular üzerinden en küçük karelerle uyduruluyor. Küçük bir masada çizginin düz olduğunu söylüyor; τ'nun bir ölçümü değil."}, "de": {"pg-desc": "Ein Sandhaufen, Korn für Korn beschickt, stellt sich an die Kante der Stabilität: das nächste Korn bewegt nichts oder ein Viertel. Lawinengrößen live geplottet.", "pl-001": "Der Haufen", "pl-002": "<span class=\"k-num\">01</span>Der Tisch und das Protokoll", "pl-003": "<span class=\"k-num\">02</span>Was die Gerade bedeutet", "pl-004": "<span class=\"k-num\">03</span>Es wird nichts eingestellt", "pl-005": "<span class=\"k-num\">04</span>Warum das zu SIMEA gehört", "pl-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "pl-007": "<span class=\"k-num\">06</span>Quelle", "pl-008": "Annahmen und Grenzen", "pl-009": "Körner, eines nach dem anderen auf einen Tisch fallen gelassen. Nichts stimmt es ab, und niemand hält es in einem bestimmten Zustand. Es wandert an den Rand seiner eigenen Stabilität und bleibt dort, wo das nächste Korn nichts tun oder ein Viertel des Haufens abtragen kann, und kein Zusehen verrät, welches von beidem.", "pl-010": "Bak, Tang und Wiesenfeld veröffentlichten dies 1987 mit einer Behauptung, die noch immer trägt: ein System aus vielen Teilen mit langsamem Antrieb bewegt sich von selbst zu einem kritischen Punkt, ohne dass jemand einen Parameter einstellt, und dort hat sein Verhalten keine charakteristische Größe mehr.", "pl-011": "Ein Gitter aus Zellen, jede mit ein paar Körnern. Lass ein Korn auf eine Zelle fallen. Hält eine Zelle je vier oder mehr, kippt sie: ein Korn an jeden ihrer vier Nachbarn. Ein Kippen kann einen Nachbarn über seine eigene Grenze stoßen, sodass ein Korn eine Kette über den ganzen Tisch auslösen kann. Körner, die über den Rand fallen, sind weg.", "pl-012": "Das ist alles. Es gibt keinen Parameter einzustellen, und genau darum geht es.", "pl-013": "Links der Haufen, schattiert nach der Zahl der Körner in jeder Zelle, mit den Zellen markiert, die in der letzten Lawine gekippt sind. Rechts jede Lawine bisher, nach Größe sortiert, auf einem Diagramm mit zwei logarithmischen Achsen. Eine Verteilung mit charakteristischer Größe zeigte einen Buckel. Ein Potenzgesetz zeigt eine gerade Linie.", "pl-014": "Der Haufen", "pl-015": "Lawinengrößen, beide Achsen logarithmisch", "pl-016": "Eine gerade Linie im Log-log-Diagramm sagt, dass die Zahl der Lawinen einer Größe mit einer festen Potenz dieser Größe fällt: die Häufigkeit zu halbieren heißt, die Größe mit einem konstanten Faktor zu multiplizieren, egal wo man beginnt. Es gibt keine typische Lawine, und die mittlere Größe der nächsten ist eine Frage, die die Verteilung nicht brauchbar beantwortet.", "pl-017": "Zahl der Lawinen der Größe s ∝ s hoch minus τ <small data-i=\"pl-034\">Der unter dem Diagramm gedruckte Exponent wird durch kleinste Quadrate an die logarithmisch gebinnten Zählungen angepasst, über die Bins, die genug Lawinen enthalten, um eine Anpassung zu lohnen. Es ist eine grobe Schätzung auf einem kleinen Tisch und sollte als Hinweis darauf gelesen werden, dass die Linie gerade ist, und nicht als Messung von τ.</small>", "pl-018": "Die kleinen Lawinen kommen sofort und in riesiger Zahl. Die großen kommen selten, und die größte bisher wird immer wieder überholt. Es gibt hier kein wahres Maximum außer der Tischgröße, und auf einem größeren Tisch wäre das größte Ereignis einfach größer.", "pl-019": "Beobachte die mittlere Zahl der Körner je Zelle. Sie steigt, während der Haufen sich füllt, dann bleibt sie stehen. Von da an kehrt der Haufen, was immer man mit ihm tut, zu etwa derselben Höhe zurück: die eingehenden Körner werden von den über den Rand fallenden ausgeglichen, und die Lawinen selbst halten das Gleichgewicht.", "pl-020": "Das ist es, was dem Wort organisiert Arbeit gibt. Niemand hält den Haufen in der Kritikalität. Füge Körner schneller hinzu, er ist noch da. Beginne mit einem leeren Tisch, er wandert hin; beginne mit einem überladenen, er fällt darauf zurück. Der kritische Zustand ist, wohin die Dynamik geht, und darum taucht der Effekt in Systemen auf, die niemand verwaltet.", "pl-021": "Zwei Gründe, und der zweite ist der, der mir wichtig ist.", "pl-022": "Das erste ist die Vorhersage. In einem solchen Zustand ist die Größe des nächsten Ereignisses nicht vorhersagbar, und Unkenntnis hat damit nichts zu tun: die Verteilung ist hier genau bekannt, denn ich habe sie geschrieben, und sie nennt die Chancen über einen Lauf und nichts über das nächste Korn. Manche Unvorhersagbarkeit ist eine Eigenschaft des Systems und überlebt jedes Instrument, und ein Forschungsvorhaben darüber, was sich vorhersagen lässt, muss beides auseinanderhalten.", "pl-023": "Das zweite ist Verantwortung. Das Korn, das eine große Lawine auslöst, ist von den Tausenden nicht zu unterscheiden, die nichts auslösten. Es war ein gewöhnliches Korn; der Unterschied liegt ganz im Zustand, den der Haufen schon erreicht hatte. Jede Untersuchung, die nach der letzten Handlung vor einem Unglück sucht, tut genau das, und der Haufen ist die sauberste mir bekannte Vorführung, dass die letzte Handlung unschuldig und das Ergebnis trotzdem gewaltig sein kann.", "pl-024": "<strong>Das ist ein Lehrmodell, keine Messung.</strong> Jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die dieses Modell daraus erzeugt hat. Nichts hier beschreibt Sand, Märkte oder irgendein reales System.", "pl-025": "Läuft vollständig in Ihrem Browser. Nichts, was Sie hier tun, verlässt die Seite. Kein Server, keine Analyse, kein Netzwerkaufruf, nachdem die Schriften geladen sind. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>.", "pl-026": "<b>Es ist kein Sand</b>Echte Schüttgut-Haufen verhalten sich weniger sauber als dieses Modell, aus Gründen von Trägheit und Reibung, die es nicht darstellen kann. Der Name ist ein Bild und sagt nichts über Sand.", "pl-027": "<b>Der Tisch ist klein</b>Jedes Potenzgesetz hier wird vom Gitter abgeschnitten, weshalb das rechte Ende des Diagramms nach unten biegt. Ein Exponent aus ein paar tausend Lawinen auf einem Tisch dieser Größe ist ein grober Hinweis.", "pl-028": "<b>Die Einschwingphase ist enthalten</b>Jede Lawine wird aufgezeichnet, auch die von vor dem Erreichen des kritischen Zustands. Drücke Zurücksetzen und lass ein paar tausend Körner fallen, bevor du das Diagramm ernst nimmst.", "pl-029": "<b>Antrieb und Antwort sind getrennt</b>Jede Lawine läuft zu Ende, bevor das nächste Korn fällt. Ein System, das schneller angetrieben wird, als es sich entspannen kann, verhielte sich anders.", "pl-030": "<b>Potenzgesetze sind leicht zu sehen und schwer zu belegen</b>Ein gerades Stück im Log-log-Diagramm ist für sich schwache Evidenz, und die statistische Literatur ist zu Augenmaß-Anpassungen nicht freundlich. Diese Seite zeigt einen Mechanismus, der eines erzeugt; eine Methode, eines nachzuweisen, ist sie nicht.", "pl-031": "<b>Eine Analogie ist kein Befund</b>Die Absätze zu Vorhersage und Verantwortung sind Argumente per Analogie. Dieses Modell belegt nichts über Märkte, Institutionen oder Unglücke, und keine Zahl von dieser Seite gehört in eine Behauptung darüber.", "pl-033": "Abbildung eins <span class=\"ex-model-sub\">Körner fallen lassen und zusehen, wie sich das Protokoll füllt</span>", "pl-skip": "Zur Simulation springen", "pl-run": "Körner fallen lassen", "pl-plot-empty": "Die Verteilung der Lawinengrößen ist noch leer.", "pl-plot-empty2": "Die Verteilung der Lawinengrößen ist noch leer: Bisher wurden nur {n} Lawinen protokolliert.", "pl-plot-none": "noch nicht genug Lawinen", "pl-ax-size": "Größe der Lawine", "pl-ax-often": "wie oft", "pl-slope": "Steigung {s}, τ ist also etwa {t}", "pl-plot": "Die Verteilung der Lawinengrößen auf einem Diagramm mit zwei logarithmischen Achsen, über {n} Lawinen aus {d} Körnern. Die Punkte liegen nahe an einer Geraden der Steigung {s}, was ein Potenzgesetz mit einem Exponenten von etwa {t} ist. Die größte Lawine bisher hat {big} Zellen gekippt.", "pl-sum": "Ein Tisch von {n} mal {n} hält im Mittel {mh} Körner je Zelle, nach {d} Körnern, die {where} gefallen sind, und {av} Lawinen. Das letzte Korn hat {last} gekippt, und die größte Lawine bisher hat {big} gekippt.", "pl-where-centre": "auf die Mitte", "pl-where-random": "zufällig", "pl-cells": "{n} Zellen", "pl-s0": "Der Tisch ist leer. Lassen Sie Körner fallen und sehen Sie zu, wie die mittlere Höhe klettert, dann aufhört zu klettern, und wie sich das Protokoll rechts zu begradigen beginnt.", "pl-s1": "Nach {d} hält der Haufen {mh}{tail}", "pl-s1-filling": " und füllt sich noch. Über die Kanten fällt noch nichts annähernd so schnell, wie Körner ankommen, das Protokoll rechts ist also nicht die kritische Verteilung.", "pl-s1-critical": ", und dort bleibt er. Von hier an werden ankommende Körner durch Körner ausgeglichen, die über die Kanten gehen, und das Gleichgewicht halten die Lawinen selbst und nicht irgendetwas, das es einstellt.", "pl-s2": "Das letzte Korn hat {last} gekippt{none} Die größte bisher hat {big} gekippt{share} Das Korn, das sie auslöste, war wie jedes andere Korn.", "pl-s2-none": ": Es landete und es geschah überhaupt nichts.", "pl-s2-some": ".", "pl-s2-over": ", was mehr Kippvorgänge sind, als es Zellen auf dem Tisch gibt, denn eine Zelle kann in einer einzigen Lawine mehr als einmal über ihr Limit gehen.", "pl-s2-share": ", was {p} Prozent der Zellen auf dem Tisch sind.", "pl-grains": "{n} Körnern", "pl-per-cell": "{n} je Zelle", "pl-sl-n": "Tischgröße", "pl-sl-n-h": "Ein größerer Tisch braucht länger bis zu seinem kritischen Zustand und hält größere Lawinen.", "pl-fmt-n": "{v} mal {v}", "pl-sg-w": "Wo das Korn landet", "pl-sg-w-h": "Nur auf die Mitte fallen zu lassen baut das klassische Muster langsamer auf.", "pl-opt-random": "irgendwo", "pl-opt-centre": "die Mitte", "pl-sl-r": "Körner je Bild im Lauf", "pl-sl-r-h": "Wie schnell der Antrieb läuft. Es ändert nicht die Physik, nur das Warten.", "pl-rd-drops": "Gefallene Körner", "pl-rd-av": "Lawinen", "pl-rd-last": "Letzte Lawine", "pl-rd-big": "Größte bisher", "pl-rd-mh": "Körner je Zelle", "pl-rd-tau": "Angepasster Exponent", "pl-sub-nothing": "{n} Körner bewirkten nichts", "pl-sub-toppled": "Zellen gekippt", "pl-sub-big": "Zellen gekippt, manche mehr als einmal", "pl-sub-mh": "mittlere Höhe", "pl-notyet": "noch nicht", "pl-sub-bins": "aus {n} Bins", "pl-sub-keep": "weiter fallen lassen", "pl-key-empty": "leer", "pl-key-two": "zwei Körner", "pl-key-three": "drei Körner", "pl-key-topple": "gerade gekippt", "pl-share": "Link kopiert. Er öffnet mit so vielen gefallenen Körnern.", "pl-032": "Die Arbeit, die das Modell und die Idee der selbstorganisierten Kritikalität einführte: Dynamische Systeme mit räumlichen Freiheitsgraden entwickeln sich von selbst in einen selbstorganisierten kritischen Zustand, den die Autoren mit Flimmerrauschen und mit dem Ursprung fraktaler Strukturen verbinden. <span class=\"ex-cite-w\">Per Bak, Chao Tang and Kurt Wiesenfeld, <span class=\"ex-cite-t\">Self-organized\n            criticality: An explanation of the 1/f noise</span>, Physical Review Letters 59(4), 27 July\n            1987, page 381.\n            <a href=\"https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381\" target=\"_blank\" rel=\"noreferrer noopener\">journals.aps.org/prl/abstract/10.1103/PhysRevLett.59.381</a>\n            Geprüft: 2026 08 22.</span>\n          ", "pg-title": "Der Haufen, ein Sandhaufen an der Kante der Stabilität. Kerem Özdemir", "pl-034": "Der Exponent unter dem Diagramm ist per kleinster Quadrate an die logarithmisch gebinnten Zählungen angepasst, über die Bins mit genug Lawinen. Auf einem kleinen Tisch sagt er, dass die Linie gerade ist; eine Messung von τ ist er nicht."}};
 function T(k, en, v) {
   var out = window.__t ? window.__t(k, en) : en;
   if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
@@ -2730,8 +2903,7 @@ function cellsT(n) { return T("pl-cells", "{n} cell" + (n === 1 ? "" : "s"), { n
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-k": "Vaka çalışmaları", "crown": "<i>Beş simülasyondan beşincisi<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte",
-"nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-k": "Fallstudien", "crown": "<i>Simulation fünf von fünf<\/i>"}};
+window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler", "crown": "<i>Beş simülasyondan beşincisi<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen", "crown": "<i>Simulation fünf von fünf<\/i>"}};
 
 (function(){
   "use strict";

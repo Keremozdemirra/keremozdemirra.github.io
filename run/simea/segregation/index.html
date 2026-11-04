@@ -9,13 +9,15 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 
 <title>Schelling segregation model, runnable in the browser. Kerem Özdemir</title>
-<meta name="description" content="A runnable Schelling model. Set how many like neighbours a household wants, run it, and watch a mild individual preference settle into a severely separated city. The segregation index is measured on screen while it happens.">
+<meta name="description" content="A runnable Schelling model: set how many like neighbours a household wants and watch a mild preference become a divided city, measured as it happens.">
 <meta name="author" content="Kerem Özdemir">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="../../fonts/fonts.css">
+<script>(function(){var d=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")})})()</script>
 <link rel="canonical" href="https://keremozdemir.de/run/simea/segregation/">
+<meta property="og:url" content="https://keremozdemir.de/run/simea/segregation/">
 <meta property="og:title" content="Schelling segregation model, runnable in the browser. Kerem Özdemir">
-<meta property="og:description" content="A runnable Schelling model. Set how many like neighbours a household wants, run it, and watch a mild individual preference settle into a severely separated city. The segregation index is measured on screen while it happens.">
+<meta property="og:description" content="A runnable Schelling model: set how many like neighbours a household wants and watch a mild preference become a divided city, measured as it happens.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -69,10 +71,59 @@
   --edge:    clamp(1.1rem, 5vw, 3.25rem);
 }
 
-/* The instruments used to flip to a dark palette with the system.  They
-   sit inside keremozdemir.de now, whose paper is light and whose top bar
-   and footer are painted from the site's own tokens, so a page that went
-   dark underneath a light bar would only look broken.  One palette. */
+/* The dark palette. It follows the system, and data-theme on the root
+   overrides the system both ways: the head script sets it from ?theme= in
+   the address (a case study framing the instrument passes the site's own
+   theme) or from the theme the reader chose on the site. The values are the
+   site's dark tokens (src/app/globals.css), so a framed instrument and the
+   page around it share one ground. Measured 2026-11-04: ink 15.6:1, dim
+   7.1:1 on the paper and 6.4:1 on a field, accent 5.6:1 on a field, flag
+   6.8:1 on its tint, a control's edge 3.8:1 against the field. The bar and
+   the footer flip with the page (pagegen.py), so nothing is left light
+   above or below it. The kit's selectors are written twice because a media
+   query and an attribute cannot share one prelude. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #111214;
+    --paper-sunk: #161719;
+    --panel:      #18191c;
+    --field:      #1c1d21;
+    --ink:        #e9eaec;
+    --ink-soft:   #c3c7cd;
+    --dim:        #9aa0a8;
+    --faint:      #9aa0a8;
+    --rule:       #292b30;
+    --rule-firm:  #3a3d43;
+    --rule-edge:  #737882;
+    --accent:     #f5694b;
+    --accent-lit: #2a2d33;
+    --flag:       #f08a6a;
+    --flag-lit:   #2a1a15;
+    --good:       #8cc084;
+    --good-lit:   #17221a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:      #111214;
+  --paper-sunk: #161719;
+  --panel:      #18191c;
+  --field:      #1c1d21;
+  --ink:        #e9eaec;
+  --ink-soft:   #c3c7cd;
+  --dim:        #9aa0a8;
+  --faint:      #9aa0a8;
+  --rule:       #292b30;
+  --rule-firm:  #3a3d43;
+  --rule-edge:  #737882;
+  --accent:     #f5694b;
+  --accent-lit: #2a2d33;
+  --flag:       #f08a6a;
+  --flag-lit:   #2a1a15;
+  --good:       #8cc084;
+  --good-lit:   #17221a;
+  color-scheme: dark;
+}
 
 /* ---------- 2. reset and page ---------- */
 
@@ -119,7 +170,7 @@ a:hover { border-bottom-color: var(--accent); }
 .k-skip {
   position: absolute; left: -9999px; top: 0; z-index: 50;
   background: var(--ink); color: var(--paper); border: 0;
-  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.875rem;
 }
 .k-skip:focus { left: 0.5rem; top: 0.5rem; }
 
@@ -151,8 +202,8 @@ a:hover { border-bottom-color: var(--accent); }
   margin-bottom: 1.1rem;
 }
 .k-sect > h2 .k-num {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
-  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
+  color: var(--faint); vertical-align: 0.4em; margin-right: 0.65rem;
 }
 .k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
 
@@ -166,13 +217,17 @@ a:hover { border-bottom-color: var(--accent); }
 .k-row.k-row-tight { gap: 0.55rem 0.9rem; }
 
 .k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+/* A label is read before the field is touched, so it is set at the size of
+   the text around it: 14px in the sans, sentence case as written. It used to
+   be 11px mono capitals, which was the smallest type on the page on the line
+   a reader needs first. */
 .k-field > label, .k-lab {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500;
+  letter-spacing: 0; color: var(--dim); line-height: 1.35;
 }
 .k-field .k-hint {
-  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
-  line-height: 1.45; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="text"], input[type="number"], input[type="search"], select, textarea {
@@ -209,8 +264,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   display: inline-flex; align-items: center; gap: 0.5rem;
   background: transparent; color: var(--ink);
   border: 1px solid var(--rule-firm); border-radius: 0;
-  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
-  letter-spacing: 0.13em; text-transform: uppercase;
+  font-family: var(--mono); font-weight: 500; font-size: 0.78rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.62rem 0.95rem; cursor: pointer;
   transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
 }
@@ -219,8 +274,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
 .k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .k-btn-key { color: #f7f5ee; }
+/* on the dark ground the accent is light, so the label on it goes dark */
+:root[data-theme="dark"] .k-btn-key { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .k-btn-key { color: var(--paper); }
+}
 .k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.75rem; padding: 0.45rem 0.7rem; }
 
 .k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
 
@@ -233,8 +293,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-panel + .k-panel { margin-top: var(--gap); }
 .k-panel > h3, .k-panel-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.75rem;
 }
 .k-panel-sunk { background: var(--paper-sunk); }
@@ -251,15 +311,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
 
 .k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
-.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dt { font-family: var(--serif); font-size: 0.875rem; color: var(--dim); min-width: 0; }
 .k-kv dd {
-  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  margin: 0; font-family: var(--mono); font-size: 0.875rem;
   font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
 }
 .k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
 
 /* arithmetic trace: every step printed */
-.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.875rem; line-height: 1.7; }
 .k-steps li {
   display: grid; grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.2rem 1rem; padding: 0.3rem 0;
@@ -285,18 +345,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 /* ---------- 6. source line ---------- */
 
 .k-source {
-  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; align-items: baseline;
   margin-top: 0.7rem; padding-top: 0.55rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
 }
 .k-source::before {
-  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  content: "source"; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); flex: none;
 }
 .k-source.k-source-bare::before { content: none; }
-.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all;
+  display: inline-block; padding-block: 0.15rem; }
+@media (pointer: coarse) {
+  .k-source a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; }
+}
 .k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .k-source .k-checked { color: var(--faint); white-space: nowrap; }
 
@@ -316,8 +381,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
 
 .k-tag {
-  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  display: inline-block; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
   white-space: nowrap;
 }
@@ -333,22 +398,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   font-size: 0.92rem;
 }
 .k-ask li > b {
-  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
-  padding-top: 0.22rem;
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.15rem;
 }
 
 /* ---------- 8. tables ---------- */
 
 .k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.875rem; }
 .k-table th, .k-table td {
   text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
   border-bottom: 1px solid var(--rule); vertical-align: top;
 }
 .k-table th {
-  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
-  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  font-family: var(--serif); font-weight: 500; font-size: 0.875rem;
+  letter-spacing: 0; color: var(--dim);
   border-bottom-color: var(--rule-firm); white-space: nowrap;
 }
 .k-table td.k-n, .k-table th.k-n {
@@ -356,7 +422,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   text-align: right; padding-right: 0; white-space: nowrap;
 }
 .k-table tbody tr:last-child td { border-bottom: 0; }
-.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell { font-family: var(--serif); font-size: 0.875rem; line-height: 1.55; color: var(--dim); }
 .k-table .k-src-cell a { word-break: break-all; }
 
 /* ---------- 9. timeline ---------- */
@@ -369,13 +435,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-time li:first-child { border-top: 0; padding-top: 0; }
 .k-time .k-when {
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.03em;
   color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
 }
 .k-time .k-what { font-size: 0.96rem; color: var(--ink); }
 .k-time .k-what small {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+  display: block; font-family: var(--serif); font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.55;
 }
 .k-time li.k-past .k-when { color: var(--faint); }
 .k-time li.k-past .k-what { color: var(--dim); }
@@ -394,8 +460,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-endnote .k-wrap { display: grid; gap: 1.1rem; }
 .k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
 .k-endnote .k-fine {
-  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-size: 0.875rem; line-height: 1.6; color: var(--faint);
 }
 .k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
 .k-endnote a:hover { color: var(--accent); }
@@ -405,7 +470,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-toast {
   position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
   background: var(--ink); color: var(--paper);
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
   opacity: 0; pointer-events: none;
   transition: opacity 0.18s ease;
@@ -477,7 +542,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   border-bottom: 1px solid var(--rule-firm);
 }
 .ex-body > h2 .k-num {
-  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
 }
 .ex-body > h3 {
@@ -512,15 +577,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 
 /* a formula set on its own line, in words rather than symbols */
 .ex-formula {
-  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.7;
   color: var(--ink); background: var(--panel);
   border-left: 2px solid var(--accent);
   padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
   max-width: 40rem; overflow-wrap: break-word;
 }
 .ex-formula small {
-  display: block; font-size: 0.66rem; color: var(--faint);
-  margin-top: 0.35rem; letter-spacing: 0.02em;
+  display: block; font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  margin-top: 0.35rem; line-height: 1.55;
 }
 
 /* ---------- the model figure, wider than the prose ---------- */
@@ -534,8 +599,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-model > figcaption,
 .ex-model-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.85rem;
   display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
 }
@@ -566,18 +631,18 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500; letter-spacing: 0;
+  color: var(--dim); line-height: 1.4;
   display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
 }
 .ex-ctrl .ex-val {
-  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  font-family: var(--mono); font-size: 0.875rem; letter-spacing: 0;
   text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
   font-weight: 500;
 }
 .ex-ctrl .k-hint {
-  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
-  line-height: 1.5; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="range"] {
@@ -608,7 +673,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
 .ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
 .ex-seg-row > label {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em;
   padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
   border: 1px solid var(--rule-firm); margin-left: -1px;
   background: var(--field); line-height: 1.3; white-space: nowrap;
@@ -628,7 +693,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 
 .ex-check {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   color: var(--dim); cursor: pointer;
 }
 .ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
@@ -643,8 +708,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-read > div { min-width: 0; }
 .ex-read dt, .ex-read .ex-read-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; letter-spacing: 0;
+  color: var(--faint); line-height: 1.35;
   margin: 0 0 0.15rem;
 }
 .ex-read dd, .ex-read .ex-read-v {
@@ -653,8 +718,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
 }
 .ex-read .ex-read-v small {
-  display: block; font-size: 0.63rem; font-weight: 400;
-  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+  display: block; font-family: var(--serif); font-size: 0.875rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0; margin-top: 0.15rem;
 }
 .ex-read-hot .ex-read-v { color: var(--accent); }
 .ex-read-flag .ex-read-v { color: var(--flag); }
@@ -662,13 +727,13 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-sum {
   margin-top: 0.9rem; padding-top: 0.7rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
-  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--dim); max-width: none;
 }
 .ex-sum b { color: var(--ink-soft); font-weight: 500; }
 .ex-sum::before {
-  content: "reading"; display: block;
-  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  content: "reading"; display: block; font-family: var(--mono);
+  font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); margin-bottom: 0.3rem;
 }
 
@@ -689,8 +754,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-key {
   display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
   margin-top: 0.7rem;
-  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
-  letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--dim);
 }
 .ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
 .ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
@@ -717,9 +781,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
 .ex-cites .ex-cite-w {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
-  line-height: 1.65;
+  display: block; font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.55;
 }
 .ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
 .ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
@@ -742,11 +806,11 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-next a:hover { border-color: var(--accent); background: var(--field); }
 .ex-next a:hover .ex-next-t { color: var(--accent); }
 .ex-next .ex-next-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--faint);
 }
 .ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
-.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+.ex-next .ex-next-d { font-size: 0.9rem; color: var(--dim); line-height: 1.5; }
 
 /* ---------- mobile ---------- */
 
@@ -785,7 +849,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .sm-canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .sm-canvas-lab {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--faint);
   margin: 0.55rem 0 0.25rem;
 }
@@ -798,27 +862,31 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   border-top: 1px solid var(--rule);
 }
 .sm-bar .sm-clock {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.04em;
   color: var(--faint); font-variant-numeric: tabular-nums;
   margin-left: auto; text-align: right;
 }
 .sm-btn-run[data-on="1"] { background: var(--accent); border-color: var(--accent); color: #f7f5ee; }
+:root[data-theme="dark"] .sm-btn-run[data-on="1"] { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .sm-btn-run[data-on="1"] { color: var(--paper); }
+}
 .sm-btn-run[data-on="1"]:hover { background: var(--ink); border-color: var(--ink); }
 
 .sm-keys {
-  font-family: var(--mono); font-size: 0.63rem; line-height: 1.65;
-  color: var(--faint); letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
   margin: 0.6rem 0 0;
 }
 .sm-keys kbd {
-  font-family: var(--mono); font-size: 0.63rem;
+  font-family: var(--mono); font-size: 0.8rem;
   border: 1px solid var(--rule-firm); border-radius: 2px;
   padding: 0.05em 0.3em; color: var(--dim);
 }
 
 .sm-still {
-  font-family: var(--mono); font-size: 0.63rem; line-height: 1.6;
-  color: var(--accent); letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.55;
+  color: var(--accent);
   margin: 0.55rem 0 0;
 }
 
@@ -832,13 +900,13 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   padding: 0.8rem 0.95rem;
 }
 .sm-construct h3 {
-  font-family: var(--mono); font-weight: 500; font-size: 0.66rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.4rem;
 }
 .sm-construct p { font-size: 0.95rem; margin-bottom: 0.5em; max-width: none; }
 .sm-construct .sm-eq {
-  font-family: var(--mono); font-size: 0.76rem; line-height: 1.65;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.6;
   color: var(--ink); background: var(--field);
   border: 1px solid var(--rule);
   padding: 0.5rem 0.6rem; margin: 0 0 0.45em;
@@ -846,8 +914,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   white-space: pre-wrap; overflow-wrap: break-word;
 }
 .sm-construct .sm-honest {
-  font-family: var(--mono); font-size: 0.65rem; line-height: 1.7;
-  color: var(--faint); letter-spacing: 0.02em; margin: 0; max-width: none;
+  font-size: 0.875rem; line-height: 1.55;
+  color: var(--faint); margin: 0; max-width: none;
 }
 .sm-construct .sm-live {
   font-family: var(--mono); font-weight: 500; font-size: 1.02rem;
@@ -871,14 +939,14 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .sm-card:hover { border-color: var(--accent); background: var(--field); }
 .sm-card:hover .sm-card-t { color: var(--accent); }
 .sm-card-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--faint);
 }
 .sm-card-t { font-family: var(--display); font-size: 1.2rem; letter-spacing: -0.02em; }
 .sm-card-d { font-size: 0.92rem; color: var(--dim); line-height: 1.5; }
 .sm-card-w {
-  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
-  letter-spacing: 0.02em; line-height: 1.6; margin-top: 0.15rem;
+  font-size: 0.875rem; color: var(--faint);
+  line-height: 1.5; margin-top: 0.15rem;
 }
 .sm-card canvas {
   display: block; width: 100%; height: auto;
@@ -917,6 +985,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .bar,footer.site-foot{color:var(--fg)}
 footer.site-foot{background:var(--paper)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar,:root:not([data-theme="light"]) footer.site-foot,:root:not([data-theme="light"]) .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}}
+:root[data-theme="dark"] .bar,:root[data-theme="dark"] footer.site-foot,:root[data-theme="dark"] .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}
+
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
 .wrap{max-width:74rem;margin:0 auto;padding:0 1.5rem}
@@ -931,6 +1002,7 @@ footer.site-foot{background:var(--paper)}
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:var(--paper);border-bottom:1px solid var(--line)}
 .in-frame .bar,.in-frame .site-foot{display:none}
 .bar .wrap{display:flex;align-items:center;gap:2rem;height:70px}
+.bar .home,.langs{flex:none}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;
   border-bottom:0;color:var(--fg);white-space:nowrap}
 .bar nav:not(.langs){margin:0 auto}
@@ -966,6 +1038,33 @@ footer.site-foot{background:var(--paper)}
 /* ---------- a leaf, falling once ---------- */
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar between a phone and a laptop ----------
+   One row needs 1,027 px in German with a touch screen (measured 2026-11-04:
+   the name, six sections, the three languages and the gaps), so from 641 to
+   1,080 px the bar takes two rows the way a phone does: the name and the
+   languages on the first, the sections on the second, which scrolls in place
+   if a long word still does not fit. Below that the switcher sat 130 px past
+   the right edge at 768 and could not be reached. */
+@media (min-width:641px) and (max-width:1080px){
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:1rem;row-gap:0;padding-top:.75rem;padding-bottom:.2rem}
+  .bar .home{line-height:33px}
+  .langs{margin-left:auto}
+  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0 -6px;padding:4px 6px;justify-content:flex-start;
+    gap:1.4rem;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+  .bar nav:not(.langs)::-webkit-scrollbar{display:none}
+  .bar nav a{padding:.45rem 0;flex:0 0 auto}
+}
+
+/* ---------- inside a case study's frame ----------
+   The page around the frame already has the title and the argument, so the
+   frame opens on the instrument: the heading and the standfirst are kept
+   for a screen reader and taken off the screen. A scaled preview is left
+   as it is, because its picture is the page's first screen. */
+.framed-tool .k-lede{position:absolute!important;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.framed-tool .k-main{padding-top:clamp(.9rem,3vw,1.4rem)}
+.framed-tool .k-lede + .k-sect{margin-top:0}
 
 /* ---------- the bar and the footer, narrowed ---------- */
 @media (max-width:640px){
@@ -1048,11 +1147,10 @@ footer.site-foot{background:var(--paper)}
 
 <div class="k-shell">
 
-<script>if(window.self!==window.top)document.documentElement.classList.add("in-frame")</script>
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../../">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../cases/" data-i="nav-k">Case studies</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
     <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
   </div>
 </header>
@@ -1323,6 +1421,16 @@ var Kit = (function () {
     return new TextDecoder().decode(bytes);
   }
 
+  /* The query without ?theme=, which a case study adds when it frames the
+     instrument. A link copied inside the frame would otherwise open dark or
+     light for whoever it is sent to, whatever they chose themselves. */
+  function query() {
+    var q = (location.search || "").replace(/^\?/, "").split("&").filter(function (p) {
+      return p && p.indexOf("theme=") !== 0;
+    }).join("&");
+    return q ? "?" + q : "";
+  }
+
   var state = {
     /* Serialise the object into the location hash without adding a history entry. */
     write: function (obj) {
@@ -1330,7 +1438,7 @@ var Kit = (function () {
       try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
       if (h.length > 8000) return "";
       try {
-        history.replaceState(null, "", location.pathname + location.search + h);
+        history.replaceState(null, "", location.pathname + query() + h);
       } catch (e) {
         location.hash = h;
       }
@@ -1343,7 +1451,7 @@ var Kit = (function () {
       try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
     },
     clear: function () {
-      try { history.replaceState(null, "", location.pathname + location.search); }
+      try { history.replaceState(null, "", location.pathname + query()); }
       catch (e) { location.hash = ""; }
     }
   };
@@ -1445,6 +1553,71 @@ var Kit = (function () {
     }
     return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
   }
+
+  /* ---------- a region that scrolls sideways ---------- */
+
+  /* A wide table on a phone scrolls inside its box, and a box that scrolls is
+     a control: a keyboard has to be able to reach it to scroll it, and a
+     screen reader has to hear what it is. It takes a tab stop only while it
+     overflows, so the same table at desktop width adds none. The name is the
+     heading of the panel it sits in, by reference, so it follows the language
+     when the reader switches. Measured 2026-11-04: axe found 17 such boxes
+     across seven instrument pages at 390px, none of them reachable. */
+  var reachSel = ".k-scroll, .k-panel > pre, [data-k-scroll]";
+  var reachN = 0;
+  /* A box can start to overflow with no change to the DOM at all: the faces
+     arrive after the first layout and widen every table. Each box and its
+     table are watched for a change of size, so the check runs again then. */
+  var reachSeen = typeof WeakSet === "function" ? new WeakSet() : null;
+  var reachRO = typeof ResizeObserver === "function" ? new ResizeObserver(function () { reachSoon(); }) : null;
+  function reach() {
+    qsa(reachSel).forEach(function (box) {
+      if (reachRO && reachSeen && !reachSeen.has(box)) {
+        reachSeen.add(box);
+        reachRO.observe(box);
+        if (box.firstElementChild) reachRO.observe(box.firstElementChild);
+      }
+      var over = box.scrollWidth > box.clientWidth + 1;
+      var mine = box.getAttribute("data-k-reach") === "1";
+      if (over && !box.hasAttribute("tabindex")) {
+        box.setAttribute("tabindex", "0");
+        box.setAttribute("data-k-reach", "1");
+        mine = true;
+      } else if (!over && mine) {
+        box.removeAttribute("tabindex");
+        box.removeAttribute("role");
+        box.removeAttribute("aria-labelledby");
+        box.removeAttribute("aria-label");
+        box.removeAttribute("data-k-reach");
+        return;
+      }
+      if (!mine) return;
+      box.setAttribute("role", "region");
+      if (box.hasAttribute("aria-labelledby") || box.hasAttribute("aria-label")) return;
+      var panel = box.closest(".k-panel, .k-sect, section, figure");
+      var head = panel && panel.querySelector("h2, h3, h4, .k-panel-h, figcaption");
+      if (head) {
+        if (!head.id) head.id = "k-reach-" + (++reachN);
+        box.setAttribute("aria-labelledby", head.id);
+      } else {
+        box.setAttribute("aria-label", window.__t ? window.__t("kit-scroll", "Table, scrolls sideways") : "Table, scrolls sideways");
+      }
+    });
+  }
+  var reachQueued = false;
+  function reachSoon() {
+    if (reachQueued) return;
+    reachQueued = true;
+    (window.requestAnimationFrame || setTimeout)(function () { reachQueued = false; reach(); });
+  }
+  if (typeof MutationObserver === "function") {
+    new MutationObserver(reachSoon).observe(document.documentElement, { childList: true, subtree: true });
+  }
+  addEventListener("resize", reachSoon);
+  addEventListener("load", reachSoon);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(reachSoon);
+  if (document.readyState !== "loading") reachSoon();
+  else document.addEventListener("DOMContentLoaded", reachSoon);
 
   return {
     el: el, qs: qs, qsa: qsa, clear: clear,
@@ -2226,7 +2399,7 @@ var Sim = (function () {
 })();
 
 /* ---- the page's own three languages ---- */
-window.PAGE_I18N = {"tr": {"pg-desc": "Çalıştırılabilir bir Schelling modeli. Bir hanenin kaç benzer komşu istediğini ayarlayın, çalıştırın ve ılımlı bir bireysel tercihin ağır ayrışmış bir şehre yerleşişini izleyin. Ayrışma endeksi olup biterken ekranda ölçülüyor.", "sg-001": "Yobaz olmadan ayrışma", "sg-002": "<span class=\"k-num\">01</span>Tahta", "sg-003": "<span class=\"k-num\">02</span>Ne ölçülüyor", "sg-004": "<span class=\"k-num\">03</span>Sonuç isteği neden aşıyor", "sg-005": "<span class=\"k-num\">04</span>Bu neden SIMEA'ya ait", "sg-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "sg-007": "<span class=\"k-num\">06</span>Kaynak", "sg-008": "Varsayımlar ve sınırlar", "sg-009": "Bu modelde kimse ayrı yaşamak istemiyor, her hane yalnızca küçük bir azınlıkta kaldığında taşınıyor, ve şehir yine de ayrışıyor: içindeki hiç kimsenin istediğinden çok daha fazla.", "sg-010": "Thomas Schelling 1971'de yayımladı; sosyal bilimlerdeki en eski fail temelli model: iki tür hane, bir tahta ve tek bir kural.", "sg-011": "Etrafınızdaki sekiz kareye bakın ve size benzeyen komşuları, sahip olduğunuz komşulara oran olarak sayın: bu oran istediğiniz kadarsa kalın, azsa boş bir kareye taşının. Modelin tamamı bu, ve istediğiniz sayı okurun belirlediği tek şey.", "sg-012": "Onu üçte bire ayarlayın, çok ılımlı bir şey söylemiş olursunuz: kötü biçimde sayıca ezilmediğim her yerde hoşnudum, komşularımın üçte ikisi öbür türden olabilir.", "sg-013": "Her kare bir hane ya da bir boşluk, ve bir hane hakkında başka hiçbir şey yok: gelir yok, fiyat yok, ev sahibi yok, geçmiş yok, kimse hakkında bir görüş yok. Yapabileceği tek şey kalmak ya da taşınmak.", "sg-014": "Şehir", "sg-015": "Ayrışma, tur tur", "sg-016": "Ayrışma endeksi, her hane için, dolu komşularının kendi türünden olanlarının payı; bütün tahta üzerinden ortalanmış.", "sg-017": "ayrışma endeksi = haneler üzerinden ortalama ( benzer komşu / dolu komşu ) <small data-i=\"sg-036\">Kusursuzca karıştırılmış bir tahta, çoğunluk türün payına yakın durur, çünkü rastgele bir komşu tam olarak odur. Tamamen ayrışmış bir tahta birde durur.</small>", "sg-018": "Başlangıç tahtası rastgele, yani endeks karışım payına yakın başlıyor ve yukarıdan başka gidecek yeri yok; önemli olan, istekten ne kadar yukarı tırmandığı. Üçte bir isteyin, tahta bunu geçip beşte dörde yakın bir yere yerleşir, üstelik tek bir hane bile sonunda içinde yaşadığı sokağa benzeyen bir sokak istememişken.", "sg-019": "Taşınmak özel bir edim değil. Bir sokağı terk eden hane, geride bıraktığı herkesin sayımını değiştiriyor ve bazıları artık kendi eşiğinin altına düşüp onlar da gidiyor; gelen bir hane de katıldığı herkesin sayımını değiştiriyor. İtişler birbirini götürmüyor: ayrışma yönünü kayırıyorlar, çünkü taşınma yalnızca kendi türünden daha fazlasına doğru yapılıyor, ondan uzağa hiçbir zaman değil.", "sg-020": "Tahtanın içinde bir cırcır dişlisi var: ayrışmış bir sokağı geri açacak hiçbir kuvvet yok, çünkü bu modelde kendinize benzeyen komşusu fazla diye mutsuz olan kimse yok. İsteği gerçekten hoşgörüsüz bir seviyeye çıkarın, aynı sonucu daha hızlı ve daha sert alırsınız; sıfıra doğru indirin, dişli durur, çünkü kimse hiç taşınmaz.", "sg-021": "İkisinin arasında bir yerde bir eşik var: altında tahta neredeyse hiç kımıldamıyor, üstünde neredeyse tamamen ayrışıyor. Onu sürgüyle bulun; çoğu okurun beklediğinden düşük.", "sg-022": "Bu model, bir sonucu içindeki insanlara geri okuma alışkanlığını kırıyor. Bitmiş tahtaya bakın, bütün sezgileriniz hanelerin bunu istediğini söyleyecek; oysa hiçbiri, içinde yaşadığı şehre benzeyen bir tercih taşımıyor.", "sg-023": "Bir failin istediği ile faillerin dizilişinin ürettiği arasındaki o boşluk, SIMEA'nın ölçmek için kurulduğu boşluk. Burada onu bir tahtanın geometrisi açıyor; yan taraftaki simülasyonda ise her failin ne göreceğini seçen bir sistem kasten açıyor. Mekanizma farklı, ders aynı: bireysel tercih ile kolektif sonuç ayrı büyüklükler, ve birini öbüründen okumak, rahat olduğu için hayatta kalan bir hata.", "sg-024": "Konutu konut yapan neredeyse her şey burada eksik, ve eksikler tesadüfi değil.", "sg-025": "Model Schelling'in, ve buradaki tahta o makaledeki alan sürümünü izliyor: bir ızgara, iki tür, karelerin kabaca üçte biri boş, ve etrafındaki sekiz kareyi sayan bir hane.", "sg-026": "<strong>Bu bir öğretim modeli, ölçüm değil:</strong> bu sayfadaki her sayı ya sizin ayarladığınız ya da tahtanın sizin ayarladığınızdan ürettiği bir sayı, burada hiçbir gerçek şehir tarif edilmiyor, ve bu sayfadan çıkan hiçbir rakamın böyle bir şey hakkındaki bir tartışmada yeri yok.", "sg-027": "Tamamen tarayıcınızda çalışır: burada yaptığınız hiçbir şey sayfadan çıkmaz, sunucu yok, analitik yok, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Özdemir</a>.", "sg-028": "<b>Para yok</b>Kira yok, fiyat yok, ücret yok, ev sahibi yok. Gerçek bir şehirde kimin nerede oturacağına karar veren kısıt genelde ne ödeyebildiğidir, ve ayrımcılık çoğu zaman komşu sayımı üzerinden değil fiyat üzerinden işler.", "sg-029": "<b>İki tür</b>Haneler tam olarak iki türde geliyor ve bir türün her üyesi birbirinin aynı; gerçek bir bölünmenin yapıldığı her şeyin çok güçlü bir basitleştirmesi.", "sg-030": "<b>Taşınmak bedava</b>Hoşnutsuz bir hane, maliyetsiz, aramasız, sırasız, redsiz ve ihbar süresiz olarak anında boş bir kareye taşınıyor; oysa gerçek taşınma, bu tahtayı hatırı sayılır ölçüde yavaşlatacak kadar yavaş ve pahalıdır.", "sg-031": "<b>Kimse geri çevrilmiyor</b>Modelde reddeden bir ev sahibi, yönlendiren bir emlakçı, bir sözleşme kaydı ya da bir politika yok. Ayrışmanın doğabileceği bir kanalı gösteriyor; bu kanalın fiilen ayrışmış herhangi bir şehri ürettiğini göstermiyor, ve kasıtlı dışlamanın tarihsel kaydı bu resmin içinde hiç yok.", "sg-032": "<b>Boş kare rastgele bir kare</b>Benim sürümüm mutsuz bir haneyi rastgele seçilen bir boşluğa gönderiyor, Schelling'in kendi anlatımı ise onu kendisini tatmin eden en yakın yere taşıyor; niteliksel sonuç aynı, örüntünün ayrıntıları değil.", "sg-033": "<b>Bu kanıt değil</b>Bu, bir mekanizmanın bir sonucu üretmeye yettiğinin gösterimi; yetmek, olmuş olmakla aynı şey değil, ve bu sayfadaki hiçbir sayı gerçek bir yeri tarif etmiyor.", "sg-035": "Şekil bir <span class=\"ex-model-sub\">isteği ayarlayın, sonra çalıştırın</span>", "sg-sl-tol": "İstenen benzer komşu", "sg-sl-tol-h": "Bir hanenin kalması için gereken dolu komşu payı.", "sg-sl-mix": "Birinci türün payı", "sg-sl-mix-h": "Hanelerin başlangıçta iki tür arasında nasıl bölündüğü.", "sg-sl-vac": "Boş kareler", "sg-sl-vac-h": "Taşınacak bir yer. Neredeyse hiç yoksa neredeyse kimse taşınamaz.", "sg-sl-n": "Tahta boyu", "sg-sl-n-h": "Her kenarda kaç kare olduğu.", "sg-fmt-n": "{v} x {v}", "sg-rd-sep": "Ayrışma endeksi", "sg-rd-base": "Nereden başladığı", "sg-rd-over": "Aşım", "sg-rd-unh": "Hâlâ hoşnutsuz", "sg-rd-rnd": "Tur", "sg-sub-sep": "komşuların benzer olma oranı", "sg-sub-base": "rastgele doldurulmuş tahta", "sg-sub-over": "istenenin üstünde", "sg-sub-unh": "geçen turda {n} taşındı", "sg-sub-settled": "yerleşti", "sg-sub-running": "çalışıyor", "sg-pts": "{n} puan", "sg-ln-sep": "ayrışma endeksi", "sg-ln-unh": "hoşnutsuz payı", "sg-ln-ask": "istedikleri", "sg-ax-rounds": "tur", "sg-clock": "tur {n}", "sg-clock-settled": "tur {n} · yerleşti", "sg-share": "Bağlantı kopyalandı; bu turdan açılıyor.", "sg-lab-plot": "Ayrışma endeksi, hoşnutsuz hanelerin payı ve her hanenin isteği, {r} tur boyunca. Endeks {sep} seviyesinde, isteğe karşı {tol}.", "sg-sum": "{n} x {n} kare bir ızgara, iki tür hane tutuyor, karelerin yüzde {vac} kadarı boş. Her hane, dolu komşularının en az yüzde {tol} kadarı kendi türündense olduğu yerde kalıyor. {r} tur sonra ayrışma endeksi {sep}, başladığı rastgele doldurulmuş tahtadaki {base} değerine karşı, ve hanelerin yüzde {unh} kadarı hâlâ hoşnutsuz{tail}", "sg-sum-settled": ". İki turdur hiçbir şey kımıldamadı, yani tahta yerleşti.", "sg-sum-plain": ".", "sg-s0": "Henüz kimse taşınmadı: her hane, komşularının {tol} kadarından azı kendi türünden olmadıkça olduğu yerde kalacak, ve bu rastgele dizilişin ayrışma endeksi {sep}. Çalıştırın'a basın.", "sg-s1": "Buradaki her hane, komşularının {tol} kadarının kendisine benzediği bir sokaktan hoşnut. {r} tur sonra ortalama hane fiilen kendi türünün {sep} kadarı olan bir sokakta yaşıyor.", "sg-s1-over": " Bu, tahtadaki hiç kimsenin istemediğinden {pts} daha fazla ayrışma.", "sg-s1-cap": " İstek, tahtanın karşılayamayacağı kadar yüksek, o yüzden aşımın ortaya çıkacak yeri yok.", "sg-s2-settled": "İki turdur hiçbir şey kımıldamadı. Diziliş kararlı: içindeki hiçbir hane mutsuz değil, hiçbiri bunu istemedi, hiçbiri taşınarak durumu iyileştiremez, ve yüzde {unh} hâlâ hoşnutsuz ve daha iyi bir yer bulamıyor.", "sg-s2-running": "Hanelerin yüzde {unh} kadarı hâlâ hoşnutsuz ve son turda {moved} tanesi taşındı, yani tahta henüz yerleşmedi.", "sg-skip": "Simülasyona geçin", "sg-034": "Modeli tanıtan makale; hem tek boyutlu bir komşu dizisi hem de burada kullanılan iki boyutlu tahta ile. Tahta sürümünde bir hane etrafındaki sekiz kareyi sayıyor, komşularının en az yarısının kendi türünden olmasını istiyor, ve kendisini tatmin eden en yakın boşluğa taşınıyor. Schelling, bu ılımlı isteklerin komşuların büyük çoğunluğunun benzer olduğu kümeler ürettiğini bildiriyor, ve bireysel teşvik ile kolektif sonuç arasında basit bir karşılık bulunmadığını yazıyor. <span class=\"ex-cite-w\">Thomas C. Schelling, <span class=\"ex-cite-t\">Dynamic Models of\n            Segregation</span>, The Journal of Mathematical Sociology 1(2), 1971, pages 143 to 186.\n            <a href=\"https://www.tandfonline.com/doi/abs/10.1080/0022250X.1971.9989794\" target=\"_blank\" rel=\"noreferrer noopener\">tandfonline.com/doi/abs/10.1080/0022250X.1971.9989794</a>\n            Tam metin şurada okundu:\n            <a href=\"https://www.suz.uzh.ch/dam/jcr:00000000-68cb-72db-ffff-ffffff8071db/04.02_schelling_71.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">suz.uzh.ch</a>.\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "pg-title": "Schelling ayrışma modeli, tarayıcıda çalışır. Kerem Özdemir"}, "de": {"pg-desc": "Ein lauffähiges Schelling-Modell. Stellen Sie ein, wie viele ähnliche Nachbarn ein Haushalt möchte, lassen Sie es laufen und sehen Sie, wie sich eine milde individuelle Präferenz in eine stark getrennte Stadt setzt. Der Segregationsindex wird währenddessen auf dem Schirm gemessen.", "sg-001": "Segregation ohne Bigotterie", "sg-002": "<span class=\"k-num\">01</span>Das Brett", "sg-003": "<span class=\"k-num\">02</span>Was gemessen wird", "sg-004": "<span class=\"k-num\">03</span>Warum das Ergebnis über den Wunsch hinausschießt", "sg-005": "<span class=\"k-num\">04</span>Warum das zu SIMEA gehört", "sg-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "sg-007": "<span class=\"k-num\">06</span>Quelle", "sg-008": "Annahmen und Grenzen", "sg-009": "Niemand in diesem Modell will getrennt wohnen, jeder Haushalt zieht nur um, wenn er in einer kleinen Minderheit zurückbleibt, und die Stadt trennt sich trotzdem, weit stärker, als irgendjemand darin verlangt hat.", "sg-010": "Thomas Schelling veröffentlichte es 1971, das älteste agentenbasierte Modell der Sozialwissenschaften: zwei Sorten Haushalte, ein Brett und eine Regel.", "sg-011": "Sehen Sie sich die acht Felder um sich herum an und zählen Sie die Nachbarn, die Ihnen ähneln, als Anteil an den Nachbarn, die Sie haben: ist dieser Anteil mindestens so hoch wie verlangt, bleiben Sie, ist er geringer, ziehen Sie auf ein freies Feld. Das ist das ganze Modell, und die Zahl, die Sie verlangen, ist das Einzige, was der Leser einstellt.", "sg-012": "Stellen Sie sie auf ein Drittel, und Sie haben etwas sehr Mildes gesagt: Ich bin überall zufrieden, wo ich nicht stark überstimmt bin, und zwei Drittel meiner Nachbarn dürfen von der anderen Sorte sein.", "sg-013": "Jedes Feld ist ein Haushalt oder eine Lücke, und sonst existiert von einem Haushalt nichts: kein Einkommen, kein Preis, kein Vermieter, keine Geschichte, keine Meinung über irgendjemanden. Das Einzige, was er tun kann, ist bleiben oder umziehen.", "sg-014": "Die Stadt", "sg-015": "Trennung, Runde für Runde", "sg-016": "Der Trennungsindex ist für jeden Haushalt der Anteil seiner belegten Nachbarn, die von seiner eigenen Sorte sind, über das ganze Brett gemittelt.", "sg-017": "Trennungsindex = Mittel über Haushalte von ( ähnliche Nachbarn / belegte Nachbarn ) <small data-i=\"sg-036\">Ein vollkommen durchmischtes Brett liegt nahe am Anteil der Mehrheitssorte, denn genau das ist ein zufälliger Nachbar. Ein vollständig getrenntes Brett liegt bei eins.</small>", "sg-018": "Das Startbrett ist zufällig, der Index beginnt also nahe dem Mischungsanteil und ihm bleibt nur der Weg nach oben; worauf es ankommt, ist, wie weit über die Forderung hinaus er klettert. Verlangen Sie ein Drittel, und das Brett läuft daran vorbei und legt sich bei etwa vier Fünfteln zur Ruhe, ohne dass je ein einziger Haushalt eine Straße gewollt hätte, wie die, in der er endet.", "sg-019": "Ein Umzug ist keine private Handlung. Ein Haushalt, der eine Straße verlässt, ändert die Zählung für alle, die er zurücklässt, und einige von ihnen fallen nun unter ihre eigene Schwelle und gehen ebenfalls; ein Haushalt, der ankommt, ändert die Zählung für alle, zu denen er stößt. Die Stöße heben sich nicht auf: Sie begünstigen die Richtung der Trennung, denn ein Umzug geht immer nur zu mehr von der eigenen Sorte hin und nie von ihr weg.", "sg-020": "Im Brett steckt eine Ratsche: keine Kraft zieht eine getrennte Straße wieder auseinander, weil in diesem Modell niemand unglücklich darüber ist, zu viele Nachbarn der eigenen Sorte zu haben. Drehen Sie die Forderung auf etwas wirklich Intolerantes, und Sie bekommen dasselbe Ergebnis schneller und härter; drehen Sie sie gegen null, und die Ratsche steht still, weil niemand mehr umzieht.", "sg-021": "Irgendwo zwischen beidem liegt eine Schwelle, unter der sich das Brett kaum bewegt und über der es sich fast vollständig trennt. Finden Sie sie mit dem Regler; sie liegt niedriger, als die meisten Leser erwarten.", "sg-022": "Dieses Modell bricht die Gewohnheit, ein Ergebnis in die Menschen darin zurückzulesen. Sehen Sie sich das fertige Brett an, und jeder Instinkt sagt, die Haushalte hätten das gewollt, dabei hat nicht einer von ihnen eine Präferenz, die auch nur entfernt aussieht wie die Stadt, in der er lebt.", "sg-023": "Diese Lücke zwischen dem, was ein Akteur will, und dem, was die Anordnung der Akteure hervorbringt, ist die Lücke, zu deren Messung SIMEA gebaut ist. Hier öffnet sie die Geometrie eines Bretts; in der Simulation nebenan öffnet sie ein System absichtlich, das auswählt, was jeder Akteur sieht. Der Mechanismus unterscheidet sich, die Lehre nicht: Individuelle Präferenz und kollektives Ergebnis sind getrennte Größen, und die eine an der anderen abzulesen ist ein Fehler, der überlebt, weil er bequem ist.", "sg-024": "Fast alles, was Wohnen zu Wohnen macht, fehlt hier, und die Auslassungen sind nicht beiläufig.", "sg-025": "Das Modell ist Schellings, und das Brett hier folgt der Flächenversion in jener Arbeit: ein Gitter, zwei Sorten, grob ein Drittel der Felder frei, und ein Haushalt, der die acht Felder um sich herum zählt.", "sg-026": "<strong>Das ist ein Lehrmodell, keine Messung:</strong> jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die das Brett daraus erzeugt hat, nichts hier beschreibt eine reale Stadt, und keine Zahl von dieser Seite gehört in ein Argument über eine.", "sg-027": "Läuft vollständig in Ihrem Browser: nichts, was Sie hier tun, verlässt die Seite, kein Server, keine Analyse, kein Netzwerkaufruf, nachdem die Schriften geladen sind. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>.", "sg-028": "<b>Kein Geld</b>Es gibt keine Miete, keinen Preis, keinen Lohn und keinen Vermieter. In einer realen Stadt entscheidet meist das, was jemand zahlen kann, wer wo wohnt, und Diskriminierung wirkt oft über den Preis statt über die Nachbarzählung.", "sg-029": "<b>Zwei Sorten</b>Haushalte gibt es in genau zwei Sorten, und alle einer Sorte sind identisch, eine sehr starke Vereinfachung von allem, woraus eine reale Spaltung besteht.", "sg-030": "<b>Umziehen ist frei</b>Ein unzufriedener Haushalt zieht sofort auf ein freies Feld, ohne Kosten, ohne Suche, ohne Warteschlange, ohne Absage und ohne Kündigungsfrist, während reales Umziehen langsam und teuer genug ist, um dieses Brett erheblich zu verlangsamen.", "sg-031": "<b>Niemand wird abgewiesen</b>Das Modell hat keinen Vermieter, der ablehnt, keinen Makler, der lenkt, keine Klausel und keine Politik. Es zeigt einen Kanal, über den Trennung entstehen kann; es zeigt nicht, dass dieser Kanal irgendeine tatsächlich getrennte Stadt hervorgebracht hat, und die historische Überlieferung absichtlicher Ausgrenzung kommt in diesem Bild überhaupt nicht vor.", "sg-032": "<b>Ein freies Feld ist ein zufälliges Feld</b>Meine Fassung schickt einen unzufriedenen Haushalt auf eine zufällig gewählte Lücke, während Schellings eigene Darstellung ihn auf den nächstgelegenen zufriedenstellenden Platz zieht; das qualitative Ergebnis ist dasselbe, die Einzelheiten des Musters sind es nicht.", "sg-033": "<b>Es ist kein Beleg</b>Das zeigt, dass ein Mechanismus hinreicht, um ein Ergebnis hervorzubringen; hinreichen ist nicht dasselbe wie stattgefunden haben, und keine Zahl auf dieser Seite beschreibt einen realen Ort.", "sg-035": "Abbildung eins <span class=\"ex-model-sub\">Forderung einstellen, dann laufen lassen</span>", "sg-sl-tol": "Verlangte ähnliche Nachbarn", "sg-sl-tol-h": "Der Anteil belegter Nachbarn, den ein Haushalt braucht, um zu bleiben.", "sg-sl-mix": "Anteil der ersten Sorte", "sg-sl-mix-h": "Wie sich die Haushalte am Anfang auf die zwei Sorten verteilen.", "sg-sl-vac": "Freie Felder", "sg-sl-vac-h": "Ein Ort zum Hinziehen. Gibt es fast keinen, kann fast niemand ziehen.", "sg-sl-n": "Brettgröße", "sg-sl-n-h": "Wie viele Felder auf jeder Seite.", "sg-fmt-n": "{v} x {v}", "sg-rd-sep": "Trennungsindex", "sg-rd-base": "Wo es begann", "sg-rd-over": "Überschuss", "sg-rd-unh": "Noch unzufrieden", "sg-rd-rnd": "Runden", "sg-sub-sep": "der Nachbarn ähneln sich", "sg-sub-base": "zufällig gefülltes Brett", "sg-sub-over": "über dem Verlangten", "sg-sub-unh": "{n} zogen letzte Runde", "sg-sub-settled": "gesetzt", "sg-sub-running": "läuft", "sg-pts": "{n} Punkte", "sg-ln-sep": "Trennungsindex", "sg-ln-unh": "Anteil unzufrieden", "sg-ln-ask": "was sie verlangten", "sg-ax-rounds": "Runden", "sg-clock": "Runde {n}", "sg-clock-settled": "Runde {n} · gesetzt", "sg-share": "Link kopiert; er öffnet auf dieser Runde.", "sg-lab-plot": "Der Trennungsindex, der Anteil unzufriedener Haushalte und die Forderung jedes Haushalts, über {r} Runden. Der Index steht bei {sep}, gegen eine Forderung von {tol}.", "sg-sum": "Ein Gitter von {n} mal {n} Feldern mit zwei Sorten Haushalten, {vac} Prozent der Felder frei. Jeder Haushalt bleibt, wo er ist, wenn mindestens {tol} Prozent seiner belegten Nachbarn von seiner eigenen Sorte sind. Nach {r} Runden liegt der Trennungsindex bei {sep}, gegen {base} auf dem zufällig gefüllten Brett, von dem er ausging, und {unh} Prozent der Haushalte sind noch unzufrieden{tail}", "sg-sum-settled": ". Zwei Runden lang hat sich nichts bewegt, das Brett hat sich also gesetzt.", "sg-sum-plain": ".", "sg-s0": "Noch ist niemand umgezogen: jeder Haushalt bleibt, wo er ist, solange nicht weniger als {tol} seiner Nachbarn von seiner eigenen Sorte sind, und der Trennungsindex dieser zufälligen Anordnung liegt bei {sep}. Drücken Sie Starten.", "sg-s1": "Jeder Haushalt hier ist mit einer Straße zufrieden, in der {tol} der Nachbarn ihm ähneln. Nach {r} Runden lebt der durchschnittliche Haushalt tatsächlich in einer Straße, die zu {sep} aus seiner eigenen Sorte besteht.", "sg-s1-over": " Das sind {pts} mehr Trennung, als irgendjemand auf dem Brett verlangt hat.", "sg-s1-cap": " Die Forderung ist so hoch, dass das Brett sie nicht erfüllen kann, der Überschuss hat also keinen Ort, an dem er auftreten könnte.", "sg-s2-settled": "Zwei Runden lang hat sich nichts bewegt. Die Anordnung ist stabil: kein Haushalt darin ist unglücklich, keiner wollte das, keiner kann die Lage durch Umziehen verbessern, und {unh} Prozent sind noch unzufrieden und finden nichts Besseres.", "sg-s2-running": "{unh} Prozent der Haushalte sind noch unzufrieden, und {moved} sind in der letzten Runde umgezogen, das Brett hat sich also noch nicht gesetzt.", "sg-skip": "Zur Simulation springen", "sg-034": "Die Arbeit, die das Modell einführte, mit einer eindimensionalen Reihe von Nachbarn und dem hier verwendeten zweidimensionalen Brett. In der Brettversion zählt ein Haushalt die acht umgebenden Felder, verlangt, dass mindestens die Hälfte seiner Nachbarn von seiner eigenen Sorte ist, und zieht auf die nächstgelegene Lücke, die ihn zufriedenstellt. Schelling berichtet, dass diese milden Forderungen Cluster erzeugen, in denen die große Mehrheit der Nachbarn einander ähnelt, und schreibt, dass es keine einfache Entsprechung zwischen individuellem Anreiz und kollektivem Ergebnis gibt. <span class=\"ex-cite-w\">Thomas C. Schelling, <span class=\"ex-cite-t\">Dynamic Models of\n            Segregation</span>, The Journal of Mathematical Sociology 1(2), 1971, pages 143 to 186.\n            <a href=\"https://www.tandfonline.com/doi/abs/10.1080/0022250X.1971.9989794\" target=\"_blank\" rel=\"noreferrer noopener\">tandfonline.com/doi/abs/10.1080/0022250X.1971.9989794</a>\n            Volltext gelesen bei\n            <a href=\"https://www.suz.uzh.ch/dam/jcr:00000000-68cb-72db-ffff-ffffff8071db/04.02_schelling_71.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">suz.uzh.ch</a>.\n            Geprüft: 2026 08 22.</span>\n          ", "pg-title": "Schelling-Segregationsmodell, läuft im Browser. Kerem Özdemir"}};
+window.PAGE_I18N = {"tr": {"pg-desc": "Çalıştırılabilir bir Schelling modeli: bir hanenin kaç benzer komşu istediğini ayarlayın, ılımlı bir tercihin bölünmüş bir şehre dönüşünü ölçerek izleyin.", "sg-001": "Yobaz olmadan ayrışma", "sg-002": "<span class=\"k-num\">01</span>Tahta", "sg-003": "<span class=\"k-num\">02</span>Ne ölçülüyor", "sg-004": "<span class=\"k-num\">03</span>Sonuç isteği neden aşıyor", "sg-005": "<span class=\"k-num\">04</span>Bu neden SIMEA'ya ait", "sg-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "sg-007": "<span class=\"k-num\">06</span>Kaynak", "sg-008": "Varsayımlar ve sınırlar", "sg-009": "Bu modelde kimse ayrı yaşamak istemiyor, her hane yalnızca küçük bir azınlıkta kaldığında taşınıyor, ve şehir yine de ayrışıyor: içindeki hiç kimsenin istediğinden çok daha fazla.", "sg-010": "Thomas Schelling 1971'de yayımladı; sosyal bilimlerdeki en eski fail temelli model: iki tür hane, bir tahta ve tek bir kural.", "sg-011": "Etrafınızdaki sekiz kareye bakın ve size benzeyen komşuları, sahip olduğunuz komşulara oran olarak sayın: bu oran istediğiniz kadarsa kalın, azsa boş bir kareye taşının. Modelin tamamı bu, ve istediğiniz sayı okurun belirlediği tek şey.", "sg-012": "Onu üçte bire ayarlayın, çok ılımlı bir şey söylemiş olursunuz: kötü biçimde sayıca ezilmediğim her yerde hoşnudum, komşularımın üçte ikisi öbür türden olabilir.", "sg-013": "Her kare bir hane ya da bir boşluk, ve bir hane hakkında başka hiçbir şey yok: gelir yok, fiyat yok, ev sahibi yok, geçmiş yok, kimse hakkında bir görüş yok. Yapabileceği tek şey kalmak ya da taşınmak.", "sg-014": "Şehir", "sg-015": "Ayrışma, tur tur", "sg-016": "Ayrışma endeksi, her hane için, dolu komşularının kendi türünden olanlarının payı; bütün tahta üzerinden ortalanmış.", "sg-017": "ayrışma endeksi = haneler üzerinden ortalama ( benzer komşu / dolu komşu ) <small data-i=\"sg-036\">Kusursuzca karıştırılmış bir tahta, çoğunluk türün payına yakın durur, çünkü rastgele bir komşu tam olarak odur. Tamamen ayrışmış bir tahta birde durur.</small>", "sg-018": "Başlangıç tahtası rastgele, yani endeks karışım payına yakın başlıyor ve yukarıdan başka gidecek yeri yok; önemli olan, istekten ne kadar yukarı tırmandığı. Üçte bir isteyin, tahta bunu geçip beşte dörde yakın bir yere yerleşir, üstelik tek bir hane bile sonunda içinde yaşadığı sokağa benzeyen bir sokak istememişken.", "sg-019": "Taşınmak özel bir edim değil. Bir sokağı terk eden hane, geride bıraktığı herkesin sayımını değiştiriyor ve bazıları artık kendi eşiğinin altına düşüp onlar da gidiyor; gelen bir hane de katıldığı herkesin sayımını değiştiriyor. İtişler birbirini götürmüyor: ayrışma yönünü kayırıyorlar, çünkü taşınma yalnızca kendi türünden daha fazlasına doğru yapılıyor, ondan uzağa hiçbir zaman değil.", "sg-020": "Tahtanın içinde bir cırcır dişlisi var: ayrışmış bir sokağı geri açacak hiçbir kuvvet yok, çünkü bu modelde kendinize benzeyen komşusu fazla diye mutsuz olan kimse yok. İsteği gerçekten hoşgörüsüz bir seviyeye çıkarın, aynı sonucu daha hızlı ve daha sert alırsınız; sıfıra doğru indirin, dişli durur, çünkü kimse hiç taşınmaz.", "sg-021": "İkisinin arasında bir yerde bir eşik var: altında tahta neredeyse hiç kımıldamıyor, üstünde neredeyse tamamen ayrışıyor. Onu sürgüyle bulun; çoğu okurun beklediğinden düşük.", "sg-022": "Bu model, bir sonucu içindeki insanlara geri okuma alışkanlığını kırıyor. Bitmiş tahtaya bakın, bütün sezgileriniz hanelerin bunu istediğini söyleyecek; oysa hiçbiri, içinde yaşadığı şehre benzeyen bir tercih taşımıyor.", "sg-023": "Bir failin istediği ile faillerin dizilişinin ürettiği arasındaki o boşluk, SIMEA'nın ölçmek için kurulduğu boşluk. Burada onu bir tahtanın geometrisi açıyor; yan taraftaki simülasyonda ise her failin ne göreceğini seçen bir sistem kasten açıyor. Mekanizma farklı, ders aynı: bireysel tercih ile kolektif sonuç ayrı büyüklükler, ve birini öbüründen okumak, rahat olduğu için hayatta kalan bir hata.", "sg-024": "Konutu konut yapan neredeyse her şey burada eksik, ve eksikler tesadüfi değil.", "sg-025": "Model Schelling'in, ve buradaki tahta o makaledeki alan sürümünü izliyor: bir ızgara, iki tür, karelerin kabaca üçte biri boş, ve etrafındaki sekiz kareyi sayan bir hane.", "sg-026": "<strong>Bu bir öğretim modeli, ölçüm değil:</strong> bu sayfadaki her sayı ya sizin ayarladığınız ya da tahtanın sizin ayarladığınızdan ürettiği bir sayı, burada hiçbir gerçek şehir tarif edilmiyor, ve bu sayfadan çıkan hiçbir rakamın böyle bir şey hakkındaki bir tartışmada yeri yok.", "sg-027": "Tamamen tarayıcınızda çalışır: burada yaptığınız hiçbir şey sayfadan çıkmaz, sunucu yok, analitik yok, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Özdemir</a>.", "sg-028": "<b>Para yok</b>Kira yok, fiyat yok, ücret yok, ev sahibi yok. Gerçek bir şehirde kimin nerede oturacağına karar veren kısıt genelde ne ödeyebildiğidir, ve ayrımcılık çoğu zaman komşu sayımı üzerinden değil fiyat üzerinden işler.", "sg-029": "<b>İki tür</b>Haneler tam olarak iki türde geliyor ve bir türün her üyesi birbirinin aynı; gerçek bir bölünmenin yapıldığı her şeyin çok güçlü bir basitleştirmesi.", "sg-030": "<b>Taşınmak bedava</b>Hoşnutsuz bir hane, maliyetsiz, aramasız, sırasız, redsiz ve ihbar süresiz olarak anında boş bir kareye taşınıyor; oysa gerçek taşınma, bu tahtayı hatırı sayılır ölçüde yavaşlatacak kadar yavaş ve pahalıdır.", "sg-031": "<b>Kimse geri çevrilmiyor</b>Modelde reddeden bir ev sahibi, yönlendiren bir emlakçı, bir sözleşme kaydı ya da bir politika yok. Ayrışmanın doğabileceği bir kanalı gösteriyor; bu kanalın fiilen ayrışmış herhangi bir şehri ürettiğini göstermiyor, ve kasıtlı dışlamanın tarihsel kaydı bu resmin içinde hiç yok.", "sg-032": "<b>Boş kare rastgele bir kare</b>Benim sürümüm mutsuz bir haneyi rastgele seçilen bir boşluğa gönderiyor, Schelling'in kendi anlatımı ise onu kendisini tatmin eden en yakın yere taşıyor; niteliksel sonuç aynı, örüntünün ayrıntıları değil.", "sg-033": "<b>Bu kanıt değil</b>Bu, bir mekanizmanın bir sonucu üretmeye yettiğinin gösterimi; yetmek, olmuş olmakla aynı şey değil, ve bu sayfadaki hiçbir sayı gerçek bir yeri tarif etmiyor.", "sg-035": "Şekil bir <span class=\"ex-model-sub\">isteği ayarlayın, sonra çalıştırın</span>", "sg-sl-tol": "İstenen benzer komşu", "sg-sl-tol-h": "Bir hanenin kalması için gereken dolu komşu payı.", "sg-sl-mix": "Birinci türün payı", "sg-sl-mix-h": "Hanelerin başlangıçta iki tür arasında nasıl bölündüğü.", "sg-sl-vac": "Boş kareler", "sg-sl-vac-h": "Taşınacak bir yer. Neredeyse hiç yoksa neredeyse kimse taşınamaz.", "sg-sl-n": "Tahta boyu", "sg-sl-n-h": "Her kenarda kaç kare olduğu.", "sg-fmt-n": "{v} x {v}", "sg-rd-sep": "Ayrışma endeksi", "sg-rd-base": "Nereden başladığı", "sg-rd-over": "Aşım", "sg-rd-unh": "Hâlâ hoşnutsuz", "sg-rd-rnd": "Tur", "sg-sub-sep": "komşuların benzer olma oranı", "sg-sub-base": "rastgele doldurulmuş tahta", "sg-sub-over": "istenenin üstünde", "sg-sub-unh": "geçen turda {n} taşındı", "sg-sub-settled": "yerleşti", "sg-sub-running": "çalışıyor", "sg-pts": "{n} puan", "sg-ln-sep": "ayrışma endeksi", "sg-ln-unh": "hoşnutsuz payı", "sg-ln-ask": "istedikleri", "sg-ax-rounds": "tur", "sg-clock": "tur {n}", "sg-clock-settled": "tur {n} · yerleşti", "sg-share": "Bağlantı kopyalandı; bu turdan açılıyor.", "sg-lab-plot": "Ayrışma endeksi, hoşnutsuz hanelerin payı ve her hanenin isteği, {r} tur boyunca. Endeks {sep} seviyesinde, isteğe karşı {tol}.", "sg-sum": "{n} x {n} kare bir ızgara, iki tür hane tutuyor, karelerin yüzde {vac} kadarı boş. Her hane, dolu komşularının en az yüzde {tol} kadarı kendi türündense olduğu yerde kalıyor. {r} tur sonra ayrışma endeksi {sep}, başladığı rastgele doldurulmuş tahtadaki {base} değerine karşı, ve hanelerin yüzde {unh} kadarı hâlâ hoşnutsuz{tail}", "sg-sum-settled": ". İki turdur hiçbir şey kımıldamadı, yani tahta yerleşti.", "sg-sum-plain": ".", "sg-s0": "Henüz kimse taşınmadı: her hane, komşularının {tol} kadarından azı kendi türünden olmadıkça olduğu yerde kalacak, ve bu rastgele dizilişin ayrışma endeksi {sep}. Çalıştırın'a basın.", "sg-s1": "Buradaki her hane, komşularının {tol} kadarının kendisine benzediği bir sokaktan hoşnut. {r} tur sonra ortalama hane fiilen kendi türünün {sep} kadarı olan bir sokakta yaşıyor.", "sg-s1-over": " Bu, tahtadaki hiç kimsenin istemediğinden {pts} daha fazla ayrışma.", "sg-s1-cap": " İstek, tahtanın karşılayamayacağı kadar yüksek, o yüzden aşımın ortaya çıkacak yeri yok.", "sg-s2-settled": "İki turdur hiçbir şey kımıldamadı. Diziliş kararlı: içindeki hiçbir hane mutsuz değil, hiçbiri bunu istemedi, hiçbiri taşınarak durumu iyileştiremez, ve yüzde {unh} hâlâ hoşnutsuz ve daha iyi bir yer bulamıyor.", "sg-s2-running": "Hanelerin yüzde {unh} kadarı hâlâ hoşnutsuz ve son turda {moved} tanesi taşındı, yani tahta henüz yerleşmedi.", "sg-skip": "Simülasyona geçin", "sg-034": "Modeli tanıtan makale; hem tek boyutlu bir komşu dizisi hem de burada kullanılan iki boyutlu tahta ile. Tahta sürümünde bir hane etrafındaki sekiz kareyi sayıyor, komşularının en az yarısının kendi türünden olmasını istiyor, ve kendisini tatmin eden en yakın boşluğa taşınıyor. Schelling, bu ılımlı isteklerin komşuların büyük çoğunluğunun benzer olduğu kümeler ürettiğini bildiriyor, ve bireysel teşvik ile kolektif sonuç arasında basit bir karşılık bulunmadığını yazıyor. <span class=\"ex-cite-w\">Thomas C. Schelling, <span class=\"ex-cite-t\">Dynamic Models of\n            Segregation</span>, The Journal of Mathematical Sociology 1(2), 1971, pages 143 to 186.\n            <a href=\"https://www.tandfonline.com/doi/abs/10.1080/0022250X.1971.9989794\" target=\"_blank\" rel=\"noreferrer noopener\">tandfonline.com/doi/abs/10.1080/0022250X.1971.9989794</a>\n            Tam metin şurada okundu:\n            <a href=\"https://www.suz.uzh.ch/dam/jcr:00000000-68cb-72db-ffff-ffffff8071db/04.02_schelling_71.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">suz.uzh.ch</a>.\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "pg-title": "Schelling ayrışma modeli, tarayıcıda çalışır. Kerem Özdemir"}, "de": {"pg-desc": "Ein lauffähiges Schelling-Modell: Wie viele ähnliche Nachbarn will ein Haushalt? Sehen Sie eine milde Vorliebe eine Stadt teilen, live gemessen.", "sg-001": "Segregation ohne Bigotterie", "sg-002": "<span class=\"k-num\">01</span>Das Brett", "sg-003": "<span class=\"k-num\">02</span>Was gemessen wird", "sg-004": "<span class=\"k-num\">03</span>Warum das Ergebnis über den Wunsch hinausschießt", "sg-005": "<span class=\"k-num\">04</span>Warum das zu SIMEA gehört", "sg-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "sg-007": "<span class=\"k-num\">06</span>Quelle", "sg-008": "Annahmen und Grenzen", "sg-009": "Niemand in diesem Modell will getrennt wohnen, jeder Haushalt zieht nur um, wenn er in einer kleinen Minderheit zurückbleibt, und die Stadt trennt sich trotzdem, weit stärker, als irgendjemand darin verlangt hat.", "sg-010": "Thomas Schelling veröffentlichte es 1971, das älteste agentenbasierte Modell der Sozialwissenschaften: zwei Sorten Haushalte, ein Brett und eine Regel.", "sg-011": "Sehen Sie sich die acht Felder um sich herum an und zählen Sie die Nachbarn, die Ihnen ähneln, als Anteil an den Nachbarn, die Sie haben: ist dieser Anteil mindestens so hoch wie verlangt, bleiben Sie, ist er geringer, ziehen Sie auf ein freies Feld. Das ist das ganze Modell, und die Zahl, die Sie verlangen, ist das Einzige, was der Leser einstellt.", "sg-012": "Stellen Sie sie auf ein Drittel, und Sie haben etwas sehr Mildes gesagt: Ich bin überall zufrieden, wo ich nicht stark überstimmt bin, und zwei Drittel meiner Nachbarn dürfen von der anderen Sorte sein.", "sg-013": "Jedes Feld ist ein Haushalt oder eine Lücke, und sonst existiert von einem Haushalt nichts: kein Einkommen, kein Preis, kein Vermieter, keine Geschichte, keine Meinung über irgendjemanden. Das Einzige, was er tun kann, ist bleiben oder umziehen.", "sg-014": "Die Stadt", "sg-015": "Trennung, Runde für Runde", "sg-016": "Der Trennungsindex ist für jeden Haushalt der Anteil seiner belegten Nachbarn, die von seiner eigenen Sorte sind, über das ganze Brett gemittelt.", "sg-017": "Trennungsindex = Mittel über Haushalte von ( ähnliche Nachbarn / belegte Nachbarn ) <small data-i=\"sg-036\">Ein vollkommen durchmischtes Brett liegt nahe am Anteil der Mehrheitssorte, denn genau das ist ein zufälliger Nachbar. Ein vollständig getrenntes Brett liegt bei eins.</small>", "sg-018": "Das Startbrett ist zufällig, der Index beginnt also nahe dem Mischungsanteil und ihm bleibt nur der Weg nach oben; worauf es ankommt, ist, wie weit über die Forderung hinaus er klettert. Verlangen Sie ein Drittel, und das Brett läuft daran vorbei und legt sich bei etwa vier Fünfteln zur Ruhe, ohne dass je ein einziger Haushalt eine Straße gewollt hätte, wie die, in der er endet.", "sg-019": "Ein Umzug ist keine private Handlung. Ein Haushalt, der eine Straße verlässt, ändert die Zählung für alle, die er zurücklässt, und einige von ihnen fallen nun unter ihre eigene Schwelle und gehen ebenfalls; ein Haushalt, der ankommt, ändert die Zählung für alle, zu denen er stößt. Die Stöße heben sich nicht auf: Sie begünstigen die Richtung der Trennung, denn ein Umzug geht immer nur zu mehr von der eigenen Sorte hin und nie von ihr weg.", "sg-020": "Im Brett steckt eine Ratsche: keine Kraft zieht eine getrennte Straße wieder auseinander, weil in diesem Modell niemand unglücklich darüber ist, zu viele Nachbarn der eigenen Sorte zu haben. Drehen Sie die Forderung auf etwas wirklich Intolerantes, und Sie bekommen dasselbe Ergebnis schneller und härter; drehen Sie sie gegen null, und die Ratsche steht still, weil niemand mehr umzieht.", "sg-021": "Irgendwo zwischen beidem liegt eine Schwelle, unter der sich das Brett kaum bewegt und über der es sich fast vollständig trennt. Finden Sie sie mit dem Regler; sie liegt niedriger, als die meisten Leser erwarten.", "sg-022": "Dieses Modell bricht die Gewohnheit, ein Ergebnis in die Menschen darin zurückzulesen. Sehen Sie sich das fertige Brett an, und jeder Instinkt sagt, die Haushalte hätten das gewollt, dabei hat nicht einer von ihnen eine Präferenz, die auch nur entfernt aussieht wie die Stadt, in der er lebt.", "sg-023": "Diese Lücke zwischen dem, was ein Akteur will, und dem, was die Anordnung der Akteure hervorbringt, ist die Lücke, zu deren Messung SIMEA gebaut ist. Hier öffnet sie die Geometrie eines Bretts; in der Simulation nebenan öffnet sie ein System absichtlich, das auswählt, was jeder Akteur sieht. Der Mechanismus unterscheidet sich, die Lehre nicht: Individuelle Präferenz und kollektives Ergebnis sind getrennte Größen, und die eine an der anderen abzulesen ist ein Fehler, der überlebt, weil er bequem ist.", "sg-024": "Fast alles, was Wohnen zu Wohnen macht, fehlt hier, und die Auslassungen sind nicht beiläufig.", "sg-025": "Das Modell ist Schellings, und das Brett hier folgt der Flächenversion in jener Arbeit: ein Gitter, zwei Sorten, grob ein Drittel der Felder frei, und ein Haushalt, der die acht Felder um sich herum zählt.", "sg-026": "<strong>Das ist ein Lehrmodell, keine Messung:</strong> jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die das Brett daraus erzeugt hat, nichts hier beschreibt eine reale Stadt, und keine Zahl von dieser Seite gehört in ein Argument über eine.", "sg-027": "Läuft vollständig in Ihrem Browser: nichts, was Sie hier tun, verlässt die Seite, kein Server, keine Analyse, kein Netzwerkaufruf, nachdem die Schriften geladen sind. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>.", "sg-028": "<b>Kein Geld</b>Es gibt keine Miete, keinen Preis, keinen Lohn und keinen Vermieter. In einer realen Stadt entscheidet meist das, was jemand zahlen kann, wer wo wohnt, und Diskriminierung wirkt oft über den Preis statt über die Nachbarzählung.", "sg-029": "<b>Zwei Sorten</b>Haushalte gibt es in genau zwei Sorten, und alle einer Sorte sind identisch, eine sehr starke Vereinfachung von allem, woraus eine reale Spaltung besteht.", "sg-030": "<b>Umziehen ist frei</b>Ein unzufriedener Haushalt zieht sofort auf ein freies Feld, ohne Kosten, ohne Suche, ohne Warteschlange, ohne Absage und ohne Kündigungsfrist, während reales Umziehen langsam und teuer genug ist, um dieses Brett erheblich zu verlangsamen.", "sg-031": "<b>Niemand wird abgewiesen</b>Das Modell hat keinen Vermieter, der ablehnt, keinen Makler, der lenkt, keine Klausel und keine Politik. Es zeigt einen Kanal, über den Trennung entstehen kann; es zeigt nicht, dass dieser Kanal irgendeine tatsächlich getrennte Stadt hervorgebracht hat, und die historische Überlieferung absichtlicher Ausgrenzung kommt in diesem Bild überhaupt nicht vor.", "sg-032": "<b>Ein freies Feld ist ein zufälliges Feld</b>Meine Fassung schickt einen unzufriedenen Haushalt auf eine zufällig gewählte Lücke, während Schellings eigene Darstellung ihn auf den nächstgelegenen zufriedenstellenden Platz zieht; das qualitative Ergebnis ist dasselbe, die Einzelheiten des Musters sind es nicht.", "sg-033": "<b>Es ist kein Beleg</b>Das zeigt, dass ein Mechanismus hinreicht, um ein Ergebnis hervorzubringen; hinreichen ist nicht dasselbe wie stattgefunden haben, und keine Zahl auf dieser Seite beschreibt einen realen Ort.", "sg-035": "Abbildung eins <span class=\"ex-model-sub\">Forderung einstellen, dann laufen lassen</span>", "sg-sl-tol": "Verlangte ähnliche Nachbarn", "sg-sl-tol-h": "Der Anteil belegter Nachbarn, den ein Haushalt braucht, um zu bleiben.", "sg-sl-mix": "Anteil der ersten Sorte", "sg-sl-mix-h": "Wie sich die Haushalte am Anfang auf die zwei Sorten verteilen.", "sg-sl-vac": "Freie Felder", "sg-sl-vac-h": "Ein Ort zum Hinziehen. Gibt es fast keinen, kann fast niemand ziehen.", "sg-sl-n": "Brettgröße", "sg-sl-n-h": "Wie viele Felder auf jeder Seite.", "sg-fmt-n": "{v} x {v}", "sg-rd-sep": "Trennungsindex", "sg-rd-base": "Wo es begann", "sg-rd-over": "Überschuss", "sg-rd-unh": "Noch unzufrieden", "sg-rd-rnd": "Runden", "sg-sub-sep": "der Nachbarn ähneln sich", "sg-sub-base": "zufällig gefülltes Brett", "sg-sub-over": "über dem Verlangten", "sg-sub-unh": "{n} zogen letzte Runde", "sg-sub-settled": "gesetzt", "sg-sub-running": "läuft", "sg-pts": "{n} Punkte", "sg-ln-sep": "Trennungsindex", "sg-ln-unh": "Anteil unzufrieden", "sg-ln-ask": "was sie verlangten", "sg-ax-rounds": "Runden", "sg-clock": "Runde {n}", "sg-clock-settled": "Runde {n} · gesetzt", "sg-share": "Link kopiert; er öffnet auf dieser Runde.", "sg-lab-plot": "Der Trennungsindex, der Anteil unzufriedener Haushalte und die Forderung jedes Haushalts, über {r} Runden. Der Index steht bei {sep}, gegen eine Forderung von {tol}.", "sg-sum": "Ein Gitter von {n} mal {n} Feldern mit zwei Sorten Haushalten, {vac} Prozent der Felder frei. Jeder Haushalt bleibt, wo er ist, wenn mindestens {tol} Prozent seiner belegten Nachbarn von seiner eigenen Sorte sind. Nach {r} Runden liegt der Trennungsindex bei {sep}, gegen {base} auf dem zufällig gefüllten Brett, von dem er ausging, und {unh} Prozent der Haushalte sind noch unzufrieden{tail}", "sg-sum-settled": ". Zwei Runden lang hat sich nichts bewegt, das Brett hat sich also gesetzt.", "sg-sum-plain": ".", "sg-s0": "Noch ist niemand umgezogen: jeder Haushalt bleibt, wo er ist, solange nicht weniger als {tol} seiner Nachbarn von seiner eigenen Sorte sind, und der Trennungsindex dieser zufälligen Anordnung liegt bei {sep}. Drücken Sie Starten.", "sg-s1": "Jeder Haushalt hier ist mit einer Straße zufrieden, in der {tol} der Nachbarn ihm ähneln. Nach {r} Runden lebt der durchschnittliche Haushalt tatsächlich in einer Straße, die zu {sep} aus seiner eigenen Sorte besteht.", "sg-s1-over": " Das sind {pts} mehr Trennung, als irgendjemand auf dem Brett verlangt hat.", "sg-s1-cap": " Die Forderung ist so hoch, dass das Brett sie nicht erfüllen kann, der Überschuss hat also keinen Ort, an dem er auftreten könnte.", "sg-s2-settled": "Zwei Runden lang hat sich nichts bewegt. Die Anordnung ist stabil: kein Haushalt darin ist unglücklich, keiner wollte das, keiner kann die Lage durch Umziehen verbessern, und {unh} Prozent sind noch unzufrieden und finden nichts Besseres.", "sg-s2-running": "{unh} Prozent der Haushalte sind noch unzufrieden, und {moved} sind in der letzten Runde umgezogen, das Brett hat sich also noch nicht gesetzt.", "sg-skip": "Zur Simulation springen", "sg-034": "Die Arbeit, die das Modell einführte, mit einer eindimensionalen Reihe von Nachbarn und dem hier verwendeten zweidimensionalen Brett. In der Brettversion zählt ein Haushalt die acht umgebenden Felder, verlangt, dass mindestens die Hälfte seiner Nachbarn von seiner eigenen Sorte ist, und zieht auf die nächstgelegene Lücke, die ihn zufriedenstellt. Schelling berichtet, dass diese milden Forderungen Cluster erzeugen, in denen die große Mehrheit der Nachbarn einander ähnelt, und schreibt, dass es keine einfache Entsprechung zwischen individuellem Anreiz und kollektivem Ergebnis gibt. <span class=\"ex-cite-w\">Thomas C. Schelling, <span class=\"ex-cite-t\">Dynamic Models of\n            Segregation</span>, The Journal of Mathematical Sociology 1(2), 1971, pages 143 to 186.\n            <a href=\"https://www.tandfonline.com/doi/abs/10.1080/0022250X.1971.9989794\" target=\"_blank\" rel=\"noreferrer noopener\">tandfonline.com/doi/abs/10.1080/0022250X.1971.9989794</a>\n            Volltext gelesen bei\n            <a href=\"https://www.suz.uzh.ch/dam/jcr:00000000-68cb-72db-ffff-ffffff8071db/04.02_schelling_71.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">suz.uzh.ch</a>.\n            Geprüft: 2026 08 22.</span>\n          ", "pg-title": "Schelling-Segregationsmodell, läuft im Browser. Kerem Özdemir"}};
 function T(k, en, v) {
   var out = window.__t ? window.__t(k, en) : en;
   if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
@@ -2632,8 +2805,7 @@ function sweepI18n() {
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-k": "Vaka çalışmaları", "crown": "<i>Beş simülasyondan birincisi<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte",
-"nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-k": "Fallstudien", "crown": "<i>Simulation eins von fünf<\/i>"}};
+window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler", "crown": "<i>Beş simülasyondan birincisi<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen", "crown": "<i>Simulation eins von fünf<\/i>"}};
 
 (function(){
   "use strict";

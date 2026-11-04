@@ -8,14 +8,16 @@
      nothing you type leaves the page into something the browser enforces. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 
-<title>Diffusion, and the shape it runs through</title>
-<meta name="description" content="The same contagion, at the same transmission probability, run over a lattice, a small world and a scale free network. Add a threshold rule and it changes again. Structure turns out to matter as much as the thing being spread.">
+<title>Diffusion, and the shape it runs through. Kerem Özdemir</title>
+<meta name="description" content="One contagion at one transmission probability, run over a lattice, a small world and a scale free network. The network's shape changes the outcome.">
 <meta name="author" content="Kerem Özdemir">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="../../fonts/fonts.css">
+<script>(function(){var d=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")})})()</script>
 <link rel="canonical" href="https://keremozdemir.de/run/simea/diffusion/">
-<meta property="og:title" content="Diffusion, and the shape it runs through">
-<meta property="og:description" content="The same contagion, at the same transmission probability, run over a lattice, a small world and a scale free network. Add a threshold rule and it changes again. Structure turns out to matter as much as the thing being spread.">
+<meta property="og:url" content="https://keremozdemir.de/run/simea/diffusion/">
+<meta property="og:title" content="Diffusion, and the shape it runs through. Kerem Özdemir">
+<meta property="og:description" content="One contagion at one transmission probability, run over a lattice, a small world and a scale free network. The network's shape changes the outcome.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -69,10 +71,59 @@
   --edge:    clamp(1.1rem, 5vw, 3.25rem);
 }
 
-/* The instruments used to flip to a dark palette with the system.  They
-   sit inside keremozdemir.de now, whose paper is light and whose top bar
-   and footer are painted from the site's own tokens, so a page that went
-   dark underneath a light bar would only look broken.  One palette. */
+/* The dark palette. It follows the system, and data-theme on the root
+   overrides the system both ways: the head script sets it from ?theme= in
+   the address (a case study framing the instrument passes the site's own
+   theme) or from the theme the reader chose on the site. The values are the
+   site's dark tokens (src/app/globals.css), so a framed instrument and the
+   page around it share one ground. Measured 2026-11-04: ink 15.6:1, dim
+   7.1:1 on the paper and 6.4:1 on a field, accent 5.6:1 on a field, flag
+   6.8:1 on its tint, a control's edge 3.8:1 against the field. The bar and
+   the footer flip with the page (pagegen.py), so nothing is left light
+   above or below it. The kit's selectors are written twice because a media
+   query and an attribute cannot share one prelude. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #111214;
+    --paper-sunk: #161719;
+    --panel:      #18191c;
+    --field:      #1c1d21;
+    --ink:        #e9eaec;
+    --ink-soft:   #c3c7cd;
+    --dim:        #9aa0a8;
+    --faint:      #9aa0a8;
+    --rule:       #292b30;
+    --rule-firm:  #3a3d43;
+    --rule-edge:  #737882;
+    --accent:     #f5694b;
+    --accent-lit: #2a2d33;
+    --flag:       #f08a6a;
+    --flag-lit:   #2a1a15;
+    --good:       #8cc084;
+    --good-lit:   #17221a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:      #111214;
+  --paper-sunk: #161719;
+  --panel:      #18191c;
+  --field:      #1c1d21;
+  --ink:        #e9eaec;
+  --ink-soft:   #c3c7cd;
+  --dim:        #9aa0a8;
+  --faint:      #9aa0a8;
+  --rule:       #292b30;
+  --rule-firm:  #3a3d43;
+  --rule-edge:  #737882;
+  --accent:     #f5694b;
+  --accent-lit: #2a2d33;
+  --flag:       #f08a6a;
+  --flag-lit:   #2a1a15;
+  --good:       #8cc084;
+  --good-lit:   #17221a;
+  color-scheme: dark;
+}
 
 /* ---------- 2. reset and page ---------- */
 
@@ -119,7 +170,7 @@ a:hover { border-bottom-color: var(--accent); }
 .k-skip {
   position: absolute; left: -9999px; top: 0; z-index: 50;
   background: var(--ink); color: var(--paper); border: 0;
-  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.875rem;
 }
 .k-skip:focus { left: 0.5rem; top: 0.5rem; }
 
@@ -151,8 +202,8 @@ a:hover { border-bottom-color: var(--accent); }
   margin-bottom: 1.1rem;
 }
 .k-sect > h2 .k-num {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
-  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
+  color: var(--faint); vertical-align: 0.4em; margin-right: 0.65rem;
 }
 .k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
 
@@ -166,13 +217,17 @@ a:hover { border-bottom-color: var(--accent); }
 .k-row.k-row-tight { gap: 0.55rem 0.9rem; }
 
 .k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+/* A label is read before the field is touched, so it is set at the size of
+   the text around it: 14px in the sans, sentence case as written. It used to
+   be 11px mono capitals, which was the smallest type on the page on the line
+   a reader needs first. */
 .k-field > label, .k-lab {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500;
+  letter-spacing: 0; color: var(--dim); line-height: 1.35;
 }
 .k-field .k-hint {
-  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
-  line-height: 1.45; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="text"], input[type="number"], input[type="search"], select, textarea {
@@ -209,8 +264,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   display: inline-flex; align-items: center; gap: 0.5rem;
   background: transparent; color: var(--ink);
   border: 1px solid var(--rule-firm); border-radius: 0;
-  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
-  letter-spacing: 0.13em; text-transform: uppercase;
+  font-family: var(--mono); font-weight: 500; font-size: 0.78rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.62rem 0.95rem; cursor: pointer;
   transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
 }
@@ -219,8 +274,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
 .k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .k-btn-key { color: #f7f5ee; }
+/* on the dark ground the accent is light, so the label on it goes dark */
+:root[data-theme="dark"] .k-btn-key { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .k-btn-key { color: var(--paper); }
+}
 .k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.75rem; padding: 0.45rem 0.7rem; }
 
 .k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
 
@@ -233,8 +293,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-panel + .k-panel { margin-top: var(--gap); }
 .k-panel > h3, .k-panel-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.75rem;
 }
 .k-panel-sunk { background: var(--paper-sunk); }
@@ -251,15 +311,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
 
 .k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
-.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dt { font-family: var(--serif); font-size: 0.875rem; color: var(--dim); min-width: 0; }
 .k-kv dd {
-  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  margin: 0; font-family: var(--mono); font-size: 0.875rem;
   font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
 }
 .k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
 
 /* arithmetic trace: every step printed */
-.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.875rem; line-height: 1.7; }
 .k-steps li {
   display: grid; grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.2rem 1rem; padding: 0.3rem 0;
@@ -285,18 +345,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 /* ---------- 6. source line ---------- */
 
 .k-source {
-  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; align-items: baseline;
   margin-top: 0.7rem; padding-top: 0.55rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
 }
 .k-source::before {
-  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  content: "source"; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); flex: none;
 }
 .k-source.k-source-bare::before { content: none; }
-.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all;
+  display: inline-block; padding-block: 0.15rem; }
+@media (pointer: coarse) {
+  .k-source a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; }
+}
 .k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .k-source .k-checked { color: var(--faint); white-space: nowrap; }
 
@@ -316,8 +381,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
 
 .k-tag {
-  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  display: inline-block; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
   white-space: nowrap;
 }
@@ -333,22 +398,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   font-size: 0.92rem;
 }
 .k-ask li > b {
-  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
-  padding-top: 0.22rem;
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.15rem;
 }
 
 /* ---------- 8. tables ---------- */
 
 .k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.875rem; }
 .k-table th, .k-table td {
   text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
   border-bottom: 1px solid var(--rule); vertical-align: top;
 }
 .k-table th {
-  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
-  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  font-family: var(--serif); font-weight: 500; font-size: 0.875rem;
+  letter-spacing: 0; color: var(--dim);
   border-bottom-color: var(--rule-firm); white-space: nowrap;
 }
 .k-table td.k-n, .k-table th.k-n {
@@ -356,7 +422,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   text-align: right; padding-right: 0; white-space: nowrap;
 }
 .k-table tbody tr:last-child td { border-bottom: 0; }
-.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell { font-family: var(--serif); font-size: 0.875rem; line-height: 1.55; color: var(--dim); }
 .k-table .k-src-cell a { word-break: break-all; }
 
 /* ---------- 9. timeline ---------- */
@@ -369,13 +435,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-time li:first-child { border-top: 0; padding-top: 0; }
 .k-time .k-when {
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.03em;
   color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
 }
 .k-time .k-what { font-size: 0.96rem; color: var(--ink); }
 .k-time .k-what small {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+  display: block; font-family: var(--serif); font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.55;
 }
 .k-time li.k-past .k-when { color: var(--faint); }
 .k-time li.k-past .k-what { color: var(--dim); }
@@ -394,8 +460,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-endnote .k-wrap { display: grid; gap: 1.1rem; }
 .k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
 .k-endnote .k-fine {
-  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-size: 0.875rem; line-height: 1.6; color: var(--faint);
 }
 .k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
 .k-endnote a:hover { color: var(--accent); }
@@ -405,7 +470,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-toast {
   position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
   background: var(--ink); color: var(--paper);
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
   opacity: 0; pointer-events: none;
   transition: opacity 0.18s ease;
@@ -477,7 +542,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   border-bottom: 1px solid var(--rule-firm);
 }
 .ex-body > h2 .k-num {
-  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
 }
 .ex-body > h3 {
@@ -512,15 +577,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 
 /* a formula set on its own line, in words rather than symbols */
 .ex-formula {
-  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.7;
   color: var(--ink); background: var(--panel);
   border-left: 2px solid var(--accent);
   padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
   max-width: 40rem; overflow-wrap: break-word;
 }
 .ex-formula small {
-  display: block; font-size: 0.66rem; color: var(--faint);
-  margin-top: 0.35rem; letter-spacing: 0.02em;
+  display: block; font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  margin-top: 0.35rem; line-height: 1.55;
 }
 
 /* ---------- the model figure, wider than the prose ---------- */
@@ -534,8 +599,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-model > figcaption,
 .ex-model-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.85rem;
   display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
 }
@@ -566,18 +631,18 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500; letter-spacing: 0;
+  color: var(--dim); line-height: 1.4;
   display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
 }
 .ex-ctrl .ex-val {
-  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  font-family: var(--mono); font-size: 0.875rem; letter-spacing: 0;
   text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
   font-weight: 500;
 }
 .ex-ctrl .k-hint {
-  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
-  line-height: 1.5; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="range"] {
@@ -608,7 +673,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
 .ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
 .ex-seg-row > label {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em;
   padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
   border: 1px solid var(--rule-firm); margin-left: -1px;
   background: var(--field); line-height: 1.3; white-space: nowrap;
@@ -628,7 +693,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 
 .ex-check {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   color: var(--dim); cursor: pointer;
 }
 .ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
@@ -643,8 +708,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-read > div { min-width: 0; }
 .ex-read dt, .ex-read .ex-read-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; letter-spacing: 0;
+  color: var(--faint); line-height: 1.35;
   margin: 0 0 0.15rem;
 }
 .ex-read dd, .ex-read .ex-read-v {
@@ -653,8 +718,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
 }
 .ex-read .ex-read-v small {
-  display: block; font-size: 0.63rem; font-weight: 400;
-  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+  display: block; font-family: var(--serif); font-size: 0.875rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0; margin-top: 0.15rem;
 }
 .ex-read-hot .ex-read-v { color: var(--accent); }
 .ex-read-flag .ex-read-v { color: var(--flag); }
@@ -662,13 +727,13 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-sum {
   margin-top: 0.9rem; padding-top: 0.7rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
-  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--dim); max-width: none;
 }
 .ex-sum b { color: var(--ink-soft); font-weight: 500; }
 .ex-sum::before {
-  content: "reading"; display: block;
-  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  content: "reading"; display: block; font-family: var(--mono);
+  font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); margin-bottom: 0.3rem;
 }
 
@@ -689,8 +754,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-key {
   display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
   margin-top: 0.7rem;
-  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
-  letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--dim);
 }
 .ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
 .ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
@@ -717,9 +781,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
 .ex-cites .ex-cite-w {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
-  line-height: 1.65;
+  display: block; font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.55;
 }
 .ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
 .ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
@@ -742,11 +806,11 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-next a:hover { border-color: var(--accent); background: var(--field); }
 .ex-next a:hover .ex-next-t { color: var(--accent); }
 .ex-next .ex-next-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--faint);
 }
 .ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
-.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+.ex-next .ex-next-d { font-size: 0.9rem; color: var(--dim); line-height: 1.5; }
 
 /* ---------- mobile ---------- */
 
@@ -785,7 +849,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .sm-canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .sm-canvas-lab {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--faint);
   margin: 0.55rem 0 0.25rem;
 }
@@ -798,27 +862,31 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   border-top: 1px solid var(--rule);
 }
 .sm-bar .sm-clock {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.04em;
   color: var(--faint); font-variant-numeric: tabular-nums;
   margin-left: auto; text-align: right;
 }
 .sm-btn-run[data-on="1"] { background: var(--accent); border-color: var(--accent); color: #f7f5ee; }
+:root[data-theme="dark"] .sm-btn-run[data-on="1"] { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .sm-btn-run[data-on="1"] { color: var(--paper); }
+}
 .sm-btn-run[data-on="1"]:hover { background: var(--ink); border-color: var(--ink); }
 
 .sm-keys {
-  font-family: var(--mono); font-size: 0.63rem; line-height: 1.65;
-  color: var(--faint); letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
   margin: 0.6rem 0 0;
 }
 .sm-keys kbd {
-  font-family: var(--mono); font-size: 0.63rem;
+  font-family: var(--mono); font-size: 0.8rem;
   border: 1px solid var(--rule-firm); border-radius: 2px;
   padding: 0.05em 0.3em; color: var(--dim);
 }
 
 .sm-still {
-  font-family: var(--mono); font-size: 0.63rem; line-height: 1.6;
-  color: var(--accent); letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.55;
+  color: var(--accent);
   margin: 0.55rem 0 0;
 }
 
@@ -832,13 +900,13 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   padding: 0.8rem 0.95rem;
 }
 .sm-construct h3 {
-  font-family: var(--mono); font-weight: 500; font-size: 0.66rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.4rem;
 }
 .sm-construct p { font-size: 0.95rem; margin-bottom: 0.5em; max-width: none; }
 .sm-construct .sm-eq {
-  font-family: var(--mono); font-size: 0.76rem; line-height: 1.65;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.6;
   color: var(--ink); background: var(--field);
   border: 1px solid var(--rule);
   padding: 0.5rem 0.6rem; margin: 0 0 0.45em;
@@ -846,8 +914,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   white-space: pre-wrap; overflow-wrap: break-word;
 }
 .sm-construct .sm-honest {
-  font-family: var(--mono); font-size: 0.65rem; line-height: 1.7;
-  color: var(--faint); letter-spacing: 0.02em; margin: 0; max-width: none;
+  font-size: 0.875rem; line-height: 1.55;
+  color: var(--faint); margin: 0; max-width: none;
 }
 .sm-construct .sm-live {
   font-family: var(--mono); font-weight: 500; font-size: 1.02rem;
@@ -871,14 +939,14 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .sm-card:hover { border-color: var(--accent); background: var(--field); }
 .sm-card:hover .sm-card-t { color: var(--accent); }
 .sm-card-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--faint);
 }
 .sm-card-t { font-family: var(--display); font-size: 1.2rem; letter-spacing: -0.02em; }
 .sm-card-d { font-size: 0.92rem; color: var(--dim); line-height: 1.5; }
 .sm-card-w {
-  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
-  letter-spacing: 0.02em; line-height: 1.6; margin-top: 0.15rem;
+  font-size: 0.875rem; color: var(--faint);
+  line-height: 1.5; margin-top: 0.15rem;
 }
 .sm-card canvas {
   display: block; width: 100%; height: auto;
@@ -917,6 +985,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .bar,footer.site-foot{color:var(--fg)}
 footer.site-foot{background:var(--paper)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar,:root:not([data-theme="light"]) footer.site-foot,:root:not([data-theme="light"]) .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}}
+:root[data-theme="dark"] .bar,:root[data-theme="dark"] footer.site-foot,:root[data-theme="dark"] .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}
+
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
 .wrap{max-width:74rem;margin:0 auto;padding:0 1.5rem}
@@ -931,6 +1002,7 @@ footer.site-foot{background:var(--paper)}
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:var(--paper);border-bottom:1px solid var(--line)}
 .in-frame .bar,.in-frame .site-foot{display:none}
 .bar .wrap{display:flex;align-items:center;gap:2rem;height:70px}
+.bar .home,.langs{flex:none}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;
   border-bottom:0;color:var(--fg);white-space:nowrap}
 .bar nav:not(.langs){margin:0 auto}
@@ -966,6 +1038,33 @@ footer.site-foot{background:var(--paper)}
 /* ---------- a leaf, falling once ---------- */
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar between a phone and a laptop ----------
+   One row needs 1,027 px in German with a touch screen (measured 2026-11-04:
+   the name, six sections, the three languages and the gaps), so from 641 to
+   1,080 px the bar takes two rows the way a phone does: the name and the
+   languages on the first, the sections on the second, which scrolls in place
+   if a long word still does not fit. Below that the switcher sat 130 px past
+   the right edge at 768 and could not be reached. */
+@media (min-width:641px) and (max-width:1080px){
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:1rem;row-gap:0;padding-top:.75rem;padding-bottom:.2rem}
+  .bar .home{line-height:33px}
+  .langs{margin-left:auto}
+  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0 -6px;padding:4px 6px;justify-content:flex-start;
+    gap:1.4rem;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+  .bar nav:not(.langs)::-webkit-scrollbar{display:none}
+  .bar nav a{padding:.45rem 0;flex:0 0 auto}
+}
+
+/* ---------- inside a case study's frame ----------
+   The page around the frame already has the title and the argument, so the
+   frame opens on the instrument: the heading and the standfirst are kept
+   for a screen reader and taken off the screen. A scaled preview is left
+   as it is, because its picture is the page's first screen. */
+.framed-tool .k-lede{position:absolute!important;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.framed-tool .k-main{padding-top:clamp(.9rem,3vw,1.4rem)}
+.framed-tool .k-lede + .k-sect{margin-top:0}
 
 /* ---------- the bar and the footer, narrowed ---------- */
 @media (max-width:640px){
@@ -1048,11 +1147,10 @@ footer.site-foot{background:var(--paper)}
 
 <div class="k-shell">
 
-<script>if(window.self!==window.top)document.documentElement.classList.add("in-frame")</script>
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../../">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../cases/" data-i="nav-k">Case studies</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
     <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
   </div>
 </header>
@@ -1331,6 +1429,16 @@ var Kit = (function () {
     return new TextDecoder().decode(bytes);
   }
 
+  /* The query without ?theme=, which a case study adds when it frames the
+     instrument. A link copied inside the frame would otherwise open dark or
+     light for whoever it is sent to, whatever they chose themselves. */
+  function query() {
+    var q = (location.search || "").replace(/^\?/, "").split("&").filter(function (p) {
+      return p && p.indexOf("theme=") !== 0;
+    }).join("&");
+    return q ? "?" + q : "";
+  }
+
   var state = {
     /* Serialise the object into the location hash without adding a history entry. */
     write: function (obj) {
@@ -1338,7 +1446,7 @@ var Kit = (function () {
       try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
       if (h.length > 8000) return "";
       try {
-        history.replaceState(null, "", location.pathname + location.search + h);
+        history.replaceState(null, "", location.pathname + query() + h);
       } catch (e) {
         location.hash = h;
       }
@@ -1351,7 +1459,7 @@ var Kit = (function () {
       try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
     },
     clear: function () {
-      try { history.replaceState(null, "", location.pathname + location.search); }
+      try { history.replaceState(null, "", location.pathname + query()); }
       catch (e) { location.hash = ""; }
     }
   };
@@ -1453,6 +1561,71 @@ var Kit = (function () {
     }
     return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
   }
+
+  /* ---------- a region that scrolls sideways ---------- */
+
+  /* A wide table on a phone scrolls inside its box, and a box that scrolls is
+     a control: a keyboard has to be able to reach it to scroll it, and a
+     screen reader has to hear what it is. It takes a tab stop only while it
+     overflows, so the same table at desktop width adds none. The name is the
+     heading of the panel it sits in, by reference, so it follows the language
+     when the reader switches. Measured 2026-11-04: axe found 17 such boxes
+     across seven instrument pages at 390px, none of them reachable. */
+  var reachSel = ".k-scroll, .k-panel > pre, [data-k-scroll]";
+  var reachN = 0;
+  /* A box can start to overflow with no change to the DOM at all: the faces
+     arrive after the first layout and widen every table. Each box and its
+     table are watched for a change of size, so the check runs again then. */
+  var reachSeen = typeof WeakSet === "function" ? new WeakSet() : null;
+  var reachRO = typeof ResizeObserver === "function" ? new ResizeObserver(function () { reachSoon(); }) : null;
+  function reach() {
+    qsa(reachSel).forEach(function (box) {
+      if (reachRO && reachSeen && !reachSeen.has(box)) {
+        reachSeen.add(box);
+        reachRO.observe(box);
+        if (box.firstElementChild) reachRO.observe(box.firstElementChild);
+      }
+      var over = box.scrollWidth > box.clientWidth + 1;
+      var mine = box.getAttribute("data-k-reach") === "1";
+      if (over && !box.hasAttribute("tabindex")) {
+        box.setAttribute("tabindex", "0");
+        box.setAttribute("data-k-reach", "1");
+        mine = true;
+      } else if (!over && mine) {
+        box.removeAttribute("tabindex");
+        box.removeAttribute("role");
+        box.removeAttribute("aria-labelledby");
+        box.removeAttribute("aria-label");
+        box.removeAttribute("data-k-reach");
+        return;
+      }
+      if (!mine) return;
+      box.setAttribute("role", "region");
+      if (box.hasAttribute("aria-labelledby") || box.hasAttribute("aria-label")) return;
+      var panel = box.closest(".k-panel, .k-sect, section, figure");
+      var head = panel && panel.querySelector("h2, h3, h4, .k-panel-h, figcaption");
+      if (head) {
+        if (!head.id) head.id = "k-reach-" + (++reachN);
+        box.setAttribute("aria-labelledby", head.id);
+      } else {
+        box.setAttribute("aria-label", window.__t ? window.__t("kit-scroll", "Table, scrolls sideways") : "Table, scrolls sideways");
+      }
+    });
+  }
+  var reachQueued = false;
+  function reachSoon() {
+    if (reachQueued) return;
+    reachQueued = true;
+    (window.requestAnimationFrame || setTimeout)(function () { reachQueued = false; reach(); });
+  }
+  if (typeof MutationObserver === "function") {
+    new MutationObserver(reachSoon).observe(document.documentElement, { childList: true, subtree: true });
+  }
+  addEventListener("resize", reachSoon);
+  addEventListener("load", reachSoon);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(reachSoon);
+  if (document.readyState !== "loading") reachSoon();
+  else document.addEventListener("DOMContentLoaded", reachSoon);
 
   return {
     el: el, qs: qs, qsa: qsa, clear: clear,
@@ -2234,7 +2407,7 @@ var Sim = (function () {
 })();
 
 /* ---- the page's own three languages ---- */
-window.PAGE_I18N = {"tr": {"pg-desc": "Aynı bulaşma, aynı bulaştırma olasılığıyla, bir kafes, bir küçük dünya ve ölçeksiz bir ağ üzerinde çalıştırılıyor. Bir eşik kuralı ekleyin, yine değişiyor. Yapının, yayılan şey kadar önemli olduğu ortaya çıkıyor.", "df-001": "Yayılma, ve içinden geçtiği biçim", "df-002": "<span class=\"k-num\">01</span>Üç biçim", "df-003": "<span class=\"k-num\">02</span>Halka neden yavaş, yeniden bağlama neden değil", "df-004": "<span class=\"k-num\">03</span>Eşik kuralı cevabı değiştiriyor", "df-005": "<span class=\"k-num\">04</span>Bu neden SIMEA'ya ait", "df-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "df-007": "<span class=\"k-num\">06</span>Kaynaklar", "df-008": "Varsayımlar ve sınırlar", "df-009": "Bulaşmayı sabit tutun, yalnızca kimin kime bağlı olduğunun örüntüsünü değiştirin; aynı şey birbirinden tamamen farklı üç biçimde yayılsın.", "df-010": "Bir söylentinin, bir teknolojinin ya da bir hastalığın yayılması, sanki şeyin kendisinin bir özelliğiymiş gibi konuşulur; bu model o alışkanlığı rahatsız eder.", "df-011": "Aynı boyutta ve kabaca aynı sayıda bağlantıya sahip üç ağ, tek bir bulaşmayı tek bir bulaştırma olasılığıyla taşıyor: herkesin yalnızca yakın komşularını tanıdığı bir halka kafesi, aynı halkanın birkaç bağlantısı uzak bir yere taşınmış hâli olan bir küçük dünya, ve birkaç düğümün çok fazla, çoğununsa çok az bağlantısı olan ölçekten bağımsız bir çizge.", "df-012": "Bulaştırma olasılığına dokunmadan aralarında geçiş yapın.", "df-013": "Her nokta bir fail, her çizgi bir bağlantı; kafes ve küçük dünya halka olarak çiziliyor çünkü gerçekten öyleler, ölçekten bağımsız çizge ise çok bağlantılı düğümlerini ortaya koyuyor çünkü onun hakkında önemli olan olgu bu.", "df-014": "Ağ", "df-015": "Benimseme, önceki koşular saklanarak", "df-016": "Halkada bir bulaşma çember boyunca tek seferde bir adım ilerler, yani öbür uca ulaşmak aradaki her failden geçmek demektir ve eğri düz bir çizgiye yakın çıkar: sabit hızla ilerleyen bir cephe.", "df-017": "Az sayıda bağlantıyı rastgele varış noktalarına taşıyın: ortalama kişinin komşu sayısı aynı kalır, neredeyse her bağlantı hâlâ yereldir, ama rastgele seçilen iki fail arasındaki adım sayısı çöker, çünkü birkaç bağlantı artık bütün halkayı keser ve bulaşma onları kullanır. Watts ve Strogatz, bu yeniden bağlamanın çok küçük bir miktarının rastgele bir çizgenin yol uzunluğunu almaya ve bir kafesin yerel kümelenmesini korumaya yettiğini, bulaşıcı şeylerin böyle bir ağda geldiği kafeste olduğundan daha kolay yayıldığını gösterdi.", "df-018": "Ölçekten bağımsız çizgenin merkezleri var: bulaşma bir merkeze ulaştığı anda her yerde olur ve eğri bir yükseliş yerine keskin bir basamak hâline gelir, yani bir merkeze erken ulaşıp ulaşmadığı koşunun hikâyesinin neredeyse tamamıdır.", "df-019": "Yukarıdaki her şey basit bir bulaşma varsayar: tek bir maruz kalma yeter ve bulaşmış her komşu bağımsız bir şanstır; bu, bir virüsü iyi, insanların benimsediği çoğu şeyi kötü tarif eder.", "df-020": "Modeli eşik kuralına geçirin: artık bir failin benimsemesi için birkaç komşusunun benimsemiş olması gerekir, çünkü yayılan şey masraflı, riskli ya da utandırıcıdır ve tek bir kişinin yapması yetmez. Centola ve Macy buna karmaşık bulaşma diyor ve basit türe hiç benzemediğini gösteriyor.", "df-021": "Eşik kuralını küçük dünyada çalıştırın: halkayı kesen tek bir bağlantı, öbür uçtaki faile tam olarak bir benimsemiş komşu getirir ve bir yetmez, yani uzun bağlantı boşa gider. Karmaşık bir bulaşmanın ihtiyacı geniş bir köprüdür, aynı benimsemiş bölgeden aynı yere varan birkaç bağlantı; kümelenmiş kafesin sağladığı, rastgele yeniden bağlamanın yok ettiği şey budur.", "df-022": "Sıralama böylece tersine döner: basit bir bulaşmayı en hızlı taşıyan yapılar, karmaşık olanı durduranlar olabilir. Eşiği ikiye ayarlayın ve kafesle küçük dünyayı karşılaştırın.", "df-023": "Çünkü bu modeldeki ağ bir doğa olgusu değil: programın ilgilendiği neredeyse her ortamda kimin kime bağlı olduğuna bir sistem karar verir; kimin bir akışta göründüğüne, kimin kiminle gruplandığına, hangi mesajların iletildiğine ve hangilerinin sessizce iletilmediğine. Öneri kuralını değiştiren bir platform çizgenin yapısını değiştirmiştir.", "df-024": "Bu, önceki simülasyondakinden daha büyük bir güç: orada sistem bir faile ne gösterileceğini seçiyordu, burada herhangi bir şeyin içinde yol alabileceği uzayın biçimini seçiyor; aynı nüfustaki aynı bulaşma, kimsenin fikri değişmeden durdurulamaz olmaktan sınırlanmış olmaya geçiyor.", "df-025": "<strong>Bu bir öğretim modeli, ölçüm değil:</strong> bu sayfadaki her sayı ya sizin ayarladığınız ya da modelin ondan ürettiği bir sayıdır, burada hiçbir şey gerçek bir hastalığa, teknolojiye ya da nüfusa göre ayarlanmamıştır.", "df-026": "Tamamen tarayıcınızda çalışır: burada yaptığınız hiçbir şey sayfadan çıkmaz, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Özdemir</a>.", "df-027": "<b>Kimse iyileşmiyor</b>Benimseyen bir fail benimsemiş kalır; bağışıklık, unutma ya da vazgeçme yok, yani eğriler yalnızca yükselebilir ve gerçek bir salgın modeli en az bir durum daha isterdi.", "df-028": "<b>Çizge hiç değişmiyor</b>Bağlantılar bütün koşu boyunca sabit, oysa gerçek ağlar içlerinden yayılan şeye tepki olarak, çoğu zaman o şeyin yayıldığından daha hızlı değişir.", "df-029": "<b>Herkes birbirinin aynı</b>Hiçbir fail bir başkasından daha duyarlı, daha ikna edici ya da daha maruz değil, yani onları ayıran tek şey çizgedeki konumları.", "df-030": "<b>Tohumlama kümelenmiş</b>Karmaşık bir bulaşma tek bir benimseyenden başlayamaz, o yüzden buradaki her koşu bir fail ve komşularıyla başlar; bu seçim eşik kuralını kayırır. Tek bir rastgele başlangıç benimseyeni eşik koşularını neredeyse her zaman öldürürdü; bu kendi başına bir bulgu ve bu sayfanın gösterdiği bulgu o değil.", "df-031": "<b>Bunlar üç aile, üç ağ değil</b>Her yapı bir tohumla bir aileden çekilir, başka bir tohum aynı istatistiklerle farklı bir çizge verir ve rastlantısal bir bulaşmanın tek tek koşuları hatırı sayılır ölçüde değişir. Herhangi bir eğriye inanmadan önce birkaç kez sıfırlayın.", "df-032": "<b>Bu bir halk sağlığı modeli değil</b>Burada hiçbir şey herhangi bir hastalığa, teknolojiye ya da nüfusa göre ayarlanmış değil, ve bu sayfadaki hiçbir sayı gerçek bir tanesi hakkındaki bir tartışmaya taşınmamalı.", "df-036": "Şekil bir <span class=\"ex-model-sub\">yapıyı değiştirin, bulaşmaya dokunma</span>", "df-skip": "Simülasyona geçin", "df-lb-lattice": "halka kafesi", "df-lb-small": "küçük dünya", "df-lb-scale": "ölçekten bağımsız çizge", "df-md-simple": "basit bulaşma", "df-md-threshold": "eşik bulaşması", "df-opt-lattice": "kafes", "df-opt-small": "küçük dünya", "df-opt-scale": "ölçekten bağımsız", "df-sg-st": "Yapı", "df-sg-st-h": "Aynı sayıda fail, kabaca aynı sayıda bağlantı.", "df-sg-md": "Bulaşma", "df-sg-md-h": "Basit: herhangi bir komşu yeter. Eşik: birkaçının önceden benimsemiş olması gerekir.", "df-sl-b": "Bulaştırma olasılığı", "df-sl-b-h": "Yapıyı değiştirirken buna dokunma. Sayfanın bütün meselesi bu.", "df-sl-th": "Eşik, gereken komşu sayısı", "df-sl-th-h": "Yalnızca eşik bulaşması kullanıyor.", "df-sl-n": "Fail", "df-sl-n-h": "Çizgenin kaç düğümü olduğu.", "df-rd-ad": "Benimseyen", "df-rd-half": "Yarıya ulaştığı yer", "df-rd-deg": "Ortalama bağlantı", "df-rd-cc": "Kümelenme", "df-rd-mp": "İki fail arası adım", "df-rd-t": "Atılan adım", "df-sub-stopped": "durdu", "df-sub-spreading": "yayılıyor", "df-sub-half": "nüfusun yarısı", "df-half-at": "adım {n}", "df-half-no": "ulaşılmadı", "df-sub-deg": "fail başına", "df-sub-cc": "birbirini tanıyan komşular", "df-sub-mp": "ortalama", "df-sub-t-done": "koşu tamamlandı", "df-sub-t": "toplam {n}", "df-key-has": "sahip", "df-key-not": "değil", "df-key-prev": "önceki bir koşu", "df-ax-steps": "adım", "df-y-half": "yarı", "df-y-all": "hepsi", "df-clock": "adım {n}", "df-clock-done": "adım {n} · durdu", "df-share": "Bağlantı kopyalandı; bu adımdan açılır.", "df-conn": "{n} bağlantı", "df-steps": "{n} adım", "df-nb": "{n} komşu", "df-curve": "{st}, {md}", "df-sum": "{n} failli bir {st}; fail başına ortalama {deg} bağlantı, {cc} kümelenme katsayısı ve iki fail arasında ortalama {mp} adım. Bulaştırma olasılığı {beta} olan bir {md}{th}, {t} adım sonra yüzde {ad} seviyesine ulaştı{tail}", "df-sum-th": " ve {n} komşuluk eşiği", "df-sum-done": " ve durdu.", "df-sum-plain": ".", "df-lab-plot": "Nüfusun benimsemiş payı, adım adım. Kalın eğri süren koşu: yapı {st}, kural {md}, {t} adım sonra yüzde {ad}; soluk eğriler diğer yapılarda tamamlanmış koşular.", "df-s1": "{st}: burada her failin yaklaşık {deg} var, en uzak iki fail ortalama yalnızca {mp} uzakta ve herhangi bir failin komşuları arasındaki olası bağlantıların {cc} kadarı fiilen mevcut; eğrinin uyduğu şey bu sayılar.", "df-s2-start": "Bir fail ve yakın komşuları ona sahip, başka kimse değil. Çalıştırın'a basın.", "df-s2-died": "Öldü: bir eşik bulaşması aynı faile varan {th} ister, bu yapıda bu neredeyse hiç olmaz, o yüzden {ad} seviyesinde durdu. Başka hiçbir şeye dokunmadan yapıyı değiştirin.", "df-s2-run": "{t} adım sonra {ad} seviyesine ulaştı{half}, bulaştırma olasılığına dokunulmadan. Yapıyı değiştirip tekrar çalıştırın ve iki eğriyi karşılaştırın.", "df-s2-half": ", nüfusun yarısını {n} adımda geçerek", "df-033": "Burada kullanılan küçük dünya kuruluşu: bir halka kafesi küçük bir olasılıkla yeniden bağlanıyor. <span class=\"ex-cite-w\">Duncan J. Watts and Steven H. Strogatz, <span class=\"ex-cite-t\">Collective\n            dynamics of 'small-world' networks</span>, Nature 393(6684), 4 June 1998, pages 440 to 442.\n            <a href=\"https://www.nature.com/articles/30918\" target=\"_blank\" rel=\"noreferrer noopener\">nature.com/articles/30918</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "df-034": "Eşik kuralı ve ürettiği tersine dönüş. <span class=\"ex-cite-w\">Damon Centola and Michael Macy, <span class=\"ex-cite-t\">Complex\n            Contagions and the Weakness of Long Ties</span>, American Journal of Sociology 113(3), 2007,\n            pages 702 to 734.\n            <a href=\"https://www.journals.uchicago.edu/doi/abs/10.1086/521848\" target=\"_blank\" rel=\"noreferrer noopener\">journals.uchicago.edu/doi/abs/10.1086/521848</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "df-035": "Ölçekten bağımsız çizge tercihli bağlanma ile kuruluyor: gelen her düğüm, mevcut düğümlere, hâlihazırda sahip oldukları bağlantı sayısıyla orantılı olasılıkla bağlanıyor. <span class=\"ex-cite-w\">Albert-László Barabási and Réka Albert, <span class=\"ex-cite-t\">Emergence\n            of Scaling in Random Networks</span>, Science 286(5439), 1999, pages 509 to 512.\n            <a href=\"https://www.science.org/doi/10.1126/science.286.5439.509\" target=\"_blank\" rel=\"noreferrer noopener\">science.org/doi/10.1126/science.286.5439.509</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "df-opt-simple": "basit", "df-opt-threshold": "eşik", "pg-title": "Yayılma, ve içinden geçtiği biçim"}, "de": {"pg-desc": "Dieselbe Ansteckung, bei derselben Übertragungswahrscheinlichkeit, über ein Gitter, eine Kleine-Welt- und ein skalenfreies Netzwerk laufen gelassen. Fügen Sie eine Schwellenregel hinzu, und es ändert sich erneut. Die Struktur erweist sich als ebenso wichtig wie das, was sich ausbreitet.", "df-001": "Diffusion, und die Form, durch die sie läuft", "df-002": "<span class=\"k-num\">01</span>Die drei Formen", "df-003": "<span class=\"k-num\">02</span>Warum der Ring langsam ist und die Umverdrahtung nicht", "df-004": "<span class=\"k-num\">03</span>Die Schwellenregel ändert die Antwort", "df-005": "<span class=\"k-num\">04</span>Warum das zu SIMEA gehört", "df-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "df-007": "<span class=\"k-num\">06</span>Quellen", "df-008": "Annahmen und Grenzen", "df-009": "Halten Sie die Ansteckung fest, ändern Sie allein das Muster, wer mit wem verbunden ist, und dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "df-010": "Über ein Gerücht, eine Technologie oder eine Krankheit wird geredet, als wäre ihre Ausbreitung eine Eigenschaft der Sache selbst; dieses Modell macht diese Gewohnheit unbequem.", "df-011": "Drei Netzwerke gleicher Größe und mit ungefähr gleich vielen Verbindungen tragen eine Ansteckung mit einer Übertragungswahrscheinlichkeit: ein Ringgitter, in dem jeder nur seine unmittelbaren Nachbarn kennt, eine kleine Welt, also derselbe Ring mit einigen anderswohin verlegten Verbindungen, und ein skalenfreier Graph, in dem einige wenige Knoten sehr viele Verbindungen haben und die meisten sehr wenige.", "df-012": "Wechseln Sie zwischen ihnen, ohne die Übertragungswahrscheinlichkeit anzurühren.", "df-013": "Jeder Punkt ist ein Akteur, jede Linie eine Verbindung; Gitter und kleine Welt sind als Ring gezeichnet, weil sie genau das sind, und der skalenfreie Graph rückt seine stark verbundenen Knoten in die Mitte, weil das die Tatsache über ihn ist, auf die es ankommt.", "df-014": "Das Netzwerk", "df-015": "Übernahme, mit den vorherigen Läufen", "df-016": "Auf dem Ring wandert eine Ansteckung immer nur einen Schritt um den Kreis, die andere Seite zu erreichen heißt also, jeden Akteur dazwischen zu überqueren, und die Kurve liegt nahe an einer Geraden: eine Front, die mit gleichbleibender Rate vorrückt.", "df-017": "Verlegen Sie eine kleine Handvoll Verbindungen an zufällige Ziele: die durchschnittliche Person hat noch immer gleich viele Nachbarn und fast jede Verbindung ist noch immer lokal, aber die Zahl der Schritte zwischen zwei zufällig gewählten Akteuren bricht ein, weil einige Verbindungen jetzt den ganzen Ring queren und die Ansteckung sie nutzt. Watts und Strogatz zeigten, dass eine sehr geringe Menge dieser Umverdrahtung genügt, um die Weglänge eines Zufallsgraphen zu erreichen und dabei die lokale Clusterbildung eines Gitters zu behalten, und dass sich Infektiöses in einem solchen Netz leichter ausbreitet als in dem Gitter, aus dem es kam.", "df-018": "Der skalenfreie Graph hat Knotenpunkte: sobald die Ansteckung einen erreicht, ist sie überall zugleich und die Kurve wird zu einer scharfen Stufe statt zu einem Anstieg, ob sie früh einen Knotenpunkt erreicht, ist also beinahe die ganze Geschichte des Laufs.", "df-019": "Alles oben nimmt eine einfache Ansteckung an, eine Exposition genügt und jeder infizierte Nachbar ist eine unabhängige Chance, was ein Virus gut und die meisten Dinge, die Menschen übernehmen, schlecht beschreibt.", "df-020": "Schalten Sie das Modell auf die Schwellenregel um: nun braucht ein Akteur mehrere Nachbarn, die es übernommen haben, weil das Verbreitete kostspielig, riskant oder peinlich ist und eine Person allein nicht genügt. Centola und Macy nennen das eine komplexe Ansteckung und zeigen, dass sie sich überhaupt nicht wie die einfache verhält.", "df-021": "Lassen Sie die Schwellenregel auf der kleinen Welt laufen: eine einzelne Verbindung quer über den Ring liefert dem Akteur am anderen Ende genau einen Nachbarn, der es übernommen hat, und einer genügt nicht, die lange Verbindung ist also verschwendet. Eine komplexe Ansteckung braucht eine breite Brücke, mehrere Verbindungen, die aus derselben übernommenen Region an derselben Stelle ankommen, was das geclusterte Gitter liefert und zufällige Umverdrahtung zerstört.", "df-022": "Die Rangfolge kehrt sich also um: Strukturen, die eine einfache Ansteckung am schnellsten tragen, können diejenigen sein, die eine komplexe stoppen. Setzen Sie die Schwelle auf zwei und vergleichen Sie das Gitter mit der kleinen Welt.", "df-023": "Weil das Netzwerk in diesem Modell keine Tatsache der Natur ist: in fast jedem Umfeld, das das Programm interessiert, entscheidet ein System darüber, wer mit wem verbunden ist, wer in einem Feed auftaucht, wer mit wem gruppiert wird, welche Nachrichten zugestellt werden und welche stillschweigend nicht. Eine Plattform, die ihre Empfehlungsregel ändert, hat die Struktur des Graphen geändert.", "df-024": "Das ist eine größere Macht als die in der vorigen Simulation, wo das System wählte, was einem Akteur gezeigt wurde: hier wählt es die Form des Raums, in dem überhaupt etwas reisen kann, und dieselbe Ansteckung in derselben Population geht von unaufhaltsam zu eingedämmt, ohne dass jemand seine Meinung geändert hätte.", "df-025": "<strong>Das ist ein Lehrmodell, keine Messung:</strong> jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die das Modell daraus erzeugt hat, und nichts hier ist auf eine reale Krankheit, Technologie oder Population kalibriert.", "df-026": "Läuft vollständig in Ihrem Browser: nichts, was Sie hier tun, verlässt die Seite, und nach dem Laden der Schriften gibt es keine Netzwerkaufrufe. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>.", "df-027": "<b>Niemand genest</b>Ein Akteur, der übernimmt, bleibt dabei, ohne Immunität, Vergessen oder Aufgeben, die Kurven können also nur steigen, und jedes reale Epidemiemodell bräuchte mindestens einen Zustand mehr.", "df-028": "<b>Der Graph ändert sich nie</b>Verbindungen sind für den ganzen Lauf fest, während sich reale Netzwerke als Reaktion auf das ändern, was sich durch sie verbreitet, oft schneller, als sich die Sache selbst verbreitet.", "df-029": "<b>Alle sind identisch</b>Kein Akteur ist anfälliger, überzeugender oder stärker exponiert als ein anderer, das Einzige, was sie unterscheidet, ist also ihre Position im Graphen.", "df-030": "<b>Die Aussaat ist geclustert</b>Eine komplexe Ansteckung kann nicht von einem einzelnen Übernehmer ausgehen, deshalb startet jeder Lauf hier von einem Akteur samt seinen Nachbarn, eine Wahl, die die Schwellenregel begünstigt. Ein einzelner zufälliger Startübernehmer ließe die Schwellenläufe fast immer sterben, was ein eigener Befund ist und nicht der, den diese Seite zeigt.", "df-031": "<b>Das sind drei Familien, nicht drei Netzwerke</b>Jede Struktur wird mit einem Startwert aus einer Familie gezogen, ein anderer Startwert ergibt einen anderen Graphen mit derselben Statistik, und einzelne Läufe einer stochastischen Ansteckung schwanken erheblich. Drücken Sie ein paar Mal auf Zurücksetzen, bevor Sie einer einzelnen Kurve glauben.", "df-032": "<b>Kein Modell für öffentliche Gesundheit</b>Nichts hier ist auf eine Krankheit, Technologie oder Population kalibriert, und keine Zahl auf dieser Seite sollte in ein Argument über eine reale getragen werden.", "df-036": "Abbildung eins <span class=\"ex-model-sub\">die Struktur ändern, die Ansteckung in Ruhe lassen</span>", "df-skip": "Zur Simulation springen", "df-lb-lattice": "Ringgitter", "df-lb-small": "kleine Welt", "df-lb-scale": "skalenfreier Graph", "df-md-simple": "einfache Ansteckung", "df-md-threshold": "Schwellenansteckung", "df-opt-lattice": "Gitter", "df-opt-small": "kleine Welt", "df-opt-scale": "skalenfrei", "df-sg-st": "Struktur", "df-sg-st-h": "Gleich viele Akteure, ungefähr gleich viele Verbindungen.", "df-sg-md": "Ansteckung", "df-sg-md-h": "Einfach: ein beliebiger Nachbar genügt. Schwelle: mehrere müssen es schon haben.", "df-sl-b": "Übertragungswahrscheinlichkeit", "df-sl-b-h": "Lassen Sie das in Ruhe, während Sie die Struktur ändern. Genau darum geht es auf dieser Seite.", "df-sl-th": "Schwelle, benötigte Nachbarn", "df-sl-th-h": "Wird nur von der Schwellenansteckung benutzt.", "df-sl-n": "Akteure", "df-sl-n-h": "Wie viele Knoten der Graph hat.", "df-rd-ad": "Übernommen", "df-rd-half": "Hälfte erreicht bei", "df-rd-deg": "Mittlere Verbindungen", "df-rd-cc": "Clusterbildung", "df-rd-mp": "Schritte zwischen zweien", "df-rd-t": "Gelaufene Schritte", "df-sub-stopped": "gestoppt", "df-sub-spreading": "breitet sich aus", "df-sub-half": "die halbe Population", "df-half-at": "Schritt {n}", "df-half-no": "nicht erreicht", "df-sub-deg": "pro Akteur", "df-sub-cc": "Nachbarn, die einander kennen", "df-sub-mp": "im Mittel", "df-sub-t-done": "Lauf beendet", "df-sub-t": "von {n}", "df-key-has": "hat es", "df-key-not": "hat es nicht", "df-key-prev": "ein früherer Lauf", "df-ax-steps": "Schritte", "df-y-half": "halb", "df-y-all": "alle", "df-clock": "Schritt {n}", "df-clock-done": "Schritt {n} · gestoppt", "df-share": "Link kopiert; er öffnet auf diesem Schritt.", "df-conn": "{n} Verbindungen", "df-steps": "{n} Schritte", "df-nb": "{n} Nachbarn", "df-curve": "{st}, {md}", "df-sum": "Struktur: {st}, mit {n} Akteuren, im Mittel {deg} Verbindungen je Akteur, einem Clusterkoeffizienten von {cc} und im Mittel {mp} Schritten zwischen zwei Akteuren. Eine {md} mit einer Übertragungswahrscheinlichkeit von {beta}{th} hat nach {t} Schritten {ad} Prozent erreicht{tail}", "df-sum-th": " und einer Schwelle von {n} Nachbarn", "df-sum-done": " und ist gestoppt.", "df-sum-plain": ".", "df-lab-plot": "Der Anteil der Population, der übernommen hat, Schritt für Schritt. Die fette Kurve ist der laufende Lauf, Struktur {st}, Regel {md}, nach {t} Schritten bei {ad} Prozent; die blassen Kurven sind die abgeschlossenen Läufe auf den anderen Strukturen.", "df-s1": "{st}: jeder Akteur hat hier etwa {deg}, die beiden am weitesten entfernten Akteure sind im Mittel nur {mp} auseinander, und {cc} der möglichen Verbindungen unter den Nachbarn eines Akteurs bestehen tatsächlich; diesen Zahlen gehorcht die Kurve.", "df-s2-start": "Ein Akteur und seine unmittelbaren Nachbarn haben es, sonst niemand. Drücken Sie Starten.", "df-s2-died": "Sie ist gestorben: eine Schwellenansteckung braucht {th}, die beim selben Akteur ankommen, und auf dieser Struktur geschieht das kaum je, sie blieb also bei {ad} stehen. Wechseln Sie die Struktur, ohne sonst etwas anzurühren.", "df-s2-run": "Sie hat nach {t} Schritten {ad} erreicht{half}, ohne dass die Übertragungswahrscheinlichkeit angerührt wurde. Ändern Sie die Struktur, lassen Sie sie noch einmal laufen und vergleichen Sie die beiden Kurven.", "df-s2-half": " und überschritt die halbe Population bei Schritt {n}", "df-033": "Die hier verwendete Kleine-Welt-Konstruktion, bei der ein Ringgitter mit kleiner Wahrscheinlichkeit umverdrahtet wird. <span class=\"ex-cite-w\">Duncan J. Watts and Steven H. Strogatz, <span class=\"ex-cite-t\">Collective\n            dynamics of 'small-world' networks</span>, Nature 393(6684), 4 June 1998, pages 440 to 442.\n            <a href=\"https://www.nature.com/articles/30918\" target=\"_blank\" rel=\"noreferrer noopener\">nature.com/articles/30918</a>\n            Geprüft: 2026 08 22.</span>\n          ", "df-034": "Die Schwellenregel und die Umkehr, die sie erzeugt. <span class=\"ex-cite-w\">Damon Centola and Michael Macy, <span class=\"ex-cite-t\">Complex\n            Contagions and the Weakness of Long Ties</span>, American Journal of Sociology 113(3), 2007,\n            pages 702 to 734.\n            <a href=\"https://www.journals.uchicago.edu/doi/abs/10.1086/521848\" target=\"_blank\" rel=\"noreferrer noopener\">journals.uchicago.edu/doi/abs/10.1086/521848</a>\n            Geprüft: 2026 08 22.</span>\n          ", "df-035": "Der skalenfreie Graph wird durch präferentielles Anbinden erzeugt, bei dem sich jeder ankommende Knoten mit einer Wahrscheinlichkeit proportional zur bereits vorhandenen Zahl von Verbindungen an bestehende Knoten anschließt. <span class=\"ex-cite-w\">Albert-László Barabási and Réka Albert, <span class=\"ex-cite-t\">Emergence\n            of Scaling in Random Networks</span>, Science 286(5439), 1999, pages 509 to 512.\n            <a href=\"https://www.science.org/doi/10.1126/science.286.5439.509\" target=\"_blank\" rel=\"noreferrer noopener\">science.org/doi/10.1126/science.286.5439.509</a>\n            Geprüft: 2026 08 22.</span>\n          ", "df-opt-simple": "einfach", "df-opt-threshold": "Schwelle", "pg-title": "Diffusion, und die Form, durch die sie läuft"}};
+window.PAGE_I18N = {"tr": {"pg-desc": "Tek bir bulaşma, tek bir olasılıkla, kafes, küçük dünya ve ölçeksiz ağ üzerinde çalışıyor. Ağın biçimi sonucu değiştiriyor.", "df-001": "Yayılma, ve içinden geçtiği biçim", "df-002": "<span class=\"k-num\">01</span>Üç biçim", "df-003": "<span class=\"k-num\">02</span>Halka neden yavaş, yeniden bağlama neden değil", "df-004": "<span class=\"k-num\">03</span>Eşik kuralı cevabı değiştiriyor", "df-005": "<span class=\"k-num\">04</span>Bu neden SIMEA'ya ait", "df-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "df-007": "<span class=\"k-num\">06</span>Kaynaklar", "df-008": "Varsayımlar ve sınırlar", "df-009": "Bulaşmayı sabit tutun, yalnızca kimin kime bağlı olduğunun örüntüsünü değiştirin; aynı şey birbirinden tamamen farklı üç biçimde yayılsın.", "df-010": "Bir söylentinin, bir teknolojinin ya da bir hastalığın yayılması, sanki şeyin kendisinin bir özelliğiymiş gibi konuşulur; bu model o alışkanlığı rahatsız eder.", "df-011": "Aynı boyutta ve kabaca aynı sayıda bağlantıya sahip üç ağ, tek bir bulaşmayı tek bir bulaştırma olasılığıyla taşıyor: herkesin yalnızca yakın komşularını tanıdığı bir halka kafesi, aynı halkanın birkaç bağlantısı uzak bir yere taşınmış hâli olan bir küçük dünya, ve birkaç düğümün çok fazla, çoğununsa çok az bağlantısı olan ölçekten bağımsız bir çizge.", "df-012": "Bulaştırma olasılığına dokunmadan aralarında geçiş yapın.", "df-013": "Her nokta bir fail, her çizgi bir bağlantı; kafes ve küçük dünya halka olarak çiziliyor çünkü gerçekten öyleler, ölçekten bağımsız çizge ise çok bağlantılı düğümlerini ortaya koyuyor çünkü onun hakkında önemli olan olgu bu.", "df-014": "Ağ", "df-015": "Benimseme, önceki koşular saklanarak", "df-016": "Halkada bir bulaşma çember boyunca tek seferde bir adım ilerler, yani öbür uca ulaşmak aradaki her failden geçmek demektir ve eğri düz bir çizgiye yakın çıkar: sabit hızla ilerleyen bir cephe.", "df-017": "Az sayıda bağlantıyı rastgele varış noktalarına taşıyın: ortalama kişinin komşu sayısı aynı kalır, neredeyse her bağlantı hâlâ yereldir, ama rastgele seçilen iki fail arasındaki adım sayısı çöker, çünkü birkaç bağlantı artık bütün halkayı keser ve bulaşma onları kullanır. Watts ve Strogatz, bu yeniden bağlamanın çok küçük bir miktarının rastgele bir çizgenin yol uzunluğunu almaya ve bir kafesin yerel kümelenmesini korumaya yettiğini, bulaşıcı şeylerin böyle bir ağda geldiği kafeste olduğundan daha kolay yayıldığını gösterdi.", "df-018": "Ölçekten bağımsız çizgenin merkezleri var: bulaşma bir merkeze ulaştığı anda her yerde olur ve eğri bir yükseliş yerine keskin bir basamak hâline gelir, yani bir merkeze erken ulaşıp ulaşmadığı koşunun hikâyesinin neredeyse tamamıdır.", "df-019": "Yukarıdaki her şey basit bir bulaşma varsayar: tek bir maruz kalma yeter ve bulaşmış her komşu bağımsız bir şanstır; bu, bir virüsü iyi, insanların benimsediği çoğu şeyi kötü tarif eder.", "df-020": "Modeli eşik kuralına geçirin: artık bir failin benimsemesi için birkaç komşusunun benimsemiş olması gerekir, çünkü yayılan şey masraflı, riskli ya da utandırıcıdır ve tek bir kişinin yapması yetmez. Centola ve Macy buna karmaşık bulaşma diyor ve basit türe hiç benzemediğini gösteriyor.", "df-021": "Eşik kuralını küçük dünyada çalıştırın: halkayı kesen tek bir bağlantı, öbür uçtaki faile tam olarak bir benimsemiş komşu getirir ve bir yetmez, yani uzun bağlantı boşa gider. Karmaşık bir bulaşmanın ihtiyacı geniş bir köprüdür, aynı benimsemiş bölgeden aynı yere varan birkaç bağlantı; kümelenmiş kafesin sağladığı, rastgele yeniden bağlamanın yok ettiği şey budur.", "df-022": "Sıralama böylece tersine döner: basit bir bulaşmayı en hızlı taşıyan yapılar, karmaşık olanı durduranlar olabilir. Eşiği ikiye ayarlayın ve kafesle küçük dünyayı karşılaştırın.", "df-023": "Çünkü bu modeldeki ağ bir doğa olgusu değil: programın ilgilendiği neredeyse her ortamda kimin kime bağlı olduğuna bir sistem karar verir; kimin bir akışta göründüğüne, kimin kiminle gruplandığına, hangi mesajların iletildiğine ve hangilerinin sessizce iletilmediğine. Öneri kuralını değiştiren bir platform çizgenin yapısını değiştirmiştir.", "df-024": "Bu, önceki simülasyondakinden daha büyük bir güç: orada sistem bir faile ne gösterileceğini seçiyordu, burada herhangi bir şeyin içinde yol alabileceği uzayın biçimini seçiyor; aynı nüfustaki aynı bulaşma, kimsenin fikri değişmeden durdurulamaz olmaktan sınırlanmış olmaya geçiyor.", "df-025": "<strong>Bu bir öğretim modeli, ölçüm değil:</strong> bu sayfadaki her sayı ya sizin ayarladığınız ya da modelin ondan ürettiği bir sayıdır, burada hiçbir şey gerçek bir hastalığa, teknolojiye ya da nüfusa göre ayarlanmamıştır.", "df-026": "Tamamen tarayıcınızda çalışır: burada yaptığınız hiçbir şey sayfadan çıkmaz, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Özdemir</a>.", "df-027": "<b>Kimse iyileşmiyor</b>Benimseyen bir fail benimsemiş kalır; bağışıklık, unutma ya da vazgeçme yok, yani eğriler yalnızca yükselebilir ve gerçek bir salgın modeli en az bir durum daha isterdi.", "df-028": "<b>Çizge hiç değişmiyor</b>Bağlantılar bütün koşu boyunca sabit, oysa gerçek ağlar içlerinden yayılan şeye tepki olarak, çoğu zaman o şeyin yayıldığından daha hızlı değişir.", "df-029": "<b>Herkes birbirinin aynı</b>Hiçbir fail bir başkasından daha duyarlı, daha ikna edici ya da daha maruz değil, yani onları ayıran tek şey çizgedeki konumları.", "df-030": "<b>Tohumlama kümelenmiş</b>Karmaşık bir bulaşma tek bir benimseyenden başlayamaz, o yüzden buradaki her koşu bir fail ve komşularıyla başlar; bu seçim eşik kuralını kayırır. Tek bir rastgele başlangıç benimseyeni eşik koşularını neredeyse her zaman öldürürdü; bu kendi başına bir bulgu ve bu sayfanın gösterdiği bulgu o değil.", "df-031": "<b>Bunlar üç aile, üç ağ değil</b>Her yapı bir tohumla bir aileden çekilir, başka bir tohum aynı istatistiklerle farklı bir çizge verir ve rastlantısal bir bulaşmanın tek tek koşuları hatırı sayılır ölçüde değişir. Herhangi bir eğriye inanmadan önce birkaç kez sıfırlayın.", "df-032": "<b>Bu bir halk sağlığı modeli değil</b>Burada hiçbir şey herhangi bir hastalığa, teknolojiye ya da nüfusa göre ayarlanmış değil, ve bu sayfadaki hiçbir sayı gerçek bir tanesi hakkındaki bir tartışmaya taşınmamalı.", "df-036": "Şekil bir <span class=\"ex-model-sub\">yapıyı değiştirin, bulaşmaya dokunma</span>", "df-skip": "Simülasyona geçin", "df-lb-lattice": "halka kafesi", "df-lb-small": "küçük dünya", "df-lb-scale": "ölçekten bağımsız çizge", "df-md-simple": "basit bulaşma", "df-md-threshold": "eşik bulaşması", "df-opt-lattice": "kafes", "df-opt-small": "küçük dünya", "df-opt-scale": "ölçekten bağımsız", "df-sg-st": "Yapı", "df-sg-st-h": "Aynı sayıda fail, kabaca aynı sayıda bağlantı.", "df-sg-md": "Bulaşma", "df-sg-md-h": "Basit: herhangi bir komşu yeter. Eşik: birkaçının önceden benimsemiş olması gerekir.", "df-sl-b": "Bulaştırma olasılığı", "df-sl-b-h": "Yapıyı değiştirirken buna dokunma. Sayfanın bütün meselesi bu.", "df-sl-th": "Eşik, gereken komşu sayısı", "df-sl-th-h": "Yalnızca eşik bulaşması kullanıyor.", "df-sl-n": "Fail", "df-sl-n-h": "Çizgenin kaç düğümü olduğu.", "df-rd-ad": "Benimseyen", "df-rd-half": "Yarıya ulaştığı yer", "df-rd-deg": "Ortalama bağlantı", "df-rd-cc": "Kümelenme", "df-rd-mp": "İki fail arası adım", "df-rd-t": "Atılan adım", "df-sub-stopped": "durdu", "df-sub-spreading": "yayılıyor", "df-sub-half": "nüfusun yarısı", "df-half-at": "adım {n}", "df-half-no": "ulaşılmadı", "df-sub-deg": "fail başına", "df-sub-cc": "birbirini tanıyan komşular", "df-sub-mp": "ortalama", "df-sub-t-done": "koşu tamamlandı", "df-sub-t": "toplam {n}", "df-key-has": "sahip", "df-key-not": "değil", "df-key-prev": "önceki bir koşu", "df-ax-steps": "adım", "df-y-half": "yarı", "df-y-all": "hepsi", "df-clock": "adım {n}", "df-clock-done": "adım {n} · durdu", "df-share": "Bağlantı kopyalandı; bu adımdan açılır.", "df-conn": "{n} bağlantı", "df-steps": "{n} adım", "df-nb": "{n} komşu", "df-curve": "{st}, {md}", "df-sum": "{n} failli bir {st}; fail başına ortalama {deg} bağlantı, {cc} kümelenme katsayısı ve iki fail arasında ortalama {mp} adım. Bulaştırma olasılığı {beta} olan bir {md}{th}, {t} adım sonra yüzde {ad} seviyesine ulaştı{tail}", "df-sum-th": " ve {n} komşuluk eşiği", "df-sum-done": " ve durdu.", "df-sum-plain": ".", "df-lab-plot": "Nüfusun benimsemiş payı, adım adım. Kalın eğri süren koşu: yapı {st}, kural {md}, {t} adım sonra yüzde {ad}; soluk eğriler diğer yapılarda tamamlanmış koşular.", "df-s1": "{st}: burada her failin yaklaşık {deg} var, en uzak iki fail ortalama yalnızca {mp} uzakta ve herhangi bir failin komşuları arasındaki olası bağlantıların {cc} kadarı fiilen mevcut; eğrinin uyduğu şey bu sayılar.", "df-s2-start": "Bir fail ve yakın komşuları ona sahip, başka kimse değil. Çalıştırın'a basın.", "df-s2-died": "Öldü: bir eşik bulaşması aynı faile varan {th} ister, bu yapıda bu neredeyse hiç olmaz, o yüzden {ad} seviyesinde durdu. Başka hiçbir şeye dokunmadan yapıyı değiştirin.", "df-s2-run": "{t} adım sonra {ad} seviyesine ulaştı{half}, bulaştırma olasılığına dokunulmadan. Yapıyı değiştirip tekrar çalıştırın ve iki eğriyi karşılaştırın.", "df-s2-half": ", nüfusun yarısını {n} adımda geçerek", "df-033": "Burada kullanılan küçük dünya kuruluşu: bir halka kafesi küçük bir olasılıkla yeniden bağlanıyor. <span class=\"ex-cite-w\">Duncan J. Watts and Steven H. Strogatz, <span class=\"ex-cite-t\">Collective\n            dynamics of 'small-world' networks</span>, Nature 393(6684), 4 June 1998, pages 440 to 442.\n            <a href=\"https://www.nature.com/articles/30918\" target=\"_blank\" rel=\"noreferrer noopener\">nature.com/articles/30918</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "df-034": "Eşik kuralı ve ürettiği tersine dönüş. <span class=\"ex-cite-w\">Damon Centola and Michael Macy, <span class=\"ex-cite-t\">Complex\n            Contagions and the Weakness of Long Ties</span>, American Journal of Sociology 113(3), 2007,\n            pages 702 to 734.\n            <a href=\"https://www.journals.uchicago.edu/doi/abs/10.1086/521848\" target=\"_blank\" rel=\"noreferrer noopener\">journals.uchicago.edu/doi/abs/10.1086/521848</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "df-035": "Ölçekten bağımsız çizge tercihli bağlanma ile kuruluyor: gelen her düğüm, mevcut düğümlere, hâlihazırda sahip oldukları bağlantı sayısıyla orantılı olasılıkla bağlanıyor. <span class=\"ex-cite-w\">Albert-László Barabási and Réka Albert, <span class=\"ex-cite-t\">Emergence\n            of Scaling in Random Networks</span>, Science 286(5439), 1999, pages 509 to 512.\n            <a href=\"https://www.science.org/doi/10.1126/science.286.5439.509\" target=\"_blank\" rel=\"noreferrer noopener\">science.org/doi/10.1126/science.286.5439.509</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "df-opt-simple": "basit", "df-opt-threshold": "eşik", "pg-title": "Yayılma, ve içinden geçtiği biçim. Kerem Özdemir"}, "de": {"pg-desc": "Eine Ansteckung bei einer Übertragungswahrscheinlichkeit, über Gitter, Kleine-Welt- und skalenfreies Netz. Die Form des Netzes ändert das Ergebnis.", "df-001": "Diffusion, und die Form, durch die sie läuft", "df-002": "<span class=\"k-num\">01</span>Die drei Formen", "df-003": "<span class=\"k-num\">02</span>Warum der Ring langsam ist und die Umverdrahtung nicht", "df-004": "<span class=\"k-num\">03</span>Die Schwellenregel ändert die Antwort", "df-005": "<span class=\"k-num\">04</span>Warum das zu SIMEA gehört", "df-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "df-007": "<span class=\"k-num\">06</span>Quellen", "df-008": "Annahmen und Grenzen", "df-009": "Halten Sie die Ansteckung fest, ändern Sie allein das Muster, wer mit wem verbunden ist, und dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "df-010": "Über ein Gerücht, eine Technologie oder eine Krankheit wird geredet, als wäre ihre Ausbreitung eine Eigenschaft der Sache selbst; dieses Modell macht diese Gewohnheit unbequem.", "df-011": "Drei Netzwerke gleicher Größe und mit ungefähr gleich vielen Verbindungen tragen eine Ansteckung mit einer Übertragungswahrscheinlichkeit: ein Ringgitter, in dem jeder nur seine unmittelbaren Nachbarn kennt, eine kleine Welt, also derselbe Ring mit einigen anderswohin verlegten Verbindungen, und ein skalenfreier Graph, in dem einige wenige Knoten sehr viele Verbindungen haben und die meisten sehr wenige.", "df-012": "Wechseln Sie zwischen ihnen, ohne die Übertragungswahrscheinlichkeit anzurühren.", "df-013": "Jeder Punkt ist ein Akteur, jede Linie eine Verbindung; Gitter und kleine Welt sind als Ring gezeichnet, weil sie genau das sind, und der skalenfreie Graph rückt seine stark verbundenen Knoten in die Mitte, weil das die Tatsache über ihn ist, auf die es ankommt.", "df-014": "Das Netzwerk", "df-015": "Übernahme, mit den vorherigen Läufen", "df-016": "Auf dem Ring wandert eine Ansteckung immer nur einen Schritt um den Kreis, die andere Seite zu erreichen heißt also, jeden Akteur dazwischen zu überqueren, und die Kurve liegt nahe an einer Geraden: eine Front, die mit gleichbleibender Rate vorrückt.", "df-017": "Verlegen Sie eine kleine Handvoll Verbindungen an zufällige Ziele: die durchschnittliche Person hat noch immer gleich viele Nachbarn und fast jede Verbindung ist noch immer lokal, aber die Zahl der Schritte zwischen zwei zufällig gewählten Akteuren bricht ein, weil einige Verbindungen jetzt den ganzen Ring queren und die Ansteckung sie nutzt. Watts und Strogatz zeigten, dass eine sehr geringe Menge dieser Umverdrahtung genügt, um die Weglänge eines Zufallsgraphen zu erreichen und dabei die lokale Clusterbildung eines Gitters zu behalten, und dass sich Infektiöses in einem solchen Netz leichter ausbreitet als in dem Gitter, aus dem es kam.", "df-018": "Der skalenfreie Graph hat Knotenpunkte: sobald die Ansteckung einen erreicht, ist sie überall zugleich und die Kurve wird zu einer scharfen Stufe statt zu einem Anstieg, ob sie früh einen Knotenpunkt erreicht, ist also beinahe die ganze Geschichte des Laufs.", "df-019": "Alles oben nimmt eine einfache Ansteckung an, eine Exposition genügt und jeder infizierte Nachbar ist eine unabhängige Chance, was ein Virus gut und die meisten Dinge, die Menschen übernehmen, schlecht beschreibt.", "df-020": "Schalten Sie das Modell auf die Schwellenregel um: nun braucht ein Akteur mehrere Nachbarn, die es übernommen haben, weil das Verbreitete kostspielig, riskant oder peinlich ist und eine Person allein nicht genügt. Centola und Macy nennen das eine komplexe Ansteckung und zeigen, dass sie sich überhaupt nicht wie die einfache verhält.", "df-021": "Lassen Sie die Schwellenregel auf der kleinen Welt laufen: eine einzelne Verbindung quer über den Ring liefert dem Akteur am anderen Ende genau einen Nachbarn, der es übernommen hat, und einer genügt nicht, die lange Verbindung ist also verschwendet. Eine komplexe Ansteckung braucht eine breite Brücke, mehrere Verbindungen, die aus derselben übernommenen Region an derselben Stelle ankommen, was das geclusterte Gitter liefert und zufällige Umverdrahtung zerstört.", "df-022": "Die Rangfolge kehrt sich also um: Strukturen, die eine einfache Ansteckung am schnellsten tragen, können diejenigen sein, die eine komplexe stoppen. Setzen Sie die Schwelle auf zwei und vergleichen Sie das Gitter mit der kleinen Welt.", "df-023": "Weil das Netzwerk in diesem Modell keine Tatsache der Natur ist: in fast jedem Umfeld, das das Programm interessiert, entscheidet ein System darüber, wer mit wem verbunden ist, wer in einem Feed auftaucht, wer mit wem gruppiert wird, welche Nachrichten zugestellt werden und welche stillschweigend nicht. Eine Plattform, die ihre Empfehlungsregel ändert, hat die Struktur des Graphen geändert.", "df-024": "Das ist eine größere Macht als die in der vorigen Simulation, wo das System wählte, was einem Akteur gezeigt wurde: hier wählt es die Form des Raums, in dem überhaupt etwas reisen kann, und dieselbe Ansteckung in derselben Population geht von unaufhaltsam zu eingedämmt, ohne dass jemand seine Meinung geändert hätte.", "df-025": "<strong>Das ist ein Lehrmodell, keine Messung:</strong> jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die das Modell daraus erzeugt hat, und nichts hier ist auf eine reale Krankheit, Technologie oder Population kalibriert.", "df-026": "Läuft vollständig in Ihrem Browser: nichts, was Sie hier tun, verlässt die Seite, und nach dem Laden der Schriften gibt es keine Netzwerkaufrufe. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>.", "df-027": "<b>Niemand genest</b>Ein Akteur, der übernimmt, bleibt dabei, ohne Immunität, Vergessen oder Aufgeben, die Kurven können also nur steigen, und jedes reale Epidemiemodell bräuchte mindestens einen Zustand mehr.", "df-028": "<b>Der Graph ändert sich nie</b>Verbindungen sind für den ganzen Lauf fest, während sich reale Netzwerke als Reaktion auf das ändern, was sich durch sie verbreitet, oft schneller, als sich die Sache selbst verbreitet.", "df-029": "<b>Alle sind identisch</b>Kein Akteur ist anfälliger, überzeugender oder stärker exponiert als ein anderer, das Einzige, was sie unterscheidet, ist also ihre Position im Graphen.", "df-030": "<b>Die Aussaat ist geclustert</b>Eine komplexe Ansteckung kann nicht von einem einzelnen Übernehmer ausgehen, deshalb startet jeder Lauf hier von einem Akteur samt seinen Nachbarn, eine Wahl, die die Schwellenregel begünstigt. Ein einzelner zufälliger Startübernehmer ließe die Schwellenläufe fast immer sterben, was ein eigener Befund ist und nicht der, den diese Seite zeigt.", "df-031": "<b>Das sind drei Familien, nicht drei Netzwerke</b>Jede Struktur wird mit einem Startwert aus einer Familie gezogen, ein anderer Startwert ergibt einen anderen Graphen mit derselben Statistik, und einzelne Läufe einer stochastischen Ansteckung schwanken erheblich. Drücken Sie ein paar Mal auf Zurücksetzen, bevor Sie einer einzelnen Kurve glauben.", "df-032": "<b>Kein Modell für öffentliche Gesundheit</b>Nichts hier ist auf eine Krankheit, Technologie oder Population kalibriert, und keine Zahl auf dieser Seite sollte in ein Argument über eine reale getragen werden.", "df-036": "Abbildung eins <span class=\"ex-model-sub\">die Struktur ändern, die Ansteckung in Ruhe lassen</span>", "df-skip": "Zur Simulation springen", "df-lb-lattice": "Ringgitter", "df-lb-small": "kleine Welt", "df-lb-scale": "skalenfreier Graph", "df-md-simple": "einfache Ansteckung", "df-md-threshold": "Schwellenansteckung", "df-opt-lattice": "Gitter", "df-opt-small": "kleine Welt", "df-opt-scale": "skalenfrei", "df-sg-st": "Struktur", "df-sg-st-h": "Gleich viele Akteure, ungefähr gleich viele Verbindungen.", "df-sg-md": "Ansteckung", "df-sg-md-h": "Einfach: ein beliebiger Nachbar genügt. Schwelle: mehrere müssen es schon haben.", "df-sl-b": "Übertragungswahrscheinlichkeit", "df-sl-b-h": "Lassen Sie das in Ruhe, während Sie die Struktur ändern. Genau darum geht es auf dieser Seite.", "df-sl-th": "Schwelle, benötigte Nachbarn", "df-sl-th-h": "Wird nur von der Schwellenansteckung benutzt.", "df-sl-n": "Akteure", "df-sl-n-h": "Wie viele Knoten der Graph hat.", "df-rd-ad": "Übernommen", "df-rd-half": "Hälfte erreicht bei", "df-rd-deg": "Mittlere Verbindungen", "df-rd-cc": "Clusterbildung", "df-rd-mp": "Schritte zwischen zweien", "df-rd-t": "Gelaufene Schritte", "df-sub-stopped": "gestoppt", "df-sub-spreading": "breitet sich aus", "df-sub-half": "die halbe Population", "df-half-at": "Schritt {n}", "df-half-no": "nicht erreicht", "df-sub-deg": "pro Akteur", "df-sub-cc": "Nachbarn, die einander kennen", "df-sub-mp": "im Mittel", "df-sub-t-done": "Lauf beendet", "df-sub-t": "von {n}", "df-key-has": "hat es", "df-key-not": "hat es nicht", "df-key-prev": "ein früherer Lauf", "df-ax-steps": "Schritte", "df-y-half": "halb", "df-y-all": "alle", "df-clock": "Schritt {n}", "df-clock-done": "Schritt {n} · gestoppt", "df-share": "Link kopiert; er öffnet auf diesem Schritt.", "df-conn": "{n} Verbindungen", "df-steps": "{n} Schritte", "df-nb": "{n} Nachbarn", "df-curve": "{st}, {md}", "df-sum": "Struktur: {st}, mit {n} Akteuren, im Mittel {deg} Verbindungen je Akteur, einem Clusterkoeffizienten von {cc} und im Mittel {mp} Schritten zwischen zwei Akteuren. Eine {md} mit einer Übertragungswahrscheinlichkeit von {beta}{th} hat nach {t} Schritten {ad} Prozent erreicht{tail}", "df-sum-th": " und einer Schwelle von {n} Nachbarn", "df-sum-done": " und ist gestoppt.", "df-sum-plain": ".", "df-lab-plot": "Der Anteil der Population, der übernommen hat, Schritt für Schritt. Die fette Kurve ist der laufende Lauf, Struktur {st}, Regel {md}, nach {t} Schritten bei {ad} Prozent; die blassen Kurven sind die abgeschlossenen Läufe auf den anderen Strukturen.", "df-s1": "{st}: jeder Akteur hat hier etwa {deg}, die beiden am weitesten entfernten Akteure sind im Mittel nur {mp} auseinander, und {cc} der möglichen Verbindungen unter den Nachbarn eines Akteurs bestehen tatsächlich; diesen Zahlen gehorcht die Kurve.", "df-s2-start": "Ein Akteur und seine unmittelbaren Nachbarn haben es, sonst niemand. Drücken Sie Starten.", "df-s2-died": "Sie ist gestorben: eine Schwellenansteckung braucht {th}, die beim selben Akteur ankommen, und auf dieser Struktur geschieht das kaum je, sie blieb also bei {ad} stehen. Wechseln Sie die Struktur, ohne sonst etwas anzurühren.", "df-s2-run": "Sie hat nach {t} Schritten {ad} erreicht{half}, ohne dass die Übertragungswahrscheinlichkeit angerührt wurde. Ändern Sie die Struktur, lassen Sie sie noch einmal laufen und vergleichen Sie die beiden Kurven.", "df-s2-half": " und überschritt die halbe Population bei Schritt {n}", "df-033": "Die hier verwendete Kleine-Welt-Konstruktion, bei der ein Ringgitter mit kleiner Wahrscheinlichkeit umverdrahtet wird. <span class=\"ex-cite-w\">Duncan J. Watts and Steven H. Strogatz, <span class=\"ex-cite-t\">Collective\n            dynamics of 'small-world' networks</span>, Nature 393(6684), 4 June 1998, pages 440 to 442.\n            <a href=\"https://www.nature.com/articles/30918\" target=\"_blank\" rel=\"noreferrer noopener\">nature.com/articles/30918</a>\n            Geprüft: 2026 08 22.</span>\n          ", "df-034": "Die Schwellenregel und die Umkehr, die sie erzeugt. <span class=\"ex-cite-w\">Damon Centola and Michael Macy, <span class=\"ex-cite-t\">Complex\n            Contagions and the Weakness of Long Ties</span>, American Journal of Sociology 113(3), 2007,\n            pages 702 to 734.\n            <a href=\"https://www.journals.uchicago.edu/doi/abs/10.1086/521848\" target=\"_blank\" rel=\"noreferrer noopener\">journals.uchicago.edu/doi/abs/10.1086/521848</a>\n            Geprüft: 2026 08 22.</span>\n          ", "df-035": "Der skalenfreie Graph wird durch präferentielles Anbinden erzeugt, bei dem sich jeder ankommende Knoten mit einer Wahrscheinlichkeit proportional zur bereits vorhandenen Zahl von Verbindungen an bestehende Knoten anschließt. <span class=\"ex-cite-w\">Albert-László Barabási and Réka Albert, <span class=\"ex-cite-t\">Emergence\n            of Scaling in Random Networks</span>, Science 286(5439), 1999, pages 509 to 512.\n            <a href=\"https://www.science.org/doi/10.1126/science.286.5439.509\" target=\"_blank\" rel=\"noreferrer noopener\">science.org/doi/10.1126/science.286.5439.509</a>\n            Geprüft: 2026 08 22.</span>\n          ", "df-opt-simple": "einfach", "df-opt-threshold": "Schwelle", "pg-title": "Diffusion, und die Form, durch die sie läuft. Kerem Özdemir"}};
 function T(k, en, v) {
   var out = window.__t ? window.__t(k, en) : en;
   if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
@@ -2803,8 +2976,7 @@ function sweepI18n() {
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-k": "Vaka çalışmaları", "crown": "<i>Beş simülasyondan üçüncüsü<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte",
-"nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-k": "Fallstudien", "crown": "<i>Simulation drei von fünf<\/i>"}};
+window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler", "crown": "<i>Beş simülasyondan üçüncüsü<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen", "crown": "<i>Simulation drei von fünf<\/i>"}};
 
 (function(){
   "use strict";

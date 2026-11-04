@@ -8,14 +8,16 @@
      nothing you type leaves the page into something the browser enforces. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 
-<title>The jam</title>
-<meta name="description" content="A ring road with nothing blocking it. Set the density and the drivers' reaction time, tap one brake, and watch a jam form out of nothing and travel backwards through the traffic. A catastrophe with no cause, made of ordinary local rules.">
+<title>The jam, a traffic jam out of nowhere. Kerem Özdemir</title>
+<meta name="description" content="A ring road with nothing blocking it. Set the density and reaction time, tap one brake, and watch a jam form from nothing and travel backwards.">
 <meta name="author" content="Kerem Özdemir">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="../../fonts/fonts.css">
+<script>(function(){var d=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")})})()</script>
 <link rel="canonical" href="https://keremozdemir.de/run/simea/jam/">
-<meta property="og:title" content="The jam">
-<meta property="og:description" content="A ring road with nothing blocking it. Set the density and the drivers' reaction time, tap one brake, and watch a jam form out of nothing and travel backwards through the traffic. A catastrophe with no cause, made of ordinary local rules.">
+<meta property="og:url" content="https://keremozdemir.de/run/simea/jam/">
+<meta property="og:title" content="The jam, a traffic jam out of nowhere. Kerem Özdemir">
+<meta property="og:description" content="A ring road with nothing blocking it. Set the density and reaction time, tap one brake, and watch a jam form from nothing and travel backwards.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -69,10 +71,59 @@
   --edge:    clamp(1.1rem, 5vw, 3.25rem);
 }
 
-/* The instruments used to flip to a dark palette with the system.  They
-   sit inside keremozdemir.de now, whose paper is light and whose top bar
-   and footer are painted from the site's own tokens, so a page that went
-   dark underneath a light bar would only look broken.  One palette. */
+/* The dark palette. It follows the system, and data-theme on the root
+   overrides the system both ways: the head script sets it from ?theme= in
+   the address (a case study framing the instrument passes the site's own
+   theme) or from the theme the reader chose on the site. The values are the
+   site's dark tokens (src/app/globals.css), so a framed instrument and the
+   page around it share one ground. Measured 2026-11-04: ink 15.6:1, dim
+   7.1:1 on the paper and 6.4:1 on a field, accent 5.6:1 on a field, flag
+   6.8:1 on its tint, a control's edge 3.8:1 against the field. The bar and
+   the footer flip with the page (pagegen.py), so nothing is left light
+   above or below it. The kit's selectors are written twice because a media
+   query and an attribute cannot share one prelude. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #111214;
+    --paper-sunk: #161719;
+    --panel:      #18191c;
+    --field:      #1c1d21;
+    --ink:        #e9eaec;
+    --ink-soft:   #c3c7cd;
+    --dim:        #9aa0a8;
+    --faint:      #9aa0a8;
+    --rule:       #292b30;
+    --rule-firm:  #3a3d43;
+    --rule-edge:  #737882;
+    --accent:     #f5694b;
+    --accent-lit: #2a2d33;
+    --flag:       #f08a6a;
+    --flag-lit:   #2a1a15;
+    --good:       #8cc084;
+    --good-lit:   #17221a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:      #111214;
+  --paper-sunk: #161719;
+  --panel:      #18191c;
+  --field:      #1c1d21;
+  --ink:        #e9eaec;
+  --ink-soft:   #c3c7cd;
+  --dim:        #9aa0a8;
+  --faint:      #9aa0a8;
+  --rule:       #292b30;
+  --rule-firm:  #3a3d43;
+  --rule-edge:  #737882;
+  --accent:     #f5694b;
+  --accent-lit: #2a2d33;
+  --flag:       #f08a6a;
+  --flag-lit:   #2a1a15;
+  --good:       #8cc084;
+  --good-lit:   #17221a;
+  color-scheme: dark;
+}
 
 /* ---------- 2. reset and page ---------- */
 
@@ -119,7 +170,7 @@ a:hover { border-bottom-color: var(--accent); }
 .k-skip {
   position: absolute; left: -9999px; top: 0; z-index: 50;
   background: var(--ink); color: var(--paper); border: 0;
-  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.875rem;
 }
 .k-skip:focus { left: 0.5rem; top: 0.5rem; }
 
@@ -151,8 +202,8 @@ a:hover { border-bottom-color: var(--accent); }
   margin-bottom: 1.1rem;
 }
 .k-sect > h2 .k-num {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
-  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
+  color: var(--faint); vertical-align: 0.4em; margin-right: 0.65rem;
 }
 .k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
 
@@ -166,13 +217,17 @@ a:hover { border-bottom-color: var(--accent); }
 .k-row.k-row-tight { gap: 0.55rem 0.9rem; }
 
 .k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+/* A label is read before the field is touched, so it is set at the size of
+   the text around it: 14px in the sans, sentence case as written. It used to
+   be 11px mono capitals, which was the smallest type on the page on the line
+   a reader needs first. */
 .k-field > label, .k-lab {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500;
+  letter-spacing: 0; color: var(--dim); line-height: 1.35;
 }
 .k-field .k-hint {
-  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
-  line-height: 1.45; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="text"], input[type="number"], input[type="search"], select, textarea {
@@ -209,8 +264,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   display: inline-flex; align-items: center; gap: 0.5rem;
   background: transparent; color: var(--ink);
   border: 1px solid var(--rule-firm); border-radius: 0;
-  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
-  letter-spacing: 0.13em; text-transform: uppercase;
+  font-family: var(--mono); font-weight: 500; font-size: 0.78rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.62rem 0.95rem; cursor: pointer;
   transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
 }
@@ -219,8 +274,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
 .k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .k-btn-key { color: #f7f5ee; }
+/* on the dark ground the accent is light, so the label on it goes dark */
+:root[data-theme="dark"] .k-btn-key { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .k-btn-key { color: var(--paper); }
+}
 .k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.75rem; padding: 0.45rem 0.7rem; }
 
 .k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
 
@@ -233,8 +293,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-panel + .k-panel { margin-top: var(--gap); }
 .k-panel > h3, .k-panel-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.75rem;
 }
 .k-panel-sunk { background: var(--paper-sunk); }
@@ -251,15 +311,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
 
 .k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
-.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dt { font-family: var(--serif); font-size: 0.875rem; color: var(--dim); min-width: 0; }
 .k-kv dd {
-  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  margin: 0; font-family: var(--mono); font-size: 0.875rem;
   font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
 }
 .k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
 
 /* arithmetic trace: every step printed */
-.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.875rem; line-height: 1.7; }
 .k-steps li {
   display: grid; grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.2rem 1rem; padding: 0.3rem 0;
@@ -285,18 +345,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 /* ---------- 6. source line ---------- */
 
 .k-source {
-  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; align-items: baseline;
   margin-top: 0.7rem; padding-top: 0.55rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
 }
 .k-source::before {
-  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  content: "source"; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); flex: none;
 }
 .k-source.k-source-bare::before { content: none; }
-.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all;
+  display: inline-block; padding-block: 0.15rem; }
+@media (pointer: coarse) {
+  .k-source a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; }
+}
 .k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .k-source .k-checked { color: var(--faint); white-space: nowrap; }
 
@@ -316,8 +381,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
 
 .k-tag {
-  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  display: inline-block; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
   white-space: nowrap;
 }
@@ -333,22 +398,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   font-size: 0.92rem;
 }
 .k-ask li > b {
-  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
-  padding-top: 0.22rem;
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.15rem;
 }
 
 /* ---------- 8. tables ---------- */
 
 .k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.875rem; }
 .k-table th, .k-table td {
   text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
   border-bottom: 1px solid var(--rule); vertical-align: top;
 }
 .k-table th {
-  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
-  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  font-family: var(--serif); font-weight: 500; font-size: 0.875rem;
+  letter-spacing: 0; color: var(--dim);
   border-bottom-color: var(--rule-firm); white-space: nowrap;
 }
 .k-table td.k-n, .k-table th.k-n {
@@ -356,7 +422,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   text-align: right; padding-right: 0; white-space: nowrap;
 }
 .k-table tbody tr:last-child td { border-bottom: 0; }
-.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell { font-family: var(--serif); font-size: 0.875rem; line-height: 1.55; color: var(--dim); }
 .k-table .k-src-cell a { word-break: break-all; }
 
 /* ---------- 9. timeline ---------- */
@@ -369,13 +435,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-time li:first-child { border-top: 0; padding-top: 0; }
 .k-time .k-when {
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.03em;
   color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
 }
 .k-time .k-what { font-size: 0.96rem; color: var(--ink); }
 .k-time .k-what small {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+  display: block; font-family: var(--serif); font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.55;
 }
 .k-time li.k-past .k-when { color: var(--faint); }
 .k-time li.k-past .k-what { color: var(--dim); }
@@ -394,8 +460,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-endnote .k-wrap { display: grid; gap: 1.1rem; }
 .k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
 .k-endnote .k-fine {
-  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-size: 0.875rem; line-height: 1.6; color: var(--faint);
 }
 .k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
 .k-endnote a:hover { color: var(--accent); }
@@ -405,7 +470,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-toast {
   position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
   background: var(--ink); color: var(--paper);
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
   opacity: 0; pointer-events: none;
   transition: opacity 0.18s ease;
@@ -477,7 +542,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   border-bottom: 1px solid var(--rule-firm);
 }
 .ex-body > h2 .k-num {
-  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
 }
 .ex-body > h3 {
@@ -512,15 +577,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 
 /* a formula set on its own line, in words rather than symbols */
 .ex-formula {
-  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.7;
   color: var(--ink); background: var(--panel);
   border-left: 2px solid var(--accent);
   padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
   max-width: 40rem; overflow-wrap: break-word;
 }
 .ex-formula small {
-  display: block; font-size: 0.66rem; color: var(--faint);
-  margin-top: 0.35rem; letter-spacing: 0.02em;
+  display: block; font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  margin-top: 0.35rem; line-height: 1.55;
 }
 
 /* ---------- the model figure, wider than the prose ---------- */
@@ -534,8 +599,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-model > figcaption,
 .ex-model-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.85rem;
   display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
 }
@@ -566,18 +631,18 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500; letter-spacing: 0;
+  color: var(--dim); line-height: 1.4;
   display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
 }
 .ex-ctrl .ex-val {
-  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  font-family: var(--mono); font-size: 0.875rem; letter-spacing: 0;
   text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
   font-weight: 500;
 }
 .ex-ctrl .k-hint {
-  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
-  line-height: 1.5; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="range"] {
@@ -608,7 +673,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
 .ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
 .ex-seg-row > label {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em;
   padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
   border: 1px solid var(--rule-firm); margin-left: -1px;
   background: var(--field); line-height: 1.3; white-space: nowrap;
@@ -628,7 +693,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 
 .ex-check {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   color: var(--dim); cursor: pointer;
 }
 .ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
@@ -643,8 +708,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-read > div { min-width: 0; }
 .ex-read dt, .ex-read .ex-read-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; letter-spacing: 0;
+  color: var(--faint); line-height: 1.35;
   margin: 0 0 0.15rem;
 }
 .ex-read dd, .ex-read .ex-read-v {
@@ -653,8 +718,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
 }
 .ex-read .ex-read-v small {
-  display: block; font-size: 0.63rem; font-weight: 400;
-  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+  display: block; font-family: var(--serif); font-size: 0.875rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0; margin-top: 0.15rem;
 }
 .ex-read-hot .ex-read-v { color: var(--accent); }
 .ex-read-flag .ex-read-v { color: var(--flag); }
@@ -662,13 +727,13 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-sum {
   margin-top: 0.9rem; padding-top: 0.7rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
-  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--dim); max-width: none;
 }
 .ex-sum b { color: var(--ink-soft); font-weight: 500; }
 .ex-sum::before {
-  content: "reading"; display: block;
-  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  content: "reading"; display: block; font-family: var(--mono);
+  font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); margin-bottom: 0.3rem;
 }
 
@@ -689,8 +754,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-key {
   display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
   margin-top: 0.7rem;
-  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
-  letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--dim);
 }
 .ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
 .ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
@@ -717,9 +781,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
 .ex-cites .ex-cite-w {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
-  line-height: 1.65;
+  display: block; font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.55;
 }
 .ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
 .ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
@@ -742,11 +806,11 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-next a:hover { border-color: var(--accent); background: var(--field); }
 .ex-next a:hover .ex-next-t { color: var(--accent); }
 .ex-next .ex-next-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--faint);
 }
 .ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
-.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+.ex-next .ex-next-d { font-size: 0.9rem; color: var(--dim); line-height: 1.5; }
 
 /* ---------- mobile ---------- */
 
@@ -785,7 +849,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .sm-canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .sm-canvas-lab {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--faint);
   margin: 0.55rem 0 0.25rem;
 }
@@ -798,27 +862,31 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   border-top: 1px solid var(--rule);
 }
 .sm-bar .sm-clock {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.04em;
   color: var(--faint); font-variant-numeric: tabular-nums;
   margin-left: auto; text-align: right;
 }
 .sm-btn-run[data-on="1"] { background: var(--accent); border-color: var(--accent); color: #f7f5ee; }
+:root[data-theme="dark"] .sm-btn-run[data-on="1"] { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .sm-btn-run[data-on="1"] { color: var(--paper); }
+}
 .sm-btn-run[data-on="1"]:hover { background: var(--ink); border-color: var(--ink); }
 
 .sm-keys {
-  font-family: var(--mono); font-size: 0.63rem; line-height: 1.65;
-  color: var(--faint); letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
   margin: 0.6rem 0 0;
 }
 .sm-keys kbd {
-  font-family: var(--mono); font-size: 0.63rem;
+  font-family: var(--mono); font-size: 0.8rem;
   border: 1px solid var(--rule-firm); border-radius: 2px;
   padding: 0.05em 0.3em; color: var(--dim);
 }
 
 .sm-still {
-  font-family: var(--mono); font-size: 0.63rem; line-height: 1.6;
-  color: var(--accent); letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.55;
+  color: var(--accent);
   margin: 0.55rem 0 0;
 }
 
@@ -832,13 +900,13 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   padding: 0.8rem 0.95rem;
 }
 .sm-construct h3 {
-  font-family: var(--mono); font-weight: 500; font-size: 0.66rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.4rem;
 }
 .sm-construct p { font-size: 0.95rem; margin-bottom: 0.5em; max-width: none; }
 .sm-construct .sm-eq {
-  font-family: var(--mono); font-size: 0.76rem; line-height: 1.65;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.6;
   color: var(--ink); background: var(--field);
   border: 1px solid var(--rule);
   padding: 0.5rem 0.6rem; margin: 0 0 0.45em;
@@ -846,8 +914,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   white-space: pre-wrap; overflow-wrap: break-word;
 }
 .sm-construct .sm-honest {
-  font-family: var(--mono); font-size: 0.65rem; line-height: 1.7;
-  color: var(--faint); letter-spacing: 0.02em; margin: 0; max-width: none;
+  font-size: 0.875rem; line-height: 1.55;
+  color: var(--faint); margin: 0; max-width: none;
 }
 .sm-construct .sm-live {
   font-family: var(--mono); font-weight: 500; font-size: 1.02rem;
@@ -871,14 +939,14 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .sm-card:hover { border-color: var(--accent); background: var(--field); }
 .sm-card:hover .sm-card-t { color: var(--accent); }
 .sm-card-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--faint);
 }
 .sm-card-t { font-family: var(--display); font-size: 1.2rem; letter-spacing: -0.02em; }
 .sm-card-d { font-size: 0.92rem; color: var(--dim); line-height: 1.5; }
 .sm-card-w {
-  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
-  letter-spacing: 0.02em; line-height: 1.6; margin-top: 0.15rem;
+  font-size: 0.875rem; color: var(--faint);
+  line-height: 1.5; margin-top: 0.15rem;
 }
 .sm-card canvas {
   display: block; width: 100%; height: auto;
@@ -917,6 +985,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .bar,footer.site-foot{color:var(--fg)}
 footer.site-foot{background:var(--paper)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar,:root:not([data-theme="light"]) footer.site-foot,:root:not([data-theme="light"]) .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}}
+:root[data-theme="dark"] .bar,:root[data-theme="dark"] footer.site-foot,:root[data-theme="dark"] .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}
+
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
 .wrap{max-width:74rem;margin:0 auto;padding:0 1.5rem}
@@ -931,6 +1002,7 @@ footer.site-foot{background:var(--paper)}
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:var(--paper);border-bottom:1px solid var(--line)}
 .in-frame .bar,.in-frame .site-foot{display:none}
 .bar .wrap{display:flex;align-items:center;gap:2rem;height:70px}
+.bar .home,.langs{flex:none}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;
   border-bottom:0;color:var(--fg);white-space:nowrap}
 .bar nav:not(.langs){margin:0 auto}
@@ -966,6 +1038,33 @@ footer.site-foot{background:var(--paper)}
 /* ---------- a leaf, falling once ---------- */
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar between a phone and a laptop ----------
+   One row needs 1,027 px in German with a touch screen (measured 2026-11-04:
+   the name, six sections, the three languages and the gaps), so from 641 to
+   1,080 px the bar takes two rows the way a phone does: the name and the
+   languages on the first, the sections on the second, which scrolls in place
+   if a long word still does not fit. Below that the switcher sat 130 px past
+   the right edge at 768 and could not be reached. */
+@media (min-width:641px) and (max-width:1080px){
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:1rem;row-gap:0;padding-top:.75rem;padding-bottom:.2rem}
+  .bar .home{line-height:33px}
+  .langs{margin-left:auto}
+  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0 -6px;padding:4px 6px;justify-content:flex-start;
+    gap:1.4rem;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+  .bar nav:not(.langs)::-webkit-scrollbar{display:none}
+  .bar nav a{padding:.45rem 0;flex:0 0 auto}
+}
+
+/* ---------- inside a case study's frame ----------
+   The page around the frame already has the title and the argument, so the
+   frame opens on the instrument: the heading and the standfirst are kept
+   for a screen reader and taken off the screen. A scaled preview is left
+   as it is, because its picture is the page's first screen. */
+.framed-tool .k-lede{position:absolute!important;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.framed-tool .k-main{padding-top:clamp(.9rem,3vw,1.4rem)}
+.framed-tool .k-lede + .k-sect{margin-top:0}
 
 /* ---------- the bar and the footer, narrowed ---------- */
 @media (max-width:640px){
@@ -1048,11 +1147,10 @@ footer.site-foot{background:var(--paper)}
 
 <div class="k-shell">
 
-<script>if(window.self!==window.top)document.documentElement.classList.add("in-frame")</script>
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../../">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../cases/" data-i="nav-k">Case studies</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
     <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
   </div>
 </header>
@@ -1327,6 +1425,16 @@ var Kit = (function () {
     return new TextDecoder().decode(bytes);
   }
 
+  /* The query without ?theme=, which a case study adds when it frames the
+     instrument. A link copied inside the frame would otherwise open dark or
+     light for whoever it is sent to, whatever they chose themselves. */
+  function query() {
+    var q = (location.search || "").replace(/^\?/, "").split("&").filter(function (p) {
+      return p && p.indexOf("theme=") !== 0;
+    }).join("&");
+    return q ? "?" + q : "";
+  }
+
   var state = {
     /* Serialise the object into the location hash without adding a history entry. */
     write: function (obj) {
@@ -1334,7 +1442,7 @@ var Kit = (function () {
       try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
       if (h.length > 8000) return "";
       try {
-        history.replaceState(null, "", location.pathname + location.search + h);
+        history.replaceState(null, "", location.pathname + query() + h);
       } catch (e) {
         location.hash = h;
       }
@@ -1347,7 +1455,7 @@ var Kit = (function () {
       try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
     },
     clear: function () {
-      try { history.replaceState(null, "", location.pathname + location.search); }
+      try { history.replaceState(null, "", location.pathname + query()); }
       catch (e) { location.hash = ""; }
     }
   };
@@ -1449,6 +1557,71 @@ var Kit = (function () {
     }
     return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
   }
+
+  /* ---------- a region that scrolls sideways ---------- */
+
+  /* A wide table on a phone scrolls inside its box, and a box that scrolls is
+     a control: a keyboard has to be able to reach it to scroll it, and a
+     screen reader has to hear what it is. It takes a tab stop only while it
+     overflows, so the same table at desktop width adds none. The name is the
+     heading of the panel it sits in, by reference, so it follows the language
+     when the reader switches. Measured 2026-11-04: axe found 17 such boxes
+     across seven instrument pages at 390px, none of them reachable. */
+  var reachSel = ".k-scroll, .k-panel > pre, [data-k-scroll]";
+  var reachN = 0;
+  /* A box can start to overflow with no change to the DOM at all: the faces
+     arrive after the first layout and widen every table. Each box and its
+     table are watched for a change of size, so the check runs again then. */
+  var reachSeen = typeof WeakSet === "function" ? new WeakSet() : null;
+  var reachRO = typeof ResizeObserver === "function" ? new ResizeObserver(function () { reachSoon(); }) : null;
+  function reach() {
+    qsa(reachSel).forEach(function (box) {
+      if (reachRO && reachSeen && !reachSeen.has(box)) {
+        reachSeen.add(box);
+        reachRO.observe(box);
+        if (box.firstElementChild) reachRO.observe(box.firstElementChild);
+      }
+      var over = box.scrollWidth > box.clientWidth + 1;
+      var mine = box.getAttribute("data-k-reach") === "1";
+      if (over && !box.hasAttribute("tabindex")) {
+        box.setAttribute("tabindex", "0");
+        box.setAttribute("data-k-reach", "1");
+        mine = true;
+      } else if (!over && mine) {
+        box.removeAttribute("tabindex");
+        box.removeAttribute("role");
+        box.removeAttribute("aria-labelledby");
+        box.removeAttribute("aria-label");
+        box.removeAttribute("data-k-reach");
+        return;
+      }
+      if (!mine) return;
+      box.setAttribute("role", "region");
+      if (box.hasAttribute("aria-labelledby") || box.hasAttribute("aria-label")) return;
+      var panel = box.closest(".k-panel, .k-sect, section, figure");
+      var head = panel && panel.querySelector("h2, h3, h4, .k-panel-h, figcaption");
+      if (head) {
+        if (!head.id) head.id = "k-reach-" + (++reachN);
+        box.setAttribute("aria-labelledby", head.id);
+      } else {
+        box.setAttribute("aria-label", window.__t ? window.__t("kit-scroll", "Table, scrolls sideways") : "Table, scrolls sideways");
+      }
+    });
+  }
+  var reachQueued = false;
+  function reachSoon() {
+    if (reachQueued) return;
+    reachQueued = true;
+    (window.requestAnimationFrame || setTimeout)(function () { reachQueued = false; reach(); });
+  }
+  if (typeof MutationObserver === "function") {
+    new MutationObserver(reachSoon).observe(document.documentElement, { childList: true, subtree: true });
+  }
+  addEventListener("resize", reachSoon);
+  addEventListener("load", reachSoon);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(reachSoon);
+  if (document.readyState !== "loading") reachSoon();
+  else document.addEventListener("DOMContentLoaded", reachSoon);
 
   return {
     el: el, qs: qs, qsa: qsa, clear: clear,
@@ -2230,7 +2403,7 @@ var Sim = (function () {
 })();
 
 /* ---- the page's own three languages ---- */
-window.PAGE_I18N = {"tr": {"pg-desc": "Önünde hiçbir engel olmayan bir çevre yolu. Yoğunluğu ve sürücülerin tepki süresini ayarlayın, bir frene basın ve yoktan bir tıkanıklığın oluşup trafiğin içinde geriye doğru yürüyüşünü izleyin. Nedeni olmayan bir felaket, sıradan yerel kurallardan yapılmış.", "jm-001": "Tıkanıklık", "jm-002": "<span class=\"k-num\">01</span>Yol ve iz", "jm-003": "<span class=\"k-num\">02</span>Kural, açık açık yazılmış", "jm-004": "<span class=\"k-num\">03</span>Eşiği bulmak", "jm-005": "<span class=\"k-num\">04</span>Bu neden SIMEA'ya ait", "jm-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "jm-007": "<span class=\"k-num\">06</span>Kaynak", "jm-008": "Varsayımlar ve sınırlar", "jm-009": "Kavşağı, trafik ışığı, kazası ve darboğazı olmayan dairesel bir yolda bir fren pedalına bir anlığına dokunun: duran bir tıkanıklık belirir, trafiğin içinde geriye doğru yürür ve fren yapan sürücü turu tamamlayıp gittikten çok sonra da oradadır.", "jm-010": "Trafik tıkanıklığının çoğu açıklaması bir sebep avıdır: bir kaza, kötü bir şerit değiştirme, ileride daralan bir yol. Bazen böyle bir şey vardır, bazen yoktur; ve hiç sebebi olmayan tıkanıklıklar anlamaya değer olanlardır, çünkü nedensellik alışkanlığının göremediği onlardır.", "jm-011": "Yol bir halka ve üzerinde arabalardan başka bir şey yok; her biri tek bir kurala uyuyor: önündeki boşluğun taşıyabileceği hıza yönel ve hızını o hedefe tepkinin izin verdiği oranda değiştirin. Modelde ne saldırganlık var ne dikkat dağınıklığı.", "jm-012": "Sağdaki panel aynı yol, zaman aşağı doğru akarken; bir tıkanıklık koyu bir bant olarak görünüyor ve o bandın eğimi tıkanıklığın kendi hızı.", "jm-013": "Halka, yukarıdan", "jm-014": "Aynı yol, zaman aşağı akarken", "jm-015": "Bir sürücünün, önündeki boşluğun belirlediği bir hedef hızı ve gerçek hızını o hedefe doğru götürdüğü bir oranı var. Tepki süresi iki işi birden görüyor: hem tepki verdiğiniz boşluğun ne kadar bayat olduğu, hem de ona tepki vermenizin ne kadar sürdüğü.", "jm-016": "g boşluğu için hedef hız: V(g) = ( g − 6 metre ) / 1,2 saniye, saniyede 30 metrede sınırlı gerçek hız: dv/dt = ( V( τ saniye önceki hâliyle boşluk ) − v ) / τ <small data-i=\"jm-037\">τ, sizin ayarladığınız tepki süresi; altı metre bir araba artı biraz fazlası, bir virgül iki saniye ise bir sürücünün koruduğu takip mesafesi.</small>", "jm-017": "Yol boşken boşluk büyük, hedef hız sınırında ve hedefin boşluğa göre türevi sıfır. Zaten sınırda olan bir sürücü boşluğa hiç tepki vermiyor, yani hiçbir şey yayılamıyor ve hiçbir şey büyüyemiyor: serbest akış bu ve hangi tepki süresi olursa olsun kararlı.", "jm-018": "Araba ekleyin: belli bir boşluğun altında her sürücü kuralın eğimli kısmında, orada öndeki boşluktaki bir değişiklik hedef hızı değiştiriyor, yani artık bir bozulmanın içinden geçebileceği bir şey var. Her sürücü aldığını, tepki süresiyle büyüyen bir katsayıyla büyütüyor; o katsayı biri geçtiğinde küçük gelen bir bozulma daha büyük çıkıyor ve halkayı dolaşıp daha da büyük geri geliyor.", "jm-019": "Yoğunluğu düşük, tepki süresini yüksek ayarlayın ve bir frene dokunun: bozulma biraz geriye yayılır, incelir ve ölür. Yoğunluğu birer adım yükseltin, her seferinde frene dokunarak, ta ki ölmeyene kadar: çizgi oldukça keskin ve iki yanında aynı frene aynı dokunuş birbirinden tamamen farklı iki gelecek üretiyor.", "jm-020": "Şimdi yoğunluğu tıkanıklığın sürdüğü yerde tutun ve bunun yerine tepki süresini düşürün: dikkatli sürücüler, dikkatsizlerin büyüttüğü aynı bozulmayı emiyor; yol da üzerindeki araba sayısı da değişmeden.", "jm-021": "Arabalar bir tıkanıklığın içinden bütün süre boyunca ileri gider: biri arkasına varır, sürünerek geçer ve önünde hızlanarak uzaklaşır; tıkanıklığın kendisi ise ters yönde yürür. Tıkanıklık belirli arabalardan yapılmış değil ve içindeki her arabanın üyeliğinden uzun yaşıyor.", "jm-022": "Çünkü bildiğim en temiz örnek bu: hiçbir failin içinde hiçbir temsili olmayan kolektif bir nesne; hiçbir sürücü bir tıkanıklık olduğunu bilmiyor ve hiçbiri makul bir mesafe korumaktan başka bir şey yapmıyor. Tıkanıklık gerçek, kararlı, belirli bir hızla hareket ediyor ve ölçülebiliyor; üstelik onu oluşturan faillerin hiçbirinin erişemediği bir betimleme düzeyinde var oluyor.", "jm-023": "Programın buradaki ilgisi şu: bir sonuç tamamen sıradan yerel kuralların etkileşimiyle üretilebilir, dolayısıyla failler arasında bir sebep aramak yanlış yere bakmaktır. Kolektif nesne bir tıkanıklıkken bu bir merak konusu; bir panik, bir banka hücumu ya da bir nüfusun görüşüyken aynı hata pahalıya patlıyor.", "jm-024": "Hiç darboğazı olmayan dairesel bir yolda bir tıkanıklığın belirebileceği, bir simülasyondan öne sürülmüş bir iddia değil: gerçek arabalar ve gerçek sürücülerle yapıldı.", "jm-025": "<strong>Bu bir öğretim modeli, ölçüm değil:</strong> bu sayfadaki her sayı ya sizin ayarladığınız ya da modelin ondan ürettiği bir sayıdır, burada hiçbir şey gerçek trafiğe göre ayarlanmamıştır.", "jm-026": "Tamamen tarayıcınızda çalışır: burada yaptığınız hiçbir şey sayfadan çıkmaz, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Özdemir</a>.", "jm-027": "<b>Tek şerit, tek halka</b>Sollama, kavşak, giriş, çıkış ya da başka yol yok; halka araba sayısını sabit tutuyor, deneyi temiz kılan da bu, onu sürdüğünüz hiçbir yola benzemez kılan da.", "jm-028": "<b>Aynı sürücüler</b>Her sürücünün tepki süresi, takip mesafesi ve hedef hızı aynı; sürücüler arasındaki gerçek değişkenlik sayıları değiştirirdi ama etkiyi ortadan kaldırmazdı.", "jm-029": "<b>Kaba bir kural</b>Hedef hız, boşlukta bir doğru ve üzerinde bir sınır; gerçek araç takibi daha karmaşıktır ve literatürde birçok kural vardır. Burada gösterilen kararsızlık gecikmeli takibin genel bir özelliği, ama kesin eşik bu belirli doğrunun yan ürünü.", "jm-030": "<b>Elle eklenen bir kural</b>Uzun bir tepki süresinde takip kuralı tek başına bir arabanın öndekinin içinden geçmesine izin verir, çünkü tepki verdiği boşluk güncel değildir. Sert bir kısıt bunu durduruyor; modelde yukarıdaki formülün dışında kalan tek şey bu: hiçbir araba öndekine, kuralın hedef hızı zaten sıfıra koyduğu altı metreden fazla yaklaşamaz.", "jm-031": "<b>Gürültü yok</b>Kusursuzca eşit aralıklı bir araba dizisi sonsuza kadar kusursuzca eşit kalır, frene elle dokunulması gerekmesinin sebebi bu. Gerçek trafik hiçbir zaman eşit değildir, o yüzden gerçek tıkanıklıkların onları başlatacak kimseye ihtiyacı yoktur.", "jm-032": "<b>Tıkanıklık hızı bir tahmin</b>Bildirilen rakam, koşunun son bölümünde halkadaki en yavaş noktanın hareketine uydurulmuş; bir yoldaki herhangi bir şeyin ölçümü değil, bu modelin bir okuması.", "jm-033": "<b>Ayarlanmış değil</b>Altı metre, bir virgül iki saniye ve saniyede otuz metre, mekanizma görünsün diye seçilmiş makul yuvarlak sayılar; ölçülmüş değerler değiller ve bu sayfadaki hiçbir sayı gerçek trafiği tarif etmiyor.", "jm-035": "Şekil bir <span class=\"ex-model-sub\">çalıştırın, sonra tek bir frene dokunun</span>", "jm-036": "Bir sürücünün frenine dokunun", "jm-skip": "Simülasyona geçin", "jm-ring-cw": "arabalar saat yönünde gidiyor", "jm-ring-avg": "{v} km/sa ortalama", "jm-st-top": "halkada bir tur", "jm-st-old": "daha eski", "jm-st-now": "şimdi", "jm-st-jam": "koyu bantlar geriye eğiliyor: tıkanıklığın hareketi bu", "jm-st-free": "düz bir alan: serbest akış", "jm-st-none": "henüz hiçbir şey çalışmadı", "jm-trace-empty": "Model henüz çalıştırılmadığı için iz boş.", "jm-trace": "Halkadaki yerel hızın izi; konum soldan sağa, zaman aşağı doğru, son {s} saniye boyunca. {tail}", "jm-trace-jam": "Üzerinde koyu bantlar geriye doğru eğiliyor, ki bu, arabaların yönüne karşı saatte {v} kilometre giden bir tıkanıklık.", "jm-trace-free": "Alan düz, ki bu serbest akış: hiçbir şey yayılmıyor.", "jm-sum": "Bir kilometre uzunluğunda tek şeritli bir halka, üzerinde {m} araba, yani kilometre başına {d} araba, sürücü tepki süresi {tau} saniye. {t} saniye sonra ortalama hız saatte {mean} kilometre, en yavaş araba {min}, en hızlısı {max} yapıyor. {tail}", "jm-sum-jam": "Trafik durun kalk hâlinde.", "jm-sum-free": "Trafik serbest akışta.", "jm-s0": "Arabalar eşit aralıklı ve hepsi {v} yapıyor; bu modelde hiçbir şey rastgele değil, yani bu sonsuza kadar tam olarak böyle kalacak. Çalıştırın'a basın, sonra bir frene dokunun.", "jm-s1": "Bir sürücü {ago} önce bir anlığına gaz kesti. O zamandan beri halka boyunca hızların yayılımı {sd} seviyesine ulaştı{tail}", "jm-s1-jam": ", en yavaş araba saatte {min} kilometreye düştü, bozulma ölmedi ve tıkanıklığa dönüştü.", "jm-s1-free": ", ki bu küçük ve küçülüyor, yani bozulma emiliyor ve yol serbest akışta kalıyor. Yoğunluğu ya da tepki süresini yükseltip tekrar dokunun.", "jm-s2-jam": "Tıkanıklığın kendisi {v} {dir} gidiyor, içindeki her araba ileri giderken; yolu tıkayan bir şey yok, kimse yanlış bir şey yapmadı ve fren yapan sürücü çoktan gitti.", "jm-dir-back": "geriye", "jm-dir-fwd": "ileriye", "jm-s2-short": "Trafik durun kalk hâlinde ama iz, tıkanıklığa bir hız uydurmaya henüz yetmiyor; bırakın çalışsın.", "jm-s2-free": "Boşluklar büyükken serbest akış her tepki süresinde kararlıdır, çünkü zaten üst hızında olan bir sürücü önündeki boşluğa hiç tepki vermez, yani bir bozulmanın içinden geçebileceği bir şey yoktur.", "jm-sl-m": "Halkadaki araba", "jm-sl-m-h": "Halka bir kilometre uzunluğunda, yani bu aynı zamanda yoğunluk.", "jm-fmt-m": "{v} (km başına {v})", "jm-sl-tau": "Tepki süresi, saniye", "jm-sl-tau-h": "Bir sürücünün tepki verdiği boşluğun ne kadar bayat olduğu, ve tepkinin ne kadar sürdüğü.", "jm-fmt-s": "{v} sn", "jm-rd-mean": "Ortalama hız", "jm-rd-min": "En yavaş araba", "jm-rd-sd": "Hızların yayılımı", "jm-rd-flow": "Bir noktadan geçen akış", "jm-rd-wave": "Tıkanıklık hızı", "jm-rd-t": "Geçen süre", "jm-kmh": "km/sa", "jm-sub-stopgo": "durun kalk", "jm-sub-free": "serbest akış", "jm-sub-flow": "saatte araba", "jm-nojam": "tıkanıklık yok", "jm-sub-wave": "km/sa, negatif geriye demek", "jm-sub-nowave": "yayılan bir şey yok", "jm-sub-nottapped": "frene dokunulmadı", "jm-sub-tapped": "frene dokunuldu", "jm-secs": "{v} sn", "jm-kmh-v": "{v} km/sa", "jm-ago": "{v} saniye", "jm-share": "Bağlantı kopyalandı; koşunun bu anından açılır.", "jm-034": "Araçlar bir pistte, eşit aralıklarla ve tekdüze hareketle, hiçbir darboğaz olmadan sürüldü ve kritik bir yoğunluğun altında tekdüze akış korundu. Üstünde akış kararsızlaştı, minik bir dalgalanma büyüdü, ve bir tıkanıklık kümesi belirip bir otoyoldaki tıkanıklık kümesiyle aynı hızda, yalnız bir dalga gibi geriye doğru yayıldı. Yazarlar, bir darboğazın yalnızca bir tetikleyici olduğu ve trafik tıkanıklığının asli kaynağı olmadığı sonucuna varıyor, ve çalışmayı tıkanıklığın kolektif bir olgu olduğuna dair ilk deneysel kanıt olarak sunuyor. <span class=\"ex-cite-w\">Yuki Sugiyama, Minoru Fukui, Macoto Kikuchi, Katsuya Hasebe, Akihiro\n            Nakayama, Katsuhiro Nishinari, Shin-ichi Tadaki and Satoshi Yukawa,\n            <span class=\"ex-cite-t\">Traffic jams without bottlenecks: experimental evidence for the\n            physical mechanism of the formation of a jam</span>, New Journal of Physics 10, 2008, article\n            033001.\n            <a href=\"https://iopscience.iop.org/article/10.1088/1367-2630/10/3/033001\" target=\"_blank\" rel=\"noreferrer noopener\">iopscience.iop.org/article/10.1088/1367-2630/10/3/033001</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "jm-key-free": "serbestçe hareket ediyor", "jm-key-stop": "durmuş hâlde", "pg-title": "Tıkanıklık"}, "de": {"pg-desc": "Eine Ringstraße, auf der nichts im Weg steht. Stellen Sie die Dichte und die Reaktionszeit der Fahrenden ein, tippen Sie einmal auf die Bremse und sehen Sie einen Stau aus dem Nichts entstehen und rückwärts durch den Verkehr wandern. Eine Katastrophe ohne Ursache, aus ganz gewöhnlichen lokalen Regeln.", "jm-001": "Der Stau", "jm-002": "<span class=\"k-num\">01</span>Die Straße und die Spur", "jm-003": "<span class=\"k-num\">02</span>Die Regel, ausgeschrieben", "jm-004": "<span class=\"k-num\">03</span>Die Kante finden", "jm-005": "<span class=\"k-num\">04</span>Warum das zu SIMEA gehört", "jm-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "jm-007": "<span class=\"k-num\">06</span>Quelle", "jm-008": "Annahmen und Grenzen", "jm-009": "Tippen Sie auf einer Ringstraße ohne Kreuzung, ohne Ampel, ohne Unfall und ohne Engpass einen Moment lang auf ein Bremspedal, und ein stehender Stau erscheint, wandert rückwärts durch den Verkehr und ist noch da, lange nachdem der bremsende Fahrer wieder herumgefahren ist.", "jm-010": "Die meisten Erklärungen eines Staus sind Suchen nach einer Ursache: ein Unfall, ein schlechtes Einfädeln, eine Verengung weiter vorn. Mal gibt es so etwas und mal nicht, und die Staus ganz ohne Ursache sind die, die zu verstehen sich lohnt, denn sie sind die, welche die Ursachengewohnheit nicht sehen kann.", "jm-011": "Die Straße ist eine Schleife, auf der nichts ist außer Autos, und jedes befolgt eine Regel: es zielt auf die Geschwindigkeit, die die Lücke voraus tragen kann, und ändert seine Geschwindigkeit auf dieses Ziel hin so schnell, wie seine Reaktion es erlaubt. Aggression und Ablenkung kommen im Modell nirgends vor.", "jm-012": "Die rechte Tafel ist dieselbe Straße mit nach unten laufender Zeit, ein Stau zeigt sich also als dunkles Band, und die Neigung dieses Bandes ist die Geschwindigkeit des Staus selbst.", "jm-013": "Die Schleife von oben", "jm-014": "Dieselbe Straße, mit der Zeit nach unten", "jm-015": "Ein Fahrer hat eine Zielgeschwindigkeit, die die Lücke voraus setzt, und eine Rate, mit der er seine tatsächliche Geschwindigkeit auf dieses Ziel hin bewegt. Die Reaktionszeit erledigt beides: sie ist, wie alt die Lücke ist, auf die Sie reagieren, und sie ist, wie lange Sie zum Reagieren brauchen.", "jm-016": "Zielgeschwindigkeit für eine Lücke g: V(g) = ( g − 6 Meter ) / 1,2 Sekunden, gedeckelt bei 30 Metern pro Sekunde tatsächliche Geschwindigkeit: dv/dt = ( V( Lücke, wie sie vor τ Sekunden war ) − v ) / τ <small data-i=\"jm-037\">τ ist die Reaktionszeit, die Sie einstellen, sechs Meter sind ein Auto und ein wenig mehr, und eins Komma zwei Sekunden ist der Abstand, den ein Fahrer hält.</small>", "jm-017": "Wenn die Straße leer ist, ist die Lücke groß, die Zielgeschwindigkeit liegt am Deckel, und die Ableitung des Ziels nach der Lücke ist null. Ein Fahrer, der schon am Deckel ist, reagiert überhaupt nicht auf die Lücke, es kann sich also nichts fortpflanzen und nichts wachsen: das ist freier Fluss, stabil bei jeder beliebigen Reaktionszeit.", "jm-018": "Fügen Sie Autos hinzu: unterhalb einer bestimmten Lücke ist jeder Fahrer auf dem schrägen Teil der Regel, wo eine Änderung der Lücke voraus die Zielgeschwindigkeit ändert, eine Störung hat also nun etwas, durch das sie reisen kann. Jeder Fahrer verstärkt das Empfangene um einen Faktor, der mit seiner Reaktionszeit wächst, und überschreitet dieser Faktor eins, verlässt eine klein ankommende Störung ihn größer und kommt um die Schleife herum noch größer zurück.", "jm-019": "Stellen Sie die Dichte niedrig und die Reaktionszeit hoch und tippen Sie eine Bremse an: die Störung breitet sich ein wenig rückwärts aus, dünnt aus und stirbt. Erhöhen Sie die Dichte Schritt für Schritt und tippen Sie jedes Mal die Bremse an, bis sie es nicht mehr tut: die Linie ist ziemlich scharf, und beiderseits davon erzeugt dasselbe Antippen derselben Bremse zwei völlig verschiedene Zukünfte.", "jm-020": "Halten Sie nun die Dichte dort, wo der Stau bestehen bleibt, und senken Sie stattdessen die Reaktionszeit: aufmerksame Fahrer absorbieren dieselbe Störung, die unaufmerksame verstärken, ohne dass sich an der Straße oder an der Zahl der Autos etwas geändert hätte.", "jm-021": "Autos fahren die ganze Zeit vorwärts durch einen Stau: eines erreicht das Ende, kriecht hindurch und beschleunigt vorn wieder weg, während der Stau selbst in die Gegenrichtung wandert. Der Stau besteht aus keinen bestimmten Autos, und er überlebt die Zugehörigkeit jedes einzelnen Autos.", "jm-022": "Weil es der sauberste mir bekannte Fall eines kollektiven Objekts ist, das in keinem Akteur irgendeine Repräsentation hat: kein Fahrer weiß, dass es einen Stau gibt, und keiner tut etwas anderes, als einen vernünftigen Abstand zu halten. Der Stau ist real, stabil, bewegt sich mit einer bestimmten Geschwindigkeit und lässt sich messen, und er existiert auf einer Beschreibungsebene, die keiner der Akteure erreicht, die ihn bilden.", "jm-023": "Das Interesse des Programms liegt hier darin, dass ein Ergebnis vollständig durch das Zusammenspiel gewöhnlicher lokaler Regeln entstehen kann, sodass die Suche nach einer Ursache unter den Akteuren an der falschen Stelle sucht. Wenn das kollektive Objekt ein Stau ist, ist das eine Kuriosität; wenn es eine Panik ist, ein Ansturm auf eine Bank oder die Meinung einer Bevölkerung, wird derselbe Fehler teuer.", "jm-024": "Dass ein Stau auf einer Ringstraße ganz ohne Engpass entstehen kann, wurde mit echten Autos und echten Fahrern gemacht und nicht aus einer Simulation behauptet.", "jm-025": "<strong>Das ist ein Lehrmodell, keine Messung:</strong> jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die das Modell daraus erzeugt hat, und nichts hier ist auf realen Verkehr kalibriert.", "jm-026": "Läuft vollständig in Ihrem Browser: nichts, was Sie hier tun, verlässt die Seite, und nach dem Laden der Schriften gibt es keine Netzwerkaufrufe. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>.", "jm-027": "<b>Eine Spur, eine Schleife</b>Kein Überholen, keine Kreuzungen, Auffahrten, Ausfahrten oder anderen Straßen; die Schleife hält die Zahl der Autos fest, was das Experiment sauber macht und es zugleich anders macht als jede Straße, auf der Sie je gefahren sind.", "jm-028": "<b>Identische Fahrer</b>Jeder Fahrer hat dieselbe Reaktionszeit, denselben Abstand und dieselbe Zielgeschwindigkeit, während reale Unterschiede zwischen Fahrern die Zahlen ändern würden, ohne den Effekt zu beseitigen.", "jm-029": "<b>Eine grobe Regel</b>Die Zielgeschwindigkeit ist eine Gerade in der Lücke mit einem Deckel darauf, während reales Folgeverhalten komplizierter ist und die Literatur viele Regeln kennt. Die hier gezeigte Instabilität ist eine allgemeine Eigenschaft verzögerten Folgens, die genaue Schwelle aber ein Artefakt dieser bestimmten Geraden.", "jm-030": "<b>Eine von Hand ergänzte Regel</b>Bei langer Reaktionszeit ließe die Folgeregel allein ein Auto durch das vorausfahrende hindurchfahren, weil die Lücke, auf die es reagiert, veraltet ist. Eine harte Beschränkung verhindert das, das Einzige im Modell außerhalb der Formel oben: kein Auto darf dem vorausfahrenden näher kommen als jene sechs Meter, bei denen die Regel die Zielgeschwindigkeit ohnehin auf null setzt.", "jm-031": "<b>Kein Rauschen</b>Eine vollkommen gleichmäßige Autoschlange bleibt für immer vollkommen gleichmäßig, weshalb die Bremse von Hand angetippt werden muss. Realer Verkehr ist nie gleichmäßig, reale Staus brauchen also niemanden, der sie startet.", "jm-032": "<b>Die Staugeschwindigkeit ist eine Schätzung</b>Die berichtete Zahl ist an die Bewegung des langsamsten Punktes auf der Schleife über das letzte Stück des Laufs angepasst, eine Ablesung dieses Modells und keine Messung von irgendetwas auf einer Straße.", "jm-033": "<b>Nicht kalibriert</b>Die sechs Meter, die eins Komma zwei Sekunden und die dreißig Meter pro Sekunde sind plausible runde Zahlen, gewählt, damit der Mechanismus sichtbar wird, keine gemessenen Werte, und keine Zahl auf dieser Seite beschreibt realen Verkehr.", "jm-035": "Abbildung eins <span class=\"ex-model-sub\">laufen lassen, dann eine Bremse antippen</span>", "jm-036": "Die Bremse eines Fahrers antippen", "jm-skip": "Zur Simulation springen", "jm-ring-cw": "Autos fahren im Uhrzeigersinn", "jm-ring-avg": "{v} km/h im Mittel", "jm-st-top": "einmal um die Schleife", "jm-st-old": "älter", "jm-st-now": "jetzt", "jm-st-jam": "dunkle Bänder neigen sich rückwärts: das ist der wandernde Stau", "jm-st-free": "ein gleichmäßiges Feld: freier Fluss", "jm-st-none": "es ist noch nichts gelaufen", "jm-trace-empty": "Die Spur ist leer, weil das Modell noch nicht gelaufen ist.", "jm-trace": "Eine Spur der lokalen Geschwindigkeit auf der Schleife, Position von links nach rechts und Zeit nach unten, über die letzten {s} Sekunden. {tail}", "jm-trace-jam": "Dunkle Bänder neigen sich rückwärts darüber, und das ist ein Stau, der mit {v} Kilometern pro Stunde gegen die Fahrtrichtung der Autos wandert.", "jm-trace-free": "Das Feld ist gleichmäßig, und das ist freier Fluss: Nichts pflanzt sich fort.", "jm-sum": "Eine einspurige Schleife von einem Kilometer Länge mit {m} Autos, also {d} Autos je Kilometer, bei einer Reaktionszeit der Fahrer von {tau} Sekunden. Nach {t} Sekunden liegt die Durchschnittsgeschwindigkeit bei {mean} Kilometern pro Stunde, das langsamste Auto fährt {min} und das schnellste {max}. {tail}", "jm-sum-jam": "Der Verkehr ist im Stop-and-go.", "jm-sum-free": "Der Verkehr ist im freien Fluss.", "jm-s0": "Die Autos stehen gleichmäßig verteilt und fahren alle {v}, und nichts in diesem Modell ist zufällig, das bleibt also für immer genau so. Drücken Sie Starten und tippen Sie dann eine Bremse an.", "jm-s1": "Ein Fahrer ging vor {ago} für einen Moment vom Gas. Seither hat die Streuung der Geschwindigkeiten um die Schleife {sd} erreicht{tail}", "jm-s1-jam": ", das langsamste Auto ist auf {min} Kilometer pro Stunde herunter, die Störung ist nicht ausgestorben, und sie ist zu einem Stau geworden.", "jm-s1-free": ", was klein ist und kleiner wird, die Störung wird also absorbiert und die Straße bleibt im freien Fluss. Erhöhen Sie die Dichte oder die Reaktionszeit und tippen Sie erneut.", "jm-s2-jam": "Der Stau selbst bewegt sich mit {v} {dir}, während jedes Auto darin vorwärts fährt, wobei nichts die Straße blockiert, niemand etwas falsch gemacht hat und der bremsende Fahrer längst weg ist.", "jm-dir-back": "rückwärts", "jm-dir-fwd": "vorwärts", "jm-s2-short": "Der Verkehr ist im Stop-and-go, aber die Spur ist noch nicht lang genug, um dem Stau eine Geschwindigkeit anzupassen; lassen Sie ihn laufen.", "jm-s2-free": "Freier Fluss ist bei jeder Reaktionszeit stabil, solange die Lücken groß sind, denn ein Fahrer, der schon auf Höchstgeschwindigkeit ist, reagiert überhaupt nicht auf die Lücke voraus, es gibt also nichts, durch das eine Störung reisen könnte.", "jm-sl-m": "Autos auf der Schleife", "jm-sl-m-h": "Die Schleife ist einen Kilometer lang, das ist also zugleich die Dichte.", "jm-fmt-m": "{v} ({v} je km)", "jm-sl-tau": "Reaktionszeit, Sekunden", "jm-sl-tau-h": "Wie alt die Lücke ist, auf die ein Fahrer reagiert, und wie lange die Reaktion dauert.", "jm-fmt-s": "{v} s", "jm-rd-mean": "Durchschnittsgeschwindigkeit", "jm-rd-min": "Langsamstes Auto", "jm-rd-sd": "Streuung der Geschwindigkeiten", "jm-rd-flow": "Fluss an einem Punkt", "jm-rd-wave": "Staugeschwindigkeit", "jm-rd-t": "Vergangen", "jm-kmh": "km/h", "jm-sub-stopgo": "Stop-and-go", "jm-sub-free": "freier Fluss", "jm-sub-flow": "Autos pro Stunde", "jm-nojam": "kein Stau", "jm-sub-wave": "km/h, negativ heißt rückwärts", "jm-sub-nowave": "nichts pflanzt sich fort", "jm-sub-nottapped": "Bremse nicht angetippt", "jm-sub-tapped": "Bremse angetippt", "jm-secs": "{v} s", "jm-kmh-v": "{v} km/h", "jm-ago": "{v} Sekunden", "jm-share": "Link kopiert; er öffnet an diesem Moment des Laufs.", "jm-034": "Fahrzeuge wurden auf einem Rundkurs gefahren, mit gleichmäßigem Abstand und gleichförmiger Bewegung, ohne jeden Engpass, und unterhalb einer kritischen Dichte hielt der gleichförmige Fluss. Oberhalb wurde der Fluss instabil, eine winzige Schwankung wuchs, und ein Stauklumpen entstand und pflanzte sich rückwärts fort wie eine Einzelwelle, mit derselben Geschwindigkeit wie ein Stauklumpen auf einer Autobahn. Die Autoren schließen daraus, dass ein Engpass nur ein Auslöser und nicht der wesentliche Ursprung eines Staus ist, und legen die Arbeit als den ersten experimentellen Beleg dafür vor, dass ein Stau ein kollektives Phänomen ist. <span class=\"ex-cite-w\">Yuki Sugiyama, Minoru Fukui, Macoto Kikuchi, Katsuya Hasebe, Akihiro\n            Nakayama, Katsuhiro Nishinari, Shin-ichi Tadaki and Satoshi Yukawa,\n            <span class=\"ex-cite-t\">Traffic jams without bottlenecks: experimental evidence for the\n            physical mechanism of the formation of a jam</span>, New Journal of Physics 10, 2008, article\n            033001.\n            <a href=\"https://iopscience.iop.org/article/10.1088/1367-2630/10/3/033001\" target=\"_blank\" rel=\"noreferrer noopener\">iopscience.iop.org/article/10.1088/1367-2630/10/3/033001</a>\n            Geprüft: 2026 08 22.</span>\n          ", "jm-key-free": "frei in Bewegung", "jm-key-stop": "im Stillstand", "pg-title": "Der Stau"}};
+window.PAGE_I18N = {"tr": {"pg-desc": "Önünde engel olmayan bir çevre yolu. Yoğunluğu ve tepki süresini ayarlayın, bir kez frene basın, yoktan doğan tıkanıklığın geriye yürüyüşünü izleyin.", "jm-001": "Tıkanıklık", "jm-002": "<span class=\"k-num\">01</span>Yol ve iz", "jm-003": "<span class=\"k-num\">02</span>Kural, açık açık yazılmış", "jm-004": "<span class=\"k-num\">03</span>Eşiği bulmak", "jm-005": "<span class=\"k-num\">04</span>Bu neden SIMEA'ya ait", "jm-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "jm-007": "<span class=\"k-num\">06</span>Kaynak", "jm-008": "Varsayımlar ve sınırlar", "jm-009": "Kavşağı, trafik ışığı, kazası ve darboğazı olmayan dairesel bir yolda bir fren pedalına bir anlığına dokunun: duran bir tıkanıklık belirir, trafiğin içinde geriye doğru yürür ve fren yapan sürücü turu tamamlayıp gittikten çok sonra da oradadır.", "jm-010": "Trafik tıkanıklığının çoğu açıklaması bir sebep avıdır: bir kaza, kötü bir şerit değiştirme, ileride daralan bir yol. Bazen böyle bir şey vardır, bazen yoktur; ve hiç sebebi olmayan tıkanıklıklar anlamaya değer olanlardır, çünkü nedensellik alışkanlığının göremediği onlardır.", "jm-011": "Yol bir halka ve üzerinde arabalardan başka bir şey yok; her biri tek bir kurala uyuyor: önündeki boşluğun taşıyabileceği hıza yönel ve hızını o hedefe tepkinin izin verdiği oranda değiştirin. Modelde ne saldırganlık var ne dikkat dağınıklığı.", "jm-012": "Sağdaki panel aynı yol, zaman aşağı doğru akarken; bir tıkanıklık koyu bir bant olarak görünüyor ve o bandın eğimi tıkanıklığın kendi hızı.", "jm-013": "Halka, yukarıdan", "jm-014": "Aynı yol, zaman aşağı akarken", "jm-015": "Bir sürücünün, önündeki boşluğun belirlediği bir hedef hızı ve gerçek hızını o hedefe doğru götürdüğü bir oranı var. Tepki süresi iki işi birden görüyor: hem tepki verdiğiniz boşluğun ne kadar bayat olduğu, hem de ona tepki vermenizin ne kadar sürdüğü.", "jm-016": "g boşluğu için hedef hız: V(g) = ( g − 6 metre ) / 1,2 saniye, saniyede 30 metrede sınırlı gerçek hız: dv/dt = ( V( τ saniye önceki hâliyle boşluk ) − v ) / τ <small data-i=\"jm-037\">τ, sizin ayarladığınız tepki süresi; altı metre bir araba artı biraz fazlası, bir virgül iki saniye ise bir sürücünün koruduğu takip mesafesi.</small>", "jm-017": "Yol boşken boşluk büyük, hedef hız sınırında ve hedefin boşluğa göre türevi sıfır. Zaten sınırda olan bir sürücü boşluğa hiç tepki vermiyor, yani hiçbir şey yayılamıyor ve hiçbir şey büyüyemiyor: serbest akış bu ve hangi tepki süresi olursa olsun kararlı.", "jm-018": "Araba ekleyin: belli bir boşluğun altında her sürücü kuralın eğimli kısmında, orada öndeki boşluktaki bir değişiklik hedef hızı değiştiriyor, yani artık bir bozulmanın içinden geçebileceği bir şey var. Her sürücü aldığını, tepki süresiyle büyüyen bir katsayıyla büyütüyor; o katsayı biri geçtiğinde küçük gelen bir bozulma daha büyük çıkıyor ve halkayı dolaşıp daha da büyük geri geliyor.", "jm-019": "Yoğunluğu düşük, tepki süresini yüksek ayarlayın ve bir frene dokunun: bozulma biraz geriye yayılır, incelir ve ölür. Yoğunluğu birer adım yükseltin, her seferinde frene dokunarak, ta ki ölmeyene kadar: çizgi oldukça keskin ve iki yanında aynı frene aynı dokunuş birbirinden tamamen farklı iki gelecek üretiyor.", "jm-020": "Şimdi yoğunluğu tıkanıklığın sürdüğü yerde tutun ve bunun yerine tepki süresini düşürün: dikkatli sürücüler, dikkatsizlerin büyüttüğü aynı bozulmayı emiyor; yol da üzerindeki araba sayısı da değişmeden.", "jm-021": "Arabalar bir tıkanıklığın içinden bütün süre boyunca ileri gider: biri arkasına varır, sürünerek geçer ve önünde hızlanarak uzaklaşır; tıkanıklığın kendisi ise ters yönde yürür. Tıkanıklık belirli arabalardan yapılmış değil ve içindeki her arabanın üyeliğinden uzun yaşıyor.", "jm-022": "Çünkü bildiğim en temiz örnek bu: hiçbir failin içinde hiçbir temsili olmayan kolektif bir nesne; hiçbir sürücü bir tıkanıklık olduğunu bilmiyor ve hiçbiri makul bir mesafe korumaktan başka bir şey yapmıyor. Tıkanıklık gerçek, kararlı, belirli bir hızla hareket ediyor ve ölçülebiliyor; üstelik onu oluşturan faillerin hiçbirinin erişemediği bir betimleme düzeyinde var oluyor.", "jm-023": "Programın buradaki ilgisi şu: bir sonuç tamamen sıradan yerel kuralların etkileşimiyle üretilebilir, dolayısıyla failler arasında bir sebep aramak yanlış yere bakmaktır. Kolektif nesne bir tıkanıklıkken bu bir merak konusu; bir panik, bir banka hücumu ya da bir nüfusun görüşüyken aynı hata pahalıya patlıyor.", "jm-024": "Hiç darboğazı olmayan dairesel bir yolda bir tıkanıklığın belirebileceği, bir simülasyondan öne sürülmüş bir iddia değil: gerçek arabalar ve gerçek sürücülerle yapıldı.", "jm-025": "<strong>Bu bir öğretim modeli, ölçüm değil:</strong> bu sayfadaki her sayı ya sizin ayarladığınız ya da modelin ondan ürettiği bir sayıdır, burada hiçbir şey gerçek trafiğe göre ayarlanmamıştır.", "jm-026": "Tamamen tarayıcınızda çalışır: burada yaptığınız hiçbir şey sayfadan çıkmaz, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Özdemir</a>.", "jm-027": "<b>Tek şerit, tek halka</b>Sollama, kavşak, giriş, çıkış ya da başka yol yok; halka araba sayısını sabit tutuyor, deneyi temiz kılan da bu, onu sürdüğünüz hiçbir yola benzemez kılan da.", "jm-028": "<b>Aynı sürücüler</b>Her sürücünün tepki süresi, takip mesafesi ve hedef hızı aynı; sürücüler arasındaki gerçek değişkenlik sayıları değiştirirdi ama etkiyi ortadan kaldırmazdı.", "jm-029": "<b>Kaba bir kural</b>Hedef hız, boşlukta bir doğru ve üzerinde bir sınır; gerçek araç takibi daha karmaşıktır ve literatürde birçok kural vardır. Burada gösterilen kararsızlık gecikmeli takibin genel bir özelliği, ama kesin eşik bu belirli doğrunun yan ürünü.", "jm-030": "<b>Elle eklenen bir kural</b>Uzun bir tepki süresinde takip kuralı tek başına bir arabanın öndekinin içinden geçmesine izin verir, çünkü tepki verdiği boşluk güncel değildir. Sert bir kısıt bunu durduruyor; modelde yukarıdaki formülün dışında kalan tek şey bu: hiçbir araba öndekine, kuralın hedef hızı zaten sıfıra koyduğu altı metreden fazla yaklaşamaz.", "jm-031": "<b>Gürültü yok</b>Kusursuzca eşit aralıklı bir araba dizisi sonsuza kadar kusursuzca eşit kalır, frene elle dokunulması gerekmesinin sebebi bu. Gerçek trafik hiçbir zaman eşit değildir, o yüzden gerçek tıkanıklıkların onları başlatacak kimseye ihtiyacı yoktur.", "jm-032": "<b>Tıkanıklık hızı bir tahmin</b>Bildirilen rakam, koşunun son bölümünde halkadaki en yavaş noktanın hareketine uydurulmuş; bir yoldaki herhangi bir şeyin ölçümü değil, bu modelin bir okuması.", "jm-033": "<b>Ayarlanmış değil</b>Altı metre, bir virgül iki saniye ve saniyede otuz metre, mekanizma görünsün diye seçilmiş makul yuvarlak sayılar; ölçülmüş değerler değiller ve bu sayfadaki hiçbir sayı gerçek trafiği tarif etmiyor.", "jm-035": "Şekil bir <span class=\"ex-model-sub\">çalıştırın, sonra tek bir frene dokunun</span>", "jm-036": "Bir sürücünün frenine dokunun", "jm-skip": "Simülasyona geçin", "jm-ring-cw": "arabalar saat yönünde gidiyor", "jm-ring-avg": "{v} km/sa ortalama", "jm-st-top": "halkada bir tur", "jm-st-old": "daha eski", "jm-st-now": "şimdi", "jm-st-jam": "koyu bantlar geriye eğiliyor: tıkanıklığın hareketi bu", "jm-st-free": "düz bir alan: serbest akış", "jm-st-none": "henüz hiçbir şey çalışmadı", "jm-trace-empty": "Model henüz çalıştırılmadığı için iz boş.", "jm-trace": "Halkadaki yerel hızın izi; konum soldan sağa, zaman aşağı doğru, son {s} saniye boyunca. {tail}", "jm-trace-jam": "Üzerinde koyu bantlar geriye doğru eğiliyor, ki bu, arabaların yönüne karşı saatte {v} kilometre giden bir tıkanıklık.", "jm-trace-free": "Alan düz, ki bu serbest akış: hiçbir şey yayılmıyor.", "jm-sum": "Bir kilometre uzunluğunda tek şeritli bir halka, üzerinde {m} araba, yani kilometre başına {d} araba, sürücü tepki süresi {tau} saniye. {t} saniye sonra ortalama hız saatte {mean} kilometre, en yavaş araba {min}, en hızlısı {max} yapıyor. {tail}", "jm-sum-jam": "Trafik durun kalk hâlinde.", "jm-sum-free": "Trafik serbest akışta.", "jm-s0": "Arabalar eşit aralıklı ve hepsi {v} yapıyor; bu modelde hiçbir şey rastgele değil, yani bu sonsuza kadar tam olarak böyle kalacak. Çalıştırın'a basın, sonra bir frene dokunun.", "jm-s1": "Bir sürücü {ago} önce bir anlığına gaz kesti. O zamandan beri halka boyunca hızların yayılımı {sd} seviyesine ulaştı{tail}", "jm-s1-jam": ", en yavaş araba saatte {min} kilometreye düştü, bozulma ölmedi ve tıkanıklığa dönüştü.", "jm-s1-free": ", ki bu küçük ve küçülüyor, yani bozulma emiliyor ve yol serbest akışta kalıyor. Yoğunluğu ya da tepki süresini yükseltip tekrar dokunun.", "jm-s2-jam": "Tıkanıklığın kendisi {v} {dir} gidiyor, içindeki her araba ileri giderken; yolu tıkayan bir şey yok, kimse yanlış bir şey yapmadı ve fren yapan sürücü çoktan gitti.", "jm-dir-back": "geriye", "jm-dir-fwd": "ileriye", "jm-s2-short": "Trafik durun kalk hâlinde ama iz, tıkanıklığa bir hız uydurmaya henüz yetmiyor; bırakın çalışsın.", "jm-s2-free": "Boşluklar büyükken serbest akış her tepki süresinde kararlıdır, çünkü zaten üst hızında olan bir sürücü önündeki boşluğa hiç tepki vermez, yani bir bozulmanın içinden geçebileceği bir şey yoktur.", "jm-sl-m": "Halkadaki araba", "jm-sl-m-h": "Halka bir kilometre uzunluğunda, yani bu aynı zamanda yoğunluk.", "jm-fmt-m": "{v} (km başına {v})", "jm-sl-tau": "Tepki süresi, saniye", "jm-sl-tau-h": "Bir sürücünün tepki verdiği boşluğun ne kadar bayat olduğu, ve tepkinin ne kadar sürdüğü.", "jm-fmt-s": "{v} sn", "jm-rd-mean": "Ortalama hız", "jm-rd-min": "En yavaş araba", "jm-rd-sd": "Hızların yayılımı", "jm-rd-flow": "Bir noktadan geçen akış", "jm-rd-wave": "Tıkanıklık hızı", "jm-rd-t": "Geçen süre", "jm-kmh": "km/sa", "jm-sub-stopgo": "durun kalk", "jm-sub-free": "serbest akış", "jm-sub-flow": "saatte araba", "jm-nojam": "tıkanıklık yok", "jm-sub-wave": "km/sa, negatif geriye demek", "jm-sub-nowave": "yayılan bir şey yok", "jm-sub-nottapped": "frene dokunulmadı", "jm-sub-tapped": "frene dokunuldu", "jm-secs": "{v} sn", "jm-kmh-v": "{v} km/sa", "jm-ago": "{v} saniye", "jm-share": "Bağlantı kopyalandı; koşunun bu anından açılır.", "jm-034": "Araçlar bir pistte, eşit aralıklarla ve tekdüze hareketle, hiçbir darboğaz olmadan sürüldü ve kritik bir yoğunluğun altında tekdüze akış korundu. Üstünde akış kararsızlaştı, minik bir dalgalanma büyüdü, ve bir tıkanıklık kümesi belirip bir otoyoldaki tıkanıklık kümesiyle aynı hızda, yalnız bir dalga gibi geriye doğru yayıldı. Yazarlar, bir darboğazın yalnızca bir tetikleyici olduğu ve trafik tıkanıklığının asli kaynağı olmadığı sonucuna varıyor, ve çalışmayı tıkanıklığın kolektif bir olgu olduğuna dair ilk deneysel kanıt olarak sunuyor. <span class=\"ex-cite-w\">Yuki Sugiyama, Minoru Fukui, Macoto Kikuchi, Katsuya Hasebe, Akihiro\n            Nakayama, Katsuhiro Nishinari, Shin-ichi Tadaki and Satoshi Yukawa,\n            <span class=\"ex-cite-t\">Traffic jams without bottlenecks: experimental evidence for the\n            physical mechanism of the formation of a jam</span>, New Journal of Physics 10, 2008, article\n            033001.\n            <a href=\"https://iopscience.iop.org/article/10.1088/1367-2630/10/3/033001\" target=\"_blank\" rel=\"noreferrer noopener\">iopscience.iop.org/article/10.1088/1367-2630/10/3/033001</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "jm-key-free": "serbestçe hareket ediyor", "jm-key-stop": "durmuş hâlde", "pg-title": "Tıkanıklık, sebepsiz bir trafik sıkışıklığı. Kerem Özdemir"}, "de": {"pg-desc": "Eine Ringstraße ohne Hindernis. Stellen Sie Dichte und Reaktionszeit ein, bremsen Sie einmal und sehen Sie einen Stau aus dem Nichts rückwärts wandern.", "jm-001": "Der Stau", "jm-002": "<span class=\"k-num\">01</span>Die Straße und die Spur", "jm-003": "<span class=\"k-num\">02</span>Die Regel, ausgeschrieben", "jm-004": "<span class=\"k-num\">03</span>Die Kante finden", "jm-005": "<span class=\"k-num\">04</span>Warum das zu SIMEA gehört", "jm-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "jm-007": "<span class=\"k-num\">06</span>Quelle", "jm-008": "Annahmen und Grenzen", "jm-009": "Tippen Sie auf einer Ringstraße ohne Kreuzung, ohne Ampel, ohne Unfall und ohne Engpass einen Moment lang auf ein Bremspedal, und ein stehender Stau erscheint, wandert rückwärts durch den Verkehr und ist noch da, lange nachdem der bremsende Fahrer wieder herumgefahren ist.", "jm-010": "Die meisten Erklärungen eines Staus sind Suchen nach einer Ursache: ein Unfall, ein schlechtes Einfädeln, eine Verengung weiter vorn. Mal gibt es so etwas und mal nicht, und die Staus ganz ohne Ursache sind die, die zu verstehen sich lohnt, denn sie sind die, welche die Ursachengewohnheit nicht sehen kann.", "jm-011": "Die Straße ist eine Schleife, auf der nichts ist außer Autos, und jedes befolgt eine Regel: es zielt auf die Geschwindigkeit, die die Lücke voraus tragen kann, und ändert seine Geschwindigkeit auf dieses Ziel hin so schnell, wie seine Reaktion es erlaubt. Aggression und Ablenkung kommen im Modell nirgends vor.", "jm-012": "Die rechte Tafel ist dieselbe Straße mit nach unten laufender Zeit, ein Stau zeigt sich also als dunkles Band, und die Neigung dieses Bandes ist die Geschwindigkeit des Staus selbst.", "jm-013": "Die Schleife von oben", "jm-014": "Dieselbe Straße, mit der Zeit nach unten", "jm-015": "Ein Fahrer hat eine Zielgeschwindigkeit, die die Lücke voraus setzt, und eine Rate, mit der er seine tatsächliche Geschwindigkeit auf dieses Ziel hin bewegt. Die Reaktionszeit erledigt beides: sie ist, wie alt die Lücke ist, auf die Sie reagieren, und sie ist, wie lange Sie zum Reagieren brauchen.", "jm-016": "Zielgeschwindigkeit für eine Lücke g: V(g) = ( g − 6 Meter ) / 1,2 Sekunden, gedeckelt bei 30 Metern pro Sekunde tatsächliche Geschwindigkeit: dv/dt = ( V( Lücke, wie sie vor τ Sekunden war ) − v ) / τ <small data-i=\"jm-037\">τ ist die Reaktionszeit, die Sie einstellen, sechs Meter sind ein Auto und ein wenig mehr, und eins Komma zwei Sekunden ist der Abstand, den ein Fahrer hält.</small>", "jm-017": "Wenn die Straße leer ist, ist die Lücke groß, die Zielgeschwindigkeit liegt am Deckel, und die Ableitung des Ziels nach der Lücke ist null. Ein Fahrer, der schon am Deckel ist, reagiert überhaupt nicht auf die Lücke, es kann sich also nichts fortpflanzen und nichts wachsen: das ist freier Fluss, stabil bei jeder beliebigen Reaktionszeit.", "jm-018": "Fügen Sie Autos hinzu: unterhalb einer bestimmten Lücke ist jeder Fahrer auf dem schrägen Teil der Regel, wo eine Änderung der Lücke voraus die Zielgeschwindigkeit ändert, eine Störung hat also nun etwas, durch das sie reisen kann. Jeder Fahrer verstärkt das Empfangene um einen Faktor, der mit seiner Reaktionszeit wächst, und überschreitet dieser Faktor eins, verlässt eine klein ankommende Störung ihn größer und kommt um die Schleife herum noch größer zurück.", "jm-019": "Stellen Sie die Dichte niedrig und die Reaktionszeit hoch und tippen Sie eine Bremse an: die Störung breitet sich ein wenig rückwärts aus, dünnt aus und stirbt. Erhöhen Sie die Dichte Schritt für Schritt und tippen Sie jedes Mal die Bremse an, bis sie es nicht mehr tut: die Linie ist ziemlich scharf, und beiderseits davon erzeugt dasselbe Antippen derselben Bremse zwei völlig verschiedene Zukünfte.", "jm-020": "Halten Sie nun die Dichte dort, wo der Stau bestehen bleibt, und senken Sie stattdessen die Reaktionszeit: aufmerksame Fahrer absorbieren dieselbe Störung, die unaufmerksame verstärken, ohne dass sich an der Straße oder an der Zahl der Autos etwas geändert hätte.", "jm-021": "Autos fahren die ganze Zeit vorwärts durch einen Stau: eines erreicht das Ende, kriecht hindurch und beschleunigt vorn wieder weg, während der Stau selbst in die Gegenrichtung wandert. Der Stau besteht aus keinen bestimmten Autos, und er überlebt die Zugehörigkeit jedes einzelnen Autos.", "jm-022": "Weil es der sauberste mir bekannte Fall eines kollektiven Objekts ist, das in keinem Akteur irgendeine Repräsentation hat: kein Fahrer weiß, dass es einen Stau gibt, und keiner tut etwas anderes, als einen vernünftigen Abstand zu halten. Der Stau ist real, stabil, bewegt sich mit einer bestimmten Geschwindigkeit und lässt sich messen, und er existiert auf einer Beschreibungsebene, die keiner der Akteure erreicht, die ihn bilden.", "jm-023": "Das Interesse des Programms liegt hier darin, dass ein Ergebnis vollständig durch das Zusammenspiel gewöhnlicher lokaler Regeln entstehen kann, sodass die Suche nach einer Ursache unter den Akteuren an der falschen Stelle sucht. Wenn das kollektive Objekt ein Stau ist, ist das eine Kuriosität; wenn es eine Panik ist, ein Ansturm auf eine Bank oder die Meinung einer Bevölkerung, wird derselbe Fehler teuer.", "jm-024": "Dass ein Stau auf einer Ringstraße ganz ohne Engpass entstehen kann, wurde mit echten Autos und echten Fahrern gemacht und nicht aus einer Simulation behauptet.", "jm-025": "<strong>Das ist ein Lehrmodell, keine Messung:</strong> jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die das Modell daraus erzeugt hat, und nichts hier ist auf realen Verkehr kalibriert.", "jm-026": "Läuft vollständig in Ihrem Browser: nichts, was Sie hier tun, verlässt die Seite, und nach dem Laden der Schriften gibt es keine Netzwerkaufrufe. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>.", "jm-027": "<b>Eine Spur, eine Schleife</b>Kein Überholen, keine Kreuzungen, Auffahrten, Ausfahrten oder anderen Straßen; die Schleife hält die Zahl der Autos fest, was das Experiment sauber macht und es zugleich anders macht als jede Straße, auf der Sie je gefahren sind.", "jm-028": "<b>Identische Fahrer</b>Jeder Fahrer hat dieselbe Reaktionszeit, denselben Abstand und dieselbe Zielgeschwindigkeit, während reale Unterschiede zwischen Fahrern die Zahlen ändern würden, ohne den Effekt zu beseitigen.", "jm-029": "<b>Eine grobe Regel</b>Die Zielgeschwindigkeit ist eine Gerade in der Lücke mit einem Deckel darauf, während reales Folgeverhalten komplizierter ist und die Literatur viele Regeln kennt. Die hier gezeigte Instabilität ist eine allgemeine Eigenschaft verzögerten Folgens, die genaue Schwelle aber ein Artefakt dieser bestimmten Geraden.", "jm-030": "<b>Eine von Hand ergänzte Regel</b>Bei langer Reaktionszeit ließe die Folgeregel allein ein Auto durch das vorausfahrende hindurchfahren, weil die Lücke, auf die es reagiert, veraltet ist. Eine harte Beschränkung verhindert das, das Einzige im Modell außerhalb der Formel oben: kein Auto darf dem vorausfahrenden näher kommen als jene sechs Meter, bei denen die Regel die Zielgeschwindigkeit ohnehin auf null setzt.", "jm-031": "<b>Kein Rauschen</b>Eine vollkommen gleichmäßige Autoschlange bleibt für immer vollkommen gleichmäßig, weshalb die Bremse von Hand angetippt werden muss. Realer Verkehr ist nie gleichmäßig, reale Staus brauchen also niemanden, der sie startet.", "jm-032": "<b>Die Staugeschwindigkeit ist eine Schätzung</b>Die berichtete Zahl ist an die Bewegung des langsamsten Punktes auf der Schleife über das letzte Stück des Laufs angepasst, eine Ablesung dieses Modells und keine Messung von irgendetwas auf einer Straße.", "jm-033": "<b>Nicht kalibriert</b>Die sechs Meter, die eins Komma zwei Sekunden und die dreißig Meter pro Sekunde sind plausible runde Zahlen, gewählt, damit der Mechanismus sichtbar wird, keine gemessenen Werte, und keine Zahl auf dieser Seite beschreibt realen Verkehr.", "jm-035": "Abbildung eins <span class=\"ex-model-sub\">laufen lassen, dann eine Bremse antippen</span>", "jm-036": "Die Bremse eines Fahrers antippen", "jm-skip": "Zur Simulation springen", "jm-ring-cw": "Autos fahren im Uhrzeigersinn", "jm-ring-avg": "{v} km/h im Mittel", "jm-st-top": "einmal um die Schleife", "jm-st-old": "älter", "jm-st-now": "jetzt", "jm-st-jam": "dunkle Bänder neigen sich rückwärts: das ist der wandernde Stau", "jm-st-free": "ein gleichmäßiges Feld: freier Fluss", "jm-st-none": "es ist noch nichts gelaufen", "jm-trace-empty": "Die Spur ist leer, weil das Modell noch nicht gelaufen ist.", "jm-trace": "Eine Spur der lokalen Geschwindigkeit auf der Schleife, Position von links nach rechts und Zeit nach unten, über die letzten {s} Sekunden. {tail}", "jm-trace-jam": "Dunkle Bänder neigen sich rückwärts darüber, und das ist ein Stau, der mit {v} Kilometern pro Stunde gegen die Fahrtrichtung der Autos wandert.", "jm-trace-free": "Das Feld ist gleichmäßig, und das ist freier Fluss: Nichts pflanzt sich fort.", "jm-sum": "Eine einspurige Schleife von einem Kilometer Länge mit {m} Autos, also {d} Autos je Kilometer, bei einer Reaktionszeit der Fahrer von {tau} Sekunden. Nach {t} Sekunden liegt die Durchschnittsgeschwindigkeit bei {mean} Kilometern pro Stunde, das langsamste Auto fährt {min} und das schnellste {max}. {tail}", "jm-sum-jam": "Der Verkehr ist im Stop-and-go.", "jm-sum-free": "Der Verkehr ist im freien Fluss.", "jm-s0": "Die Autos stehen gleichmäßig verteilt und fahren alle {v}, und nichts in diesem Modell ist zufällig, das bleibt also für immer genau so. Drücken Sie Starten und tippen Sie dann eine Bremse an.", "jm-s1": "Ein Fahrer ging vor {ago} für einen Moment vom Gas. Seither hat die Streuung der Geschwindigkeiten um die Schleife {sd} erreicht{tail}", "jm-s1-jam": ", das langsamste Auto ist auf {min} Kilometer pro Stunde herunter, die Störung ist nicht ausgestorben, und sie ist zu einem Stau geworden.", "jm-s1-free": ", was klein ist und kleiner wird, die Störung wird also absorbiert und die Straße bleibt im freien Fluss. Erhöhen Sie die Dichte oder die Reaktionszeit und tippen Sie erneut.", "jm-s2-jam": "Der Stau selbst bewegt sich mit {v} {dir}, während jedes Auto darin vorwärts fährt, wobei nichts die Straße blockiert, niemand etwas falsch gemacht hat und der bremsende Fahrer längst weg ist.", "jm-dir-back": "rückwärts", "jm-dir-fwd": "vorwärts", "jm-s2-short": "Der Verkehr ist im Stop-and-go, aber die Spur ist noch nicht lang genug, um dem Stau eine Geschwindigkeit anzupassen; lassen Sie ihn laufen.", "jm-s2-free": "Freier Fluss ist bei jeder Reaktionszeit stabil, solange die Lücken groß sind, denn ein Fahrer, der schon auf Höchstgeschwindigkeit ist, reagiert überhaupt nicht auf die Lücke voraus, es gibt also nichts, durch das eine Störung reisen könnte.", "jm-sl-m": "Autos auf der Schleife", "jm-sl-m-h": "Die Schleife ist einen Kilometer lang, das ist also zugleich die Dichte.", "jm-fmt-m": "{v} ({v} je km)", "jm-sl-tau": "Reaktionszeit, Sekunden", "jm-sl-tau-h": "Wie alt die Lücke ist, auf die ein Fahrer reagiert, und wie lange die Reaktion dauert.", "jm-fmt-s": "{v} s", "jm-rd-mean": "Durchschnittsgeschwindigkeit", "jm-rd-min": "Langsamstes Auto", "jm-rd-sd": "Streuung der Geschwindigkeiten", "jm-rd-flow": "Fluss an einem Punkt", "jm-rd-wave": "Staugeschwindigkeit", "jm-rd-t": "Vergangen", "jm-kmh": "km/h", "jm-sub-stopgo": "Stop-and-go", "jm-sub-free": "freier Fluss", "jm-sub-flow": "Autos pro Stunde", "jm-nojam": "kein Stau", "jm-sub-wave": "km/h, negativ heißt rückwärts", "jm-sub-nowave": "nichts pflanzt sich fort", "jm-sub-nottapped": "Bremse nicht angetippt", "jm-sub-tapped": "Bremse angetippt", "jm-secs": "{v} s", "jm-kmh-v": "{v} km/h", "jm-ago": "{v} Sekunden", "jm-share": "Link kopiert; er öffnet an diesem Moment des Laufs.", "jm-034": "Fahrzeuge wurden auf einem Rundkurs gefahren, mit gleichmäßigem Abstand und gleichförmiger Bewegung, ohne jeden Engpass, und unterhalb einer kritischen Dichte hielt der gleichförmige Fluss. Oberhalb wurde der Fluss instabil, eine winzige Schwankung wuchs, und ein Stauklumpen entstand und pflanzte sich rückwärts fort wie eine Einzelwelle, mit derselben Geschwindigkeit wie ein Stauklumpen auf einer Autobahn. Die Autoren schließen daraus, dass ein Engpass nur ein Auslöser und nicht der wesentliche Ursprung eines Staus ist, und legen die Arbeit als den ersten experimentellen Beleg dafür vor, dass ein Stau ein kollektives Phänomen ist. <span class=\"ex-cite-w\">Yuki Sugiyama, Minoru Fukui, Macoto Kikuchi, Katsuya Hasebe, Akihiro\n            Nakayama, Katsuhiro Nishinari, Shin-ichi Tadaki and Satoshi Yukawa,\n            <span class=\"ex-cite-t\">Traffic jams without bottlenecks: experimental evidence for the\n            physical mechanism of the formation of a jam</span>, New Journal of Physics 10, 2008, article\n            033001.\n            <a href=\"https://iopscience.iop.org/article/10.1088/1367-2630/10/3/033001\" target=\"_blank\" rel=\"noreferrer noopener\">iopscience.iop.org/article/10.1088/1367-2630/10/3/033001</a>\n            Geprüft: 2026 08 22.</span>\n          ", "jm-key-free": "frei in Bewegung", "jm-key-stop": "im Stillstand", "pg-title": "Der Stau, ein Stau aus dem Nichts. Kerem Özdemir"}};
 function T(k, en, v) {
   var out = window.__t ? window.__t(k, en) : en;
   if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
@@ -2800,8 +2973,7 @@ function sweepI18n() {
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-k": "Vaka çalışmaları", "crown": "<i>Beş simülasyondan dördüncüsü<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte",
-"nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-k": "Fallstudien", "crown": "<i>Simulation vier von fünf<\/i>"}};
+window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler", "crown": "<i>Beş simülasyondan dördüncüsü<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen", "crown": "<i>Simulation vier von fünf<\/i>"}};
 
 (function(){
   "use strict";

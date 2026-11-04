@@ -8,14 +8,16 @@
      nothing you type leaves the page into something the browser enforces. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 
-<title>The recommender</title>
-<meta name="description" content="A population of agents, a feed that decides what each of them sees, and the same population run again with a neutral feed alongside it. The three SIMEA constructs, the influence gradient, the autonomy threshold and the entropy of the choice environment, are defined on screen and measured live.">
+<title>The recommender, a feed's influence measured. Kerem Özdemir</title>
+<meta name="description" content="A feed decides what each agent sees, and the same population runs beside it with a neutral feed. Influence, autonomy and choice entropy measured live.">
 <meta name="author" content="Kerem Özdemir">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="../../fonts/fonts.css">
+<script>(function(){var d=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")})})()</script>
 <link rel="canonical" href="https://keremozdemir.de/run/simea/recommender/">
-<meta property="og:title" content="The recommender">
-<meta property="og:description" content="A population of agents, a feed that decides what each of them sees, and the same population run again with a neutral feed alongside it. The three SIMEA constructs, the influence gradient, the autonomy threshold and the entropy of the choice environment, are defined on screen and measured live.">
+<meta property="og:url" content="https://keremozdemir.de/run/simea/recommender/">
+<meta property="og:title" content="The recommender, a feed's influence measured. Kerem Özdemir">
+<meta property="og:description" content="A feed decides what each agent sees, and the same population runs beside it with a neutral feed. Influence, autonomy and choice entropy measured live.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://keremozdemir.de/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -69,10 +71,59 @@
   --edge:    clamp(1.1rem, 5vw, 3.25rem);
 }
 
-/* The instruments used to flip to a dark palette with the system.  They
-   sit inside keremozdemir.de now, whose paper is light and whose top bar
-   and footer are painted from the site's own tokens, so a page that went
-   dark underneath a light bar would only look broken.  One palette. */
+/* The dark palette. It follows the system, and data-theme on the root
+   overrides the system both ways: the head script sets it from ?theme= in
+   the address (a case study framing the instrument passes the site's own
+   theme) or from the theme the reader chose on the site. The values are the
+   site's dark tokens (src/app/globals.css), so a framed instrument and the
+   page around it share one ground. Measured 2026-11-04: ink 15.6:1, dim
+   7.1:1 on the paper and 6.4:1 on a field, accent 5.6:1 on a field, flag
+   6.8:1 on its tint, a control's edge 3.8:1 against the field. The bar and
+   the footer flip with the page (pagegen.py), so nothing is left light
+   above or below it. The kit's selectors are written twice because a media
+   query and an attribute cannot share one prelude. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #111214;
+    --paper-sunk: #161719;
+    --panel:      #18191c;
+    --field:      #1c1d21;
+    --ink:        #e9eaec;
+    --ink-soft:   #c3c7cd;
+    --dim:        #9aa0a8;
+    --faint:      #9aa0a8;
+    --rule:       #292b30;
+    --rule-firm:  #3a3d43;
+    --rule-edge:  #737882;
+    --accent:     #f5694b;
+    --accent-lit: #2a2d33;
+    --flag:       #f08a6a;
+    --flag-lit:   #2a1a15;
+    --good:       #8cc084;
+    --good-lit:   #17221a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:      #111214;
+  --paper-sunk: #161719;
+  --panel:      #18191c;
+  --field:      #1c1d21;
+  --ink:        #e9eaec;
+  --ink-soft:   #c3c7cd;
+  --dim:        #9aa0a8;
+  --faint:      #9aa0a8;
+  --rule:       #292b30;
+  --rule-firm:  #3a3d43;
+  --rule-edge:  #737882;
+  --accent:     #f5694b;
+  --accent-lit: #2a2d33;
+  --flag:       #f08a6a;
+  --flag-lit:   #2a1a15;
+  --good:       #8cc084;
+  --good-lit:   #17221a;
+  color-scheme: dark;
+}
 
 /* ---------- 2. reset and page ---------- */
 
@@ -119,7 +170,7 @@ a:hover { border-bottom-color: var(--accent); }
 .k-skip {
   position: absolute; left: -9999px; top: 0; z-index: 50;
   background: var(--ink); color: var(--paper); border: 0;
-  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.78rem;
+  padding: 0.7rem 1rem; font-family: var(--mono); font-size: 0.875rem;
 }
 .k-skip:focus { left: 0.5rem; top: 0.5rem; }
 
@@ -151,8 +202,8 @@ a:hover { border-bottom-color: var(--accent); }
   margin-bottom: 1.1rem;
 }
 .k-sect > h2 .k-num {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
-  color: var(--faint); vertical-align: 0.5em; margin-right: 0.65rem;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
+  color: var(--faint); vertical-align: 0.4em; margin-right: 0.65rem;
 }
 .k-note { font-size: 0.95rem; color: var(--dim); max-width: 64ch; }
 
@@ -166,13 +217,17 @@ a:hover { border-bottom-color: var(--accent); }
 .k-row.k-row-tight { gap: 0.55rem 0.9rem; }
 
 .k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+/* A label is read before the field is touched, so it is set at the size of
+   the text around it: 14px in the sans, sentence case as written. It used to
+   be 11px mono capitals, which was the smallest type on the page on the line
+   a reader needs first. */
 .k-field > label, .k-lab {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.35;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500;
+  letter-spacing: 0; color: var(--dim); line-height: 1.35;
 }
 .k-field .k-hint {
-  font-family: var(--mono); font-size: 0.66rem; color: var(--faint);
-  line-height: 1.45; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="text"], input[type="number"], input[type="search"], select, textarea {
@@ -209,8 +264,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   display: inline-flex; align-items: center; gap: 0.5rem;
   background: transparent; color: var(--ink);
   border: 1px solid var(--rule-firm); border-radius: 0;
-  font-family: var(--mono); font-weight: 500; font-size: 0.71rem;
-  letter-spacing: 0.13em; text-transform: uppercase;
+  font-family: var(--mono); font-weight: 500; font-size: 0.78rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.62rem 0.95rem; cursor: pointer;
   transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
 }
@@ -219,8 +274,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-btn[disabled]:hover { background: transparent; color: var(--ink); border-color: var(--rule-firm); }
 .k-btn-key { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .k-btn-key { color: #f7f5ee; }
+/* on the dark ground the accent is light, so the label on it goes dark */
+:root[data-theme="dark"] .k-btn-key { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .k-btn-key { color: var(--paper); }
+}
 .k-btn-key:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.68rem; padding: 0.45rem 0.7rem; }
+.k-btn-quiet { border-color: var(--rule); color: var(--dim); font-size: 0.75rem; padding: 0.45rem 0.7rem; }
 
 .k-btnbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
 
@@ -233,8 +293,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-panel + .k-panel { margin-top: var(--gap); }
 .k-panel > h3, .k-panel-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.75rem;
 }
 .k-panel-sunk { background: var(--paper-sunk); }
@@ -251,15 +311,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
 
 .k-kv { display: grid; gap: 0.3rem 1rem; grid-template-columns: minmax(0, 1fr) auto; }
-.k-kv dt { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); letter-spacing: 0.02em; min-width: 0; }
+.k-kv dt { font-family: var(--serif); font-size: 0.875rem; color: var(--dim); min-width: 0; }
 .k-kv dd {
-  margin: 0; font-family: var(--mono); font-size: 0.8rem;
+  margin: 0; font-family: var(--mono); font-size: 0.875rem;
   font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
 }
 .k-kv .k-tot { border-top: 1px solid var(--rule-firm); padding-top: 0.4rem; margin-top: 0.25rem; font-weight: 500; }
 
 /* arithmetic trace: every step printed */
-.k-steps { margin: 0; font-family: var(--mono); font-size: 0.76rem; line-height: 1.75; }
+.k-steps { margin: 0; font-family: var(--mono); font-size: 0.875rem; line-height: 1.7; }
 .k-steps li {
   display: grid; grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.2rem 1rem; padding: 0.3rem 0;
@@ -285,18 +345,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 /* ---------- 6. source line ---------- */
 
 .k-source {
-  display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: baseline;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; align-items: baseline;
   margin-top: 0.7rem; padding-top: 0.55rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.67rem; line-height: 1.6;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
 }
 .k-source::before {
-  content: "source"; letter-spacing: 0.16em; text-transform: uppercase;
+  content: "source"; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); flex: none;
 }
 .k-source.k-source-bare::before { content: none; }
-.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
+.k-source a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all;
+  display: inline-block; padding-block: 0.15rem; }
+@media (pointer: coarse) {
+  .k-source a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; }
+}
 .k-source a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .k-source .k-checked { color: var(--faint); white-space: nowrap; }
 
@@ -316,8 +381,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-ok > h3, .k-ok .k-panel-h { color: var(--good); }
 
 .k-tag {
-  display: inline-block; font-family: var(--mono); font-size: 0.62rem;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  display: inline-block; font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.18rem 0.42rem; border: 1px solid currentColor; line-height: 1.3;
   white-space: nowrap;
 }
@@ -333,22 +398,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   font-size: 0.92rem;
 }
 .k-ask li > b {
-  font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
-  padding-top: 0.22rem;
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim);
+  padding-top: 0.15rem;
 }
 
 /* ---------- 8. tables ---------- */
 
 .k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.86rem; }
+.k-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.875rem; }
 .k-table th, .k-table td {
   text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
   border-bottom: 1px solid var(--rule); vertical-align: top;
 }
 .k-table th {
-  font-family: var(--mono); font-weight: 500; font-size: 0.64rem;
-  letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim);
+  font-family: var(--serif); font-weight: 500; font-size: 0.875rem;
+  letter-spacing: 0; color: var(--dim);
   border-bottom-color: var(--rule-firm); white-space: nowrap;
 }
 .k-table td.k-n, .k-table th.k-n {
@@ -356,7 +422,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   text-align: right; padding-right: 0; white-space: nowrap;
 }
 .k-table tbody tr:last-child td { border-bottom: 0; }
-.k-table .k-src-cell { font-family: var(--mono); font-size: 0.68rem; line-height: 1.6; color: var(--dim); }
+.k-table .k-src-cell { font-family: var(--serif); font-size: 0.875rem; line-height: 1.55; color: var(--dim); }
 .k-table .k-src-cell a { word-break: break-all; }
 
 /* ---------- 9. timeline ---------- */
@@ -369,13 +435,13 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-time li:first-child { border-top: 0; padding-top: 0; }
 .k-time .k-when {
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.03em;
   color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 0.15rem;
 }
 .k-time .k-what { font-size: 0.96rem; color: var(--ink); }
 .k-time .k-what small {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  color: var(--faint); margin-top: 0.25rem; line-height: 1.6;
+  display: block; font-family: var(--serif); font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.25rem; line-height: 1.55;
 }
 .k-time li.k-past .k-when { color: var(--faint); }
 .k-time li.k-past .k-what { color: var(--dim); }
@@ -394,8 +460,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-endnote .k-wrap { display: grid; gap: 1.1rem; }
 .k-endnote p { max-width: 72ch; margin-bottom: 0.6rem; }
 .k-endnote .k-fine {
-  font-family: var(--mono); font-size: 0.68rem; line-height: 1.8;
-  letter-spacing: 0.02em; color: var(--faint);
+  font-size: 0.875rem; line-height: 1.6; color: var(--faint);
 }
 .k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
 .k-endnote a:hover { color: var(--accent); }
@@ -405,7 +470,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .k-toast {
   position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
   background: var(--ink); color: var(--paper);
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   padding: 0.6rem 1rem; z-index: 60; max-width: calc(100vw - 2rem);
   opacity: 0; pointer-events: none;
   transition: opacity 0.18s ease;
@@ -477,7 +542,7 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   border-bottom: 1px solid var(--rule-firm);
 }
 .ex-body > h2 .k-num {
-  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   color: var(--faint); vertical-align: 0.55em; margin-right: 0.6rem;
 }
 .ex-body > h3 {
@@ -512,15 +577,15 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 
 /* a formula set on its own line, in words rather than symbols */
 .ex-formula {
-  font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.7;
   color: var(--ink); background: var(--panel);
   border-left: 2px solid var(--accent);
   padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
   max-width: 40rem; overflow-wrap: break-word;
 }
 .ex-formula small {
-  display: block; font-size: 0.66rem; color: var(--faint);
-  margin-top: 0.35rem; letter-spacing: 0.02em;
+  display: block; font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  margin-top: 0.35rem; line-height: 1.55;
 }
 
 /* ---------- the model figure, wider than the prose ---------- */
@@ -534,8 +599,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-model > figcaption,
 .ex-model-h {
-  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.85rem;
   display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; align-items: baseline;
 }
@@ -566,18 +631,18 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .ex-ctrl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .ex-ctrl > label, .ex-ctrl > .k-lab, .ex-ctrl > legend {
-  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--dim); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; font-weight: 500; letter-spacing: 0;
+  color: var(--dim); line-height: 1.4;
   display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline;
 }
 .ex-ctrl .ex-val {
-  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0;
+  font-family: var(--mono); font-size: 0.875rem; letter-spacing: 0;
   text-transform: none; color: var(--ink); font-variant-numeric: tabular-nums;
   font-weight: 500;
 }
 .ex-ctrl .k-hint {
-  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
-  line-height: 1.5; letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
+  line-height: 1.45;
 }
 
 input[type="range"] {
@@ -608,7 +673,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-seg > legend { padding: 0; margin-bottom: 0.3rem; }
 .ex-seg-row { display: flex; flex-wrap: wrap; gap: 0; }
 .ex-seg-row > label {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em;
   padding: 0.5rem 0.7rem; cursor: pointer; color: var(--dim);
   border: 1px solid var(--rule-firm); margin-left: -1px;
   background: var(--field); line-height: 1.3; white-space: nowrap;
@@ -628,7 +693,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 
 .ex-check {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--serif); font-size: 0.875rem;
   color: var(--dim); cursor: pointer;
 }
 .ex-check input { accent-color: var(--accent); width: 1rem; height: 1rem; }
@@ -643,8 +708,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-read > div { min-width: 0; }
 .ex-read dt, .ex-read .ex-read-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--faint); line-height: 1.4;
+  font-family: var(--serif); font-size: 0.875rem; letter-spacing: 0;
+  color: var(--faint); line-height: 1.35;
   margin: 0 0 0.15rem;
 }
 .ex-read dd, .ex-read .ex-read-v {
@@ -653,8 +718,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   letter-spacing: -0.01em; color: var(--ink); line-height: 1.25;
 }
 .ex-read .ex-read-v small {
-  display: block; font-size: 0.63rem; font-weight: 400;
-  color: var(--faint); letter-spacing: 0.05em; margin-top: 0.15rem;
+  display: block; font-family: var(--serif); font-size: 0.875rem; font-weight: 400;
+  color: var(--faint); letter-spacing: 0; margin-top: 0.15rem;
 }
 .ex-read-hot .ex-read-v { color: var(--accent); }
 .ex-read-flag .ex-read-v { color: var(--flag); }
@@ -662,13 +727,13 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-sum {
   margin-top: 0.9rem; padding-top: 0.7rem;
   border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.72rem; line-height: 1.75;
-  letter-spacing: 0.01em; color: var(--dim); max-width: none;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--dim); max-width: none;
 }
 .ex-sum b { color: var(--ink-soft); font-weight: 500; }
 .ex-sum::before {
-  content: "reading"; display: block;
-  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  content: "reading"; display: block; font-family: var(--mono);
+  font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--faint); margin-bottom: 0.3rem;
 }
 
@@ -689,8 +754,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-key {
   display: flex; flex-wrap: wrap; gap: 0.35rem 1.15rem;
   margin-top: 0.7rem;
-  font-family: var(--mono); font-size: 0.66rem; color: var(--dim);
-  letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; color: var(--dim);
 }
 .ex-key span { display: inline-flex; align-items: center; gap: 0.4rem; }
 .ex-key i { display: inline-block; width: 0.75rem; height: 0.75rem; flex: none; }
@@ -717,9 +781,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .ex-cites li:first-child { border-top: 0; padding-top: 0.2rem; }
 .ex-cites .ex-cite-w {
-  display: block; font-family: var(--mono); font-size: 0.66rem;
-  letter-spacing: 0.02em; color: var(--faint); margin-top: 0.3rem;
-  line-height: 1.65;
+  display: block; font-size: 0.875rem;
+  color: var(--faint); margin-top: 0.3rem;
+  line-height: 1.55;
 }
 .ex-cites .ex-cite-w a { color: var(--dim); border-bottom: 1px solid var(--rule); word-break: break-all; }
 .ex-cites .ex-cite-w a:hover { color: var(--accent); border-bottom-color: var(--accent); }
@@ -742,11 +806,11 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .ex-next a:hover { border-color: var(--accent); background: var(--field); }
 .ex-next a:hover .ex-next-t { color: var(--accent); }
 .ex-next .ex-next-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--faint);
 }
 .ex-next .ex-next-t { font-family: var(--display); font-size: 1.06rem; letter-spacing: -0.02em; }
-.ex-next .ex-next-d { font-size: 0.88rem; color: var(--dim); line-height: 1.5; }
+.ex-next .ex-next-d { font-size: 0.9rem; color: var(--dim); line-height: 1.5; }
 
 /* ---------- mobile ---------- */
 
@@ -785,7 +849,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .sm-canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .sm-canvas-lab {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--faint);
   margin: 0.55rem 0 0.25rem;
 }
@@ -798,27 +862,31 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   border-top: 1px solid var(--rule);
 }
 .sm-bar .sm-clock {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.04em;
   color: var(--faint); font-variant-numeric: tabular-nums;
   margin-left: auto; text-align: right;
 }
 .sm-btn-run[data-on="1"] { background: var(--accent); border-color: var(--accent); color: #f7f5ee; }
+:root[data-theme="dark"] .sm-btn-run[data-on="1"] { color: var(--paper); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .sm-btn-run[data-on="1"] { color: var(--paper); }
+}
 .sm-btn-run[data-on="1"]:hover { background: var(--ink); border-color: var(--ink); }
 
 .sm-keys {
-  font-family: var(--mono); font-size: 0.63rem; line-height: 1.65;
-  color: var(--faint); letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.6;
+  color: var(--faint);
   margin: 0.6rem 0 0;
 }
 .sm-keys kbd {
-  font-family: var(--mono); font-size: 0.63rem;
+  font-family: var(--mono); font-size: 0.8rem;
   border: 1px solid var(--rule-firm); border-radius: 2px;
   padding: 0.05em 0.3em; color: var(--dim);
 }
 
 .sm-still {
-  font-family: var(--mono); font-size: 0.63rem; line-height: 1.6;
-  color: var(--accent); letter-spacing: 0.02em;
+  font-family: var(--serif); font-size: 0.875rem; line-height: 1.55;
+  color: var(--accent);
   margin: 0.55rem 0 0;
 }
 
@@ -832,13 +900,13 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   padding: 0.8rem 0.95rem;
 }
 .sm-construct h3 {
-  font-family: var(--mono); font-weight: 500; font-size: 0.66rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--mono); font-weight: 500; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
   margin: 0 0 0.4rem;
 }
 .sm-construct p { font-size: 0.95rem; margin-bottom: 0.5em; max-width: none; }
 .sm-construct .sm-eq {
-  font-family: var(--mono); font-size: 0.76rem; line-height: 1.65;
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.6;
   color: var(--ink); background: var(--field);
   border: 1px solid var(--rule);
   padding: 0.5rem 0.6rem; margin: 0 0 0.45em;
@@ -846,8 +914,8 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   white-space: pre-wrap; overflow-wrap: break-word;
 }
 .sm-construct .sm-honest {
-  font-family: var(--mono); font-size: 0.65rem; line-height: 1.7;
-  color: var(--faint); letter-spacing: 0.02em; margin: 0; max-width: none;
+  font-size: 0.875rem; line-height: 1.55;
+  color: var(--faint); margin: 0; max-width: none;
 }
 .sm-construct .sm-live {
   font-family: var(--mono); font-weight: 500; font-size: 1.02rem;
@@ -871,14 +939,14 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 .sm-card:hover { border-color: var(--accent); background: var(--field); }
 .sm-card:hover .sm-card-t { color: var(--accent); }
 .sm-card-k {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--faint);
 }
 .sm-card-t { font-family: var(--display); font-size: 1.2rem; letter-spacing: -0.02em; }
 .sm-card-d { font-size: 0.92rem; color: var(--dim); line-height: 1.5; }
 .sm-card-w {
-  font-family: var(--mono); font-size: 0.63rem; color: var(--faint);
-  letter-spacing: 0.02em; line-height: 1.6; margin-top: 0.15rem;
+  font-size: 0.875rem; color: var(--faint);
+  line-height: 1.5; margin-top: 0.15rem;
 }
 .sm-card canvas {
   display: block; width: 100%; height: auto;
@@ -901,7 +969,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 /* ---------- simulation two ---------- */
 
 .rc-verdict {
-  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em;
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--accent);
   border: 1px solid var(--accent); background: var(--accent-lit);
   padding: 0.3rem 0.6rem; display: inline-block; margin-top: 0.9rem;
@@ -921,6 +989,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 }
 .bar,footer.site-foot{color:var(--fg)}
 footer.site-foot{background:var(--paper)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar,:root:not([data-theme="light"]) footer.site-foot,:root:not([data-theme="light"]) .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}}
+:root[data-theme="dark"] .bar,:root[data-theme="dark"] footer.site-foot,:root[data-theme="dark"] .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}
+
 .bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
 
 .wrap{max-width:74rem;margin:0 auto;padding:0 1.5rem}
@@ -935,6 +1006,7 @@ footer.site-foot{background:var(--paper)}
 .bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:var(--paper);border-bottom:1px solid var(--line)}
 .in-frame .bar,.in-frame .site-foot{display:none}
 .bar .wrap{display:flex;align-items:center;gap:2rem;height:70px}
+.bar .home,.langs{flex:none}
 .bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;
   border-bottom:0;color:var(--fg);white-space:nowrap}
 .bar nav:not(.langs){margin:0 auto}
@@ -970,6 +1042,33 @@ footer.site-foot{background:var(--paper)}
 /* ---------- a leaf, falling once ---------- */
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
+
+/* ---------- the bar between a phone and a laptop ----------
+   One row needs 1,027 px in German with a touch screen (measured 2026-11-04:
+   the name, six sections, the three languages and the gaps), so from 641 to
+   1,080 px the bar takes two rows the way a phone does: the name and the
+   languages on the first, the sections on the second, which scrolls in place
+   if a long word still does not fit. Below that the switcher sat 130 px past
+   the right edge at 768 and could not be reached. */
+@media (min-width:641px) and (max-width:1080px){
+  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:1rem;row-gap:0;padding-top:.75rem;padding-bottom:.2rem}
+  .bar .home{line-height:33px}
+  .langs{margin-left:auto}
+  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0 -6px;padding:4px 6px;justify-content:flex-start;
+    gap:1.4rem;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+  .bar nav:not(.langs)::-webkit-scrollbar{display:none}
+  .bar nav a{padding:.45rem 0;flex:0 0 auto}
+}
+
+/* ---------- inside a case study's frame ----------
+   The page around the frame already has the title and the argument, so the
+   frame opens on the instrument: the heading and the standfirst are kept
+   for a screen reader and taken off the screen. A scaled preview is left
+   as it is, because its picture is the page's first screen. */
+.framed-tool .k-lede{position:absolute!important;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.framed-tool .k-main{padding-top:clamp(.9rem,3vw,1.4rem)}
+.framed-tool .k-lede + .k-sect{margin-top:0}
 
 /* ---------- the bar and the footer, narrowed ---------- */
 @media (max-width:640px){
@@ -1052,11 +1151,10 @@ footer.site-foot{background:var(--paper)}
 
 <div class="k-shell">
 
-<script>if(window.self!==window.top)document.documentElement.classList.add("in-frame")</script>
 <header class="bar">
   <div class="wrap">
     <a class="home" href="../../../">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../cases/" data-i="nav-k">Case studies</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
+    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
     <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
   </div>
 </header>
@@ -1375,6 +1473,16 @@ var Kit = (function () {
     return new TextDecoder().decode(bytes);
   }
 
+  /* The query without ?theme=, which a case study adds when it frames the
+     instrument. A link copied inside the frame would otherwise open dark or
+     light for whoever it is sent to, whatever they chose themselves. */
+  function query() {
+    var q = (location.search || "").replace(/^\?/, "").split("&").filter(function (p) {
+      return p && p.indexOf("theme=") !== 0;
+    }).join("&");
+    return q ? "?" + q : "";
+  }
+
   var state = {
     /* Serialise the object into the location hash without adding a history entry. */
     write: function (obj) {
@@ -1382,7 +1490,7 @@ var Kit = (function () {
       try { h = "#s=" + b64urlEncode(JSON.stringify(obj)); } catch (e) { return ""; }
       if (h.length > 8000) return "";
       try {
-        history.replaceState(null, "", location.pathname + location.search + h);
+        history.replaceState(null, "", location.pathname + query() + h);
       } catch (e) {
         location.hash = h;
       }
@@ -1395,7 +1503,7 @@ var Kit = (function () {
       try { return JSON.parse(b64urlDecode(m[1])); } catch (e) { return null; }
     },
     clear: function () {
-      try { history.replaceState(null, "", location.pathname + location.search); }
+      try { history.replaceState(null, "", location.pathname + query()); }
       catch (e) { location.hash = ""; }
     }
   };
@@ -1497,6 +1605,71 @@ var Kit = (function () {
     }
     return el("p", { class: "k-source" + (bare ? " k-source-bare" : "") }, kids);
   }
+
+  /* ---------- a region that scrolls sideways ---------- */
+
+  /* A wide table on a phone scrolls inside its box, and a box that scrolls is
+     a control: a keyboard has to be able to reach it to scroll it, and a
+     screen reader has to hear what it is. It takes a tab stop only while it
+     overflows, so the same table at desktop width adds none. The name is the
+     heading of the panel it sits in, by reference, so it follows the language
+     when the reader switches. Measured 2026-11-04: axe found 17 such boxes
+     across seven instrument pages at 390px, none of them reachable. */
+  var reachSel = ".k-scroll, .k-panel > pre, [data-k-scroll]";
+  var reachN = 0;
+  /* A box can start to overflow with no change to the DOM at all: the faces
+     arrive after the first layout and widen every table. Each box and its
+     table are watched for a change of size, so the check runs again then. */
+  var reachSeen = typeof WeakSet === "function" ? new WeakSet() : null;
+  var reachRO = typeof ResizeObserver === "function" ? new ResizeObserver(function () { reachSoon(); }) : null;
+  function reach() {
+    qsa(reachSel).forEach(function (box) {
+      if (reachRO && reachSeen && !reachSeen.has(box)) {
+        reachSeen.add(box);
+        reachRO.observe(box);
+        if (box.firstElementChild) reachRO.observe(box.firstElementChild);
+      }
+      var over = box.scrollWidth > box.clientWidth + 1;
+      var mine = box.getAttribute("data-k-reach") === "1";
+      if (over && !box.hasAttribute("tabindex")) {
+        box.setAttribute("tabindex", "0");
+        box.setAttribute("data-k-reach", "1");
+        mine = true;
+      } else if (!over && mine) {
+        box.removeAttribute("tabindex");
+        box.removeAttribute("role");
+        box.removeAttribute("aria-labelledby");
+        box.removeAttribute("aria-label");
+        box.removeAttribute("data-k-reach");
+        return;
+      }
+      if (!mine) return;
+      box.setAttribute("role", "region");
+      if (box.hasAttribute("aria-labelledby") || box.hasAttribute("aria-label")) return;
+      var panel = box.closest(".k-panel, .k-sect, section, figure");
+      var head = panel && panel.querySelector("h2, h3, h4, .k-panel-h, figcaption");
+      if (head) {
+        if (!head.id) head.id = "k-reach-" + (++reachN);
+        box.setAttribute("aria-labelledby", head.id);
+      } else {
+        box.setAttribute("aria-label", window.__t ? window.__t("kit-scroll", "Table, scrolls sideways") : "Table, scrolls sideways");
+      }
+    });
+  }
+  var reachQueued = false;
+  function reachSoon() {
+    if (reachQueued) return;
+    reachQueued = true;
+    (window.requestAnimationFrame || setTimeout)(function () { reachQueued = false; reach(); });
+  }
+  if (typeof MutationObserver === "function") {
+    new MutationObserver(reachSoon).observe(document.documentElement, { childList: true, subtree: true });
+  }
+  addEventListener("resize", reachSoon);
+  addEventListener("load", reachSoon);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(reachSoon);
+  if (document.readyState !== "loading") reachSoon();
+  else document.addEventListener("DOMContentLoaded", reachSoon);
 
   return {
     el: el, qs: qs, qsa: qsa, clear: clear,
@@ -2278,7 +2451,7 @@ var Sim = (function () {
 })();
 
 /* ---- the page's own three languages ---- */
-window.PAGE_I18N = {"tr": {"pg-desc": "Bir fail nüfusu, her birinin ne göreceğine karar veren bir akış ve aynı nüfusun yanında nötr bir akışla ikinci bir koşu. Üç SIMEA yapısı, etki eğimi, özerklik eşiği ve seçim ortamının entropisi, ekranda tanımlanıp canlı ölçülüyor.", "rc-001": "Öneri sistemi", "rc-002": "<span class=\"k-num\">01</span>İki dünya, tek tohum", "rc-003": "<span class=\"k-num\">02</span>Üç yapı, ekranda", "rc-004": "<span class=\"k-num\">03</span>Ona yapmaya değer üç şey", "rc-005": "<span class=\"k-num\">04</span>Kural aslında ne", "rc-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "rc-007": "<span class=\"k-num\">06</span>Kaynaklar", "rc-008": "Varsayımlar ve sınırlar", "rc-009": "Etki eğimi <span class=\"sm-live\" id=\"rc-live-g\">0.00</span>", "rc-010": "Özerklik eşiği <span class=\"sm-live\" id=\"rc-live-a\">1.00</span>", "rc-011": "Seçim ortamının entropisi <span class=\"sm-live\" id=\"rc-live-h\">1.00</span>", "rc-012": "Bir görüş taşıyan bin fail, ve her birinin ne göreceğine karar veren bir sistem; aynı nüfus, aynı başlangıç noktasından aynı rastgele çekilişlerle iki kez çalıştırılıyor, bir kez sistem seçerken bir kez nötr bir akışla, böylece iki koşu arasındaki fark sistemin kendisi oluyor, başka hiçbir şey değil.", "rc-013": "SIMEA'nın iddiası şu: bir sistemin içine yerleşmiş bir fail, tek başına seçen bir faille aynı nesne değildir, ve bu fark yalnızca öne sürülmek yerine ölçülebilir.", "rc-014": "Her fail tek bir eksen üzerinde, bir uçtan öbürüne bir konum tutuyor, ve her tur kendisine başka faillerin tuttuğu birkaç konum gösteriliyor. Kendi konumuna ciddiye alınacak kadar yakın olan her şeye doğru biraz kayıyor, çok uzak olan her şeyi yok sayıyor. Sistemin yaptığı tek şey, o birkaç konumu seçmek.", "rc-015": "Bu çok küçük bir güç: bir faile hiçbir şeye inandıramaz, cezalandıramaz, ödeyemez, ikna edemez, yalan söyleyemez. Seçer; çalıştırın ve tek başına seçmenin bir nüfusu ne kadar uzağa taşıdığını görün.", "rc-016": "Zaman soldan sağa akıyor, görüş ekseni dikeyin bir ucundan öbürüne uzanıyor, ve bir bant ne kadar koyuysa o anda orada o kadar çok fail duruyor.", "rc-017": "Üstteki tarama, içinde öneri sistemi olan dünya; alttaki karşı olgu, yani aynı failler, aynı başlangıç konumları, aynı sırayla çekilen aynı rastgele sayılar ve tekdüze rastgele seçen bir akış. Öneri sistemini uyuşmayı hiç kayırmayacak biçimde ayarlayın, iki tarama piksel piksel aynı olur, çünkü o ayarda iki dünya aynı süreçtir; dolayısıyla gördüğünüz her fark sistemin kendisi.", "rc-018": "Nüfusun nerede durduğu, tur tur", "rc-019": "<span class=\"rc-verdict\" id=\"rc-verdict\">henüz çalıştırılmadı</span>", "rc-020": "SIMEA üç ölçülebilir büyüklük öneriyor: bir sistemin bir seçim üzerinde uyguladığı etki eğimi, faile kendisine kalan özerklik eşiği, ve seçim ortamının kendi entropisi.", "rc-021": "Her biri bir <span class=\"ex-em\">işlevselleştirme</span>: bir yapıyı, bir makinenin yapabileceği aritmetiğe çevirmenin bir yolu, basit, sınırlı ve okunaklı olduğu için seçilmiş. Hiçbiri yapının kendisi değil, ve farklı bir model üzerinde farklı bir işlevselleştirme farklı sayılar verirdi; her biri için makul olan birkaç tanesi mevcut. Bu üçünün işe yaradığı yer, tek bir modelin içinde, değişen tek şeyin okurun değiştirdiği şey olduğu karşılaştırma.", "rc-022": "Sistemin seçmesi nüfusu eksen boyunca ne kadar taşıdı, aynı nüfusun sistem olmadan gittiği yere kıyasla. İki koşu da yirmi dört kutuya bölünüyor ve iki dağılım şu soruyla karşılaştırılıyor: birinin kütlesi öbürünün tam üstüne oturmak için ne kadar taşınmalı, eksenin bütün genişliğine oran olarak. Sıfır, yönlendirilmiş nüfusun tam olarak yönlendirilmemiş olanın durduğu yerde durduğu anlamına geliyor; bir ise eksenin bir ucundan öbürüne taşındığı anlamına geliyor.", "rc-023": "F(b) = b kutusunda ya da altında kalan nüfus payı G = ( b kutuları üzerinden toplam | F_yönlendirilmiş(b) − F_nötr(b) | ) / 23", "rc-024": "Bu, eksen boyunca bir uzaklık, ve onu seçmek bana önce bir yanlış cevaba mal oldu. İşe toplam değişim uzaklığıyla başladım; o yalnızca iki dağılımın ne kadarının örtüşmediğini soruyor: sıfırı doğru okuyor, ama bir nüfus bir ya da iki sıkı konumda toplandıktan sonra, o konumlar aynı kutuyu paylaşmayı bıraktığı anda bire sıçrıyor, yani kıl payı itilmiş bir uzlaşı ile ikiye bölünmüş bir nüfus aynı şekilde bir alıyordu. Eksen boyunca uzaklık bunları ayırt ediyor, çünkü kütlenin taşınıp taşınmadığını değil ne kadar taşındığını sayıyor. Yine de birkaç işlevselleştirmeden biri: aynı yapı, her failin kendi karşı olgusal ikizine karşı fail fail ölçülebilir, ya da ortalamadaki kayma olarak alınabilirdi, ve bunlar bununla uyuşmazdı.", "rc-025": "Her tur bir failin yeni konumu, halihazırda durduğu yerle kendisine gösterilenin ağırlıklı ortalaması; özerklik eşiği ise halihazırda durduğu yerin hâlâ taşıdığı ağırlık, nüfus üzerinden ortalanmış. Bir, gördüğü hiçbir şeyin onu kımıldatmadığı anlamına geliyor; daha düşük olması, daha fazlasının akıştan geldiği anlamına geliyor.", "rc-026": "i faili için: x_i(sonraki) = (1 − μ·m_i)·x_i + μ · kabul edilen j öğeleri üzerinden toplam x_j A = failler üzerinden ortalama ( 1 − μ·m_i )", "rc-027": "μ, bir failin kabul ettiği bir öğeye doğru attığı sabit adım, burada 0,15; m_i ise beş öğeden kaçını bu turda kabul ettiği. Beş yuva ve bu adımla bu ölçünün aritmetik tabanı 0,25, yani tam bir özerklik kaybı bildiremiyor: akışın hiçbir zaman hepsini alamadığı bir modelin içinde, nüfusun hareketinin ne kadarının kendisinin değil akışın olduğunu bildiriyor, ve o taban yapının değil benim parametrelerimin bir özelliği.", "rc-028": "Bu, nüfusa ne sunulduğunu ölçüyor, neye inandığını değil. Her fail için akışın eksen üzerinde tam bir dağılımı var: kendisi için çekilen adaylar, uyuşmaya verilen ağırlık ve rastgele pay verildiğinde bir yuvanın yirmi dört kutunun her birine düşme ihtimali. Bu dağılımın Shannon entropisi alınıyor, sıfırdan bire gitsin diye düz bir dağılımın entropisine bölünüyor ve nüfus üzerinden ortalanıyor: bir, faile bütün eksenin eşit olarak sunulduğu anlamına geliyor, düşmesi ise akışının daraldığı anlamına geliyor.", "rc-029": "i faili için: q_i(b) = i'nin akışındaki bir yuvanın b kutusuna düşme ihtimali H = failler üzerinden ortalama ( − b kutuları üzerinden toplam q_i(b) · log q_i(b) ) / log 24", "rc-030": "Birincisi, bu, tek bir failin ortamının failler üzerinden ortalaması, nüfusun ortamı değil: herkes üzerinden aynı anda ölçüldüğünde, her bireysel akış darken bile sayı yüksek kalıyor, çünkü farklı yönlere bakan dar akışlar aralarında yine de ekseni kaplıyor. İki rakam da resmin altındaki okuma satırında, ve aralarındaki fark, balon sözcüğünün söylemeye çalıştığı şeyin çoğu. İkincisi, sayı hem öneri sistemi dar seçtiği için hem de nüfus çöküp sunulacak fazla bir şey kalmadığı için düşüyor, o yüzden onu taramanın yerine değil yanında okuyun.", "rc-031": "Önce, öneri sistemini uyuşmayı hiç kayırmayacak biçimde ayarlayın ve çalıştırın: etki eğimi bütün koşu boyunca sıfırda kalıyor ve iki tarama aynı kalıyor. Kontrol bu, çünkü hiçbir şey olmuyorken sıfır okumayan bir ölçü hiç okunmaya değmez.", "rc-032": "Sonra, hareket etme isteğini orta bir yere koyun, uyuşmanın kayırılmasını sonuna kadar açın ve tekrar çalıştırın. Nüfus ikiye ayrılıyor, iki yarı birbirinden uzaklaşıyor ve bu olurken eğim tırmanıyor; altındaki nötr dünya ise, aynı failler ve aynı çekilişlerle, tersine bir araya geliyor.", "rc-033": "Üçüncü olarak, öneri sistemini olduğu yerde bırakın ve akışın rastgele çekilen payını yükseltin. Her failin ortamının entropisi geri yükseliyor, yarılar ayrışmayı bırakıyor, ve belli bir payın üstünde nüfus yeniden bir araya geliyor. Sistem daha az güçlü olmadı; seçimleri yalnızca sulandı, ve sulanmanın yettiği ortaya çıkıyor.", "rc-034": "Bir fail, kendisine gösterilene doğru yalnızca gösterilen şey ciddiye alınacak kadar yakınken güncelleniyor. Bu, sınırlı güven kuralı; görüş dinamikleri literatüründe standart, kaynağı aşağıda veriliyor, ve modelin yaptığı her şey ondan ve seçmeden çıkıyor.", "rc-035": "adaylar: her fail için her tur rastgele çekilen otuz iki başka fail seçim: j öğesi exp( − α · | x_j − x_i | ) ile orantılı ağırlıkla seçiliyor, yuvaların ρ payı ise bunun yerine tekdüze rastgele çekiliyor güncelleme: | x_j − x_i | ≤ c olduğunda j öğesi kabul ediliyor, sonra x_i, x_j yönünde μ = 0,15 kadar kayıyor <small data-i=\"rc-053\">α uyuşmanın kayırılması, ρ rastgele pay, c ise uyuşmazlığa doğru hareket etme isteği. α sıfıra eşitken ağırlıkların hepsi eşit ve seçim tekdüze, ki bu tam olarak nötr akış; iki dünyanın orada çakışmasının sebebi de bu.</small>", "rc-036": "Öneri sisteminin azamileştirdiği bir amacı yok, failin şu anki konumunun ötesinde bir modeli yok, belleği yok, sonuca ilgisi yok: bir uzaklık üzerindeki tek bir üstel ağırlık. Neredeyse her gerçek sistem bundan daha yetenekli, ve daha yetenekli olanlar daha nazik olmazdı.", "rc-037": "En çok dikkat ettiğim simülasyon bu, çünkü gerçek bir platform hakkında bir şey söylüyormuş gibi alıntılanmaya en yatkın olan o. Söylemiyor.", "rc-038": "Çerçeve bana ait, arkasındaki not aşağıda bağlantılı.", "rc-039": "<strong>Bu bir öğretim modeli, ölçüm değil:</strong> bu sayfadaki her sayı ya sizin ayarladığınız ya da bu modelin sizin ayarladığınızdan ürettiği bir sayı, burada gerçek bir platform ya da gerçek bir nüfus tarif edilmiyor, ve bu sayfadan çıkan hiçbir rakamın böyle bir şey hakkındaki bir tartışmada yeri yok.", "rc-040": "Tamamen tarayıcınızda çalışır: burada yaptığınız hiçbir şey sayfadan çıkmaz, sunucu yok, analitik yok, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Özdemir</a>.", "rc-041": "<b>Tek eksen</b>Bir görüş, tek bir çizgi üzerinde tek bir sayı; oysa gerçek konumlar çok boyutludur ve çoğu zaman hiç sıralı değildir, ve bir anlaşmazlığı anlaşmazlık yapan şeyin büyük kısmı bir çizgiye yassıltıldığında kayboluyor.", "rc-042": "<b>Kural uydurma</b>Sınırlı güven güncellemesi, insanların fikirlerini nasıl değiştirdiğine dair ölçülmüş bir yasa değil, arkasında literatürü olan bir modelleme uzlaşımı; buradaki faillerin ise belleği, kimliği, grubu, konum değiştirme maliyeti ve bir konumu bir başkasına tercih etmek için sebebi yok.", "rc-043": "<b>Sistem bir oyuncak</b>Bir uzaklık üzerinde tek bir üstel ağırlık: etkileşim amacı yok, reklam yok, sıralama modeli yok, soğuk başlangıç yok, moderasyon yok, gerçek bir öneri sisteminin ne üzerinde eğitildiğine dair bir kavram yok. Buradaki sayıyı gerçek bir sistemin etkisinin tahmini olarak okumak bir kategori hatası olurdu.", "rc-044": "<b>Üç yapı tek bir işlevselleştirme</b>Eksen boyunca bir uzaklık, bir güncelleme kuralındaki bir ağırlık ve normalleştirilmiş bir Shannon entropisi savunulabilir üç seçim; savunulabilir üç başka seçim üç başka sayı kümesi verirdi.", "rc-045": "<b>Karşı olgu yalnızca burada var</b>Etki eğimi, dünyayı iki kez çalıştırarak hesaplanıyor; gerçek bir sistemde ise tam olarak bir koşu var ve nötr bir ikiz yok, ki bu tam da programın üzerinde çalışmak için var olduğu ölçüm sorunu. Bu sayfanın gösterdiği şey, o büyüklüğü elde edebilseydiniz ne anlama geleceği; onu elde etmenin bir yöntemi değil.", "rc-046": "<b>Entropi belirsiz</b>Akış daraldığında da düşüyor, nüfus çöktüğünde de, ve hangisi olduğunu söyleyemiyor; o yüzden onu taramanın yerine değil yanında okuyun.", "rc-047": "<b>Buradaki hiçbir sayı tahmin değil</b>Bu sayfadaki her rakam üstündeki parametrelerden geliyor, ve hiçbiri bir platformu, bir nüfusu ya da ölçülmüş bir etkiyi tarif etmiyor.", "rc-051": "Şekil bir <span class=\"ex-model-sub\">akışı ayarlayın, sonra çalıştırın</span>", "rc-052": "Şekil iki <span class=\"ex-model-sub\">üç yapı, tur tur</span>", "rc-skip": "Simülasyona geçin", "rc-v-notrun": "henüz çalıştırılmadı", "rc-v-consensus": "uzlaşı", "rc-v-hard": "sert kutuplaşma", "rc-v-two": "iki kamp", "rc-v-frag": "{n} kampa parçalanma", "rc-camps": "{n} kamp", "rc-pan-steered": "öneri sistemiyle", "rc-pan-neutral": "nötr akışla", "rc-ax-rounds": "tur", "rc-ln-g": "etki eğimi", "rc-ln-a": "özerklik eşiği", "rc-ln-h": "bir akışın entropisi", "rc-sl-a": "Uyuşmanın kayırılması", "rc-sl-a-h": "Akışın, failin kendi konumuna yakın konumları ne kadar dik biçimde tercih ettiği. Sıfır nötr bir akış.", "rc-sl-c": "Hareket etme isteği", "rc-sl-c-h": "Bir şeyin ne kadar uzakta olup faili yine de kımıldatabileceği. Eksen iki birim genişliğinde.", "rc-sl-r": "Akışın rastgele payı", "rc-sl-r-h": "Sıralanmış malzeme yerine gerçekten rastgele malzemeyle doldurulan yuvalar.", "rc-sl-n": "Nüfus", "rc-sl-n-h": "İki dünyanın her birinde kaç fail olduğu.", "rc-rd-g": "Etki eğimi", "rc-rd-a": "Özerklik eşiği", "rc-rd-h": "Bir akışın entropisi", "rc-rd-hn": "Aynısı, nötr akış", "rc-rd-cl": "Kamp", "rc-rd-t": "Tur", "rc-sub-g": "0 fark yok demek", "rc-sub-a": "1 tamamen kendisinin demek", "rc-sub-h": "1 bütün eksen demek", "rc-sub-hn": "herkes üzerinden: {v}", "rc-sub-cl": "yayılım {v}", "rc-sub-t-done": "koşu tamamlandı", "rc-sub-t": "toplam {n}", "rc-key-more": "burada duran fail sayısı", "rc-key-now": "şu an çizilen tur", "rc-clock": "tur {n} / {m}", "rc-share": "Bağlantı kopyalandı; bu turdan açılıyor.", "rc-sum": "Aynı nüfusun {t} tur boyunca iki tarama görüntüsü; dikeyde görüş eksi birden artı bire, zaman soldan sağa, daha çok failin durduğu yerde daha koyu. Üstteki taramada öneri sistemi var, uyuşmayı {alpha} ağırlığıyla kayırıyor ve akışın yüzde {rho} kadarı rastgele çekiliyor; alttaki tarama ise aynı failler ve aynı rastgele çekilişlerle nötr bir akış. Nüfus şu an {camps} hâlinde ve okuma {verdict}.", "rc-sum2": "Üç yapı {t} tur boyunca, her biri sıfırdan bire. Etki eğimi {g} okuyor, özerklik eşiği {a}, ve tek bir failin seçim ortamının entropisi {h}; nötr dünyadaki {hn} değerine karşı. Tek tek failler yerine bütün nüfus üzerinden aynı anda ölçüldüğünde {hall} okuyor.", "rc-s0": "İki dünya da eksen boyunca eşit dağılmış aynı {n} faili tutuyor. Çalıştırın'a basın.", "rc-s-ctrl": "Öneri sistemi uyuşmayı hiç kayırmayacak biçimde ayarlı, yani nötr bir akışın yaptığı şeyin aynısını yapıyor ve iki dünya aynı süreç. Etki eğimi {t} tur sonra {g} okuyor.", "rc-s-steer": "{t} tur sonra yönlendirilmiş nüfus ile yönlendirilmemiş ikizi etki eğiminde {g} kadar ayrılıyor. Aynı failler, aynı başlangıç konumları ve aynı rastgele sayılar {where}", "rc-s-near": "neredeyse aynı yere gitti, yani seçme onları henüz nötr akışın götürmeyeceği bir yere taşımadı.", "rc-s-far": "ölçülebilir biçimde farklı yerlere gitti, ve iki koşu arasında farklı olan tek şey, her faile hangi birkaç konumun gösterildiğiydi.", "rc-s2": "Ortalama failin bir sonraki konumunun {a} kadarı kendi ön kanısı, kalanı kendisine gösterilen. Akışın kendisi şu an, o faile bütün ekseni eşit sunsaydı sahip olacağı entropinin {h} kadarında; nötr dünyadaki {hn} değerine karşı. Bütün nüfus üzerinden aynı anda aynı ölçü {hall} okuyor, ki bu daha yüksek, çünkü farklı yönlere bakan dar akışlar aralarında yine de ekseni kaplıyor; nüfus ise {camps} hâlinde duruyor.", "rc-048": "Güncelleme kuralı bir sınırlı güven modeli: bir fail yalnızca kendi güven aralığındaki görüşleri hesaba katıyor, ve makale, o aralığın genişliğinin bir nüfusun uzlaşıya mı vardığını, ikiye mi ayrıldığını yoksa parçalandığını mı belirlediğini inceliyor. <span class=\"ex-cite-w\">Rainer Hegselmann and Ulrich Krause, <span class=\"ex-cite-t\">Opinion\n            Dynamics and Bounded Confidence: Models, Analysis and Simulation</span>, Journal of Artificial\n            Societies and Social Simulation 5(3), article 2, 2002.\n            <a href=\"https://www.jasss.org/5/3/2.html\" target=\"_blank\" rel=\"noreferrer noopener\">jasss.org/5/3/2.html</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "rc-049": "Seçim ortamının entropisi, sunulan şeyin dağılımının Shannon entropisi; aynı kutular üzerindeki düz dağılımın entropisiyle normalleştirilmiş. <span class=\"ex-cite-w\">Claude E. Shannon, <span class=\"ex-cite-t\">A Mathematical Theory of\n            Communication</span>, The Bell System Technical Journal 27, 1948, pages 379 to 423 and 623 to\n            656.\n            <a href=\"https://onlinelibrary.wiley.com/doi/10.1002/j.1538-7305.1948.tb01338.x\" target=\"_blank\" rel=\"noreferrer noopener\">doi.org 10.1002/j.1538-7305.1948.tb01338.x</a>\n            Tam metin şurada okundu:\n            <a href=\"https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">people.math.harvard.edu</a>.\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "rc-050": "Üç yapı, ve onları isteme sebepleri. <span class=\"ex-cite-w\">Kerem Özdemir, <span class=\"ex-cite-t\">The agent was never alone:\n            SIMEA</span>, a working note.\n            <a href=\"../../note-simea.html\">keremozdemir.de/note-simea.html</a></span>\n          ", "rc-camps-one": "tek bir kamp", "pg-title": "Öneri sistemi"}, "de": {"pg-desc": "Eine Population von Agenten, ein Feed, der entscheidet, was jeder von ihnen sieht, und dieselbe Population daneben noch einmal mit einem neutralen Feed. Die drei SIMEA-Konstrukte, Einflussgradient, Autonomieschwelle und Entropie der Wahlumgebung, werden auf dem Schirm definiert und live gemessen.", "rc-001": "Das Empfehlungssystem", "rc-002": "<span class=\"k-num\">01</span>Zwei Welten, ein Startwert", "rc-003": "<span class=\"k-num\">02</span>Die drei Konstrukte, auf dem Bildschirm", "rc-004": "<span class=\"k-num\">03</span>Drei Dinge, die man damit tun sollte", "rc-005": "<span class=\"k-num\">04</span>Was die Regel tatsächlich ist", "rc-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "rc-007": "<span class=\"k-num\">06</span>Quellen", "rc-008": "Annahmen und Grenzen", "rc-009": "Einflussgradient <span class=\"sm-live\" id=\"rc-live-g\">0.00</span>", "rc-010": "Autonomieschwelle <span class=\"sm-live\" id=\"rc-live-a\">1.00</span>", "rc-011": "Entropie der Wahlumgebung <span class=\"sm-live\" id=\"rc-live-h\">1.00</span>", "rc-012": "Tausend Akteure mit einer Meinung, und ein System, das entscheidet, was jeder von ihnen zu sehen bekommt; dieselbe Population läuft zweimal vom selben Ausgangspunkt mit denselben Zufallsziehungen, einmal mit dem wählenden System und einmal mit einem neutralen Feed, sodass der Unterschied zwischen den beiden Läufen das System ist und sonst nichts.", "rc-013": "SIMEA behauptet, dass ein in ein System eingebetteter Akteur nicht dasselbe Objekt ist wie ein Akteur, der allein wählt, und dass sich der Unterschied messen lässt, statt bloß behauptet zu werden.", "rc-014": "Jeder Akteur hält eine Position auf einer einzigen Achse, von einem Ende zum anderen, und in jeder Runde bekommt er eine Handvoll Positionen anderer Akteure gezeigt. Er bewegt sich ein Stück auf alles zu, was seiner eigenen nahe genug ist, um ernst genommen zu werden, und ignoriert alles, was zu weit weg ist. Das Einzige, was das System tut, ist, diese Handvoll auszuwählen.", "rc-015": "Das ist eine sehr kleine Macht: sie kann einen Akteur nichts glauben machen, nicht bestrafen, bezahlen, überreden oder lügen. Sie wählt aus; lassen Sie es laufen und sehen Sie, wie weit Auswahl allein eine Population trägt.", "rc-016": "Die Zeit läuft von links nach rechts, die Meinungsachse von einem Ende der Senkrechten zum anderen, und je dunkler ein Band, desto mehr Akteure stehen in diesem Moment dort.", "rc-017": "Das obere Raster ist die Welt mit dem Empfehlungssystem darin; das untere ist das Kontrafaktische, dieselben Akteure, dieselben Startpositionen, dieselben Zufallszahlen in derselben Reihenfolge, und ein Feed, der gleichverteilt zufällig auswählt. Stellen Sie das Empfehlungssystem so ein, dass es Zustimmung überhaupt nicht bevorzugt, und die beiden Raster sind Pixel für Pixel identisch, denn bei dieser Einstellung sind die beiden Welten derselbe Prozess, und damit ist jeder Unterschied, den Sie sehen, das System.", "rc-018": "Wo die Population steht, Runde für Runde", "rc-019": "<span class=\"rc-verdict\" id=\"rc-verdict\">noch nicht gelaufen</span>", "rc-020": "SIMEA schlägt drei messbare Größen vor: den Einflussgradienten, den ein System auf eine Entscheidung ausübt, die Autonomieschwelle, die dem Akteur bleibt, und die Entropie der Wahlumgebung selbst.", "rc-021": "Jede ist eine <span class=\"ex-em\">Operationalisierung</span>: eine Art, ein Konstrukt in Arithmetik zu überführen, die eine Maschine ausführen kann, gewählt, weil sie einfach, beschränkt und lesbar ist. Keine davon ist das Konstrukt, und eine andere Operationalisierung auf einem anderen Modell ergäbe andere Zahlen, wobei es für jede mehrere vernünftige gibt. Wozu die drei taugen, ist der Vergleich innerhalb eines Modells, wo das Einzige, was sich geändert hat, das ist, was der Leser geändert hat.", "rc-022": "Wie weit entlang der Achse das Auswählen des Systems die Population getragen hat, verglichen damit, wohin dieselbe Population ohne es gegangen ist. Beide Läufe werden in vierundzwanzig Bins eingeteilt, und die beiden Verteilungen werden mit der Frage verglichen, wie weit die Masse der einen bewegt werden müsste, um genau auf der anderen zu liegen, als Anteil an der ganzen Breite der Achse. Null heißt, die gesteuerte Population sitzt genau dort, wo die ungesteuerte sitzt; eins heißt, sie wurde von einem Ende der Achse zum anderen getragen.", "rc-023": "F(b) = der Anteil der Population auf oder unter Bin b G = ( Summe über Bins b von | F_gesteuert(b) − F_neutral(b) | ) / 23", "rc-024": "Das ist ein Abstand entlang der Achse, und ihn zu wählen kostete mich zuerst eine falsche Antwort. Ich begann mit der Totalvariationsdistanz, die nur fragt, wie viel der beiden Verteilungen sich nicht überlappt: Sie liest die Null richtig, aber sobald sich eine Population in ein oder zwei enge Positionen gesammelt hat, springt sie auf eins, sobald diese Positionen kein Bin mehr teilen, sodass ein um Haaresbreite verschobener Konsens und eine in zwei Teile gerissene Population beide eine Eins bekamen. Der Abstand entlang der Achse unterscheidet sie, weil er zählt, wie weit die Masse sich bewegt hat, und nicht, ob sie sich bewegt hat. Er bleibt eine Operationalisierung unter mehreren: Dasselbe Konstrukt ließe sich Akteur für Akteur gegen dessen eigenes kontrafaktisches Selbst messen oder als Verschiebung des Mittelwerts, und beides stimmte mit diesem hier nicht überein.", "rc-025": "In jeder Runde ist die neue Position eines Akteurs ein gewichtetes Mittel aus dem, wo er schon stand, und dem, was ihm gezeigt wurde, und die Autonomieschwelle ist das Gewicht, das die alte Position noch trägt, über die Population gemittelt. Eins heißt, nichts von dem Gesehenen hat ihn bewegt; niedriger heißt, mehr davon kam aus dem Feed.", "rc-026": "für Akteur i: x_i(nächste) = (1 − μ·m_i)·x_i + μ · Summe über angenommene Elemente j von x_j A = Mittel über Akteure von ( 1 − μ·m_i )", "rc-027": "μ ist der feste Schritt, den ein Akteur auf ein angenommenes Element zu macht, hier 0,15, und m_i ist, wie viele der fünf Elemente er in dieser Runde angenommen hat. Bei fünf Plätzen und diesem Schritt liegt der arithmetische Boden dieses Maßes bei 0,25, es kann also keinen völligen Verlust an Autonomie melden: Es meldet, wie viel der Bewegung der Population dem Feed und nicht ihr selbst gehört, innerhalb eines Modells, das den Feed nie alles bekommen lässt, und dieser Boden ist eine Eigenschaft meiner Parameter und nicht des Konstrukts.", "rc-028": "Das misst, was der Population angeboten wird, nicht, was sie glaubt. Für jeden Akteur hat der Feed eine exakte Verteilung über die Achse: die Wahrscheinlichkeit, dass ein Platz in jedem der vierundzwanzig Bins landet, gegeben die für ihn gezogenen Kandidaten, das Gewicht auf Zustimmung und den Zufallsanteil. Von dieser Verteilung wird die Shannon-Entropie genommen, durch die einer flachen geteilt, sodass sie von null bis eins läuft, und über die Population gemittelt: Eins heißt, einem Akteur wird die ganze Achse gleichmäßig angeboten, und ein Fallen heißt, sein Feed hat sich verengt.", "rc-029": "für Akteur i: q_i(b) = die Wahrscheinlichkeit, dass ein Platz in i's Feed in Bin b landet H = Mittel über Akteure von ( − Summe über Bins b von q_i(b) · log q_i(b) ) / log 24", "rc-030": "Erstens ist das die Umgebung eines Akteurs, über Akteure gemittelt, und nicht die der Population: über alle zugleich gemessen bleibt die Zahl hoch, selbst wenn jeder einzelne Feed eng ist, weil enge Feeds in verschiedene Richtungen zusammen die Achse trotzdem abdecken. Beide Zahlen stehen in der Lesezeile unter dem Bild, und der Unterschied zwischen ihnen ist das meiste von dem, was das Wort Blase sagen will. Zweitens fällt die Zahl sowohl, weil das Empfehlungssystem eng auswählt, als auch, weil die Population zusammengebrochen ist und wenig übrig bleibt, das sich ausliefern ließe, lesen Sie sie also neben dem Raster und nicht statt seiner.", "rc-031": "Erstens: Stellen Sie das Empfehlungssystem so ein, dass es Zustimmung überhaupt nicht bevorzugt, und lassen Sie es laufen: der Einflussgradient bleibt den ganzen Lauf über bei null, und die beiden Raster bleiben identisch. Das ist die Kontrolle, denn ein Maß, das nicht null anzeigt, wenn nichts geschieht, ist überhaupt nicht lesenswert.", "rc-032": "Zweitens: Setzen Sie die Bewegungsbereitschaft auf etwas Mittleres, drehen Sie die Bevorzugung von Zustimmung kräftig hoch und lassen Sie es noch einmal laufen. Die Population spaltet sich, die beiden Hälften laufen voneinander weg und der Gradient klettert dabei, während die neutrale Welt darunter, mit denselben Akteuren und denselben Ziehungen, stattdessen zusammenfindet.", "rc-033": "Drittens: Lassen Sie das Empfehlungssystem genau dort, wo es ist, und erhöhen Sie den Anteil des Feeds, der zufällig gezogen wird. Die Entropie der Umgebung jedes Akteurs steigt wieder, die Hälften hören auf, sich zu trennen, und oberhalb eines bestimmten Anteils findet die Population wieder zusammen. Das System ist nicht schwächer geworden; seine Auswahl wurde nur verdünnt, und Verdünnung erweist sich als genug.", "rc-034": "Ein Akteur aktualisiert sich nur dann in Richtung dessen, was ihm gezeigt wird, wenn das Gezeigte nahe genug ist, um ernst genommen zu werden. Das ist eine Regel beschränkten Vertrauens, in der Literatur zur Meinungsdynamik Standard und unten belegt, und alles, was das Modell tut, folgt aus ihr und aus der Auswahl.", "rc-035": "Kandidaten: zweiunddreißig andere Akteure, für jeden Akteur in jeder Runde zufällig gezogen Auswahl: Element j wird mit einem Gewicht proportional zu exp( − α · | x_j − x_i | ) gezogen, ein Anteil ρ der Plätze wird stattdessen gleichverteilt zufällig gezogen Aktualisierung: Element j wird angenommen, wenn | x_j − x_i | ≤ c, dann bewegt sich x_i um μ = 0,15 auf x_j zu <small data-i=\"rc-053\">α ist die Bevorzugung von Zustimmung, ρ der Zufallsanteil, c die Bereitschaft, sich auf Widerspruch zuzubewegen. Bei α gleich null sind alle Gewichte gleich und die Auswahl ist gleichverteilt, was genau der neutrale Feed ist, weshalb die beiden Welten dort zusammenfallen.</small>", "rc-036": "Das Empfehlungssystem hat kein Ziel, das es maximiert, kein Modell des Akteurs über dessen aktuelle Position hinaus, kein Gedächtnis und kein Interesse am Ergebnis: es ist ein exponentielles Gewicht auf einem Abstand. Fast jedes reale System kann mehr, und die, die mehr können, wären nicht sanfter.", "rc-037": "Das ist die Simulation, bei der ich am vorsichtigsten bin, weil sie am ehesten so zitiert wird, als sagte sie etwas über eine reale Plattform. Tut sie nicht.", "rc-038": "Der Rahmen ist mein eigener, und die Notiz dahinter ist unten verlinkt.", "rc-039": "<strong>Das ist ein Lehrmodell, keine Messung:</strong> jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die dieses Modell daraus erzeugt hat, nichts hier beschreibt eine reale Plattform oder eine reale Population, und keine Zahl von dieser Seite gehört in ein Argument über eine.", "rc-040": "Läuft vollständig in Ihrem Browser: nichts, was Sie hier tun, verlässt die Seite, kein Server, keine Analyse, kein Netzwerkaufruf, nachdem die Schriften geladen sind. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>.", "rc-041": "<b>Eine Achse</b>Eine Meinung ist eine einzige Zahl auf einer einzigen Linie, während reale Positionen vieldimensional und oft gar nicht geordnet sind, und vieles von dem, was eine Meinungsverschiedenheit ausmacht, verschwindet, wenn man sie auf eine Linie plattdrückt.", "rc-042": "<b>Die Regel ist erfunden</b>Die Aktualisierung bei beschränktem Vertrauen ist eine Modellierungskonvention mit Literatur dahinter und kein gemessenes Gesetz dafür, wie Menschen ihre Meinung ändern, und die Akteure hier haben kein Gedächtnis, keine Identität, keine Gruppe, keine Kosten für einen Positionswechsel und keinen Grund, die eine Position statt der anderen zu halten.", "rc-043": "<b>Das System ist ein Spielzeug</b>Ein exponentielles Gewicht auf einem Abstand: kein Engagement-Ziel, keine Werbung, kein Ranking-Modell, kein Kaltstart, keine Moderation, kein Begriff davon, worauf ein reales Empfehlungssystem trainiert wird. Die Zahl hier als Schätzung des Einflusses irgendeines realen Systems zu lesen, wäre ein Kategorienfehler.", "rc-044": "<b>Die drei Konstrukte sind eine Operationalisierung</b>Ein Abstand entlang der Achse, ein Gewicht in einer Aktualisierungsregel und eine normierte Shannon-Entropie sind drei vertretbare Wahlen, und drei andere vertretbare Wahlen ergäben drei andere Zahlenreihen.", "rc-045": "<b>Das Kontrafaktische gibt es nur hier</b>Der Einflussgradient wird berechnet, indem die Welt zweimal läuft, und in einem realen System gibt es genau einen Lauf und keinen neutralen Zwilling, und genau das ist das Messproblem, an dem zu arbeiten das Programm existiert. Was diese Seite zeigt, ist, was die Größe bedeuten würde, wenn man sie bekommen könnte, und keine Methode, sie zu bekommen.", "rc-046": "<b>Die Entropie ist mehrdeutig</b>Sie fällt, wenn der Feed sich verengt, und sie fällt, wenn die Population zusammenbricht, und sie kann Ihnen nicht sagen, welches von beidem, lesen Sie sie also neben dem Raster und nicht statt seiner.", "rc-047": "<b>Keine Zahl hier ist eine Schätzung</b>Jede Zahl auf dieser Seite kommt aus den Parametern darüber, und keine beschreibt eine Plattform, eine Population oder einen gemessenen Effekt.", "rc-051": "Abbildung eins <span class=\"ex-model-sub\">Feed einstellen, dann laufen lassen</span>", "rc-052": "Abbildung zwei <span class=\"ex-model-sub\">die drei Konstrukte, Runde für Runde</span>", "rc-skip": "Zur Simulation springen", "rc-v-notrun": "noch nicht gelaufen", "rc-v-consensus": "Konsens", "rc-v-hard": "harte Polarisierung", "rc-v-two": "zwei Lager", "rc-v-frag": "Zersplitterung in {n} Lager", "rc-camps": "{n} Lagern", "rc-pan-steered": "mit dem Empfehlungssystem", "rc-pan-neutral": "mit einem neutralen Feed", "rc-ax-rounds": "Runden", "rc-ln-g": "Einflussgradient", "rc-ln-a": "Autonomieschwelle", "rc-ln-h": "Entropie eines Feeds", "rc-sl-a": "Bevorzugung von Zustimmung", "rc-sl-a-h": "Wie steil der Feed Positionen nahe der eigenen des Akteurs bevorzugt. Null ist ein neutraler Feed.", "rc-sl-c": "Bewegungsbereitschaft", "rc-sl-c-h": "Wie weit etwas entfernt sein darf und den Akteur trotzdem bewegt. Die Achse ist zwei Einheiten breit.", "rc-sl-r": "Zufallsanteil des Feeds", "rc-sl-r-h": "Plätze, die mit wirklich zufälligem statt mit sortiertem Material gefüllt werden.", "rc-sl-n": "Population", "rc-sl-n-h": "Wie viele Akteure in jeder der beiden Welten sind.", "rc-rd-g": "Einflussgradient", "rc-rd-a": "Autonomieschwelle", "rc-rd-h": "Entropie eines Feeds", "rc-rd-hn": "Dasselbe, neutraler Feed", "rc-rd-cl": "Lager", "rc-rd-t": "Runden", "rc-sub-g": "0 heißt kein Unterschied", "rc-sub-a": "1 heißt ganz die eigene", "rc-sub-h": "1 heißt die ganze Achse", "rc-sub-hn": "über alle: {v}", "rc-sub-cl": "Spanne {v}", "rc-sub-t-done": "Lauf beendet", "rc-sub-t": "von {n}", "rc-key-more": "mehr Akteure stehen hier", "rc-key-now": "die gerade gezeichnete Runde", "rc-clock": "Runde {n} von {m}", "rc-share": "Link kopiert; er öffnet auf dieser Runde.", "rc-sum": "Zwei Raster derselben Population über {t} Runden, Meinung auf der Senkrechten von minus eins bis plus eins, Zeit von links nach rechts, dunkler, wo mehr Akteure stehen. Das obere Raster hat das Empfehlungssystem darin, das Zustimmung mit {alpha} gewichtet, während {rho} Prozent des Feeds zufällig gezogen werden, und das untere Raster sind dieselben Akteure und dieselben Zufallsziehungen mit einem neutralen Feed. Die Population sitzt gerade in {camps}, und die Lesung lautet {verdict}.", "rc-sum2": "Die drei Konstrukte über {t} Runden, jedes von null bis eins. Der Einflussgradient zeigt {g}, die Autonomieschwelle {a}, und die Entropie der Wahlumgebung eines Akteurs {h}, gegen {hn} in der neutralen Welt. Über die ganze Population zugleich statt Akteur für Akteur gemessen zeigt sie {hall}.", "rc-s0": "Beide Welten halten dieselben {n} Akteure, gleichmäßig entlang der Achse verteilt. Drücken Sie Starten.", "rc-s-ctrl": "Das Empfehlungssystem ist so eingestellt, dass es Zustimmung überhaupt nicht bevorzugt, es tut also dasselbe wie ein neutraler Feed, und die beiden Welten sind derselbe Prozess. Der Einflussgradient zeigt nach {t} Runden {g}.", "rc-s-steer": "Nach {t} Runden unterscheiden sich die gesteuerte Population und ihr ungesteuerter Zwilling um {g} auf dem Einflussgradienten. Dieselben Akteure, dieselben Startpositionen und dieselben Zufallszahlen gingen {where}", "rc-s-near": "an fast denselben Ort, die Auswahl hat sie also noch nirgendwohin getragen, wohin der neutrale Feed sie nicht auch gebracht hätte.", "rc-s-far": "an messbar verschiedene Orte, und das Einzige, was sich zwischen den beiden Läufen unterschied, war, welche Handvoll Positionen jedem Akteur gezeigt wurde.", "rc-s2": "Die nächste Position des durchschnittlichen Akteurs besteht zu {a} aus seiner eigenen Vorannahme, der Rest ist das, was ihm gezeigt wurde. Der Feed selbst liegt gerade bei {h} der Entropie, die er hätte, wenn er diesem Akteur die ganze Achse gleichmäßig anböte, gegen {hn} in der neutralen Welt. Über die ganze Population zugleich zeigt dasselbe Maß {hall}, was höher ist, weil enge Feeds in verschiedene Richtungen zusammen die Achse trotzdem abdecken, und die Population steht in {camps}.", "rc-048": "Die Aktualisierungsregel ist ein Modell beschränkten Vertrauens: Ein Akteur berücksichtigt nur die Meinungen innerhalb eines Vertrauensintervalls um die eigene, und die Arbeit untersucht, wie die Breite dieses Intervalls entscheidet, ob eine Population zu Konsens gelangt, sich spaltet oder zersplittert. <span class=\"ex-cite-w\">Rainer Hegselmann and Ulrich Krause, <span class=\"ex-cite-t\">Opinion\n            Dynamics and Bounded Confidence: Models, Analysis and Simulation</span>, Journal of Artificial\n            Societies and Social Simulation 5(3), article 2, 2002.\n            <a href=\"https://www.jasss.org/5/3/2.html\" target=\"_blank\" rel=\"noreferrer noopener\">jasss.org/5/3/2.html</a>\n            Geprüft: 2026 08 22.</span>\n          ", "rc-049": "Die Entropie der Wahlumgebung ist Shannons Entropie der Verteilung dessen, was ausgeliefert wird, normiert durch die Entropie der flachen Verteilung über dieselben Bins. <span class=\"ex-cite-w\">Claude E. Shannon, <span class=\"ex-cite-t\">A Mathematical Theory of\n            Communication</span>, The Bell System Technical Journal 27, 1948, pages 379 to 423 and 623 to\n            656.\n            <a href=\"https://onlinelibrary.wiley.com/doi/10.1002/j.1538-7305.1948.tb01338.x\" target=\"_blank\" rel=\"noreferrer noopener\">doi.org 10.1002/j.1538-7305.1948.tb01338.x</a>\n            Volltext gelesen bei\n            <a href=\"https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">people.math.harvard.edu</a>.\n            Geprüft: 2026 08 22.</span>\n          ", "rc-050": "Die drei Konstrukte und die Gründe, sie zu wollen. <span class=\"ex-cite-w\">Kerem Özdemir, <span class=\"ex-cite-t\">The agent was never alone:\n            SIMEA</span>, a working note.\n            <a href=\"../../note-simea.html\">keremozdemir.de/note-simea.html</a></span>\n          ", "rc-camps-one": "einem Lager", "pg-title": "Das Empfehlungssystem"}};
+window.PAGE_I18N = {"tr": {"pg-desc": "Bir akış her failin ne göreceğine karar veriyor; aynı nüfus yanında nötr bir akışla koşuyor. Etki, özerklik ve seçim entropisi canlı ölçülüyor.", "rc-001": "Öneri sistemi", "rc-002": "<span class=\"k-num\">01</span>İki dünya, tek tohum", "rc-003": "<span class=\"k-num\">02</span>Üç yapı, ekranda", "rc-004": "<span class=\"k-num\">03</span>Ona yapmaya değer üç şey", "rc-005": "<span class=\"k-num\">04</span>Kural aslında ne", "rc-006": "<span class=\"k-num\">05</span>Modelin durduğu yer", "rc-007": "<span class=\"k-num\">06</span>Kaynaklar", "rc-008": "Varsayımlar ve sınırlar", "rc-009": "Etki eğimi <span class=\"sm-live\" id=\"rc-live-g\">0.00</span>", "rc-010": "Özerklik eşiği <span class=\"sm-live\" id=\"rc-live-a\">1.00</span>", "rc-011": "Seçim ortamının entropisi <span class=\"sm-live\" id=\"rc-live-h\">1.00</span>", "rc-012": "Bir görüş taşıyan bin fail, ve her birinin ne göreceğine karar veren bir sistem; aynı nüfus, aynı başlangıç noktasından aynı rastgele çekilişlerle iki kez çalıştırılıyor, bir kez sistem seçerken bir kez nötr bir akışla, böylece iki koşu arasındaki fark sistemin kendisi oluyor, başka hiçbir şey değil.", "rc-013": "SIMEA'nın iddiası şu: bir sistemin içine yerleşmiş bir fail, tek başına seçen bir faille aynı nesne değildir, ve bu fark yalnızca öne sürülmek yerine ölçülebilir.", "rc-014": "Her fail tek bir eksen üzerinde, bir uçtan öbürüne bir konum tutuyor, ve her tur kendisine başka faillerin tuttuğu birkaç konum gösteriliyor. Kendi konumuna ciddiye alınacak kadar yakın olan her şeye doğru biraz kayıyor, çok uzak olan her şeyi yok sayıyor. Sistemin yaptığı tek şey, o birkaç konumu seçmek.", "rc-015": "Bu çok küçük bir güç: bir faile hiçbir şeye inandıramaz, cezalandıramaz, ödeyemez, ikna edemez, yalan söyleyemez. Seçer; çalıştırın ve tek başına seçmenin bir nüfusu ne kadar uzağa taşıdığını görün.", "rc-016": "Zaman soldan sağa akıyor, görüş ekseni dikeyin bir ucundan öbürüne uzanıyor, ve bir bant ne kadar koyuysa o anda orada o kadar çok fail duruyor.", "rc-017": "Üstteki tarama, içinde öneri sistemi olan dünya; alttaki karşı olgu, yani aynı failler, aynı başlangıç konumları, aynı sırayla çekilen aynı rastgele sayılar ve tekdüze rastgele seçen bir akış. Öneri sistemini uyuşmayı hiç kayırmayacak biçimde ayarlayın, iki tarama piksel piksel aynı olur, çünkü o ayarda iki dünya aynı süreçtir; dolayısıyla gördüğünüz her fark sistemin kendisi.", "rc-018": "Nüfusun nerede durduğu, tur tur", "rc-019": "<span class=\"rc-verdict\" id=\"rc-verdict\">henüz çalıştırılmadı</span>", "rc-020": "SIMEA üç ölçülebilir büyüklük öneriyor: bir sistemin bir seçim üzerinde uyguladığı etki eğimi, faile kendisine kalan özerklik eşiği, ve seçim ortamının kendi entropisi.", "rc-021": "Her biri bir <span class=\"ex-em\">işlevselleştirme</span>: bir yapıyı, bir makinenin yapabileceği aritmetiğe çevirmenin bir yolu, basit, sınırlı ve okunaklı olduğu için seçilmiş. Hiçbiri yapının kendisi değil, ve farklı bir model üzerinde farklı bir işlevselleştirme farklı sayılar verirdi; her biri için makul olan birkaç tanesi mevcut. Bu üçünün işe yaradığı yer, tek bir modelin içinde, değişen tek şeyin okurun değiştirdiği şey olduğu karşılaştırma.", "rc-022": "Sistemin seçmesi nüfusu eksen boyunca ne kadar taşıdı, aynı nüfusun sistem olmadan gittiği yere kıyasla. İki koşu da yirmi dört kutuya bölünüyor ve iki dağılım şu soruyla karşılaştırılıyor: birinin kütlesi öbürünün tam üstüne oturmak için ne kadar taşınmalı, eksenin bütün genişliğine oran olarak. Sıfır, yönlendirilmiş nüfusun tam olarak yönlendirilmemiş olanın durduğu yerde durduğu anlamına geliyor; bir ise eksenin bir ucundan öbürüne taşındığı anlamına geliyor.", "rc-023": "F(b) = b kutusunda ya da altında kalan nüfus payı G = ( b kutuları üzerinden toplam | F_yönlendirilmiş(b) − F_nötr(b) | ) / 23", "rc-024": "Bu, eksen boyunca bir uzaklık, ve onu seçmek bana önce bir yanlış cevaba mal oldu. İşe toplam değişim uzaklığıyla başladım; o yalnızca iki dağılımın ne kadarının örtüşmediğini soruyor: sıfırı doğru okuyor, ama bir nüfus bir ya da iki sıkı konumda toplandıktan sonra, o konumlar aynı kutuyu paylaşmayı bıraktığı anda bire sıçrıyor, yani kıl payı itilmiş bir uzlaşı ile ikiye bölünmüş bir nüfus aynı şekilde bir alıyordu. Eksen boyunca uzaklık bunları ayırt ediyor, çünkü kütlenin taşınıp taşınmadığını değil ne kadar taşındığını sayıyor. Yine de birkaç işlevselleştirmeden biri: aynı yapı, her failin kendi karşı olgusal ikizine karşı fail fail ölçülebilir, ya da ortalamadaki kayma olarak alınabilirdi, ve bunlar bununla uyuşmazdı.", "rc-025": "Her tur bir failin yeni konumu, halihazırda durduğu yerle kendisine gösterilenin ağırlıklı ortalaması; özerklik eşiği ise halihazırda durduğu yerin hâlâ taşıdığı ağırlık, nüfus üzerinden ortalanmış. Bir, gördüğü hiçbir şeyin onu kımıldatmadığı anlamına geliyor; daha düşük olması, daha fazlasının akıştan geldiği anlamına geliyor.", "rc-026": "i faili için: x_i(sonraki) = (1 − μ·m_i)·x_i + μ · kabul edilen j öğeleri üzerinden toplam x_j A = failler üzerinden ortalama ( 1 − μ·m_i )", "rc-027": "μ, bir failin kabul ettiği bir öğeye doğru attığı sabit adım, burada 0,15; m_i ise beş öğeden kaçını bu turda kabul ettiği. Beş yuva ve bu adımla bu ölçünün aritmetik tabanı 0,25, yani tam bir özerklik kaybı bildiremiyor: akışın hiçbir zaman hepsini alamadığı bir modelin içinde, nüfusun hareketinin ne kadarının kendisinin değil akışın olduğunu bildiriyor, ve o taban yapının değil benim parametrelerimin bir özelliği.", "rc-028": "Bu, nüfusa ne sunulduğunu ölçüyor, neye inandığını değil. Her fail için akışın eksen üzerinde tam bir dağılımı var: kendisi için çekilen adaylar, uyuşmaya verilen ağırlık ve rastgele pay verildiğinde bir yuvanın yirmi dört kutunun her birine düşme ihtimali. Bu dağılımın Shannon entropisi alınıyor, sıfırdan bire gitsin diye düz bir dağılımın entropisine bölünüyor ve nüfus üzerinden ortalanıyor: bir, faile bütün eksenin eşit olarak sunulduğu anlamına geliyor, düşmesi ise akışının daraldığı anlamına geliyor.", "rc-029": "i faili için: q_i(b) = i'nin akışındaki bir yuvanın b kutusuna düşme ihtimali H = failler üzerinden ortalama ( − b kutuları üzerinden toplam q_i(b) · log q_i(b) ) / log 24", "rc-030": "Birincisi, bu, tek bir failin ortamının failler üzerinden ortalaması, nüfusun ortamı değil: herkes üzerinden aynı anda ölçüldüğünde, her bireysel akış darken bile sayı yüksek kalıyor, çünkü farklı yönlere bakan dar akışlar aralarında yine de ekseni kaplıyor. İki rakam da resmin altındaki okuma satırında, ve aralarındaki fark, balon sözcüğünün söylemeye çalıştığı şeyin çoğu. İkincisi, sayı hem öneri sistemi dar seçtiği için hem de nüfus çöküp sunulacak fazla bir şey kalmadığı için düşüyor, o yüzden onu taramanın yerine değil yanında okuyun.", "rc-031": "Önce, öneri sistemini uyuşmayı hiç kayırmayacak biçimde ayarlayın ve çalıştırın: etki eğimi bütün koşu boyunca sıfırda kalıyor ve iki tarama aynı kalıyor. Kontrol bu, çünkü hiçbir şey olmuyorken sıfır okumayan bir ölçü hiç okunmaya değmez.", "rc-032": "Sonra, hareket etme isteğini orta bir yere koyun, uyuşmanın kayırılmasını sonuna kadar açın ve tekrar çalıştırın. Nüfus ikiye ayrılıyor, iki yarı birbirinden uzaklaşıyor ve bu olurken eğim tırmanıyor; altındaki nötr dünya ise, aynı failler ve aynı çekilişlerle, tersine bir araya geliyor.", "rc-033": "Üçüncü olarak, öneri sistemini olduğu yerde bırakın ve akışın rastgele çekilen payını yükseltin. Her failin ortamının entropisi geri yükseliyor, yarılar ayrışmayı bırakıyor, ve belli bir payın üstünde nüfus yeniden bir araya geliyor. Sistem daha az güçlü olmadı; seçimleri yalnızca sulandı, ve sulanmanın yettiği ortaya çıkıyor.", "rc-034": "Bir fail, kendisine gösterilene doğru yalnızca gösterilen şey ciddiye alınacak kadar yakınken güncelleniyor. Bu, sınırlı güven kuralı; görüş dinamikleri literatüründe standart, kaynağı aşağıda veriliyor, ve modelin yaptığı her şey ondan ve seçmeden çıkıyor.", "rc-035": "adaylar: her fail için her tur rastgele çekilen otuz iki başka fail seçim: j öğesi exp( − α · | x_j − x_i | ) ile orantılı ağırlıkla seçiliyor, yuvaların ρ payı ise bunun yerine tekdüze rastgele çekiliyor güncelleme: | x_j − x_i | ≤ c olduğunda j öğesi kabul ediliyor, sonra x_i, x_j yönünde μ = 0,15 kadar kayıyor <small data-i=\"rc-053\">α uyuşmanın kayırılması, ρ rastgele pay, c ise uyuşmazlığa doğru hareket etme isteği. α sıfıra eşitken ağırlıkların hepsi eşit ve seçim tekdüze, ki bu tam olarak nötr akış; iki dünyanın orada çakışmasının sebebi de bu.</small>", "rc-036": "Öneri sisteminin azamileştirdiği bir amacı yok, failin şu anki konumunun ötesinde bir modeli yok, belleği yok, sonuca ilgisi yok: bir uzaklık üzerindeki tek bir üstel ağırlık. Neredeyse her gerçek sistem bundan daha yetenekli, ve daha yetenekli olanlar daha nazik olmazdı.", "rc-037": "En çok dikkat ettiğim simülasyon bu, çünkü gerçek bir platform hakkında bir şey söylüyormuş gibi alıntılanmaya en yatkın olan o. Söylemiyor.", "rc-038": "Çerçeve bana ait, arkasındaki not aşağıda bağlantılı.", "rc-039": "<strong>Bu bir öğretim modeli, ölçüm değil:</strong> bu sayfadaki her sayı ya sizin ayarladığınız ya da bu modelin sizin ayarladığınızdan ürettiği bir sayı, burada gerçek bir platform ya da gerçek bir nüfus tarif edilmiyor, ve bu sayfadan çıkan hiçbir rakamın böyle bir şey hakkındaki bir tartışmada yeri yok.", "rc-040": "Tamamen tarayıcınızda çalışır: burada yaptığınız hiçbir şey sayfadan çıkmaz, sunucu yok, analitik yok, yazı tipleri yüklendikten sonra ağ isteği yok. <a href=\"../index.html\">SIMEA simülasyonlarının</a> parçası, yapan <a href=\"../../index.html\">Kerem Özdemir</a>.", "rc-041": "<b>Tek eksen</b>Bir görüş, tek bir çizgi üzerinde tek bir sayı; oysa gerçek konumlar çok boyutludur ve çoğu zaman hiç sıralı değildir, ve bir anlaşmazlığı anlaşmazlık yapan şeyin büyük kısmı bir çizgiye yassıltıldığında kayboluyor.", "rc-042": "<b>Kural uydurma</b>Sınırlı güven güncellemesi, insanların fikirlerini nasıl değiştirdiğine dair ölçülmüş bir yasa değil, arkasında literatürü olan bir modelleme uzlaşımı; buradaki faillerin ise belleği, kimliği, grubu, konum değiştirme maliyeti ve bir konumu bir başkasına tercih etmek için sebebi yok.", "rc-043": "<b>Sistem bir oyuncak</b>Bir uzaklık üzerinde tek bir üstel ağırlık: etkileşim amacı yok, reklam yok, sıralama modeli yok, soğuk başlangıç yok, moderasyon yok, gerçek bir öneri sisteminin ne üzerinde eğitildiğine dair bir kavram yok. Buradaki sayıyı gerçek bir sistemin etkisinin tahmini olarak okumak bir kategori hatası olurdu.", "rc-044": "<b>Üç yapı tek bir işlevselleştirme</b>Eksen boyunca bir uzaklık, bir güncelleme kuralındaki bir ağırlık ve normalleştirilmiş bir Shannon entropisi savunulabilir üç seçim; savunulabilir üç başka seçim üç başka sayı kümesi verirdi.", "rc-045": "<b>Karşı olgu yalnızca burada var</b>Etki eğimi, dünyayı iki kez çalıştırarak hesaplanıyor; gerçek bir sistemde ise tam olarak bir koşu var ve nötr bir ikiz yok, ki bu tam da programın üzerinde çalışmak için var olduğu ölçüm sorunu. Bu sayfanın gösterdiği şey, o büyüklüğü elde edebilseydiniz ne anlama geleceği; onu elde etmenin bir yöntemi değil.", "rc-046": "<b>Entropi belirsiz</b>Akış daraldığında da düşüyor, nüfus çöktüğünde de, ve hangisi olduğunu söyleyemiyor; o yüzden onu taramanın yerine değil yanında okuyun.", "rc-047": "<b>Buradaki hiçbir sayı tahmin değil</b>Bu sayfadaki her rakam üstündeki parametrelerden geliyor, ve hiçbiri bir platformu, bir nüfusu ya da ölçülmüş bir etkiyi tarif etmiyor.", "rc-051": "Şekil bir <span class=\"ex-model-sub\">akışı ayarlayın, sonra çalıştırın</span>", "rc-052": "Şekil iki <span class=\"ex-model-sub\">üç yapı, tur tur</span>", "rc-skip": "Simülasyona geçin", "rc-v-notrun": "henüz çalıştırılmadı", "rc-v-consensus": "uzlaşı", "rc-v-hard": "sert kutuplaşma", "rc-v-two": "iki kamp", "rc-v-frag": "{n} kampa parçalanma", "rc-camps": "{n} kamp", "rc-pan-steered": "öneri sistemiyle", "rc-pan-neutral": "nötr akışla", "rc-ax-rounds": "tur", "rc-ln-g": "etki eğimi", "rc-ln-a": "özerklik eşiği", "rc-ln-h": "bir akışın entropisi", "rc-sl-a": "Uyuşmanın kayırılması", "rc-sl-a-h": "Akışın, failin kendi konumuna yakın konumları ne kadar dik biçimde tercih ettiği. Sıfır nötr bir akış.", "rc-sl-c": "Hareket etme isteği", "rc-sl-c-h": "Bir şeyin ne kadar uzakta olup faili yine de kımıldatabileceği. Eksen iki birim genişliğinde.", "rc-sl-r": "Akışın rastgele payı", "rc-sl-r-h": "Sıralanmış malzeme yerine gerçekten rastgele malzemeyle doldurulan yuvalar.", "rc-sl-n": "Nüfus", "rc-sl-n-h": "İki dünyanın her birinde kaç fail olduğu.", "rc-rd-g": "Etki eğimi", "rc-rd-a": "Özerklik eşiği", "rc-rd-h": "Bir akışın entropisi", "rc-rd-hn": "Aynısı, nötr akış", "rc-rd-cl": "Kamp", "rc-rd-t": "Tur", "rc-sub-g": "0 fark yok demek", "rc-sub-a": "1 tamamen kendisinin demek", "rc-sub-h": "1 bütün eksen demek", "rc-sub-hn": "herkes üzerinden: {v}", "rc-sub-cl": "yayılım {v}", "rc-sub-t-done": "koşu tamamlandı", "rc-sub-t": "toplam {n}", "rc-key-more": "burada duran fail sayısı", "rc-key-now": "şu an çizilen tur", "rc-clock": "tur {n} / {m}", "rc-share": "Bağlantı kopyalandı; bu turdan açılıyor.", "rc-sum": "Aynı nüfusun {t} tur boyunca iki tarama görüntüsü; dikeyde görüş eksi birden artı bire, zaman soldan sağa, daha çok failin durduğu yerde daha koyu. Üstteki taramada öneri sistemi var, uyuşmayı {alpha} ağırlığıyla kayırıyor ve akışın yüzde {rho} kadarı rastgele çekiliyor; alttaki tarama ise aynı failler ve aynı rastgele çekilişlerle nötr bir akış. Nüfus şu an {camps} hâlinde ve okuma {verdict}.", "rc-sum2": "Üç yapı {t} tur boyunca, her biri sıfırdan bire. Etki eğimi {g} okuyor, özerklik eşiği {a}, ve tek bir failin seçim ortamının entropisi {h}; nötr dünyadaki {hn} değerine karşı. Tek tek failler yerine bütün nüfus üzerinden aynı anda ölçüldüğünde {hall} okuyor.", "rc-s0": "İki dünya da eksen boyunca eşit dağılmış aynı {n} faili tutuyor. Çalıştırın'a basın.", "rc-s-ctrl": "Öneri sistemi uyuşmayı hiç kayırmayacak biçimde ayarlı, yani nötr bir akışın yaptığı şeyin aynısını yapıyor ve iki dünya aynı süreç. Etki eğimi {t} tur sonra {g} okuyor.", "rc-s-steer": "{t} tur sonra yönlendirilmiş nüfus ile yönlendirilmemiş ikizi etki eğiminde {g} kadar ayrılıyor. Aynı failler, aynı başlangıç konumları ve aynı rastgele sayılar {where}", "rc-s-near": "neredeyse aynı yere gitti, yani seçme onları henüz nötr akışın götürmeyeceği bir yere taşımadı.", "rc-s-far": "ölçülebilir biçimde farklı yerlere gitti, ve iki koşu arasında farklı olan tek şey, her faile hangi birkaç konumun gösterildiğiydi.", "rc-s2": "Ortalama failin bir sonraki konumunun {a} kadarı kendi ön kanısı, kalanı kendisine gösterilen. Akışın kendisi şu an, o faile bütün ekseni eşit sunsaydı sahip olacağı entropinin {h} kadarında; nötr dünyadaki {hn} değerine karşı. Bütün nüfus üzerinden aynı anda aynı ölçü {hall} okuyor, ki bu daha yüksek, çünkü farklı yönlere bakan dar akışlar aralarında yine de ekseni kaplıyor; nüfus ise {camps} hâlinde duruyor.", "rc-048": "Güncelleme kuralı bir sınırlı güven modeli: bir fail yalnızca kendi güven aralığındaki görüşleri hesaba katıyor, ve makale, o aralığın genişliğinin bir nüfusun uzlaşıya mı vardığını, ikiye mi ayrıldığını yoksa parçalandığını mı belirlediğini inceliyor. <span class=\"ex-cite-w\">Rainer Hegselmann and Ulrich Krause, <span class=\"ex-cite-t\">Opinion\n            Dynamics and Bounded Confidence: Models, Analysis and Simulation</span>, Journal of Artificial\n            Societies and Social Simulation 5(3), article 2, 2002.\n            <a href=\"https://www.jasss.org/5/3/2.html\" target=\"_blank\" rel=\"noreferrer noopener\">jasss.org/5/3/2.html</a>\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "rc-049": "Seçim ortamının entropisi, sunulan şeyin dağılımının Shannon entropisi; aynı kutular üzerindeki düz dağılımın entropisiyle normalleştirilmiş. <span class=\"ex-cite-w\">Claude E. Shannon, <span class=\"ex-cite-t\">A Mathematical Theory of\n            Communication</span>, The Bell System Technical Journal 27, 1948, pages 379 to 423 and 623 to\n            656.\n            <a href=\"https://onlinelibrary.wiley.com/doi/10.1002/j.1538-7305.1948.tb01338.x\" target=\"_blank\" rel=\"noreferrer noopener\">doi.org 10.1002/j.1538-7305.1948.tb01338.x</a>\n            Tam metin şurada okundu:\n            <a href=\"https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">people.math.harvard.edu</a>.\n            Kontrol tarihi: 2026 08 22.</span>\n          ", "rc-050": "Üç yapı, ve onları isteme sebepleri. <span class=\"ex-cite-w\">Kerem Özdemir, <span class=\"ex-cite-t\">The agent was never alone:\n            SIMEA</span>, a working note.\n            <a href=\"../../note-simea.html\">keremozdemir.de/note-simea.html</a></span>\n          ", "rc-camps-one": "tek bir kamp", "pg-title": "Öneri sistemi, bir akışın etkisi ölçülüyor. Kerem Özdemir"}, "de": {"pg-desc": "Ein Feed entscheidet, was jeder Agent sieht, und dieselbe Population läuft daneben mit neutralem Feed. Einfluss, Autonomie und Wahlentropie live gemessen.", "rc-001": "Das Empfehlungssystem", "rc-002": "<span class=\"k-num\">01</span>Zwei Welten, ein Startwert", "rc-003": "<span class=\"k-num\">02</span>Die drei Konstrukte, auf dem Bildschirm", "rc-004": "<span class=\"k-num\">03</span>Drei Dinge, die man damit tun sollte", "rc-005": "<span class=\"k-num\">04</span>Was die Regel tatsächlich ist", "rc-006": "<span class=\"k-num\">05</span>Wo das Modell aufhört", "rc-007": "<span class=\"k-num\">06</span>Quellen", "rc-008": "Annahmen und Grenzen", "rc-009": "Einflussgradient <span class=\"sm-live\" id=\"rc-live-g\">0.00</span>", "rc-010": "Autonomieschwelle <span class=\"sm-live\" id=\"rc-live-a\">1.00</span>", "rc-011": "Entropie der Wahlumgebung <span class=\"sm-live\" id=\"rc-live-h\">1.00</span>", "rc-012": "Tausend Akteure mit einer Meinung, und ein System, das entscheidet, was jeder von ihnen zu sehen bekommt; dieselbe Population läuft zweimal vom selben Ausgangspunkt mit denselben Zufallsziehungen, einmal mit dem wählenden System und einmal mit einem neutralen Feed, sodass der Unterschied zwischen den beiden Läufen das System ist und sonst nichts.", "rc-013": "SIMEA behauptet, dass ein in ein System eingebetteter Akteur nicht dasselbe Objekt ist wie ein Akteur, der allein wählt, und dass sich der Unterschied messen lässt, statt bloß behauptet zu werden.", "rc-014": "Jeder Akteur hält eine Position auf einer einzigen Achse, von einem Ende zum anderen, und in jeder Runde bekommt er eine Handvoll Positionen anderer Akteure gezeigt. Er bewegt sich ein Stück auf alles zu, was seiner eigenen nahe genug ist, um ernst genommen zu werden, und ignoriert alles, was zu weit weg ist. Das Einzige, was das System tut, ist, diese Handvoll auszuwählen.", "rc-015": "Das ist eine sehr kleine Macht: sie kann einen Akteur nichts glauben machen, nicht bestrafen, bezahlen, überreden oder lügen. Sie wählt aus; lassen Sie es laufen und sehen Sie, wie weit Auswahl allein eine Population trägt.", "rc-016": "Die Zeit läuft von links nach rechts, die Meinungsachse von einem Ende der Senkrechten zum anderen, und je dunkler ein Band, desto mehr Akteure stehen in diesem Moment dort.", "rc-017": "Das obere Raster ist die Welt mit dem Empfehlungssystem darin; das untere ist das Kontrafaktische, dieselben Akteure, dieselben Startpositionen, dieselben Zufallszahlen in derselben Reihenfolge, und ein Feed, der gleichverteilt zufällig auswählt. Stellen Sie das Empfehlungssystem so ein, dass es Zustimmung überhaupt nicht bevorzugt, und die beiden Raster sind Pixel für Pixel identisch, denn bei dieser Einstellung sind die beiden Welten derselbe Prozess, und damit ist jeder Unterschied, den Sie sehen, das System.", "rc-018": "Wo die Population steht, Runde für Runde", "rc-019": "<span class=\"rc-verdict\" id=\"rc-verdict\">noch nicht gelaufen</span>", "rc-020": "SIMEA schlägt drei messbare Größen vor: den Einflussgradienten, den ein System auf eine Entscheidung ausübt, die Autonomieschwelle, die dem Akteur bleibt, und die Entropie der Wahlumgebung selbst.", "rc-021": "Jede ist eine <span class=\"ex-em\">Operationalisierung</span>: eine Art, ein Konstrukt in Arithmetik zu überführen, die eine Maschine ausführen kann, gewählt, weil sie einfach, beschränkt und lesbar ist. Keine davon ist das Konstrukt, und eine andere Operationalisierung auf einem anderen Modell ergäbe andere Zahlen, wobei es für jede mehrere vernünftige gibt. Wozu die drei taugen, ist der Vergleich innerhalb eines Modells, wo das Einzige, was sich geändert hat, das ist, was der Leser geändert hat.", "rc-022": "Wie weit entlang der Achse das Auswählen des Systems die Population getragen hat, verglichen damit, wohin dieselbe Population ohne es gegangen ist. Beide Läufe werden in vierundzwanzig Bins eingeteilt, und die beiden Verteilungen werden mit der Frage verglichen, wie weit die Masse der einen bewegt werden müsste, um genau auf der anderen zu liegen, als Anteil an der ganzen Breite der Achse. Null heißt, die gesteuerte Population sitzt genau dort, wo die ungesteuerte sitzt; eins heißt, sie wurde von einem Ende der Achse zum anderen getragen.", "rc-023": "F(b) = der Anteil der Population auf oder unter Bin b G = ( Summe über Bins b von | F_gesteuert(b) − F_neutral(b) | ) / 23", "rc-024": "Das ist ein Abstand entlang der Achse, und ihn zu wählen kostete mich zuerst eine falsche Antwort. Ich begann mit der Totalvariationsdistanz, die nur fragt, wie viel der beiden Verteilungen sich nicht überlappt: Sie liest die Null richtig, aber sobald sich eine Population in ein oder zwei enge Positionen gesammelt hat, springt sie auf eins, sobald diese Positionen kein Bin mehr teilen, sodass ein um Haaresbreite verschobener Konsens und eine in zwei Teile gerissene Population beide eine Eins bekamen. Der Abstand entlang der Achse unterscheidet sie, weil er zählt, wie weit die Masse sich bewegt hat, und nicht, ob sie sich bewegt hat. Er bleibt eine Operationalisierung unter mehreren: Dasselbe Konstrukt ließe sich Akteur für Akteur gegen dessen eigenes kontrafaktisches Selbst messen oder als Verschiebung des Mittelwerts, und beides stimmte mit diesem hier nicht überein.", "rc-025": "In jeder Runde ist die neue Position eines Akteurs ein gewichtetes Mittel aus dem, wo er schon stand, und dem, was ihm gezeigt wurde, und die Autonomieschwelle ist das Gewicht, das die alte Position noch trägt, über die Population gemittelt. Eins heißt, nichts von dem Gesehenen hat ihn bewegt; niedriger heißt, mehr davon kam aus dem Feed.", "rc-026": "für Akteur i: x_i(nächste) = (1 − μ·m_i)·x_i + μ · Summe über angenommene Elemente j von x_j A = Mittel über Akteure von ( 1 − μ·m_i )", "rc-027": "μ ist der feste Schritt, den ein Akteur auf ein angenommenes Element zu macht, hier 0,15, und m_i ist, wie viele der fünf Elemente er in dieser Runde angenommen hat. Bei fünf Plätzen und diesem Schritt liegt der arithmetische Boden dieses Maßes bei 0,25, es kann also keinen völligen Verlust an Autonomie melden: Es meldet, wie viel der Bewegung der Population dem Feed und nicht ihr selbst gehört, innerhalb eines Modells, das den Feed nie alles bekommen lässt, und dieser Boden ist eine Eigenschaft meiner Parameter und nicht des Konstrukts.", "rc-028": "Das misst, was der Population angeboten wird, nicht, was sie glaubt. Für jeden Akteur hat der Feed eine exakte Verteilung über die Achse: die Wahrscheinlichkeit, dass ein Platz in jedem der vierundzwanzig Bins landet, gegeben die für ihn gezogenen Kandidaten, das Gewicht auf Zustimmung und den Zufallsanteil. Von dieser Verteilung wird die Shannon-Entropie genommen, durch die einer flachen geteilt, sodass sie von null bis eins läuft, und über die Population gemittelt: Eins heißt, einem Akteur wird die ganze Achse gleichmäßig angeboten, und ein Fallen heißt, sein Feed hat sich verengt.", "rc-029": "für Akteur i: q_i(b) = die Wahrscheinlichkeit, dass ein Platz in i's Feed in Bin b landet H = Mittel über Akteure von ( − Summe über Bins b von q_i(b) · log q_i(b) ) / log 24", "rc-030": "Erstens ist das die Umgebung eines Akteurs, über Akteure gemittelt, und nicht die der Population: über alle zugleich gemessen bleibt die Zahl hoch, selbst wenn jeder einzelne Feed eng ist, weil enge Feeds in verschiedene Richtungen zusammen die Achse trotzdem abdecken. Beide Zahlen stehen in der Lesezeile unter dem Bild, und der Unterschied zwischen ihnen ist das meiste von dem, was das Wort Blase sagen will. Zweitens fällt die Zahl sowohl, weil das Empfehlungssystem eng auswählt, als auch, weil die Population zusammengebrochen ist und wenig übrig bleibt, das sich ausliefern ließe, lesen Sie sie also neben dem Raster und nicht statt seiner.", "rc-031": "Erstens: Stellen Sie das Empfehlungssystem so ein, dass es Zustimmung überhaupt nicht bevorzugt, und lassen Sie es laufen: der Einflussgradient bleibt den ganzen Lauf über bei null, und die beiden Raster bleiben identisch. Das ist die Kontrolle, denn ein Maß, das nicht null anzeigt, wenn nichts geschieht, ist überhaupt nicht lesenswert.", "rc-032": "Zweitens: Setzen Sie die Bewegungsbereitschaft auf etwas Mittleres, drehen Sie die Bevorzugung von Zustimmung kräftig hoch und lassen Sie es noch einmal laufen. Die Population spaltet sich, die beiden Hälften laufen voneinander weg und der Gradient klettert dabei, während die neutrale Welt darunter, mit denselben Akteuren und denselben Ziehungen, stattdessen zusammenfindet.", "rc-033": "Drittens: Lassen Sie das Empfehlungssystem genau dort, wo es ist, und erhöhen Sie den Anteil des Feeds, der zufällig gezogen wird. Die Entropie der Umgebung jedes Akteurs steigt wieder, die Hälften hören auf, sich zu trennen, und oberhalb eines bestimmten Anteils findet die Population wieder zusammen. Das System ist nicht schwächer geworden; seine Auswahl wurde nur verdünnt, und Verdünnung erweist sich als genug.", "rc-034": "Ein Akteur aktualisiert sich nur dann in Richtung dessen, was ihm gezeigt wird, wenn das Gezeigte nahe genug ist, um ernst genommen zu werden. Das ist eine Regel beschränkten Vertrauens, in der Literatur zur Meinungsdynamik Standard und unten belegt, und alles, was das Modell tut, folgt aus ihr und aus der Auswahl.", "rc-035": "Kandidaten: zweiunddreißig andere Akteure, für jeden Akteur in jeder Runde zufällig gezogen Auswahl: Element j wird mit einem Gewicht proportional zu exp( − α · | x_j − x_i | ) gezogen, ein Anteil ρ der Plätze wird stattdessen gleichverteilt zufällig gezogen Aktualisierung: Element j wird angenommen, wenn | x_j − x_i | ≤ c, dann bewegt sich x_i um μ = 0,15 auf x_j zu <small data-i=\"rc-053\">α ist die Bevorzugung von Zustimmung, ρ der Zufallsanteil, c die Bereitschaft, sich auf Widerspruch zuzubewegen. Bei α gleich null sind alle Gewichte gleich und die Auswahl ist gleichverteilt, was genau der neutrale Feed ist, weshalb die beiden Welten dort zusammenfallen.</small>", "rc-036": "Das Empfehlungssystem hat kein Ziel, das es maximiert, kein Modell des Akteurs über dessen aktuelle Position hinaus, kein Gedächtnis und kein Interesse am Ergebnis: es ist ein exponentielles Gewicht auf einem Abstand. Fast jedes reale System kann mehr, und die, die mehr können, wären nicht sanfter.", "rc-037": "Das ist die Simulation, bei der ich am vorsichtigsten bin, weil sie am ehesten so zitiert wird, als sagte sie etwas über eine reale Plattform. Tut sie nicht.", "rc-038": "Der Rahmen ist mein eigener, und die Notiz dahinter ist unten verlinkt.", "rc-039": "<strong>Das ist ein Lehrmodell, keine Messung:</strong> jede Zahl auf dieser Seite ist eine, die Sie eingestellt haben, oder eine, die dieses Modell daraus erzeugt hat, nichts hier beschreibt eine reale Plattform oder eine reale Population, und keine Zahl von dieser Seite gehört in ein Argument über eine.", "rc-040": "Läuft vollständig in Ihrem Browser: nichts, was Sie hier tun, verlässt die Seite, kein Server, keine Analyse, kein Netzwerkaufruf, nachdem die Schriften geladen sind. Teil <a href=\"../index.html\">der SIMEA-Simulationen</a>, gebaut von <a href=\"../../index.html\">Kerem Özdemir</a>.", "rc-041": "<b>Eine Achse</b>Eine Meinung ist eine einzige Zahl auf einer einzigen Linie, während reale Positionen vieldimensional und oft gar nicht geordnet sind, und vieles von dem, was eine Meinungsverschiedenheit ausmacht, verschwindet, wenn man sie auf eine Linie plattdrückt.", "rc-042": "<b>Die Regel ist erfunden</b>Die Aktualisierung bei beschränktem Vertrauen ist eine Modellierungskonvention mit Literatur dahinter und kein gemessenes Gesetz dafür, wie Menschen ihre Meinung ändern, und die Akteure hier haben kein Gedächtnis, keine Identität, keine Gruppe, keine Kosten für einen Positionswechsel und keinen Grund, die eine Position statt der anderen zu halten.", "rc-043": "<b>Das System ist ein Spielzeug</b>Ein exponentielles Gewicht auf einem Abstand: kein Engagement-Ziel, keine Werbung, kein Ranking-Modell, kein Kaltstart, keine Moderation, kein Begriff davon, worauf ein reales Empfehlungssystem trainiert wird. Die Zahl hier als Schätzung des Einflusses irgendeines realen Systems zu lesen, wäre ein Kategorienfehler.", "rc-044": "<b>Die drei Konstrukte sind eine Operationalisierung</b>Ein Abstand entlang der Achse, ein Gewicht in einer Aktualisierungsregel und eine normierte Shannon-Entropie sind drei vertretbare Wahlen, und drei andere vertretbare Wahlen ergäben drei andere Zahlenreihen.", "rc-045": "<b>Das Kontrafaktische gibt es nur hier</b>Der Einflussgradient wird berechnet, indem die Welt zweimal läuft, und in einem realen System gibt es genau einen Lauf und keinen neutralen Zwilling, und genau das ist das Messproblem, an dem zu arbeiten das Programm existiert. Was diese Seite zeigt, ist, was die Größe bedeuten würde, wenn man sie bekommen könnte, und keine Methode, sie zu bekommen.", "rc-046": "<b>Die Entropie ist mehrdeutig</b>Sie fällt, wenn der Feed sich verengt, und sie fällt, wenn die Population zusammenbricht, und sie kann Ihnen nicht sagen, welches von beidem, lesen Sie sie also neben dem Raster und nicht statt seiner.", "rc-047": "<b>Keine Zahl hier ist eine Schätzung</b>Jede Zahl auf dieser Seite kommt aus den Parametern darüber, und keine beschreibt eine Plattform, eine Population oder einen gemessenen Effekt.", "rc-051": "Abbildung eins <span class=\"ex-model-sub\">Feed einstellen, dann laufen lassen</span>", "rc-052": "Abbildung zwei <span class=\"ex-model-sub\">die drei Konstrukte, Runde für Runde</span>", "rc-skip": "Zur Simulation springen", "rc-v-notrun": "noch nicht gelaufen", "rc-v-consensus": "Konsens", "rc-v-hard": "harte Polarisierung", "rc-v-two": "zwei Lager", "rc-v-frag": "Zersplitterung in {n} Lager", "rc-camps": "{n} Lagern", "rc-pan-steered": "mit dem Empfehlungssystem", "rc-pan-neutral": "mit einem neutralen Feed", "rc-ax-rounds": "Runden", "rc-ln-g": "Einflussgradient", "rc-ln-a": "Autonomieschwelle", "rc-ln-h": "Entropie eines Feeds", "rc-sl-a": "Bevorzugung von Zustimmung", "rc-sl-a-h": "Wie steil der Feed Positionen nahe der eigenen des Akteurs bevorzugt. Null ist ein neutraler Feed.", "rc-sl-c": "Bewegungsbereitschaft", "rc-sl-c-h": "Wie weit etwas entfernt sein darf und den Akteur trotzdem bewegt. Die Achse ist zwei Einheiten breit.", "rc-sl-r": "Zufallsanteil des Feeds", "rc-sl-r-h": "Plätze, die mit wirklich zufälligem statt mit sortiertem Material gefüllt werden.", "rc-sl-n": "Population", "rc-sl-n-h": "Wie viele Akteure in jeder der beiden Welten sind.", "rc-rd-g": "Einflussgradient", "rc-rd-a": "Autonomieschwelle", "rc-rd-h": "Entropie eines Feeds", "rc-rd-hn": "Dasselbe, neutraler Feed", "rc-rd-cl": "Lager", "rc-rd-t": "Runden", "rc-sub-g": "0 heißt kein Unterschied", "rc-sub-a": "1 heißt ganz die eigene", "rc-sub-h": "1 heißt die ganze Achse", "rc-sub-hn": "über alle: {v}", "rc-sub-cl": "Spanne {v}", "rc-sub-t-done": "Lauf beendet", "rc-sub-t": "von {n}", "rc-key-more": "mehr Akteure stehen hier", "rc-key-now": "die gerade gezeichnete Runde", "rc-clock": "Runde {n} von {m}", "rc-share": "Link kopiert; er öffnet auf dieser Runde.", "rc-sum": "Zwei Raster derselben Population über {t} Runden, Meinung auf der Senkrechten von minus eins bis plus eins, Zeit von links nach rechts, dunkler, wo mehr Akteure stehen. Das obere Raster hat das Empfehlungssystem darin, das Zustimmung mit {alpha} gewichtet, während {rho} Prozent des Feeds zufällig gezogen werden, und das untere Raster sind dieselben Akteure und dieselben Zufallsziehungen mit einem neutralen Feed. Die Population sitzt gerade in {camps}, und die Lesung lautet {verdict}.", "rc-sum2": "Die drei Konstrukte über {t} Runden, jedes von null bis eins. Der Einflussgradient zeigt {g}, die Autonomieschwelle {a}, und die Entropie der Wahlumgebung eines Akteurs {h}, gegen {hn} in der neutralen Welt. Über die ganze Population zugleich statt Akteur für Akteur gemessen zeigt sie {hall}.", "rc-s0": "Beide Welten halten dieselben {n} Akteure, gleichmäßig entlang der Achse verteilt. Drücken Sie Starten.", "rc-s-ctrl": "Das Empfehlungssystem ist so eingestellt, dass es Zustimmung überhaupt nicht bevorzugt, es tut also dasselbe wie ein neutraler Feed, und die beiden Welten sind derselbe Prozess. Der Einflussgradient zeigt nach {t} Runden {g}.", "rc-s-steer": "Nach {t} Runden unterscheiden sich die gesteuerte Population und ihr ungesteuerter Zwilling um {g} auf dem Einflussgradienten. Dieselben Akteure, dieselben Startpositionen und dieselben Zufallszahlen gingen {where}", "rc-s-near": "an fast denselben Ort, die Auswahl hat sie also noch nirgendwohin getragen, wohin der neutrale Feed sie nicht auch gebracht hätte.", "rc-s-far": "an messbar verschiedene Orte, und das Einzige, was sich zwischen den beiden Läufen unterschied, war, welche Handvoll Positionen jedem Akteur gezeigt wurde.", "rc-s2": "Die nächste Position des durchschnittlichen Akteurs besteht zu {a} aus seiner eigenen Vorannahme, der Rest ist das, was ihm gezeigt wurde. Der Feed selbst liegt gerade bei {h} der Entropie, die er hätte, wenn er diesem Akteur die ganze Achse gleichmäßig anböte, gegen {hn} in der neutralen Welt. Über die ganze Population zugleich zeigt dasselbe Maß {hall}, was höher ist, weil enge Feeds in verschiedene Richtungen zusammen die Achse trotzdem abdecken, und die Population steht in {camps}.", "rc-048": "Die Aktualisierungsregel ist ein Modell beschränkten Vertrauens: Ein Akteur berücksichtigt nur die Meinungen innerhalb eines Vertrauensintervalls um die eigene, und die Arbeit untersucht, wie die Breite dieses Intervalls entscheidet, ob eine Population zu Konsens gelangt, sich spaltet oder zersplittert. <span class=\"ex-cite-w\">Rainer Hegselmann and Ulrich Krause, <span class=\"ex-cite-t\">Opinion\n            Dynamics and Bounded Confidence: Models, Analysis and Simulation</span>, Journal of Artificial\n            Societies and Social Simulation 5(3), article 2, 2002.\n            <a href=\"https://www.jasss.org/5/3/2.html\" target=\"_blank\" rel=\"noreferrer noopener\">jasss.org/5/3/2.html</a>\n            Geprüft: 2026 08 22.</span>\n          ", "rc-049": "Die Entropie der Wahlumgebung ist Shannons Entropie der Verteilung dessen, was ausgeliefert wird, normiert durch die Entropie der flachen Verteilung über dieselben Bins. <span class=\"ex-cite-w\">Claude E. Shannon, <span class=\"ex-cite-t\">A Mathematical Theory of\n            Communication</span>, The Bell System Technical Journal 27, 1948, pages 379 to 423 and 623 to\n            656.\n            <a href=\"https://onlinelibrary.wiley.com/doi/10.1002/j.1538-7305.1948.tb01338.x\" target=\"_blank\" rel=\"noreferrer noopener\">doi.org 10.1002/j.1538-7305.1948.tb01338.x</a>\n            Volltext gelesen bei\n            <a href=\"https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">people.math.harvard.edu</a>.\n            Geprüft: 2026 08 22.</span>\n          ", "rc-050": "Die drei Konstrukte und die Gründe, sie zu wollen. <span class=\"ex-cite-w\">Kerem Özdemir, <span class=\"ex-cite-t\">The agent was never alone:\n            SIMEA</span>, a working note.\n            <a href=\"../../note-simea.html\">keremozdemir.de/note-simea.html</a></span>\n          ", "rc-camps-one": "einem Lager", "pg-title": "Das Empfehlungssystem, der Einfluss eines Feeds gemessen. Kerem Özdemir"}};
 function T(k, en, v) {
   var out = window.__t ? window.__t(k, en) : en;
   if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
@@ -2848,8 +3021,7 @@ function campsT(k) {
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-k": "Vaka çalışmaları", "crown": "<i>Beş simülasyondan ikincisi<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte",
-"nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-k": "Fallstudien", "crown": "<i>Simulation zwei von fünf<\/i>"}};
+window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler", "crown": "<i>Beş simülasyondan ikincisi<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen", "crown": "<i>Simulation zwei von fünf<\/i>"}};
 
 (function(){
   "use strict";

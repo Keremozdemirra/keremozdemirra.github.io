@@ -1,10 +1,17 @@
 <!doctype html>
 <html lang="en">
-<title>Loudmeter</title>
+<title>Loudmeter, loudness to BS.1770-4. Kerem Özdemir</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="https://keremozdemir.de/run/workshop/loudmeter/">
 <meta name="description" content="Measure a file against a loudness target to BS.1770-4 and normalise it to match. Runs in your browser. The audio never leaves your machine.">
+<meta property="og:title" content="Loudmeter, loudness to BS.1770-4. Kerem Özdemir">
+<meta property="og:description" content="Measure a file against a loudness target to BS.1770-4 and normalise it to match. Runs in your browser. The audio never leaves your machine.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://keremozdemir.de/run/workshop/loudmeter/">
+<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>.ws-vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}.ws-main{display:contents}[role="region"][tabindex="0"]:focus-visible{outline:2px solid currentColor;outline-offset:-2px}</style>
 <style>
 /* Fonts served from this file, not from Google. A hotlinked
    font sends the visitor's IP to a third party on every load; nothing
@@ -53,7 +60,7 @@
 
 :root {
   --case: #b9bfb2; --face: #e9ebe4; --panel: #f4f5f0;
-  --ink: #1a1c18; --ink-2: #55594f; --ink-3: #868b7e;
+  --ink: #1a1c18; --ink-2: #55594f; --ink-3: #62665b;
   --rule: #ccd1c3; --rule-2: #9aa192;
   --brand: #7a3b12; --ok: #2f6b3d; --over: #a5341f;
   --ui: "Saira", "Helvetica Neue", Arial, sans-serif;
@@ -127,7 +134,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .drop:hover, .drop.hot { background: var(--panel); }
 .drop b { font: 500 17px/1.3 var(--ui); }
 .drop span { font-size: 14px; color: var(--ink-2); }
-.drop .now { font: 400 13px/1.4 var(--eng); color: var(--brand); margin-top: 4px; }
+.drop .now { font: 400 14px/1.4 var(--eng); color: var(--brand); margin-top: 4px; }
 .srcinfo { padding: 18px 20px; display: grid; align-content: center; gap: 9px; }
 .srcinfo .r { display: flex; justify-content: space-between; gap: 14px; align-items: baseline; border-bottom: 1px solid var(--rule); padding-bottom: 7px; }
 .srcinfo .r:last-child { border-bottom: 0; padding-bottom: 0; }
@@ -173,7 +180,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .side .v { font: 400 27px/1.05 var(--read); font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 7px; }
 .side .v u { text-decoration: none; font: 500 12px/1 var(--ui); color: var(--ink-3); }
 .side .v.over { color: var(--over); }
-.side .note { font-size: 12.5px; color: var(--ink-3); }
+.side .note { font-size: 14px; color: var(--ink-3); }
 .side .note.over { color: var(--over); }
 
 /* the controls block */
@@ -198,7 +205,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .act { display: flex; flex-direction: column; gap: 8px; justify-content: center; }
 .act .btn { width: 100%; }
-.act .fine { font: 400 11.5px/1.5 var(--ui); color: var(--ink-3); }
+.act .fine { font: 400 14px/1.5 var(--ui); color: var(--ink-3); }
 
 /* the trace along the bottom */
 .trace { padding: 16px 20px 18px; }
@@ -220,7 +227,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 .saidplain {
   padding: 13px 20px; border-top: 1px solid var(--rule);
-  font: 400 12.5px/1.6 var(--ui); color: var(--ink-3); max-width: 92ch;
+  font: 400 14px/1.6 var(--ui); color: var(--ink-3); max-width: 92ch;
 }
 .saidplain b { color: var(--ink-2); font-weight: 600; }
 
@@ -236,6 +243,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 </style>
 
+<main class="ws-main">
+<h1 class="ws-vh">Loudmeter, loudness to BS.1770-4</h1>
 <div class="top">
   <a class="brand" href="../"><b>Loudmeter</b></a>
   <span class="sp"></span>
@@ -359,7 +368,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 </div>
 
-<input type="file" id="file" accept="audio/*,.wav,.flac,.mp3,.m4a,.ogg,.aif,.aiff" style="position:absolute;left:-9999px" aria-hidden="true">
+</main>
+<input type="file" id="file" accept="audio/*,.wav,.flac,.mp3,.m4a,.ogg,.aif,.aiff" style="position:absolute;left:-9999px" aria-hidden="true" tabindex="-1">
 
 <script>
 /* ENGINE:BEGIN — injected from engine.js by build.py; do not edit here. */
