@@ -13,14 +13,18 @@
 <meta name="author" content="Kerem Özdemir">
 <meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="../../../fonts/fonts.css">
-<script>(function(){var d=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")})})()</script>
+<script>(function(){var d=document.documentElement,t=null;d.classList.add("js");try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")});function k(l){return l==="en"||l==="tr"||l==="de"}var L=(function(){var q=null,p=null,s=null,l=null;try{q=new URLSearchParams(location.search).get("lang")}catch(e){}if(k(q)){try{sessionStorage.setItem("lang",q)}catch(e){}return q}try{if(window.self!==window.top)p=window.parent.document.documentElement.getAttribute("lang")}catch(e){}if(k(p))return p;try{s=sessionStorage.getItem("lang")}catch(e){}if(k(s))return s;try{l=localStorage.getItem("lang")}catch(e){}if(k(l))return l;l=String((navigator.languages&&navigator.languages[0])||navigator.language||"").toLowerCase();return l.indexOf("de")===0?"de":l.indexOf("tr")===0?"tr":"en"})();window.__tabLang=function(){return L};d.setAttribute("lang",L)})()</script>
 <link rel="canonical" href="https://keremozdemir.de/run/tools/economics/lemons/">
 <meta property="og:url" content="https://keremozdemir.de/run/tools/economics/lemons/">
 <meta property="og:title" content="The market for lemons, interactive. Kerem Özdemir">
 <meta property="og:description" content="Adverse selection as a used car market: set the spread of quality and what buyers can see, run it round by round, then add a warranty and watch it recover.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta property="og:image" content="https://keremozdemir.de/run/og/tools-economics-lemons.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The market for lemons, interactive. Kerem Özdemir">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://keremozdemir.de/run/og/tools-economics-lemons.png">
 <link rel="icon" href="/favicon.ico?v=4" sizes="any">
 <style>
 /* ============================================================
@@ -68,8 +72,11 @@
   --measure: 66ch;
   --gap:     clamp(1rem, 2.4vw, 1.6rem);
   --pad:     clamp(0.95rem, 2.4vw, 1.5rem);
-  --edge:    clamp(1.1rem, 5vw, 3.25rem);
+  /* the site's gutter, so the page under the bar starts where the name does */
+  --edge:    1.5rem;
 }
+@media (min-width: 640px) { :root { --edge: 2.5rem; } }
+html.in-frame { --edge: clamp(1.1rem, 5vw, 3.25rem); }
 
 /* The dark palette. It follows the system, and data-theme on the root
    overrides the system both ways: the head script sets it from ?theme= in
@@ -212,8 +219,11 @@ a:hover { border-bottom-color: var(--accent); }
 .k-row {
   display: grid; gap: 0.7rem var(--gap);
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-  align-items: end;
+  /* Fields share a top: on the bottom edge, a hint under one pushed its label
+     above its neighbour's. A button in the row still sits on the fields' line. */
+  align-items: start;
 }
+.k-row:has(> button) { align-items: end; }
 .k-row.k-row-tight { gap: 0.55rem 0.9rem; }
 
 .k-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
@@ -407,6 +417,23 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 
 .k-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .k-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* A table wider than its panel fades at the edge it continues past, which says
+   there is more without a line of text saying so. kit.js sets the attribute
+   from the scroll position. Focus lifts the fade, because a mask would clip
+   the ring. */
+[data-k-more="end"] {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2.25rem), transparent);
+          mask-image: linear-gradient(to right, #000 calc(100% - 2.25rem), transparent);
+}
+[data-k-more="start"] {
+  -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 2.25rem), transparent);
+          mask-image: linear-gradient(to left, #000 calc(100% - 2.25rem), transparent);
+}
+[data-k-more="both"] {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 2.25rem, #000 calc(100% - 2.25rem), transparent);
+          mask-image: linear-gradient(to right, transparent, #000 2.25rem, #000 calc(100% - 2.25rem), transparent);
+}
+[data-k-more]:focus-visible { -webkit-mask-image: none; mask-image: none; }
 .k-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.875rem; }
 .k-table th, .k-table td {
   text-align: left; padding: 0.5rem 0.75rem 0.5rem 0;
@@ -419,11 +446,17 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-table td.k-n, .k-table th.k-n {
   font-family: var(--mono); font-variant-numeric: tabular-nums;
-  text-align: right; padding-right: 0; white-space: nowrap;
+  text-align: right; white-space: nowrap;
 }
+.k-table td:last-child, .k-table th:last-child { padding-right: 0; }
+/* a right aligned figure beside a left aligned word needs room on both sides */
+.k-table td.k-n + td:not(.k-n), .k-table th.k-n + th:not(.k-n) { padding-left: 0.75rem; }
 .k-table tbody tr:last-child td { border-bottom: 0; }
 .k-table .k-src-cell { font-family: var(--serif); font-size: 0.875rem; line-height: 1.55; color: var(--dim); }
 .k-table .k-src-cell a { word-break: break-all; }
+@media (pointer: coarse) {
+  .k-table a, .k-time small a { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; }
+}
 
 /* ---------- 9. timeline ---------- */
 
@@ -464,6 +497,8 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 }
 .k-endnote a { color: var(--dim); border-bottom-color: var(--rule); }
 .k-endnote a:hover { color: var(--accent); }
+/* the closing panel runs straight into the footer's rule */
+.k-endnote + footer.site-foot { margin-top: 0; }
 
 /* ---------- 11. toast for copy actions ---------- */
 
@@ -512,21 +547,28 @@ input[aria-invalid="true"] { border-color: var(--flag); }
    so that each page still ships as one self contained file.
    ============================================================ */
 
-/* ---------- reading column ---------- */
+/* ---------- reading column ----------
+   The title, the standfirst and the body hang from one left edge at one
+   measure, and the opening two paragraphs share a size and a leading. A body
+   centred under a left aligned crown read as a layout fault in the first
+   screen: the same page stepped 220 px to the right with no space above it. */
+
+.k-crown, .k-crown .k-standfirst { max-width: 40rem; }
 
 .ex-body {
   display: grid;
   /* minmax(0, 1fr) rather than auto, so that one wide child can never
      stretch the whole reading column past the width of the screen */
   grid-template-columns: minmax(0, 1fr);
-  justify-items: center;
+  justify-items: start;
   gap: 0;
+  margin-top: clamp(1.75rem, 4vw, 2.75rem);
 }
 .ex-body > * {
   width: 100%;
   max-width: 40rem;
   min-width: 0;
-  justify-self: center;
+  justify-self: start;
 }
 
 .ex-body > p {
@@ -551,9 +593,9 @@ input[aria-invalid="true"] { border-color: var(--flag); }
 .ex-body > ul, .ex-body > ol { max-width: 40rem; padding-left: 1.15rem; margin: 0 0 1.05em; }
 .ex-body > ul li, .ex-body > ol li { margin-bottom: 0.45em; }
 
-.ex-lead {
-  font-size: clamp(1.1rem, 1.03rem + 0.4vw, 1.28rem) !important;
-  line-height: 1.55;
+.ex-body > p.ex-lead, .ex-lead {
+  font-size: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  line-height: 1.5;
   color: var(--ink-soft);
 }
 
@@ -582,8 +624,12 @@ input[aria-invalid="true"] { border-color: var(--flag); }
   border-left: 2px solid var(--accent);
   padding: 0.7rem 0.9rem; margin: 0 0 1.15em;
   max-width: 40rem; overflow-wrap: break-word;
+  /* each definition on its own line, as the source writes them */
+  white-space: pre-line;
 }
+.ex-body > p.ex-formula { font-size: 0.875rem; line-height: 1.7; }
 .ex-formula small {
+  white-space: normal;
   display: block; font-family: var(--serif); font-size: 0.875rem; color: var(--faint);
   margin-top: 0.35rem; line-height: 1.55;
 }
@@ -679,6 +725,9 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   background: var(--field); line-height: 1.3; white-space: nowrap;
 }
 .ex-seg-row > label:first-of-type { margin-left: 0; }
+@media (pointer: coarse) {
+  .ex-seg-row > label { display: inline-flex; align-items: center; min-height: 44px; }
+}
 .ex-seg-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .ex-seg-row > label:has(input:checked) { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 :root[data-theme="dark"] .ex-seg-row > label:has(input:checked) { color: #17140f; }
@@ -835,7 +884,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
 @media (max-width: 640px) { .lm-round { margin-left: 0; width: 100%; } }
 
 /* ---------- the site's clothes, worn by an instrument ---------- */
-.bar,footer.site-foot,.leaf-mark{
+header.bar,footer.site-foot,.site-menu,.leaf-mark{
   --serif:"Fraunces",Georgia,serif;
   --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -846,78 +895,198 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--ink); }
   --accent:#c2371c;
   --ease:cubic-bezier(.23,1,.32,1);
 }
-.bar,footer.site-foot{color:var(--fg)}
 footer.site-foot{background:var(--paper)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar,:root:not([data-theme="light"]) footer.site-foot,:root:not([data-theme="light"]) .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}}
-:root[data-theme="dark"] .bar,:root[data-theme="dark"] footer.site-foot,:root[data-theme="dark"] .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) header.bar,:root:not([data-theme="light"]) footer.site-foot,:root:not([data-theme="light"]) .site-menu,:root:not([data-theme="light"]) .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}}
+:root[data-theme="dark"] header.bar,:root[data-theme="dark"] footer.site-foot,:root[data-theme="dark"] .site-menu,:root[data-theme="dark"] .leaf-mark{--paper:#111214;--fg:#e9eaec;--dim:#9aa0a8;--line:#292b30;--accent:#f5694b}
 
-.bar .wrap,footer.site-foot .wrap{max-width:74rem;padding-inline:clamp(1.1rem,5vw,3.25rem)}
+
 
 .wrap{max-width:74rem;margin:0 auto;padding:0 1.5rem}
 @media (min-width:640px){.wrap{padding:0 2.5rem}}
 
-/* ---------- top bar ----------
-   The site's own bar, measured off it on 2026-09-24: 70 px, the name in the
-   serif, the sections in the mono face in capitals, the languages as one
-   pill. These pages read as a second site until then. Inside a frame on
-   the site (a case study running its instrument) the bar and the footer are
-   not drawn at all: the page around the frame already has both. */
-.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:var(--paper);border-bottom:1px solid var(--line)}
-.in-frame .bar,.in-frame .site-foot{display:none}
-.bar .wrap{display:flex;align-items:center;gap:2rem;height:70px}
-.bar .home,.langs{flex:none}
-.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;
-  border-bottom:0;color:var(--fg);white-space:nowrap}
-.bar nav:not(.langs){margin:0 auto}
-.bar nav{display:flex;gap:1.75rem;align-items:center}
-.bar nav a{font-family:var(--mono);font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;
-  white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:400;padding:.25rem 0;
-  border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
-.bar nav a:hover{color:var(--fg)}
-.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
-.langs{display:inline-flex;align-items:center;padding:2px;border-radius:999px;
-  box-shadow:inset 0 0 0 1px var(--line)}
-.langs button{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;width:36px;height:33px;
-  border:0;border-radius:999px;background:none;color:var(--dim);cursor:pointer;
-  transition:background-color .2s var(--ease),color .2s var(--ease)}
-.langs button:hover{color:var(--fg)}
-.langs button[aria-pressed="true"]{background:var(--fg);color:var(--paper)}
+/* ---------- between pages ----------
+   The rules of src/app/globals.css on the new site. A page that left this out
+   turned every crossing from the site into "Transition was aborted" in the
+   console of the page being left. */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:vt-out 160ms cubic-bezier(.16,1,.3,1) both}
+::view-transition-new(root){animation:vt-in 240ms cubic-bezier(.16,1,.3,1) both}
+@keyframes vt-out{to{opacity:0;transform:translateY(-12px)}}
+@keyframes vt-in{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
 
-/* ---------- footer, the site's own ---------- */
-.site-foot{border-top:1px solid var(--line);margin-top:clamp(2.5rem,6vh,4rem);font-family:var(--sans)}
-.site-foot .foot-main{display:flex;flex-wrap:wrap;gap:1.5rem 2rem;justify-content:space-between;
-  align-items:baseline;padding-top:3rem;padding-bottom:3rem}
-.site-foot .foot-id{color:var(--dim)}
-.site-foot .foot-mono{font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;line-height:1.7}
-.site-foot .foot-note{margin-top:.5rem;max-width:38ch;font-size:.875rem;line-height:1.55}
-.site-foot .foot-links{display:flex;flex-wrap:wrap;gap:.75rem 1.75rem;list-style:none;font-size:.95rem}
-.site-foot .foot-links a{display:inline-flex;align-items:center;padding:.375rem 0;color:var(--fg)}
-.site-foot .foot-marks{border-top:1px solid var(--line)}
-.site-foot .foot-marks ul{display:flex;align-items:center;justify-content:center;gap:2.25rem;
-  list-style:none;padding-top:1.5rem;padding-bottom:1.5rem}
-.site-foot .foot-marks a{display:inline-flex;color:var(--dim);transition:color .18s var(--ease)}
-.site-foot .foot-marks a:hover{color:var(--fg)}
+/* A heading reached through a fragment lands clear of the bar. */
+html{scroll-padding-top:6rem}
+html.in-frame{scroll-padding-top:1rem}
+
+/* ---------- top bar ----------
+   The site's own bar, in the numbers measured off https://keremozdemir.de/ on
+   2026-11-05: at 1440 the container is 1184 wide with a 40 px gutter, the name
+   at x 168, the sections at x 413, the three chips 36 px apart from x 1159, the
+   whole bar 70 tall. Below 1024 the sections go into a sheet behind a menu
+   button and below 640 the chips go with them, as they do on the site, so no
+   section sits past the edge of a scrolling row. header.bar rather than .bar,
+   because the games keep a .bar of their own inside their meters. Inside a
+   frame on the site (a case study running its instrument) the bar, the sheet
+   and the footer are not drawn at all: the page around the frame has them. */
+header.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);line-height:1.55;
+  background:var(--paper);color:var(--fg);border-bottom:1px solid var(--line);view-transition-name:masthead}
+header.bar,.site-menu,footer.site-foot{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.in-frame header.bar,.in-frame .site-foot,.in-frame .site-menu{display:none}
+header.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+  padding-top:1rem;padding-bottom:1rem}
+header.bar .home{flex:none;font-family:var(--serif);font-weight:400;font-size:1.05rem;
+  font-variation-settings:"SOFT" 0,"WONK" 0,"opsz" 24;white-space:nowrap;
+  text-decoration:none;border:0;color:var(--fg)}
+header.bar .sections{display:none}
+header.bar .sections a{position:relative;display:block;padding:.25rem 0;font-family:var(--mono);
+  font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;
+  text-decoration:none;border:0;color:var(--dim);transition:color .3s ease}
+header.bar .sections a:hover,header.bar .sections a[aria-current]{color:var(--fg)}
+/* the site's one moving object, a pixel under the word */
+header.bar .sections a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;
+  transition:transform .45s cubic-bezier(.16,1,.3,1)}
+header.bar .sections a:hover::after,header.bar .sections a[aria-current]::after{transform:scaleX(1)}
+.bar-end{flex:none;display:flex;align-items:center;gap:.5rem}
+header.bar a:focus-visible,header.bar button:focus-visible,.site-menu a:focus-visible,.site-menu button:focus-visible,
+footer.site-foot a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+/* The chips: one pill and one mark that slides under the current language.
+   Both the mark and the chip's colour are asked of the document, because the
+   head script sets html[lang] before the first paint, so a page opening in
+   Turkish does not slide there from EN. */
+.langs{position:relative;display:inline-flex;align-items:center;flex:none;box-sizing:border-box;
+  width:7.0625rem;padding:2px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line)}
+.langs .lang-thumb{position:absolute;top:.125rem;bottom:.125rem;left:.125rem;
+  width:calc((100% - .25rem) / 3);border-radius:999px;background:var(--fg);
+  transition:transform .42s cubic-bezier(.16,1,.3,1)}
+html[lang="tr"] .lang-thumb{transform:translateX(100%)}
+html[lang="de"] .lang-thumb{transform:translateX(200%)}
+header.bar .langs button,.site-menu .langs button{position:relative;z-index:1;flex:1 1 0;width:auto;min-width:0;
+  height:2.0625rem;min-height:0;margin:0;padding:0;display:inline-flex;align-items:center;justify-content:center;
+  border:0;border-radius:999px;background:none;color:var(--dim);font-family:var(--mono);font-size:.75rem;
+  font-weight:400;line-height:1;letter-spacing:.08em;text-align:center;cursor:pointer;
+  transition:color .42s cubic-bezier(.16,1,.3,1)}
+header.bar .langs button:hover,.site-menu .langs button:hover{background:none;border:0;color:var(--fg)}
+header.bar .langs button:active,.site-menu .langs button:active{transform:none}
+html[lang="en"] .langs button[data-lang="en"],html[lang="tr"] .langs button[data-lang="tr"],
+html[lang="de"] .langs button[data-lang="de"]{color:var(--paper)}
+/* 44 px to press, whatever the chip's own height */
+.langs button::after{content:"";position:absolute;inset-inline:0;top:50%;height:2.75rem;transform:translateY(-50%)}
+
+/* the menu button: two rules that become a cross */
+header.bar .menu-toggle{position:relative;flex:none;width:2.75rem;height:2.75rem;min-height:0;margin:0;padding:0;
+  border:0;border-radius:0;background:none;color:var(--fg);cursor:pointer}
+header.bar .menu-toggle:hover{background:none;border:0}
+header.bar .menu-toggle:active{transform:none}
+.menu-toggle span{position:absolute;left:50%;top:50%;display:block;width:1.25rem;height:1px;background:var(--fg);
+  transition:transform .4s ease}
+.menu-toggle span:first-child{transform:translate(-50%,-5px)}
+.menu-toggle span:last-child{transform:translate(-50%,3px)}
+.menu-open .menu-toggle span:first-child{transform:translate(-50%,-50%) rotate(45deg)}
+.menu-open .menu-toggle span:last-child{transform:translate(-50%,-50%) rotate(-45deg)}
+
+/* ---------- the sheet behind the menu button ----------
+   Six sections at display size, then the address, the marks and the two legal
+   links, as on the site. Hidden with visibility, so a closed sheet holds no
+   stop for a keyboard and nothing for a screen reader. The bar stays above it
+   holding the cross. The lock is on the body alone, where it passes to the
+   viewport and leaves the sticky bar sticking; overflow on the root as well
+   would turn the body into a scroller of its own, and the bar would go with it. */
+.site-menu{position:fixed;inset:0;z-index:29;background:var(--paper);color:var(--fg);font-family:var(--sans);
+  line-height:1.55;visibility:hidden;opacity:0;transition:opacity .3s ease,visibility 0s linear .3s}
+.site-menu.open{visibility:visible;opacity:1;transition:opacity .3s ease}
+html.menu-open{scrollbar-gutter:stable}
+html.menu-open body{overflow:hidden}
+.site-menu .menu-in{display:flex;flex-direction:column;height:100%;overflow-y:auto;overscroll-behavior:contain;
+  padding:5rem 2rem .5rem}
+.site-menu .menu-main{margin-block:auto;display:flex;flex-direction:column;gap:.25rem}
+.site-menu .menu-main .langs{align-self:flex-start;margin-bottom:1.5rem}
+.site-menu .menu-main > a{display:block;border:0;border-top:1px solid var(--line);padding:1rem 0;
+  font-family:var(--serif);font-weight:400;font-size:1.9rem;line-height:1;letter-spacing:0;
+  text-decoration:none;color:var(--fg)}
+.site-menu .menu-main > a:hover{color:var(--accent)}
+.site-menu .menu-foot{padding-bottom:2.5rem}
+.site-menu .menu-foot ul{display:flex;flex-direction:column;gap:.375rem;margin:0;padding:1.25rem 0 0;
+  list-style:none;border-top:1px solid var(--line)}
+.site-menu .menu-mail{display:inline-flex;align-items:center;min-height:2.75rem;font-size:1rem;
+  text-decoration:none;border:0;color:var(--fg)}
+.site-menu .menu-marks{display:flex;align-items:center;gap:1rem;margin-top:.5rem}
+.site-menu .menu-legal{display:flex;gap:1.5rem;margin:1rem 0 0;font-family:var(--mono);font-size:.75rem;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--dim);max-width:none}
+.site-menu .menu-legal a{display:inline-flex;align-items:center;min-height:2.75rem;text-decoration:none;
+  border:0;color:inherit}
+/* clipped to a pixel until it has focus: the cross is what a sighted reader
+   reaches for, and it sits outside this dialog, where a screen reader on a
+   phone cannot go */
+.site-menu .menu-close{position:absolute;top:5.5rem;right:2rem;width:1px;height:1px;overflow:hidden;
+  clip-path:inset(50%);padding:0;margin:0;border:0;border-radius:999px;background:var(--fg);color:var(--paper);
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;cursor:pointer}
+.site-menu .menu-close:focus{width:auto;height:auto;overflow:visible;clip-path:none;padding:.5rem 1rem}
+.site-menu .mark-a,footer.site-foot .mark-a{display:inline-flex;align-items:center;justify-content:center;
+  width:2.75rem;height:2.75rem;color:var(--dim);text-decoration:none;border:0;background:none;
+  transition:color .2s ease,transform .3s cubic-bezier(.2,.7,.2,1)}
+.site-menu .mark-a:hover,footer.site-foot .mark-a:hover,.site-menu .mark-a:focus-visible,
+footer.site-foot .mark-a:focus-visible{color:var(--fg);transform:translateY(-1px)}
+
+/* ---------- footer, the site's own ----------
+   The numbers of the site's footer, measured the same day and kept level with
+   src/components/chrome.tsx. A page here may give every link a rule and every
+   list an indent (the instruments and the games both do), so the footer says
+   what it wants of each. */
+footer.site-foot{margin-top:2.5rem;border-top:1px solid var(--line);font-family:var(--sans);line-height:1.55;
+  letter-spacing:normal;color:var(--fg)}
+footer.site-foot p{margin:0;max-width:none}
+footer.site-foot ul{list-style:none}
+footer.site-foot li{margin:0;padding:0;font-size:inherit;line-height:inherit;color:inherit}
+footer.site-foot .foot-main{display:flex;flex-direction:column;gap:1.5rem;padding-top:3rem;padding-bottom:3rem}
+footer.site-foot .foot-id{color:var(--dim)}
+footer.site-foot .foot-line{font-size:.875rem;line-height:1.55}
+footer.site-foot .foot-note{margin-top:.5rem;max-width:38ch;font-size:.875rem;line-height:1.55}
+footer.site-foot .foot-links{display:grid;grid-template-columns:repeat(3,max-content);gap:.25rem 1.75rem;
+  margin:0;padding:0;font-size:.95rem}
+footer.site-foot .foot-links a{display:inline-flex;align-items:center;min-width:2.75rem;min-height:2.75rem;
+  text-decoration:none;border:0;background:none;color:var(--fg)}
+footer.site-foot .foot-marks{border-top:1px solid var(--line)}
+footer.site-foot .foot-marks ul{display:flex;align-items:center;justify-content:center;gap:0 1.5rem;
+  padding-top:1.5rem;padding-bottom:1.5rem}
+@media (min-width:640px){
+  .bar-end{gap:.75rem}
+  footer.site-foot .foot-main{flex-direction:row;align-items:baseline;justify-content:space-between}
+  footer.site-foot .foot-links{display:flex;flex-wrap:wrap;gap:.75rem 1.75rem}
+  footer.site-foot .foot-marks ul{gap:0 2.25rem}
+}
+@media (max-width:639.98px){
+  header.bar .bar-end .langs{display:none}
+}
+@media (min-width:640px){
+  .site-menu .menu-main .langs{display:none}
+}
+@media (min-width:1024px){
+  header.bar .sections{display:flex;gap:1.75rem;align-items:center}
+  header.bar .menu-toggle,.site-menu{display:none}
+  /* The site holds its search button here, which this edition does not have.
+     An empty slot of the same width keeps the sections at the x they have on
+     the site, in each language, so nothing jumps on a crossing. */
+  .bar-end::before{content:"";width:7.45rem}
+  html[lang="tr"] .bar-end::before{width:5.92rem}
+}
+/* With no script the menu button and the chips do nothing. The links are the
+   one part of the bar that still works, so they take the room. */
+html:not(.js) .menu-toggle,html:not(.js) .langs{display:none}
+@media (max-width:1023.98px){
+  html:not(.js) header.bar .wrap{flex-wrap:wrap;row-gap:.25rem}
+  html:not(.js) header.bar .sections{display:flex;flex-wrap:wrap;gap:.25rem 1.25rem;width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  .langs .lang-thumb,.langs button,.menu-toggle span,.site-menu,.mark-a,header.bar .sections a::after{transition:none!important}
+  .site-menu .mark-a:hover,footer.site-foot .mark-a:hover{transform:none}
+}
 
 /* ---------- a leaf, falling once ---------- */
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
-
-/* ---------- the bar between a phone and a laptop ----------
-   One row needs 1,027 px in German with a touch screen (measured 2026-11-04:
-   the name, six sections, the three languages and the gaps), so from 641 to
-   1,080 px the bar takes two rows the way a phone does: the name and the
-   languages on the first, the sections on the second, which scrolls in place
-   if a long word still does not fit. Below that the switcher sat 130 px past
-   the right edge at 768 and could not be reached. */
-@media (min-width:641px) and (max-width:1080px){
-  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:1rem;row-gap:0;padding-top:.75rem;padding-bottom:.2rem}
-  .bar .home{line-height:33px}
-  .langs{margin-left:auto}
-  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0 -6px;padding:4px 6px;justify-content:flex-start;
-    gap:1.4rem;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
-  .bar nav:not(.langs)::-webkit-scrollbar{display:none}
-  .bar nav a{padding:.45rem 0;flex:0 0 auto}
-}
 
 /* ---------- inside a case study's frame ----------
    The page around the frame already has the title and the argument, so the
@@ -929,33 +1098,11 @@ footer.site-foot{background:var(--paper)}
 .framed-tool .k-main{padding-top:clamp(.9rem,3vw,1.4rem)}
 .framed-tool .k-lede + .k-sect{margin-top:0}
 
-/* ---------- the bar and the footer, narrowed ---------- */
-@media (max-width:640px){
-  /* the name and the languages share the first line, the sections scroll on
-     the second, the way the site's pages are read with a thumb */
-  .bar .wrap{flex-wrap:wrap;height:auto;gap:0 .7rem;padding-top:.7rem;padding-bottom:.2rem;position:relative}
-  .bar .home{font-size:1rem;line-height:33px}
-  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0;flex-wrap:nowrap;justify-content:flex-start;
-    gap:1.25rem;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    /* the last name fades rather than being cut, which says there is more */
-    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
-    mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
-    padding-right:2.2rem}
-  .bar nav::-webkit-scrollbar{display:none}
-  .bar nav a{font-size:.72rem;padding:.6rem 0;flex:0 0 auto}
-  .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
-  .langs{position:absolute;top:.7rem;right:1.5rem}
-  .langs button{width:34px;height:31px}
-  .site-foot .foot-marks ul{gap:1.5rem}
-}
-
-/* a finger, not a cursor: every control a thumb has to find is a thumb wide */
+/* every control a thumb has to find is a thumb wide */
 @media (pointer:coarse){
-  .bar .home{display:inline-flex;align-items:center;min-height:44px}
-  .bar nav a{min-height:44px;display:inline-flex;align-items:center}
-  .langs button{min-width:44px;min-height:44px}
-  .site-foot .foot-links a,.site-foot .foot-marks a{min-width:44px;min-height:44px;justify-content:center}
+  header.bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .langs{width:8.75rem}
+  header.bar .langs button,.site-menu .langs button{min-width:44px;min-height:44px}
 }
 
 /* the same thumb, on the page itself */
@@ -980,7 +1127,7 @@ footer.site-foot{background:var(--paper)}
     text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
   .note-item h2 a:hover{text-decoration-color:var(--accent)}
   /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
-  body input[type="text"],body input[type="email"],body input[type="number"],
+  body input[type="text"],body input[type="email"],body input[type="number"],body input[type="date"],
   body select,body textarea{font-size:16px;min-height:44px}
   body .frow textarea{min-height:8rem}
   /* a 4px tall slider is not a control: the whole strip takes the touch */
@@ -1012,11 +1159,22 @@ footer.site-foot{background:var(--paper)}
 
 <header class="bar">
   <div class="wrap">
-    <a class="home" href="../../../../">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../../../products/" data-i="nav-pd">Products</a><a href="../../../../projects/" data-i="nav-j">Projects</a><a href="../../../../games/" data-i="nav-g">Games</a><a href="../../../../discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../../about/" data-i="nav-p">About</a><a href="../../../../contact/" data-i="nav-c">Contact</a></nav>
-    <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
+    <a class="home" href="../../../../" data-home="/">Kerem Özdemir</a>
+    <nav class="sections" aria-label="Site" data-ia="a-site"><a href="../../../../products/" data-home="/products/" data-i="nav-pd">Products</a><a href="../../../../projects/" data-home="/projects/" data-i="nav-j">Projects</a><a href="../../../../games/" data-home="/games/" data-i="nav-g">Games</a><a href="../../../../discoveries/" data-home="/discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../../about/" data-home="/about/" data-i="nav-p">About</a><a href="../../../../contact/" data-home="/contact/" data-i="nav-c">Contact</a></nav>
+    <div class="bar-end"><div class="langs" role="group" aria-label="Language" data-ia="a-lang"><span class="lang-thumb" aria-hidden="true"></span><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></div><button type="button" class="menu-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu" data-ia="a-menu"><span></span><span></span></button></div>
   </div>
 </header>
+<div class="site-menu" id="site-menu" role="dialog" aria-modal="true" aria-label="Menu" data-ia="a-menu">
+  <button type="button" class="menu-close" data-i="a-menu-close">Close menu</button>
+  <nav class="menu-in" aria-label="Site" data-ia="a-site">
+    <div class="menu-main"><div class="langs" role="group" aria-label="Language" data-ia="a-lang"><span class="lang-thumb" aria-hidden="true"></span><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></div><a href="../../../../products/" data-home="/products/" data-i="nav-pd">Products</a><a href="../../../../projects/" data-home="/projects/" data-i="nav-j">Projects</a><a href="../../../../games/" data-home="/games/" data-i="nav-g">Games</a><a href="../../../../discoveries/" data-home="/discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../../about/" data-home="/about/" data-i="nav-p">About</a><a href="../../../../contact/" data-home="/contact/" data-i="nav-c">Contact</a></div>
+    <div class="menu-foot">
+      <ul><li><a class="menu-mail" href="mailto:kozdemir3523@gmail.com">kozdemir3523@gmail.com</a></li>
+      <li class="menu-marks"><a class="mark-a" href="https://github.com/Keremozdemirra" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-gh"/></svg></a><a class="mark-a" href="https://www.linkedin.com/in/keremozdemir23" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-li"/></svg></a><a class="mark-a" href="https://x.com/kerem_oozdemir" target="_blank" rel="noopener noreferrer" title="X" aria-label="X"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-x"/></svg></a><a class="mark-a" href="https://orcid.org/0009-0007-4674-0521" target="_blank" rel="noopener noreferrer" title="ORCID" aria-label="ORCID"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-or"/></svg></a><a class="mark-a" href="mailto:kozdemir3523@gmail.com" title="Email" aria-label="Email" data-ia="a-mail" data-it="a-mail"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-em"/></svg></a></li></ul>
+      <p class="menu-legal"><a href="../../../../impressum/" data-home="/impressum/">Impressum</a><a href="../../../../privacy/" data-home="/privacy/" data-i="nav-dsg">Privacy</a></p>
+    </div>
+  </nav>
+</div>
 
 
   <main class="k-main" id="essay">
@@ -1070,7 +1228,7 @@ footer.site-foot{background:var(--paper)}
         <p data-i="lm-017">The whole spiral is one line of arithmetic. A buyer who sees a fraction of the quality and guesses the rest offers a price built from both; an owner sells when that offer is at least what the car is worth to them. Working the inequality through gives the highest quality still offered for sale.</p>
 
         <p class="ex-formula" data-i="lm-018">highest quality still offered = 1.5 x (1 minus visibility) x believed average / (1 minus 1.5 x visibility)
-        <small data-i="lm-041" data-verbatim>With no visibility at all the expression is just one and a half times the believed average. As
+        <small data-i="lm-041" data-verbatim>With no visibility at all the expression is one and a half times the believed average. As
         visibility rises towards two thirds the denominator goes to zero and every car sells whatever the
         belief.</small></p>
 
@@ -1084,7 +1242,7 @@ footer.site-foot{background:var(--paper)}
 
         <p data-i="lm-022">A <span class="ex-em">warranty</span> attacks the exposure instead: the seller promises to make good any shortfall against a stated standard, so the buyer pays for the standard rather than for a guess. The bad cars now sell, because their owners can carry the repair bill and still come out ahead. The very best cars withdraw, because a warranty pays the same for an excellent car as for an adequate one. The remedy rescues the market and truncates it at the top.</p>
 
-        <h2 id="s5" data-i="lm-006"><span class="k-num">05</span>What Akerlof actually wrote</h2>
+        <h2 id="s5" data-i="lm-006"><span class="k-num">05</span>What Akerlof wrote</h2>
 
         <p data-i="lm-023">The paper is George Akerlof's, thirteen pages in the Quarterly Journal of Economics, August 1970. The used car market is its opening illustration. The general claim is that where one side of a trade knows the quality and the other does not, the bad drives out the good, and the loss falls on the honest seller who can no longer prove that their car is good.</p>
 
@@ -1125,7 +1283,7 @@ footer.site-foot{background:var(--paper)}
             George Georgiadis, <span class="ex-cite-t">Information Economics, Module 14: Adverse
             Selection</span>, Kellogg School of Management,
             <a href="https://www.kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf" target="_blank" rel="noreferrer noopener">kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf</a>.
-            Checked 2026 08 21.</span>
+            Checked 2026-08-21.</span>
           </li>
           <li data-i="lm-036">
             Akerlof's own account of the rejections: the American Economic Review and the Review of Economic
@@ -1138,7 +1296,7 @@ footer.site-foot{background:var(--paper)}
             <a href="https://www.nobelprize.org/prizes/economic-sciences/2001/akerlof/article/" target="_blank" rel="noreferrer noopener">nobelprize.org/prizes/economic-sciences/2001/akerlof/article</a>
             Read through the summary at
             <a href="https://equitablegrowth.org/must-read-george-akerlof-2001-writing-the-the-market-for-lemons-a-personal-interpretive-essay/" target="_blank" rel="noreferrer noopener">equitablegrowth.org</a>.
-            Checked 2026 08 21.</span>
+            Checked 2026-08-21.</span>
           </li>
           <li data-i="lm-037">
             The 2001 Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel was awarded jointly
@@ -1146,7 +1304,7 @@ footer.site-foot{background:var(--paper)}
             asymmetric information.
             <span class="ex-cite-w">The Nobel Foundation, prize summary for 2001.
             <a href="https://www.nobelprize.org/prizes/economic-sciences/2001/summary/" target="_blank" rel="noreferrer noopener">nobelprize.org/prizes/economic-sciences/2001/summary</a>
-            Checked 2026 08 21.</span>
+            Checked 2026-08-21.</span>
           </li>
           <li data-i="lm-038">
             Warranties, vehicle history reports, brand reputation and licensing are the institutions usually
@@ -1154,7 +1312,7 @@ footer.site-foot{background:var(--paper)}
             <span class="ex-cite-w">David R. Henderson, editor, <span class="ex-cite-t">The Concise Encyclopedia
             of Economics</span>, biography of George Akerlof, Library of Economics and Liberty.
             <a href="https://www.econlib.org/library/Enc/bios/Akerlof.html" target="_blank" rel="noreferrer noopener">econlib.org/library/Enc/bios/Akerlof.html</a>
-            Checked 2026 08 21.</span>
+            Checked 2026-08-21.</span>
           </li>
         </ul>
 
@@ -1179,8 +1337,8 @@ footer.site-foot{background:var(--paper)}
 
   <aside class="k-endnote">
     <div class="k-wrap">
-      <p class="k-fine" data-i="lm-noadv">These are instruments for thinking, not advice. Nothing on this page is a recommendation about a real tax, a real market or a real decision, and no number on it was measured.</p>
-      <p data-i="lm-026"><strong>This is a teaching model, not a measurement.</strong> Every figure on this page comes from the settings you chose and the arithmetic in section three. Nothing here is an estimate of any real used car market.</p>
+      <p class="k-fine" data-i="lm-noadv">These are instruments for thinking. Nothing on this page is advice or a recommendation about a real tax, a real market or a real decision, and no number on it was measured.</p>
+      <p data-i="lm-026"><strong>This is a teaching model and it measures nothing.</strong> Every figure on this page comes from the settings you chose and the arithmetic in section three. Nothing here is an estimate of any real used car market.</p>
       <p class="k-fine" data-i="lm-027">
         Runs entirely in your browser. Nothing you do here leaves the page. No server, no analytics, no network
         call after the fonts have loaded. Part of
@@ -1193,23 +1351,23 @@ footer.site-foot{background:var(--paper)}
 <footer class="site-foot">
   <div class="wrap foot-main">
     <div class="foot-id">
-      <p class="foot-mono">© 2026 Kerem Özdemir · <span data-i="foot-city">Munich</span></p>
+      <p class="foot-line">© 2026 Kerem Özdemir · <span data-i="foot-city">Munich</span></p>
       <p class="foot-note" data-i="foot-note">No cookies, no analytics, no third party request.</p>
     </div>
     <ul class="foot-links">
-      <li><a href="../../../../games/" data-i="nav-g">Games</a></li>
-      <li><a href="../../../../cv/" data-i="foot-cv">CV</a></li>
-      <li><a href="../../../../sources/" data-i="nav-src">Sources</a></li>
-      <li><a href="../../../../impressum/">Impressum</a></li>
-      <li><a href="../../../../privacy/" data-i="nav-dsg">Privacy</a></li>
+      <li><a href="../../../../games/" data-home="/games/" data-i="nav-g">Games</a></li>
+      <li><a href="../../../../cv/" data-home="/cv/" data-i="foot-cv">CV</a></li>
+      <li><a href="../../../../sources/" data-home="/sources/" data-i="nav-src">Sources</a></li>
+      <li><a href="../../../../impressum/" data-home="/impressum/">Impressum</a></li>
+      <li><a href="../../../../privacy/" data-home="/privacy/" data-i="nav-dsg">Privacy</a></li>
     </ul>
   </div>
   <div class="foot-marks"><ul class="wrap">
-    <li><a href="https://github.com/Keremozdemirra" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></li>
-    <li><a href="https://www.linkedin.com/in/keremozdemir23" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
-    <li><a href="https://x.com/kerem_oozdemir" target="_blank" rel="noopener noreferrer" title="X" aria-label="X"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a></li>
-    <li><a href="https://orcid.org/0009-0007-4674-0521" target="_blank" rel="noopener noreferrer" title="ORCID" aria-label="ORCID"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg></a></li>
-    <li><a href="mailto:kozdemir3523@gmail.com" title="Email" aria-label="Email"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M2.5 4h19A1.5 1.5 0 0 1 23 5.5v.9l-11 6.9L1 6.4v-.9A1.5 1.5 0 0 1 2.5 4zM1 8.7l11 6.9 11-6.9v9.8a1.5 1.5 0 0 1-1.5 1.5h-19A1.5 1.5 0 0 1 1 18.5z"/></svg></a></li>
+    <li><a class="mark-a" href="https://github.com/Keremozdemirra" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-gh" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></li>
+    <li><a class="mark-a" href="https://www.linkedin.com/in/keremozdemir23" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-li" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
+    <li><a class="mark-a" href="https://x.com/kerem_oozdemir" target="_blank" rel="noopener noreferrer" title="X" aria-label="X"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-x" d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a></li>
+    <li><a class="mark-a" href="https://orcid.org/0009-0007-4674-0521" target="_blank" rel="noopener noreferrer" title="ORCID" aria-label="ORCID"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-or" d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg></a></li>
+    <li><a class="mark-a" href="mailto:kozdemir3523@gmail.com" title="Email" aria-label="Email" data-ia="a-mail" data-it="a-mail"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-em" d="M2.5 4h19A1.5 1.5 0 0 1 23 5.5v.9l-11 6.9L1 6.4v-.9A1.5 1.5 0 0 1 2.5 4zM1 8.7l11 6.9 11-6.9v9.8a1.5 1.5 0 0 1-1.5 1.5h-19A1.5 1.5 0 0 1 1 18.5z"/></svg></a></li>
   </ul></div>
 </footer>
 
@@ -1327,12 +1485,13 @@ var Kit = (function () {
     return new TextDecoder().decode(bytes);
   }
 
-  /* The query without ?theme=, which a case study adds when it frames the
-     instrument. A link copied inside the frame would otherwise open dark or
-     light for whoever it is sent to, whatever they chose themselves. */
+  /* The query without ?theme= and ?lang=, which the site adds when it frames or
+     links the instrument. A copied link would otherwise open dark or light, or
+     in Turkish, for whoever it is sent to, whatever they chose themselves. The
+     tab keeps its own language in sessionStorage, so this loses it nothing. */
   function query() {
     var q = (location.search || "").replace(/^\?/, "").split("&").filter(function (p) {
-      return p && p.indexOf("theme=") !== 0;
+      return p && p.indexOf("theme=") !== 0 && p.indexOf("lang=") !== 0;
     }).join("&");
     return q ? "?" + q : "";
   }
@@ -1471,6 +1630,13 @@ var Kit = (function () {
      across seven instrument pages at 390px, none of them reachable. */
   var reachSel = ".k-scroll, .k-panel > pre, [data-k-scroll]";
   var reachN = 0;
+  /* Which edge a box continues past, for the fade in kit.css. */
+  function reachEdge(box) {
+    var max = box.scrollWidth - box.clientWidth;
+    var v = max <= 1 ? null : box.scrollLeft <= 1 ? "end" : box.scrollLeft >= max - 1 ? "start" : "both";
+    if (v === null) box.removeAttribute("data-k-more");
+    else if (box.getAttribute("data-k-more") !== v) box.setAttribute("data-k-more", v);
+  }
   /* A box can start to overflow with no change to the DOM at all: the faces
      arrive after the first layout and widen every table. Each box and its
      table are watched for a change of size, so the check runs again then. */
@@ -1482,7 +1648,9 @@ var Kit = (function () {
         reachSeen.add(box);
         reachRO.observe(box);
         if (box.firstElementChild) reachRO.observe(box.firstElementChild);
+        box.addEventListener("scroll", function () { reachEdge(box); }, { passive: true });
       }
+      reachEdge(box);
       var over = box.scrollWidth > box.clientWidth + 1;
       var mine = box.getAttribute("data-k-reach") === "1";
       if (over && !box.hasAttribute("tabindex")) {
@@ -1873,7 +2041,7 @@ var Ex = (function () {
 })();
 
 /* ---- the page's own three languages ---- */
-window.PAGE_I18N = {"tr": {"pg-desc": "Ters seçim, bir ikinci el araba piyasası olarak: kaliteyi ve alıcının gördüğünü ayarlayın, tur tur çalıştırın, sonra bir garantiyle toparlanışını izleyin.", "lm-noadv": "Bunlar düşünmek için araçlar, tavsiye değil. Bu sayfadaki hiçbir şey gerçek bir vergi, gerçek bir piyasa ya da gerçek bir karar hakkında öneri değildir ve üzerindeki hiçbir sayı ölçülmüş değildir.", "lm-kskip": "Denemeye atla", "lm-001": "Limon piyasası", "lm-002": "<span class=\"k-num\">01</span>Galeri", "lm-003": "<span class=\"k-num\">02</span>Neden çözülüyor", "lm-004": "<span class=\"k-num\">03</span>Karar veren sayı", "lm-005": "<span class=\"k-num\">04</span>Yeniden kurmanın iki yolu", "lm-006": "<span class=\"k-num\">05</span>Akerlof gerçekte ne yazdı", "lm-007": "<span class=\"k-num\">06</span>Modelin durduğu yer", "lm-008": "<span class=\"k-num\">07</span>Kaynaklar", "lm-009": "Varsayımlar ve sınırlar", "lm-010": "Satıcının arabanın ne olduğunu bildiği, alıcının bilmediği bir ikinci el piyasası. Kalitenin ne kadar değiştiğini ve alıcının bunun ne kadarını görebildiğini ayarlayın, sonra iyi arabaların tur tur ayrılışını izleyin.", "lm-011": "Yüz yirmi kişinin her biri bir araba satmak istiyor ve her biri kendi arabasının tam olarak kaç para ettiğini biliyor. Alıcılar yalnızca önlerindeki arabaların bir aralıkta olduğunu biliyor. Her araba alıcı için sahibine ettiğinin yarısı kadar daha fazla ediyor; tam bilgi altında hepsi satılırdı.", "lm-012": "Modelde kimse yalan söylemiyor. Her satıcı teklif edilen fiyatı kabul ediyor ya da arabayı tutuyor; her alıcı galerideki arabaların ortalama değerini teklif ediyor. Bu iki makul kuraldan piyasa kendi kendinizi söküyor.", "lm-013": "Her işaret bir araba; solda en kötüsü, sağda en iyisi, düşeyde kalitesi. Kalitenin yayılımını ve alıcının bunun ne kadarını görebildiğini ayarlayın, sonra piyasayı çalıştırın. Çizgi, sahibinin teklif edilen fiyatı almak yerine arabayı tutmayı seçtiği kalite sınırı.", "lm-014": "Döngü dört adımdan oluşuyor ve kendi üstüne kapanıyor. Alıcılar ortalama arabanın kaç para ettiğine inandıklarına göre fiyat teklif ediyor. O fiyata en iyi arabaların sahipleri hayır diyor. Satıştaki arabalar bu yüzden mevcut arabalardan kötü çıkıyor; alıcılar ortalamayı aşağı çekip daha az teklif ediyor, bu da bir sonraki iyi araba katmanını dışarı itiyor.", "lm-015": "Turları adım adım geçin ve çizginin inişini izleyin. İki seri, her turda el değiştiren arabaların ortalama kalitesi ve ödenen ortalama fiyat. Birlikte düşüyorlar, çünkü fiyat kalitenin bir tahmini ve tahmin kendi aşağı ittiği bir büyüklüğün peşinde.", "lm-016": "Her zaman sıfıra inmiyor. Galerideki en kötü araba hâlâ makul bir arabaysa sarmalın yeri bitiyor ve piyasa olması gerekenden küçük ve kötü, ama hayatta kalıyor. En kötü araba değersizse taban yok ve piyasa dibe kadar düşüyor. Bunu görmek için yayılımı en yükseğe çekin.", "lm-017": "Bütün sarmal tek satır aritmetik. Kalitenin bir kısmını görüp kalanını tahmin eden alıcı ikisinden kurulu bir fiyat teklif ediyor; sahibi bu teklif arabanın kendisine ettiği kadarsa satıyor. Eşitsizliği çözmek hâlâ satışa sunulan en yüksek kaliteyi veriyor.", "lm-018": "satışta kalan en yüksek kalite = 1,5 x (1 eksi görünürlük) x inanılan ortalama / (1 eksi 1,5 x görünürlük)\n        <small>Hiç görünürlük yokken ifade, inanılan ortalamanın bir buçuk katından ibaret. Görünürlük üçte ikiye yaklaştıkça payda sıfıra gider ve inanç ne olursa olsun her araba satılır.</small>", "lm-019": "Bu eşik, görünürlük kontrolünün yumuşak bir eğim yerine davranışın değiştiği bir noktaya sahip olmasının nedeni. En kötü araba değersizken piyasa yalnızca alıcılar aldıklarının üçte birinden fazlasını görebiliyorsa ayakta kalıyor. Üçte birin altında her şey sıfıra gidiyor; üstünde tutuyor. Yayılımı en yükseğe çekin ve görünürlüğü üçte birin üzerinden geçir.", "lm-020": "Yukarıda kimsenin kötü davranması gerekmedi, dolayısıyla yukarıdaki hiçbir şey insanlardan daha iyi davranmalarını istemekle düzelmez. Düzelten, alıcının parasının neye maruz kaldığını değiştirmek. Çare kontrolü iki yol sunuyor ve birbirinden yeterince farklı çalışıyorlar; birini, sonra ötekini deneyin.", "lm-021": "<span class=\"ex-em\">Sertifika</span> doğrudan bilgisizliğe saldırıyor: bir muayene, alıcının göremediğinin çoğunu bir ücret karşılığında ortaya çıkarıyor. Açın, çizgi galerinin tepesinin üstüne sıçrasın; kalite görünürken kimsenin çekilmek için nedeni yok. Ücret satıcının aldığından çıkıyor, bu yüzden geri gelen piyasa idealinden biraz küçük.", "lm-022": "<span class=\"ex-em\">Garanti</span> ise maruziyete saldırıyor: satıcı belirtilen bir standardın altında kalanı tamamlamayı vaat ediyor, alıcı da bir tahmin yerine standardın parasını ödüyor. Kötü arabalar artık satılıyor, çünkü sahipleri tamir faturasını taşıyıp yine kârda kalıyor. En iyi arabalar çekiliyor, çünkü garanti mükemmel bir arabaya yeterli bir arabayla aynı parayı ödüyor. Çare piyasayı kurtarıyor ve tepeden kesiyor.", "lm-023": "Makale George Akerlof'un; Quarterly Journal of Economics'te, Ağustos 1970, on üç sayfa. İkinci el araba piyasası açılış örneği. Genel iddia şu: bir alışverişte kaliteyi bir taraf bilip öteki bilmiyorsa kötü iyiyi kovar ve kayıp, arabasının iyi olduğunu artık kanıtlayamayan dürüst satıcıya düşer.", "lm-024": "Yukarıdaki model bu argümanın sayısal bir sürümü. Akerlof'un aritmetiği daha sert: alıcılar arabalara sahiplerinin biçtiğinin bir buçuk katı değer biçiyor, kalite sıfırdan yukarı düzgün yayılıyor ve kendisiyle tutarlı tek fiyat sıfır. Piyasa küçülmüyor, yok oluyor. Yayılım kontrolü en yüksekte bu duruma varıyor.", "lm-025": "American Economic Review ile Review of Economic Studies makaleyi fazla önemsiz diye geri çevirdi; Journal of Political Economy'deki bir hakem, argüman doğruysa hiçbir malın alınıp satılamayacağını ileri sürdü. Otuz bir yıl sonra Akerlof, asimetrik bilgili piyasaların analizi için 2001 ekonomi ödülünü Michael Spence ve Joseph Stiglitz ile paylaştı.", "lm-026": "<strong>Bu bir öğretim modeli, ölçüm değil.</strong> Sayfadaki her rakam seçtiğiniz ayarlardan ve üçüncü bölümdeki aritmetikten geliyor. Burada hiçbir şey gerçek bir ikinci el piyasasının tahmini değil.", "lm-027": "Tümüyle kendi tarayıcında çalışır. Burada yaptığınız hiçbir şey sayfadan çıkmaz. Sunucu yok, analiz yok, yazı tipleri geldikten sonra ağ çağrısı yok. <a href=\"../index.html\">Explorable Economics</a>'in parçası; <a href=\"../../../index.html\">Kerem Özdemir</a> yaptı.", "lm-028": "<b>Tek seferlik alıcılar</b>Her alıcı bir kez geliyor, alıyor ya da almıyor ve gidiyor. Ne tekrar müşteri var ne itibar ne kulaktan kulağa; gerçek bir piyasada kaliteyi ayakta tutan en güçlü kuvvetler bunlar.", "lm-029": "<b>İnançlar kabaca güncelleniyor</b>Alıcılar bu turun inancını geçen turun gerçekleşen ortalamasına eşitliyor. Tamamen rasyonel bir alıcı doğrudan sabit noktaya atlardı ve izlenecek sarmal kalmazdı. Turlar bir öğretim aracı; varılan yer iki durumda da aynı.", "lm-030": "<b>Kalite tek sayı</b>Gerçek arabalar bazı yönlerden iyi, bazılarından kötü. Bunu tek bir gizli sayıya sıkıştırmak resmi çizilebilir kılıyor ve resmin dışarıda bıraktığı en büyük şey de bu.", "lm-031": "<b>Çareler taslak</b>Sertifika, sabit ücretli bir görünürlük sıçraması; garanti, sabit bir standardın altında kalanı tamamlama vaadi, yine sabit ücretle. Gerçek garantiler fiyatlanır, sınırlanır, tartışılır ve bazen ödenmez; gerçek sertifika şemaları da parasını ödeyen satıcılarca ele geçirilebilir.", "lm-032": "<b>Garanti bir transfer</b>Garantinin ödediği tamir, satıcıdan alıcıya geçen para olarak ele alınıyor; modelde gerçek kaynak tüketmiyor. Tamirlerin kaynak tükettiği bir ele alış piyasayı burada göründüğünden küçük bırakırdı.", "lm-033": "<b>Hiçbir şey tahmin edilmedi</b>Bir buçuk çarpanı, yüz yirmi araba, ücretler ve on dört tur, mekanizma görünsün diye seçildi. Hiçbiri gerçek bir piyasadan ölçülmedi.", "lm-034": "<b>Ters seçim okumalardan yalnızca biri</b>İkinci el arabalar gizli bilgiyle ilgisi olmayan nedenlerle de sıfırdan ucuz satılır; yıpranma ve değer kaybı bunlardan. Bir piyasanın bu deseni göstermesi, deseni bu mekanizmanın ürettiğini kanıtlamaz.", "lm-039": "Birinci şekil <span class=\"ex-model-sub\">arabalar, tur tur</span>", "lm-040": "İkinci şekil <span class=\"ex-model-sub\">turlar boyunca kalite ve fiyat</span>", "lm-035": "Makalenin kendisi ve alıcıların arabalara sahibin değerlemesinin üç yarımı kadar değer biçtiği, kalitenin düzgün yayıldığı, böylece sıfırın üstünde hiçbir fiyatın kendisiyle tutarlı olmadığı sayısal örnek.\n            <span class=\"ex-cite-w\">George A. Akerlof, <span class=\"ex-cite-t\">The Market for &ldquo;Lemons&rdquo;:\n            Quality Uncertainty and the Market Mechanism</span>, The Quarterly Journal of Economics, volume 84,\n            number 3, August 1970, pages 488 to 500. DOI 10.2307/1879431.\n            <a href=\"https://doi.org/10.2307/1879431\" target=\"_blank\" rel=\"noreferrer noopener\">doi.org/10.2307/1879431</a>\n            Künye şuradan doğrulandı:\n            <a href=\"https://en.wikipedia.org/wiki/The_Market_for_Lemons\" target=\"_blank\" rel=\"noreferrer noopener\">en.wikipedia.org/wiki/The_Market_for_Lemons</a>.\n            Kurulum, yani satıcı değerlemesinin üç yarımını ödemeye razı alıcı, düzgün dağılmış kalite ve hiçbir arabanın satılmadığı sıfırdaki tek denge fiyatı, şurada veriliyor:\n            George Georgiadis, <span class=\"ex-cite-t\">Information Economics, Module 14: Adverse\n            Selection</span>, Kellogg School of Management,\n            <a href=\"https://www.kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf</a>.\n            Kontrol tarihi: 2026 08 21.</span>", "lm-036": "Akerlof'un ret hikâyesini kendi anlatışı: American Economic Review ile Review of Economic Studies makaleyi bu kadar önemsiz konularda yayın yapmadıkları gerekçesiyle geri çevirdi; Journal of Political Economy'deki bir hakemse makale doğru olsaydı hiçbir malın alınıp satılamayacağını savundu.\n            <span class=\"ex-cite-w\">George A. Akerlof, <span class=\"ex-cite-t\">Writing the &ldquo;The Market for\n            &lsquo;Lemons&rsquo;&rdquo;: A Personal and Interpretive Essay</span>, published by the Nobel\n            Foundation, 2001.\n            <a href=\"https://www.nobelprize.org/prizes/economic-sciences/2001/akerlof/article/\" target=\"_blank\" rel=\"noreferrer noopener\">nobelprize.org/prizes/economic-sciences/2001/akerlof/article</a>\n            Özet şuradan okundu:\n            <a href=\"https://equitablegrowth.org/must-read-george-akerlof-2001-writing-the-the-market-for-lemons-a-personal-interpretive-essay/\" target=\"_blank\" rel=\"noreferrer noopener\">equitablegrowth.org</a>.\n            Kontrol tarihi: 2026 08 21.</span>", "lm-037": "2001 Alfred Nobel Anısına Sveriges Riksbank İktisat Bilimleri Ödülü, asimetrik bilgili piyasa çözümlemeleri için George A. Akerlof, A. Michael Spence ve Joseph E. Stiglitz'e ortaklaşa verildi.\n            <span class=\"ex-cite-w\">The Nobel Foundation, prize summary for 2001.\n            <a href=\"https://www.nobelprize.org/prizes/economic-sciences/2001/summary/\" target=\"_blank\" rel=\"noreferrer noopener\">nobelprize.org/prizes/economic-sciences/2001/summary</a>\n            Kontrol tarihi: 2026 08 21.</span>", "lm-038": "Soruna piyasadan gelen cevaplar olarak genellikle garantiler, araç geçmişi raporları, marka itibarı ve ruhsatlandırma anılır; bunların hiçbiri yasayla konmaz.\n            <span class=\"ex-cite-w\">David R. Henderson, editor, <span class=\"ex-cite-t\">The Concise Encyclopedia\n            of Economics</span>, biography of George Akerlof, Library of Economics and Liberty.\n            <a href=\"https://www.econlib.org/library/Enc/bios/Akerlof.html\" target=\"_blank\" rel=\"noreferrer noopener\">econlib.org/library/Enc/bios/Akerlof.html</a>\n            Kontrol tarihi: 2026 08 21.</span>", "lm-c-spread": "Kalite yayılımı", "lm-c-spread-h": "En iyi ve en kötü arabaların 100 ortalamasının iki yanına ne kadar uzak durduğu.", "lm-c-vis": "Alıcının görebildiği", "lm-c-vis-h": "Para el değiştirmeden önce bir arabanın kalitesinin görünen payı.", "lm-c-rem": "Yürürlükteki çare", "lm-c-rem-h": "Dördüncü bölüm bunların her birinin aritmetiğe ne yaptığını anlatıyor.", "lm-c-round": "Tur", "lm-c-round-h": "Turları kaydırarak gez ya da aşağıdaki düğmeleri kullan.", "lm-o-none": "yok", "lm-o-war": "garanti", "lm-o-cert": "sertifika", "lm-b-back": "Birinci tura dönün", "lm-b-step": "Bir tur ilerle", "lm-b-run": "Piyasayı çalıştırın", "lm-b-copy": "Bağlantıyı kopyalayın", "lm-r-n": "El değiştiren arabalar", "lm-r-aq": "Satılanın ortalama kalitesi", "lm-r-ap": "Ödenen ortalama fiyat", "lm-r-th": "Çekilme eşiği", "lm-r-lost": "Kaybedilen alışveriş kazancı", "lm-k-sold": "satılan araba", "lm-k-kept": "sahibinde kalan araba", "lm-k-thr": "çekilme eşiği", "lm-k2-aq": "satılanın ortalama kalitesi", "lm-k2-ap": "ödenen ortalama fiyat", "lm-k2-share": "el değiştiren pay, sağ eksen", "lm-l-cars": "yüz yirmi araba, en kötüsü solda", "lm-l-q": "kalite", "lm-l-keep": "bu çizginin üstünde sahibi arabayı tutuyor", "lm-l-none": "hiçbir şey işlem görmüyor", "lm-l-aq": "satılan ortalama kalite ", "lm-l-ap": "ödenen ortalama fiyat ", "lm-l-thr-bind": "sahiplerin tuttuğu kalite sınırı", "lm-l-thr-free": "galerideki her araba satışta", "lm-l-floor": "hiçbir araba sahibine ettiğinin altında fiyatlanmıyor", "lm-rd-lost-t": "sonda erişilebilir kazancın", "lm-w-none": "çare yok", "lm-w-war": "ilan edilmiş standarda karşı garanti", "lm-w-cert": "bağımsız sertifika", "lm-s1-a": "Yüz yirmi araba; kalite {lo} ile {hi} arasında düzgün yayılmış, alıcılar kalitenin yüzde {v} kadarını görebiliyor, {rem} yürürlükte. {b} turdan {a}. turda ", "lm-s1-dead": "tek bir araba bile satışa sunulmuyor. Piyasa gitti.", "lm-s1-main": "120 arabanın {n} tanesi el değiştiriyor; satılanın ortalama kalitesi, galerinin 100 ortalamasına karşı {aq} ve ödenen ortalama fiyat {ap}. ", "lm-s1-keep": "Kalitesi {t} üstündeki her araba sahibinde kalıyor.", "lm-s1-all": "Hiçbir araba sahibine tekliften daha değerli değil; kimse çekilmiyor.", "lm-s1-r1": " Birinci turda {n} araba, {aq} ortalama kaliteyle el değiştirmişti.", "lm-s2-one": "Satılan ortalama kalite ve ödenen ortalama fiyat, {b} turun birincisine kadar çizili. Birinci turda satılan ortalama kalite {aq}, ödenen ortalama fiyat {ap} ve galerinin yüzde {sh} kadarı el değiştiriyor. Kalanını çizmek için piyasayı adımla ya da çalıştırın.", "lm-s2-main": "Satılan ortalama kalite ve ödenen ortalama fiyat, {b} turdan {u}. tura kadar çizili. Kalite birinci turdaki {aq0} değerinden {u}. turda {aq1} değerine iniyor. Fiyat {ap0} değerinden {ap1} değerine. El değiştiren pay yüzde {s0} düzeyinden yüzde {s1} düzeyine iniyor.", "lm-sy-cert": "Kalitenin {v} kadarını açığa çıkaran bir muayeneyle fiyat ortalamayı değil arabayı izliyor; kimsenin çekilmek için sebebi yok. {n} araba işlem görüyor ve satılan ortalama kalite {aq} düzeyinde kalıyor. Her satıştan {fee} ücret çıkıyor; öğrenmenin fiyatı bu.", "lm-sy-war1": "{g} standardına karşı garantiyle alıcı tahmine değil standarda para ödüyor; inancın düşmesi hiç gerekmiyor. {n} araba işlem görüyor. ", "lm-sy-war2": "En iyi {top} araba yine çekiliyor; çünkü garanti mükemmel arabaya da idare eder arabaya da aynı parayı ödüyor ve sahipleri o fiyatı almıyor.", "lm-sy-war3": "Bu yayılımda hiçbir araba garantili fiyattan daha değerli olacak kadar iyi değil; bütün galeri satılıyor.", "lm-sy-see": "Alıcılar aldıklarının {v} kadarını görebiliyor ve kalite {lo} ile {hi} arasında. ", "lm-sy-dead": "Piyasa hayatta kalmıyor. {r}. tura gelindiğinde satışa sunulan tek bir şey yok. Bu galerideki en kötü araba {lo} ediyor; bu, inancın içinden düşüp gitmesini durduracak bir taban değil.", "lm-sy-calm": "Pek bir şey olmuyor. Teklif, en iyi sahibin bile kabul edeceği kadar yüksek; inanç hiç hayal kırıklığına uğramıyor ve sarmal hiç başlamıyor. Her turda galerinin {sh} kadarı işlem görüyor.", "lm-sy-fall": "{r} tur boyunca satılan ortalama kalite {a0} değerinden {a1} değerine, işlem gören arabaların payı {s0} düzeyinden {s1} düzeyine düşüyor. Kimse hile yapmadı. Fiyat, iyi arabayı kötüden ayırt edebilmeyi bıraktı; iyi arabalar da gelmeyi bıraktı.", "lm-sy-p2": "Buradaki her araba alıcıya, sahibine ettiğinin yarısı kadar daha fazla ediyor; tam bilgi altında 120'sinin hepsi satılırdı. Bu hâliyle bu piyasadaki alışveriş kazancının {ls} kadarı hiç gerçekleşmiyor. O kayıp cehaletin maliyeti ve en çok, ellerindekini kanıtlayamayan iyi araba sahiplerine düşüyor.", "lm-pct": "yüzde {x}", "lm-ofN": "120'de {n}", "lm-rd-of": " / ", "lm-rd-pct": " galerinin yüzdesi", "lm-rd-none": "yok", "lm-rd-avg100": "galeri ortalaması 100", "lm-rd-nocar": "araba satışta değil", "lm-rd-percar": "araba başına ödenen", "lm-rd-nobind": "bağlamıyor", "pg-title": "Limon piyasası, etkileşimli. Kerem Özdemir"}, "de": {"pg-desc": "Adverse Selektion als Gebrauchtwagenmarkt: Qualität und Sicht der Käufer einstellen, Runde für Runde laufen lassen, dann mit einer Garantie erholen lassen.", "lm-noadv": "Das sind Werkzeuge zum Nachdenken, keine Beratung. Nichts auf dieser Seite ist eine Empfehlung zu einer wirklichen Steuer, einem wirklichen Markt oder einer wirklichen Entscheidung, und keine Zahl darauf wurde gemessen.", "lm-kskip": "Zum Essay springen", "lm-001": "Der Markt für Zitronen", "lm-002": "<span class=\"k-num\">01</span>Der Platz", "lm-003": "<span class=\"k-num\">02</span>Warum er sich auflöst", "lm-004": "<span class=\"k-num\">03</span>Die Zahl, die es entscheidet", "lm-005": "<span class=\"k-num\">04</span>Zwei Wege, ihn wieder zusammenzusetzen", "lm-006": "<span class=\"k-num\">05</span>Was Akerlof wirklich schrieb", "lm-007": "<span class=\"k-num\">06</span>Wo das Modell endet", "lm-008": "<span class=\"k-num\">07</span>Quellen", "lm-009": "Annahmen und Grenzen", "lm-010": "Ein Gebrauchtwagenmarkt, auf dem der Verkäufer weiß, was das Auto ist, und der Käufer nicht. Stelle ein, wie weit die Qualität streut und wie viel davon ein Käufer sehen kann, und sieh zu, wie die guten Autos Runde um Runde verschwinden.", "lm-011": "Hundertzwanzig Leute wollen je ein Auto verkaufen, und jeder weiß genau, was sein eigenes wert ist. Die Käufer wissen nur, dass die Autos vor ihnen irgendwo in einer Spanne liegen. Jedes Auto ist einem Käufer anderthalbmal so viel wert wie seinem Besitzer; bei voller Information würde jedes verkauft.", "lm-012": "Niemand im Modell lügt. Jeder Verkäufer nimmt den gebotenen Preis an oder behält das Auto; jeder Käufer bietet, was die Autos auf dem Platz im Durchschnitt wert sind. Aus diesen zwei vernünftigen Regeln nimmt sich der Markt selbst auseinander.", "lm-013": "Jede Marke ist ein Auto, vom schlechtesten links bis zum besten rechts, mit seiner Qualität auf der Senkrechten. Stelle die Streuung der Qualität ein und wie viel davon ein Käufer sieht, dann lass den Markt laufen. Die Linie ist die Qualität, oberhalb derer ein Besitzer das Auto lieber behält, als den Preis zu nehmen.", "lm-014": "Die Schleife hat vier Schritte und schließt sich. Käufer bieten einen Preis, der auf dem vermuteten Wert des durchschnittlichen Autos beruht. Zu diesem Preis lehnen die Besitzer der besten Autos ab. Die angebotenen Autos sind darum schlechter als die verfügbaren, also senken die Käufer den Durchschnitt und bieten weniger, was die nächste Schicht guter Autos hinausdrängt.", "lm-015": "Geh die Runden durch und sieh die Linie sinken. Die zwei Reihen sind die durchschnittliche Qualität der in jeder Runde verkauften Autos und der durchschnittlich gezahlte Preis. Sie fallen zusammen, weil der Preis eine Schätzung der Qualität ist und die Schätzung einer Größe hinterherläuft, die sie selbst nach unten drückt.", "lm-016": "Es geht nicht immer auf null. Ist das schlechteste Auto auf dem Platz noch ein brauchbares Auto, geht der Spirale der Raum aus und der Markt bleibt kleiner und schlechter, als er sein sollte, aber am Leben. Ist das schlechteste Auto wertlos, gibt es keinen Boden, und der Markt fällt ganz durch. Zieh die Streuung auf ihr Maximum, um das zu sehen.", "lm-017": "Die ganze Spirale ist eine Zeile Arithmetik. Ein Käufer, der einen Teil der Qualität sieht und den Rest schätzt, bietet einen Preis aus beidem; ein Besitzer verkauft, wenn dieses Gebot mindestens so hoch ist, wie ihm das Auto wert ist. Löst man die Ungleichung auf, ergibt sich die höchste noch angebotene Qualität.", "lm-018": "höchste noch angebotene Qualität = 1,5 x (1 minus Sichtbarkeit) x geglaubter Durchschnitt / (1 minus 1,5 x Sichtbarkeit)\n        <small>Ohne jede Sichtbarkeit ist der Ausdruck bloß das Anderthalbfache des geglaubten Durchschnitts. Steigt die Sichtbarkeit gegen zwei Drittel, geht der Nenner gegen null, und jeder Wagen verkauft sich, was immer geglaubt wird.</small>", "lm-019": "Diese Schwelle ist der Grund, warum der Sichtbarkeitsregler einen Punkt hat, an dem das Verhalten umschlägt, statt einer glatten Steigung. Ist das schlechteste Auto wertlos, überlebt der Markt nur, wenn die Käufer mehr als ein Drittel dessen sehen, was sie kaufen. Unter einem Drittel geht alles auf null; darüber hält es. Zieh die Streuung auf ihr Maximum und führe die Sichtbarkeit über ein Drittel.", "lm-020": "Nichts oben verlangte, dass sich jemand schlecht verhält, also richtet es nichts oben, die Leute um besseres Verhalten zu bitten. Was es richtet, ist zu ändern, wem das Geld des Käufers ausgesetzt ist. Der Abhilferegler bietet zwei Wege, und sie wirken verschieden genug, um sie nacheinander zu probieren.", "lm-021": "Ein <span class=\"ex-em\">Zertifikat</span> greift die Unkenntnis direkt an: eine Prüfung legt gegen Gebühr das meiste offen, was der Käufer nicht sehen konnte. Schalte es ein, und die Linie springt über die Spitze des Platzes, denn bei sichtbarer Qualität hat niemand einen Grund, sich zurückzuziehen. Die Gebühr geht vom Erlös des Verkäufers ab, also ist der zurückgekehrte Markt etwas kleiner als der ideale.", "lm-022": "Eine <span class=\"ex-em\">Garantie</span> greift stattdessen das Risiko an: der Verkäufer verspricht, jeden Fehlbetrag gegen einen genannten Standard auszugleichen, sodass der Käufer für den Standard zahlt statt für eine Vermutung. Die schlechten Autos werden nun verkauft, weil ihre Besitzer die Reparatur tragen und trotzdem gewinnen. Die allerbesten ziehen sich zurück, weil eine Garantie für ein hervorragendes Auto dasselbe zahlt wie für ein ausreichendes. Die Abhilfe rettet den Markt und schneidet ihn oben ab.", "lm-023": "Das Papier ist von George Akerlof, dreizehn Seiten im Quarterly Journal of Economics, August 1970. Der Gebrauchtwagenmarkt ist sein Eingangsbeispiel. Die allgemeine These: wo eine Seite eines Geschäfts die Qualität kennt und die andere nicht, verdrängt das Schlechte das Gute, und der Verlust trifft den ehrlichen Verkäufer, der nicht mehr beweisen kann, dass sein Auto gut ist.", "lm-024": "Das Modell oben ist eine numerische Fassung dieses Arguments. Akerlofs Arithmetik ist schärfer: Käufer bewerten Autos mit dem Anderthalbfachen der Besitzer, die Qualität ist von null aufwärts gleichverteilt, und der einzige mit sich selbst verträgliche Preis ist null. Der Markt schrumpft nicht, er verschwindet. Der Streuungsregler erreicht diesen Fall an seinem Maximum.", "lm-025": "Die American Economic Review und die Review of Economic Studies lehnten das Papier als zu trivial ab, und ein Gutachter des Journal of Political Economy hielt dagegen, dass bei richtiger Argumentation gar keine Güter gehandelt werden könnten. Einunddreißig Jahre später teilte sich Akerlof den Wirtschaftspreis 2001 mit Michael Spence und Joseph Stiglitz für die Analyse von Märkten mit asymmetrischer Information.", "lm-026": "<strong>Dies ist ein Lehrmodell, keine Messung.</strong> Jede Zahl auf dieser Seite stammt aus den gewählten Einstellungen und der Arithmetik in Abschnitt drei. Nichts hier ist eine Schätzung eines echten Gebrauchtwagenmarkts.", "lm-027": "Läuft vollständig in Ihrem Browser. Nichts, was Sie hier tun, verlässt die Seite. Kein Server, keine Analyse, kein Netzaufruf nach dem Laden der Schriften. Teil von <a href=\"../index.html\">Explorable Economics</a>, gebaut von <a href=\"../../../index.html\">Kerem Özdemir</a>.", "lm-028": "<b>Einmalige Käufer</b>Jeder Käufer kommt einmal, kauft oder nicht, und geht. Keine Stammkunden, kein Ruf, keine Mundpropaganda, die auf einem echten Markt zu den stärksten Kräften gehören, die die Qualität halten.", "lm-029": "<b>Erwartungen werden grob angepasst</b>Käufer setzen die Erwartung dieser Runde auf den realisierten Durchschnitt der letzten. Ein vollkommen rationaler Käufer spränge direkt zum Fixpunkt, und es gäbe keine Spirale zu sehen. Die Runden sind ein Lehrmittel; der Endpunkt ist in beiden Fällen derselbe.", "lm-030": "<b>Qualität ist eine Zahl</b>Echte Autos sind in mancher Hinsicht gut und in anderer schlecht. Das in einen einzigen verborgenen Wert zu pressen macht das Bild zeichenbar und ist zugleich das Größte, was es auslässt.", "lm-031": "<b>Die Abhilfen sind Skizzen</b>Das Zertifikat ist ein Sprung der Sichtbarkeit mit fester Gebühr; die Garantie ein Versprechen, jeden Fehlbetrag gegen einen festen Standard auszugleichen, wieder mit fester Gebühr. Echte Garantien werden bepreist, begrenzt, bestritten und manchmal nicht eingelöst, und echte Zertifizierungen können von den Verkäufern, die sie bezahlen, vereinnahmt werden.", "lm-032": "<b>Die Garantie ist ein Transfer</b>Die Reparatur, die eine Garantie bezahlt, gilt als Geld, das vom Verkäufer zum Käufer wandert; im Modell verbraucht sie keine echten Ressourcen. Eine Behandlung, in der Reparaturen Ressourcen verbrauchen, ließe den Markt kleiner, als er hier erscheint.", "lm-033": "<b>Nichts ist geschätzt</b>Der Faktor anderthalb, die hundertzwanzig Autos, die Gebühren und die vierzehn Runden sind so gewählt, dass der Mechanismus sichtbar wird. Keiner davon ist an einem echten Markt gemessen.", "lm-034": "<b>Adverse Selektion ist eine Lesart von mehreren</b>Gebrauchtwagen sind aus Gründen billiger als Neuwagen, die mit verborgener Information nichts zu tun haben, Verschleiß und Wertverlust darunter. Dass ein Markt das Muster zeigt, beweist nicht, dass dieser Mechanismus es erzeugt hat.", "lm-039": "Abbildung eins <span class=\"ex-model-sub\">die Wagen, Runde für Runde</span>", "lm-040": "Abbildung zwei <span class=\"ex-model-sub\">Qualität und Preis über die Runden</span>", "lm-035": "Das Papier selbst, und das Zahlenbeispiel, in dem Käufer Wagen mit drei Halben der Besitzerbewertung bewerten und die Qualität gleichmäßig streut, sodass kein Preis über null mit sich selbst verträglich ist.\n            <span class=\"ex-cite-w\">George A. Akerlof, <span class=\"ex-cite-t\">The Market for &ldquo;Lemons&rdquo;:\n            Quality Uncertainty and the Market Mechanism</span>, The Quarterly Journal of Economics, volume 84,\n            number 3, August 1970, pages 488 to 500. DOI 10.2307/1879431.\n            <a href=\"https://doi.org/10.2307/1879431\" target=\"_blank\" rel=\"noreferrer noopener\">doi.org/10.2307/1879431</a>\n            Bibliografische Angaben bestätigt bei\n            <a href=\"https://en.wikipedia.org/wiki/The_Market_for_Lemons\" target=\"_blank\" rel=\"noreferrer noopener\">en.wikipedia.org/wiki/The_Market_for_Lemons</a>.\n            Der Aufbau, ein Käufer, der drei Halbe der Verkäuferbewertung zahlt, gleichverteilte Qualität und ein eindeutiger Gleichgewichtspreis von null, zu dem kein Wagen verkauft wird, steht in\n            George Georgiadis, <span class=\"ex-cite-t\">Information Economics, Module 14: Adverse\n            Selection</span>, Kellogg School of Management,\n            <a href=\"https://www.kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf</a>.\n            Geprüft: 2026 08 21.</span>", "lm-036": "Akerlofs eigener Bericht über die Ablehnungen: American Economic Review und Review of Economic Studies lehnten das Papier mit der Begründung ab, sie veröffentlichten keine Arbeiten zu derart trivialen Themen, und ein Gutachter des Journal of Political Economy hielt dagegen, wäre das Papier richtig, könnten keine Güter gehandelt werden.\n            <span class=\"ex-cite-w\">George A. Akerlof, <span class=\"ex-cite-t\">Writing the &ldquo;The Market for\n            &lsquo;Lemons&rsquo;&rdquo;: A Personal and Interpretive Essay</span>, published by the Nobel\n            Foundation, 2001.\n            <a href=\"https://www.nobelprize.org/prizes/economic-sciences/2001/akerlof/article/\" target=\"_blank\" rel=\"noreferrer noopener\">nobelprize.org/prizes/economic-sciences/2001/akerlof/article</a>\n            Gelesen über die Zusammenfassung bei\n            <a href=\"https://equitablegrowth.org/must-read-george-akerlof-2001-writing-the-the-market-for-lemons-a-personal-interpretive-essay/\" target=\"_blank\" rel=\"noreferrer noopener\">equitablegrowth.org</a>.\n            Geprüft: 2026 08 21.</span>", "lm-037": "Der Sveriges-Riksbank-Preis für Wirtschaftswissenschaften 2001 im Gedenken an Alfred Nobel ging gemeinsam an George A. Akerlof, A. Michael Spence und Joseph E. Stiglitz für ihre Analysen von Märkten mit asymmetrischer Information.\n            <span class=\"ex-cite-w\">The Nobel Foundation, prize summary for 2001.\n            <a href=\"https://www.nobelprize.org/prizes/economic-sciences/2001/summary/\" target=\"_blank\" rel=\"noreferrer noopener\">nobelprize.org/prizes/economic-sciences/2001/summary</a>\n            Geprüft: 2026 08 21.</span>", "lm-038": "Garantien, Fahrzeughistorien, Markenruf und Lizenzierung sind die Institutionen, die gewöhnlich als Marktantworten auf das Problem genannt werden, nicht die gesetzlichen.\n            <span class=\"ex-cite-w\">David R. Henderson, editor, <span class=\"ex-cite-t\">The Concise Encyclopedia\n            of Economics</span>, biography of George Akerlof, Library of Economics and Liberty.\n            <a href=\"https://www.econlib.org/library/Enc/bios/Akerlof.html\" target=\"_blank\" rel=\"noreferrer noopener\">econlib.org/library/Enc/bios/Akerlof.html</a>\n            Geprüft: 2026 08 21.</span>", "lm-c-spread": "Streuung der Qualität", "lm-c-spread-h": "Wie weit der beste und der schlechteste Wagen beiderseits eines Durchschnitts von 100 liegen.", "lm-c-vis": "Was ein Käufer sieht", "lm-c-vis-h": "Der sichtbare Anteil der Qualität eines Wagens, bevor Geld den Besitzer wechselt.", "lm-c-rem": "Geltende Abhilfe", "lm-c-rem-h": "Abschnitt vier erklärt, was jede davon mit der Arithmetik macht.", "lm-c-round": "Runde", "lm-c-round-h": "Fahren Sie durch die Runden, oder nutzen Sie die Knöpfe unten.", "lm-o-none": "keine", "lm-o-war": "Garantie", "lm-o-cert": "Zertifikat", "lm-b-back": "Zurück zu Runde eins", "lm-b-step": "Eine Runde weiter", "lm-b-run": "Den Markt laufen lassen", "lm-b-copy": "Link kopieren", "lm-r-n": "Wagen, die den Besitzer wechseln", "lm-r-aq": "Durchschnittsqualität verkauft", "lm-r-ap": "Durchschnittspreis gezahlt", "lm-r-th": "Rückzugsschwelle", "lm-r-lost": "Verlorener Handelsgewinn", "lm-k-sold": "verkaufter Wagen", "lm-k-kept": "vom Besitzer behaltener Wagen", "lm-k-thr": "Rückzugsschwelle", "lm-k2-aq": "Durchschnittsqualität verkauft", "lm-k2-ap": "Durchschnittspreis gezahlt", "lm-k2-share": "handelnder Anteil des Platzes, rechte Skala", "lm-l-cars": "die hundertzwanzig Wagen, der schlechteste links", "lm-l-q": "Qualität", "lm-l-keep": "über dieser Linie behält der Besitzer den Wagen", "lm-l-none": "nichts wird gehandelt", "lm-l-aq": "Durchschnittsqualität verkauft ", "lm-l-ap": "Durchschnittspreis gezahlt ", "lm-l-thr-bind": "Qualität, oberhalb derer Besitzer behalten", "lm-l-thr-free": "jeder Wagen des Platzes wird angeboten", "lm-l-floor": "kein Wagen ist unter seinem Besitzerwert bepreist", "lm-rd-lost-t": "des am Ende verfügbaren Gewinns", "lm-w-none": "keine Abhilfe", "lm-w-war": "eine Garantie gegen einen genannten Standard", "lm-w-cert": "ein unabhängiges Zertifikat", "lm-s1-a": "Hundertzwanzig Wagen, Qualität gleichmäßig von {lo} bis {hi} gestreut, Käufer sehen {v} Prozent der Qualität, {rem} in Kraft. In Runde {a} von {b} ", "lm-s1-dead": "wird kein einziger Wagen angeboten. Der Markt ist fort.", "lm-s1-main": "wechseln {n} der 120 Wagen den Besitzer, die Durchschnittsqualität der Verkauften ist {aq} gegen einen Platzdurchschnitt von 100, der Durchschnittspreis {ap}. ", "lm-s1-keep": "Jeder Wagen über einer Qualität von {t} bleibt bei seinem Besitzer.", "lm-s1-all": "Kein Wagen ist seinem Besitzer mehr wert als das Angebot, also zieht sich keiner zurück.", "lm-s1-r1": " In Runde eins wechselten {n} Wagen bei einer Durchschnittsqualität von {aq} den Besitzer.", "lm-s2-one": "Durchschnittsqualität und Durchschnittspreis, gezeichnet bis Runde eins von {b}. In Runde eins ist die verkaufte Durchschnittsqualität {aq}, der gezahlte Durchschnittspreis {ap}, und {sh} Prozent des Platzes wechseln den Besitzer. Schreiten oder laufen Sie den Markt, um den Rest zu zeichnen.", "lm-s2-main": "Durchschnittsqualität und Durchschnittspreis, gezeichnet bis Runde {u} von {b}. Die Qualität geht von {aq0} in Runde eins auf {aq1} in Runde {u}. Der Preis von {ap0} auf {ap1}. Der handelnde Anteil von {s0} auf {s1} Prozent.", "lm-sy-cert": "Mit einer Prüfung, die {v} der Qualität aufdeckt, folgt der Preis dem Wagen statt dem Durchschnitt, also hat kein Besitzer einen Grund, sich zurückzuziehen. {n} Wagen handeln, und die verkaufte Durchschnittsqualität bleibt bei {aq}. Die Gebühr von {fee} geht von jedem Verkauf ab; das ist der Preis des Herausfindens.", "lm-sy-war1": "Mit einer Garantie gegen einen Standard von {g} zahlt der Käufer für den Standard und nicht für eine Vermutung, also muss der Glaube nie fallen. {n} Wagen handeln. ", "lm-sy-war2": "Die {top} besten Wagen ziehen sich trotzdem zurück, denn eine Garantie zahlt für einen ausgezeichneten Wagen dasselbe wie für einen passablen, und ihre Besitzer nehmen diesen Preis nicht.", "lm-sy-war3": "Bei dieser Streuung ist kein Wagen gut genug, um mehr wert zu sein als der garantierte Preis, also handelt der ganze Platz.", "lm-sy-see": "Käufer sehen {v} dessen, was sie kaufen, und die Qualität läuft von {lo} bis {hi}. ", "lm-sy-dead": "Der Markt überlebt nicht. In Runde {r} wird gar nichts mehr angeboten. Der schlechteste Wagen dieses Platzes ist {lo} wert, und das ist kein Boden, der den fallenden Glauben aufhält.", "lm-sy-calm": "Viel geschieht nicht. Das Angebot ist hoch genug, dass selbst der beste Besitzer annimmt; der Glaube wird nie enttäuscht, und die Spirale beginnt nie. {sh} des Platzes handeln in jeder Runde.", "lm-sy-fall": "Über {r} Runden fällt die verkaufte Durchschnittsqualität von {a0} auf {a1} und der Anteil handelnder Wagen von {s0} auf {s1}. Niemand hat betrogen. Der Preis konnte einen guten Wagen nicht mehr von einem schlechten unterscheiden, also kamen die guten nicht mehr.", "lm-sy-p2": "Jeder Wagen hier ist einem Käufer anderthalbmal so viel wert wie seinem Besitzer; bei voller Information würden alle 120 verkauft. So aber wird {ls} des Handelsgewinns dieses Marktes nie realisiert. Dieser Verlust ist der Preis der Unwissenheit, und er trifft am härtesten die Besitzer guter Wagen, die nicht beweisen können, was sie haben.", "lm-pct": "{x} Prozent", "lm-ofN": "{n} von 120", "lm-rd-of": " von ", "lm-rd-pct": " Prozent des Platzes", "lm-rd-none": "keine", "lm-rd-avg100": "Platzdurchschnitt 100", "lm-rd-nocar": "kein Wagen im Angebot", "lm-rd-percar": "gezahlt je Wagen", "lm-rd-nobind": "keine bindet", "pg-title": "Der Markt für Zitronen, interaktiv. Kerem Özdemir"}};
+window.PAGE_I18N = {"tr": {"pg-desc": "Ters seçim, bir ikinci el araba piyasası olarak: kaliteyi ve alıcının gördüğünü ayarlayın, tur tur çalıştırın, sonra bir garantiyle toparlanışını izleyin.", "lm-noadv": "Bunlar düşünmek için araçlar. Bu sayfadaki hiçbir şey gerçek bir vergi, gerçek bir piyasa ya da gerçek bir karar hakkında tavsiye ya da öneri değildir ve üzerindeki hiçbir sayı ölçülmüş değildir.", "lm-kskip": "Denemeye atlayın", "lm-001": "Limon piyasası", "lm-002": "<span class=\"k-num\">01</span>Galeri", "lm-003": "<span class=\"k-num\">02</span>Neden çözülüyor", "lm-004": "<span class=\"k-num\">03</span>Karar veren sayı", "lm-005": "<span class=\"k-num\">04</span>Yeniden kurmanın iki yolu", "lm-006": "<span class=\"k-num\">05</span>Akerlof ne yazdı", "lm-007": "<span class=\"k-num\">06</span>Modelin durduğu yer", "lm-008": "<span class=\"k-num\">07</span>Kaynaklar", "lm-009": "Varsayımlar ve sınırlar", "lm-010": "Satıcının arabanın ne olduğunu bildiği, alıcının bilmediği bir ikinci el piyasası. Kalitenin ne kadar değiştiğini ve alıcının bunun ne kadarını görebildiğini ayarlayın, sonra iyi arabaların tur tur ayrılışını izleyin.", "lm-011": "Yüz yirmi kişinin her biri bir araba satmak istiyor ve her biri kendi arabasının tam olarak kaç para ettiğini biliyor. Alıcılar yalnızca önlerindeki arabaların bir aralıkta olduğunu biliyor. Her araba alıcı için sahibine ettiğinin yarısı kadar daha fazla ediyor; tam bilgi altında hepsi satılırdı.", "lm-012": "Modelde kimse yalan söylemiyor. Her satıcı teklif edilen fiyatı kabul ediyor ya da arabayı tutuyor; her alıcı galerideki arabaların ortalama değerini teklif ediyor. Bu iki makul kuraldan piyasa kendi kendini söküyor.", "lm-013": "Her işaret bir araba; solda en kötüsü, sağda en iyisi, düşeyde kalitesi. Kalitenin yayılımını ve alıcının bunun ne kadarını görebildiğini ayarlayın, sonra piyasayı çalıştırın. Çizgi, sahibinin teklif edilen fiyatı almak yerine arabayı tutmayı seçtiği kalite sınırı.", "lm-014": "Döngü dört adımdan oluşuyor ve kendi üstüne kapanıyor. Alıcılar ortalama arabanın kaç para ettiğine inandıklarına göre fiyat teklif ediyor. O fiyata en iyi arabaların sahipleri hayır diyor. Satıştaki arabalar bu yüzden mevcut arabalardan kötü çıkıyor; alıcılar ortalamayı aşağı çekip daha az teklif ediyor, bu da bir sonraki iyi araba katmanını dışarı itiyor.", "lm-015": "Turları adım adım geçin ve çizginin inişini izleyin. İki seri, her turda el değiştiren arabaların ortalama kalitesi ve ödenen ortalama fiyat. Birlikte düşüyorlar, çünkü fiyat kalitenin bir tahmini ve tahmin kendi aşağı ittiği bir büyüklüğün peşinde.", "lm-016": "Her zaman sıfıra inmiyor. Galerideki en kötü araba hâlâ makul bir arabaysa sarmalın yeri bitiyor ve piyasa olması gerekenden küçük ve kötü, ama hayatta kalıyor. En kötü araba değersizse taban yok ve piyasa dibe kadar düşüyor. Bunu görmek için yayılımı en yükseğe çekin.", "lm-017": "Bütün sarmal tek satır aritmetik. Kalitenin bir kısmını görüp kalanını tahmin eden alıcı ikisinden kurulu bir fiyat teklif ediyor; sahibi bu teklif arabanın kendisine ettiği kadarsa satıyor. Eşitsizliği çözmek hâlâ satışa sunulan en yüksek kaliteyi veriyor.", "lm-018": "satışta kalan en yüksek kalite = 1,5 x (1 eksi görünürlük) x inanılan ortalama / (1 eksi 1,5 x görünürlük)\n        <small>Hiç görünürlük yokken ifade, inanılan ortalamanın bir buçuk katından ibaret. Görünürlük üçte ikiye yaklaştıkça payda sıfıra gider ve inanç ne olursa olsun her araba satılır.</small>", "lm-019": "Bu eşik, görünürlük kontrolünün yumuşak bir eğim yerine davranışın değiştiği bir noktaya sahip olmasının nedeni. En kötü araba değersizken piyasa yalnızca alıcılar aldıklarının üçte birinden fazlasını görebiliyorsa ayakta kalıyor. Üçte birin altında her şey sıfıra gidiyor; üstünde tutuyor. Yayılımı en yükseğe çekin ve görünürlüğü üçte birin üzerinden geçirin.", "lm-020": "Yukarıda kimsenin kötü davranması gerekmedi, dolayısıyla yukarıdaki hiçbir şey insanlardan daha iyi davranmalarını istemekle düzelmez. Düzelten, alıcının parasının neye maruz kaldığını değiştirmek. Çare kontrolü iki yol sunuyor ve birbirinden yeterince farklı çalışıyorlar; birini, sonra ötekini deneyin.", "lm-021": "<span class=\"ex-em\">Sertifika</span> doğrudan bilgisizliğe saldırıyor: bir muayene, alıcının göremediğinin çoğunu bir ücret karşılığında ortaya çıkarıyor. Açın, çizgi galerinin tepesinin üstüne sıçrasın; kalite görünürken kimsenin çekilmek için nedeni yok. Ücret satıcının aldığından çıkıyor, bu yüzden geri gelen piyasa idealinden biraz küçük.", "lm-022": "<span class=\"ex-em\">Garanti</span> ise maruziyete saldırıyor: satıcı belirtilen bir standardın altında kalanı tamamlamayı vaat ediyor, alıcı da bir tahmin yerine standardın parasını ödüyor. Kötü arabalar artık satılıyor, çünkü sahipleri tamir faturasını taşıyıp yine kârda kalıyor. En iyi arabalar çekiliyor, çünkü garanti mükemmel bir arabaya yeterli bir arabayla aynı parayı ödüyor. Çare piyasayı kurtarıyor ve tepeden kesiyor.", "lm-023": "Makale George Akerlof'un; Quarterly Journal of Economics'te, Ağustos 1970, on üç sayfa. İkinci el araba piyasası açılış örneği. Genel iddia şu: bir alışverişte kaliteyi bir taraf bilip öteki bilmiyorsa kötü iyiyi kovar ve kayıp, arabasının iyi olduğunu artık kanıtlayamayan dürüst satıcıya düşer.", "lm-024": "Yukarıdaki model bu argümanın sayısal bir sürümü. Akerlof'un aritmetiği daha sert: alıcılar arabalara sahiplerinin biçtiğinin bir buçuk katı değer biçiyor, kalite sıfırdan yukarı düzgün yayılıyor ve kendisiyle tutarlı tek fiyat sıfır. Piyasa küçülmüyor, yok oluyor. Yayılım kontrolü en yüksekte bu duruma varıyor.", "lm-025": "American Economic Review ile Review of Economic Studies makaleyi fazla önemsiz diye geri çevirdi; Journal of Political Economy'deki bir hakem, argüman doğruysa hiçbir malın alınıp satılamayacağını ileri sürdü. Otuz bir yıl sonra Akerlof, asimetrik bilgili piyasaların analizi için 2001 ekonomi ödülünü Michael Spence ve Joseph Stiglitz ile paylaştı.", "lm-026": "<strong>Bu bir öğretim modelidir ve hiçbir şey ölçmez.</strong> Sayfadaki her rakam seçtiğiniz ayarlardan ve üçüncü bölümdeki aritmetikten geliyor. Burada hiçbir şey gerçek bir ikinci el piyasasının tahmini değil.", "lm-027": "Tümüyle kendi tarayıcında çalışır. Burada yaptığınız hiçbir şey sayfadan çıkmaz. Sunucu yok, analiz yok, yazı tipleri geldikten sonra ağ çağrısı yok. <a href=\"../index.html\">Explorable Economics</a>'in parçası; <a href=\"../../../index.html\">Kerem Özdemir</a> yaptı.", "lm-028": "<b>Tek seferlik alıcılar</b>Her alıcı bir kez geliyor, alıyor ya da almıyor ve gidiyor. Ne tekrar müşteri var ne itibar ne kulaktan kulağa; gerçek bir piyasada kaliteyi ayakta tutan en güçlü kuvvetler bunlar.", "lm-029": "<b>İnançlar kabaca güncelleniyor</b>Alıcılar bu turun inancını geçen turun gerçekleşen ortalamasına eşitliyor. Tamamen rasyonel bir alıcı doğrudan sabit noktaya atlardı ve izlenecek sarmal kalmazdı. Turlar bir öğretim aracı; varılan yer iki durumda da aynı.", "lm-030": "<b>Kalite tek sayı</b>Gerçek arabalar bazı yönlerden iyi, bazılarından kötü. Bunu tek bir gizli sayıya sıkıştırmak resmi çizilebilir kılıyor ve resmin dışarıda bıraktığı en büyük şey de bu.", "lm-031": "<b>Çareler taslak</b>Sertifika, sabit ücretli bir görünürlük sıçraması; garanti, sabit bir standardın altında kalanı tamamlama vaadi, yine sabit ücretle. Gerçek garantiler fiyatlanır, sınırlanır, tartışılır ve bazen ödenmez; gerçek sertifika şemaları da parasını ödeyen satıcılarca ele geçirilebilir.", "lm-032": "<b>Garanti bir transfer</b>Garantinin ödediği tamir, satıcıdan alıcıya geçen para olarak ele alınıyor; modelde gerçek kaynak tüketmiyor. Tamirlerin kaynak tükettiği bir ele alış piyasayı burada göründüğünden küçük bırakırdı.", "lm-033": "<b>Hiçbir şey tahmin edilmedi</b>Bir buçuk çarpanı, yüz yirmi araba, ücretler ve on dört tur, mekanizma görünsün diye seçildi. Hiçbiri gerçek bir piyasadan ölçülmedi.", "lm-034": "<b>Ters seçim okumalardan yalnızca biri</b>İkinci el arabalar gizli bilgiyle ilgisi olmayan nedenlerle de sıfırdan ucuz satılır; yıpranma ve değer kaybı bunlardan. Bir piyasanın bu deseni göstermesi, deseni bu mekanizmanın ürettiğini kanıtlamaz.", "lm-039": "Birinci şekil <span class=\"ex-model-sub\">arabalar, tur tur</span>", "lm-040": "İkinci şekil <span class=\"ex-model-sub\">turlar boyunca kalite ve fiyat</span>", "lm-035": "Makalenin kendisi ve alıcıların arabalara sahibin değerlemesinin üç yarımı kadar değer biçtiği, kalitenin düzgün yayıldığı, böylece sıfırın üstünde hiçbir fiyatın kendisiyle tutarlı olmadığı sayısal örnek.\n            <span class=\"ex-cite-w\">George A. Akerlof, <span class=\"ex-cite-t\">The Market for &ldquo;Lemons&rdquo;:\n            Quality Uncertainty and the Market Mechanism</span>, The Quarterly Journal of Economics, volume 84,\n            number 3, August 1970, pages 488 to 500. DOI 10.2307/1879431.\n            <a href=\"https://doi.org/10.2307/1879431\" target=\"_blank\" rel=\"noreferrer noopener\">doi.org/10.2307/1879431</a>\n            Künye şuradan doğrulandı:\n            <a href=\"https://en.wikipedia.org/wiki/The_Market_for_Lemons\" target=\"_blank\" rel=\"noreferrer noopener\">en.wikipedia.org/wiki/The_Market_for_Lemons</a>.\n            Kurulum, yani satıcı değerlemesinin üç yarımını ödemeye razı alıcı, düzgün dağılmış kalite ve hiçbir arabanın satılmadığı sıfırdaki tek denge fiyatı, şurada veriliyor:\n            George Georgiadis, <span class=\"ex-cite-t\">Information Economics, Module 14: Adverse\n            Selection</span>, Kellogg School of Management,\n            <a href=\"https://www.kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf</a>.\n            Kontrol tarihi: 2026-08-21.</span>", "lm-036": "Akerlof'un ret hikâyesini kendi anlatışı: American Economic Review ile Review of Economic Studies makaleyi bu kadar önemsiz konularda yayın yapmadıkları gerekçesiyle geri çevirdi; Journal of Political Economy'deki bir hakemse makale doğru olsaydı hiçbir malın alınıp satılamayacağını savundu.\n            <span class=\"ex-cite-w\">George A. Akerlof, <span class=\"ex-cite-t\">Writing the &ldquo;The Market for\n            &lsquo;Lemons&rsquo;&rdquo;: A Personal and Interpretive Essay</span>, published by the Nobel\n            Foundation, 2001.\n            <a href=\"https://www.nobelprize.org/prizes/economic-sciences/2001/akerlof/article/\" target=\"_blank\" rel=\"noreferrer noopener\">nobelprize.org/prizes/economic-sciences/2001/akerlof/article</a>\n            Özet şuradan okundu:\n            <a href=\"https://equitablegrowth.org/must-read-george-akerlof-2001-writing-the-the-market-for-lemons-a-personal-interpretive-essay/\" target=\"_blank\" rel=\"noreferrer noopener\">equitablegrowth.org</a>.\n            Kontrol tarihi: 2026-08-21.</span>", "lm-037": "2001 Alfred Nobel Anısına Sveriges Riksbank İktisat Bilimleri Ödülü, asimetrik bilgili piyasa çözümlemeleri için George A. Akerlof, A. Michael Spence ve Joseph E. Stiglitz'e ortaklaşa verildi.\n            <span class=\"ex-cite-w\">The Nobel Foundation, prize summary for 2001.\n            <a href=\"https://www.nobelprize.org/prizes/economic-sciences/2001/summary/\" target=\"_blank\" rel=\"noreferrer noopener\">nobelprize.org/prizes/economic-sciences/2001/summary</a>\n            Kontrol tarihi: 2026-08-21.</span>", "lm-038": "Soruna piyasadan gelen cevaplar olarak genellikle garantiler, araç geçmişi raporları, marka itibarı ve ruhsatlandırma anılır; bunların hiçbiri yasayla konmaz.\n            <span class=\"ex-cite-w\">David R. Henderson, editor, <span class=\"ex-cite-t\">The Concise Encyclopedia\n            of Economics</span>, biography of George Akerlof, Library of Economics and Liberty.\n            <a href=\"https://www.econlib.org/library/Enc/bios/Akerlof.html\" target=\"_blank\" rel=\"noreferrer noopener\">econlib.org/library/Enc/bios/Akerlof.html</a>\n            Kontrol tarihi: 2026-08-21.</span>", "lm-c-spread": "Kalite yayılımı", "lm-c-spread-h": "En iyi ve en kötü arabaların 100 ortalamasının iki yanına ne kadar uzak durduğu.", "lm-c-vis": "Alıcının görebildiği", "lm-c-vis-h": "Para el değiştirmeden önce bir arabanın kalitesinin görünen payı.", "lm-c-rem": "Yürürlükteki çare", "lm-c-rem-h": "Dördüncü bölüm bunların her birinin aritmetiğe ne yaptığını anlatıyor.", "lm-c-round": "Tur", "lm-c-round-h": "Turları kaydırarak gez ya da aşağıdaki düğmeleri kullan.", "lm-o-none": "yok", "lm-o-war": "garanti", "lm-o-cert": "sertifika", "lm-b-back": "Birinci tura dönün", "lm-b-step": "Bir tur ilerleyin", "lm-b-run": "Piyasayı çalıştırın", "lm-b-copy": "Bağlantıyı kopyalayın", "lm-r-n": "El değiştiren arabalar", "lm-r-aq": "Satılanın ortalama kalitesi", "lm-r-ap": "Ödenen ortalama fiyat", "lm-r-th": "Çekilme eşiği", "lm-r-lost": "Kaybedilen alışveriş kazancı", "lm-k-sold": "satılan araba", "lm-k-kept": "sahibinde kalan araba", "lm-k-thr": "çekilme eşiği", "lm-k2-aq": "satılanın ortalama kalitesi", "lm-k2-ap": "ödenen ortalama fiyat", "lm-k2-share": "el değiştiren pay, sağ eksen", "lm-l-cars": "yüz yirmi araba, en kötüsü solda", "lm-l-q": "kalite", "lm-l-keep": "bu çizginin üstünde sahibi arabayı tutuyor", "lm-l-none": "hiçbir şey işlem görmüyor", "lm-l-aq": "satılan ortalama kalite ", "lm-l-ap": "ödenen ortalama fiyat ", "lm-l-thr-bind": "sahiplerin tuttuğu kalite sınırı", "lm-l-thr-free": "galerideki her araba satışta", "lm-l-floor": "hiçbir araba sahibine ettiğinin altında fiyatlanmıyor", "lm-rd-lost-t": "sonda erişilebilir kazancın", "lm-w-none": "çare yok", "lm-w-war": "ilan edilmiş standarda karşı garanti", "lm-w-cert": "bağımsız sertifika", "lm-s1-a": "Yüz yirmi araba; kalite {lo} ile {hi} arasında düzgün yayılmış, alıcılar kalitenin yüzde {v} kadarını görebiliyor, {rem} yürürlükte. {b} turdan {a}. turda ", "lm-s1-dead": "tek bir araba bile satışa sunulmuyor. Piyasa gitti.", "lm-s1-main": "120 arabanın {n} tanesi el değiştiriyor; satılanın ortalama kalitesi, galerinin 100 ortalamasına karşı {aq} ve ödenen ortalama fiyat {ap}. ", "lm-s1-keep": "Kalitesi {t} üstündeki her araba sahibinde kalıyor.", "lm-s1-all": "Hiçbir araba sahibine tekliften daha değerli değil; kimse çekilmiyor.", "lm-s1-r1": " Birinci turda {n} araba, {aq} ortalama kaliteyle el değiştirmişti.", "lm-s2-one": "Satılan ortalama kalite ve ödenen ortalama fiyat, {b} turun birincisine kadar çizili. Birinci turda satılan ortalama kalite {aq}, ödenen ortalama fiyat {ap} ve galerinin yüzde {sh} kadarı el değiştiriyor. Kalanını çizmek için piyasayı adımla ya da çalıştırın.", "lm-s2-main": "Satılan ortalama kalite ve ödenen ortalama fiyat, {b} turdan {u}. tura kadar çizili. Kalite birinci turdaki {aq0} değerinden {u}. turda {aq1} değerine iniyor. Fiyat {ap0} değerinden {ap1} değerine. El değiştiren pay yüzde {s0} düzeyinden yüzde {s1} düzeyine iniyor.", "lm-sy-cert": "Kalitenin {v} kadarını açığa çıkaran bir muayeneyle fiyat ortalama yerine arabayı izliyor; kimsenin çekilmek için sebebi yok. {n} araba işlem görüyor ve satılan ortalama kalite {aq} düzeyinde kalıyor. Her satıştan {fee} ücret çıkıyor; öğrenmenin fiyatı bu.", "lm-sy-war1": "{g} standardına karşı garantiyle alıcı tahmin yerine standarda para ödüyor; inancın düşmesi hiç gerekmiyor. {n} araba işlem görüyor. ", "lm-sy-war2": "En iyi {top} araba yine çekiliyor; çünkü garanti mükemmel arabaya da idare eder arabaya da aynı parayı ödüyor ve sahipleri o fiyatı almıyor.", "lm-sy-war3": "Bu yayılımda hiçbir araba garantili fiyattan daha değerli olacak kadar iyi değil; bütün galeri satılıyor.", "lm-sy-see": "Alıcılar aldıklarının {v} kadarını görebiliyor ve kalite {lo} ile {hi} arasında. ", "lm-sy-dead": "Piyasa hayatta kalmıyor. {r}. tura gelindiğinde satışa sunulan tek bir şey yok. Bu galerideki en kötü araba {lo} ediyor; bu, inancın içinden düşüp gitmesini durduracak bir taban değil.", "lm-sy-calm": "Pek bir şey olmuyor. Teklif, en iyi sahibin bile kabul edeceği kadar yüksek; inanç hiç hayal kırıklığına uğramıyor ve sarmal hiç başlamıyor. Her turda galerinin {sh} kadarı işlem görüyor.", "lm-sy-fall": "{r} tur boyunca satılan ortalama kalite {a0} değerinden {a1} değerine, işlem gören arabaların payı {s0} düzeyinden {s1} düzeyine düşüyor. Kimse hile yapmadı. Fiyat, iyi arabayı kötüden ayırt edebilmeyi bıraktı; iyi arabalar da gelmeyi bıraktı.", "lm-sy-p2": "Buradaki her araba alıcıya, sahibine ettiğinin yarısı kadar daha fazla ediyor; tam bilgi altında 120'sinin hepsi satılırdı. Bu hâliyle bu piyasadaki alışveriş kazancının {ls} kadarı hiç gerçekleşmiyor. O kayıp cehaletin maliyeti ve en çok, ellerindekini kanıtlayamayan iyi araba sahiplerine düşüyor.", "lm-pct": "yüzde {x}", "lm-ofN": "120'de {n}", "lm-rd-of": " / ", "lm-rd-pct": " galerinin yüzdesi", "lm-rd-none": "yok", "lm-rd-avg100": "galeri ortalaması 100", "lm-rd-nocar": "araba satışta değil", "lm-rd-percar": "araba başına ödenen", "lm-rd-nobind": "bağlamıyor", "pg-title": "Limon piyasası, etkileşimli. Kerem Özdemir"}, "de": {"pg-desc": "Adverse Selektion als Gebrauchtwagenmarkt: Qualität und Sicht der Käufer einstellen, Runde für Runde laufen lassen, dann mit einer Garantie erholen lassen.", "lm-noadv": "Das sind Werkzeuge zum Nachdenken. Nichts auf dieser Seite ist eine Beratung oder Empfehlung zu einer wirklichen Steuer, einem wirklichen Markt oder einer wirklichen Entscheidung, und keine Zahl darauf wurde gemessen.", "lm-kskip": "Zum Essay springen", "lm-001": "Der Markt für Zitronen", "lm-002": "<span class=\"k-num\">01</span>Der Platz", "lm-003": "<span class=\"k-num\">02</span>Warum er sich auflöst", "lm-004": "<span class=\"k-num\">03</span>Die Zahl, die es entscheidet", "lm-005": "<span class=\"k-num\">04</span>Zwei Wege, ihn wieder zusammenzusetzen", "lm-006": "<span class=\"k-num\">05</span>Was Akerlof schrieb", "lm-007": "<span class=\"k-num\">06</span>Wo das Modell endet", "lm-008": "<span class=\"k-num\">07</span>Quellen", "lm-009": "Annahmen und Grenzen", "lm-010": "Ein Gebrauchtwagenmarkt, auf dem der Verkäufer weiß, was das Auto ist, und der Käufer nicht. Stellen Sie ein, wie weit die Qualität streut und wie viel davon ein Käufer sehen kann, und sehen Sie zu, wie die guten Autos Runde um Runde verschwinden.", "lm-011": "Hundertzwanzig Leute wollen je ein Auto verkaufen, und jeder weiß genau, was sein eigenes wert ist. Die Käufer wissen nur, dass die Autos vor ihnen irgendwo in einer Spanne liegen. Jedes Auto ist einem Käufer anderthalbmal so viel wert wie seinem Besitzer; bei voller Information würde jedes verkauft.", "lm-012": "Niemand im Modell lügt. Jeder Verkäufer nimmt den gebotenen Preis an oder behält das Auto; jeder Käufer bietet, was die Autos auf dem Platz im Durchschnitt wert sind. Aus diesen zwei vernünftigen Regeln nimmt sich der Markt selbst auseinander.", "lm-013": "Jede Marke ist ein Auto, vom schlechtesten links bis zum besten rechts, mit seiner Qualität auf der Senkrechten. Stellen Sie die Streuung der Qualität ein und wie viel davon ein Käufer sieht, dann lassen Sie den Markt laufen. Die Linie ist die Qualität, oberhalb derer ein Besitzer das Auto lieber behält, als den Preis zu nehmen.", "lm-014": "Die Schleife hat vier Schritte und schließt sich. Käufer bieten einen Preis, der auf dem vermuteten Wert des durchschnittlichen Autos beruht. Zu diesem Preis lehnen die Besitzer der besten Autos ab. Die angebotenen Autos sind darum schlechter als die verfügbaren, also senken die Käufer den Durchschnitt und bieten weniger, was die nächste Schicht guter Autos hinausdrängt.", "lm-015": "Gehen Sie die Runden durch und sehen Sie die Linie sinken. Die zwei Reihen sind die durchschnittliche Qualität der in jeder Runde verkauften Autos und der durchschnittlich gezahlte Preis. Sie fallen zusammen, weil der Preis eine Schätzung der Qualität ist und die Schätzung einer Größe hinterherläuft, die sie selbst nach unten drückt.", "lm-016": "Es geht nicht immer auf null. Ist das schlechteste Auto auf dem Platz noch ein brauchbares Auto, geht der Spirale der Raum aus und der Markt bleibt kleiner und schlechter, als er sein sollte, aber am Leben. Ist das schlechteste Auto wertlos, gibt es keinen Boden, und der Markt fällt ganz durch. Ziehen Sie die Streuung auf ihr Maximum, um das zu sehen.", "lm-017": "Die ganze Spirale ist eine Zeile Arithmetik. Ein Käufer, der einen Teil der Qualität sieht und den Rest schätzt, bietet einen Preis aus beidem; ein Besitzer verkauft, wenn dieses Gebot mindestens so hoch ist, wie ihm das Auto wert ist. Löst man die Ungleichung auf, ergibt sich die höchste noch angebotene Qualität.", "lm-018": "höchste noch angebotene Qualität = 1,5 x (1 minus Sichtbarkeit) x geglaubter Durchschnitt / (1 minus 1,5 x Sichtbarkeit)\n        <small>Ohne jede Sichtbarkeit ist der Ausdruck das Anderthalbfache des geglaubten Durchschnitts. Steigt die Sichtbarkeit gegen zwei Drittel, geht der Nenner gegen null, und jeder Wagen verkauft sich, was immer geglaubt wird.</small>", "lm-019": "Diese Schwelle ist der Grund, warum der Sichtbarkeitsregler einen Punkt hat, an dem das Verhalten umschlägt, statt einer glatten Steigung. Ist das schlechteste Auto wertlos, überlebt der Markt nur, wenn die Käufer mehr als ein Drittel dessen sehen, was sie kaufen. Unter einem Drittel geht alles auf null; darüber hält es. Ziehen Sie die Streuung auf ihr Maximum und führen Sie die Sichtbarkeit über ein Drittel.", "lm-020": "Nichts oben verlangte, dass sich jemand schlecht verhält, also richtet es nichts oben, die Leute um besseres Verhalten zu bitten. Was es richtet, ist zu ändern, wem das Geld des Käufers ausgesetzt ist. Der Abhilferegler bietet zwei Wege, und sie wirken verschieden genug, um sie nacheinander zu probieren.", "lm-021": "Ein <span class=\"ex-em\">Zertifikat</span> greift die Unkenntnis direkt an: eine Prüfung legt gegen Gebühr das meiste offen, was der Käufer nicht sehen konnte. Schalte es ein, und die Linie springt über die Spitze des Platzes, denn bei sichtbarer Qualität hat niemand einen Grund, sich zurückzuziehen. Die Gebühr geht vom Erlös des Verkäufers ab, also ist der zurückgekehrte Markt etwas kleiner als der ideale.", "lm-022": "Eine <span class=\"ex-em\">Garantie</span> greift stattdessen das Risiko an: der Verkäufer verspricht, jeden Fehlbetrag gegen einen genannten Standard auszugleichen, sodass der Käufer für den Standard zahlt statt für eine Vermutung. Die schlechten Autos werden nun verkauft, weil ihre Besitzer die Reparatur tragen und trotzdem gewinnen. Die allerbesten ziehen sich zurück, weil eine Garantie für ein hervorragendes Auto dasselbe zahlt wie für ein ausreichendes. Die Abhilfe rettet den Markt und schneidet ihn oben ab.", "lm-023": "Das Papier ist von George Akerlof, dreizehn Seiten im Quarterly Journal of Economics, August 1970. Der Gebrauchtwagenmarkt ist sein Eingangsbeispiel. Die allgemeine These: wo eine Seite eines Geschäfts die Qualität kennt und die andere nicht, verdrängt das Schlechte das Gute, und der Verlust trifft den ehrlichen Verkäufer, der nicht mehr beweisen kann, dass sein Auto gut ist.", "lm-024": "Das Modell oben ist eine numerische Fassung dieses Arguments. Akerlofs Arithmetik ist schärfer: Käufer bewerten Autos mit dem Anderthalbfachen der Besitzer, die Qualität ist von null aufwärts gleichverteilt, und der einzige mit sich selbst verträgliche Preis ist null. Der Markt schrumpft nicht, er verschwindet. Der Streuungsregler erreicht diesen Fall an seinem Maximum.", "lm-025": "Die American Economic Review und die Review of Economic Studies lehnten das Papier als zu trivial ab, und ein Gutachter des Journal of Political Economy hielt dagegen, dass bei richtiger Argumentation gar keine Güter gehandelt werden könnten. Einunddreißig Jahre später teilte sich Akerlof den Wirtschaftspreis 2001 mit Michael Spence und Joseph Stiglitz für die Analyse von Märkten mit asymmetrischer Information.", "lm-026": "<strong>Dies ist ein Lehrmodell, und es misst nichts.</strong> Jede Zahl auf dieser Seite stammt aus den gewählten Einstellungen und der Arithmetik in Abschnitt drei. Nichts hier ist eine Schätzung eines echten Gebrauchtwagenmarkts.", "lm-027": "Läuft vollständig in Ihrem Browser. Nichts, was Sie hier tun, verlässt die Seite. Kein Server, keine Analyse, kein Netzaufruf nach dem Laden der Schriften. Teil von <a href=\"../index.html\">Explorable Economics</a>, gebaut von <a href=\"../../../index.html\">Kerem Özdemir</a>.", "lm-028": "<b>Einmalige Käufer</b>Jeder Käufer kommt einmal, kauft oder nicht, und geht. Keine Stammkunden, kein Ruf, keine Mundpropaganda, die auf einem echten Markt zu den stärksten Kräften gehören, die die Qualität halten.", "lm-029": "<b>Erwartungen werden grob angepasst</b>Käufer setzen die Erwartung dieser Runde auf den realisierten Durchschnitt der letzten. Ein vollkommen rationaler Käufer spränge direkt zum Fixpunkt, und es gäbe keine Spirale zu sehen. Die Runden sind ein Lehrmittel; der Endpunkt ist in beiden Fällen derselbe.", "lm-030": "<b>Qualität ist eine Zahl</b>Echte Autos sind in mancher Hinsicht gut und in anderer schlecht. Das in einen einzigen verborgenen Wert zu pressen macht das Bild zeichenbar und ist zugleich das Größte, was es auslässt.", "lm-031": "<b>Die Abhilfen sind Skizzen</b>Das Zertifikat ist ein Sprung der Sichtbarkeit mit fester Gebühr; die Garantie ein Versprechen, jeden Fehlbetrag gegen einen festen Standard auszugleichen, wieder mit fester Gebühr. Echte Garantien werden bepreist, begrenzt, bestritten und manchmal nicht eingelöst, und echte Zertifizierungen können von den Verkäufern, die sie bezahlen, vereinnahmt werden.", "lm-032": "<b>Die Garantie ist ein Transfer</b>Die Reparatur, die eine Garantie bezahlt, gilt als Geld, das vom Verkäufer zum Käufer wandert; im Modell verbraucht sie keine echten Ressourcen. Eine Behandlung, in der Reparaturen Ressourcen verbrauchen, ließe den Markt kleiner, als er hier erscheint.", "lm-033": "<b>Nichts ist geschätzt</b>Der Faktor anderthalb, die hundertzwanzig Autos, die Gebühren und die vierzehn Runden sind so gewählt, dass der Mechanismus sichtbar wird. Keiner davon ist an einem echten Markt gemessen.", "lm-034": "<b>Adverse Selektion ist eine Lesart von mehreren</b>Gebrauchtwagen sind aus Gründen billiger als Neuwagen, die mit verborgener Information nichts zu tun haben, Verschleiß und Wertverlust darunter. Dass ein Markt das Muster zeigt, beweist nicht, dass dieser Mechanismus es erzeugt hat.", "lm-039": "Abbildung eins <span class=\"ex-model-sub\">die Wagen, Runde für Runde</span>", "lm-040": "Abbildung zwei <span class=\"ex-model-sub\">Qualität und Preis über die Runden</span>", "lm-035": "Das Papier selbst, und das Zahlenbeispiel, in dem Käufer Wagen mit drei Halben der Besitzerbewertung bewerten und die Qualität gleichmäßig streut, sodass kein Preis über null mit sich selbst verträglich ist.\n            <span class=\"ex-cite-w\">George A. Akerlof, <span class=\"ex-cite-t\">The Market for &ldquo;Lemons&rdquo;:\n            Quality Uncertainty and the Market Mechanism</span>, The Quarterly Journal of Economics, volume 84,\n            number 3, August 1970, pages 488 to 500. DOI 10.2307/1879431.\n            <a href=\"https://doi.org/10.2307/1879431\" target=\"_blank\" rel=\"noreferrer noopener\">doi.org/10.2307/1879431</a>\n            Bibliografische Angaben bestätigt bei\n            <a href=\"https://en.wikipedia.org/wiki/The_Market_for_Lemons\" target=\"_blank\" rel=\"noreferrer noopener\">en.wikipedia.org/wiki/The_Market_for_Lemons</a>.\n            Der Aufbau, ein Käufer, der drei Halbe der Verkäuferbewertung zahlt, gleichverteilte Qualität und ein eindeutiger Gleichgewichtspreis von null, zu dem kein Wagen verkauft wird, steht in\n            George Georgiadis, <span class=\"ex-cite-t\">Information Economics, Module 14: Adverse\n            Selection</span>, Kellogg School of Management,\n            <a href=\"https://www.kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">kellogg.northwestern.edu/faculty/georgiadis/Teaching/Ec515_Module14.pdf</a>.\n            Geprüft: 2026-08-21.</span>", "lm-036": "Akerlofs eigener Bericht über die Ablehnungen: American Economic Review und Review of Economic Studies lehnten das Papier mit der Begründung ab, sie veröffentlichten keine Arbeiten zu derart trivialen Themen, und ein Gutachter des Journal of Political Economy hielt dagegen, wäre das Papier richtig, könnten keine Güter gehandelt werden.\n            <span class=\"ex-cite-w\">George A. Akerlof, <span class=\"ex-cite-t\">Writing the &ldquo;The Market for\n            &lsquo;Lemons&rsquo;&rdquo;: A Personal and Interpretive Essay</span>, published by the Nobel\n            Foundation, 2001.\n            <a href=\"https://www.nobelprize.org/prizes/economic-sciences/2001/akerlof/article/\" target=\"_blank\" rel=\"noreferrer noopener\">nobelprize.org/prizes/economic-sciences/2001/akerlof/article</a>\n            Gelesen über die Zusammenfassung bei\n            <a href=\"https://equitablegrowth.org/must-read-george-akerlof-2001-writing-the-the-market-for-lemons-a-personal-interpretive-essay/\" target=\"_blank\" rel=\"noreferrer noopener\">equitablegrowth.org</a>.\n            Geprüft: 2026-08-21.</span>", "lm-037": "Der Sveriges-Riksbank-Preis für Wirtschaftswissenschaften 2001 im Gedenken an Alfred Nobel ging gemeinsam an George A. Akerlof, A. Michael Spence und Joseph E. Stiglitz für ihre Analysen von Märkten mit asymmetrischer Information.\n            <span class=\"ex-cite-w\">The Nobel Foundation, prize summary for 2001.\n            <a href=\"https://www.nobelprize.org/prizes/economic-sciences/2001/summary/\" target=\"_blank\" rel=\"noreferrer noopener\">nobelprize.org/prizes/economic-sciences/2001/summary</a>\n            Geprüft: 2026-08-21.</span>", "lm-038": "Garantien, Fahrzeughistorien, Markenruf und Lizenzierung sind die Institutionen, die gewöhnlich als Marktantworten auf das Problem genannt werden, statt der gesetzlichen.\n            <span class=\"ex-cite-w\">David R. Henderson, editor, <span class=\"ex-cite-t\">The Concise Encyclopedia\n            of Economics</span>, biography of George Akerlof, Library of Economics and Liberty.\n            <a href=\"https://www.econlib.org/library/Enc/bios/Akerlof.html\" target=\"_blank\" rel=\"noreferrer noopener\">econlib.org/library/Enc/bios/Akerlof.html</a>\n            Geprüft: 2026-08-21.</span>", "lm-c-spread": "Streuung der Qualität", "lm-c-spread-h": "Wie weit der beste und der schlechteste Wagen beiderseits eines Durchschnitts von 100 liegen.", "lm-c-vis": "Was ein Käufer sieht", "lm-c-vis-h": "Der sichtbare Anteil der Qualität eines Wagens, bevor Geld den Besitzer wechselt.", "lm-c-rem": "Geltende Abhilfe", "lm-c-rem-h": "Abschnitt vier erklärt, was jede davon mit der Arithmetik macht.", "lm-c-round": "Runde", "lm-c-round-h": "Fahren Sie durch die Runden, oder nutzen Sie die Knöpfe unten.", "lm-o-none": "keine", "lm-o-war": "Garantie", "lm-o-cert": "Zertifikat", "lm-b-back": "Zurück zu Runde eins", "lm-b-step": "Eine Runde weiter", "lm-b-run": "Den Markt laufen lassen", "lm-b-copy": "Link kopieren", "lm-r-n": "Wagen, die den Besitzer wechseln", "lm-r-aq": "Durchschnittsqualität verkauft", "lm-r-ap": "Durchschnittspreis gezahlt", "lm-r-th": "Rückzugsschwelle", "lm-r-lost": "Verlorener Handelsgewinn", "lm-k-sold": "verkaufter Wagen", "lm-k-kept": "vom Besitzer behaltener Wagen", "lm-k-thr": "Rückzugsschwelle", "lm-k2-aq": "Durchschnittsqualität verkauft", "lm-k2-ap": "Durchschnittspreis gezahlt", "lm-k2-share": "handelnder Anteil des Platzes, rechte Skala", "lm-l-cars": "die hundertzwanzig Wagen, der schlechteste links", "lm-l-q": "Qualität", "lm-l-keep": "über dieser Linie behält der Besitzer den Wagen", "lm-l-none": "nichts wird gehandelt", "lm-l-aq": "Durchschnittsqualität verkauft ", "lm-l-ap": "Durchschnittspreis gezahlt ", "lm-l-thr-bind": "Qualität, oberhalb derer Besitzer behalten", "lm-l-thr-free": "jeder Wagen des Platzes wird angeboten", "lm-l-floor": "kein Wagen ist unter seinem Besitzerwert bepreist", "lm-rd-lost-t": "des am Ende verfügbaren Gewinns", "lm-w-none": "keine Abhilfe", "lm-w-war": "eine Garantie gegen einen genannten Standard", "lm-w-cert": "ein unabhängiges Zertifikat", "lm-s1-a": "Hundertzwanzig Wagen, Qualität gleichmäßig von {lo} bis {hi} gestreut, Käufer sehen {v} Prozent der Qualität, {rem} in Kraft. In Runde {a} von {b} ", "lm-s1-dead": "wird kein einziger Wagen angeboten. Der Markt ist fort.", "lm-s1-main": "wechseln {n} der 120 Wagen den Besitzer, die Durchschnittsqualität der Verkauften ist {aq} gegen einen Platzdurchschnitt von 100, der Durchschnittspreis {ap}. ", "lm-s1-keep": "Jeder Wagen über einer Qualität von {t} bleibt bei seinem Besitzer.", "lm-s1-all": "Kein Wagen ist seinem Besitzer mehr wert als das Angebot, also zieht sich keiner zurück.", "lm-s1-r1": " In Runde eins wechselten {n} Wagen bei einer Durchschnittsqualität von {aq} den Besitzer.", "lm-s2-one": "Durchschnittsqualität und Durchschnittspreis, gezeichnet bis Runde eins von {b}. In Runde eins ist die verkaufte Durchschnittsqualität {aq}, der gezahlte Durchschnittspreis {ap}, und {sh} Prozent des Platzes wechseln den Besitzer. Schreiten oder laufen Sie den Markt, um den Rest zu zeichnen.", "lm-s2-main": "Durchschnittsqualität und Durchschnittspreis, gezeichnet bis Runde {u} von {b}. Die Qualität geht von {aq0} in Runde eins auf {aq1} in Runde {u}. Der Preis von {ap0} auf {ap1}. Der handelnde Anteil von {s0} auf {s1} Prozent.", "lm-sy-cert": "Mit einer Prüfung, die {v} der Qualität aufdeckt, folgt der Preis dem Wagen statt dem Durchschnitt, also hat kein Besitzer einen Grund, sich zurückzuziehen. {n} Wagen handeln, und die verkaufte Durchschnittsqualität bleibt bei {aq}. Die Gebühr von {fee} geht von jedem Verkauf ab; das ist der Preis des Herausfindens.", "lm-sy-war1": "Mit einer Garantie gegen einen Standard von {g} zahlt der Käufer für den Standard statt für eine Vermutung, also muss der Glaube nie fallen. {n} Wagen handeln. ", "lm-sy-war2": "Die {top} besten Wagen ziehen sich trotzdem zurück, denn eine Garantie zahlt für einen ausgezeichneten Wagen dasselbe wie für einen passablen, und ihre Besitzer nehmen diesen Preis nicht.", "lm-sy-war3": "Bei dieser Streuung ist kein Wagen gut genug, um mehr wert zu sein als der garantierte Preis, also handelt der ganze Platz.", "lm-sy-see": "Käufer sehen {v} dessen, was sie kaufen, und die Qualität läuft von {lo} bis {hi}. ", "lm-sy-dead": "Der Markt überlebt nicht. In Runde {r} wird gar nichts mehr angeboten. Der schlechteste Wagen dieses Platzes ist {lo} wert, und das ist kein Boden, der den fallenden Glauben aufhält.", "lm-sy-calm": "Viel geschieht nicht. Das Angebot ist hoch genug, dass selbst der beste Besitzer annimmt; der Glaube wird nie enttäuscht, und die Spirale beginnt nie. {sh} des Platzes handeln in jeder Runde.", "lm-sy-fall": "Über {r} Runden fällt die verkaufte Durchschnittsqualität von {a0} auf {a1} und der Anteil handelnder Wagen von {s0} auf {s1}. Niemand hat betrogen. Der Preis konnte einen guten Wagen nicht mehr von einem schlechten unterscheiden, also kamen die guten nicht mehr.", "lm-sy-p2": "Jeder Wagen hier ist einem Käufer anderthalbmal so viel wert wie seinem Besitzer; bei voller Information würden alle 120 verkauft. So aber wird {ls} des Handelsgewinns dieses Marktes nie realisiert. Dieser Verlust ist der Preis der Unwissenheit, und er trifft am härtesten die Besitzer guter Wagen, die nicht beweisen können, was sie haben.", "lm-pct": "{x} Prozent", "lm-ofN": "{n} von 120", "lm-rd-of": " von ", "lm-rd-pct": " Prozent des Platzes", "lm-rd-none": "keine", "lm-rd-avg100": "Platzdurchschnitt 100", "lm-rd-nocar": "kein Wagen im Angebot", "lm-rd-percar": "gezahlt je Wagen", "lm-rd-nobind": "keine bindet", "pg-title": "Der Markt für Zitronen, interaktiv. Kerem Özdemir"}};
 function T(k, en, v) {
   var out = window.__t ? window.__t(k, en) : en;
   if (v) for (var vn in v) out = out.split("{" + vn + "}").join(String(v[vn]));
@@ -2256,7 +2424,7 @@ function sweepI18n() {
 
     if (S.remedy === "warranty") {
       var top = N - d.count;
-      var html = T("lm-sy-war1", "With a warranty against a standard of {g}, the buyer is paying for the standard and not for a guess, so the belief never has to fall. {n} cars trade. ",
+      var html = T("lm-sy-war1", "With a warranty against a standard of {g}, the buyer pays for the standard instead of a guess, so the belief never has to fall. {n} cars trade. ",
         {g: WAR_G, n: nh(T("lm-ofN", "{n} of 120", {n: d.count}))});
       if (top > 0) {
         html += T("lm-sy-war2", "The {top} best cars withdraw anyway, because a warranty pays the same for an excellent car as for an adequate one and their owners will not take that price.",
@@ -2282,7 +2450,7 @@ function sweepI18n() {
       html2 += T("lm-sy-calm", "Nothing much happens. The offer is high enough that even the best owner accepts it, so the belief is never disappointed and the spiral never starts. {sh} of the lot trades in every round.",
         {sh: nh(pctW(Kit.num(100 * last.count / N, 0)))});
     } else {
-      html2 += T("lm-sy-fall", "Over {r} rounds the average quality sold falls from {a0} to {a1} and the share of cars trading falls from {s0} to {s1}. Nobody cheated. The price simply stopped being able to tell a good car from a bad one, so the good cars stopped coming.",
+      html2 += T("lm-sy-fall", "Over {r} rounds the average quality sold falls from {a0} to {a1} and the share of cars trading falls from {s0} to {s1}. Nobody cheated. The price stopped being able to tell a good car from a bad one, so the good cars stopped coming.",
         {r: ROUNDS, a0: nh(Kit.num(first.avgQ, 1)), a1: nh(Kit.num(last.avgQ, 1), true),
          s0: nh(pctW(Kit.num(100 * first.count / N, 0))), s1: nh(pctW(Kit.num(100 * last.count / N, 0)), true)});
     }
@@ -2462,19 +2630,13 @@ function sweepI18n() {
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler", "crown": "<i>İktisat<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen", "crown": "<i>Volkswirtschaftslehre<\/i>"}};
+window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "a-menu": "Menü", "a-menu-close": "Menüyü kapat", "a-mail": "E-posta", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak elinize veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek etik bir edimdir.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarlayın ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izleyin.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: size verilen sonuçlar yerine çalıştırdığınız modeller.", "xn-k-again": "Baştan başlayın", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükleyin, bir vergi koyun ve kanunun onu kimin sırtlayacağına karar vermediğini görün.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştırın, sonra kazananları çoğaltın ve gelecek uzunken neyin hayatta kaldığını görün.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştırın ve iyi arabaların gidişini izleyin.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğiniz modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tutun ve altındaki ağın biçimini değiştirin. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştırın", "sim-pause": "Duraklatın", "sim-step": "Adım", "sim-reset": "Sıfırlayın", "sim-share": "Bu koşunun bağlantısını kopyalayın", "sim-advance": "{n} adım ilerletin", "sim-still": "Sisteminiz azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerletin düğmesi onu {n} adım götürüp sonucu bir kez çiziyor. Adım düğmesi onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler", "crown": "<i>İktisat<\/i>"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "a-menu": "Menü", "a-menu-close": "Menü schließen", "a-mail": "E-Mail", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen", "crown": "<i>Volkswirtschaftslehre<\/i>"}};
 
 (function(){
   "use strict";
-  var KEY = "lang", lang = "en";
-  function preferred(){
-    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
-    l = String(l).toLowerCase();
-    if (l.indexOf("de") === 0) return "de";
-    if (l.indexOf("tr") === 0) return "tr";
-    return "en";
-  }
-  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  /* The head script settles the language: the address, the tab, the reader's
+     choice, the browser. */
+  var lang = window.__tabLang ? window.__tabLang() : "en";
   var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
   /* One dictionary per language, rebuilt on every pass, so a page that
      declares its own words later is still heard. */
@@ -2551,7 +2713,12 @@ window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, an
     });
     var ot1 = document.querySelector('meta[property="og:title"]');
     if (ot1) ot1.setAttribute("content", document.title);
-    try { localStorage.setItem(KEY, l); } catch (e) {}
+    /* The site has a copy of each of these pages under /tr and /de, and a reader
+       in this tab's language leaves to the page in that language: with nothing
+       stored, a plain /about/ would land them in English. */
+    document.querySelectorAll("a[data-home]").forEach(function(a){
+      a.setAttribute("href", (l === "en" ? "" : "/" + l) + a.getAttribute("data-home"));
+    });
     window.__lang = l;
     /* One lookup for a string a script draws itself rather than one the
        browser is holding in an element. */
@@ -2561,8 +2728,26 @@ window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, an
     };
     try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
+  /* A press on this page's own switch is the only thing here that writes the
+     reader's choice down. It also takes over the tab and leaves the address,
+     where a ?lang= would win again on the next reload. A framed page has no
+     switch to press, and this guard keeps it that way: the site redirects by
+     this key, so a frame must never write it. */
+  function press(l){
+    if (window.self === window.top) {
+      try { localStorage.setItem("lang", l); } catch(e){}
+      try { sessionStorage.setItem("lang", l); } catch(e){}
+      try {
+        var q = location.search.replace(/^\?/, "").split("&").filter(function(p){
+          return p && p.indexOf("lang=") !== 0;
+        }).join("&");
+        history.replaceState(history.state, "", location.pathname + (q ? "?" + q : "") + location.hash);
+      } catch(e){}
+    }
+    apply(l);
+  }
   document.querySelectorAll(".langs button").forEach(function(b){
-    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+    b.addEventListener("click", function(){ press(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
   window.__lang = lang;
@@ -2573,21 +2758,58 @@ window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, an
      the bar has already taken, or it overhangs the fold by exactly that much
      and clips whatever sits at its bottom. */
   function barHeight(){
-    var b = document.querySelector(".bar");
+    var b = document.querySelector("header.bar");
     document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
   }
   barHeight();
   addEventListener("resize", barHeight);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
-  /* the nav is one scrolling line on a phone, so the page you are on can
-     start off past its right edge. Bring it into view without moving the
-     page. The generated pages do the same. */
-  try {
-    var cur = document.querySelector(".bar nav a[aria-current]");
-    if (cur && cur.parentNode.scrollWidth > cur.parentNode.clientWidth) {
-      cur.parentNode.scrollLeft = Math.max(0, cur.offsetLeft - 24);
+  /* The sheet behind the menu button. Focus goes to the first section and stays
+     inside until the sheet closes, then returns to the button. Escape, a link,
+     and a window grown past the point where the button exists all close it. */
+  (function(){
+    var btn = document.querySelector(".menu-toggle"), sheet = document.getElementById("site-menu");
+    if (!btn || !sheet) return;
+    var root = document.documentElement, open = false;
+    function stops(){
+      return Array.prototype.filter.call(sheet.querySelectorAll("a[href],button"), function(el){
+        return el.offsetParent !== null || el.classList.contains("menu-close");
+      });
     }
-  } catch(e){}
+    function set(v, back){
+      if (v === open) return;
+      open = v;
+      root.classList.toggle("menu-open", v);
+      sheet.classList.toggle("open", v);
+      btn.setAttribute("aria-expanded", v ? "true" : "false");
+      if (v) {
+        var first = sheet.querySelector(".menu-main > a");
+        if (first) first.focus({ preventScroll: true });
+      } else if (back) {
+        btn.focus({ preventScroll: true });
+      }
+    }
+    btn.addEventListener("click", function(){ set(!open, true); });
+    var closer = sheet.querySelector(".menu-close");
+    if (closer) closer.addEventListener("click", function(){ set(false, true); });
+    sheet.addEventListener("click", function(e){
+      if (e.target.closest && e.target.closest("a")) set(false, false);
+    });
+    document.addEventListener("keydown", function(e){
+      if (!open) return;
+      if (e.key === "Escape") { set(false, true); return; }
+      if (e.key !== "Tab") return;
+      var list = stops(), i = list.indexOf(document.activeElement);
+      if (!list.length) return;
+      var next = e.shiftKey ? (i <= 0 ? list.length - 1 : i - 1) : (i === list.length - 1 ? 0 : i + 1);
+      e.preventDefault();
+      list[next].focus();
+    });
+    var wide = matchMedia("(min-width:64rem)");
+    var onWide = function(){ if (wide.matches) set(false, false); };
+    if (wide.addEventListener) wide.addEventListener("change", onWide);
+    addEventListener("pageshow", function(e){ if (e.persisted) set(false, false); });
+  })();
 })();
 
 </script>

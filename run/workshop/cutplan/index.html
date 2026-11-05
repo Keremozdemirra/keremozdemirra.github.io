@@ -9,9 +9,14 @@
 <meta property="og:description" content="An SVG into GRBL G-code for a laser, with the inside shapes cut before the outline that would drop the part.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://keremozdemir.de/run/workshop/cutplan/">
-<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta property="og:image" content="https://keremozdemir.de/run/og/workshop-cutplan.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Cutplan, SVG to G-code for a laser cutter. Kerem Özdemir">
 <meta name="twitter:card" content="summary_large_image">
-<style>.ws-vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}.ws-main{display:contents}[role="region"][tabindex="0"]:focus-visible{outline:2px solid currentColor;outline-offset:-2px}</style>
+<meta name="twitter:image" content="https://keremozdemir.de/run/og/workshop-cutplan.png">
+<style>.ws-vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}.ws-main{display:contents}[role="region"][tabindex="0"]:focus-visible{outline:2px solid currentColor;outline-offset:-2px}@view-transition{navigation:auto}::view-transition-old(root){animation:vt-out 160ms cubic-bezier(.16,1,.3,1) both}::view-transition-new(root){animation:vt-in 240ms cubic-bezier(.16,1,.3,1) both}@keyframes vt-out{to{opacity:0;transform:translateY(-12px)}}@keyframes vt-in{from{opacity:0;transform:translateY(12px)}}@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}:root[data-theme="light"]{color-scheme:light}:root[data-theme="dark"]{color-scheme:dark}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark}}.ws-back{flex:none;display:inline-flex;align-items:center;gap:.35em;font-size:13px;line-height:1;font-weight:500;color:inherit;text-decoration:none;white-space:nowrap}.ws-back:hover{text-decoration:underline;text-underline-offset:3px}.ws-back:focus-visible{outline:2px solid currentColor;outline-offset:2px}@media (pointer:coarse){.ws-back{min-height:44px}}@media print{.ws-back{display:none}}@media (pointer:coarse){button{min-height:44px;min-width:44px}select,input[type=number],input[type=text],input[type=search]{min-height:44px}input[type=number]{min-width:44px}label:has(>input[type=checkbox]),label:has(>input[type=radio]){min-height:44px}.ws-hit{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}}</style>
+<script>(function(){var d=document.documentElement,t=null;d.classList.add("js");try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")});function k(l){return l==="en"||l==="tr"||l==="de"}var L=(function(){var q=null,p=null,s=null,l=null;try{q=new URLSearchParams(location.search).get("lang")}catch(e){}if(k(q)){try{sessionStorage.setItem("lang",q)}catch(e){}return q}try{if(window.self!==window.top)p=window.parent.document.documentElement.getAttribute("lang")}catch(e){}if(k(p))return p;try{s=sessionStorage.getItem("lang")}catch(e){}if(k(s))return s;try{l=localStorage.getItem("lang")}catch(e){}if(k(l))return l;l=String((navigator.languages&&navigator.languages[0])||navigator.language||"").toLowerCase();return l.indexOf("de")===0?"de":l.indexOf("tr")===0?"tr":"en"})();window.__tabLang=function(){return L};d.setAttribute("lang",L)})()</script><script>(function(){var d=document.documentElement,l=d.getAttribute("lang");d.setAttribute("lang","en");var W={en:["Tools","Kerem Özdemir, all tools",""],tr:["Araçlar","Kerem Özdemir, tüm araçlar","/tr"],de:["Werkzeuge","Kerem Özdemir, alle Werkzeuge","/de"]}[l]||["Tools","Kerem Özdemir, all tools",""];function put(){document.querySelectorAll("a[data-ws]").forEach(function(a){a.setAttribute("href",W[2]+"/work/workshop/");if(l!=="en"&&W[2])a.setAttribute("lang",l);var t=a.querySelector("[data-ws-t]");if(t)t.textContent=W[0];else a.textContent=W[1]})}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",put);else put()})()</script>
 <style>
 /* Fonts served from this file, not from Google. A hotlinked
    font sends the visitor's IP to a third party on every load; nothing
@@ -53,9 +58,24 @@
   --w-extra:  4px;
 
   --sel: #dde2d8; --sel-ink: #14171a;
+  --heavy: var(--ink); --on-cut: var(--paper); --scrim: rgb(20 23 26 / .38);
   color-scheme: light;
   caret-color: var(--cut);
   accent-color: var(--cut);
+}
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:#111312; --paper:#1d201e; --panel:#181a19; --ink:#eceeea; --ink-2:#b8bcb6; --ink-3:#9ca19b;
+    --rule:#2e312f; --rule-2:#555953; --cut:#f08074; --cut-w:#301c19; --travel:#858a84;
+    --sel:#272b28; --sel-ink:#eceeea; --heavy:#555953; --on-cut:#1a0d0b; --scrim:rgb(0 0 0 / .62);
+  }
+}
+@media screen {
+  :root[data-theme="dark"] {
+    --ground:#111312; --paper:#1d201e; --panel:#181a19; --ink:#eceeea; --ink-2:#b8bcb6; --ink-3:#9ca19b;
+    --rule:#2e312f; --rule-2:#555953; --cut:#f08074; --cut-w:#301c19; --travel:#858a84;
+    --sel:#272b28; --sel-ink:#eceeea; --heavy:#555953; --on-cut:#1a0d0b; --scrim:rgb(0 0 0 / .62);
+  }
 }
 
 * { box-sizing: border-box; }
@@ -81,7 +101,7 @@ body {
 /* ── machine bar ───────────────────────────────────────────────────────── */
 .machine {
   display: flex; align-items: center; gap: 10px; padding: 0 12px 0 14px;
-  background: var(--panel); border-bottom: var(--w-extra) solid var(--ink); z-index: 20;
+  background: var(--panel); border-bottom: var(--w-extra) solid var(--heavy); z-index: 20;
 }
 .logo { display: flex; align-items: center; gap: 8px; flex: none; text-decoration: none; color: inherit; }
 .logo svg { display: block; color: var(--cut); }
@@ -104,7 +124,7 @@ select { font-family: Archivo, sans-serif; width: auto; padding: 5px 8px; font-s
 input:focus, select:focus { border-color: var(--cut); outline: none; }
 
 button.beam {
-  background: var(--cut); color: var(--paper);
+  background: var(--cut); color: var(--on-cut);
   border: var(--w-wide) solid var(--cut); border-radius: 0;
   padding: 9px 15px; font: 700 12px/1 Archivo, sans-serif; font-stretch: 92%;
   letter-spacing: .07em; text-transform: uppercase; cursor: pointer;
@@ -138,7 +158,7 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
 .tools {
   position: absolute; left: 14px; top: 14px; z-index: 10;
   display: flex; flex-direction: column;
-  background: var(--panel); border: var(--w-wide) solid var(--ink);
+  background: var(--panel); border: var(--w-wide) solid var(--heavy);
 }
 .tools button {
   width: 34px; height: 34px; display: grid; place-items: center;
@@ -150,11 +170,11 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
 @media (hover: hover) {
   .tools button:not([aria-pressed="true"]):hover { background: var(--sel); color: var(--ink); }
 }
-.tools .rule { height: var(--w-wide); background: var(--ink); }
+.tools .rule { height: var(--w-wide); background: var(--heavy); }
 
 .panel {
   position: absolute; right: 14px; z-index: 10; width: 250px;
-  background: var(--panel); border: var(--w-wide) solid var(--ink);
+  background: var(--panel); border: var(--w-wide) solid var(--heavy);
 }
 .panel > h2 {
   margin: 0; padding: 8px 10px; font: 700 9.5px/1 "B612 Mono", ui-monospace, monospace;
@@ -209,7 +229,7 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
 /* ── job strip ─────────────────────────────────────────────────────────── */
 .job {
   display: flex; align-items: center; padding: 0 12px;
-  background: var(--panel); border-top: var(--w-extra) solid var(--ink); overflow-x: auto;
+  background: var(--panel); border-top: var(--w-extra) solid var(--heavy); overflow-x: auto;
 }
 .job .stat {
   display: flex; align-items: baseline; gap: 7px; padding: 0 13px;
@@ -223,12 +243,15 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
 .job .v { font: 400 12.5px/1 "B612 Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; color: var(--ink); }
 .job .v.warn, .job .v.stop { color: var(--cut); }
 .job .spacer { flex: 1; border: 0; }
+.ws-foot { margin-left: 14px; font: 400 12px/1 Archivo, sans-serif; color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.ws-foot:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+@media (pointer:coarse) { .ws-foot { display: inline-flex; align-items: center; min-height: 44px; } }
 
 .flags { position: absolute; left: 14px; right: 14px; bottom: 14px; z-index: 12; display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
 .flag {
   pointer-events: auto; align-self: flex-start; max-width: min(560px, 90%);
   background: var(--panel); border: var(--w-narrow) solid var(--rule);
-  border-left: var(--w-extra) solid var(--ink);
+  border-left: var(--w-extra) solid var(--heavy);
   padding: 9px 13px; font-size: 14px; color: var(--ink-2);
 }
 .flag.stop { border-left-color: var(--cut); }
@@ -236,12 +259,12 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
 .flag b { color: var(--ink); font-weight: 600; }
 
 /* ── modal ─────────────────────────────────────────────────────────────── */
-.scrim { position: fixed; inset: 0; background: rgb(20 23 26 / .38); z-index: 40; display: grid; place-items: center; padding: 22px; }
+.scrim { position: fixed; inset: 0; background: var(--scrim); z-index: 40; display: grid; place-items: center; padding: 22px; }
 .scrim[hidden] { display: none; }
-.modal { background: var(--panel); border: var(--w-extra) solid var(--ink); width: min(680px, 100%); max-height: 84dvh; overflow: auto; }
+.modal { background: var(--panel); border: var(--w-extra) solid var(--heavy); width: min(680px, 100%); max-height: 84dvh; overflow: auto; }
 .modal header {
   display: flex; align-items: center; gap: 10px; padding: 12px 14px;
-  border-bottom: var(--w-wide) solid var(--ink); position: sticky; top: 0; background: var(--panel);
+  border-bottom: var(--w-wide) solid var(--heavy); position: sticky; top: 0; background: var(--panel);
 }
 .modal header h3 { margin: 0; font: 700 14px/1 Archivo, sans-serif; font-stretch: 88%; text-transform: uppercase; letter-spacing: .02em; }
 .modal header .spacer { flex: 1; }
@@ -300,6 +323,7 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
   .app { grid-template-rows: auto minmax(0, 1fr) 44px; }
   .machine { flex-wrap: wrap; padding: 8px 12px; row-gap: 8px; }
   .machine .spacer, .machine .sep { display: none; }
+  .machine > .ws-back { order: 0; }
   .machine > .logo { order: 1; }
   .machine > button.beam { order: 2; margin-left: auto; }
   .machine > button.flat, .machine > .srcname, .machine > input { order: 3; }
@@ -313,14 +337,15 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
 <h1 class="ws-vh">Cutplan, SVG to G-code for a laser cutter</h1>
   <!-- ── machine bar ─────────────────────────────────────────────────── -->
   <div class="machine">
-    <a class="logo" href="../" title="Cutplan">
+    <a class="ws-back" data-ws="b" href="/work/workshop/"><span aria-hidden="true">←</span> <span data-ws-t>Tools</span></a>
+    <span class="logo">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
            stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
         <path d="M12 2v7"/><path d="M9 9h6l-3 4z"/><path d="M12 13v3"/>
         <rect x="3" y="17" width="18" height="4" rx="1"/>
       </svg>
       <b>Cutplan</b>
-    </a>
+    </span>
     <div class="sep"></div>
     <button class="flat" id="open">Open SVG</button>
     <span class="srcname" id="srcname"><em>sample part</em></span>
@@ -450,6 +475,7 @@ svg.bed { position: absolute; inset: 0; width: 100%; height: 100%; display: bloc
     <div class="stat" style="border:0;padding-right:0">
       <button class="flat" id="preview">Preview G-code</button>
       <button class="flat" id="copy" style="margin-left:6px">Copy</button>
+      <a class="ws-foot" data-ws="f" href="/work/workshop/">Kerem Özdemir, all tools</a>
     </div>
   </div>
 </div>
@@ -1079,24 +1105,24 @@ function render() {
 
   /* the bed itself */
   p.push('<rect x="' + X(0) + '" y="' + Y(0) + '" width="' + (b.w * v.z).toFixed(2) +
-    '" height="' + (b.h * v.z).toFixed(2) + '" fill="#f6f7f3" stroke="#14171a" stroke-width="2"/>');
+    '" height="' + (b.h * v.z).toFixed(2) + '" fill="var(--paper)" stroke="var(--heavy)" stroke-width="2"/>');
 
   if (state.show.grid) {
     var step = b.w > 900 ? 100 : b.w > 400 ? 50 : 20;
     var g = [];
     for (var gx = step; gx < b.w; gx += step) g.push("M" + X(gx) + " " + Y(0) + "V" + Y(b.h));
     for (var gy = step; gy < b.h; gy += step) g.push("M" + X(0) + " " + Y(gy) + "H" + X(b.w));
-    p.push('<path d="' + g.join("") + '" stroke="#c6cac3" stroke-width="1" fill="none"/>');
+    p.push('<path d="' + g.join("") + '" stroke="var(--rule)" stroke-width="1" fill="none"/>');
   }
 
   /* origin mark, because which corner is zero is the thing that ruins a job */
   var oy = $("origin").value === "bl" ? b.h : 0;
   p.push('<g opacity=".85"><path d="M' + X(0) + " " + Y(oy) + "h" + (18) + "M" + X(0) + " " +
     Y(oy) + "v" + ($("origin").value === "bl" ? -18 : 18) +
-    '" stroke="#b4302a" stroke-width="1.4" fill="none"/>' +
-    '<circle cx="' + X(0) + '" cy="' + Y(oy) + '" r="2.4" fill="#b4302a"/></g>');
+    '" stroke="var(--cut)" stroke-width="1.4" fill="none"/>' +
+    '<circle cx="' + X(0) + '" cy="' + Y(oy) + '" r="2.4" fill="var(--cut)"/></g>');
   p.push('<text x="' + (+X(0) + 22) + '" y="' + (+Y(oy) + ($("origin").value === "bl" ? -8 : 16)) +
-    '" fill="#868c88" font-family="B612 Mono, monospace" font-size="10">0,0</text>');
+    '" fill="var(--ink-3)" font-family="B612 Mono, monospace" font-size="10">0,0</text>');
 
   if (state.ordered && state.ordered.length) {
     var prev = null;
@@ -1110,7 +1136,7 @@ function render() {
       prev = pts[pts.length - 1];
     });
     if (state.show.travel && travelPath.length) {
-      p.push('<path d="' + travelPath.join("") + '" stroke="#8b918c" stroke-width="1" ' +
+      p.push('<path d="' + travelPath.join("") + '" stroke="var(--travel)" stroke-width="1" ' +
         'stroke-dasharray="4 3" fill="none"/>');
     }
 
@@ -1118,21 +1144,21 @@ function render() {
       var d = "M" + poly.pts.map(function (pt) { return X(pt[0]) + " " + Y(pt[1]); }).join("L");
       var on = state.sel === i;
       p.push('<path class="cut" data-i="' + i + '" d="' + d + '" fill="none" stroke="' +
-        (on ? "#14171a" : "#b4302a") + '" stroke-width="' + (on ? 2.6 : 1.5) +
+        (on ? "var(--ink)" : "var(--cut)") + '" stroke-width="' + (on ? 2.6 : 1.5) +
         '" stroke-linejoin="round" stroke-linecap="round" opacity="' + (on ? 1 : .92) + '"/>');
       if (state.show.seq) {
         p.push('<circle cx="' + X(poly.pts[0][0]) + '" cy="' + Y(poly.pts[0][1]) +
-          '" r="8" fill="#f6f7f3" stroke="' + (on ? "#14171a" : "#b4302a") + '" stroke-width="1"/>');
+          '" r="8" fill="var(--paper)" stroke="' + (on ? "var(--ink)" : "var(--cut)") + '" stroke-width="1"/>');
         p.push('<text x="' + X(poly.pts[0][0]) + '" y="' + (+Y(poly.pts[0][1]) + 3.4) +
-          '" fill="' + (on ? "#14171a" : "#b4302a") + '" font-family="B612 Mono, monospace" ' +
+          '" fill="' + (on ? "var(--ink)" : "var(--cut)") + '" font-family="B612 Mono, monospace" ' +
           'font-size="9.5" text-anchor="middle">' + (i + 1) + "</text>");
       }
     });
 
     if (state.sim) {
       p.push('<circle cx="' + X(state.sim[0]) + '" cy="' + Y(state.sim[1]) +
-        '" r="5" fill="#b4302a"/><circle cx="' + X(state.sim[0]) + '" cy="' + Y(state.sim[1]) +
-        '" r="11" fill="none" stroke="#b4302a" stroke-width="1" opacity=".5"/>');
+        '" r="5" fill="var(--cut)"/><circle cx="' + X(state.sim[0]) + '" cy="' + Y(state.sim[1]) +
+        '" r="11" fill="none" stroke="var(--cut)" stroke-width="1" opacity=".5"/>');
     }
   }
   p.push("</svg>");

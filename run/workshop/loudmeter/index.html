@@ -9,9 +9,14 @@
 <meta property="og:description" content="Measure a file against a loudness target to BS.1770-4 and normalise it to match. Runs in your browser. The audio never leaves your machine.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://keremozdemir.de/run/workshop/loudmeter/">
-<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta property="og:image" content="https://keremozdemir.de/run/og/workshop-loudmeter.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Loudmeter, loudness to BS.1770-4. Kerem Özdemir">
 <meta name="twitter:card" content="summary_large_image">
-<style>.ws-vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}.ws-main{display:contents}[role="region"][tabindex="0"]:focus-visible{outline:2px solid currentColor;outline-offset:-2px}</style>
+<meta name="twitter:image" content="https://keremozdemir.de/run/og/workshop-loudmeter.png">
+<style>.ws-vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}.ws-main{display:contents}[role="region"][tabindex="0"]:focus-visible{outline:2px solid currentColor;outline-offset:-2px}@view-transition{navigation:auto}::view-transition-old(root){animation:vt-out 160ms cubic-bezier(.16,1,.3,1) both}::view-transition-new(root){animation:vt-in 240ms cubic-bezier(.16,1,.3,1) both}@keyframes vt-out{to{opacity:0;transform:translateY(-12px)}}@keyframes vt-in{from{opacity:0;transform:translateY(12px)}}@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}:root[data-theme="light"]{color-scheme:light}:root[data-theme="dark"]{color-scheme:dark}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark}}.ws-back{flex:none;display:inline-flex;align-items:center;gap:.35em;font-size:13px;line-height:1;font-weight:500;color:inherit;text-decoration:none;white-space:nowrap}.ws-back:hover{text-decoration:underline;text-underline-offset:3px}.ws-back:focus-visible{outline:2px solid currentColor;outline-offset:2px}@media (pointer:coarse){.ws-back{min-height:44px}}@media print{.ws-back{display:none}}@media (pointer:coarse){button{min-height:44px;min-width:44px}select,input[type=number],input[type=text],input[type=search]{min-height:44px}input[type=number]{min-width:44px}label:has(>input[type=checkbox]),label:has(>input[type=radio]){min-height:44px}.ws-hit{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}}</style>
+<script>(function(){var d=document.documentElement,t=null;d.classList.add("js");try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")});function k(l){return l==="en"||l==="tr"||l==="de"}var L=(function(){var q=null,p=null,s=null,l=null;try{q=new URLSearchParams(location.search).get("lang")}catch(e){}if(k(q)){try{sessionStorage.setItem("lang",q)}catch(e){}return q}try{if(window.self!==window.top)p=window.parent.document.documentElement.getAttribute("lang")}catch(e){}if(k(p))return p;try{s=sessionStorage.getItem("lang")}catch(e){}if(k(s))return s;try{l=localStorage.getItem("lang")}catch(e){}if(k(l))return l;l=String((navigator.languages&&navigator.languages[0])||navigator.language||"").toLowerCase();return l.indexOf("de")===0?"de":l.indexOf("tr")===0?"tr":"en"})();window.__tabLang=function(){return L};d.setAttribute("lang",L)})()</script><script>(function(){var d=document.documentElement,l=d.getAttribute("lang");d.setAttribute("lang","en");var W={en:["Tools","Kerem Özdemir, all tools",""],tr:["Araçlar","Kerem Özdemir, tüm araçlar","/tr"],de:["Werkzeuge","Kerem Özdemir, alle Werkzeuge","/de"]}[l]||["Tools","Kerem Özdemir, all tools",""];function put(){document.querySelectorAll("a[data-ws]").forEach(function(a){a.setAttribute("href",W[2]+"/work/workshop/");if(l!=="en"&&W[2])a.setAttribute("lang",l);var t=a.querySelector("[data-ws-t]");if(t)t.textContent=W[0];else a.textContent=W[1]})}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",put);else put()})()</script>
 <style>
 /* Fonts served from this file, not from Google. A hotlinked
    font sends the visitor's IP to a third party on every load; nothing
@@ -62,10 +67,25 @@
   --case: #b9bfb2; --face: #e9ebe4; --panel: #f4f5f0;
   --ink: #1a1c18; --ink-2: #55594f; --ink-3: #62665b;
   --rule: #ccd1c3; --rule-2: #9aa192;
-  --brand: #7a3b12; --ok: #2f6b3d; --over: #a5341f;
+  --brand: #7a3b12; --brand-hot: #612e0d; --ok: #2f6b3d; --over: #a5341f;
+  --top: var(--ink); --top-ink: var(--face); --top-edge: transparent; --heavy: var(--ink);
   --ui: "Saira", "Helvetica Neue", Arial, sans-serif;
   --read: "Saira Semi Condensed", "Saira", "Helvetica Neue", Arial, sans-serif;
   --eng: "Martian Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --case:#111310; --face:#1c1e1a; --panel:#262822; --ink:#eef0e8; --ink-2:#bcc0b3; --ink-3:#a2a699;
+    --rule:#30332c; --rule-2:#4f5348; --brand:#de9259; --brand-hot:#eaaa7b; --ok:#80c892; --over:#f08e73;
+    --top:#181a17; --top-ink:#eef0e8; --top-edge:#30332c; --heavy:#4f5348;
+  }
+}
+@media screen {
+  :root[data-theme="dark"] {
+    --case:#111310; --face:#1c1e1a; --panel:#262822; --ink:#eef0e8; --ink-2:#bcc0b3; --ink-3:#a2a699;
+    --rule:#30332c; --rule-2:#4f5348; --brand:#de9259; --brand-hot:#eaaa7b; --ok:#80c892; --over:#f08e73;
+    --top:#181a17; --top-ink:#eef0e8; --top-edge:#30332c; --heavy:#4f5348;
+  }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -86,26 +106,26 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 .top {
   display: flex; align-items: center; gap: 20px; padding: 0 20px; height: 56px;
-  background: var(--ink); color: var(--face);
+  background: var(--top); color: var(--top-ink); border-bottom: 1px solid var(--top-edge);
 }
-.top .brand { text-decoration: none; color: var(--face); display: flex; align-items: center; gap: 11px; }
+.top .brand { text-decoration: none; color: var(--top-ink); display: flex; align-items: center; gap: 11px; }
 .top .brand b { font: 600 21px/1 var(--read); }
 .top .brand::after {
-  content: "BS.1770-4"; font: 400 9px/1 var(--eng);
+  content: "BS.1770-4"; font: 400 9px/1 var(--eng); color: var(--face);
   background: var(--brand); padding: 5px 6px 4px; border-radius: 2px;
 }
 .top .sp { flex: 1; }
-.top a.lnk { font: 400 13.5px/1 var(--ui); color: rgb(233 235 228 / .74); text-decoration: none; }
-.top a.lnk:hover { color: var(--face); }
+.top a.lnk { font: 400 13.5px/1 var(--ui); color: var(--top-ink); text-decoration: none; }
+.top a.lnk:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   font: 500 14px/1 var(--ui); padding: 10px 16px; border-radius: 3px; cursor: pointer;
   background: var(--brand); color: var(--face); border: 1.5px solid var(--brand); text-decoration: none;
 }
-.btn:hover { background: #612e0d; border-color: #612e0d; }
-.btn.line { background: transparent; color: var(--face); border-color: rgb(233 235 228 / .4); }
-.btn.line:hover { background: rgb(233 235 228 / .14); border-color: var(--face); }
+.btn:hover { background: var(--brand-hot); border-color: var(--brand-hot); }
+.btn.line { background: transparent; color: var(--top-ink); border-color: rgb(233 235 228 / .4); }
+.btn.line:hover { background: rgb(233 235 228 / .14); border-color: var(--top-ink); }
 .btn.sm { padding: 7px 12px; font-size: 12.5px; }
 .btn[disabled] { opacity: .35; pointer-events: none; }
 
@@ -115,7 +135,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 .face {
   background: var(--face); border: 1px solid var(--rule-2);
-  border-top: 3px solid var(--ink); border-radius: 4px;
+  border-top: 3px solid var(--heavy); border-radius: 4px;
 }
 .face > .hd {
   display: flex; align-items: center; gap: 11px; flex-wrap: wrap;
@@ -246,9 +266,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 <main class="ws-main">
 <h1 class="ws-vh">Loudmeter, loudness to BS.1770-4</h1>
 <div class="top">
-  <a class="brand" href="../"><b>Loudmeter</b></a>
+  <a class="ws-back lnk" data-ws="b" href="/work/workshop/"><span aria-hidden="true">←</span> <span data-ws-t>Tools</span></a>
+  <span class="brand"><b>Loudmeter</b></span>
   <span class="sp"></span>
-  <a class="lnk" href="../">About</a>
   
   <button class="btn line sm" id="demo">Load a test signal</button>
 </div>
@@ -336,7 +356,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
         </div>
         <p class="fine" style="margin-top:11px">These are the numbers those
           documents state. Confirm them against whatever your deliverable
-          actually says.</p>
+          says.</p>
       </div>
       <div>
         <div class="k">Numbers</div>
@@ -1049,4 +1069,20 @@ var Loudness = (function () {
 })();
 </script>
 
+<!-- The way back from a tool opened from a search result. It sits at the end of
+     the document: these tools fill the window, and anything pinned there covers
+     the last line of their own writing. The colour is inherited, because each
+     tool already chose a text colour that reads on its own background. -->
+<style>
+.ko-home{display:block;text-align:center;
+  padding:1.5rem 1rem calc(1.5rem + env(safe-area-inset-bottom,0px));
+  font:400 .875rem/1.4 ui-sans-serif,-apple-system,"Segoe UI",sans-serif;
+  letter-spacing:.02em;text-decoration:none;color:inherit;
+  transition:opacity .18s ease}
+.ko-home:hover,.ko-home:focus-visible{opacity:1;text-decoration:underline;
+  text-underline-offset:3px}
+.ko-home:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+@media print{.ko-home{display:none}}
+</style>
+<footer class="ko-foot"><a class="ko-home" data-ws="f" href="/work/workshop/">Kerem Özdemir, all tools</a></footer>
 </html>

@@ -14,14 +14,18 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#2c2115">
 <link rel="stylesheet" href="../../fonts/fonts.css">
-<script>(function(){var d=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")})})()</script>
+<script>(function(){var d=document.documentElement,t=null;d.classList.add("js");try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")});function k(l){return l==="en"||l==="tr"||l==="de"}var L=(function(){var q=null,p=null,s=null,l=null;try{q=new URLSearchParams(location.search).get("lang")}catch(e){}if(k(q)){try{sessionStorage.setItem("lang",q)}catch(e){}return q}try{if(window.self!==window.top)p=window.parent.document.documentElement.getAttribute("lang")}catch(e){}if(k(p))return p;try{s=sessionStorage.getItem("lang")}catch(e){}if(k(s))return s;try{l=localStorage.getItem("lang")}catch(e){}if(k(l))return l;l=String((navigator.languages&&navigator.languages[0])||navigator.language||"").toLowerCase();return l.indexOf("de")===0?"de":l.indexOf("tr")===0?"tr":"en"})();window.__tabLang=function(){return L};d.setAttribute("lang",L)})()</script>
 <link rel="canonical" href="https://keremozdemir.de/run/game/commons/">
 <meta property="og:url" content="https://keremozdemir.de/run/game/commons/">
 <meta property="og:title" content="The Commons, a game about one shared pasture. Kerem Özdemir">
 <meta property="og:description" content="One pasture, four households, and a yearly choice of how many animals to graze. Watch the grass go, then try again under a rule the four of you choose.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://keremozdemir.de/og.png">
+<meta property="og:image" content="https://keremozdemir.de/run/og/game-commons.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Commons, a game about one shared pasture. Kerem Özdemir">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://keremozdemir.de/run/og/game-commons.png">
 <link rel="icon" href="/favicon.ico?v=4" sizes="any">
 <style>
 /* ============================================================
@@ -210,7 +214,7 @@ input[type="range"]{width:100%;max-width:22rem;accent-color:#8a4a2c}
 .rulecard p{margin:0 0 .4rem;font-size:.95rem}
 
 /* ---------- the site's clothes, worn by an instrument ---------- */
-.bar,footer.site-foot,.leaf-mark{
+header.bar,footer.site-foot,.site-menu,.leaf-mark{
   --serif:"Fraunces",Georgia,serif;
   --sans:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -221,83 +225,199 @@ input[type="range"]{width:100%;max-width:22rem;accent-color:#8a4a2c}
   --accent:#c2371c;
   --ease:cubic-bezier(.23,1,.32,1);
 }
-.bar,footer.site-foot{color:var(--fg)}
 footer.site-foot{background:var(--paper)}
 
-.bar .wrap,footer.site-foot .wrap{max-width:calc(64rem + 2 * clamp(.6rem,2vw,1.1rem));
-  padding-inline:clamp(.6rem,2vw,1.1rem)}
-/* the village is a fixed canvas lying under the whole document, so
-   the bar and the footer have to be lifted over it; and the game's
-   own overflow rule stops a sticky bar from sticking, so it stands
-   still at the top of the page instead of following the scroll */
-.bar{position:relative;z-index:3}
 footer.site-foot{position:relative;z-index:3}
+html.menu-open{overflow:hidden}
+html.menu-open body{padding-top:var(--barh,0px)}
+html.menu-open header.bar{position:fixed;top:0;left:0;right:0}
 
 .wrap{max-width:74rem;margin:0 auto;padding:0 1.5rem}
 @media (min-width:640px){.wrap{padding:0 2.5rem}}
 
-/* ---------- top bar ----------
-   The site's own bar, measured off it on 2026-09-24: 70 px, the name in the
-   serif, the sections in the mono face in capitals, the languages as one
-   pill. These pages read as a second site until then. Inside a frame on
-   the site (a case study running its instrument) the bar and the footer are
-   not drawn at all: the page around the frame already has both. */
-.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:var(--paper);border-bottom:1px solid var(--line)}
-.in-frame .bar,.in-frame .site-foot{display:none}
-.bar .wrap{display:flex;align-items:center;gap:2rem;height:70px}
-.bar .home,.langs{flex:none}
-.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;
-  border-bottom:0;color:var(--fg);white-space:nowrap}
-.bar nav:not(.langs){margin:0 auto}
-.bar nav{display:flex;gap:1.75rem;align-items:center}
-.bar nav a{font-family:var(--mono);font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;
-  white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:400;padding:.25rem 0;
-  border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
-.bar nav a:hover{color:var(--fg)}
-.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
-.langs{display:inline-flex;align-items:center;padding:2px;border-radius:999px;
-  box-shadow:inset 0 0 0 1px var(--line)}
-.langs button{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;width:36px;height:33px;
-  border:0;border-radius:999px;background:none;color:var(--dim);cursor:pointer;
-  transition:background-color .2s var(--ease),color .2s var(--ease)}
-.langs button:hover{color:var(--fg)}
-.langs button[aria-pressed="true"]{background:var(--fg);color:var(--paper)}
+/* ---------- between pages ----------
+   The rules of src/app/globals.css on the new site. A page that left this out
+   turned every crossing from the site into "Transition was aborted" in the
+   console of the page being left. */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:vt-out 160ms cubic-bezier(.16,1,.3,1) both}
+::view-transition-new(root){animation:vt-in 240ms cubic-bezier(.16,1,.3,1) both}
+@keyframes vt-out{to{opacity:0;transform:translateY(-12px)}}
+@keyframes vt-in{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
 
-/* ---------- footer, the site's own ---------- */
-.site-foot{border-top:1px solid var(--line);margin-top:clamp(2.5rem,6vh,4rem);font-family:var(--sans)}
-.site-foot .foot-main{display:flex;flex-wrap:wrap;gap:1.5rem 2rem;justify-content:space-between;
-  align-items:baseline;padding-top:3rem;padding-bottom:3rem}
-.site-foot .foot-id{color:var(--dim)}
-.site-foot .foot-mono{font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;line-height:1.7}
-.site-foot .foot-note{margin-top:.5rem;max-width:38ch;font-size:.875rem;line-height:1.55}
-.site-foot .foot-links{display:flex;flex-wrap:wrap;gap:.75rem 1.75rem;list-style:none;font-size:.95rem}
-.site-foot .foot-links a{display:inline-flex;align-items:center;padding:.375rem 0;color:var(--fg)}
-.site-foot .foot-marks{border-top:1px solid var(--line)}
-.site-foot .foot-marks ul{display:flex;align-items:center;justify-content:center;gap:2.25rem;
-  list-style:none;padding-top:1.5rem;padding-bottom:1.5rem}
-.site-foot .foot-marks a{display:inline-flex;color:var(--dim);transition:color .18s var(--ease)}
-.site-foot .foot-marks a:hover{color:var(--fg)}
+/* A heading reached through a fragment lands clear of the bar. */
+html{scroll-padding-top:6rem}
+html.in-frame{scroll-padding-top:1rem}
+
+/* ---------- top bar ----------
+   The site's own bar, in the numbers measured off https://keremozdemir.de/ on
+   2026-11-05: at 1440 the container is 1184 wide with a 40 px gutter, the name
+   at x 168, the sections at x 413, the three chips 36 px apart from x 1159, the
+   whole bar 70 tall. Below 1024 the sections go into a sheet behind a menu
+   button and below 640 the chips go with them, as they do on the site, so no
+   section sits past the edge of a scrolling row. header.bar rather than .bar,
+   because the games keep a .bar of their own inside their meters. Inside a
+   frame on the site (a case study running its instrument) the bar, the sheet
+   and the footer are not drawn at all: the page around the frame has them. */
+header.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);line-height:1.55;
+  background:var(--paper);color:var(--fg);border-bottom:1px solid var(--line);view-transition-name:masthead}
+header.bar,.site-menu,footer.site-foot{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.in-frame header.bar,.in-frame .site-foot,.in-frame .site-menu{display:none}
+header.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+  padding-top:1rem;padding-bottom:1rem}
+header.bar .home{flex:none;font-family:var(--serif);font-weight:400;font-size:1.05rem;
+  font-variation-settings:"SOFT" 0,"WONK" 0,"opsz" 24;white-space:nowrap;
+  text-decoration:none;border:0;color:var(--fg)}
+header.bar .sections{display:none}
+header.bar .sections a{position:relative;display:block;padding:.25rem 0;font-family:var(--mono);
+  font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;
+  text-decoration:none;border:0;color:var(--dim);transition:color .3s ease}
+header.bar .sections a:hover,header.bar .sections a[aria-current]{color:var(--fg)}
+/* the site's one moving object, a pixel under the word */
+header.bar .sections a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;
+  transition:transform .45s cubic-bezier(.16,1,.3,1)}
+header.bar .sections a:hover::after,header.bar .sections a[aria-current]::after{transform:scaleX(1)}
+.bar-end{flex:none;display:flex;align-items:center;gap:.5rem}
+header.bar a:focus-visible,header.bar button:focus-visible,.site-menu a:focus-visible,.site-menu button:focus-visible,
+footer.site-foot a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+/* The chips: one pill and one mark that slides under the current language.
+   Both the mark and the chip's colour are asked of the document, because the
+   head script sets html[lang] before the first paint, so a page opening in
+   Turkish does not slide there from EN. */
+.langs{position:relative;display:inline-flex;align-items:center;flex:none;box-sizing:border-box;
+  width:7.0625rem;padding:2px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line)}
+.langs .lang-thumb{position:absolute;top:.125rem;bottom:.125rem;left:.125rem;
+  width:calc((100% - .25rem) / 3);border-radius:999px;background:var(--fg);
+  transition:transform .42s cubic-bezier(.16,1,.3,1)}
+html[lang="tr"] .lang-thumb{transform:translateX(100%)}
+html[lang="de"] .lang-thumb{transform:translateX(200%)}
+header.bar .langs button,.site-menu .langs button{position:relative;z-index:1;flex:1 1 0;width:auto;min-width:0;
+  height:2.0625rem;min-height:0;margin:0;padding:0;display:inline-flex;align-items:center;justify-content:center;
+  border:0;border-radius:999px;background:none;color:var(--dim);font-family:var(--mono);font-size:.75rem;
+  font-weight:400;line-height:1;letter-spacing:.08em;text-align:center;cursor:pointer;
+  transition:color .42s cubic-bezier(.16,1,.3,1)}
+header.bar .langs button:hover,.site-menu .langs button:hover{background:none;border:0;color:var(--fg)}
+header.bar .langs button:active,.site-menu .langs button:active{transform:none}
+html[lang="en"] .langs button[data-lang="en"],html[lang="tr"] .langs button[data-lang="tr"],
+html[lang="de"] .langs button[data-lang="de"]{color:var(--paper)}
+/* 44 px to press, whatever the chip's own height */
+.langs button::after{content:"";position:absolute;inset-inline:0;top:50%;height:2.75rem;transform:translateY(-50%)}
+
+/* the menu button: two rules that become a cross */
+header.bar .menu-toggle{position:relative;flex:none;width:2.75rem;height:2.75rem;min-height:0;margin:0;padding:0;
+  border:0;border-radius:0;background:none;color:var(--fg);cursor:pointer}
+header.bar .menu-toggle:hover{background:none;border:0}
+header.bar .menu-toggle:active{transform:none}
+.menu-toggle span{position:absolute;left:50%;top:50%;display:block;width:1.25rem;height:1px;background:var(--fg);
+  transition:transform .4s ease}
+.menu-toggle span:first-child{transform:translate(-50%,-5px)}
+.menu-toggle span:last-child{transform:translate(-50%,3px)}
+.menu-open .menu-toggle span:first-child{transform:translate(-50%,-50%) rotate(45deg)}
+.menu-open .menu-toggle span:last-child{transform:translate(-50%,-50%) rotate(-45deg)}
+
+/* ---------- the sheet behind the menu button ----------
+   Six sections at display size, then the address, the marks and the two legal
+   links, as on the site. Hidden with visibility, so a closed sheet holds no
+   stop for a keyboard and nothing for a screen reader. The bar stays above it
+   holding the cross. The lock is on the body alone, where it passes to the
+   viewport and leaves the sticky bar sticking; overflow on the root as well
+   would turn the body into a scroller of its own, and the bar would go with it. */
+.site-menu{position:fixed;inset:0;z-index:29;background:var(--paper);color:var(--fg);font-family:var(--sans);
+  line-height:1.55;visibility:hidden;opacity:0;transition:opacity .3s ease,visibility 0s linear .3s}
+.site-menu.open{visibility:visible;opacity:1;transition:opacity .3s ease}
+html.menu-open{scrollbar-gutter:stable}
+html.menu-open body{overflow:hidden}
+.site-menu .menu-in{display:flex;flex-direction:column;height:100%;overflow-y:auto;overscroll-behavior:contain;
+  padding:5rem 2rem .5rem}
+.site-menu .menu-main{margin-block:auto;display:flex;flex-direction:column;gap:.25rem}
+.site-menu .menu-main .langs{align-self:flex-start;margin-bottom:1.5rem}
+.site-menu .menu-main > a{display:block;border:0;border-top:1px solid var(--line);padding:1rem 0;
+  font-family:var(--serif);font-weight:400;font-size:1.9rem;line-height:1;letter-spacing:0;
+  text-decoration:none;color:var(--fg)}
+.site-menu .menu-main > a:hover{color:var(--accent)}
+.site-menu .menu-foot{padding-bottom:2.5rem}
+.site-menu .menu-foot ul{display:flex;flex-direction:column;gap:.375rem;margin:0;padding:1.25rem 0 0;
+  list-style:none;border-top:1px solid var(--line)}
+.site-menu .menu-mail{display:inline-flex;align-items:center;min-height:2.75rem;font-size:1rem;
+  text-decoration:none;border:0;color:var(--fg)}
+.site-menu .menu-marks{display:flex;align-items:center;gap:1rem;margin-top:.5rem}
+.site-menu .menu-legal{display:flex;gap:1.5rem;margin:1rem 0 0;font-family:var(--mono);font-size:.75rem;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--dim);max-width:none}
+.site-menu .menu-legal a{display:inline-flex;align-items:center;min-height:2.75rem;text-decoration:none;
+  border:0;color:inherit}
+/* clipped to a pixel until it has focus: the cross is what a sighted reader
+   reaches for, and it sits outside this dialog, where a screen reader on a
+   phone cannot go */
+.site-menu .menu-close{position:absolute;top:5.5rem;right:2rem;width:1px;height:1px;overflow:hidden;
+  clip-path:inset(50%);padding:0;margin:0;border:0;border-radius:999px;background:var(--fg);color:var(--paper);
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;cursor:pointer}
+.site-menu .menu-close:focus{width:auto;height:auto;overflow:visible;clip-path:none;padding:.5rem 1rem}
+.site-menu .mark-a,footer.site-foot .mark-a{display:inline-flex;align-items:center;justify-content:center;
+  width:2.75rem;height:2.75rem;color:var(--dim);text-decoration:none;border:0;background:none;
+  transition:color .2s ease,transform .3s cubic-bezier(.2,.7,.2,1)}
+.site-menu .mark-a:hover,footer.site-foot .mark-a:hover,.site-menu .mark-a:focus-visible,
+footer.site-foot .mark-a:focus-visible{color:var(--fg);transform:translateY(-1px)}
+
+/* ---------- footer, the site's own ----------
+   The numbers of the site's footer, measured the same day and kept level with
+   src/components/chrome.tsx. A page here may give every link a rule and every
+   list an indent (the instruments and the games both do), so the footer says
+   what it wants of each. */
+footer.site-foot{margin-top:2.5rem;border-top:1px solid var(--line);font-family:var(--sans);line-height:1.55;
+  letter-spacing:normal;color:var(--fg)}
+footer.site-foot p{margin:0;max-width:none}
+footer.site-foot ul{list-style:none}
+footer.site-foot li{margin:0;padding:0;font-size:inherit;line-height:inherit;color:inherit}
+footer.site-foot .foot-main{display:flex;flex-direction:column;gap:1.5rem;padding-top:3rem;padding-bottom:3rem}
+footer.site-foot .foot-id{color:var(--dim)}
+footer.site-foot .foot-line{font-size:.875rem;line-height:1.55}
+footer.site-foot .foot-note{margin-top:.5rem;max-width:38ch;font-size:.875rem;line-height:1.55}
+footer.site-foot .foot-links{display:grid;grid-template-columns:repeat(3,max-content);gap:.25rem 1.75rem;
+  margin:0;padding:0;font-size:.95rem}
+footer.site-foot .foot-links a{display:inline-flex;align-items:center;min-width:2.75rem;min-height:2.75rem;
+  text-decoration:none;border:0;background:none;color:var(--fg)}
+footer.site-foot .foot-marks{border-top:1px solid var(--line)}
+footer.site-foot .foot-marks ul{display:flex;align-items:center;justify-content:center;gap:0 1.5rem;
+  padding-top:1.5rem;padding-bottom:1.5rem}
+@media (min-width:640px){
+  .bar-end{gap:.75rem}
+  footer.site-foot .foot-main{flex-direction:row;align-items:baseline;justify-content:space-between}
+  footer.site-foot .foot-links{display:flex;flex-wrap:wrap;gap:.75rem 1.75rem}
+  footer.site-foot .foot-marks ul{gap:0 2.25rem}
+}
+@media (max-width:639.98px){
+  header.bar .bar-end .langs{display:none}
+}
+@media (min-width:640px){
+  .site-menu .menu-main .langs{display:none}
+}
+@media (min-width:1024px){
+  header.bar .sections{display:flex;gap:1.75rem;align-items:center}
+  header.bar .menu-toggle,.site-menu{display:none}
+  /* The site holds its search button here, which this edition does not have.
+     An empty slot of the same width keeps the sections at the x they have on
+     the site, in each language, so nothing jumps on a crossing. */
+  .bar-end::before{content:"";width:7.45rem}
+  html[lang="tr"] .bar-end::before{width:5.92rem}
+}
+/* With no script the menu button and the chips do nothing. The links are the
+   one part of the bar that still works, so they take the room. */
+html:not(.js) .menu-toggle,html:not(.js) .langs{display:none}
+@media (max-width:1023.98px){
+  html:not(.js) header.bar .wrap{flex-wrap:wrap;row-gap:.25rem}
+  html:not(.js) header.bar .sections{display:flex;flex-wrap:wrap;gap:.25rem 1.25rem;width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  .langs .lang-thumb,.langs button,.menu-toggle span,.site-menu,.mark-a,header.bar .sections a::after{transition:none!important}
+  .site-menu .mark-a:hover,footer.site-foot .mark-a:hover{transform:none}
+}
 
 /* ---------- a leaf, falling once ---------- */
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
-
-/* ---------- the bar between a phone and a laptop ----------
-   One row needs 1,027 px in German with a touch screen (measured 2026-11-04:
-   the name, six sections, the three languages and the gaps), so from 641 to
-   1,080 px the bar takes two rows the way a phone does: the name and the
-   languages on the first, the sections on the second, which scrolls in place
-   if a long word still does not fit. Below that the switcher sat 130 px past
-   the right edge at 768 and could not be reached. */
-@media (min-width:641px) and (max-width:1080px){
-  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:1rem;row-gap:0;padding-top:.75rem;padding-bottom:.2rem}
-  .bar .home{line-height:33px}
-  .langs{margin-left:auto}
-  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0 -6px;padding:4px 6px;justify-content:flex-start;
-    gap:1.4rem;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
-  .bar nav:not(.langs)::-webkit-scrollbar{display:none}
-  .bar nav a{padding:.45rem 0;flex:0 0 auto}
-}
 
 /* ---------- inside a case study's frame ----------
    The page around the frame already has the title and the argument, so the
@@ -309,33 +429,11 @@ footer.site-foot{position:relative;z-index:3}
 .framed-tool .k-main{padding-top:clamp(.9rem,3vw,1.4rem)}
 .framed-tool .k-lede + .k-sect{margin-top:0}
 
-/* ---------- the bar and the footer, narrowed ---------- */
-@media (max-width:640px){
-  /* the name and the languages share the first line, the sections scroll on
-     the second, the way the site's pages are read with a thumb */
-  .bar .wrap{flex-wrap:wrap;height:auto;gap:0 .7rem;padding-top:.7rem;padding-bottom:.2rem;position:relative}
-  .bar .home{font-size:1rem;line-height:33px}
-  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0;flex-wrap:nowrap;justify-content:flex-start;
-    gap:1.25rem;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    /* the last name fades rather than being cut, which says there is more */
-    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
-    mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
-    padding-right:2.2rem}
-  .bar nav::-webkit-scrollbar{display:none}
-  .bar nav a{font-size:.72rem;padding:.6rem 0;flex:0 0 auto}
-  .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
-  .langs{position:absolute;top:.7rem;right:1.5rem}
-  .langs button{width:34px;height:31px}
-  .site-foot .foot-marks ul{gap:1.5rem}
-}
-
-/* a finger, not a cursor: every control a thumb has to find is a thumb wide */
+/* every control a thumb has to find is a thumb wide */
 @media (pointer:coarse){
-  .bar .home{display:inline-flex;align-items:center;min-height:44px}
-  .bar nav a{min-height:44px;display:inline-flex;align-items:center}
-  .langs button{min-width:44px;min-height:44px}
-  .site-foot .foot-links a,.site-foot .foot-marks a{min-width:44px;min-height:44px;justify-content:center}
+  header.bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .langs{width:8.75rem}
+  header.bar .langs button,.site-menu .langs button{min-width:44px;min-height:44px}
 }
 
 /* the same thumb, on the page itself */
@@ -360,7 +458,7 @@ footer.site-foot{position:relative;z-index:3}
     text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
   .note-item h2 a:hover{text-decoration-color:var(--accent)}
   /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
-  body input[type="text"],body input[type="email"],body input[type="number"],
+  body input[type="text"],body input[type="email"],body input[type="number"],body input[type="date"],
   body select,body textarea{font-size:16px;min-height:44px}
   body .frow textarea{min-height:8rem}
   /* a 4px tall slider is not a control: the whole strip takes the touch */
@@ -391,11 +489,22 @@ footer.site-foot{position:relative;z-index:3}
 
 <header class="bar">
   <div class="wrap">
-    <a class="home" href="../../../">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../../../products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-i="nav-g">Games</a><a href="../../../discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../about/" data-i="nav-p">About</a><a href="../../../contact/" data-i="nav-c">Contact</a></nav>
-    <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
+    <a class="home" href="../../../" data-home="/">Kerem Özdemir</a>
+    <nav class="sections" aria-label="Site" data-ia="a-site"><a href="../../../products/" data-home="/products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-home="/projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-home="/games/" data-i="nav-g">Games</a><a href="../../../discoveries/" data-home="/discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../about/" data-home="/about/" data-i="nav-p">About</a><a href="../../../contact/" data-home="/contact/" data-i="nav-c">Contact</a></nav>
+    <div class="bar-end"><div class="langs" role="group" aria-label="Language" data-ia="a-lang"><span class="lang-thumb" aria-hidden="true"></span><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></div><button type="button" class="menu-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu" data-ia="a-menu"><span></span><span></span></button></div>
   </div>
 </header>
+<div class="site-menu" id="site-menu" role="dialog" aria-modal="true" aria-label="Menu" data-ia="a-menu">
+  <button type="button" class="menu-close" data-i="a-menu-close">Close menu</button>
+  <nav class="menu-in" aria-label="Site" data-ia="a-site">
+    <div class="menu-main"><div class="langs" role="group" aria-label="Language" data-ia="a-lang"><span class="lang-thumb" aria-hidden="true"></span><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></div><a href="../../../products/" data-home="/products/" data-i="nav-pd">Products</a><a href="../../../projects/" data-home="/projects/" data-i="nav-j">Projects</a><a href="../../../games/" data-home="/games/" data-i="nav-g">Games</a><a href="../../../discoveries/" data-home="/discoveries/" data-i="nav-dc">Discoveries</a><a href="../../../about/" data-home="/about/" data-i="nav-p">About</a><a href="../../../contact/" data-home="/contact/" data-i="nav-c">Contact</a></div>
+    <div class="menu-foot">
+      <ul><li><a class="menu-mail" href="mailto:kozdemir3523@gmail.com">kozdemir3523@gmail.com</a></li>
+      <li class="menu-marks"><a class="mark-a" href="https://github.com/Keremozdemirra" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-gh"/></svg></a><a class="mark-a" href="https://www.linkedin.com/in/keremozdemir23" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-li"/></svg></a><a class="mark-a" href="https://x.com/kerem_oozdemir" target="_blank" rel="noopener noreferrer" title="X" aria-label="X"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-x"/></svg></a><a class="mark-a" href="https://orcid.org/0009-0007-4674-0521" target="_blank" rel="noopener noreferrer" title="ORCID" aria-label="ORCID"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-or"/></svg></a><a class="mark-a" href="mailto:kozdemir3523@gmail.com" title="Email" aria-label="Email" data-ia="a-mail" data-it="a-mail"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-em"/></svg></a></li></ul>
+      <p class="menu-legal"><a href="../../../impressum/" data-home="/impressum/">Impressum</a><a href="../../../privacy/" data-home="/privacy/" data-i="nav-dsg">Privacy</a></p>
+    </div>
+  </nav>
+</div>
 
 
 <canvas id="world" aria-hidden="true"></canvas>
@@ -417,23 +526,23 @@ footer.site-foot{position:relative;z-index:3}
 <footer class="site-foot">
   <div class="wrap foot-main">
     <div class="foot-id">
-      <p class="foot-mono">© 2026 Kerem Özdemir · <span data-i="foot-city">Munich</span></p>
+      <p class="foot-line">© 2026 Kerem Özdemir · <span data-i="foot-city">Munich</span></p>
       <p class="foot-note" data-i="foot-note">No cookies, no analytics, no third party request.</p>
     </div>
     <ul class="foot-links">
-      <li><a href="../../../games/" data-i="nav-g">Games</a></li>
-      <li><a href="../../../cv/" data-i="foot-cv">CV</a></li>
-      <li><a href="../../../sources/" data-i="nav-src">Sources</a></li>
-      <li><a href="../../../impressum/">Impressum</a></li>
-      <li><a href="../../../privacy/" data-i="nav-dsg">Privacy</a></li>
+      <li><a href="../../../games/" data-home="/games/" data-i="nav-g">Games</a></li>
+      <li><a href="../../../cv/" data-home="/cv/" data-i="foot-cv">CV</a></li>
+      <li><a href="../../../sources/" data-home="/sources/" data-i="nav-src">Sources</a></li>
+      <li><a href="../../../impressum/" data-home="/impressum/">Impressum</a></li>
+      <li><a href="../../../privacy/" data-home="/privacy/" data-i="nav-dsg">Privacy</a></li>
     </ul>
   </div>
   <div class="foot-marks"><ul class="wrap">
-    <li><a href="https://github.com/Keremozdemirra" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></li>
-    <li><a href="https://www.linkedin.com/in/keremozdemir23" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
-    <li><a href="https://x.com/kerem_oozdemir" target="_blank" rel="noopener noreferrer" title="X" aria-label="X"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a></li>
-    <li><a href="https://orcid.org/0009-0007-4674-0521" target="_blank" rel="noopener noreferrer" title="ORCID" aria-label="ORCID"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg></a></li>
-    <li><a href="mailto:kozdemir3523@gmail.com" title="Email" aria-label="Email"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M2.5 4h19A1.5 1.5 0 0 1 23 5.5v.9l-11 6.9L1 6.4v-.9A1.5 1.5 0 0 1 2.5 4zM1 8.7l11 6.9 11-6.9v9.8a1.5 1.5 0 0 1-1.5 1.5h-19A1.5 1.5 0 0 1 1 18.5z"/></svg></a></li>
+    <li><a class="mark-a" href="https://github.com/Keremozdemirra" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-gh" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></li>
+    <li><a class="mark-a" href="https://www.linkedin.com/in/keremozdemir23" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-li" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
+    <li><a class="mark-a" href="https://x.com/kerem_oozdemir" target="_blank" rel="noopener noreferrer" title="X" aria-label="X"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-x" d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a></li>
+    <li><a class="mark-a" href="https://orcid.org/0009-0007-4674-0521" target="_blank" rel="noopener noreferrer" title="ORCID" aria-label="ORCID"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-or" d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg></a></li>
+    <li><a class="mark-a" href="mailto:kozdemir3523@gmail.com" title="Email" aria-label="Email" data-ia="a-mail" data-it="a-mail"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-em" d="M2.5 4h19A1.5 1.5 0 0 1 23 5.5v.9l-11 6.9L1 6.4v-.9A1.5 1.5 0 0 1 2.5 4zM1 8.7l11 6.9 11-6.9v9.8a1.5 1.5 0 0 1-1.5 1.5h-19A1.5 1.5 0 0 1 1 18.5z"/></svg></a></li>
   </ul></div>
 </footer>
 
@@ -1496,7 +1605,7 @@ return api;
 var el = KW.el, clamp = KW.clamp, lerp = KW.lerp;
 
 /* ---- the page's own three languages ---- */
-window.PAGE_I18N = {"tr": {"pg-desc": "Tek mera, dört hane ve her yıl kaç hayvan salınacağı kararı. Otun gidişini izleyin, sonra dördünüzün seçtiği bir kuralla yeniden deneyin.", "cm-h1": "Ortak Mera", "cm-skip": "Seçimlere atla", "cm-restart": "Baştan başlayın", "cm-name": "Ortak Mera", "cm-when-one": "tek mera, dört hane", "cm-when-first": "ilk yıl", "cm-when-spring": "{b} yıldan {a}. yılın baharı", "cm-when-autumn": "{n}. yılın güzü", "cm-when-what": "yukarıda ne oldu", "cm-when-rule": "kendi kuralınız", "cm-when-arg": "savın kendisi, açıkça", "cm-you": "Siz", "cm-rn-none": "Hiç kural yok", "cm-rn-quota": "Üçlük bir kota", "cm-rn-watched": "Bir kota ve herkesin sayısı kapıda", "cm-rn-fined": "Bir kota, sayılar kapıda ve kademeli bir ceza", "cm-rl-none": "Herkes en iyi bildiğini salıyor.", "cm-rl-quota": "Her hane merada üç hayvan tutmayı kabul ediyor. Kimse kimseyi saymıyor.", "cm-rl-watched": "Aynı üçer hayvan; ve her yılın sonunda her hanenin sayısı, dördünün de okuyabildiği toplantı evinin kapısına tebeşirle yazılıyor.", "cm-rl-fined": "Aynı üçer hayvan, aynı kapı; sayısını aşan hane ilk seferinde bir günlük otlatma, ikincisinde bir hayvanlık değer kaybediyor.", "cm-t-p1": "Köyün üstündeki mera dört hanenin hepsinin ve hiçbirinin. Her bahar her hane oraya kaç hayvan salacağına karar veriyor ve kimse izin istemiyor, çünkü isteyecek kimse yok.", "cm-t-p2": "Ot en hızlı yarısı yenmişken büyür, hiç kalmamışken neredeyse hiç büyümez; dört hanenin hayvanları da aynı tarladan yer.", "cm-b-resume": "{n}. yıldan devam et", "cm-b-gate": "Kapıyı açın", "cm-s-title": "Ortak Mera. Tek mera, dört hane ve her bahar bir karar.", "cm-m-pasture": "Mera", "cm-m-worth": "Bir hayvanın değeri", "cm-m-offull": "{a} / {b}", "cm-m-wheel": "{q} teker", "cm-led-a": "Peynirlerin ", "cm-led-b": "Yıl ", "cm-oi-kick": "Birinci kısım", "cm-oi-h": "Kimse bir şey kararlaştırmadı", "cm-oi-p1": "Ana, Bruno ve Deniz hayvanlarını sizinkiyle aynı merada tutuyor ve dördünüzün arasında bir anlaşma yok, yapmanın da yolu yok: oyunun bu kısmında konuşmak yok.", "cm-oi-p2": "Her bahar birden altıya kadar kaç hayvan salacağını seçiyorsunuz; onlar da öyle. Güzün ot sayılıyor.", "cm-b-firstspring": "İlk bahar", "cm-s-oi": "Birinci kısım. Kaç hayvan salacağını seçin.", "cm-y-kick": "Yıl {n}", "cm-y-h-bare": "Yukarıda neredeyse hiçbir şey kalmadı", "cm-y-h": "Kaçını salıyorsunuz", "cm-y-p0": "Yazın boyunca merada tuttuğunuz her hayvan güzün bir teker peynir ederek döner; ot inceyse daha az eder.", "cm-y-quota": "Anlaşma hane başı {q} hayvan ve yine de daha fazlasını salabilirsiniz. Kimsenin bilip bilmeyeceği, dördünüzün hangi kuralı seçtiğine bağlı.", "cm-ly-a": "Geçen yıl dördünüzün toplam {t} hayvanı dışarıdaydı. ", "cm-ly-fat": "Hayvanlar semiz döndü.", "cm-ly-light": "Hayvanlar çıktıklarından daha hafif döndü.", "cm-ly-thin": "Hayvanlar zayıf döndü ve toprak görünmeye başladı.", "cm-ly-bare": "Mera çıplak ve dönenler beslemeye değmeyecek hâldeydi.", "cm-b-turnout": "{c} sal", "cm-anim1": "{n} hayvan", "cm-animN": "{n} hayvan", "cm-s-year": "Yıl {n}. Mera {b} üzerinden {a} durumunda. Rakam tuşlarıyla birden altıya kadar hayvan seçin, sonra sal.", "cm-h-h-gone": "Mera bitti", "cm-h-h-showing": "Toprak görünüyor", "cm-h-h-count": "Sayım", "cm-h-line": "Siz {a} saldınız, Ana {b}, Bruno {c}, Deniz {d}. Tek merada {t} hayvan.", "cm-h-p2": "Ot baharda {a} idi, şimdi {b}; yıldan {e} teker peynir çıkardınız.", "cm-h-bare": "Geri gelecek, ama yavaş; çünkü ot ottan büyür ve büyüyecek ot neredeyse yok.", "cm-over-1": "{w} anlaşılan sayının üstündeydi ve sabah kapıda yazıyordu.", "cm-over-n": "{w} anlaşılan sayının üstündeydi ve sabah kapıda yazıyordu.", "cm-and": " ve ", "cm-b-what1": "Yukarıda ne oldu", "cm-b-what2": "Kural ne yaptı", "cm-b-nextspring": "Sonraki bahar", "cm-s-harvest": "{line} Mera {b} üzerinden {a} durumunda.", "cm-p1e-kick": "Birinci kısmın sonu", "cm-p1e-h-coll": "Gitti ve hızlı gitti", "cm-p1e-h": "Nerede durdu", "cm-p1e-p1": "Mera sonsuza kadar {n} hayvan besleyebilir; bu da dört haneye aşağı yukarı üçer eder. {p} hayvanda ot, büyüdüğünden hızlı yeniyordu; büyüdüğünden hızlı yenen ot bir yerde durmaz, düşer.", "cm-p1e-p2": "Yukarıda kimse mantıksız bir şey yapmıyordu. Fazladan bir hayvan, sahibi olan haneye koca bir teker peynir eder; o hayvanın ota verdiği zararsa dört hane arasında bölüşülür. Yani kararının maliyetinin dörtte üçünü başkası öder. Bu aritmetikle herkes yüz yüze, o yüzden herkes bir hayvan ekliyor ve hepsinin bedelini mera ödüyor.", "cm-p1e-coll": "Ot {y}. yılda tükendi ve {m} tekerle bitirdiniz.", "cm-p1e-ok": "{m} tekerle ve {b} üzerinden {a} durumda bir merayla bitirdin.", "cm-p1e-cmp": " Dört hane, {y} yılın hepsinde üçer hayvan tutsaydı her biri yaklaşık {q} ile bitirirdi.", "cm-p1e-better": "Demek ondan iyi yaptın; bu da oyunun kusuru değil, işin zorluğunun kendisi. Ot olduğu sürece bir fazla hayvan tutan hane, bir eksik tutandan iyi durumdadır; başkaları ne yaparsa yapsın. Fatura, kimsenin saymadığı son yıldan sonra gelir.", "cm-p1e-after": "{e} seviyesinde tutulan bir mera, orada tutulduğu sürece her haneye yılda yaklaşık {p} teker ödemeye devam eder. Sizinki {a} durumda ve üstünde hiçbir şey olmadan tamamen kendi hâline bırakılsa yarıya dönmesi yaklaşık {y} yıl alır.", "cm-p1e-stop": "Hikâye genelde burada, insan doğası üzerine bir kıssayla durdurulur; durulacak yanlış yer, çünkü dördünüzün konuşmasına hiç izin verilmedi.", "cm-b-agree": "Şimdi bir şeyde anlaşın", "cm-s-p1e": "Birinci kısmın sonu. Mera sonsuza kadar toplam yaklaşık {n} hayvan taşır.", "cm-r-kick": "İkinci kısım", "cm-r-h": "Dördünüz oturuyorsunuz", "cm-r-p1": "Aynı mera, yeniden gücünde; aynı dört hane, sonsuza kadar taşıyabildiği aynı on iki civarı hayvan. Bu kez önce bir şeyde anlaşmanıza izin var. Birini seçin, sonra on dört yıl boyunca onun içinde yaşa.", "cm-b-live": "Bu kuralda yaşa", "cm-r-p2": "Üçü de bir hayvanın değerini ya da otun büyüme hızını değiştirmiyor; değiştirdikleri tek şey, dördünüzün birbiriniz hakkında ne bildiği.", "cm-s-rules": "Bir kural seçin: bir kota, herkesin sayısı kapıda bir kota, ya da sayılar ve kademeli ceza ile bir kota.", "cm-e-kick": "Sonu", "cm-e-h": "Trajedi insanlar hakkında değil, kurallar hakkında bir sonuçtur", "cm-e-p1": "{r} altında mera {b} üzerinden {a} ile, siz {m} tekerle bitirdin. Birinci kısım {a2} ile ve {m2} tekerle bitmişti.", "cm-e-p2": "İki kısım arasında ne otla ne de bir hayvanın değeriyle ilgili bir şey değişti. Değişen, dördünüzün birbirinizin sayılarını görüp göremediği ve biri aştığında ne olduğuydu.", "cm-e-sub1": "Saymak anlaşmaktan neden daha önemli", "cm-e-p3": "Kimsenin denetlemediği bir kota bir dilektir. Herkes uyarken işler ve bir hane aşıp da hiçbir şey olmadığı anda kayar; çünkü diğerleri aptal değil ve otun gittiğini görebiliyorlar. Sayıları kapıya yazmak kimseyi cezalandırmaz; yalnızca aşmayı başkalarının bildiği bir şey yapar ve işin çoğunu bunun yaptığı ortaya çıkar.", "cm-e-p4": "Bu oyundaki ceza bilerek küçük: bir günlük otlatma, sonra bir hayvan. Kimseyi mahvedecek bir ceza değil ve olması da gerekmiyor, çünkü amacı para değil.", "cm-e-sub2": "Kayıtlar ne diyor", "cm-e-p5": "Elinor Ostrom kariyerini; kullanıcıların kendi kendinizi yönettiği meralar, ormanlar, balıkçılık sahaları ve yeraltı suyu havzaları üzerine saha çalışmalarını okuyarak geçirdi. Nobel komitesi bulguyu 2009 ödülünü duyururken özetledi. Komitenin sözleriyle, ortak mülkiyet “kullanıcı birlikleri tarafından başarıyla yönetilebilir” ve sonuçlar “çoğu zaman standart teorilerin öngördüğünden iyidir”; çünkü kaynak kullanıcıları “çıkar çatışmalarını ele almak için karar alma ve kural uygulatmaya dönük incelikli mekanizmalar geliştirir”.", "cm-e-p6": "Ayakta kalan düzenlemelerin ortak yanları vardı. Kimin neye hakkı olduğunu açıkça söyleyen kurallar. İzleme ve yaptırımın kullanıcıların kendileri ya da onlara hesap veren biri tarafından yürütülmesi. Kademeli yaptırımlar: ilk ihlalde hafif, tekrarlandıkça sertleşen. Kullanıcıların katıldığı karar süreçleri. Ve dış otoritelerin, kullanıcıların kendi kendilerini örgütleme hakkını tanıması.", "cm-e-sub3": "Bunun göstermediği", "cm-e-m1": "Buradaki komşular üç kısa kural; ikinci kısımda anlaşmaya model öyle dediği için uyuyorlar ve asıl soruyu, insanların kendi yaptıkları anlaşmaya uyup uymadığını, bu oyun göstermek yerine varsayıyor.", "cm-e-m2": "Ot, ders kitabındaki bir büyüme eğrisini izleyen tek bir sayı; her yıl kenarlardan bir miktar tohum savrulsun ki çıplak bir tarla geri gelebilsin. Gerçek bir merada toprak, hava, hastalık ve kimsenin hayvanıyla ilgisi olmayan kötü bir yıl vardır.", "cm-e-m3": "Ostrom'un vakaları çoğunlukla uzun ortak geçmişi ve net sınırları olan küçük gruplardı; onun çalışmasında her ortak varlığın kullanıcıları tarafından yönetilebileceği yazmaz ve başarısız vakalar da kaydın parçasıdır.", "cm-e-m4": "Ünlü müştereklerin trajedisi savı, kuralsız açık erişimde ne olacağı konusunda yanlış değildir. Yanlış olduğu yer, bunu yalnızca özel mülkiyetin ya da dışarıdan bir otoritenin önleyebileceği şeklinde okunmasıdır.", "cm-e-m5": "Dört hane ve tek mera kolay durumdur: ne koca bir denizin balıkçılığı ne de atmosfer, kayıttaki başarılı vakaların sınırlarına, küçük sayılarına ve ortak geçmişine sahiptir.", "cm-e-src": "Kaynaklar", "cm-src1": "Bulgu.", "cm-src2": "Tasarım ilkeleri ve Hardin okuması.", "cm-src-tail": "Okundu: 2026 08 21. Almanca ve Türkçe aktarımlar bana ait.", "cm-fam": "Ailenin geri kalanı; tehlikenin açgözlülük değil şüphe olduğu bir av da dahil: ", "cm-fam-a": "bütün oyunlar burada", "cm-b-another": "Başka bir kural deneyin", "cm-b-gateagain": "Kapıyı yeniden açın", "cm-s-end": "Son. Trajedi, kullanıcıların anlaşıp uygulatabildiği kurallara bağlıdır.", "cm-k-return": "enter", "cm-k-start": "başlayın", "cm-k-begin": "başlayın", "cm-k-go": "devam", "cm-k-again": "tekrar", "cm-k-enter": "enter", "pg-title": "Ortak Otlak, paylaşılan bir mera üzerine bir oyun. Kerem Özdemir"}, "de": {"pg-desc": "Eine Weide, vier Haushalte, jedes Jahr die Wahl, wie viele Tiere grasen. Sehen Sie das Gras schwinden und versuchen Sie es mit einer gemeinsamen Regel neu.", "cm-h1": "Die Allmende", "cm-skip": "Zu den Entscheidungen springen", "cm-restart": "Von vorn beginnen", "cm-name": "Die Allmende", "cm-when-one": "eine Weide, vier Haushalte", "cm-when-first": "das erste Jahr", "cm-when-spring": "Frühjahr des Jahres {a} von {b}", "cm-when-autumn": "Herbst des Jahres {n}", "cm-when-what": "was dort oben geschah", "cm-when-rule": "eine eigene Regel", "cm-when-arg": "das Argument, schlicht gesagt", "cm-you": "Sie", "cm-rn-none": "Gar keine Regel", "cm-rn-quota": "Eine Quote von drei", "cm-rn-watched": "Eine Quote, und alle Zahlen an der Tür", "cm-rn-fined": "Eine Quote, die Zahlen an der Tür und eine gestufte Strafe", "cm-rl-none": "Jeder treibt aus, was er für richtig hält.", "cm-rl-quota": "Jeder Haushalt verpflichtet sich auf drei Tiere auf der Weide. Niemand zählt irgendwen.", "cm-rl-watched": "Dieselben drei, und am Ende jedes Jahres wird die Zahl jedes Haushalts mit Kreide an die Tür des Versammlungshauses geschrieben, wo alle vier sie lesen können.", "cm-rl-fined": "Dieselben drei und dieselbe Tür; ein Haushalt über seiner Zahl verliert beim ersten Mal einen Tag Weide und beim zweiten den Wert eines ganzen Tieres.", "cm-t-p1": "Die Weide über dem Dorf gehört allen vier Haushalten und keinem. Jedes Frühjahr entscheidet jeder Haushalt, wie viele Tiere er auftreibt, und niemand bittet um Erlaubnis, denn es gibt niemanden, den man fragen könnte.", "cm-t-p2": "Gras wächst am schnellsten nach, wenn es halb abgefressen ist, und kaum noch, wenn nichts mehr da ist; und die Tiere aller vier Haushalte fressen vom selben Feld.", "cm-b-resume": "Weiter ab Jahr {n}", "cm-b-gate": "Das Gatter öffnen", "cm-s-title": "Die Allmende. Eine Weide, vier Haushalte, und jedes Frühjahr eine Entscheidung.", "cm-m-pasture": "Die Weide", "cm-m-worth": "Was ein Tier wert ist", "cm-m-offull": "{a} von {b}", "cm-m-wheel": "{q} Laib", "cm-led-a": "Ihre Käse ", "cm-led-b": "Jahr ", "cm-oi-kick": "Teil eins", "cm-oi-h": "Niemand hat etwas vereinbart", "cm-oi-p1": "Ana, Bruno und Deniz halten ihre Tiere auf derselben Weide wie Sie, und es gibt keine Vereinbarung zwischen Ihnen vieren und keinen Weg, eine zu treffen: In diesem Teil des Spiels wird nicht geredet.", "cm-oi-p2": "Jedes Frühjahr wählen Sie, wie viele Tiere Sie auftreiben, von eins bis sechs, und sie auch. Im Herbst wird das Gras gezählt.", "cm-b-firstspring": "Das erste Frühjahr", "cm-s-oi": "Teil eins. Wählen Sie, wie viele Tiere Sie auftreiben.", "cm-y-kick": "Jahr {n}", "cm-y-h-bare": "Dort oben ist fast nichts mehr", "cm-y-h": "Wie viele treiben Sie auf", "cm-y-p0": "Jedes Tier, das Sie den Sommer über auf der Weide halten, kommt im Herbst einen Laib Käse wert zurück, oder weniger, wenn das Gras dünn war.", "cm-y-quota": "Vereinbart sind {q} Tiere je Haushalt, und Sie können trotzdem mehr auftreiben. Ob es jemand erfährt, hängt davon ab, welche Regel Sie vier gewählt haben.", "cm-ly-a": "Im letzten Jahr hatten Sie vier zusammen {t} Tiere draußen. ", "cm-ly-fat": "Die Tiere kamen fett zurück.", "cm-ly-light": "Die Tiere kamen leichter zurück, als sie hinausgingen.", "cm-ly-thin": "Die Tiere kamen mager zurück, und der Boden scheint durch.", "cm-ly-bare": "Die Weide ist kahl, und was zurückkam, war das Halten kaum wert.", "cm-b-turnout": "{c} auftreiben", "cm-anim1": "{n} Tier", "cm-animN": "{n} Tiere", "cm-s-year": "Jahr {n}. Die Weide steht bei {a} von {b}. Wählen Sie mit den Zifferntasten eins bis sechs Tiere und treiben Sie sie auf.", "cm-h-h-gone": "Die Weide ist dahin", "cm-h-h-showing": "Der Boden scheint durch", "cm-h-h-count": "Die Zählung", "cm-h-line": "Sie trieben {a} auf, Ana {b}, Bruno {c}, Deniz {d}. {t} Tiere auf einer Weide.", "cm-h-p2": "Das Gras stand im Frühjahr bei {a} und steht jetzt bei {b}, und Sie holten {e} Laibe Käse aus dem Jahr.", "cm-h-bare": "Es kommt zurück, aber langsam, denn Gras wächst aus Gras, und es ist fast keines mehr da, aus dem es wachsen könnte.", "cm-over-1": "{w} lag über der vereinbarten Zahl, und am Morgen stand es an der Tür.", "cm-over-n": "{w} lagen über der vereinbarten Zahl, und am Morgen stand es an der Tür.", "cm-and": " und ", "cm-b-what1": "Was dort oben geschah", "cm-b-what2": "Was die Regel getan hat", "cm-b-nextspring": "Das nächste Frühjahr", "cm-s-harvest": "{line} Die Weide steht bei {a} von {b}.", "cm-p1e-kick": "Ende von Teil eins", "cm-p1e-h-coll": "Es ging dahin, und es ging schnell", "cm-p1e-h": "Wo es endete", "cm-p1e-p1": "Die Weide kann für immer {n} Tiere ernähren, etwa drei je Haushalt. Bei {p} Tieren wurde das Gras schneller gefressen, als es wuchs, und Gras, das schneller gefressen wird, als es wächst, pendelt sich nicht ein; es fällt.", "cm-p1e-p2": "Niemand dort oben tat etwas Unvernünftiges. Ein weiteres Tier ist dem Haushalt, dem es gehört, einen ganzen Laib Käse wert, und der Schaden, den es dem Gras zufügt, verteilt sich auf vier Haushalte; drei Viertel der Kosten Ihrer Entscheidung zahlt also jemand anderes. Vor dieser Arithmetik stehen alle, also legt jeder ein Tier zu, und die Weide bezahlt alles.", "cm-p1e-coll": "Das Gras gab im Jahr {y} auf, und Sie schlossen mit {m} Laiben ab.", "cm-p1e-ok": "Sie schlossen mit {m} Laiben und einer Weide bei {a} von {b} ab.", "cm-p1e-cmp": " Vier Haushalte mit je drei Tieren, alle {y} Jahre lang, hätten jeder mit etwa {q} abgeschlossen.", "cm-p1e-better": "Sie schnitten also besser ab, und das ist die Schwierigkeit, kein Fehler des Spiels. Solange Gras da ist, steht der Haushalt mit einem Tier mehr besser da als der mit einem weniger, was auch immer die anderen tun. Die Rechnung kommt nach dem letzten Jahr, das noch irgendwer zählt.", "cm-p1e-after": "Eine bei {e} gehaltene Weide zahlt jedem Haushalt etwa {p} Laibe im Jahr, solange sie dort gehalten wird. Ihre steht bei {a}, und ganz sich selbst überlassen, mit gar nichts darauf, bräuchte sie etwa {y} Jahre, um auf die Hälfte zurückzukommen.", "cm-p1e-stop": "Hier hört die Geschichte gewöhnlich auf, mit einer Moral über die menschliche Natur, und es ist die falsche Stelle zum Aufhören, denn Sie vier durften nie miteinander reden.", "cm-b-agree": "Jetzt etwas vereinbaren", "cm-s-p1e": "Ende von Teil eins. Die Weide trägt für immer insgesamt etwa {n} Tiere.", "cm-r-kick": "Teil zwei", "cm-r-h": "Sie vier setzen sich zusammen", "cm-r-p1": "Dieselbe Weide, wieder bei Kräften, dieselben vier Haushalte, dieselben rund zwölf Tiere, die sie für immer tragen kann. Diesmal dürfen Sie zuerst etwas vereinbaren. Wählen Sie eine Regel, und leben Sie dann vierzehn Jahre darin.", "cm-b-live": "In dieser Regel leben", "cm-r-p2": "Keine der drei ändert, was ein Tier wert ist oder wie schnell Gras wächst; sie ändern nur, was Sie vier voneinander wissen.", "cm-s-rules": "Wählen Sie eine Regel: eine Quote, eine Quote mit allen Zahlen an der Tür, oder eine Quote mit den Zahlen und einer gestuften Strafe.", "cm-e-kick": "Das Ende", "cm-e-h": "Die Tragik ist ein Ergebnis über Regeln, nicht über Menschen", "cm-e-p1": "Unter der Regel {r} endete die Weide bei {a} von {b}, und Sie schlossen mit {m} Laiben ab. Teil eins endete bei {a2} mit {m2}.", "cm-e-p2": "Am Gras und am Wert eines Tieres änderte sich zwischen den beiden Teilen nichts. Was sich änderte, war, ob Sie vier die Zahlen der anderen sehen konnten und was geschah, wenn jemand darüber lag.", "cm-e-sub1": "Warum Zählen wichtiger ist als Vereinbaren", "cm-e-p3": "Eine Quote, die niemand prüft, ist ein Wunsch. Sie funktioniert, solange alle sie halten, und sie rutscht in dem Moment, in dem ein Haushalt darüber liegt und nichts folgt, denn die anderen sind keine Narren und sehen das Gras schwinden. Die Zahlen an die Tür zu schreiben bestraft niemanden; es bedeutet nur, dass Überschreiten etwas ist, das die anderen wissen, und das erweist sich als der größte Teil der Arbeit.", "cm-e-p4": "Die Strafe in diesem Spiel ist mit Absicht klein: ein Tag Weide, dann ein Tier. Keine Strafe, an der jemand zugrunde ginge, und das muss sie auch nicht sein, denn es geht ihr nicht ums Geld.", "cm-e-sub2": "Was die Bilanz sagt", "cm-e-p5": "Elinor Ostrom verbrachte eine Laufbahn damit, Feldstudien über Weiden, Wälder, Fischgründe und Grundwasserbecken zu lesen, in denen die Nutzer sich selbst regierten. Das Nobelkomitee fasste den Befund bei der Bekanntgabe des Preises 2009 zusammen. In seinen Worten kann Gemeinschaftseigentum „von Nutzervereinigungen erfolgreich verwaltet werden“, und die Ergebnisse seien „öfter besser, als die Standardtheorien vorhersagen“, weil Ressourcennutzer „häufig ausgefeilte Mechanismen für Entscheidungen und Regeldurchsetzung entwickeln, um Interessenkonflikte zu bewältigen“.", "cm-e-p6": "Die Ordnungen, die hielten, hatten Gemeinsamkeiten. Regeln, die klar sagen, wem was zusteht. Beobachtung und Sanktionierung durch die Nutzer selbst oder durch jemanden, der ihnen Rechenschaft schuldet. Gestufte Sanktionen, mild beim ersten Verstoß und strenger bei Wiederholung. Entscheidungsverfahren, an denen die Nutzer teilhaben. Und die Anerkennung äußerer Autoritäten, dass die Nutzer sich überhaupt selbst organisieren dürfen.", "cm-e-sub3": "Was das nicht zeigt", "cm-e-m1": "Die Nachbarn hier sind drei kurze Regeln, die die Vereinbarung in Teil zwei halten, weil das Modell es so sagt, und ob Menschen eine selbst getroffene Vereinbarung halten, wird hier vorausgesetzt statt gezeigt.", "cm-e-m2": "Das Gras ist eine einzige Zahl auf einer Lehrbuch-Wachstumskurve, mit etwas Samenflug von den Rändern in jedem Jahr, damit ein kahles Feld überhaupt zurückkommen kann. Eine echte Weide hat Boden, Wetter, Krankheit und ein schlechtes Jahr, das mit niemandes Tieren zu tun hat.", "cm-e-m3": "Ostroms Fälle waren meist kleine Gruppen mit langer gemeinsamer Geschichte und klaren Grenzen; nirgends in ihrer Arbeit steht, dass jede Allmende von ihren Nutzern regiert werden kann, und die gescheiterten Fälle gehören ebenfalls zur Bilanz.", "cm-e-m4": "Das berühmte Argument von der Tragik der Allmende irrt nicht darüber, was bei offenem Zugang ohne Regeln geschieht. Es irrt, wenn man es so liest, als könne nur Privateigentum oder eine äußere Autorität das verhindern.", "cm-e-m5": "Vier Haushalte und eine Weide sind der leichte Fall: Weder die Fischerei eines ganzen Meeres noch die Atmosphäre hat die Grenzen, die kleinen Zahlen oder die gemeinsame Geschichte, die die erfolgreichen Fälle der Bilanz hatten.", "cm-e-src": "Quellen", "cm-src1": "Der Befund.", "cm-src2": "Die Gestaltungsprinzipien und die Hardin-Lesart.", "cm-src-tail": "Gelesen: 2026 08 21. Deutsche und türkische Übertragung von mir.", "cm-fam": "Der Rest der Familie, darunter eine Jagd, in der die Gefahr der Zweifel ist und nicht die Gier: ", "cm-fam-a": "alle Spiele sind hier", "cm-b-another": "Eine andere Regel versuchen", "cm-b-gateagain": "Das Gatter wieder öffnen", "cm-s-end": "Das Ende. Die Tragik hängt an den Regeln, die die Nutzer vereinbaren und durchsetzen können.", "cm-k-return": "Enter", "cm-k-start": "Start", "cm-k-begin": "Start", "cm-k-go": "weiter", "cm-k-again": "erneut", "cm-k-enter": "Enter", "pg-title": "Die Allmende, ein Spiel um eine gemeinsame Weide. Kerem Özdemir"}};
+window.PAGE_I18N = {"tr": {"pg-desc": "Tek mera, dört hane ve her yıl kaç hayvan salınacağı kararı. Otun gidişini izleyin, sonra dördünüzün seçtiği bir kuralla yeniden deneyin.", "cm-h1": "Ortak Mera", "cm-skip": "Seçimlere atlayın", "cm-restart": "Baştan başlayın", "cm-name": "Ortak Mera", "cm-when-one": "tek mera, dört hane", "cm-when-first": "ilk yıl", "cm-when-spring": "{b} yıldan {a}. yılın baharı", "cm-when-autumn": "{n}. yılın güzü", "cm-when-what": "yukarıda ne oldu", "cm-when-rule": "kendi kuralınız", "cm-when-arg": "savın kendisi, açıkça", "cm-you": "Siz", "cm-rn-none": "Hiç kural yok", "cm-rn-quota": "Üçlük bir kota", "cm-rn-watched": "Bir kota ve herkesin sayısı kapıda", "cm-rn-fined": "Bir kota, sayılar kapıda ve kademeli bir ceza", "cm-rl-none": "Herkes en iyi bildiğini salıyor.", "cm-rl-quota": "Her hane merada üç hayvan tutmayı kabul ediyor. Kimse kimseyi saymıyor.", "cm-rl-watched": "Aynı üçer hayvan; ve her yılın sonunda her hanenin sayısı, dördünün de okuyabildiği toplantı evinin kapısına tebeşirle yazılıyor.", "cm-rl-fined": "Aynı üçer hayvan, aynı kapı; sayısını aşan hane ilk seferinde bir günlük otlatma, ikincisinde bir hayvanlık değer kaybediyor.", "cm-t-p1": "Köyün üstündeki mera dört hanenin hepsinin ve hiçbirinin. Her bahar her hane oraya kaç hayvan salacağına karar veriyor ve kimse izin istemiyor, çünkü isteyecek kimse yok.", "cm-t-p2": "Ot en hızlı yarısı yenmişken büyür, hiç kalmamışken neredeyse hiç büyümez; dört hanenin hayvanları da aynı tarladan yer.", "cm-b-resume": "{n}. yıldan devam edin", "cm-b-gate": "Kapıyı açın", "cm-s-title": "Ortak Mera. Tek mera, dört hane ve her bahar bir karar.", "cm-m-pasture": "Mera", "cm-m-worth": "Bir hayvanın değeri", "cm-m-offull": "{a} / {b}", "cm-m-wheel": "{q} teker", "cm-led-a": "Peynirlerin ", "cm-led-b": "Yıl ", "cm-oi-kick": "Birinci kısım", "cm-oi-h": "Kimse bir şey kararlaştırmadı", "cm-oi-p1": "Ana, Bruno ve Deniz hayvanlarını sizinkiyle aynı merada tutuyor ve dördünüzün arasında bir anlaşma yok, yapmanın da yolu yok: oyunun bu kısmında konuşmak yok.", "cm-oi-p2": "Her bahar birden altıya kadar kaç hayvan salacağını seçiyorsunuz; onlar da öyle. Güzün ot sayılıyor.", "cm-b-firstspring": "İlk bahar", "cm-s-oi": "Birinci kısım. Kaç hayvan salacağını seçin.", "cm-y-kick": "Yıl {n}", "cm-y-h-bare": "Yukarıda neredeyse hiçbir şey kalmadı", "cm-y-h": "Kaçını salıyorsunuz", "cm-y-p0": "Yazın boyunca merada tuttuğunuz her hayvan güzün bir teker peynir ederek döner; ot inceyse daha az eder.", "cm-y-quota": "Anlaşma hane başı {q} hayvan ve yine de daha fazlasını salabilirsiniz. Kimsenin bilip bilmeyeceği, dördünüzün hangi kuralı seçtiğine bağlı.", "cm-ly-a": "Geçen yıl dördünüzün toplam {t} hayvanı dışarıdaydı. ", "cm-ly-fat": "Hayvanlar semiz döndü.", "cm-ly-light": "Hayvanlar çıktıklarından daha hafif döndü.", "cm-ly-thin": "Hayvanlar zayıf döndü ve toprak görünmeye başladı.", "cm-ly-bare": "Mera çıplak ve dönenler beslemeye değmeyecek hâldeydi.", "cm-b-turnout": "{c} salın", "cm-anim1": "{n} hayvan", "cm-animN": "{n} hayvan", "cm-s-year": "Yıl {n}. Mera {b} üzerinden {a} durumunda. Rakam tuşlarıyla birden altıya kadar hayvan seçin, sonra salın.", "cm-h-h-gone": "Mera bitti", "cm-h-h-showing": "Toprak görünüyor", "cm-h-h-count": "Sayım", "cm-h-line": "Siz {a} saldınız, Ana {b}, Bruno {c}, Deniz {d}. Tek merada {t} hayvan.", "cm-h-p2": "Ot baharda {a} idi, şimdi {b}; yıldan {e} teker peynir çıkardınız.", "cm-h-bare": "Geri gelecek, ama yavaş; çünkü ot ottan büyür ve büyüyecek ot neredeyse yok.", "cm-over-1": "{w} anlaşılan sayının üstündeydi ve sabah kapıda yazıyordu.", "cm-over-n": "{w} anlaşılan sayının üstündeydi ve sabah kapıda yazıyordu.", "cm-and": " ve ", "cm-b-what1": "Yukarıda ne oldu", "cm-b-what2": "Kural ne yaptı", "cm-b-nextspring": "Sonraki bahar", "cm-s-harvest": "{line} Mera {b} üzerinden {a} durumunda.", "cm-p1e-kick": "Birinci kısmın sonu", "cm-p1e-h-coll": "Gitti ve hızlı gitti", "cm-p1e-h": "Nerede durdu", "cm-p1e-p1": "Mera sonsuza kadar {n} hayvan besleyebilir; bu da dört haneye aşağı yukarı üçer eder. {p} hayvanda ot, büyüdüğünden hızlı yeniyordu; büyüdüğünden hızlı yenen ot bir yerde durmaz, düşer.", "cm-p1e-p2": "Yukarıda kimse mantıksız bir şey yapmıyordu. Fazladan bir hayvan, sahibi olan haneye koca bir teker peynir eder; o hayvanın ota verdiği zararsa dört hane arasında bölüşülür. Yani kararının maliyetinin dörtte üçünü başkası öder. Bu aritmetikle herkes yüz yüze, o yüzden herkes bir hayvan ekliyor ve hepsinin bedelini mera ödüyor.", "cm-p1e-coll": "Ot {y}. yılda tükendi ve {m} tekerle bitirdiniz.", "cm-p1e-ok": "{m} tekerle ve {b} üzerinden {a} durumda bir merayla bitirdiniz.", "cm-p1e-cmp": " Dört hane, {y} yılın hepsinde üçer hayvan tutsaydı her biri yaklaşık {q} ile bitirirdi.", "cm-p1e-better": "Demek ondan iyi yaptınız; bu da oyunun kusuru yerine işin zorluğunun kendisi. Ot olduğu sürece bir fazla hayvan tutan hane, bir eksik tutandan iyi durumdadır; başkaları ne yaparsa yapsın. Fatura, kimsenin saymadığı son yıldan sonra gelir.", "cm-p1e-after": "{e} seviyesinde tutulan bir mera, orada tutulduğu sürece her haneye yılda yaklaşık {p} teker ödemeye devam eder. Sizinki {a} durumda ve üstünde hiçbir şey olmadan tamamen kendi hâline bırakılsa yarıya dönmesi yaklaşık {y} yıl alır.", "cm-p1e-stop": "Hikâye genelde burada, insan doğası üzerine bir kıssayla durdurulur; durulacak yanlış yer, çünkü dördünüzün konuşmasına hiç izin verilmedi.", "cm-b-agree": "Şimdi bir şeyde anlaşın", "cm-s-p1e": "Birinci kısmın sonu. Mera sonsuza kadar toplam yaklaşık {n} hayvan taşır.", "cm-r-kick": "İkinci kısım", "cm-r-h": "Dördünüz oturuyorsunuz", "cm-r-p1": "Aynı mera, yeniden gücünde; aynı dört hane, sonsuza kadar taşıyabildiği aynı on iki civarı hayvan. Bu kez önce bir şeyde anlaşmanıza izin var. Birini seçin, sonra on dört yıl boyunca onun içinde yaşayın.", "cm-b-live": "Bu kuralda yaşayın", "cm-r-p2": "Üçü de bir hayvanın değerini ya da otun büyüme hızını değiştirmiyor; değiştirdikleri tek şey, dördünüzün birbiriniz hakkında ne bildiği.", "cm-s-rules": "Bir kural seçin: bir kota, herkesin sayısı kapıda bir kota, ya da sayılar ve kademeli ceza ile bir kota.", "cm-e-kick": "Sonu", "cm-e-h": "Trajedi kurallar hakkında bir sonuçtur", "cm-e-p1": "{r} altında mera {b} üzerinden {a} ile, siz {m} tekerle bitirdiniz. Birinci kısım {a2} ile ve {m2} tekerle bitmişti.", "cm-e-p2": "İki kısım arasında ne otla ne de bir hayvanın değeriyle ilgili bir şey değişti. Değişen, dördünüzün birbirinizin sayılarını görüp göremediği ve biri aştığında ne olduğuydu.", "cm-e-sub1": "Saymak anlaşmaktan neden daha önemli", "cm-e-p3": "Kimsenin denetlemediği bir kota bir dilektir. Herkes uyarken işler ve bir hane aşıp da hiçbir şey olmadığı anda kayar; çünkü diğerleri aptal değil; otun gittiğini görebiliyorlar. Sayıları kapıya yazmak kimseyi cezalandırmaz; yalnızca aşmayı başkalarının bildiği bir şey yapar ve işin çoğunu bunun yaptığı ortaya çıkar.", "cm-e-p4": "Bu oyundaki ceza bilerek küçük: bir günlük otlatma, sonra bir hayvan. Kimseyi mahvetmez ve mahvetmesi de gerekmiyor, çünkü amacı para değil.", "cm-e-sub2": "Kayıtlar ne diyor", "cm-e-p5": "Elinor Ostrom kariyerini; kullanıcıların kendi kendini yönettiği meralar, ormanlar, balıkçılık sahaları ve yeraltı suyu havzaları üzerine saha çalışmalarını okuyarak geçirdi. Nobel komitesi bulguyu 2009 ödülünü duyururken özetledi. Komitenin sözleriyle, ortak mülkiyet “kullanıcı birlikleri tarafından başarıyla yönetilebilir” ve sonuçlar “çoğu zaman standart teorilerin öngördüğünden iyidir”; çünkü kaynak kullanıcıları “çıkar çatışmalarını ele almak için karar alma ve kural uygulatmaya dönük incelikli mekanizmalar geliştirir”.", "cm-e-p6": "Ayakta kalan düzenlemelerin ortak yanları vardı. Kimin neye hakkı olduğunu açıkça söyleyen kurallar. İzleme ve yaptırımın kullanıcıların kendileri ya da onlara hesap veren biri tarafından yürütülmesi. Kademeli yaptırımlar: ilk ihlalde hafif, tekrarlandıkça sertleşen. Kullanıcıların katıldığı karar süreçleri. Ve dış otoritelerin, kullanıcıların kendi kendilerini örgütleme hakkını tanıması.", "cm-e-sub3": "Bunun göstermediği", "cm-e-m1": "Buradaki komşular üç kısa kural; ikinci kısımda anlaşmaya model öyle dediği için uyuyorlar ve asıl soruyu, insanların kendi yaptıkları anlaşmaya uyup uymadığını, bu oyun göstermek yerine varsayıyor.", "cm-e-m2": "Ot, ders kitabındaki bir büyüme eğrisini izleyen tek bir sayı; her yıl kenarlardan bir miktar tohum savrulsun ki çıplak bir tarla geri gelebilsin. Gerçek bir merada toprak, hava, hastalık ve kimsenin hayvanıyla ilgisi olmayan kötü bir yıl vardır.", "cm-e-m3": "Ostrom'un vakaları çoğunlukla uzun ortak geçmişi ve net sınırları olan küçük gruplardı; onun çalışmasında her ortak varlığın kullanıcıları tarafından yönetilebileceği yazmaz ve başarısız vakalar da kaydın parçasıdır.", "cm-e-m4": "Ünlü müştereklerin trajedisi savı, kuralsız açık erişimde ne olacağı konusunda yanlış değildir. Yanlış olduğu yer, bunu yalnızca özel mülkiyetin ya da dışarıdan bir otoritenin önleyebileceği şeklinde okunmasıdır.", "cm-e-m5": "Dört hane ve tek mera kolay durumdur: ne koca bir denizin balıkçılığı ne de atmosfer, kayıttaki başarılı vakaların sınırlarına, küçük sayılarına ve ortak geçmişine sahiptir.", "cm-e-src": "Kaynaklar", "cm-src1": "Bulgu.", "cm-src2": "Tasarım ilkeleri ve Hardin okuması.", "cm-src-tail": "Okundu: 2026-08-21. Almanca ve Türkçe aktarımlar bana ait.", "cm-fam": "Ailenin geri kalanı; tehlikenin açgözlülük yerine şüphe olduğu bir av da dahil: ", "cm-fam-a": "bütün oyunlar burada", "cm-b-another": "Başka bir kural deneyin", "cm-b-gateagain": "Kapıyı yeniden açın", "cm-s-end": "Son. Trajedi, kullanıcıların anlaşıp uygulatabildiği kurallara bağlıdır.", "cm-k-return": "enter", "cm-k-start": "başlayın", "cm-k-begin": "başlayın", "cm-k-go": "devam", "cm-k-again": "tekrar", "cm-k-enter": "enter", "pg-title": "Ortak Otlak, paylaşılan bir mera üzerine bir oyun. Kerem Özdemir"}, "de": {"pg-desc": "Eine Weide, vier Haushalte, jedes Jahr die Wahl, wie viele Tiere grasen. Sehen Sie das Gras schwinden und versuchen Sie es mit einer gemeinsamen Regel neu.", "cm-h1": "Die Allmende", "cm-skip": "Zu den Entscheidungen springen", "cm-restart": "Von vorn beginnen", "cm-name": "Die Allmende", "cm-when-one": "eine Weide, vier Haushalte", "cm-when-first": "das erste Jahr", "cm-when-spring": "Frühjahr des Jahres {a} von {b}", "cm-when-autumn": "Herbst des Jahres {n}", "cm-when-what": "was dort oben geschah", "cm-when-rule": "eine eigene Regel", "cm-when-arg": "das Argument, schlicht gesagt", "cm-you": "Sie", "cm-rn-none": "Gar keine Regel", "cm-rn-quota": "Eine Quote von drei", "cm-rn-watched": "Eine Quote, und alle Zahlen an der Tür", "cm-rn-fined": "Eine Quote, die Zahlen an der Tür und eine gestufte Strafe", "cm-rl-none": "Jeder treibt aus, was er für richtig hält.", "cm-rl-quota": "Jeder Haushalt verpflichtet sich auf drei Tiere auf der Weide. Niemand zählt irgendwen.", "cm-rl-watched": "Dieselben drei, und am Ende jedes Jahres wird die Zahl jedes Haushalts mit Kreide an die Tür des Versammlungshauses geschrieben, wo alle vier sie lesen können.", "cm-rl-fined": "Dieselben drei und dieselbe Tür; ein Haushalt über seiner Zahl verliert beim ersten Mal einen Tag Weide und beim zweiten den Wert eines ganzen Tieres.", "cm-t-p1": "Die Weide über dem Dorf gehört allen vier Haushalten und keinem. Jedes Frühjahr entscheidet jeder Haushalt, wie viele Tiere er auftreibt, und niemand bittet um Erlaubnis, denn es gibt niemanden, den man fragen könnte.", "cm-t-p2": "Gras wächst am schnellsten nach, wenn es halb abgefressen ist, und kaum noch, wenn nichts mehr da ist; und die Tiere aller vier Haushalte fressen vom selben Feld.", "cm-b-resume": "Weiter ab Jahr {n}", "cm-b-gate": "Das Gatter öffnen", "cm-s-title": "Die Allmende. Eine Weide, vier Haushalte, und jedes Frühjahr eine Entscheidung.", "cm-m-pasture": "Die Weide", "cm-m-worth": "Was ein Tier wert ist", "cm-m-offull": "{a} von {b}", "cm-m-wheel": "{q} Laib", "cm-led-a": "Ihre Käse ", "cm-led-b": "Jahr ", "cm-oi-kick": "Teil eins", "cm-oi-h": "Niemand hat etwas vereinbart", "cm-oi-p1": "Ana, Bruno und Deniz halten ihre Tiere auf derselben Weide wie Sie, und es gibt keine Vereinbarung zwischen Ihnen vieren und keinen Weg, eine zu treffen: In diesem Teil des Spiels wird nicht geredet.", "cm-oi-p2": "Jedes Frühjahr wählen Sie, wie viele Tiere Sie auftreiben, von eins bis sechs, und sie auch. Im Herbst wird das Gras gezählt.", "cm-b-firstspring": "Das erste Frühjahr", "cm-s-oi": "Teil eins. Wählen Sie, wie viele Tiere Sie auftreiben.", "cm-y-kick": "Jahr {n}", "cm-y-h-bare": "Dort oben ist fast nichts mehr", "cm-y-h": "Wie viele treiben Sie auf", "cm-y-p0": "Jedes Tier, das Sie den Sommer über auf der Weide halten, kommt im Herbst einen Laib Käse wert zurück, oder weniger, wenn das Gras dünn war.", "cm-y-quota": "Vereinbart sind {q} Tiere je Haushalt, und Sie können trotzdem mehr auftreiben. Ob es jemand erfährt, hängt davon ab, welche Regel Sie vier gewählt haben.", "cm-ly-a": "Im letzten Jahr hatten Sie vier zusammen {t} Tiere draußen. ", "cm-ly-fat": "Die Tiere kamen fett zurück.", "cm-ly-light": "Die Tiere kamen leichter zurück, als sie hinausgingen.", "cm-ly-thin": "Die Tiere kamen mager zurück, und der Boden scheint durch.", "cm-ly-bare": "Die Weide ist kahl, und was zurückkam, war das Halten kaum wert.", "cm-b-turnout": "{c} auftreiben", "cm-anim1": "{n} Tier", "cm-animN": "{n} Tiere", "cm-s-year": "Jahr {n}. Die Weide steht bei {a} von {b}. Wählen Sie mit den Zifferntasten eins bis sechs Tiere und treiben Sie sie auf.", "cm-h-h-gone": "Die Weide ist dahin", "cm-h-h-showing": "Der Boden scheint durch", "cm-h-h-count": "Die Zählung", "cm-h-line": "Sie trieben {a} auf, Ana {b}, Bruno {c}, Deniz {d}. {t} Tiere auf einer Weide.", "cm-h-p2": "Das Gras stand im Frühjahr bei {a} und steht jetzt bei {b}, und Sie holten {e} Laibe Käse aus dem Jahr.", "cm-h-bare": "Es kommt zurück, aber langsam, denn Gras wächst aus Gras, und es ist fast keines mehr da, aus dem es wachsen könnte.", "cm-over-1": "{w} lag über der vereinbarten Zahl, und am Morgen stand es an der Tür.", "cm-over-n": "{w} lagen über der vereinbarten Zahl, und am Morgen stand es an der Tür.", "cm-and": " und ", "cm-b-what1": "Was dort oben geschah", "cm-b-what2": "Was die Regel getan hat", "cm-b-nextspring": "Das nächste Frühjahr", "cm-s-harvest": "{line} Die Weide steht bei {a} von {b}.", "cm-p1e-kick": "Ende von Teil eins", "cm-p1e-h-coll": "Es ging dahin, und es ging schnell", "cm-p1e-h": "Wo es endete", "cm-p1e-p1": "Die Weide kann für immer {n} Tiere ernähren, etwa drei je Haushalt. Bei {p} Tieren wurde das Gras schneller gefressen, als es wuchs, und Gras, das schneller gefressen wird, als es wächst, pendelt sich nicht ein; es fällt.", "cm-p1e-p2": "Niemand dort oben tat etwas Unvernünftiges. Ein weiteres Tier ist dem Haushalt, dem es gehört, einen ganzen Laib Käse wert, und der Schaden, den es dem Gras zufügt, verteilt sich auf vier Haushalte; drei Viertel der Kosten Ihrer Entscheidung zahlt also jemand anderes. Vor dieser Arithmetik stehen alle, also legt jeder ein Tier zu, und die Weide bezahlt alles.", "cm-p1e-coll": "Das Gras gab im Jahr {y} auf, und Sie schlossen mit {m} Laiben ab.", "cm-p1e-ok": "Sie schlossen mit {m} Laiben und einer Weide bei {a} von {b} ab.", "cm-p1e-cmp": " Vier Haushalte mit je drei Tieren, alle {y} Jahre lang, hätten jeder mit etwa {q} abgeschlossen.", "cm-p1e-better": "Sie schnitten also besser ab, und das ist die Schwierigkeit statt eines Fehlers des Spiels. Solange Gras da ist, steht der Haushalt mit einem Tier mehr besser da als der mit einem weniger, was auch immer die anderen tun. Die Rechnung kommt nach dem letzten Jahr, das noch irgendwer zählt.", "cm-p1e-after": "Eine bei {e} gehaltene Weide zahlt jedem Haushalt etwa {p} Laibe im Jahr, solange sie dort gehalten wird. Ihre steht bei {a}, und ganz sich selbst überlassen, mit gar nichts darauf, bräuchte sie etwa {y} Jahre, um auf die Hälfte zurückzukommen.", "cm-p1e-stop": "Hier hört die Geschichte gewöhnlich auf, mit einer Moral über die menschliche Natur, und es ist die falsche Stelle zum Aufhören, denn Sie vier durften nie miteinander reden.", "cm-b-agree": "Jetzt etwas vereinbaren", "cm-s-p1e": "Ende von Teil eins. Die Weide trägt für immer insgesamt etwa {n} Tiere.", "cm-r-kick": "Teil zwei", "cm-r-h": "Sie vier setzen sich zusammen", "cm-r-p1": "Dieselbe Weide, wieder bei Kräften, dieselben vier Haushalte, dieselben rund zwölf Tiere, die sie für immer tragen kann. Diesmal dürfen Sie zuerst etwas vereinbaren. Wählen Sie eine Regel, und leben Sie dann vierzehn Jahre darin.", "cm-b-live": "In dieser Regel leben", "cm-r-p2": "Keine der drei ändert, was ein Tier wert ist oder wie schnell Gras wächst; sie ändern nur, was Sie vier voneinander wissen.", "cm-s-rules": "Wählen Sie eine Regel: eine Quote, eine Quote mit allen Zahlen an der Tür, oder eine Quote mit den Zahlen und einer gestuften Strafe.", "cm-e-kick": "Das Ende", "cm-e-h": "Die Tragik ist ein Ergebnis über Regeln", "cm-e-p1": "Unter der Regel {r} endete die Weide bei {a} von {b}, und Sie schlossen mit {m} Laiben ab. Teil eins endete bei {a2} mit {m2}.", "cm-e-p2": "Am Gras und am Wert eines Tieres änderte sich zwischen den beiden Teilen nichts. Was sich änderte, war, ob Sie vier die Zahlen der anderen sehen konnten und was geschah, wenn jemand darüber lag.", "cm-e-sub1": "Warum Zählen wichtiger ist als Vereinbaren", "cm-e-p3": "Eine Quote, die niemand prüft, ist ein Wunsch. Sie funktioniert, solange alle sie halten, und sie rutscht in dem Moment, in dem ein Haushalt darüber liegt und nichts folgt, denn die anderen sind keine Narren und sehen das Gras schwinden. Die Zahlen an die Tür zu schreiben bestraft niemanden; es bedeutet nur, dass Überschreiten etwas ist, das die anderen wissen, und das erweist sich als der größte Teil der Arbeit.", "cm-e-p4": "Die Strafe in diesem Spiel ist mit Absicht klein: ein Tag Weide, dann ein Tier. Keine Strafe, an der jemand zugrunde ginge, und das muss sie auch nicht sein, denn es geht ihr nicht ums Geld.", "cm-e-sub2": "Was die Bilanz sagt", "cm-e-p5": "Elinor Ostrom verbrachte eine Laufbahn damit, Feldstudien über Weiden, Wälder, Fischgründe und Grundwasserbecken zu lesen, in denen die Nutzer sich selbst regierten. Das Nobelkomitee fasste den Befund bei der Bekanntgabe des Preises 2009 zusammen. In seinen Worten kann Gemeinschaftseigentum „von Nutzervereinigungen erfolgreich verwaltet werden“, und die Ergebnisse seien „öfter besser, als die Standardtheorien vorhersagen“, weil Ressourcennutzer „häufig ausgefeilte Mechanismen für Entscheidungen und Regeldurchsetzung entwickeln, um Interessenkonflikte zu bewältigen“.", "cm-e-p6": "Die Ordnungen, die hielten, hatten Gemeinsamkeiten. Regeln, die klar sagen, wem was zusteht. Beobachtung und Sanktionierung durch die Nutzer selbst oder durch jemanden, der ihnen Rechenschaft schuldet. Gestufte Sanktionen, mild beim ersten Verstoß und strenger bei Wiederholung. Entscheidungsverfahren, an denen die Nutzer teilhaben. Und die Anerkennung äußerer Autoritäten, dass die Nutzer sich überhaupt selbst organisieren dürfen.", "cm-e-sub3": "Was das nicht zeigt", "cm-e-m1": "Die Nachbarn hier sind drei kurze Regeln, die die Vereinbarung in Teil zwei halten, weil das Modell es so sagt, und ob Menschen eine selbst getroffene Vereinbarung halten, wird hier vorausgesetzt statt gezeigt.", "cm-e-m2": "Das Gras ist eine einzige Zahl auf einer Lehrbuch-Wachstumskurve, mit etwas Samenflug von den Rändern in jedem Jahr, damit ein kahles Feld überhaupt zurückkommen kann. Eine echte Weide hat Boden, Wetter, Krankheit und ein schlechtes Jahr, das mit niemandes Tieren zu tun hat.", "cm-e-m3": "Ostroms Fälle waren meist kleine Gruppen mit langer gemeinsamer Geschichte und klaren Grenzen; nirgends in ihrer Arbeit steht, dass jede Allmende von ihren Nutzern regiert werden kann, und die gescheiterten Fälle gehören ebenfalls zur Bilanz.", "cm-e-m4": "Das berühmte Argument von der Tragik der Allmende irrt nicht darüber, was bei offenem Zugang ohne Regeln geschieht. Es irrt, wenn man es so liest, als könne nur Privateigentum oder eine äußere Autorität das verhindern.", "cm-e-m5": "Vier Haushalte und eine Weide sind der leichte Fall: Weder die Fischerei eines ganzen Meeres noch die Atmosphäre hat die Grenzen, die kleinen Zahlen oder die gemeinsame Geschichte, die die erfolgreichen Fälle der Bilanz hatten.", "cm-e-src": "Quellen", "cm-src1": "Der Befund.", "cm-src2": "Die Gestaltungsprinzipien und die Hardin-Lesart.", "cm-src-tail": "Gelesen: 2026-08-21. Deutsche und türkische Übertragung von mir.", "cm-fam": "Der Rest der Familie, darunter eine Jagd, in der die Gefahr der Zweifel statt der Gier ist: ", "cm-fam-a": "alle Spiele sind hier", "cm-b-another": "Eine andere Regel versuchen", "cm-b-gateagain": "Das Gatter wieder öffnen", "cm-s-end": "Das Ende. Die Tragik hängt an den Regeln, die die Nutzer vereinbaren und durchsetzen können.", "cm-k-return": "Enter", "cm-k-start": "Start", "cm-k-begin": "Start", "cm-k-go": "weiter", "cm-k-again": "erneut", "cm-k-enter": "Enter", "pg-title": "Die Allmende, ein Spiel um eine gemeinsame Weide. Kerem Özdemir"}};
 function T(k, en, v) {
   var s = window.__t ? window.__t(k, en) : en;
   if (v) for (var n in v) s = s.split("{" + n + "}").join(String(v[n]));
@@ -1853,7 +1962,7 @@ function setMine(n) {
     bs[i].setAttribute("aria-pressed", (i + 1) === G.mine ? "true" : "false");
   }
   var go = ui.panel.querySelector(".row button");
-  if (go) go.firstChild.textContent = "Turn out " + G.mine + (G.mine === 1 ? " animal" : " animals");
+  if (go) go.firstChild.textContent = T("cm-b-turnout", "Turn out {c}", {c: animalsW(G.mine)});
 }
 
 function lastYearWords() {
@@ -2056,7 +2165,7 @@ VIEWS.ending = function () {
   KW.season(2, true); KW.daylight(0.6);
   ui.top(T("cm-name", "The Commons"), T("cm-when-arg", "the argument, plainly"));
   ui.kick(T("cm-e-kick", "The end of it"));
-  ui.head(T("cm-e-h", "The tragedy is a result about rules, not about people"));
+  ui.head(T("cm-e-h", "The tragedy is a result about rules"));
 
   ui.para(T("cm-e-p1", "Under {r} the pasture finished at {a} out of {b} and you finished with {m} wheels. Part one finished at {a2} with {m2}.",
           {r: window.__lang && window.__lang !== "en" ? ruleName(G.rule) : rule.name.toLowerCase(),
@@ -2086,11 +2195,11 @@ VIEWS.ending = function () {
     { what: T("cm-src1", "The finding."),
       cite: "The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel 2009, press release of 12 October 2009, on Elinor Ostrom.",
       url: "https://www.nobelprize.org/prizes/economic-sciences/2009/press-release/",
-      tail: T("cm-src-tail", "Read 2026 08 21. The German and Turkish renderings are my own.") },
+      tail: T("cm-src-tail", "Read 2026-08-21. The German and Turkish renderings are my own.") },
     { what: T("cm-src2", "The design principles and the reading of Hardin."),
       cite: "Economic Governance, scientific background on the 2009 prize, Royal Swedish Academy of Sciences.",
       url: "https://www.nobelprize.org/uploads/2018/06/advanced-economicsciences2009.pdf",
-      tail: T("cm-src-tail", "Read 2026 08 21. The German and Turkish renderings are my own.") }
+      tail: T("cm-src-tail", "Read 2026-08-21. The German and Turkish renderings are my own.") }
   ]);
 
   var p = el("p");
@@ -2156,19 +2265,13 @@ KW.start({
 </script>
 
 <script>
-window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen"}};
+window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "a-menu": "Menü", "a-menu-close": "Menüyü kapat", "a-mail": "E-posta", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak elinize veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek etik bir edimdir.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarlayın ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izleyin.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: size verilen sonuçlar yerine çalıştırdığınız modeller.", "xn-k-again": "Baştan başlayın", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükleyin, bir vergi koyun ve kanunun onu kimin sırtlayacağına karar vermediğini görün.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştırın, sonra kazananları çoğaltın ve gelecek uzunken neyin hayatta kaldığını görün.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştırın ve iyi arabaların gidişini izleyin.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğiniz modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tutun ve altındaki ağın biçimini değiştirin. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştırın", "sim-pause": "Duraklatın", "sim-step": "Adım", "sim-reset": "Sıfırlayın", "sim-share": "Bu koşunun bağlantısını kopyalayın", "sim-advance": "{n} adım ilerletin", "sim-still": "Sisteminiz azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerletin düğmesi onu {n} adım götürüp sonucu bir kez çiziyor. Adım düğmesi onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler"}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "a-menu": "Menü", "a-menu-close": "Menü schließen", "a-mail": "E-Mail", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen"}};
 
 (function(){
   "use strict";
-  var KEY = "lang", lang = "en";
-  function preferred(){
-    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
-    l = String(l).toLowerCase();
-    if (l.indexOf("de") === 0) return "de";
-    if (l.indexOf("tr") === 0) return "tr";
-    return "en";
-  }
-  try { lang = localStorage.getItem(KEY) || preferred(); } catch (e) { lang = preferred(); }
+  /* The head script settles the language: the address, the tab, the reader's
+     choice, the browser. */
+  var lang = window.__tabLang ? window.__tabLang() : "en";
   var base = {}, baseA = {}, baseT = {}, baseP = {}, titleBase = null;
   /* One dictionary per language, rebuilt on every pass, so a page that
      declares its own words later is still heard. */
@@ -2245,7 +2348,12 @@ window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, an
     });
     var ot1 = document.querySelector('meta[property="og:title"]');
     if (ot1) ot1.setAttribute("content", document.title);
-    try { localStorage.setItem(KEY, l); } catch (e) {}
+    /* The site has a copy of each of these pages under /tr and /de, and a reader
+       in this tab's language leaves to the page in that language: with nothing
+       stored, a plain /about/ would land them in English. */
+    document.querySelectorAll("a[data-home]").forEach(function(a){
+      a.setAttribute("href", (l === "en" ? "" : "/" + l) + a.getAttribute("data-home"));
+    });
     window.__lang = l;
     /* One lookup for a string a script draws itself rather than one the
        browser is holding in an element. */
@@ -2255,8 +2363,26 @@ window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, an
     };
     try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch (e) {}
   }
+  /* A press on this page's own switch is the only thing here that writes the
+     reader's choice down. It also takes over the tab and leaves the address,
+     where a ?lang= would win again on the next reload. A framed page has no
+     switch to press, and this guard keeps it that way: the site redirects by
+     this key, so a frame must never write it. */
+  function press(l){
+    if (window.self === window.top) {
+      try { localStorage.setItem("lang", l); } catch(e){}
+      try { sessionStorage.setItem("lang", l); } catch(e){}
+      try {
+        var q = location.search.replace(/^\?/, "").split("&").filter(function(p){
+          return p && p.indexOf("lang=") !== 0;
+        }).join("&");
+        history.replaceState(history.state, "", location.pathname + (q ? "?" + q : "") + location.hash);
+      } catch(e){}
+    }
+    apply(l);
+  }
   document.querySelectorAll(".langs button").forEach(function(b){
-    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+    b.addEventListener("click", function(){ press(b.getAttribute("data-lang")); });
   });
   window.__chrome = apply;
   window.__lang = lang;
@@ -2267,21 +2393,58 @@ window.CHROME_I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, an
      the bar has already taken, or it overhangs the fold by exactly that much
      and clips whatever sits at its bottom. */
   function barHeight(){
-    var b = document.querySelector(".bar");
+    var b = document.querySelector("header.bar");
     document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
   }
   barHeight();
   addEventListener("resize", barHeight);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
-  /* the nav is one scrolling line on a phone, so the page you are on can
-     start off past its right edge. Bring it into view without moving the
-     page. The generated pages do the same. */
-  try {
-    var cur = document.querySelector(".bar nav a[aria-current]");
-    if (cur && cur.parentNode.scrollWidth > cur.parentNode.clientWidth) {
-      cur.parentNode.scrollLeft = Math.max(0, cur.offsetLeft - 24);
+  /* The sheet behind the menu button. Focus goes to the first section and stays
+     inside until the sheet closes, then returns to the button. Escape, a link,
+     and a window grown past the point where the button exists all close it. */
+  (function(){
+    var btn = document.querySelector(".menu-toggle"), sheet = document.getElementById("site-menu");
+    if (!btn || !sheet) return;
+    var root = document.documentElement, open = false;
+    function stops(){
+      return Array.prototype.filter.call(sheet.querySelectorAll("a[href],button"), function(el){
+        return el.offsetParent !== null || el.classList.contains("menu-close");
+      });
     }
-  } catch(e){}
+    function set(v, back){
+      if (v === open) return;
+      open = v;
+      root.classList.toggle("menu-open", v);
+      sheet.classList.toggle("open", v);
+      btn.setAttribute("aria-expanded", v ? "true" : "false");
+      if (v) {
+        var first = sheet.querySelector(".menu-main > a");
+        if (first) first.focus({ preventScroll: true });
+      } else if (back) {
+        btn.focus({ preventScroll: true });
+      }
+    }
+    btn.addEventListener("click", function(){ set(!open, true); });
+    var closer = sheet.querySelector(".menu-close");
+    if (closer) closer.addEventListener("click", function(){ set(false, true); });
+    sheet.addEventListener("click", function(e){
+      if (e.target.closest && e.target.closest("a")) set(false, false);
+    });
+    document.addEventListener("keydown", function(e){
+      if (!open) return;
+      if (e.key === "Escape") { set(false, true); return; }
+      if (e.key !== "Tab") return;
+      var list = stops(), i = list.indexOf(document.activeElement);
+      if (!list.length) return;
+      var next = e.shiftKey ? (i <= 0 ? list.length - 1 : i - 1) : (i === list.length - 1 ? 0 : i + 1);
+      e.preventDefault();
+      list[next].focus();
+    });
+    var wide = matchMedia("(min-width:64rem)");
+    var onWide = function(){ if (wide.matches) set(false, false); };
+    if (wide.addEventListener) wide.addEventListener("change", onWide);
+    addEventListener("pageshow", function(e){ if (e.persisted) set(false, false); });
+  })();
 })();
 
 </script>

@@ -22,7 +22,7 @@
 <meta name="description" content="Five live analytical instruments, and the public repositories behind them.">
 <meta name="author" content="Kerem Özdemir">
 <meta name="color-scheme" content="light dark">
-<script>(function(){var d=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")})})()</script>
+<script>(function(){var d=document.documentElement,t=null;d.classList.add("js");try{t=new URLSearchParams(location.search).get("theme")}catch(e){}if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("theme")}catch(e){}}if(t==="dark"||t==="light")d.setAttribute("data-theme",t);try{if(window.self!==window.top){d.classList.add("in-frame");var f=window.frameElement;if(f&&f.getAttribute("scrolling")!=="no")d.classList.add("framed-tool")}}catch(e){}addEventListener("storage",function(e){if(e.key!=="theme")return;var v=e.newValue;if(v==="dark"||v==="light")d.setAttribute("data-theme",v);else d.removeAttribute("data-theme")});function k(l){return l==="en"||l==="tr"||l==="de"}var L=(function(){var q=null,p=null,s=null,l=null;try{q=new URLSearchParams(location.search).get("lang")}catch(e){}if(k(q)){try{sessionStorage.setItem("lang",q)}catch(e){}return q}try{if(window.self!==window.top)p=window.parent.document.documentElement.getAttribute("lang")}catch(e){}if(k(p))return p;try{s=sessionStorage.getItem("lang")}catch(e){}if(k(s))return s;try{l=localStorage.getItem("lang")}catch(e){}if(k(l))return l;l=String((navigator.languages&&navigator.languages[0])||navigator.language||"").toLowerCase();return l.indexOf("de")===0?"de":l.indexOf("tr")===0?"tr":"en"})();window.__tabLang=function(){return L};d.setAttribute("lang",L)})()</script>
 <link rel="canonical" href="https://keremozdemir.de/projects/">
 <meta name="robots" content="noindex">
 <meta property="og:url" content="https://keremozdemir.de/projects/">
@@ -33,9 +33,13 @@
      mark, so 23 of them each carried their own copy and Search Console kept
      showing the retired icon. The root file is the current K. -->
 <link rel="icon" href="/favicon.ico?v=4" sizes="any">
-<meta property="og:image" content="https://keremozdemir.de/og.png">
-<link rel="alternate" type="application/rss+xml" title="Notes" href="feed.xml">
+<meta property="og:image" content="https://keremozdemir.de/og/projects.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Instruments. Kerem Özdemir">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://keremozdemir.de/og/projects.png">
+<link rel="alternate" type="application/rss+xml" title="Notes" href="feed.xml">
 
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
@@ -89,68 +93,189 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .wrap{max-width:74rem;margin:0 auto;padding:0 1.5rem}
 @media (min-width:640px){.wrap{padding:0 2.5rem}}
 
-/* ---------- top bar ----------
-   The site's own bar, measured off it on 2026-09-24: 70 px, the name in the
-   serif, the sections in the mono face in capitals, the languages as one
-   pill. These pages read as a second site until then. Inside a frame on
-   the site (a case study running its instrument) the bar and the footer are
-   not drawn at all: the page around the frame already has both. */
-.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);background:var(--paper);border-bottom:1px solid var(--line)}
-.in-frame .bar,.in-frame .site-foot{display:none}
-.bar .wrap{display:flex;align-items:center;gap:2rem;height:70px}
-.bar .home,.langs{flex:none}
-.bar .home{font-family:var(--serif);font-weight:400;font-size:1.05rem;text-decoration:none;
-  border-bottom:0;color:var(--fg);white-space:nowrap}
-.bar nav:not(.langs){margin:0 auto}
-.bar nav{display:flex;gap:1.75rem;align-items:center}
-.bar nav a{font-family:var(--mono);font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;
-  white-space:nowrap;text-decoration:none;color:var(--dim);font-weight:400;padding:.25rem 0;
-  border-bottom:1px solid transparent;transition:color .18s var(--ease),border-color .18s var(--ease)}
-.bar nav a:hover{color:var(--fg)}
-.bar nav a[aria-current]{color:var(--fg);border-bottom-color:var(--accent)}
-.langs{display:inline-flex;align-items:center;padding:2px;border-radius:999px;
-  box-shadow:inset 0 0 0 1px var(--line)}
-.langs button{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;width:36px;height:33px;
-  border:0;border-radius:999px;background:none;color:var(--dim);cursor:pointer;
-  transition:background-color .2s var(--ease),color .2s var(--ease)}
-.langs button:hover{color:var(--fg)}
-.langs button[aria-pressed="true"]{background:var(--fg);color:var(--paper)}
+/* ---------- between pages ----------
+   The rules of src/app/globals.css on the new site. A page that left this out
+   turned every crossing from the site into "Transition was aborted" in the
+   console of the page being left. */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:vt-out 160ms cubic-bezier(.16,1,.3,1) both}
+::view-transition-new(root){animation:vt-in 240ms cubic-bezier(.16,1,.3,1) both}
+@keyframes vt-out{to{opacity:0;transform:translateY(-12px)}}
+@keyframes vt-in{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
 
-/* ---------- footer, the site's own ---------- */
-.site-foot{border-top:1px solid var(--line);margin-top:clamp(2.5rem,6vh,4rem);font-family:var(--sans)}
-.site-foot .foot-main{display:flex;flex-wrap:wrap;gap:1.5rem 2rem;justify-content:space-between;
-  align-items:baseline;padding-top:3rem;padding-bottom:3rem}
-.site-foot .foot-id{color:var(--dim)}
-.site-foot .foot-mono{font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;line-height:1.7}
-.site-foot .foot-note{margin-top:.5rem;max-width:38ch;font-size:.875rem;line-height:1.55}
-.site-foot .foot-links{display:flex;flex-wrap:wrap;gap:.75rem 1.75rem;list-style:none;font-size:.95rem}
-.site-foot .foot-links a{display:inline-flex;align-items:center;padding:.375rem 0;color:var(--fg)}
-.site-foot .foot-marks{border-top:1px solid var(--line)}
-.site-foot .foot-marks ul{display:flex;align-items:center;justify-content:center;gap:2.25rem;
-  list-style:none;padding-top:1.5rem;padding-bottom:1.5rem}
-.site-foot .foot-marks a{display:inline-flex;color:var(--dim);transition:color .18s var(--ease)}
-.site-foot .foot-marks a:hover{color:var(--fg)}
+/* A heading reached through a fragment lands clear of the bar. */
+html{scroll-padding-top:6rem}
+html.in-frame{scroll-padding-top:1rem}
+
+/* ---------- top bar ----------
+   The site's own bar, in the numbers measured off https://keremozdemir.de/ on
+   2026-11-05: at 1440 the container is 1184 wide with a 40 px gutter, the name
+   at x 168, the sections at x 413, the three chips 36 px apart from x 1159, the
+   whole bar 70 tall. Below 1024 the sections go into a sheet behind a menu
+   button and below 640 the chips go with them, as they do on the site, so no
+   section sits past the edge of a scrolling row. header.bar rather than .bar,
+   because the games keep a .bar of their own inside their meters. Inside a
+   frame on the site (a case study running its instrument) the bar, the sheet
+   and the footer are not drawn at all: the page around the frame has them. */
+header.bar{position:sticky;top:0;z-index:30;font-family:var(--sans);line-height:1.55;
+  background:var(--paper);color:var(--fg);border-bottom:1px solid var(--line);view-transition-name:masthead}
+header.bar,.site-menu,footer.site-foot{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.in-frame header.bar,.in-frame .site-foot,.in-frame .site-menu{display:none}
+header.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+  padding-top:1rem;padding-bottom:1rem}
+header.bar .home{flex:none;font-family:var(--serif);font-weight:400;font-size:1.05rem;
+  font-variation-settings:"SOFT" 0,"WONK" 0,"opsz" 24;white-space:nowrap;
+  text-decoration:none;border:0;color:var(--fg)}
+header.bar .sections{display:none}
+header.bar .sections a{position:relative;display:block;padding:.25rem 0;font-family:var(--mono);
+  font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;
+  text-decoration:none;border:0;color:var(--dim);transition:color .3s ease}
+header.bar .sections a:hover,header.bar .sections a[aria-current]{color:var(--fg)}
+/* the site's one moving object, a pixel under the word */
+header.bar .sections a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;
+  transition:transform .45s cubic-bezier(.16,1,.3,1)}
+header.bar .sections a:hover::after,header.bar .sections a[aria-current]::after{transform:scaleX(1)}
+.bar-end{flex:none;display:flex;align-items:center;gap:.5rem}
+header.bar a:focus-visible,header.bar button:focus-visible,.site-menu a:focus-visible,.site-menu button:focus-visible,
+footer.site-foot a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+/* The chips: one pill and one mark that slides under the current language.
+   Both the mark and the chip's colour are asked of the document, because the
+   head script sets html[lang] before the first paint, so a page opening in
+   Turkish does not slide there from EN. */
+.langs{position:relative;display:inline-flex;align-items:center;flex:none;box-sizing:border-box;
+  width:7.0625rem;padding:2px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line)}
+.langs .lang-thumb{position:absolute;top:.125rem;bottom:.125rem;left:.125rem;
+  width:calc((100% - .25rem) / 3);border-radius:999px;background:var(--fg);
+  transition:transform .42s cubic-bezier(.16,1,.3,1)}
+html[lang="tr"] .lang-thumb{transform:translateX(100%)}
+html[lang="de"] .lang-thumb{transform:translateX(200%)}
+header.bar .langs button,.site-menu .langs button{position:relative;z-index:1;flex:1 1 0;width:auto;min-width:0;
+  height:2.0625rem;min-height:0;margin:0;padding:0;display:inline-flex;align-items:center;justify-content:center;
+  border:0;border-radius:999px;background:none;color:var(--dim);font-family:var(--mono);font-size:.75rem;
+  font-weight:400;line-height:1;letter-spacing:.08em;text-align:center;cursor:pointer;
+  transition:color .42s cubic-bezier(.16,1,.3,1)}
+header.bar .langs button:hover,.site-menu .langs button:hover{background:none;border:0;color:var(--fg)}
+header.bar .langs button:active,.site-menu .langs button:active{transform:none}
+html[lang="en"] .langs button[data-lang="en"],html[lang="tr"] .langs button[data-lang="tr"],
+html[lang="de"] .langs button[data-lang="de"]{color:var(--paper)}
+/* 44 px to press, whatever the chip's own height */
+.langs button::after{content:"";position:absolute;inset-inline:0;top:50%;height:2.75rem;transform:translateY(-50%)}
+
+/* the menu button: two rules that become a cross */
+header.bar .menu-toggle{position:relative;flex:none;width:2.75rem;height:2.75rem;min-height:0;margin:0;padding:0;
+  border:0;border-radius:0;background:none;color:var(--fg);cursor:pointer}
+header.bar .menu-toggle:hover{background:none;border:0}
+header.bar .menu-toggle:active{transform:none}
+.menu-toggle span{position:absolute;left:50%;top:50%;display:block;width:1.25rem;height:1px;background:var(--fg);
+  transition:transform .4s ease}
+.menu-toggle span:first-child{transform:translate(-50%,-5px)}
+.menu-toggle span:last-child{transform:translate(-50%,3px)}
+.menu-open .menu-toggle span:first-child{transform:translate(-50%,-50%) rotate(45deg)}
+.menu-open .menu-toggle span:last-child{transform:translate(-50%,-50%) rotate(-45deg)}
+
+/* ---------- the sheet behind the menu button ----------
+   Six sections at display size, then the address, the marks and the two legal
+   links, as on the site. Hidden with visibility, so a closed sheet holds no
+   stop for a keyboard and nothing for a screen reader. The bar stays above it
+   holding the cross. The lock is on the body alone, where it passes to the
+   viewport and leaves the sticky bar sticking; overflow on the root as well
+   would turn the body into a scroller of its own, and the bar would go with it. */
+.site-menu{position:fixed;inset:0;z-index:29;background:var(--paper);color:var(--fg);font-family:var(--sans);
+  line-height:1.55;visibility:hidden;opacity:0;transition:opacity .3s ease,visibility 0s linear .3s}
+.site-menu.open{visibility:visible;opacity:1;transition:opacity .3s ease}
+html.menu-open{scrollbar-gutter:stable}
+html.menu-open body{overflow:hidden}
+.site-menu .menu-in{display:flex;flex-direction:column;height:100%;overflow-y:auto;overscroll-behavior:contain;
+  padding:5rem 2rem .5rem}
+.site-menu .menu-main{margin-block:auto;display:flex;flex-direction:column;gap:.25rem}
+.site-menu .menu-main .langs{align-self:flex-start;margin-bottom:1.5rem}
+.site-menu .menu-main > a{display:block;border:0;border-top:1px solid var(--line);padding:1rem 0;
+  font-family:var(--serif);font-weight:400;font-size:1.9rem;line-height:1;letter-spacing:0;
+  text-decoration:none;color:var(--fg)}
+.site-menu .menu-main > a:hover{color:var(--accent)}
+.site-menu .menu-foot{padding-bottom:2.5rem}
+.site-menu .menu-foot ul{display:flex;flex-direction:column;gap:.375rem;margin:0;padding:1.25rem 0 0;
+  list-style:none;border-top:1px solid var(--line)}
+.site-menu .menu-mail{display:inline-flex;align-items:center;min-height:2.75rem;font-size:1rem;
+  text-decoration:none;border:0;color:var(--fg)}
+.site-menu .menu-marks{display:flex;align-items:center;gap:1rem;margin-top:.5rem}
+.site-menu .menu-legal{display:flex;gap:1.5rem;margin:1rem 0 0;font-family:var(--mono);font-size:.75rem;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--dim);max-width:none}
+.site-menu .menu-legal a{display:inline-flex;align-items:center;min-height:2.75rem;text-decoration:none;
+  border:0;color:inherit}
+/* clipped to a pixel until it has focus: the cross is what a sighted reader
+   reaches for, and it sits outside this dialog, where a screen reader on a
+   phone cannot go */
+.site-menu .menu-close{position:absolute;top:5.5rem;right:2rem;width:1px;height:1px;overflow:hidden;
+  clip-path:inset(50%);padding:0;margin:0;border:0;border-radius:999px;background:var(--fg);color:var(--paper);
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;cursor:pointer}
+.site-menu .menu-close:focus{width:auto;height:auto;overflow:visible;clip-path:none;padding:.5rem 1rem}
+.site-menu .mark-a,footer.site-foot .mark-a{display:inline-flex;align-items:center;justify-content:center;
+  width:2.75rem;height:2.75rem;color:var(--dim);text-decoration:none;border:0;background:none;
+  transition:color .2s ease,transform .3s cubic-bezier(.2,.7,.2,1)}
+.site-menu .mark-a:hover,footer.site-foot .mark-a:hover,.site-menu .mark-a:focus-visible,
+footer.site-foot .mark-a:focus-visible{color:var(--fg);transform:translateY(-1px)}
+
+/* ---------- footer, the site's own ----------
+   The numbers of the site's footer, measured the same day and kept level with
+   src/components/chrome.tsx. A page here may give every link a rule and every
+   list an indent (the instruments and the games both do), so the footer says
+   what it wants of each. */
+footer.site-foot{margin-top:2.5rem;border-top:1px solid var(--line);font-family:var(--sans);line-height:1.55;
+  letter-spacing:normal;color:var(--fg)}
+footer.site-foot p{margin:0;max-width:none}
+footer.site-foot ul{list-style:none}
+footer.site-foot li{margin:0;padding:0;font-size:inherit;line-height:inherit;color:inherit}
+footer.site-foot .foot-main{display:flex;flex-direction:column;gap:1.5rem;padding-top:3rem;padding-bottom:3rem}
+footer.site-foot .foot-id{color:var(--dim)}
+footer.site-foot .foot-line{font-size:.875rem;line-height:1.55}
+footer.site-foot .foot-note{margin-top:.5rem;max-width:38ch;font-size:.875rem;line-height:1.55}
+footer.site-foot .foot-links{display:grid;grid-template-columns:repeat(3,max-content);gap:.25rem 1.75rem;
+  margin:0;padding:0;font-size:.95rem}
+footer.site-foot .foot-links a{display:inline-flex;align-items:center;min-width:2.75rem;min-height:2.75rem;
+  text-decoration:none;border:0;background:none;color:var(--fg)}
+footer.site-foot .foot-marks{border-top:1px solid var(--line)}
+footer.site-foot .foot-marks ul{display:flex;align-items:center;justify-content:center;gap:0 1.5rem;
+  padding-top:1.5rem;padding-bottom:1.5rem}
+@media (min-width:640px){
+  .bar-end{gap:.75rem}
+  footer.site-foot .foot-main{flex-direction:row;align-items:baseline;justify-content:space-between}
+  footer.site-foot .foot-links{display:flex;flex-wrap:wrap;gap:.75rem 1.75rem}
+  footer.site-foot .foot-marks ul{gap:0 2.25rem}
+}
+@media (max-width:639.98px){
+  header.bar .bar-end .langs{display:none}
+}
+@media (min-width:640px){
+  .site-menu .menu-main .langs{display:none}
+}
+@media (min-width:1024px){
+  header.bar .sections{display:flex;gap:1.75rem;align-items:center}
+  header.bar .menu-toggle,.site-menu{display:none}
+  /* The site holds its search button here, which this edition does not have.
+     An empty slot of the same width keeps the sections at the x they have on
+     the site, in each language, so nothing jumps on a crossing. */
+  .bar-end::before{content:"";width:7.45rem}
+  html[lang="tr"] .bar-end::before{width:5.92rem}
+}
+/* With no script the menu button and the chips do nothing. The links are the
+   one part of the bar that still works, so they take the room. */
+html:not(.js) .menu-toggle,html:not(.js) .langs{display:none}
+@media (max-width:1023.98px){
+  html:not(.js) header.bar .wrap{flex-wrap:wrap;row-gap:.25rem}
+  html:not(.js) header.bar .sections{display:flex;flex-wrap:wrap;gap:.25rem 1.25rem;width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  .langs .lang-thumb,.langs button,.menu-toggle span,.site-menu,.mark-a,header.bar .sections a::after{transition:none!important}
+  .site-menu .mark-a:hover,footer.site-foot .mark-a:hover{transform:none}
+}
 
 /* ---------- a leaf, falling once ---------- */
 .leaf-mark{position:fixed;top:-30px;pointer-events:none;z-index:5;opacity:.45}
 @media (prefers-reduced-motion:reduce){.leaf-mark{display:none}}
-
-/* ---------- the bar between a phone and a laptop ----------
-   One row needs 1,027 px in German with a touch screen (measured 2026-11-04:
-   the name, six sections, the three languages and the gaps), so from 641 to
-   1,080 px the bar takes two rows the way a phone does: the name and the
-   languages on the first, the sections on the second, which scrolls in place
-   if a long word still does not fit. Below that the switcher sat 130 px past
-   the right edge at 768 and could not be reached. */
-@media (min-width:641px) and (max-width:1080px){
-  .bar .wrap{flex-wrap:wrap;height:auto;column-gap:1rem;row-gap:0;padding-top:.75rem;padding-bottom:.2rem}
-  .bar .home{line-height:33px}
-  .langs{margin-left:auto}
-  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0 -6px;padding:4px 6px;justify-content:flex-start;
-    gap:1.4rem;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
-  .bar nav:not(.langs)::-webkit-scrollbar{display:none}
-  .bar nav a{padding:.45rem 0;flex:0 0 auto}
-}
 
 /* ---------- inside a case study's frame ----------
    The page around the frame already has the title and the argument, so the
@@ -162,33 +287,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .framed-tool .k-main{padding-top:clamp(.9rem,3vw,1.4rem)}
 .framed-tool .k-lede + .k-sect{margin-top:0}
 
-/* ---------- the bar and the footer, narrowed ---------- */
-@media (max-width:640px){
-  /* the name and the languages share the first line, the sections scroll on
-     the second, the way the site's pages are read with a thumb */
-  .bar .wrap{flex-wrap:wrap;height:auto;gap:0 .7rem;padding-top:.7rem;padding-bottom:.2rem;position:relative}
-  .bar .home{font-size:1rem;line-height:33px}
-  .bar nav:not(.langs){order:3;flex:1 0 100%;margin:0;flex-wrap:nowrap;justify-content:flex-start;
-    gap:1.25rem;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    /* the last name fades rather than being cut, which says there is more */
-    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
-    mask-image:linear-gradient(90deg,#000 calc(100% - 2.2rem),transparent);
-    padding-right:2.2rem}
-  .bar nav::-webkit-scrollbar{display:none}
-  .bar nav a{font-size:.72rem;padding:.6rem 0;flex:0 0 auto}
-  .bar nav a[aria-current]{scroll-margin-inline:1.5rem}
-  .langs{position:absolute;top:.7rem;right:1.5rem}
-  .langs button{width:34px;height:31px}
-  .site-foot .foot-marks ul{gap:1.5rem}
-}
-
-/* a finger, not a cursor: every control a thumb has to find is a thumb wide */
+/* every control a thumb has to find is a thumb wide */
 @media (pointer:coarse){
-  .bar .home{display:inline-flex;align-items:center;min-height:44px}
-  .bar nav a{min-height:44px;display:inline-flex;align-items:center}
-  .langs button{min-width:44px;min-height:44px}
-  .site-foot .foot-links a,.site-foot .foot-marks a{min-width:44px;min-height:44px;justify-content:center}
+  header.bar .home{display:inline-flex;align-items:center;min-height:44px}
+  .langs{width:8.75rem}
+  header.bar .langs button,.site-menu .langs button{min-width:44px;min-height:44px}
 }
 
 /* ---------- page head ---------- */
@@ -290,7 +393,7 @@ section:has(> .note-item:last-of-type) + section{border-top:0}
 
 /* ---------- profile pieces ---------- */
 .story{max-width:62ch;font-family:var(--text);font-size:1.13rem;line-height:1.65}
-.story p+p{margin-top:1em}
+.story p+p,.story+.story{margin-top:1em}
 .tl{margin-top:.4rem;border-top:1px solid var(--line)}
 .tl .row{padding:1.5rem 0;border-bottom:1px solid var(--line)}
 .tl .row:last-child{border-bottom:0}
@@ -446,7 +549,7 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
 @media print{
   .rise{opacity:1!important;transform:none!important}
   @page{size:A4;margin:13mm 15mm}
-  .bar,footer,.leaf-mark,.cv-btn,.langs{display:none!important}
+  .bar,.site-menu,footer,.leaf-mark,.cv-btn,.langs{display:none!important}
   body{background:#fff;color:#000}
   body::after{display:none}
   body.has-cv main>section,body.has-cv .crown{display:none!important}
@@ -484,7 +587,7 @@ h3.sub{font-family:var(--serif);font-weight:400;font-size:1.05rem;color:var(--fg
     text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:5px}
   .note-item h2 a:hover{text-decoration-color:var(--accent)}
   /* fields and their kin: 16px so the phone does not zoom, 44 so it can be hit */
-  body input[type="text"],body input[type="email"],body input[type="number"],
+  body input[type="text"],body input[type="email"],body input[type="number"],body input[type="date"],
   body select,body textarea{font-size:16px;min-height:44px}
   body .frow textarea{min-height:8rem}
   /* a 4px tall slider is not a control: the whole strip takes the touch */
@@ -662,6 +765,11 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
 .yrs th:first-child,.yrs td:first-child{text-align:left}
 .yrs td{text-align:right;padding:.42rem .3rem;border-bottom:1px solid var(--line);color:var(--fg)}
 .yrs tr:last-child td{border-bottom:0;font-weight:500}
+.yrs:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:640px){
+  .yrs th{letter-spacing:0}
+  .yrs th,.yrs td{padding-inline:.2rem}
+}
 .solve{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.875rem;
   font-variant-numeric:tabular-nums}
 .solve:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -727,15 +835,25 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
 <body>
 <header class="bar">
   <div class="wrap">
-    <a class="home" href="../">Kerem Özdemir</a>
-    <nav aria-label="Site" data-ia="a-site"><a href="../products/" data-i="nav-pd">Products</a><a href="../projects/" data-i="nav-j">Projects</a><a href="../games/" data-i="nav-g">Games</a><a href="../discoveries/" data-i="nav-dc">Discoveries</a><a href="../about/" data-i="nav-p">About</a><a href="../contact/" data-i="nav-c">Contact</a></nav>
-    <nav class="langs" aria-label="Language" data-ia="a-lang"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></nav>
+    <a class="home" href="../" data-home="/">Kerem Özdemir</a>
+    <nav class="sections" aria-label="Site" data-ia="a-site"><a href="../products/" data-home="/products/" data-i="nav-pd">Products</a><a href="../projects/" data-home="/projects/" data-i="nav-j">Projects</a><a href="../games/" data-home="/games/" data-i="nav-g">Games</a><a href="../discoveries/" data-home="/discoveries/" data-i="nav-dc">Discoveries</a><a href="../about/" data-home="/about/" data-i="nav-p">About</a><a href="../contact/" data-home="/contact/" data-i="nav-c">Contact</a></nav>
+    <div class="bar-end"><div class="langs" role="group" aria-label="Language" data-ia="a-lang"><span class="lang-thumb" aria-hidden="true"></span><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></div><button type="button" class="menu-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu" data-ia="a-menu"><span></span><span></span></button></div>
   </div>
 </header>
+<div class="site-menu" id="site-menu" role="dialog" aria-modal="true" aria-label="Menu" data-ia="a-menu">
+  <button type="button" class="menu-close" data-i="a-menu-close">Close menu</button>
+  <nav class="menu-in" aria-label="Site" data-ia="a-site">
+    <div class="menu-main"><div class="langs" role="group" aria-label="Language" data-ia="a-lang"><span class="lang-thumb" aria-hidden="true"></span><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button><button type="button" data-lang="de" aria-pressed="false">DE</button></div><a href="../products/" data-home="/products/" data-i="nav-pd">Products</a><a href="../projects/" data-home="/projects/" data-i="nav-j">Projects</a><a href="../games/" data-home="/games/" data-i="nav-g">Games</a><a href="../discoveries/" data-home="/discoveries/" data-i="nav-dc">Discoveries</a><a href="../about/" data-home="/about/" data-i="nav-p">About</a><a href="../contact/" data-home="/contact/" data-i="nav-c">Contact</a></div>
+    <div class="menu-foot">
+      <ul><li><a class="menu-mail" href="mailto:kozdemir3523@gmail.com">kozdemir3523@gmail.com</a></li>
+      <li class="menu-marks"><a class="mark-a" href="https://github.com/Keremozdemirra" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-gh"/></svg></a><a class="mark-a" href="https://www.linkedin.com/in/keremozdemir23" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-li"/></svg></a><a class="mark-a" href="https://x.com/kerem_oozdemir" target="_blank" rel="noopener noreferrer" title="X" aria-label="X"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-x"/></svg></a><a class="mark-a" href="https://orcid.org/0009-0007-4674-0521" target="_blank" rel="noopener noreferrer" title="ORCID" aria-label="ORCID"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-or"/></svg></a><a class="mark-a" href="mailto:kozdemir3523@gmail.com" title="Email" aria-label="Email" data-ia="a-mail" data-it="a-mail"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href="#m-em"/></svg></a></li></ul>
+      <p class="menu-legal"><a href="../impressum/" data-home="/impressum/">Impressum</a><a href="../privacy/" data-home="/privacy/" data-i="nav-dsg">Privacy</a></p>
+    </div>
+  </nav>
+</div>
 <main class="wrap">
 
 <div class="crown">
-  <span class="no"></span>
   <h1 class="folio" data-i="j-h1">Instruments</h1>
   <p class="lede" data-i="j-lede">Five instruments that run in this page, and the repositories behind them.</p>
 </div>
@@ -888,34 +1006,34 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;background:var(--am
     <a class="repo" href="https://github.com/Keremozdemirra/simea" rel="noopener noreferrer" data-gh="simea"><h3>simea</h3><span class="t" data-i="rt5">Research</span><p data-i="rp5">A draft framework note and a positioning note, with the models that test them. Neither is peer reviewed.</p></a>
     <a class="repo" href="https://github.com/Keremozdemirra/agent-kit" rel="noopener noreferrer" data-gh="agent-kit"><h3>agent-kit +11</h3><span class="t" data-i="rt6">Skill packs</span><p data-i="rp6">Twelve repositories of working method packaged as Claude skills. finance, sustainability, research, writing, risk, and the conventions they share.</p></a>
   </div>
-  <p class="quiet-line" data-i="repo-read">Read from GitHub on 2026 08 25, when this page was built.</p>
+  <p class="quiet-line" data-i="repo-read">Read from GitHub on 2026-08-25, when this page was built.</p>
 </section>
 
 </main>
 <footer class="site-foot">
   <div class="wrap foot-main">
     <div class="foot-id">
-      <p class="foot-mono">© 2026 Kerem Özdemir · <span data-i="foot-city">Munich</span></p>
+      <p class="foot-line">© 2026 Kerem Özdemir · <span data-i="foot-city">Munich</span></p>
       <p class="foot-note" data-i="foot-note">No cookies, no analytics, no third party request.</p>
     </div>
     <ul class="foot-links">
-      <li><a href="../games/" data-i="nav-g">Games</a></li>
-      <li><a href="../cv/" data-i="foot-cv">CV</a></li>
-      <li><a href="../sources/" data-i="nav-src">Sources</a></li>
-      <li><a href="../impressum/">Impressum</a></li>
-      <li><a href="../privacy/" data-i="nav-dsg">Privacy</a></li>
+      <li><a href="../games/" data-home="/games/" data-i="nav-g">Games</a></li>
+      <li><a href="../cv/" data-home="/cv/" data-i="foot-cv">CV</a></li>
+      <li><a href="../sources/" data-home="/sources/" data-i="nav-src">Sources</a></li>
+      <li><a href="../impressum/" data-home="/impressum/">Impressum</a></li>
+      <li><a href="../privacy/" data-home="/privacy/" data-i="nav-dsg">Privacy</a></li>
     </ul>
   </div>
   <div class="foot-marks"><ul class="wrap">
-    <li><a href="https://github.com/Keremozdemirra" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></li>
-    <li><a href="https://www.linkedin.com/in/keremozdemir23" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
-    <li><a href="https://x.com/kerem_oozdemir" target="_blank" rel="noopener noreferrer" title="X" aria-label="X"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a></li>
-    <li><a href="https://orcid.org/0009-0007-4674-0521" target="_blank" rel="noopener noreferrer" title="ORCID" aria-label="ORCID"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg></a></li>
-    <li><a href="mailto:kozdemir3523@gmail.com" title="Email" aria-label="Email"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M2.5 4h19A1.5 1.5 0 0 1 23 5.5v.9l-11 6.9L1 6.4v-.9A1.5 1.5 0 0 1 2.5 4zM1 8.7l11 6.9 11-6.9v9.8a1.5 1.5 0 0 1-1.5 1.5h-19A1.5 1.5 0 0 1 1 18.5z"/></svg></a></li>
+    <li><a class="mark-a" href="https://github.com/Keremozdemirra" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-gh" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></li>
+    <li><a class="mark-a" href="https://www.linkedin.com/in/keremozdemir23" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-li" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
+    <li><a class="mark-a" href="https://x.com/kerem_oozdemir" target="_blank" rel="noopener noreferrer" title="X" aria-label="X"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-x" d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a></li>
+    <li><a class="mark-a" href="https://orcid.org/0009-0007-4674-0521" target="_blank" rel="noopener noreferrer" title="ORCID" aria-label="ORCID"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-or" d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg></a></li>
+    <li><a class="mark-a" href="mailto:kozdemir3523@gmail.com" title="Email" aria-label="Email" data-ia="a-mail" data-it="a-mail"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path id="m-em" d="M2.5 4h19A1.5 1.5 0 0 1 23 5.5v.9l-11 6.9L1 6.4v-.9A1.5 1.5 0 0 1 2.5 4zM1 8.7l11 6.9 11-6.9v9.8a1.5 1.5 0 0 1-1.5 1.5h-19A1.5 1.5 0 0 1 1 18.5z"/></svg></a></li>
   </ul></div>
 </footer>
 <script>
-window.I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak eline veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek teknik değil, etik bir edim.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarla ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izle.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: eline tutuşturulan sonuçlar değil, çalıştırdığın modeller.", "xn-k-again": "Baştan başla", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükle, bir vergi koy, ve kanunun onu kimin sırtlayacağına karar vermediğini gör.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştır, sonra kazananları çoğalt, ve gelecek uzunken neyin hayatta kaldığını gör.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştır ve iyi arabaların gidişini izle.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğin modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tut ve altındaki ağın biçimini değiştir. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştır", "sim-pause": "Duraklat", "sim-step": "Adım", "sim-reset": "Sıfırla", "sim-share": "Bu koşunun bağlantısını kopyala", "sim-advance": "{n} adım ilerlet", "sim-still": "Sistemin azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerlet onu {n} adım götürüp sonucu bir kez çiziyor. Adım onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler", "pg-desc": "Canlı çalışan beş analitik araç ve arkalarındaki açık depolar.", "col-r1": "Yapım aşamasında", "col-r2": "Küçük ekip", "col-r3": "Boğaziçi Enterprize, üçüncülük", "case-link": "Vaka incelemesini oku", "tst-72": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>dcf-lab, 72 test<\/a>", "tst-46": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>marginal-abatement, 46 test<\/a>", "tst-37": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>carbon-bridge, 37 test<\/a>", "tst-127": "<a href='https://github.com/Keremozdemirra/unitguard/actions/workflows/tests.yml' rel='noopener noreferrer'>dimensions ve quantity, 127 test<\/a>", "tst-49": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>market-sizer, 49 test<\/a>", "t1": "Araç bir", "t2": "Araç iki", "t3": "Araç üç", "t4": "Araç dört", "t5": "Araç beş", "q1": "Bu değerlemenin ne kadarı öngörülen beş yıl, ne kadarı onların ardına eklenen sonsuz devam?", "q1b": "Her sürgü bir iddiadır: büyüme hikâyedir, iskonto oranı şüphedir, nihai değer ise değerlemelerin saklandığı yerdir.", "q2": "Verili bir karbon fiyatında bu on önlemden hangileri yapmaya değer ve bu küme ne kadara mal olur?", "q3": "Emisyonlar iki yıl arasında değişti. Bunun ne kadarı üretim, ne kadarı ürün karması, ne kadarı enerji yoğunluğu ve ne kadarı emisyon faktörü?", "q4": "Bu dönüşümün bir cevabı var mı, yoksa tam olarak ne eksik?", "q5": "İki boyutlandırma birbirini tutmuyor. Hangi varsayım değişmeli ve ne olmalı?", "lb-w": "Sermaye maliyeti", "lb-g": "Terminal büyüme", "lb-cp": "Karbon fiyatı", "ro-n": "Açılan önlemler", "ro-t": "Kümülatif azaltım", "ro-c": "Net yıllık maliyet", "mc-hint": "Çubuk genişliği yıllık azaltımdır. Çubuk yüksekliği ton başına seviyelendirilmiş maliyettir. Aritmetiği için bir çubuk seçin.", "ug-qty": "Miktar", "ug-from": "Kaynak", "ug-to": "Hedef", "ug-go": "Dönüştür", "ms-td-h": "Yukarıdan aşağı", "ms-td-s": "Katsayılarla daraltılan bir evren.", "ms-bu-h": "Aşağıdan yukarı", "ms-bu-s": "Her biri sürücülerin çarpımı olan segmentler.", "ms-td-t": "Yukarıdan aşağı toplam", "ms-bu-t": "Aşağıdan yukarı toplam", "ms-gap": "Fark", "ms-cap": "İki boyutlandırmanın uyuşması için her varsayımın ne olması gerekirdi", "ms-c1": "Varsayım", "ms-c2": "Şimdi", "ms-c3": "Gerekli", "ms-c4": "Kat", "ug-dim-energy": "enerji", "ug-dim-mass": "kütle", "ug-dim-ghg": "sera gazı kütlesi", "ug-noans": "{a} birimini {b} birimine çevirmenin burada bir cevabı yok.", "ug-h-gwp": "Küresel ısınma potansiyeli verilmedi", "ug-w-gwp": "Bir ton CH4 ancak bir küresel ısınma potansiyeli üzerinden tCO2e olur ve bir GWP yalnızca belirtilmiş bir IPCC değerlendirme raporu ve zaman ufku içinde vardır. 100 yıl için AR4 metanı 25, AR5 28, AR6 ise biyojenik için 27,0 ve fosil metan için 29,8 sayar. Raporu ve ufku söyleyin, bu tek bir çarpmaya döner.", "ug-n-gwp": "unitguard birini seçmektense reddeder.", "ug-h-mix": "Gaz karışımı verilmedi", "ug-w-mix": "tCO2e bir hesap birimidir, bir madde değil. Bir gaz demetinin ne kadar ısınmaya yol açtığı kabul edilen değeri kaydeder, tek bir gazdan ne kadar bulunduğunu değil. Bu rakamı üreten karışım olmadan geri verilecek bir {g} kütlesi yoktur.", "ug-n-mix": "İşleyen yön CO2'den CO2e'ye olandır; orada potansiyel tanımı gereği 1'dir.", "ug-n-4412": "Tam olarak 44/12, molar kütlelerin oranı.", "ug-n-1244": "Tam olarak 12/44, molar kütlelerin oranı.", "ug-n-co2e": "CO2'nin potansiyeli, metriğin tanımı gereği 1'dir.", "ug-n-cco2e": "Karbondan CO2'ye 44/12 ile, sonra CO2'den CO2e'ye 1 potansiyeliyle.", "ug-h-none": "Tanımlı değil", "ug-w-none": "unitguard bu iki tür arasında tanımlı bir yol tutmuyor.", "ug-h-sp": "Gaz türü verilmedi", "ug-w-sp": "{a} çıplak bir kütledir. {b} tek bir gazı sayar. Türü adlandırmak ikisi arasındaki tüm farktır ve onu tahmin eden bir dönüştürücü sayıyı uyduruyor olurdu.", "ug-n-sp": "Girdi tarafında türü belirtin, dönüşüm geçer.", "ug-h-drop": "Tür bilgisi düşerdi", "ug-w-drop": "unitguard gaz türünü birimin bir parçası olarak taşır. {a} birimini çıplak {b} birimine çevirmek onu düşürür ve rakam bir emisyon rakamı olmaktan çıkar. Türü hedef birimde tutun.", "ug-h-dim": "Farklı boyutlar", "ug-w-dim": "{a} {da} ölçer, {b} ise {db} ölçer. Hiçbiri kendi başına diğerine dönüşmez. Bir enerji yoğunluğu ya da bir emisyon faktörü dönüştürürdü, ikisi de verilmedi.", "ug-n-scale": "Ölçek katsayıları tam rasyonel sayılardır, bu yüzden gidiş dönüş kayıpsızdır.", "ug-h-nan": "Sayı değil", "ug-l-nan": "“{q}” bir büyüklük değil.", "ug-w-nan": "Düz bir ondalık yazın. Büyüklükler tam rasyonel olarak okunur, yani 0,1 en yakın ikili kayan sayı değil, tam olarak onda birdir.", "ug-h-ok": "Dönüştürüldü", "ug-l-ok": "{a} {ua}, {b} {ub} eder.", "ug-n-tilde": "Baştaki tilde, ondalıkta bitmeyen bir rasyoneli işaretler. Saklanan değer tamdır, yazılan değil.", "ug-refused": "Reddedildi.", "word-to": "birimine", "ug-loaded": "{x} yüklendi.", "cb-err": "Toplam üretim her iki dönemde de sıfırın üzerinde olmalı.", "cb-s1": "Kaplamalı sac", "cb-s2": "Ekstrüzyon", "cb-s3": "Döküm", "cb-r1": "Üretim, adet", "cb-r2": "Adet başına MWh", "cb-r3": "MWh başına tCO2e", "cb-e1": "Üretim", "cb-e2": "Karma", "cb-e3": "Enerji yoğunluğu", "cb-e4": "Emisyon faktörü", "cb-em": "{y} emisyonları", "cb-scale": "Ölçek {lo} ile {hi} tCO2e arasında ve sıfırdan başlamıyor, böylece dört etki kendilerinin altı katı toplamların yanında okunabiliyor.", "cb-check": "Kontrol", "cb-check-a": "Kontrol, yana kaydırılır", "cb-ident": "faaliyet + karma + yoğunluk + faktör = toplam", "cb-sum": "dört etkinin toplamı", "cb-minus": "2026 eksi 2023", "cb-res": "artık", "cb-lmdi": "LMDI-I artık bırakmaz, dolayısıyla tek fark kayan nokta gürültüsüdür. Yukarıdaki herhangi bir alanı değiştirin, iki satır eşit kalır.", "mc-m1": "LED aydınlatma yenileme", "mc-m2": "Basınçlı hava kaçağı onarımı", "mc-m3": "Değişken hızlı sürücüler", "mc-m4": "Kazan ayarı", "mc-m5": "Isı geri kazanımı", "mc-m6": "Çatı üstü güneş paneli", "mc-m7": "Proses elektrifikasyonu", "mc-m8": "Motor yenileme", "mc-m9": "Yalıtım iyileştirmesi", "mc-m10": "Yeşil elektrik sözleşmesi", "mc-aria": "{n}, ton başına {c} euro, yılda {a} ton", "mc-pertonne": "EUR, ton başına", "mc-often": "on üzerinden", "mc-tpy": "yılda ton, {t} içinden", "mc-saving": "seviyelendirilmiş maliyette net tasarruf", "mc-cost": "seviyelendirilmiş maliyette net maliyet", "mc-yes": "Ton başına {p} EUR'da bu önlem yapmaya değer.", "mc-no": "Ton başına {p} EUR'da bu önlem yapmaya değmez. {c} seviyesinde geçer.", "mc-worth": "Ton başına {p} EUR'da yapmaya değer", "mc-none": "Ton başına {p} EUR'da hiçbiri geçmiyor", "mc-cheapest": "En ucuz üçü gösteriliyor. Eğri ton başına {c} EUR'dan başlıyor.", "mc-all": "Bu eğrideki her önlem ton başına {c} EUR'da geçiyor. Bunun üstünde sürgü bir şey değiştirmiyor.", "ms-d1": "250 çalışanın üzerindeki AB şirketleri", "ms-d2": "CSRD kapsamındaki pay", "ms-d3": "Dışarıdan yazılım alan pay", "ms-d4": "Yıllık lisans, EUR", "ms-d5": "Şirketler", "ms-d6": "Bağlanma oranı", "ms-g1": "Büyük halka açık", "ms-g2": "Büyük özel", "ms-g3": "Orta ölçek", "ms-w-share": "gereken pay %{p}, %100'ü aşıyor", "ms-w-neg": "gereken değer negatif", "ms-illus": "EUR, örnek", "ms-share-of": "yukarıdan aşağı toplamın %{p} kadarı", "ms-td-zero": "yukarıdan aşağı toplam sıfır", "ms-infeasible": "olanaksız", "ms-grp-td": "Yukarıdan aşağı, her katsayı aynı katı paylaşır {m}", "ms-undef": "tanımsız", "ms-w-zero": "yukarıdan aşağı toplam sıfır, dolayısıyla hiçbir katsayı onu ölçekleyemez", "ms-w-pin": "sıfıra sabitlenmiş bir katsayı, farkı kapatmak için ölçeklenemez", "ms-n-zero": "Bu segmentin değeri sıfır, dolayısıyla sürücülerinden hiçbirini ölçeklemek toplamı kımıldatamaz.", "ms-n-over": "Diğer segmentler tek başına {r} EUR ediyor, bu da {t} EUR'luk yukarıdan aşağı toplamın zaten üstünde. Bu segmentte hiçbir sürücü değeri farkı kapatmıyor.", "ms-grp-bu": "Aşağıdan yukarı, {s}", "dcf-h-ref": "Reddedildi. Bildirilecek bir sayı yok", "dcf-l-ref": "%{g} nihai büyüme, %{w} sermaye maliyetinin altında değil.", "dcf-w-ref": "İskonto oranına eşit ya da onun üzerinde büyüyen bir sonsuz devamın değeri sınırsızdır, dolayısıyla yazılacak bir firma değeri yoktur. Büyüme oranını sermaye maliyetinin hemen altına kırpmak reddetmekten kötüdür, çünkü yerine cevabı kırpma sıkıldıkça kaçan başka bir model koyar. Ya büyüme oranı ya da sermaye maliyeti yanlıştır.", "dcf-n-ref": "Öngörü yılları normal biçimde iskonto edilmeye devam eder. Cevabı olmayan yalnızca nihai değerdir.", "dcf-share": "kadarı firma değerinin nihai değeridir. Öngörülen beş yıl kalan %{r} kısmı oluşturur.", "dcf-k1": "Öngörünün bugünkü değeri", "dcf-k2": "Nihai değerin bugünkü değeri", "dcf-k3": "İşletme değeri", "dcf-c1": "Yıl", "dcf-c2": "Serbest nakit akışı", "dcf-c3": "İskonto katsayısı", "dcf-c4": "Bugünkü değer", "dcf-term": "Nihai", "dcf-tv": "Terminal değer", "dcf-unit": "Nakit akışları baştan sona aynı birimdedir ve birim, paya etki etmez.", "x-copylink": "bağlantıyı kopyala", "x-copied": "kopyalandı", "x-push": "{d} tarihinde gönderildi", "j-h1": "Ölçüm araçları", "j-lede": "Bu sayfada canlı çalışan beş ölçüm aracı ve arkalarındaki repolar.", "col-p": "İnsanların birlikte bir şey inşa etmesi için bir platformun kurucu ortağıyım. Küçük bir ekiple yapım aşamasında, ve burada gösterilecek bir şey henüz yok. Olduğunda bu sayfaya girecek.", "inst-h": "Beş araç, canlı", "inst-p": "Python repolarımdan JavaScript'e taşındı ve tamamen bu sayfanın içinde çalışıyor. Girdiler örnektir; aritmetik repolardakiyle birebir aynı, testler Python tarafında.", "repo-h": "Repolar", "repo-p": "Hepsi açık, hepsi kaynaklı. Yukarıdaki araçlar ilk üçünden geliyor; sonraki ikisi kendi başına duruyor, sonuncusu da çalışma yöntemini yeniden kullanılabilir skill'ler olarak paketliyor.", "rp1": "Karbon ayrıştırma, hedef patikaları, azaltım maliyeti, CBAM gömülü emisyonları.", "rp2": "İki yönden pazar boyutlandırma, nihai değeri parçalanmış DCF.", "rp3": "Enerji ve emisyon aritmetiği için birim ve boyut güvenliği. Tahmin etmeyi reddeder.", "rp4": "Açık iklim verisi üzerinde tek arayüz; her değer kaynak, sürüm ve tarih taşır.", "rt5": "Araştırma", "rp5": "Bir taslak çerçeve notu ve bir konumlandırma notu, onları sınayan modellerle. İkisi de hakem sürecinden geçmedi.", "rt6": "Skill paketleri", "rp6": "Çalışma yöntemini Claude skill'i olarak paketleyen on iki repo. finans, sürdürülebilirlik, araştırma, yazı, risk ve ortak konvansiyonları.", "repo-read": "GitHub'dan bu sayfa kurulurken, 2026 08 25 tarihinde okundu."}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt, kein technischer.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen", "pg-desc": "Fünf laufende analytische Instrumente und die öffentlichen Repositories dahinter.", "col-r1": "Im Aufbau", "col-r2": "Kleines Team", "col-r3": "Boğaziçi Enterprize, dritter Platz", "case-link": "Die Fallstudie lesen", "tst-72": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>dcf-lab, 72 Tests<\/a>", "tst-46": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>marginal-abatement, 46 Tests<\/a>", "tst-37": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>carbon-bridge, 37 Tests<\/a>", "tst-127": "<a href='https://github.com/Keremozdemirra/unitguard/actions/workflows/tests.yml' rel='noopener noreferrer'>dimensions und quantity, 127 Tests<\/a>", "tst-49": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>market-sizer, 49 Tests<\/a>", "t1": "Instrument eins", "t2": "Instrument zwei", "t3": "Instrument drei", "t4": "Instrument vier", "t5": "Instrument fünf", "q1": "Wie viel dieser Bewertung sind die fünf prognostizierten Jahre, und wie viel ist die Ewigkeit, die dahinter geschraubt wurde?", "q1b": "Jeder Regler ist ein Argument: das Wachstum ist die Geschichte, der Diskontsatz ist der Zweifel, und im Endwert verstecken sich die Bewertungen.", "q2": "Welche dieser zehn Maßnahmen lohnen sich bei einem gegebenen CO2-Preis, und was kostet das Bündel?", "q3": "Die Emissionen haben sich zwischen zwei Jahren verschoben. Wie viel davon war Menge, wie viel Produktmix, wie viel Energieintensität und wie viel Emissionsfaktor?", "q4": "Hat diese Umrechnung eine Antwort, und wenn nicht, was genau fehlt?", "q5": "Die beiden Marktgrößen widersprechen sich. Welche Annahme müsste sich ändern, und worauf?", "lb-w": "Kapitalkosten", "lb-g": "Ewiges Wachstum", "lb-cp": "CO2-Preis", "ro-n": "Freigeschaltete Maßnahmen", "ro-t": "Kumulierte Vermeidung", "ro-c": "Netto-Jahreskosten", "mc-hint": "Die Balkenbreite ist die jährliche Vermeidung. Die Balkenhöhe sind die nivellierten Kosten je Tonne. Wählen Sie einen Balken für seine Rechnung.", "ug-qty": "Menge", "ug-from": "Von", "ug-to": "Nach", "ug-go": "Umrechnen", "ms-td-h": "Top down", "ms-td-s": "Ein Universum, durch Faktoren verengt.", "ms-bu-h": "Bottom up", "ms-bu-s": "Segmente, jedes ein Produkt aus Treibern.", "ms-td-t": "Top-down-Summe", "ms-bu-t": "Bottom-up-Summe", "ms-gap": "Lücke", "ms-cap": "Was jede Annahme sein müsste, damit die beiden Marktgrößen übereinstimmen", "ms-c1": "Annahme", "ms-c2": "Jetzt", "ms-c3": "Erforderlich", "ms-c4": "Faktor", "ug-dim-energy": "Energie", "ug-dim-mass": "Masse", "ug-dim-ghg": "Treibhausgasmasse", "ug-noans": "{a} nach {b} hat hier keine Antwort.", "ug-h-gwp": "Kein Treibhauspotenzial angegeben", "ug-w-gwp": "Eine Tonne CH4 wird nur über ein Treibhauspotenzial zu tCO2e, und ein GWP existiert nur innerhalb eines genannten IPCC-Sachstandsberichts und Zeithorizonts. Über 100 Jahre setzt AR4 Methan auf 25, AR5 auf 28 und AR6 auf 27,0 für biogenes und 29,8 für fossiles Methan. Nennen Sie Bericht und Horizont, dann ist das eine einzige Multiplikation.", "ug-n-gwp": "unitguard verweigert, statt eines auszuwählen.", "ug-h-mix": "Keine Gaszusammensetzung angegeben", "ug-w-mix": "tCO2e ist eine Recheneinheit, kein Stoff. Sie hält fest, wie viel Erwärmung einem Bündel von Gasen zugerechnet wird, nicht wie viel von einem einzelnen Gas vorhanden ist. Ohne die Zusammensetzung hinter der Zahl gibt es keine Masse {g}, die zurückgegeben werden könnte.", "ug-n-mix": "Die Richtung, die funktioniert, ist CO2 nach CO2e, wo das Potenzial per Definition 1 ist.", "ug-n-4412": "Genau 44/12, das Verhältnis der Molmassen.", "ug-n-1244": "Genau 12/44, das Verhältnis der Molmassen.", "ug-n-co2e": "Das Potenzial von CO2 ist per Definition der Metrik 1.", "ug-n-cco2e": "Kohlenstoff nach CO2 mit 44/12, dann CO2 nach CO2e mit einem Potenzial von 1.", "ug-h-none": "Nicht definiert", "ug-w-none": "unitguard kennt keinen definierten Weg zwischen diesen beiden Spezies.", "ug-h-sp": "Keine Gasspezies angegeben", "ug-w-sp": "{a} ist eine blanke Masse. {b} zählt ein bestimmtes Gas. Die Spezies zu benennen ist der ganze Unterschied, und ein Rechner, der sie erriete, würde die Zahl erfinden.", "ug-n-sp": "Nennen Sie die Spezies auf der Eingabeseite, dann geht die Umrechnung durch.", "ug-h-drop": "Die Spezies ginge verloren", "ug-w-drop": "unitguard führt die Gasspezies als Teil der Einheit. {a} in ein blankes {b} umzurechnen wirft sie weg, und die Zahl ist keine Emissionszahl mehr. Behalten Sie die Spezies in der Zieleinheit.", "ug-h-dim": "Verschiedene Dimensionen", "ug-w-dim": "{a} misst {da} und {b} misst {db}. Nichts wandelt das eine von allein in das andere um. Eine Energiedichte oder ein Emissionsfaktor täten es, und keines davon wurde geliefert.", "ug-n-scale": "Die Skalenfaktoren sind exakte Brüche, deshalb geht der Hin- und Rückweg verlustfrei.", "ug-h-nan": "Keine Zahl", "ug-l-nan": "„{q}“ ist keine Größe.", "ug-w-nan": "Geben Sie eine einfache Dezimalzahl ein. Größen werden als exakte Brüche gelesen, 0,1 bedeutet also ein Zehntel und nicht die nächstgelegene binäre Gleitkommazahl.", "ug-h-ok": "Umgerechnet", "ug-l-ok": "{a} {ua} sind {b} {ub}.", "ug-n-tilde": "Die vorangestellte Tilde markiert einen Bruch, der dezimal nicht abbricht. Der gespeicherte Wert ist exakt, der gedruckte nicht.", "ug-refused": "Verweigert.", "word-to": "nach", "ug-loaded": "{x} geladen.", "cb-err": "Die Gesamtmenge muss in beiden Perioden über null liegen.", "cb-s1": "Beschichtetes Blech", "cb-s2": "Strangpressprofile", "cb-s3": "Gussteile", "cb-r1": "Menge, Stück", "cb-r2": "MWh je Stück", "cb-r3": "tCO2e je MWh", "cb-e1": "Menge", "cb-e2": "Mix", "cb-e3": "Energieintensität", "cb-e4": "Emissionsfaktor", "cb-em": "Emissionen {y}", "cb-scale": "Die Skala reicht von {lo} bis {hi} tCO2e und beginnt nicht bei null, damit die vier Effekte neben Summen lesbar bleiben, die sechsmal so groß sind.", "cb-check": "Die Probe", "cb-check-a": "Die Probe, seitlich scrollbar", "cb-ident": "Aktivität + Mix + Intensität + Faktor = Summe", "cb-sum": "Summe der vier Effekte", "cb-minus": "2026 minus 2023", "cb-res": "Rest", "cb-lmdi": "LMDI-I lässt keinen Rest, der einzige Unterschied ist also Gleitkommarauschen. Ändern Sie oben ein beliebiges Feld, die beiden Zeilen bleiben gleich.", "mc-m1": "LED-Umrüstung", "mc-m2": "Druckluftleckagen abdichten", "mc-m3": "Drehzahlgeregelte Antriebe", "mc-m4": "Kesseleinstellung", "mc-m5": "Wärmerückgewinnung", "mc-m6": "Aufdach-Photovoltaik", "mc-m7": "Prozesselektrifizierung", "mc-m8": "Motorentausch", "mc-m9": "Dämmung verbessern", "mc-m10": "Ökostromvertrag", "mc-aria": "{n}, {c} Euro je Tonne, {a} Tonnen im Jahr", "mc-pertonne": "EUR je Tonne", "mc-often": "von zehn", "mc-tpy": "Tonnen im Jahr, von {t}", "mc-saving": "eine Nettoersparnis zu nivellierten Kosten", "mc-cost": "Nettokosten zu nivellierten Kosten", "mc-yes": "Bei {p} EUR je Tonne lohnt sich diese Maßnahme.", "mc-no": "Bei {p} EUR je Tonne lohnt sich diese Maßnahme nicht. Sie greift ab {c}.", "mc-worth": "Lohnt sich bei {p} EUR je Tonne", "mc-none": "Bei {p} EUR je Tonne greift keine", "mc-cheapest": "Die drei günstigsten sind gezeigt. Die Kurve beginnt bei {c} EUR je Tonne.", "mc-all": "Jede Maßnahme dieser Kurve greift bei {c} EUR je Tonne. Darüber ändert der Regler nichts mehr.", "ms-d1": "EU-Unternehmen über 250 Beschäftigte", "ms-d2": "Anteil im CSRD-Anwendungsbereich", "ms-d3": "Anteil, der externe Software kauft", "ms-d4": "Jahreslizenz, EUR", "ms-d5": "Unternehmen", "ms-d6": "Abschlussquote", "ms-g1": "Große börsennotierte", "ms-g2": "Große private", "ms-g3": "Mittelstand", "ms-w-share": "erforderlicher Anteil von {p} % übersteigt 100 %", "ms-w-neg": "erforderlicher Wert ist negativ", "ms-illus": "EUR, illustrativ", "ms-share-of": "{p} % der Top-down-Summe", "ms-td-zero": "Top-down-Summe ist null", "ms-infeasible": "unmöglich", "ms-grp-td": "Top down, jeder Faktor teilt denselben Multiplikator {m}", "ms-undef": "undefiniert", "ms-w-zero": "die Top-down-Summe ist null, kein Faktor kann sie skalieren", "ms-w-pin": "ein auf null festgesetzter Faktor lässt sich nicht skalieren, um eine Lücke zu schließen", "ms-n-zero": "Dieses Segment ist null wert, das Skalieren seiner Treiber bewegt die Summe also nicht.", "ms-n-over": "Die übrigen Segmente kommen allein auf {r} EUR und liegen damit bereits über der Top-down-Summe von {t} EUR. Kein Treiberwert in diesem Segment schließt die Lücke.", "ms-grp-bu": "Bottom up, {s}", "dcf-h-ref": "Verweigert. Keine Zahl zu berichten", "dcf-l-ref": "Ewiges Wachstum von {g} % liegt nicht unter den Kapitalkosten von {w} %.", "dcf-w-ref": "Eine Ewigkeit, die mit ihrem Diskontsatz oder darüber wächst, hat unbegrenzten Wert, es gibt also keinen Unternehmenswert auszugeben. Die Wachstumsrate knapp unter die Kapitalkosten zu kappen ist schlimmer als eine Verweigerung, denn dabei tritt ein anderes Modell an die Stelle, dessen Antwort davonläuft, je enger gekappt wird. Entweder die Wachstumsrate oder die Kapitalkosten sind falsch.", "dcf-n-ref": "Die Prognosejahre werden weiterhin normal diskontiert. Nur der Endwert hat keine Antwort.", "dcf-share": "des Unternehmenswerts ist der Endwert. Die fünf Prognosejahre machen die übrigen {r} % aus.", "dcf-k1": "Barwert der Prognose", "dcf-k2": "Barwert des Endwert", "dcf-k3": "Unternehmenswert", "dcf-c1": "Jahr", "dcf-c2": "Freier Zahlungsstrom", "dcf-c3": "Diskontfaktor", "dcf-c4": "Barwert", "dcf-term": "Endwert", "dcf-tv": "Endwert", "dcf-unit": "Die Zahlungsströme stehen durchgehend in derselben Einheit, und die Einheit spielt für den Anteil keine Rolle.", "x-copylink": "Link kopieren", "x-copied": "kopiert", "x-push": "gepusht am {d}", "j-h1": "Instrumente", "j-lede": "Fünf Instrumente, die direkt auf dieser Seite laufen, und die Repositories dahinter.", "col-p": "Ich baue als Mitgründer eine Plattform für Menschen, die gemeinsam etwas bauen. Sie ist mit einem kleinen Team im Aufbau, und es gibt hier noch nichts vorzuführen. Wenn es so weit ist, steht es auf dieser Seite.", "inst-h": "Fünf Instrumente, live", "inst-p": "Aus meinen Python-Repositories in JavaScript übertragen; alles läuft direkt auf dieser Seite. Die Eingaben sind illustrativ; die Arithmetik ist dieselbe, die Tests trägt die Python-Seite.", "repo-h": "Repositories", "repo-p": "Alles öffentlich, alles mit Quelle. Die Instrumente oben stammen aus den ersten drei; die beiden danach stehen für sich, und das letzte verpackt Arbeitsmethode als wiederverwendbare Skills.", "rp1": "Emissionszerlegung, Zielpfade, Vermeidungskosten, eingebettete CBAM-Emissionen.", "rp2": "Marktgrößen aus zwei Richtungen, DCF mit zerlegtem Endwert.", "rp3": "Einheiten- und Dimensionssicherheit für Energie- und Emissionsrechnung. Rät nicht.", "rp4": "Eine Schnittstelle über öffentliche Klimadaten; jeder Wert trägt Quelle, Version, Datum.", "rt5": "Forschung", "rp5": "Eine Entwurfsnotiz zum Rahmen und eine Positionierungsnotiz, mit den Modellen, die sie prüfen. Keine von beiden ist begutachtet.", "rt6": "Skill-Pakete", "rp6": "Zwölf Repositories, die Arbeitsmethode als Claude-Skills verpacken. Finanzen, Nachhaltigkeit, Recherche, Schreiben, Risiko und ihre gemeinsamen Konventionen.", "repo-read": "Von GitHub gelesen am 2026 08 25, als diese Seite gebaut wurde."}};
+window.I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik yok, üçüncü taraf isteği yok.", "foot-cv": "CV", "foot-col": "Kolofon", "foot-chg": "Değişiklikler", "kit-share-ok": "Bağlantı kopyalandı. Bu girdilerle yeniden açılıyor.", "kit-copy-blocked": "Tarayıcı kopyalamayı engelledi. Bağlantı şimdi adres çubuğunda.", "kit-csv-ok": "Tablo kopyalandı. Bir hesap tablosuna yapıştırın.", "kit-csv-blocked": "Tarayıcı kopyalamayı engelledi. Bunun yerine indirmeyi kullanın.", "nx-sims": "Diğer simülasyonlar", "nx-essays": "Diğer denemeler", "nx-else": "Bu sitenin başka yerlerinde", "kit-checked": "kontrol tarihi", "kit-scroll": "Tablo, yana kaydırılır", "nav-p": "Hakkımda", "nav-src": "Kaynaklar", "nav-imp": "Künye", "nav-dsg": "Gizlilik", "nav-j": "Projeler", "nav-pd": "Ürünler", "nav-n": "Notlar", "nav-c": "İletişim", "nav-t": "Araçlar", "nav-g": "Oyunlar", "nav-e": "İktisat", "nav-s": "Simülasyonlar", "nav-w": "Portfolyo", "a-site": "Site", "a-lang": "Dil", "a-menu": "Menü", "a-menu-close": "Menüyü kapat", "a-mail": "E-posta", "kit-na": "hesaplanamıyor", "xn-k-play": "Oynanabilir hâli", "xn-t-long": "Uzun Oyun", "xn-d-long": "Aynı ikilem, aynı stratejiler ve aynı evrimsel koşu, bir model hakkında bir sayfa yerine bir köy ve bir çit hakkında bir oyun olarak elinize veriliyor.", "xn-k-next-e": "Sonraki deneme", "xn-t-disc": "Gelecek neden ucuz", "xn-d-disc": "Gelecek yüzyıldaki bir felakete karşı harekete geçmeye değip değmeyeceğine tek bir sürgü karar veriyor. Onu seçmek etik bir edimdir.", "xn-k-prev-e": "Önceki deneme", "xn-t-lemons": "Limon piyasası", "xn-d-lemons": "Kalitenin yayılımını ayarlayın ve bir ikinci el araba piyasasının tur tur kendini dağıtışını izleyin.", "xn-k-back": "Geri", "xn-t-all4": "Dört denemenin hepsi", "xn-d-all4": "Explorable Economics: size verilen sonuçlar yerine çalıştırdığınız modeller.", "xn-k-again": "Baştan başlayın", "xn-t-tax": "Vergiyi gerçekte kim öder", "xn-d-tax": "Eğrileri sürükleyin, bir vergi koyun ve kanunun onu kimin sırtlayacağına karar vermediğini görün.", "xn-t-coop": "İşbirliğinin evrimi", "xn-d-coop": "Stratejiler arasında bir turnuva çalıştırın, sonra kazananları çoğaltın ve gelecek uzunken neyin hayatta kaldığını görün.", "xn-d-lemons2": "Bir tarafın bildiğini öbürünün bilmediği bir piyasaya ne olur. Çalıştırın ve iyi arabaların gidişini izleyin.", "xn-k-next-s": "Sonraki simülasyon", "xn-t-jam": "Tıkanıklık", "xn-d-jam": "Önünde hiçbir engel olmayan bir çevre yolu, ve yoktan oluşup trafiğin içinde geriye doğru yürüyen bir tıkanıklık.", "xn-t-all5": "Beş simülasyonun hepsi", "xn-d-all5": "Sistemler ve failler üzerine bir araştırma projesinin neden çalıştırabileceğiniz modellere ihtiyacı var.", "xn-k-note": "Not", "xn-t-note": "Fail hiçbir zaman yalnız değildi", "xn-d-note": "SIMEA nedir, neden başladığı yerden başlıyor, ve arkasındaki iki makale.", "xn-k-near": "Yan tarafta", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Her birinin ortasında bir model olan dört deneme: vergi yansıması, ters seçim, işbirliği ve iskonto.", "xn-t-pile": "Yığın", "xn-d-pile": "Kendini eşiğe göre düzenleyen bir yığına teker teker bırakılan taneler, ve bir sonraki tane ya hiçbir şey yapmıyor ya da yığının dörtte birini indiriyor.", "xn-k-flag": "Amiral gemisi", "xn-t-rec": "Öneri sistemi", "xn-d-rec": "Bir nüfus, her birinin ne göreceğine karar veren bir akış, ve karşı olgusal bir koşuya karşı canlı ölçülen üç SIMEA yapısı.", "xn-t-dif": "Yayılma", "xn-d-dif": "Bulaşmayı sabit tutun ve altındaki ağın biçimini değiştirin. Aynı şey birbirinden tamamen farklı üç biçimde yayılıyor.", "sim-run": "Çalıştırın", "sim-pause": "Duraklatın", "sim-step": "Adım", "sim-reset": "Sıfırlayın", "sim-share": "Bu koşunun bağlantısını kopyalayın", "sim-advance": "{n} adım ilerletin", "sim-still": "Sisteminiz azaltılmış hareket istiyor, o yüzden bu model hiç canlandırılmıyor. İlerletin düğmesi onu {n} adım götürüp sonucu bir kez çiziyor. Adım düğmesi onu bir adım götürüyor.", "sim-keys": "Klavye: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> bir adım atar, <kbd>R<\/kbd> sıfırlar. Aşağıdaki her denetim standart bir sürgü, radyo grubu ya da düğme.", "sim-keys-adv": "ilerletir", "sim-keys-run": "çalıştırır ve duraklatır", "sim-undef": "tanımsız", "sim-pct": "%{v}", "nav-dc": "Keşifler", "pg-desc": "Canlı çalışan beş analitik araç ve arkalarındaki açık depolar.", "col-r1": "Yapım aşamasında", "col-r2": "Küçük ekip", "col-r3": "Boğaziçi Enterprize, üçüncülük", "case-link": "Vaka incelemesini oku", "tst-72": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>dcf-lab, 72 test<\/a>", "tst-46": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>marginal-abatement, 46 test<\/a>", "tst-37": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>carbon-bridge, 37 test<\/a>", "tst-127": "<a href='https://github.com/Keremozdemirra/unitguard/actions/workflows/tests.yml' rel='noopener noreferrer'>dimensions ve quantity, 127 test<\/a>", "tst-49": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>market-sizer, 49 test<\/a>", "t1": "Araç bir", "t2": "Araç iki", "t3": "Araç üç", "t4": "Araç dört", "t5": "Araç beş", "q1": "Bu değerlemenin ne kadarı öngörülen beş yıl, ne kadarı onların ardına eklenen sonsuz devam?", "q1b": "Her sürgü bir iddiadır: büyüme hikâyedir, iskonto oranı şüphedir, nihai değer ise değerlemelerin saklandığı yerdir.", "q2": "Verili bir karbon fiyatında bu on önlemden hangileri yapmaya değer ve bu küme ne kadara mal olur?", "q3": "Emisyonlar iki yıl arasında değişti. Bunun ne kadarı üretim, ne kadarı ürün karması, ne kadarı enerji yoğunluğu ve ne kadarı emisyon faktörü?", "q4": "Bu dönüşümün bir cevabı var mı, yoksa tam olarak ne eksik?", "q5": "İki boyutlandırma birbirini tutmuyor. Hangi varsayım değişmeli ve ne olmalı?", "lb-w": "Sermaye maliyeti", "lb-g": "Terminal büyüme", "lb-cp": "Karbon fiyatı", "ro-n": "Açılan önlemler", "ro-t": "Kümülatif azaltım", "ro-c": "Net yıllık maliyet", "mc-hint": "Çubuk genişliği yıllık azaltımdır. Çubuk yüksekliği ton başına seviyelendirilmiş maliyettir. Aritmetiği için bir çubuk seçin.", "ug-qty": "Miktar", "ug-from": "Kaynak", "ug-to": "Hedef", "ug-go": "Dönüştürün", "ms-td-h": "Yukarıdan aşağı", "ms-td-s": "Katsayılarla daraltılan bir evren.", "ms-bu-h": "Aşağıdan yukarı", "ms-bu-s": "Her biri sürücülerin çarpımı olan segmentler.", "ms-td-t": "Yukarıdan aşağı toplam", "ms-bu-t": "Aşağıdan yukarı toplam", "ms-gap": "Fark", "ms-cap": "İki boyutlandırmanın uyuşması için her varsayımın ne olması gerekirdi", "ms-c1": "Varsayım", "ms-c2": "Şimdi", "ms-c3": "Gerekli", "ms-c4": "Kat", "ug-dim-energy": "enerji", "ug-dim-mass": "kütle", "ug-dim-ghg": "sera gazı kütlesi", "ug-noans": "{a} birimini {b} birimine çevirmenin burada bir cevabı yok.", "ug-h-gwp": "Küresel ısınma potansiyeli verilmedi", "ug-w-gwp": "Bir ton CH4 ancak bir küresel ısınma potansiyeli üzerinden tCO2e olur ve bir GWP yalnızca belirtilmiş bir IPCC değerlendirme raporu ve zaman ufku içinde vardır. 100 yıl için AR4 metanı 25, AR5 28, AR6 ise biyojenik için 27,0 ve fosil metan için 29,8 sayar. Raporu ve ufku söyleyin, bu tek bir çarpmaya döner.", "ug-n-gwp": "unitguard birini seçmektense reddeder.", "ug-h-mix": "Gaz karışımı verilmedi", "ug-w-mix": "tCO2e bir hesap birimidir: bir gaz demetinin ne kadar ısınmaya yol açtığı kabul edilen değeri kaydeder. Bu rakamı üreten karışım olmadan geri verilecek bir {g} kütlesi yoktur.", "ug-n-mix": "İşleyen yön CO2'den CO2e'ye olandır; orada potansiyel tanımı gereği 1'dir.", "ug-n-4412": "Tam olarak 44/12, molar kütlelerin oranı.", "ug-n-1244": "Tam olarak 12/44, molar kütlelerin oranı.", "ug-n-co2e": "CO2'nin potansiyeli, metriğin tanımı gereği 1'dir.", "ug-n-cco2e": "Karbondan CO2'ye 44/12 ile, sonra CO2'den CO2e'ye 1 potansiyeliyle.", "ug-h-none": "Tanımlı değil", "ug-w-none": "unitguard bu iki tür arasında tanımlı bir yol tutmuyor.", "ug-h-sp": "Gaz türü verilmedi", "ug-w-sp": "{a} çıplak bir kütledir. {b} tek bir gazı sayar. Türü adlandırmak ikisi arasındaki tüm farktır ve onu tahmin eden bir dönüştürücü sayıyı uyduruyor olurdu.", "ug-n-sp": "Girdi tarafında türü belirtin, dönüşüm geçer.", "ug-h-drop": "Tür bilgisi düşerdi", "ug-w-drop": "unitguard gaz türünü birimin bir parçası olarak taşır. {a} birimini çıplak {b} birimine çevirmek onu düşürür ve rakam bir emisyon rakamı olmaktan çıkar. Türü hedef birimde tutun.", "ug-h-dim": "Farklı boyutlar", "ug-w-dim": "{a} {da} ölçer, {b} ise {db} ölçer. Hiçbiri kendi başına diğerine dönüşmez. Bir enerji yoğunluğu ya da bir emisyon faktörü dönüştürürdü, ikisi de verilmedi.", "ug-n-scale": "Ölçek katsayıları tam rasyonel sayılardır, bu yüzden gidiş dönüş kayıpsızdır.", "ug-h-nan": "Sayı değil", "ug-l-nan": "“{q}” bir büyüklük değil.", "ug-w-nan": "Düz bir ondalık yazın. Büyüklükler tam rasyonel olarak okunur, yani 0,1 en yakın ikili kayan sayı yerine tam olarak onda birdir.", "ug-h-ok": "Dönüştürüldü", "ug-l-ok": "{a} {ua}, {b} {ub} eder.", "ug-n-tilde": "Baştaki tilde, ondalıkta bitmeyen bir rasyoneli işaretler. Saklanan değer tamdır, yazılan değil.", "ug-refused": "Reddedildi.", "word-to": "birimine", "ug-loaded": "{x} yüklendi.", "cb-err": "Toplam üretim her iki dönemde de sıfırın üzerinde olmalı.", "cb-s1": "Kaplamalı sac", "cb-s2": "Ekstrüzyon", "cb-s3": "Döküm", "cb-r1": "Üretim, adet", "cb-r2": "Adet başına MWh", "cb-r3": "MWh başına tCO2e", "cb-e1": "Üretim", "cb-e2": "Karma", "cb-e3": "Enerji yoğunluğu", "cb-e4": "Emisyon faktörü", "cb-em": "{y} emisyonları", "cb-scale": "Ölçek {lo} ile {hi} tCO2e arasında ve sıfırdan başlamıyor, böylece dört etki kendilerinin altı katı toplamların yanında okunabiliyor.", "cb-check": "Kontrol", "cb-check-a": "Kontrol, yana kaydırılır", "cb-ident": "faaliyet + karma + yoğunluk + faktör = toplam", "cb-sum": "dört etkinin toplamı", "cb-minus": "2026 eksi 2023", "cb-res": "artık", "cb-lmdi": "LMDI-I artık bırakmaz, dolayısıyla tek fark kayan nokta gürültüsüdür. Yukarıdaki herhangi bir alanı değiştirin, iki satır eşit kalır.", "mc-m1": "LED aydınlatma yenileme", "mc-m2": "Basınçlı hava kaçağı onarımı", "mc-m3": "Değişken hızlı sürücüler", "mc-m4": "Kazan ayarı", "mc-m5": "Isı geri kazanımı", "mc-m6": "Çatı üstü güneş paneli", "mc-m7": "Proses elektrifikasyonu", "mc-m8": "Motor yenileme", "mc-m9": "Yalıtım iyileştirmesi", "mc-m10": "Yeşil elektrik sözleşmesi", "mc-aria": "{n}, ton başına {c} euro, yılda {a} ton", "mc-pertonne": "EUR, ton başına", "mc-often": "on üzerinden", "mc-tpy": "yılda ton, {t} içinden", "mc-saving": "seviyelendirilmiş maliyette net tasarruf", "mc-cost": "seviyelendirilmiş maliyette net maliyet", "mc-yes": "Ton başına {p} EUR'da bu önlem yapmaya değer.", "mc-no": "Ton başına {p} EUR'da bu önlem yapmaya değmez. {c} seviyesinde geçer.", "mc-worth": "Ton başına {p} EUR'da yapmaya değer", "mc-none": "Ton başına {p} EUR'da hiçbiri geçmiyor", "mc-cheapest": "En ucuz üçü gösteriliyor. Eğri ton başına {c} EUR'dan başlıyor.", "mc-all": "Bu eğrideki her önlem ton başına {c} EUR'da geçiyor. Bunun üstünde sürgü bir şey değiştirmiyor.", "ms-d1": "250 çalışanın üzerindeki AB şirketleri", "ms-d2": "CSRD kapsamındaki pay", "ms-d3": "Dışarıdan yazılım alan pay", "ms-d4": "Yıllık lisans, EUR", "ms-d5": "Şirketler", "ms-d6": "Bağlanma oranı", "ms-g1": "Büyük halka açık", "ms-g2": "Büyük özel", "ms-g3": "Orta ölçek", "ms-w-share": "gereken pay %{p}, %100'ü aşıyor", "ms-w-neg": "gereken değer negatif", "ms-illus": "EUR, örnek", "ms-share-of": "yukarıdan aşağı toplamın %{p} kadarı", "ms-td-zero": "yukarıdan aşağı toplam sıfır", "ms-infeasible": "olanaksız", "ms-grp-td": "Yukarıdan aşağı, her katsayı aynı katı paylaşır {m}", "ms-undef": "tanımsız", "ms-w-zero": "yukarıdan aşağı toplam sıfır, dolayısıyla hiçbir katsayı onu ölçekleyemez", "ms-w-pin": "sıfıra sabitlenmiş bir katsayı, farkı kapatmak için ölçeklenemez", "ms-n-zero": "Bu segmentin değeri sıfır, dolayısıyla sürücülerinden hiçbirini ölçeklemek toplamı kımıldatamaz.", "ms-n-over": "Diğer segmentler tek başına {r} EUR ediyor, bu da {t} EUR'luk yukarıdan aşağı toplamın zaten üstünde. Bu segmentte hiçbir sürücü değeri farkı kapatmıyor.", "ms-grp-bu": "Aşağıdan yukarı, {s}", "dcf-h-ref": "Reddedildi. Bildirilecek bir sayı yok", "dcf-l-ref": "%{g} nihai büyüme, %{w} sermaye maliyetinin altında değil.", "dcf-w-ref": "İskonto oranına eşit ya da onun üzerinde büyüyen bir sonsuz devamın değeri sınırsızdır, dolayısıyla yazılacak bir firma değeri yoktur. Büyüme oranını sermaye maliyetinin hemen altına kırpmak reddetmekten kötüdür, çünkü yerine cevabı kırpma sıkıldıkça kaçan başka bir model koyar. Ya büyüme oranı ya da sermaye maliyeti yanlıştır.", "dcf-n-ref": "Öngörü yılları normal biçimde iskonto edilmeye devam eder. Cevabı olmayan yalnızca nihai değerdir.", "dcf-share": "kadarı firma değerinin nihai değeridir. Öngörülen beş yıl kalan %{r} kısmı oluşturur.", "dcf-k1": "Öngörünün bugünkü değeri", "dcf-k2": "Nihai değerin bugünkü değeri", "dcf-k3": "İşletme değeri", "dcf-c1": "Yıl", "dcf-c2": "Serbest nakit akışı", "dcf-c3": "İskonto katsayısı", "dcf-c4": "Bugünkü değer", "dcf-term": "Nihai", "dcf-tv": "Terminal değer", "dcf-unit": "Nakit akışları baştan sona aynı birimdedir ve birim, paya etki etmez.", "x-copylink": "bağlantıyı kopyalayın", "x-copied": "kopyalandı", "x-push": "{d} tarihinde gönderildi", "j-h1": "Ölçüm araçları", "j-lede": "Bu sayfada canlı çalışan beş ölçüm aracı ve arkalarındaki repolar.", "col-p": "İnsanların birlikte bir şey inşa etmesi için bir platformun kurucu ortağıyım. Küçük bir ekiple yapım aşamasında, ve burada gösterilecek bir şey henüz yok. Olduğunda bu sayfaya girecek.", "inst-h": "Beş araç, canlı", "inst-p": "Python repolarımdan JavaScript'e taşındı ve tamamen bu sayfanın içinde çalışıyor. Girdiler örnektir; aritmetik repolardakiyle birebir aynı, testler Python tarafında.", "repo-h": "Repolar", "repo-p": "Hepsi açık, hepsi kaynaklı. Yukarıdaki araçlar ilk üçünden geliyor; sonraki ikisi kendi başına duruyor, sonuncusu da çalışma yöntemini yeniden kullanılabilir skill'ler olarak paketliyor.", "rp1": "Karbon ayrıştırma, hedef patikaları, azaltım maliyeti, CBAM gömülü emisyonları.", "rp2": "İki yönden pazar boyutlandırma, nihai değeri parçalanmış DCF.", "rp3": "Enerji ve emisyon aritmetiği için birim ve boyut güvenliği. Tahmin etmeyi reddeder.", "rp4": "Açık iklim verisi üzerinde tek arayüz; her değer kaynak, sürüm ve tarih taşır.", "rt5": "Araştırma", "rp5": "Bir taslak çerçeve notu ve bir konumlandırma notu, onları sınayan modellerle. İkisi de hakem sürecinden geçmedi.", "rt6": "Skill paketleri", "rp6": "Çalışma yöntemini Claude skill'i olarak paketleyen on iki repo. finans, sürdürülebilirlik, araştırma, yazı, risk ve ortak konvansiyonları.", "repo-read": "GitHub'dan bu sayfa kurulurken, 2026-08-25 tarihinde okundu."}, "de": {"foot-city": "München", "foot-note": "Keine Cookies, keine Analytik, keine Anfrage an Dritte.", "foot-cv": "Lebenslauf", "foot-col": "Kolophon", "foot-chg": "Änderungen", "kit-share-ok": "Link kopiert. Er öffnet wieder mit diesen Eingaben.", "kit-copy-blocked": "Der Browser hat das Kopieren blockiert. Der Link steht jetzt in der Adresszeile.", "kit-csv-ok": "Tabelle kopiert. Fügen Sie sie in eine Tabellenkalkulation ein.", "kit-csv-blocked": "Der Browser hat das Kopieren blockiert. Nutzen Sie stattdessen den Download.", "nx-sims": "Weitere Simulationen", "nx-essays": "Weitere Essays", "nx-else": "Anderswo auf dieser Website", "kit-checked": "geprüft", "kit-scroll": "Tabelle, seitlich scrollbar", "nav-p": "Über mich", "nav-src": "Quellen", "nav-imp": "Impressum", "nav-dsg": "Datenschutz", "nav-j": "Projekte", "nav-pd": "Produkte", "nav-n": "Notizen", "nav-c": "Kontakt", "nav-t": "Werkzeuge", "nav-g": "Spiele", "nav-e": "Ökonomik", "nav-s": "Simulationen", "nav-w": "Portfolio", "a-site": "Website", "a-lang": "Sprache", "a-menu": "Menü", "a-menu-close": "Menü schließen", "a-mail": "E-Mail", "kit-na": "nicht berechenbar", "xn-k-play": "Die spielbare Fassung", "xn-t-long": "Das lange Spiel", "xn-d-long": "Dasselbe Dilemma, dieselben Strategien und derselbe evolutionäre Lauf, Ihnen als Spiel über ein Dorf und einen Zaun in die Hand gegeben statt als Seite über ein Modell.", "xn-k-next-e": "Nächstes Essay", "xn-t-disc": "Warum die Zukunft billig ist", "xn-d-disc": "Ein einziger Regler entscheidet, ob eine Katastrophe im nächsten Jahrhundert Handeln wert ist. Ihn zu wählen ist ein ethischer Akt.", "xn-k-prev-e": "Vorheriges Essay", "xn-t-lemons": "Der Markt für Zitronen", "xn-d-lemons": "Stellen Sie die Streuung der Qualität ein und sehen Sie zu, wie sich ein Gebrauchtwagenmarkt Runde für Runde selbst zerlegt.", "xn-k-back": "Zurück", "xn-t-all4": "Alle vier Essays", "xn-d-all4": "Explorable Economics: Modelle, die Sie laufen lassen, statt Schlussfolgerungen, die man Ihnen reicht.", "xn-k-again": "Von vorn", "xn-t-tax": "Wer eine Steuer wirklich zahlt", "xn-d-tax": "Ziehen Sie die Kurven, setzen Sie eine Steuer, und stellen Sie fest, dass das Gesetz nicht entscheidet, wer sie trägt.", "xn-t-coop": "Die Evolution der Kooperation", "xn-d-coop": "Lassen Sie ein Turnier zwischen Strategien laufen, lassen Sie dann die Sieger sich vermehren, und sehen Sie, was überlebt, wenn die Zukunft lang ist.", "xn-d-lemons2": "Was mit einem Markt geschieht, wenn eine Seite etwas weiß, was die andere nicht weiß. Lassen Sie ihn laufen und sehen Sie die guten Autos gehen.", "xn-k-next-s": "Nächste Simulation", "xn-t-jam": "Der Stau", "xn-d-jam": "Eine Ringstraße, auf der nichts im Weg steht, und ein Stau, der aus dem Nichts entsteht und rückwärts durch den Verkehr wandert.", "xn-t-all5": "Alle fünf Simulationen", "xn-d-all5": "Warum ein Forschungsprojekt über Systeme und Akteure Modelle braucht, die man laufen lassen kann.", "xn-k-note": "Die Notiz", "xn-t-note": "Der Akteur war nie allein", "xn-d-note": "Was SIMEA ist, warum es dort ansetzt, wo es ansetzt, und die zwei Arbeiten dahinter.", "xn-k-near": "Nebenan", "xn-t-ee": "Explorable Economics", "xn-d-ee": "Vier Essays mit je einem Modell in der Mitte, über Inzidenz, adverse Selektion, Kooperation und Diskontierung.", "xn-t-pile": "Der Haufen", "xn-d-pile": "Körner, eines nach dem anderen auf einen Haufen geworfen, der sich selbst an die Kante organisiert, wo das nächste Korn nichts bewirken oder ein Viertel davon zum Einsturz bringen kann.", "xn-k-flag": "Das Flaggschiff", "xn-t-rec": "Das Empfehlungssystem", "xn-d-rec": "Eine Population, ein Feed, der entscheidet, was jeder von ihnen sieht, und die drei SIMEA-Konstrukte, live gegen einen kontrafaktischen Lauf gemessen.", "xn-t-dif": "Diffusion", "xn-d-dif": "Halten Sie die Ansteckung fest und ändern Sie die Form des Netzwerks darunter. Dasselbe verbreitet sich auf drei völlig verschiedene Weisen.", "sim-run": "Starten", "sim-pause": "Pause", "sim-step": "Schritt", "sim-reset": "Zurücksetzen", "sim-share": "Link zu diesem Lauf kopieren", "sim-advance": "{n} Schritte vor", "sim-still": "Ihr System verlangt reduzierte Bewegung, deshalb wird dieses Modell nie animiert. Vor bewegt es {n} Schritte und zeichnet das Ergebnis einmal. Schritt bewegt es um einen.", "sim-keys": "Tastatur: <kbd>Space<\/kbd> {space}, <kbd>S<\/kbd> geht einen Schritt, <kbd>R<\/kbd> setzt zurück. Jedes Bedienelement unten ist ein gewöhnlicher Regler, eine Radiogruppe oder eine Schaltfläche.", "sim-keys-adv": "bewegt vor", "sim-keys-run": "startet und pausiert", "sim-undef": "nicht definiert", "sim-pct": "{v} %", "nav-dc": "Entdeckungen", "pg-desc": "Fünf laufende analytische Instrumente und die öffentlichen Repositories dahinter.", "col-r1": "Im Aufbau", "col-r2": "Kleines Team", "col-r3": "Boğaziçi Enterprize, dritter Platz", "case-link": "Die Fallstudie lesen", "tst-72": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>dcf-lab, 72 Tests<\/a>", "tst-46": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>marginal-abatement, 46 Tests<\/a>", "tst-37": "<a href='https://github.com/Keremozdemirra/esg-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>carbon-bridge, 37 Tests<\/a>", "tst-127": "<a href='https://github.com/Keremozdemirra/unitguard/actions/workflows/tests.yml' rel='noopener noreferrer'>dimensions und quantity, 127 Tests<\/a>", "tst-49": "<a href='https://github.com/Keremozdemirra/analyst-toolkit/actions/workflows/tests.yml' rel='noopener noreferrer'>market-sizer, 49 Tests<\/a>", "t1": "Instrument eins", "t2": "Instrument zwei", "t3": "Instrument drei", "t4": "Instrument vier", "t5": "Instrument fünf", "q1": "Wie viel dieser Bewertung sind die fünf prognostizierten Jahre, und wie viel ist die Ewigkeit, die dahinter geschraubt wurde?", "q1b": "Jeder Regler ist ein Argument: das Wachstum ist die Geschichte, der Diskontsatz ist der Zweifel, und im Endwert verstecken sich die Bewertungen.", "q2": "Welche dieser zehn Maßnahmen lohnen sich bei einem gegebenen CO2-Preis, und was kostet das Bündel?", "q3": "Die Emissionen haben sich zwischen zwei Jahren verschoben. Wie viel davon war Menge, wie viel Produktmix, wie viel Energieintensität und wie viel Emissionsfaktor?", "q4": "Hat diese Umrechnung eine Antwort, und wenn nicht, was genau fehlt?", "q5": "Die beiden Marktgrößen widersprechen sich. Welche Annahme müsste sich ändern, und worauf?", "lb-w": "Kapitalkosten", "lb-g": "Ewiges Wachstum", "lb-cp": "CO2-Preis", "ro-n": "Freigeschaltete Maßnahmen", "ro-t": "Kumulierte Vermeidung", "ro-c": "Netto-Jahreskosten", "mc-hint": "Die Balkenbreite ist die jährliche Vermeidung. Die Balkenhöhe sind die nivellierten Kosten je Tonne. Wählen Sie einen Balken für seine Rechnung.", "ug-qty": "Menge", "ug-from": "Von", "ug-to": "Nach", "ug-go": "Umrechnen", "ms-td-h": "Top down", "ms-td-s": "Ein Universum, durch Faktoren verengt.", "ms-bu-h": "Bottom up", "ms-bu-s": "Segmente, jedes ein Produkt aus Treibern.", "ms-td-t": "Top-down-Summe", "ms-bu-t": "Bottom-up-Summe", "ms-gap": "Lücke", "ms-cap": "Was jede Annahme sein müsste, damit die beiden Marktgrößen übereinstimmen", "ms-c1": "Annahme", "ms-c2": "Jetzt", "ms-c3": "Erforderlich", "ms-c4": "Faktor", "ug-dim-energy": "Energie", "ug-dim-mass": "Masse", "ug-dim-ghg": "Treibhausgasmasse", "ug-noans": "{a} nach {b} hat hier keine Antwort.", "ug-h-gwp": "Kein Treibhauspotenzial angegeben", "ug-w-gwp": "Eine Tonne CH4 wird nur über ein Treibhauspotenzial zu tCO2e, und ein GWP existiert nur innerhalb eines genannten IPCC-Sachstandsberichts und Zeithorizonts. Über 100 Jahre setzt AR4 Methan auf 25, AR5 auf 28 und AR6 auf 27,0 für biogenes und 29,8 für fossiles Methan. Nennen Sie Bericht und Horizont, dann ist das eine einzige Multiplikation.", "ug-n-gwp": "unitguard verweigert, statt eines auszuwählen.", "ug-h-mix": "Keine Gaszusammensetzung angegeben", "ug-w-mix": "tCO2e ist eine Recheneinheit: Sie hält fest, wie viel Erwärmung einem Bündel von Gasen zugerechnet wird. Ohne die Zusammensetzung hinter der Zahl gibt es keine Masse {g}, die zurückgegeben werden könnte.", "ug-n-mix": "Die Richtung, die funktioniert, ist CO2 nach CO2e, wo das Potenzial per Definition 1 ist.", "ug-n-4412": "Genau 44/12, das Verhältnis der Molmassen.", "ug-n-1244": "Genau 12/44, das Verhältnis der Molmassen.", "ug-n-co2e": "Das Potenzial von CO2 ist per Definition der Metrik 1.", "ug-n-cco2e": "Kohlenstoff nach CO2 mit 44/12, dann CO2 nach CO2e mit einem Potenzial von 1.", "ug-h-none": "Nicht definiert", "ug-w-none": "unitguard kennt keinen definierten Weg zwischen diesen beiden Spezies.", "ug-h-sp": "Keine Gasspezies angegeben", "ug-w-sp": "{a} ist eine blanke Masse. {b} zählt ein bestimmtes Gas. Die Spezies zu benennen ist der ganze Unterschied, und ein Rechner, der sie erriete, würde die Zahl erfinden.", "ug-n-sp": "Nennen Sie die Spezies auf der Eingabeseite, dann geht die Umrechnung durch.", "ug-h-drop": "Die Spezies ginge verloren", "ug-w-drop": "unitguard führt die Gasspezies als Teil der Einheit. {a} in ein blankes {b} umzurechnen wirft sie weg, und die Zahl ist keine Emissionszahl mehr. Behalten Sie die Spezies in der Zieleinheit.", "ug-h-dim": "Verschiedene Dimensionen", "ug-w-dim": "{a} misst {da} und {b} misst {db}. Nichts wandelt das eine von allein in das andere um. Eine Energiedichte oder ein Emissionsfaktor täten es, und keines davon wurde geliefert.", "ug-n-scale": "Die Skalenfaktoren sind exakte Brüche, deshalb geht der Hin- und Rückweg verlustfrei.", "ug-h-nan": "Keine Zahl", "ug-l-nan": "„{q}“ ist keine Größe.", "ug-w-nan": "Geben Sie eine einfache Dezimalzahl ein. Größen werden als exakte Brüche gelesen, 0,1 bedeutet also ein Zehntel statt der nächstgelegenen binären Gleitkommazahl.", "ug-h-ok": "Umgerechnet", "ug-l-ok": "{a} {ua} sind {b} {ub}.", "ug-n-tilde": "Die vorangestellte Tilde markiert einen Bruch, der dezimal nicht abbricht. Der gespeicherte Wert ist exakt, der gedruckte nicht.", "ug-refused": "Verweigert.", "word-to": "nach", "ug-loaded": "{x} geladen.", "cb-err": "Die Gesamtmenge muss in beiden Perioden über null liegen.", "cb-s1": "Beschichtetes Blech", "cb-s2": "Strangpressprofile", "cb-s3": "Gussteile", "cb-r1": "Menge, Stück", "cb-r2": "MWh je Stück", "cb-r3": "tCO2e je MWh", "cb-e1": "Menge", "cb-e2": "Mix", "cb-e3": "Energieintensität", "cb-e4": "Emissionsfaktor", "cb-em": "Emissionen {y}", "cb-scale": "Die Skala reicht von {lo} bis {hi} tCO2e und beginnt nicht bei null, damit die vier Effekte neben Summen lesbar bleiben, die sechsmal so groß sind.", "cb-check": "Die Probe", "cb-check-a": "Die Probe, seitlich scrollbar", "cb-ident": "Aktivität + Mix + Intensität + Faktor = Summe", "cb-sum": "Summe der vier Effekte", "cb-minus": "2026 minus 2023", "cb-res": "Rest", "cb-lmdi": "LMDI-I lässt keinen Rest, der einzige Unterschied ist also Gleitkommarauschen. Ändern Sie oben ein beliebiges Feld, die beiden Zeilen bleiben gleich.", "mc-m1": "LED-Umrüstung", "mc-m2": "Druckluftleckagen abdichten", "mc-m3": "Drehzahlgeregelte Antriebe", "mc-m4": "Kesseleinstellung", "mc-m5": "Wärmerückgewinnung", "mc-m6": "Aufdach-Photovoltaik", "mc-m7": "Prozesselektrifizierung", "mc-m8": "Motorentausch", "mc-m9": "Dämmung verbessern", "mc-m10": "Ökostromvertrag", "mc-aria": "{n}, {c} Euro je Tonne, {a} Tonnen im Jahr", "mc-pertonne": "EUR je Tonne", "mc-often": "von zehn", "mc-tpy": "Tonnen im Jahr, von {t}", "mc-saving": "eine Nettoersparnis zu nivellierten Kosten", "mc-cost": "Nettokosten zu nivellierten Kosten", "mc-yes": "Bei {p} EUR je Tonne lohnt sich diese Maßnahme.", "mc-no": "Bei {p} EUR je Tonne lohnt sich diese Maßnahme nicht. Sie greift ab {c}.", "mc-worth": "Lohnt sich bei {p} EUR je Tonne", "mc-none": "Bei {p} EUR je Tonne greift keine", "mc-cheapest": "Die drei günstigsten sind gezeigt. Die Kurve beginnt bei {c} EUR je Tonne.", "mc-all": "Jede Maßnahme dieser Kurve greift bei {c} EUR je Tonne. Darüber ändert der Regler nichts mehr.", "ms-d1": "EU-Unternehmen über 250 Beschäftigte", "ms-d2": "Anteil im CSRD-Anwendungsbereich", "ms-d3": "Anteil, der externe Software kauft", "ms-d4": "Jahreslizenz, EUR", "ms-d5": "Unternehmen", "ms-d6": "Abschlussquote", "ms-g1": "Große börsennotierte", "ms-g2": "Große private", "ms-g3": "Mittelstand", "ms-w-share": "erforderlicher Anteil von {p} % übersteigt 100 %", "ms-w-neg": "erforderlicher Wert ist negativ", "ms-illus": "EUR, illustrativ", "ms-share-of": "{p} % der Top-down-Summe", "ms-td-zero": "Top-down-Summe ist null", "ms-infeasible": "unmöglich", "ms-grp-td": "Top down, jeder Faktor teilt denselben Multiplikator {m}", "ms-undef": "undefiniert", "ms-w-zero": "die Top-down-Summe ist null, kein Faktor kann sie skalieren", "ms-w-pin": "ein auf null festgesetzter Faktor lässt sich nicht skalieren, um eine Lücke zu schließen", "ms-n-zero": "Dieses Segment ist null wert, das Skalieren seiner Treiber bewegt die Summe also nicht.", "ms-n-over": "Die übrigen Segmente kommen allein auf {r} EUR und liegen damit bereits über der Top-down-Summe von {t} EUR. Kein Treiberwert in diesem Segment schließt die Lücke.", "ms-grp-bu": "Bottom up, {s}", "dcf-h-ref": "Verweigert. Keine Zahl zu berichten", "dcf-l-ref": "Ewiges Wachstum von {g} % liegt nicht unter den Kapitalkosten von {w} %.", "dcf-w-ref": "Eine Ewigkeit, die mit ihrem Diskontsatz oder darüber wächst, hat unbegrenzten Wert, es gibt also keinen Unternehmenswert auszugeben. Die Wachstumsrate knapp unter die Kapitalkosten zu kappen ist schlimmer als eine Verweigerung, denn dabei tritt ein anderes Modell an die Stelle, dessen Antwort davonläuft, je enger gekappt wird. Entweder die Wachstumsrate oder die Kapitalkosten sind falsch.", "dcf-n-ref": "Die Prognosejahre werden weiterhin normal diskontiert. Nur der Endwert hat keine Antwort.", "dcf-share": "des Unternehmenswerts ist der Endwert. Die fünf Prognosejahre machen die übrigen {r} % aus.", "dcf-k1": "Barwert der Prognose", "dcf-k2": "Barwert des Endwert", "dcf-k3": "Unternehmenswert", "dcf-c1": "Jahr", "dcf-c2": "Freier Zahlungs­strom", "dcf-c3": "Diskont­faktor", "dcf-c4": "Barwert", "dcf-term": "Endwert", "dcf-tv": "Endwert", "dcf-unit": "Die Zahlungsströme stehen durchgehend in derselben Einheit, und die Einheit spielt für den Anteil keine Rolle.", "x-copylink": "Link kopieren", "x-copied": "kopiert", "x-push": "gepusht am {d}", "j-h1": "Instrumente", "j-lede": "Fünf Instrumente, die direkt auf dieser Seite laufen, und die Repositories dahinter.", "col-p": "Ich baue als Mitgründer eine Plattform für Menschen, die gemeinsam etwas bauen. Sie ist mit einem kleinen Team im Aufbau, und es gibt hier noch nichts vorzuführen. Wenn es so weit ist, steht es auf dieser Seite.", "inst-h": "Fünf Instrumente, live", "inst-p": "Aus meinen Python-Repositories in JavaScript übertragen; alles läuft direkt auf dieser Seite. Die Eingaben sind illustrativ; die Arithmetik ist dieselbe, die Tests trägt die Python-Seite.", "repo-h": "Repositories", "repo-p": "Alles öffentlich, alles mit Quelle. Die Instrumente oben stammen aus den ersten drei; die beiden danach stehen für sich, und das letzte verpackt Arbeitsmethode als wiederverwendbare Skills.", "rp1": "Emissionszerlegung, Zielpfade, Vermeidungskosten, eingebettete CBAM-Emissionen.", "rp2": "Marktgrößen aus zwei Richtungen, DCF mit zerlegtem Endwert.", "rp3": "Einheiten- und Dimensionssicherheit für Energie- und Emissionsrechnung. Rät nicht.", "rp4": "Eine Schnittstelle über öffentliche Klimadaten; jeder Wert trägt Quelle, Version, Datum.", "rt5": "Forschung", "rp5": "Eine Entwurfsnotiz zum Rahmen und eine Positionierungsnotiz, mit den Modellen, die sie prüfen. Keine von beiden ist begutachtet.", "rt6": "Skill-Pakete", "rp6": "Zwölf Repositories, die Arbeitsmethode als Claude-Skills verpacken. Finanzen, Nachhaltigkeit, Recherche, Schreiben, Risiko und ihre gemeinsamen Konventionen.", "repo-read": "Von GitHub gelesen am 2026-08-25, als diese Seite gebaut wurde."}};
 
 (function(){
   "use strict";
@@ -927,16 +1045,9 @@ window.I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik 
       setTimeout(function () { opening.classList.add("in"); }, 120);
     }
   } catch (e) {}
-  /* language: the same dictionaries drive every inner page */
-  /* First visit only. A German recruiter should not have to find the switch
-     before the page speaks to them; once they choose, the choice is theirs. */
-  function preferred(){
-    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
-    l = String(l).toLowerCase();
-    if (l.indexOf("de") === 0) return "de";
-    if (l.indexOf("tr") === 0) return "tr";
-    return "en";
-  }
+  /* language: the same dictionaries drive every inner page. The head script
+     settles which one, from the address, the tab, the reader's choice and the
+     browser, in that order, and stores nothing a reader did not press. */
   /* Three languages exist and nothing else is one. The value comes out of
      localStorage, which any page on this origin can write, and it was used
      unchecked as a key into window.I18N: "constructor" or "__proto__" would
@@ -945,8 +1056,7 @@ window.I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik 
      of Object.prototype, but a value read from storage is input and input
      gets checked. */
   function knownLang(l){ return l === "en" || l === "tr" || l === "de"; }
-  var lang = "en";
-  try { lang = localStorage.getItem("lang") || preferred(); } catch(e){ lang = preferred(); }
+  var lang = window.__tabLang ? window.__tabLang() : "en";
   if (!knownLang(lang)) lang = "en";
   window.__lang = lang;
   var base = {}, baseA = {}, titleBase = null;
@@ -1019,32 +1129,92 @@ window.I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik 
       var f = a.getAttribute("data-cv-" + l) || a.getAttribute("data-cv");
       a.setAttribute("href", f); a.setAttribute("download", f);
     });
-    try { localStorage.setItem("lang", l); } catch(e){}
+    /* The site has a copy of each of these pages under /tr and /de, and a reader
+       in this tab's language leaves to the page in that language: with nothing
+       stored, a plain /about/ would land them in English. */
+    document.querySelectorAll("a[data-home]").forEach(function(a){
+      a.setAttribute("href", (l === "en" ? "" : "/" + l) + a.getAttribute("data-home"));
+    });
     try { document.dispatchEvent(new CustomEvent("langchange", { detail: l })); } catch(e){}
   }
+  /* A press on this page's own switch is the only thing here that writes the
+     reader's choice down. It also takes over the tab and leaves the address,
+     where a ?lang= would win again on the next reload. A framed page has no
+     switch to press, and this guard keeps it that way: the site redirects by
+     this key, so a frame must never write it. */
+  function press(l){
+    if (window.self === window.top) {
+      try { localStorage.setItem("lang", l); } catch(e){}
+      try { sessionStorage.setItem("lang", l); } catch(e){}
+      try {
+        var q = location.search.replace(/^\?/, "").split("&").filter(function(p){
+          return p && p.indexOf("lang=") !== 0;
+        }).join("&");
+        history.replaceState(history.state, "", location.pathname + (q ? "?" + q : "") + location.hash);
+      } catch(e){}
+    }
+    apply(l);
+  }
   document.querySelectorAll(".langs button").forEach(function(b){
-    b.addEventListener("click", function(){ apply(b.getAttribute("data-lang")); });
+    b.addEventListener("click", function(){ press(b.getAttribute("data-lang")); });
   });
   apply(lang);
   /* A page that wants a whole viewport of height has to know how much of it
      the bar has already taken, or it overhangs the fold by exactly that much
      and clips whatever sits at its bottom. */
   function barHeight(){
-    var b = document.querySelector(".bar");
+    var b = document.querySelector("header.bar");
     document.documentElement.style.setProperty("--barh", (b ? b.offsetHeight : 0) + "px");
   }
   barHeight();
   addEventListener("resize", barHeight);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(barHeight);
-  /* On a narrow screen the nav is one scrolling line, so the page you are on
-     may start off past the right edge of it. Bring it into view, without
-     scrolling the page itself. */
-  try {
-    var cur = document.querySelector(".bar nav a[aria-current]");
-    if (cur && cur.parentNode.scrollWidth > cur.parentNode.clientWidth) {
-      cur.parentNode.scrollLeft = Math.max(0, cur.offsetLeft - 24);
+  /* The sheet behind the menu button. Focus goes to the first section and stays
+     inside until the sheet closes, then returns to the button. Escape, a link,
+     and a window grown past the point where the button exists all close it. */
+  (function(){
+    var btn = document.querySelector(".menu-toggle"), sheet = document.getElementById("site-menu");
+    if (!btn || !sheet) return;
+    var root = document.documentElement, open = false;
+    function stops(){
+      return Array.prototype.filter.call(sheet.querySelectorAll("a[href],button"), function(el){
+        return el.offsetParent !== null || el.classList.contains("menu-close");
+      });
     }
-  } catch(e){}
+    function set(v, back){
+      if (v === open) return;
+      open = v;
+      root.classList.toggle("menu-open", v);
+      sheet.classList.toggle("open", v);
+      btn.setAttribute("aria-expanded", v ? "true" : "false");
+      if (v) {
+        var first = sheet.querySelector(".menu-main > a");
+        if (first) first.focus({ preventScroll: true });
+      } else if (back) {
+        btn.focus({ preventScroll: true });
+      }
+    }
+    btn.addEventListener("click", function(){ set(!open, true); });
+    var closer = sheet.querySelector(".menu-close");
+    if (closer) closer.addEventListener("click", function(){ set(false, true); });
+    sheet.addEventListener("click", function(e){
+      if (e.target.closest && e.target.closest("a")) set(false, false);
+    });
+    document.addEventListener("keydown", function(e){
+      if (!open) return;
+      if (e.key === "Escape") { set(false, true); return; }
+      if (e.key !== "Tab") return;
+      var list = stops(), i = list.indexOf(document.activeElement);
+      if (!list.length) return;
+      var next = e.shiftKey ? (i <= 0 ? list.length - 1 : i - 1) : (i === list.length - 1 ? 0 : i + 1);
+      e.preventDefault();
+      list[next].focus();
+    });
+    var wide = matchMedia("(min-width:64rem)");
+    var onWide = function(){ if (wide.matches) set(false, false); };
+    if (wide.addEventListener) wide.addEventListener("change", onWide);
+    addEventListener("pageshow", function(e){ if (e.persisted) set(false, false); });
+  })();
 
   /* soft travel: no internal link jumps straight */
   var fadeEl = document.createElement("div");
@@ -1209,7 +1379,7 @@ window.I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik 
       return { ok: false,
         head: T("ug-h-mix", "No gas mix was given"),
         line: noAnswer(fromS, toS),
-        why: T("ug-w-mix", "tCO2e is a unit of account, not a substance. It records how much warming a bundle of gases is held to cause, not how much of any single gas is present. Without the mix that produced the figure there is no mass of {g} to return.").replace("{g}", to),
+        why: T("ug-w-mix", "tCO2e is a unit of account: it records how much warming a bundle of gases is held to cause. Without the mix that produced the figure there is no mass of {g} to return.").replace("{g}", to),
         note: T("ug-n-mix", "The direction that does work is CO2 to CO2e, where the potential is 1 by definition.") };
     }
     if (from === "C" && to === "CO2") return { ok: true, f: R(44n, 12n), note: T("ug-n-4412", "Exactly 44/12, the ratio of the molar masses.") };
@@ -1822,6 +1992,9 @@ window.I18N = {"tr": {"foot-city": "Münih", "foot-note": "Çerez yok, analitik 
       body.appendChild(split);
 
       var tbl = el("table", "yrs");
+      /* on a phone a table is a scroller (main table in pagegen.py), and a long
+         German heading can still make it one that needs a keyboard stop */
+      tbl.setAttribute("tabindex", "0");
       var thead = el("thead"), htr = el("tr");
       [T("dcf-c1", "Year"), T("dcf-c2", "Free cash flow"), T("dcf-c3", "Discount factor"), T("dcf-c4", "Present value")].forEach(function(h, i){
         var th = el("th", null, h); th.scope = "col"; htr.appendChild(th);
