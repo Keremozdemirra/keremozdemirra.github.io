@@ -735,6 +735,22 @@ var Cutplan = (function () {
     return { pts: [[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]], closed: true };
   }
 
+  /* SVG's rule: a missing radius copies the other, and each is capped at half
+     the side. A part drawn with rounded corners has to come out with them. */
+  function roundRectPoly(x, y, w, h, rx, ry, tol) {
+    if (!(rx > 0) && !(ry > 0)) return rectPoly(x, y, w, h);
+    if (!(rx > 0)) rx = ry;
+    if (!(ry > 0)) ry = rx;
+    rx = Math.min(rx, w / 2);
+    ry = Math.min(ry, h / 2);
+    var a = " A" + rx + " " + ry + " 0 0 1 ";
+    return parsePathData(
+      "M" + (x + rx) + " " + y + " H" + (x + w - rx) + a + (x + w) + " " + (y + ry) +
+      " V" + (y + h - ry) + a + (x + w - rx) + " " + (y + h) +
+      " H" + (x + rx) + a + x + " " + (y + h - ry) +
+      " V" + (y + ry) + a + (x + rx) + " " + y + " Z", tol)[0];
+  }
+
   /* --- units ------------------------------------------------------------- */
 
   var PER_MM = { mm: 1, cm: 10, in: 25.4, pt: 25.4 / 72, pc: 25.4 / 6, px: 25.4 / 96, "": 25.4 / 96 };
@@ -783,18 +799,26 @@ var Cutplan = (function () {
      first means an inner shape is cut while its surrounding material is still
      held by the sheet. Get this wrong and the part drops out mid-job, which is
      the single detail that tells an operator whether the author has used a
-     laser. */
+     laser.
+
+     Containment is judged on every vertex of the inner shape. One probe at the
+     bbox centre got a real drawing wrong: the centre of a ring sits in the gap
+     of a concave outline, so a shape fully inside was cut after its outline.
+     Open paths count too, because a score line inside a part must also go
+     before the part is cut free. */
+  // Plenty of exporters end an outline on its first point and never write Z.
+  function endsMeet(pts) {
+    var a = pts[0], b = pts[pts.length - 1];
+    return Math.abs(a[0] - b[0]) <= 0.01 && Math.abs(a[1] - b[1]) <= 0.01;
+  }
+
   function depthOf(poly, all) {
-    if (poly.pts.length < 3) return 0;
-    var b = bbox(poly.pts);
-    var probe = [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2];
-    if (!pointInPoly(probe, poly.pts)) probe = poly.pts[0];
     var d = 0;
     for (var i = 0; i < all.length; i++) {
       var o = all[i];
-      if (o === poly || !o.closed || o.pts.length < 3) continue;
+      if (o === poly || o.pts.length < 3 || !(o.closed || endsMeet(o.pts))) continue;
       if (Math.abs(area(o.pts)) <= Math.abs(area(poly.pts))) continue;
-      if (pointInPoly(probe, o.pts)) d++;
+      if (poly.pts.every(function (p) { return pointInPoly(p, o.pts); })) d++;
     }
     return d;
   }
@@ -825,6 +849,17 @@ var Cutplan = (function () {
 
   /* --- SVG --------------------------------------------------------------- */
 
+  /* Geometry in these is reference material: cutting it would put phantom
+     outlines on the job, a clip rectangle most often. */
+  var NOT_DRAWN = { defs: 1, clippath: 1, mask: 1, symbol: 1, marker: 1, pattern: 1,
+                    lineargradient: 1, radialgradient: 1, filter: 1, title: 1, desc: 1,
+                    metadata: 1, style: 1, script: 1 };
+
+  function isHidden(el) {
+    if (el.getAttribute("display") === "none" || el.getAttribute("visibility") === "hidden") return true;
+    return /(^|;)\s*(display\s*:\s*none|visibility\s*:\s*hidden)/i.test(el.getAttribute("style") || "");
+  }
+
   function parseSVG(text, tol) {
     tol = tol || 0.05;
     var warnings = [];
@@ -849,53 +884,72 @@ var Cutplan = (function () {
       ox = -vb[0]; oy = -vb[1];
     }
     var root = mul([scale, 0, 0, scale, 0, 0], [1, 0, 0, 1, ox, oy]);
+    // Illustrator writes 72 user units to the inch and many exporters write no
+    // unit at all, so a file without a physical size can come out a third small.
+    var assumedScale = !/(mm|cm|in|pt|pc)\s*$/i.test(svg.getAttribute("width") || "") &&
+                       !/(mm|cm|in|pt|pc)\s*$/i.test(svg.getAttribute("height") || "");
 
     var polys = [];
-    function walk(node, m) {
+    function walk(node, m, seen) {
       for (var i = 0; i < node.childNodes.length; i++) {
-        var el = node.childNodes[i];
-        if (el.nodeType !== 1) continue;
-        var name = el.nodeName.toLowerCase();
-        var lm = mul(m, parseTransform(el.getAttribute("transform")));
-        var got = [];
-
-        if (name === "path") got = parsePathData(el.getAttribute("d") || "", tol / Math.max(scale, EPS));
-        else if (name === "rect") {
-          got = [rectPoly(num(el.getAttribute("x")), num(el.getAttribute("y")),
-                          num(el.getAttribute("width")), num(el.getAttribute("height")))];
-        } else if (name === "circle") {
-          var r = num(el.getAttribute("r"));
-          got = [ellipsePoly(num(el.getAttribute("cx")), num(el.getAttribute("cy")), r, r,
-                             tol / Math.max(scale, EPS))];
-        } else if (name === "ellipse") {
-          got = [ellipsePoly(num(el.getAttribute("cx")), num(el.getAttribute("cy")),
-                             num(el.getAttribute("rx")), num(el.getAttribute("ry")),
-                             tol / Math.max(scale, EPS))];
-        } else if (name === "line") {
-          got = [{ pts: [[num(el.getAttribute("x1")), num(el.getAttribute("y1"))],
-                         [num(el.getAttribute("x2")), num(el.getAttribute("y2"))]], closed: false }];
-        } else if (name === "polyline" || name === "polygon") {
-          var nums = (el.getAttribute("points") || "").split(/[\s,]+/).map(Number)
-                       .filter(function (v) { return isFinite(v); });
-          var pts = [];
-          for (var k = 0; k + 1 < nums.length; k += 2) pts.push([nums[k], nums[k + 1]]);
-          if (pts.length > 1) {
-            if (name === "polygon") pts.push(pts[0].slice());
-            got = [{ pts: pts, closed: name === "polygon" }];
-          }
-        } else if (name === "text" || name === "image" || name === "use") {
-          if (warnings.indexOf(name) === -1) warnings.push(name);
-        }
-
-        for (var g = 0; g < got.length; g++) {
-          got[g].pts = got[g].pts.map(function (p) { return apply(lm, p[0], p[1]); });
-          if (got[g].pts.length > 1) polys.push(got[g]);
-        }
-        if (el.childNodes && el.childNodes.length) walk(el, lm);
+        if (node.childNodes[i].nodeType === 1) visit(node.childNodes[i], m, seen);
       }
     }
-    walk(svg, root);
-    return { polys: polys, warnings: warnings };
+    function visit(el, m, seen) {
+      var name = el.nodeName.toLowerCase();
+      if (NOT_DRAWN[name] || isHidden(el)) return;
+      var lm = mul(m, parseTransform(el.getAttribute("transform")));
+      var got = [];
+
+      if (name === "use") {
+        var href = el.getAttribute("href") || el.getAttribute("xlink:href") || "";
+        var id = href.charAt(0) === "#" ? href.slice(1) : "";
+        var target = id && seen.indexOf(id) === -1 && doc.querySelector('[id="' + id.replace(/"/g, "") + '"]');
+        if (!target) { if (warnings.indexOf(name) === -1) warnings.push(name); return; }
+        var um = mul(lm, [1, 0, 0, 1, num(el.getAttribute("x")), num(el.getAttribute("y"))]);
+        if (target.nodeName.toLowerCase() === "symbol") walk(target, um, seen.concat(id));
+        else visit(target, um, seen.concat(id));
+        return;
+      }
+
+      if (name === "path") got = parsePathData(el.getAttribute("d") || "", tol / Math.max(scale, EPS));
+      else if (name === "rect") {
+        got = [roundRectPoly(num(el.getAttribute("x")), num(el.getAttribute("y")),
+                             num(el.getAttribute("width")), num(el.getAttribute("height")),
+                             num(el.getAttribute("rx")), num(el.getAttribute("ry")),
+                             tol / Math.max(scale, EPS))];
+      } else if (name === "circle") {
+        var r = num(el.getAttribute("r"));
+        got = [ellipsePoly(num(el.getAttribute("cx")), num(el.getAttribute("cy")), r, r,
+                           tol / Math.max(scale, EPS))];
+      } else if (name === "ellipse") {
+        got = [ellipsePoly(num(el.getAttribute("cx")), num(el.getAttribute("cy")),
+                           num(el.getAttribute("rx")), num(el.getAttribute("ry")),
+                           tol / Math.max(scale, EPS))];
+      } else if (name === "line") {
+        got = [{ pts: [[num(el.getAttribute("x1")), num(el.getAttribute("y1"))],
+                       [num(el.getAttribute("x2")), num(el.getAttribute("y2"))]], closed: false }];
+      } else if (name === "polyline" || name === "polygon") {
+        var nums = (el.getAttribute("points") || "").split(/[\s,]+/).map(Number)
+                     .filter(function (v) { return isFinite(v); });
+        var pts = [];
+        for (var k = 0; k + 1 < nums.length; k += 2) pts.push([nums[k], nums[k + 1]]);
+        if (pts.length > 1) {
+          if (name === "polygon") pts.push(pts[0].slice());
+          got = [{ pts: pts, closed: name === "polygon" }];
+        }
+      } else if (name === "text" || name === "image") {
+        if (warnings.indexOf(name) === -1) warnings.push(name);
+      }
+
+      for (var g = 0; g < got.length; g++) {
+        got[g].pts = got[g].pts.map(function (p) { return apply(lm, p[0], p[1]); });
+        if (got[g].pts.length > 1) polys.push(got[g]);
+      }
+      walk(el, lm, seen);
+    }
+    walk(svg, root, []);
+    return { polys: polys, warnings: warnings, assumedScale: assumedScale };
   }
 
   /* --- G-code ------------------------------------------------------------
@@ -1051,6 +1105,7 @@ function load(text, name, isDemo) {
   }
   state.polys = r.polys;
   state.warnings = r.warnings || [];
+  state.assumedScale = !!r.assumedScale;
   state.ordered = Cutplan.order(r.polys);
   state.name = (name || "cut").replace(/\.svg$/i, "");
   state.demo = !!isDemo;
@@ -1368,6 +1423,10 @@ function readFile(f) {
     if (state.warnings.length) {
       flag("warn", "<b>Ignored:</b> " + esc(state.warnings.join(", ")) +
         ". Everything else in the file was read.");
+    }
+    if (state.assumedScale) {
+      flag("warn", "<b>Check the size:</b> this file states no physical size, so 96 dpi was assumed. " +
+        "A file saved from Illustrator at 72 dpi would be a third larger than shown here.");
     }
   };
   rd.readAsText(f);
