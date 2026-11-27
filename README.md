@@ -14,7 +14,7 @@ too.
 
 `/run/` holds the previous edition of the site, 61 pages of it, still working
 and still addressable. Every URL that edition published redirects to its place
-here rather than dying.
+here.
 
 ## Terms
 
